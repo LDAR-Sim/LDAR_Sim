@@ -1,0 +1,2 @@
+{'timesteps': 100, 'methods': {'OGI': {'n_crews': 10, 'truck_types': ['silverado', 'tacoma', 'dodge'], 'min_temp': -30, 'max_wind': 20, 'max_precip': 2}}, 'WT_data': '5YearWT2011_2016.nc', 'P_data': '5YearPrecip2011_2016.nc', 'infrastructure_file': 'AER_sites.csv', 'leak_file': 'FWAQS_all.csv', 'delay_to_fix': 3, 'minimum_interval': 10, 'output_folder': 'sim1_output', 'working_directory': 'D:/OneDrive - University of Calgary/Documents/Thomas/PhD/Thesis/LDAR_Sim/model/python_v2'}
+2019-03-26 12:36:52.437176
