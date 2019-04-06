@@ -69,7 +69,7 @@ class OGI_crew:
 
                     # Update site
                     site['surveys_conducted'] += 1
-                    site['t_since_last_LDAR'] == 0
+                    site['t_since_last_LDAR'] = 0
 
                     # Need to update 'surveys_this_year' and 't_since_last_LDAR'
                     return (facility_ID)
