@@ -60,7 +60,7 @@ class ldar_sim:
                                                 'status': 'active',
                                                 'days_active': 0,
                                                 'component': 'unknown',
-                                                'date_began': self.state['t'],
+                                                'date_began': self.state['t'].current_date,
                                                 'date_found': None,
                                                 'date_repaired': None,
                                                 'repair_delay': None,
@@ -120,7 +120,7 @@ class ldar_sim:
                                                 'status': 'active',
                                                 'days_active': 0,
                                                 'component': 'unknown',
-                                                'date_began': self.state['t'],
+                                                'date_began': self.state['t'].current_date,
                                                 'date_found': None,
                                                 'date_repaired': None,
                                                 'repair_delay': None,
@@ -146,10 +146,10 @@ class ldar_sim:
         Repair tagged leaks.
         '''
         for leak in self.state['tags']:
-            if self.state['t'] - leak['date_found']  == self.parameters['delay_to_fix']:
+            if (self.state['t'].current_date - leak['date_found']).days  == self.parameters['delay_to_fix']:
                 leak['status'] = 'repaired'
-                leak['date_repaired'] = self.state['t']
-                leak['repair_delay'] = leak['date_repaired'] - leak['date_found']
+                leak['date_repaired'] = self.state['t'].current_date
+                leak['repair_delay'] = (leak['date_repaired'] - leak['date_found']).days
 
         return
 
@@ -164,14 +164,14 @@ class ldar_sim:
             if leak['status'] == 'active':
                 active_leaks.append(leak)
 
-        self.timeseries['day'].append(self.state['t'])
+        self.timeseries['datetime'].append(self.state['t'].current_date)
         self.timeseries['active_leaks'].append(len(active_leaks))
         self.timeseries['new_leaks'].append(sum(d['n_new_leaks'] for d in self.state['sites']))
         self.timeseries['cum_repaired_leaks'].append(sum(d['status'] == 'repaired' for d in self.state['leaks']))
         self.timeseries['daily_emissions_kg'].append(sum(d['rate'] for d in active_leaks))
 #       self.timeseries['prop_sites_unavail']           This might be a dream. Would have to check conditions for EVERY site.. could take forever (although previous model did it).
 
-        print ('Day ' + str(self.state['t']) + ' complete!')
+        print ('Day ' + str(self.state['t'].current_timestep) + ' complete!')
         return
 
     def finalize (self):
@@ -184,7 +184,6 @@ class ldar_sim:
 
         for site in self.state['sites']:
             del site['n_new_leaks']
-            del site['t_since_last_LDAR']
 
         df = pd.DataFrame(self.state['leaks'])
         df2 = pd.DataFrame(self.timeseries)

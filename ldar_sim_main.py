@@ -15,14 +15,16 @@
 import numpy as np
 from weather_lookup import *
 from ldar_sim import *
+from time_counter import *
 
 #-------------------------------------------------------------------------------
 #----------------------Static user-defined input parameters---------------------
 
 parameters = {
-    'timesteps': 100,
+    'timesteps': 50,
+    'start_year': 2011,
     'methods': {'OGI': {
-                         'n_crews': 10,
+                         'n_crews': 4,
                          'truck_types': ['silverado', 'tacoma', 'dodge'],
                          'min_temp': -30,
                          'max_wind': 20,
@@ -41,7 +43,7 @@ parameters = {
     'leak_file': 'FWAQS_all.csv',
     'delay_to_fix': 3,
     'minimum_interval': 10,
-    'output_folder': 'sim1_output',
+    'output_folder': 'sim_output',
     'working_directory': "D:/OneDrive - University of Calgary/Documents/Thomas/PhD/Thesis/LDAR_Sim/model/python_v2"
 }
 
@@ -49,7 +51,7 @@ parameters = {
 #-----------------------Initialize dynamic model state--------------------------
 
 state = {
-    't': 0,                 # timestep
+    't': None,                 
     'methods': [],          # list of methods in action
     'sites': [],            # sites in the simulation
     'tags': [],             # leaks that have been tagged for repair
@@ -60,7 +62,7 @@ state = {
 #------------------------Initialize timeseries data-----------------------------
 
 timeseries = {
-    'day': [],
+    'datetime': [],
     'active_leaks': [],
     'new_leaks': [],
     'cum_repaired_leaks': [],
@@ -75,12 +77,13 @@ if __name__ == '__main__':
 
     # Initialize objects
     state['weather'] = weatherman (state, parameters)
+    state['t'] = time_counter(parameters)
     sim = ldar_sim (state, parameters, timeseries)
 
     # Loop through timeseries
-    for t in range (parameters['timesteps']):
-        state['t'] = t
+    while state['t'].current_date <= state['t'].end_date:
         sim.update ()
+        state['t'].next_day ()
 
     # Clean up and write files
     sim.finalize ()
