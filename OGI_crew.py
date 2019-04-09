@@ -1,6 +1,7 @@
 
 import numpy as np
 from datetime import timedelta
+import random
 
 class OGI_crew:
     def __init__ (self, state, parameters, config, timeseries, deployment_days, id):
@@ -39,7 +40,10 @@ class OGI_crew:
 
         '''
 
-        # First, identify the site you want based on a neglect ranking
+        # First, shuffle all the entries to randomize order for identical 't_Since_last_LDAR' values
+        random.shuffle(self.state['sites'])
+            
+        # Then, identify the site you want based on a neglect ranking
         self.state['sites'] = sorted(self.state['sites'], key=lambda k: k['t_since_last_LDAR'], reverse = True)
 
         # Then, starting with the most neglected site, check if conditions are suitable for LDAR
