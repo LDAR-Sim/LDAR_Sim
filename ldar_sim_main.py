@@ -20,10 +20,10 @@ from time_counter import *
 #----------------------Static user-defined input parameters---------------------
 
 parameters = {
-    'timesteps': 10,
+    'timesteps': 30,
     'start_year': 2011,
     'methods': {'OGI': {
-                         'n_crews': 3,
+                         'n_crews': 2,
                          'truck_types': ['silverado', 'tacoma', 'dodge'],
                          'min_temp': -30,
                          'max_wind': 20,
@@ -65,6 +65,7 @@ timeseries = {
     'datetime': [],
     'active_leaks': [],
     'new_leaks': [],
+    'n_tags': [],
     'cum_repaired_leaks': [],
     'daily_emissions_kg': [],
     'wells_skipped_weather': [0]*parameters['timesteps']

@@ -148,13 +148,15 @@ class ldar_sim:
 
     def repair_leaks (self):
         '''
-        Repair tagged leaks.
+        Repair tagged leaks and remove from tag pool.
         '''
-        for leak in self.state['tags']:
-            if (self.state['t'].current_date - leak['date_found']).days  == self.parameters['delay_to_fix']:
-                leak['status'] = 'repaired'
-                leak['date_repaired'] = self.state['t'].current_date
-                leak['repair_delay'] = (leak['date_repaired'] - leak['date_found']).days
+        for tag in self.state['tags']:
+            if (self.state['t'].current_date - tag['date_found']).days  == self.parameters['delay_to_fix']:
+                tag['status'] = 'repaired'
+                tag['date_repaired'] = self.state['t'].current_date
+                tag['repair_delay'] = (tag['date_repaired'] - tag['date_found']).days
+        
+        self.state['tags'] = [tag for tag in self.state['tags'] if tag['status'] == 'active']
 
         return
 
@@ -174,6 +176,7 @@ class ldar_sim:
         self.timeseries['new_leaks'].append(sum(d['n_new_leaks'] for d in self.state['sites']))
         self.timeseries['cum_repaired_leaks'].append(sum(d['status'] == 'repaired' for d in self.state['leaks']))
         self.timeseries['daily_emissions_kg'].append(sum(d['rate'] for d in active_leaks))
+        self.timeseries['n_tags'].append(len(self.state['tags']))
 
         print ('Day ' + str(self.state['t'].current_timestep) + ' complete!')
         return
