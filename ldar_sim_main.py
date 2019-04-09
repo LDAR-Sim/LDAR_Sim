@@ -12,7 +12,6 @@
 #-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------
 
-import numpy as np
 from weather_lookup import *
 from ldar_sim import *
 from time_counter import *
@@ -21,10 +20,10 @@ from time_counter import *
 #----------------------Static user-defined input parameters---------------------
 
 parameters = {
-    'timesteps': 50,
+    'timesteps': 500,
     'start_year': 2011,
     'methods': {'OGI': {
-                         'n_crews': 4,
+                         'n_crews': 1,
                          'truck_types': ['silverado', 'tacoma', 'dodge'],
                          'min_temp': -30,
                          'max_wind': 20,
@@ -37,6 +36,7 @@ parameters = {
 ##                   e.g.      'n_wells_per_day': 300,
 ##                         },
                 },
+
     'WT_data': '5YearWT2011_2016.nc',
     'P_data': '5YearPrecip2011_2016.nc',
     'infrastructure_file': 'AER_sites.csv',
@@ -67,8 +67,7 @@ timeseries = {
     'new_leaks': [],
     'cum_repaired_leaks': [],
     'daily_emissions_kg': [],
-    'wells_skipped_weather': [0]*parameters['timesteps'],
-#    'prop_sites_unavail': []
+    'wells_skipped_weather': [0]*parameters['timesteps']
 }
 
 #-----------------------------Run simulations-----------------------------------
@@ -76,7 +75,9 @@ timeseries = {
 if __name__ == '__main__':
 
     # Initialize objects
-    state['weather'] = weatherman (state, parameters)
+    print('Initializing, please wait...')
+    
+    state['weather'] = weather_lookup (state, parameters)
     state['t'] = time_counter(parameters)
     sim = ldar_sim (state, parameters, timeseries)
 

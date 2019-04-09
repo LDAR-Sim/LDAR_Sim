@@ -3,7 +3,7 @@ import numpy as np
 from datetime import timedelta
 
 class OGI_crew:
-    def __init__ (self, state, parameters, config, timeseries, id):
+    def __init__ (self, state, parameters, config, timeseries, deployment_days, id):
         '''
         Constructs an individual OGI crew based on defined configuration.
         '''
@@ -11,6 +11,7 @@ class OGI_crew:
         self.parameters = parameters
         self.config = config
         self.timeseries = timeseries
+        self.deployment_days = deployment_days
         self.crewstate = {'id': id}     # Crewstate is unique to this agent
         self.crewstate['truck'] = np.random.choice (self.config['truck_types'])
         self.crewstate['lat'] = 0.0
@@ -53,20 +54,15 @@ class OGI_crew:
             elif site['surveys_conducted']*(365/self.state['t'].current_timestep) < int(site['required_surveys']):
 
                 # Check the weather for that site
-                weather = self.state['weather'].get_weather (
-                    lat = float(next(item for item in self.state['sites'] if item['facility_ID'] == site['facility_ID'])['lat']),
-                    lon = float(next(item for item in self.state['sites'] if item['facility_ID'] == site['facility_ID'])['lon']),
-                    time = (self.state['t'].current_timestep))
-
-                # Is the weather suitable?
-                if weather['temp'] > self.config['min_temp'] and weather['wspeed'] < self.config['max_wind'] and weather['precip'] < self.config['max_precip']:                   
+                if self.deployment_days[site['lon_index'], site['lat_index'], self.state['t'].current_timestep] == True:
+                
                     # The site passes all the tests! Choose it!
-                    facility_ID = site['facility_ID']
-
+                    facility_ID = site['facility_ID']   
+                    
                     # Update site
                     site['surveys_conducted'] += 1
                     site['t_since_last_LDAR'] = 0
-
+                           
                     return (facility_ID)
                     break                    
                                         

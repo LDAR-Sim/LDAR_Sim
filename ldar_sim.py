@@ -15,6 +15,20 @@ class ldar_sim:
         self.parameters = parameters
         self.timeseries = timeseries
 
+        # Read in the sites as a list of dictionaries
+        with open(self.parameters['infrastructure_file']) as f:
+            self.state['sites'] = [{k: v for k, v in row.items()}
+                    for row in csv.DictReader(f, skipinitialspace=True)]
+            
+        # Additional variable(s) for each site
+        for site in self.state['sites']:
+            site.update( {'t_since_last_LDAR': 0})
+            site.update( {'surveys_conducted': 0})
+            site.update( {'lat_index': min(range(len(self.state['weather'].latitude)), 
+                           key=lambda i: abs(self.state['weather'].latitude[i]-float(site['lat'])))})
+            site.update( {'lon_index': min(range(len(self.state['weather'].longitude)), 
+                           key=lambda i: abs(self.state['weather'].longitude[i]-float(site['lon'])%360))})
+ 
         # Initialize method(s) to be used; append to state
         for m in self.parameters['methods']:
             if m == 'OGI':
@@ -25,16 +39,6 @@ class ldar_sim:
                     self.parameters, self.parameters['methods'][m]))
             else:
                 print ('Cannot add this method: ' + m)
-
-        # Read in the sites as a list of dictionaries
-        with open(self.parameters['infrastructure_file']) as f:
-            self.state['sites'] = [{k: v for k, v in row.items()}
-                    for row in csv.DictReader(f, skipinitialspace=True)]
-
-        # Additional variable(s) for each site
-        for site in self.state['sites']:
-            site.update( {"t_since_last_LDAR": 0})
-            site.update( {"surveys_conducted": 0})
 
         # Initialize baseline leaks for each site
         # First, generate initial leak count for each site
@@ -169,10 +173,10 @@ class ldar_sim:
         self.timeseries['new_leaks'].append(sum(d['n_new_leaks'] for d in self.state['sites']))
         self.timeseries['cum_repaired_leaks'].append(sum(d['status'] == 'repaired' for d in self.state['leaks']))
         self.timeseries['daily_emissions_kg'].append(sum(d['rate'] for d in active_leaks))
-#       self.timeseries['prop_sites_unavail']           This might be a dream. Would have to check conditions for EVERY site.. could take forever (although previous model did it).
 
         print ('Day ' + str(self.state['t'].current_timestep) + ' complete!')
         return
+
 
     def finalize (self):
         '''
