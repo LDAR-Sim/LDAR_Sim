@@ -2,6 +2,7 @@ import pandas as pd
 import csv
 import os
 import datetime
+import sys
 from OGI_company import *
 from truck_company import *
 
@@ -29,7 +30,17 @@ class ldar_sim:
                            key=lambda i: abs(self.state['weather'].latitude[i]-float(site['lat'])))})
             site.update( {'lon_index': min(range(len(self.state['weather'].longitude)), 
                            key=lambda i: abs(self.state['weather'].longitude[i]-float(site['lon'])%360))})
- 
+            
+            # Check to make sure site is within range of grid-based data
+            if float(site['lat']) > max(self.state['weather'].latitude):
+                sys.exit('Simulation terminated: One or more sites is too far North and is outside the spatial bounds of your weather data!')
+            if float(site['lat']) < min(self.state['weather'].latitude):
+                sys.exit('Simulation terminated: One or more sites is too far South and is outside the spatial bounds of your weather data!')
+            if float(site['lon'])%360 > max(self.state['weather'].longitude):
+                sys.exit('Simulation terminated: One or more sites is too far East and is outside the spatial bounds of your weather data!')
+            if float(site['lon'])%360 < min(self.state['weather'].longitude):
+                sys.exit('Simulation terminated: One or more sites is too far West and is outside the spatial bounds of your weather data!')
+        
         # Initialize method(s) to be used; append to state
         for m in self.parameters['methods']:
             if m == 'OGI':
