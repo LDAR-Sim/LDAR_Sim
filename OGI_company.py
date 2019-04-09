@@ -8,6 +8,7 @@ class OGI_company:
         Initialize a company to manage the OGI crews (e.g. a contracting company).
 
         '''
+        print('Initializing OGI company...')
         self.state = state
         self.parameters = parameters
         self.config = config

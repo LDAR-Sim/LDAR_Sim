@@ -7,6 +7,7 @@ class weather_lookup:
         Read in a NetCDF file and returns the weather at a given place in time.
 
         '''
+        print('Initializing weather...')
         self.state = state
         self.parameters = parameters
 

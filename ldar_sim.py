@@ -16,6 +16,7 @@ class ldar_sim:
         self.timeseries = timeseries
 
         # Read in the sites as a list of dictionaries
+        print('Initializing sites...')
         with open(self.parameters['infrastructure_file']) as f:
             self.state['sites'] = [{k: v for k, v in row.items()}
                     for row in csv.DictReader(f, skipinitialspace=True)]
@@ -42,6 +43,7 @@ class ldar_sim:
 
         # Initialize baseline leaks for each site
         # First, generate initial leak count for each site
+        print('Initializing leaks...')
         for site in self.state['sites']:
             n_leaks = round(np.random.normal(6.186, 6.717))                       # Placeholder mean and stdev from FEAST - need to empirically justify this distribution
             if n_leaks <= 0:
@@ -73,7 +75,6 @@ class ldar_sim:
                                                 'requires_shutdown': False,
                                                 })
 
-        print ('Initialization complete!')
         return
 
     def update (self):
@@ -203,6 +204,7 @@ class ldar_sim:
         metadata.close()
 
 
+        print ('Results have been written to output folder.')
         print ('Simulation complete. Thank you for using the LDAR Simulator.')
         return
 

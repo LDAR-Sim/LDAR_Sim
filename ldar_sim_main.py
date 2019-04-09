@@ -20,10 +20,10 @@ from time_counter import *
 #----------------------Static user-defined input parameters---------------------
 
 parameters = {
-    'timesteps': 500,
+    'timesteps': 10,
     'start_year': 2011,
     'methods': {'OGI': {
-                         'n_crews': 1,
+                         'n_crews': 3,
                          'truck_types': ['silverado', 'tacoma', 'dodge'],
                          'min_temp': -30,
                          'max_wind': 20,
@@ -43,7 +43,7 @@ parameters = {
     'leak_file': 'FWAQS_all.csv',
     'delay_to_fix': 3,
     'minimum_interval': 10,
-    'output_folder': 'sim_output',
+    'output_folder': 'sim5_output',
     'working_directory': "D:/OneDrive - University of Calgary/Documents/Thomas/PhD/Thesis/LDAR_Sim/model/python_v2"
 }
 
@@ -80,6 +80,8 @@ if __name__ == '__main__':
     state['weather'] = weather_lookup (state, parameters)
     state['t'] = time_counter(parameters)
     sim = ldar_sim (state, parameters, timeseries)
+    
+    print ('Initialization complete!')
 
     # Loop through timeseries
     while state['t'].current_date <= state['t'].end_date:

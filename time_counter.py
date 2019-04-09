@@ -8,6 +8,7 @@ class time_counter:
         Initialize a calendar and clock to count through the simulation.
 
         '''
+        print('Initializing timeseries...')
         self.parameters = parameters
         self.start_date = datetime(parameters['start_year'],1,1)
         self.current_date = self.start_date
