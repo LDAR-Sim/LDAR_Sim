@@ -1,8 +1,10 @@
 
 import numpy as np
+from datetime import timedelta
+import random
 
 class OGI_crew:
-    def __init__ (self, state, parameters, config, timeseries, id):
+    def __init__ (self, state, parameters, config, timeseries, deployment_days, id):
         '''
         Constructs an individual OGI crew based on defined configuration.
         '''
@@ -10,12 +12,12 @@ class OGI_crew:
         self.parameters = parameters
         self.config = config
         self.timeseries = timeseries
+        self.deployment_days = deployment_days
         self.crewstate = {'id': id}     # Crewstate is unique to this agent
         self.crewstate['truck'] = np.random.choice (self.config['truck_types'])
         self.crewstate['lat'] = 0.0
         self.crewstate['lon'] = 0.0
         self.n_sites_done_today = 0
-        self.time_of_day = 800
         return
 
     def work_a_day (self):
@@ -23,11 +25,11 @@ class OGI_crew:
         Go to work and find the leaks for a given day
         '''
 
-        self.n_sites_done_today = 0         # Reset well count
-        self.time_of_day = 800              # Reset time of day
-        while self.time_of_day < 1800:
+        self.n_sites_done_today = 0                                                                # Reset well count
+        self.state['t'].current_date = self.state['t'].current_date.replace(hour = 8)              # Set start of work day
+        while self.state['t'].current_date.hour < 18:
             facility_ID = self.choose_site ()
-            if self.time_of_day < 1800:
+            if self.state['t'].current_date.hour < 18:
                 self.visit_site (facility_ID)
         return
 
@@ -38,42 +40,39 @@ class OGI_crew:
 
         '''
 
-        # First, identify the site you want based on a neglect ranking
+        # First, shuffle all the entries to randomize order for identical 't_Since_last_LDAR' values
+        random.shuffle(self.state['sites'])
+            
+        # Then, identify the site you want based on a neglect ranking
         self.state['sites'] = sorted(self.state['sites'], key=lambda k: k['t_since_last_LDAR'], reverse = True)
 
-        # Then, check all the conditions for that site...
+        # Then, starting with the most neglected site, check if conditions are suitable for LDAR
         for site in self.state['sites']:
 
             # If the site is 'unripened' (i.e. hasn't met the minimum interval set out in the LDAR regulations/policy), break out - no LDAR today
             if site['t_since_last_LDAR'] < self.parameters['minimum_interval']:
-                self.time_of_day = 1800
+                self.state['t'].current_date = self.state['t'].current_date.replace(hour = 23)
                 break
 
-            # Else if site-specific required visits have not been met for the year - I think this is a clever way to do this that works?!
-            elif site['surveys_conducted']*(365/self.state['t']) < int(site['required_surveys']):
+            # Else if site-specific required visits have not been met for the year
+            elif site['surveys_conducted']*(365/self.state['t'].current_timestep) < int(site['required_surveys']):
 
                 # Check the weather for that site
-                weather = self.state['weather'].get_weather (
-                    lat = float(next(item for item in self.state['sites'] if item['facility_ID'] == site['facility_ID'])['lat']),
-                    lon = float(next(item for item in self.state['sites'] if item['facility_ID'] == site['facility_ID'])['lon']),
-                    time = self.state['t'])
-
-                # Is the weather suitable?
-                if weather['temp'] < self.config['min_temp'] or weather['wspeed'] > self.config['max_wind'] and weather['precip'] > self.config['max_precip']:
-                    self.timeseries['wells_skipped_weather'][self.state['t']] += 1
-                    continue
-
-                else:
+                if self.deployment_days[site['lon_index'], site['lat_index'], self.state['t'].current_timestep] == True:
+                
                     # The site passes all the tests! Choose it!
-                    facility_ID = site['facility_ID']
-
+                    facility_ID = site['facility_ID']   
+                    
                     # Update site
                     site['surveys_conducted'] += 1
-                    site['t_since_last_LDAR'] == 0
-
-                    # Need to update 'surveys_this_year' and 't_since_last_LDAR'
+                    site['t_since_last_LDAR'] = 0
+                           
                     return (facility_ID)
-                    break
+                    break                    
+                                        
+                else:
+                    self.timeseries['wells_skipped_weather'][self.state['t'].current_timestep] += 1
+
 
 
     def visit_site (self, facility_ID):
@@ -89,12 +88,12 @@ class OGI_crew:
 
         # Add these leaks to the 'tag pool'
         for leak in self.leaks_present:
-            leak['date_found'] = self.state['t']
+            leak['date_found'] = self.state['t'].current_date
             leak['found_by_company'] = 'OGI_company'
             leak['found_by_crew'] = self.crewstate['id']
             self.state['tags'].append(leak)
 
-        self.time_of_day += 200
+        self.state['t'].current_date += timedelta(hours = 2)
         self.n_sites_done_today += 1
 
 
@@ -114,5 +113,5 @@ class OGI_crew:
                     self.crewstate['truck'] + ' truck had a ' + disaster)
 
             # no more wells today
-            self.time_of_day = 1800
+            self.state['t'].current_date = self.state['t'].current_date.replace(hour = 23)
         return

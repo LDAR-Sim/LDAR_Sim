@@ -1,12 +1,13 @@
 from netCDF4 import Dataset
 import numpy as np
 
-class weatherman:
+class weather_lookup:
     def __init__ (self, state, parameters):
         '''
         Read in a NetCDF file and returns the weather at a given place in time.
 
         '''
+        print('Initializing weather...')
         self.state = state
         self.parameters = parameters
 
@@ -31,32 +32,41 @@ class weatherman:
         self.lat_length = len(self.wind_temp_data.variables['latitude'])          # Length of latitude dimension - number of cells
         self.lon_length = len(self.wind_temp_data.variables['longitude'])         # Length of longitude dimension - number of cells
 
-
         return
 
-    def get_weather (self, time, lat, lon):
+    def deployment_days (self, method):
         '''
-        Query the weather for a specific day and place.
+        Generate a 3D space-time matrix of all days on which weather
+        conditions are suitable for a given method to conduct LDAR.
+        
+        Should only be called once/method during initialization.
+        
+        DD = deployment day
         '''
 
-        # Convert the input in decimal degrees to a cell in the grid to query the weather
-        lat_index = min(range(len(self.latitude)), key=lambda i: abs(self.latitude[i]-lat))              # Finds the cell latitude index for the point provided
-        lon_index = min(range(len(self.longitude)), key=lambda i: abs(self.longitude[i]-lon%360))        # Find lon index. %360 converts longitude from -180 to 180 to 0 to 360 coordinate
+        # Initialize empty boolean arrays for threshold pass(1)/fail(0)
+        bool_temp = np.zeros((self.lon_length, self.lat_length, self.parameters['timesteps']))
+        bool_wind = np.zeros((self.lon_length, self.lat_length, self.parameters['timesteps']))
+        bool_precip = np.zeros((self.lon_length, self.lat_length, self.parameters['timesteps']))
+    
+        # For each day...
+        for day in range(self.parameters['timesteps']):
+            
+            # Count OGIDs for each criteria
+            for lat in range(self.lat_length):
+                for lon in range(self.lon_length):
+                    # If you exceed minimum temperature...
+                    if self.temps[day, lat, lon] >= self.parameters['methods'][method]['min_temp']:       
+                        bool_temp[lon, lat, day] = 1       # Count one instrument day (instrument can be used)
+                    # If you are below the maximum wind...
+                    if self.winds[day, lat, lon] <= self.parameters['methods'][method]['max_wind']:       
+                        bool_wind[lon, lat, day] = 1        # Count one instrument day (instrument can be used)
+                    # If you are below the precipitation threshold...
+                    if self.precip[day, lat, lon] <= self.parameters['methods'][method]['max_precip']:         
+                        bool_precip[lon, lat, day] = 1      # Count one instrument day (instrument can be used)
+    
+        # Check to see if all criteria (temp, wind, and precip) were met...
+        bool_sum = np.add(bool_temp, np.add(bool_wind, bool_precip))
+        DD_all = bool_sum == 3
 
-        weather = {
-                   'temp': self.temps[time, lat_index, lon_index],
-                   'precip': self.precip[time, lat_index, lon_index],
-                   'wspeed': self.winds[time, lat_index, lon_index]
-                   #'wdir': .....
-                   #'clouds': .....
-                   }
-        return (weather)
-
-
-
-
-
-
-
-
-
+        return (DD_all)
