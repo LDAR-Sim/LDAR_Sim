@@ -197,10 +197,17 @@ class ldar_sim:
         '''
         Compile and write output files.
         '''
+        
         output_directory = os.path.join(self.parameters['working_directory'], self.parameters['output_folder'])
         if not os.path.exists(output_directory):
-            os.makedirs(output_directory)
-
+            os.makedirs(output_directory)       
+       
+        # Make maps and append site-level DD and MCB data
+        for m in self.state['methods']:
+            m.make_maps()
+            m.site_reports()
+ 
+        # Write csv files           
         for site in self.state['sites']:
             del site['n_new_leaks']
 
@@ -217,11 +224,6 @@ class ldar_sim:
         str(datetime.datetime.now()))
         metadata.close()
         
-        # Make maps, if requested
-        if self.parameters['make_maps'] == True:
-            for m in self.state['methods']:
-                m.make_maps()
-            
 
         print ('Results have been written to output folder.')
         print ('Simulation complete. Thank you for using the LDAR Simulator.')
