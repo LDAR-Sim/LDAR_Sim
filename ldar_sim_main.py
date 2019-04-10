@@ -20,12 +20,12 @@ from time_counter import *
 #----------------------Static user-defined input parameters---------------------
 
 parameters = {
-    'timesteps': 30,
+    'timesteps': 200,
     'start_year': 2011,
     'methods': {'OGI': {
-                         'n_crews': 2,
+                         'n_crews': 1,
                          'truck_types': ['silverado', 'tacoma', 'dodge'],
-                         'min_temp': -30,
+                         'min_temp': -20,
                          'max_wind': 20,
                          'max_precip': 2
                          },
@@ -43,8 +43,9 @@ parameters = {
     'leak_file': 'FWAQS_all.csv',
     'delay_to_fix': 3,
     'minimum_interval': 10,
-    'output_folder': 'sim5_output',
-    'working_directory': "D:/OneDrive - University of Calgary/Documents/Thomas/PhD/Thesis/LDAR_Sim/model/python_v2"
+    'output_folder': 'sim7_output',
+    'working_directory': "D:/OneDrive - University of Calgary/Documents/Thomas/PhD/Thesis/LDAR_Sim/model/python_v2",
+    'make_maps': True
 }
 
 #-------------------------------------------------------------------------------

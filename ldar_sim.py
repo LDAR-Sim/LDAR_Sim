@@ -216,7 +216,12 @@ class ldar_sim:
         metadata.write(str(self.parameters) + '\n' +
         str(datetime.datetime.now()))
         metadata.close()
-
+        
+        # Make maps, if requested
+        if self.parameters['make_maps'] == True:
+            for m in self.state['methods']:
+                m.make_maps()
+            
 
         print ('Results have been written to output folder.')
         print ('Simulation complete. Thank you for using the LDAR Simulator.')
