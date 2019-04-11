@@ -28,9 +28,11 @@ class OGI_crew:
         self.n_sites_done_today = 0                                                                # Reset well count
         self.state['t'].current_date = self.state['t'].current_date.replace(hour = 8)              # Set start of work day
         while self.state['t'].current_date.hour < 18:
-            facility_ID = self.choose_site ()
-            if self.state['t'].current_date.hour < 18:
-                self.visit_site (facility_ID)
+            facility_ID, found_site = self.choose_site ()
+            if not found_site:
+                break                                   # Break out if no site can be found
+            self.visit_site (facility_ID)
+
         return
 
 
@@ -45,6 +47,9 @@ class OGI_crew:
             
         # Then, identify the site you want based on a neglect ranking
         self.state['sites'] = sorted(self.state['sites'], key=lambda k: k['t_since_last_LDAR'], reverse = True)
+
+        facility_ID = None                                  # The facility ID gets assigned if a site is found
+        found_site = False                                  # The found site flag is updated if a site is found
 
         # Then, starting with the most neglected site, check if conditions are suitable for LDAR
         for site in self.state['sites']:
@@ -62,18 +67,17 @@ class OGI_crew:
                 
                     # The site passes all the tests! Choose it!
                     facility_ID = site['facility_ID']   
-                    
+                    found_site = True
+
                     # Update site
                     site['surveys_conducted'] += 1
                     site['t_since_last_LDAR'] = 0
-                           
-                    return (facility_ID)
-                    break                    
+                    break
                                         
                 else:
                     self.timeseries['wells_skipped_weather'][self.state['t'].current_timestep] += 1
 
-
+        return (facility_ID, found_site)
 
     def visit_site (self, facility_ID):
         '''
