@@ -55,7 +55,7 @@ class OGI_crew:
                 break
 
             # Else if site-specific required visits have not been met for the year
-            elif site['surveys_conducted']*(365/self.state['t'].current_timestep) < int(site['required_surveys']):
+            elif site['surveys_done_this_year'] < int(site['required_surveys']):
 
                 # Check the weather for that site
                 if self.deployment_days[site['lon_index'], site['lat_index'], self.state['t'].current_timestep] == True:
@@ -66,6 +66,7 @@ class OGI_crew:
 
                     # Update site
                     site['surveys_conducted'] += 1
+                    site['surveys_done_this_year'] += 1
                     site['t_since_last_LDAR'] = 0
                     break
                                         
