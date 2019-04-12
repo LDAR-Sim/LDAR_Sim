@@ -20,10 +20,10 @@ from time_counter import *
 #----------------------Static user-defined input parameters---------------------
 
 parameters = {
-    'timesteps': 10,
+    'timesteps': 1000,
     'start_year': 2011,
     'methods': {'OGI': {
-                         'n_crews': 3,
+                         'n_crews': 5,
                          'truck_types': ['silverado', 'tacoma', 'dodge'],
                          'min_temp': -20,
                          'max_wind': 20,
@@ -39,11 +39,11 @@ parameters = {
 
     'WT_data': '5YearWT2011_2016.nc',
     'P_data': '5YearPrecip2011_2016.nc',
-    'infrastructure_file': 'AER_sites.csv',
+    'infrastructure_file': 'AER_sites_500.csv',
     'leak_file': 'FWAQS_all.csv',
     'delay_to_fix': 3,
     'minimum_interval': 10,
-    'output_folder': 'sim_output_10_days',
+    'output_folder': 'sim_output_test',
     'working_directory': "D:/OneDrive - University of Calgary/Documents/Thomas/PhD/Thesis/LDAR_Sim/model/python_v2"
 }
 

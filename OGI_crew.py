@@ -1,7 +1,5 @@
-
 import numpy as np
 from datetime import timedelta
-import random
 
 class OGI_crew:
     def __init__ (self, state, parameters, config, timeseries, deployment_days, id):
@@ -39,9 +37,6 @@ class OGI_crew:
         Choose a site to survey.
 
         '''
-
-        # First, shuffle all the entries to randomize order for identical 't_Since_last_LDAR' values
-        random.shuffle(self.state['sites'])
             
         # Then, identify the site you want based on a neglect ranking
         self.state['sites'] = sorted(self.state['sites'], key=lambda k: k['t_since_last_LDAR'], reverse = True)
@@ -84,7 +79,8 @@ class OGI_crew:
         self.leaks_present = []
         for leak in self.state['leaks']:
             if leak['facility_ID'] == facility_ID:
-                self.leaks_present.append(leak)
+                if leak['status'] == 'active':
+                    self.leaks_present.append(leak)
 
         # Add these leaks to the 'tag pool'
         for leak in self.leaks_present:
@@ -107,7 +103,7 @@ class OGI_crew:
         random disasters
         '''
 
-        if np.random.random() > 0.99999:
+        if np.random.random() > 0.9999:
             disaster = np.random.choice (['car crash', 'OGI camera failure', 'tire blowout'])
             print ('OGI crew ' + str (self.crewstate['id']) + ' with a ' + \
                     self.crewstate['truck'] + ' truck had a ' + disaster)

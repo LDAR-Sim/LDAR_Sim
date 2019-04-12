@@ -1,8 +1,10 @@
 import pandas as pd
+import numpy as np
 import csv
 import os
 import datetime
 import sys
+import random
 from OGI_company import *
 from truck_company import *
 
@@ -21,11 +23,17 @@ class ldar_sim:
         with open(self.parameters['infrastructure_file']) as f:
             self.state['sites'] = [{k: v for k, v in row.items()}
                     for row in csv.DictReader(f, skipinitialspace=True)]
+        
+        # Shuffle all the entries to randomize order for identical 't_Since_last_LDAR' values
+        random.shuffle(self.state['sites'])
             
         # Additional variable(s) for each site
         for site in self.state['sites']:
             site.update( {'t_since_last_LDAR': 0})
             site.update( {'surveys_conducted': 0})
+            site.update( {'total_emissions_kg': 0})
+            site.update( {'active_leaks': 0})
+            site.update( {'repaired_leaks': 0})
             site.update( {'lat_index': min(range(len(self.state['weather'].latitude)), 
                            key=lambda i: abs(self.state['weather'].latitude[i]-float(site['lat'])))})
             site.update( {'lon_index': min(range(len(self.state['weather'].longitude)), 
@@ -181,7 +189,7 @@ class ldar_sim:
         for leak in self.state['leaks']:
             if leak['status'] == 'active':
                 active_leaks.append(leak)
-
+        
         self.timeseries['datetime'].append(self.state['t'].current_date)
         self.timeseries['active_leaks'].append(len(active_leaks))
         self.timeseries['new_leaks'].append(sum(d['n_new_leaks'] for d in self.state['sites']))
@@ -197,11 +205,24 @@ class ldar_sim:
         '''
         Compile and write output files.
         '''
-        
+        print ('Finalizing simulation...')
         output_directory = os.path.join(self.parameters['working_directory'], self.parameters['output_folder'])
         if not os.path.exists(output_directory):
             os.makedirs(output_directory)       
-       
+         
+        # Attribute individual leak emissions to site totals
+        for leak in self.state['leaks']:
+            tot_emissions_kg = leak['days_active']*leak['rate']
+            
+            for site in self.state['sites']:
+                if site['facility_ID'] == leak['facility_ID']:
+                    site['total_emissions_kg'] += tot_emissions_kg
+                    if leak['status'] == 'active':
+                        site['active_leaks'] += 1
+                    elif leak['status'] == 'repaired':
+                        site['repaired_leaks'] += 1
+                    break
+
         # Make maps and append site-level DD and MCB data
         for m in self.state['methods']:
             m.make_maps()
