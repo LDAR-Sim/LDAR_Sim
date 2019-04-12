@@ -31,6 +31,7 @@ class ldar_sim:
         for site in self.state['sites']:
             site.update( {'t_since_last_LDAR': 0})
             site.update( {'surveys_conducted': 0})
+            site.update( {'attempted_today?': False})
             site.update( {'surveys_done_this_year': 0})
             site.update( {'total_emissions_kg': 0})
             site.update( {'active_leaks': 0})
@@ -121,6 +122,7 @@ class ldar_sim:
 
         for site in self.state['sites']:
             site['t_since_last_LDAR'] += 1
+            site['attempted_today?'] = False
             
         if self.state['t'].current_date.month == 1 and self.state['t'].current_date.day == 1:
             for site in self.state['sites']:
@@ -218,7 +220,6 @@ class ldar_sim:
         # Attribute individual leak emissions to site totals
         for leak in self.state['leaks']:
             tot_emissions_kg = leak['days_active']*leak['rate']
-            
             for site in self.state['sites']:
                 if site['facility_ID'] == leak['facility_ID']:
                     site['total_emissions_kg'] += tot_emissions_kg

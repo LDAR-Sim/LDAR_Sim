@@ -40,7 +40,7 @@ class OGI_crew:
 
         '''
             
-        # Then, identify the site you want based on a neglect ranking
+        # Sort all sites based on a neglect ranking
         self.state['sites'] = sorted(self.state['sites'], key=lambda k: k['t_since_last_LDAR'], reverse = True)
 
         facility_ID = None                                  # The facility ID gets assigned if a site is found
@@ -49,29 +49,33 @@ class OGI_crew:
         # Then, starting with the most neglected site, check if conditions are suitable for LDAR
         for site in self.state['sites']:
 
-            # If the site is 'unripened' (i.e. hasn't met the minimum interval set out in the LDAR regulations/policy), break out - no LDAR today
-            if site['t_since_last_LDAR'] < self.parameters['minimum_interval']:
-                self.state['t'].current_date = self.state['t'].current_date.replace(hour = 23)
-                break
-
-            # Else if site-specific required visits have not been met for the year
-            elif site['surveys_done_this_year'] < int(site['required_surveys']):
-
-                # Check the weather for that site
-                if self.deployment_days[site['lon_index'], site['lat_index'], self.state['t'].current_timestep] == True:
-                
-                    # The site passes all the tests! Choose it!
-                    facility_ID = site['facility_ID']   
-                    found_site = True
-
-                    # Update site
-                    site['surveys_conducted'] += 1
-                    site['surveys_done_this_year'] += 1
-                    site['t_since_last_LDAR'] = 0
+            # If the site hasn't been attempted yet today
+            if site['attempted_today?'] == False:
+            
+                # If the site is 'unripened' (i.e. hasn't met the minimum interval set out in the LDAR regulations/policy), break out - no LDAR today
+                if site['t_since_last_LDAR'] < self.parameters['minimum_interval']:
+                    self.state['t'].current_date = self.state['t'].current_date.replace(hour = 23)
                     break
-                                        
-                else:
-                    self.timeseries['wells_skipped_weather'][self.state['t'].current_timestep] += 1
+    
+                # Else if site-specific required visits have not been met for the year
+                elif site['surveys_done_this_year'] < int(site['required_surveys']):
+    
+                    # Check the weather for that site
+                    if self.deployment_days[site['lon_index'], site['lat_index'], self.state['t'].current_timestep] == True:
+                    
+                        # The site passes all the tests! Choose it!
+                        facility_ID = site['facility_ID']   
+                        found_site = True
+    
+                        # Update site
+                        site['surveys_conducted'] += 1
+                        site['surveys_done_this_year'] += 1
+                        site['t_since_last_LDAR'] = 0
+                        break
+                                            
+                    else:
+                        site['attempted_today?'] = True
+                        self.timeseries['wells_skipped_weather'][self.state['t'].current_timestep] += 1
 
         return (facility_ID, found_site)
 
