@@ -52,7 +52,7 @@ class weather_lookup:
         # For each day...
         for day in range(self.parameters['timesteps']):
             
-            # Count OGIDs for each criteria
+            # Count DDs for each criteria
             for lat in range(self.lat_length):
                 for lon in range(self.lon_length):
                     # If you exceed minimum temperature...

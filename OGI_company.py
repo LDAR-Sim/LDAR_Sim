@@ -27,7 +27,7 @@ class OGI_company:
         
         # Initialize the individual OGI crews (the agents)
         for i in range (config['n_crews']):
-            self.crews.append (OGI_crew (state, parameters, config, timeseries, self.deployment_days, id = i))
+            self.crews.append (OGI_crew (state, parameters, config, timeseries, self.deployment_days, id = i + 1))
 
         return
 
@@ -55,7 +55,7 @@ class OGI_company:
         Also outputs a map of MCB (maximum condition blackout) over period of analysis.
         '''
         
-        print('Generating maps...')
+        print('Generating OGI maps...')
 
         # For each cell, sum the total number of deployment days and divide by total number of days        
         for lon in range(len(self.state['weather'].longitude)):

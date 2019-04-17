@@ -26,10 +26,10 @@ class OGI_crew:
         self.n_sites_done_today = 0                                                                # Reset well count
         self.state['t'].current_date = self.state['t'].current_date.replace(hour = 8)              # Set start of work day
         while self.state['t'].current_date.hour < 18:
-            facility_ID, found_site = self.choose_site ()
+            facility_ID, found_site, site = self.choose_site ()
             if not found_site:
                 break                                   # Break out if no site can be found
-            self.visit_site (facility_ID)
+            self.visit_site (facility_ID, site)
 
         return
 
@@ -58,7 +58,7 @@ class OGI_crew:
                     break
     
                 # Else if site-specific required visits have not been met for the year
-                elif site['surveys_done_this_year'] < int(site['required_surveys']):
+                elif site['surveys_done_this_year'] < int(site['required_surveys_OGI']):
     
                     # Check the weather for that site
                     if self.deployment_days[site['lon_index'], site['lat_index'], self.state['t'].current_timestep] == True:
@@ -77,9 +77,9 @@ class OGI_crew:
                         site['attempted_today?'] = True
                         self.timeseries['wells_skipped_weather'][self.state['t'].current_timestep] += 1
 
-        return (facility_ID, found_site)
+        return (facility_ID, found_site, site)
 
-    def visit_site (self, facility_ID):
+    def visit_site (self, facility_ID, site):
         '''
         Look for leaks at the chosen site.
         '''
@@ -98,7 +98,7 @@ class OGI_crew:
             leak['found_by_crew'] = self.crewstate['id']
             self.state['tags'].append(leak)
 
-        self.state['t'].current_date += timedelta(hours = 2)
+        self.state['t'].current_date += timedelta(minutes = int(site['OGI_time']))
         self.n_sites_done_today += 1
 
 

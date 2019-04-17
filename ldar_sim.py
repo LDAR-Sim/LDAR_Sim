@@ -6,6 +6,7 @@ import datetime
 import sys
 import random
 from OGI_company import *
+from M21_company import *
 from truck_company import *
 
 class ldar_sim:
@@ -56,9 +57,9 @@ class ldar_sim:
             if m == 'OGI':
                 self.state['methods'].append (OGI_company (self.state,
                     self.parameters, self.parameters['methods'][m], timeseries))
-            elif m == 'truck':
-                self.state['methods'].append (truck_company (self.state,
-                    self.parameters, self.parameters['methods'][m]))
+            elif m == 'M21':
+                self.state['methods'].append (M21_company (self.state,
+                    self.parameters, self.parameters['methods'][m], timeseries))
             else:
                 print ('Cannot add this method: ' + m)
 

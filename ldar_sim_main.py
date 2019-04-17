@@ -20,21 +20,22 @@ from time_counter import *
 #----------------------Static user-defined input parameters---------------------
 
 parameters = {
-    'timesteps': 2100,
+    'timesteps': 50,
     'start_year': 2011,
-    'methods': {'OGI': {
-                         'n_crews': 1,
+    'methods': {'M21': {
+                         'n_crews': 2,
                          'truck_types': ['silverado', 'tacoma', 'dodge'],
                          'min_temp': -20,
                          'max_wind': 10,
                          'max_precip': 1
                          },
-
-##   future possibilities:     'truck'/'UAV'/'satellite'/whatever: {
-##                   e.g.      'n_crews': 20,
-##                   e.g.      'truck_types': ['silverado', 'tacoma', 'dodge'],
-##                   e.g.      'n_wells_per_day': 300,
-##                         },
+                'OGI': {
+                         'n_crews': 2,
+                         'truck_types': ['silverado', 'tacoma', 'dodge'],
+                         'min_temp': -20,
+                         'max_wind': 10,
+                         'max_precip': 1
+                         }
                 },
 
     'WT_data': '5YearWT2011_2016.nc',
@@ -43,7 +44,7 @@ parameters = {
     'leak_file': 'FWAQS_all.csv',
     'delay_to_fix': 3,
     'minimum_interval': 10,
-    'output_folder': 'test_output1',
+    'output_folder': 'test_output',
     'working_directory': "D:/OneDrive - University of Calgary/Documents/Thomas/PhD/Thesis/LDAR_Sim/model/python_v2"
 }
 
