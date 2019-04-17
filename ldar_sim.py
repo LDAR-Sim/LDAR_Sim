@@ -30,10 +30,6 @@ class ldar_sim:
             
         # Additional variable(s) for each site
         for site in self.state['sites']:
-            site.update( {'t_since_last_LDAR': 0})
-            site.update( {'surveys_conducted': 0})
-            site.update( {'attempted_today?': False})
-            site.update( {'surveys_done_this_year': 0})
             site.update( {'total_emissions_kg': 0})
             site.update( {'active_leaks': 0})
             site.update( {'repaired_leaks': 0})
@@ -114,20 +110,11 @@ class ldar_sim:
 
     def update_state (self):
         '''
-        update the state of active leaks and sites.
+        update the state of active leaks
         '''
-
         for leak in self.state['leaks']:
             if leak['status'] == 'active':
                 leak['days_active'] += 1
-
-        for site in self.state['sites']:
-            site['t_since_last_LDAR'] += 1
-            site['attempted_today?'] = False
-            
-        if self.state['t'].current_date.month == 1 and self.state['t'].current_date.day == 1:
-            for site in self.state['sites']:
-                site['surveys_done_this_year'] = 0
 
     def add_leaks (self):
         '''

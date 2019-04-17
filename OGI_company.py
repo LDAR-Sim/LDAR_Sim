@@ -20,6 +20,13 @@ class OGI_company:
         self.crews = []                         # Empty list of OGI agents (crews)
         self.deployment_days = self.state['weather'].deployment_days('OGI')
         self.timeseries['prop_sites_avail_OGI'] = []
+ 
+        # Additional variable(s) for each site       
+        for site in self.state['sites']:
+            site.update( {'t_since_last_LDAR_OGI': 0})
+            site.update( {'surveys_conducted_OGI': 0})
+            site.update( {'attempted_today_OGI?': False})
+            site.update( {'surveys_done_this_year_OGI': 0})
         
         # Initialize 2D matrices to store deployment day (DD) counts and MCBs
         self.DD_OGI_map = np.zeros((len(self.state['weather'].longitude), len(self.state['weather'].latitude)))
@@ -38,7 +45,16 @@ class OGI_company:
 
         for i in self.crews:
             i.work_a_day ()
+
+        # Update method-specific site variables each day
+        for site in self.state['sites']:
+            site['t_since_last_LDAR_OGI'] += 1
+            site['attempted_today_OGI?'] = False
             
+        if self.state['t'].current_date.day == 1 and self.state['t'].current_date.month == 1:
+            for site in self.state['sites']:
+                site['surveys_done_this_year_OGI'] = 0
+                
         # Calculate proportion sites available
         available_sites = 0
         for site in self.state['sites']:
@@ -115,6 +131,5 @@ class OGI_company:
             site['MCB_OGI'] = self.MCB_OGI_map[site['lon_index'], site['lat_index']]
         
         return
-            
             
             

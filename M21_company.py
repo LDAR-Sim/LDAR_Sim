@@ -21,6 +21,13 @@ class M21_company:
         self.deployment_days = self.state['weather'].deployment_days('M21')
         self.timeseries['prop_sites_avail_M21'] = []
         
+        # Additional variable(s) for each site       
+        for site in self.state['sites']:
+            site.update( {'t_since_last_LDAR_M21': 0})
+            site.update( {'surveys_conducted_M21': 0})
+            site.update( {'attempted_today_M21?': False})
+            site.update( {'surveys_done_this_year_M21': 0})
+
         # Initialize 2D matrices to store deployment day (DD) counts and MCBs
         self.DD_M21_map = np.zeros((len(self.state['weather'].longitude), len(self.state['weather'].latitude)))
         self.MCB_M21_map = np.zeros((len(self.state['weather'].longitude), len(self.state['weather'].latitude)))
@@ -39,6 +46,15 @@ class M21_company:
         for i in self.crews:
             i.work_a_day ()
             
+        # Update method-specific site variables each day
+        for site in self.state['sites']:
+            site['t_since_last_LDAR_M21'] += 1
+            site['attempted_today_M21?'] = False
+            
+        if self.state['t'].current_date.day == 1 and self.state['t'].current_date.month == 1:
+            for site in self.state['sites']:
+                site['surveys_done_this_year_M21'] = 0
+                
         # Calculate proportion sites available
         available_sites = 0
         for site in self.state['sites']:

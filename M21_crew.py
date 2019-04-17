@@ -15,15 +15,13 @@ class M21_crew:
         self.crewstate['truck'] = np.random.choice (self.config['truck_types'])
         self.crewstate['lat'] = 0.0
         self.crewstate['lon'] = 0.0
-        self.n_sites_done_today = 0
         return
 
     def work_a_day (self):
         '''
         Go to work and find the leaks for a given day
         '''
-
-        self.n_sites_done_today = 0                                                                # Reset well count
+                                                              # Reset well count
         self.state['t'].current_date = self.state['t'].current_date.replace(hour = 8)              # Set start of work day
         while self.state['t'].current_date.hour < 18:
             facility_ID, found_site, site = self.choose_site ()
@@ -41,7 +39,7 @@ class M21_crew:
         '''
             
         # Sort all sites based on a neglect ranking
-        self.state['sites'] = sorted(self.state['sites'], key=lambda k: k['t_since_last_LDAR'], reverse = True)
+        self.state['sites'] = sorted(self.state['sites'], key=lambda k: k['t_since_last_LDAR_M21'], reverse = True)
 
         facility_ID = None                                  # The facility ID gets assigned if a site is found
         found_site = False                                  # The found site flag is updated if a site is found
@@ -50,15 +48,15 @@ class M21_crew:
         for site in self.state['sites']:
 
             # If the site hasn't been attempted yet today
-            if site['attempted_today?'] == False:
+            if site['attempted_today_M21?'] == False:
             
                 # If the site is 'unripened' (i.e. hasn't met the minimum interval set out in the LDAR regulations/policy), break out - no LDAR today
-                if site['t_since_last_LDAR'] < self.parameters['methods']['M21']['min_interval']:
+                if site['t_since_last_LDAR_M21'] < self.parameters['methods']['M21']['min_interval']:
                     self.state['t'].current_date = self.state['t'].current_date.replace(hour = 23)
                     break
     
                 # Else if site-specific required visits have not been met for the year
-                elif site['surveys_done_this_year'] < int(site['required_surveys_M21']):
+                elif site['surveys_done_this_year_M21'] < int(site['required_surveys_M21']):
     
                     # Check the weather for that site
                     if self.deployment_days[site['lon_index'], site['lat_index'], self.state['t'].current_timestep] == True:
@@ -68,13 +66,13 @@ class M21_crew:
                         found_site = True
     
                         # Update site
-                        site['surveys_conducted'] += 1
-                        site['surveys_done_this_year'] += 1
-                        site['t_since_last_LDAR'] = 0
+                        site['surveys_conducted_M21'] += 1
+                        site['surveys_done_this_year_M21'] += 1
+                        site['t_since_last_LDAR_M21'] = 0
                         break
                                             
                     else:
-                        site['attempted_today?'] = True
+                        site['attempted_today_M21?'] = True
                         self.timeseries['wells_skipped_weather'][self.state['t'].current_timestep] += 1
 
         return (facility_ID, found_site, site)
@@ -99,8 +97,6 @@ class M21_crew:
             self.state['tags'].append(leak)
 
         self.state['t'].current_date += timedelta(minutes = int(site['M21_time']))
-        self.n_sites_done_today += 1
-
 
 
         self.random_disaster ()         # See if there's a disaster

@@ -20,19 +20,19 @@ from time_counter import *
 #----------------------Static user-defined input parameters---------------------
 
 parameters = {
-    'timesteps': 50,
+    'timesteps': 1000,
     'start_year': 2011,
     'methods': {
                 'M21': {
                          'n_crews': 2,
                          'truck_types': ['silverado', 'tacoma', 'dodge'],
-                         'min_temp': -20,
-                         'max_wind': 10,
-                         'max_precip': 1,
+                         'min_temp': -25,
+                         'max_wind': 20,
+                         'max_precip': 5,
                          'min_interval': 10
                          },
                 'OGI': {
-                         'n_crews': 2,
+                         'n_crews': 4,
                          'truck_types': ['silverado', 'tacoma', 'dodge'],
                          'min_temp': -20,
                          'max_wind': 10,
