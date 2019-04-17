@@ -27,7 +27,8 @@ class OGI_company:
             site.update( {'surveys_conducted_OGI': 0})
             site.update( {'attempted_today_OGI?': False})
             site.update( {'surveys_done_this_year_OGI': 0})
-        
+            site.update( {'missed_leaks_OGI': 0})
+            
         # Initialize 2D matrices to store deployment day (DD) counts and MCBs
         self.DD_OGI_map = np.zeros((len(self.state['weather'].longitude), len(self.state['weather'].latitude)))
         self.MCB_OGI_map = np.zeros((len(self.state['weather'].longitude), len(self.state['weather'].latitude)))

@@ -1,5 +1,7 @@
 import numpy as np
 from datetime import timedelta
+import math
+import numpy as np
 
 class OGI_crew:
     def __init__ (self, state, parameters, config, timeseries, deployment_days, id):
@@ -89,13 +91,27 @@ class OGI_crew:
                 if leak['status'] == 'active':
                     self.leaks_present.append(leak)
 
-        # Add these leaks to the 'tag pool'
+        # Detection module from Ravikumar et al 2018, assuming 3 m distance
         for leak in self.leaks_present:
-            leak['date_found'] = self.state['t'].current_date
-            leak['found_by_company'] = 'OGI_company'
-            leak['found_by_crew'] = self.crewstate['id']
-            self.state['tags'].append(leak)
-
+            k = np.random.normal(4.9, 0.3)
+            x0 = np.random.normal(0.47, 0.01)
+            if leak['rate'] == 0:
+                prob_detect = 0
+            else:
+                x = math.log10(leak['rate']*41.6667)            # Convert from kg/day to g/h
+                prob_detect = 1/(1 + math.exp(-k*(x-x0)))
+            detect = np.random.binomial(1, prob_detect)
+            
+            if detect == True:
+                # Add these leaks to the 'tag pool'
+                leak['date_found'] = self.state['t'].current_date
+                leak['found_by_company'] = 'OGI_company'
+                leak['found_by_crew'] = self.crewstate['id']
+                self.state['tags'].append(leak)
+                
+            elif detect == False:
+                site['missed_leaks_OGI'] += 1
+                
         self.state['t'].current_date += timedelta(minutes = int(site['OGI_time']))
 
 
