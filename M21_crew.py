@@ -53,7 +53,7 @@ class M21_crew:
             if site['attempted_today?'] == False:
             
                 # If the site is 'unripened' (i.e. hasn't met the minimum interval set out in the LDAR regulations/policy), break out - no LDAR today
-                if site['t_since_last_LDAR'] < self.parameters['minimum_interval']:
+                if site['t_since_last_LDAR'] < self.parameters['methods']['M21']['min_interval']:
                     self.state['t'].current_date = self.state['t'].current_date.replace(hour = 23)
                     break
     

@@ -22,28 +22,30 @@ from time_counter import *
 parameters = {
     'timesteps': 50,
     'start_year': 2011,
-    'methods': {'M21': {
+    'methods': {
+                'M21': {
                          'n_crews': 2,
                          'truck_types': ['silverado', 'tacoma', 'dodge'],
                          'min_temp': -20,
                          'max_wind': 10,
-                         'max_precip': 1
+                         'max_precip': 1,
+                         'min_interval': 10
                          },
                 'OGI': {
                          'n_crews': 2,
                          'truck_types': ['silverado', 'tacoma', 'dodge'],
                          'min_temp': -20,
                          'max_wind': 10,
-                         'max_precip': 1
+                         'max_precip': 1,
+                         'min_interval': 10
                          }
                 },
 
+    'repair_delay': 3,
     'WT_data': '5YearWT2011_2016.nc',
     'P_data': '5YearPrecip2011_2016.nc',
     'infrastructure_file': 'AER_sites_500.csv',
     'leak_file': 'FWAQS_all.csv',
-    'delay_to_fix': 3,
-    'minimum_interval': 10,
     'output_folder': 'test_output',
     'working_directory': "D:/OneDrive - University of Calgary/Documents/Thomas/PhD/Thesis/LDAR_Sim/model/python_v2"
 }

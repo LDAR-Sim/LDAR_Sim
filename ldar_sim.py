@@ -178,7 +178,7 @@ class ldar_sim:
         Repair tagged leaks and remove from tag pool.
         '''
         for tag in self.state['tags']:
-            if (self.state['t'].current_date - tag['date_found']).days  == self.parameters['delay_to_fix']:
+            if (self.state['t'].current_date - tag['date_found']).days  == self.parameters['repair_delay']:
                 tag['status'] = 'repaired'
                 tag['date_repaired'] = self.state['t'].current_date
                 tag['repair_delay'] = (tag['date_repaired'] - tag['date_found']).days
