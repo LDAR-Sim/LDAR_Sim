@@ -15,38 +15,39 @@
 from weather_lookup import *
 from ldar_sim import *
 from time_counter import *
+import numpy as np
 
 #-------------------------------------------------------------------------------
 #----------------------Static user-defined input parameters---------------------
 
 parameters = {
-    'timesteps': 1000,
+    'timesteps': 800,
     'start_year': 2011,
     'methods': {
-                'M21': {
-                         'n_crews': 2,
-                         'truck_types': ['silverado', 'tacoma', 'dodge'],
-                         'min_temp': -25,
-                         'max_wind': 20,
-                         'max_precip': 5,
-                         'min_interval': 10
-                         },
+#                'M21': {
+#                         'n_crews': 4,
+#                         'truck_types': ['silverado', 'tacoma', 'dodge'],
+#                         'min_temp': -25,
+#                         'max_wind': 20,
+#                         'max_precip': 5,
+#                         'min_interval': 10
+#                         },
                 'OGI': {
-                         'n_crews': 4,
+                         'n_crews': 1,
                          'truck_types': ['silverado', 'tacoma', 'dodge'],
                          'min_temp': -20,
                          'max_wind': 10,
                          'max_precip': 1,
-                         'min_interval': 10
+                         'min_interval': 60
                          }
                 },
 
-    'repair_delay': 3,
+    'repair_delay': 5,
     'WT_data': '5YearWT2011_2016.nc',
     'P_data': '5YearPrecip2011_2016.nc',
-    'infrastructure_file': 'AER_sites_500.csv',
+    'infrastructure_file': 'AER_sites_500_OGI.csv',
     'leak_file': 'FWAQS_all.csv',
-    'output_folder': 'test_output',
+    'output_folder': 'test_output_test',
     'working_directory': "D:/OneDrive - University of Calgary/Documents/Thomas/PhD/Thesis/LDAR_Sim/model/python_v2"
 }
 

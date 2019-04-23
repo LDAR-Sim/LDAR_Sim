@@ -53,7 +53,7 @@ class OGI_crew:
             if site['attempted_today_OGI?'] == False:
             
                 # If the site is 'unripened' (i.e. hasn't met the minimum interval set out in the LDAR regulations/policy), break out - no LDAR today
-                if site['t_since_last_LDAR_OGI'] < self.parameters['methods']['M21']['min_interval']:
+                if site['t_since_last_LDAR_OGI'] < self.parameters['methods']['OGI']['min_interval']:
                     self.state['t'].current_date = self.state['t'].current_date.replace(hour = 23)
                     break
     

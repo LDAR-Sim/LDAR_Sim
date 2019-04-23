@@ -8,6 +8,7 @@ import random
 from OGI_company import *
 from M21_company import *
 from truck_company import *
+from plotter import *
 
 class ldar_sim:
     def __init__ (self, state, parameters, timeseries):
@@ -226,12 +227,15 @@ class ldar_sim:
         for site in self.state['sites']:
             del site['n_new_leaks']
 
-        df = pd.DataFrame(self.state['leaks'])
-        df2 = pd.DataFrame(self.timeseries)
-        df3 = pd.DataFrame(self.state['sites'])
-        df.to_csv(output_directory + '/leaks_output.csv', index = False)
-        df2.to_csv(output_directory + '/timeseries_output.csv', index = False)
-        df3.to_csv(output_directory + '/sites_output.csv', index = False)
+        leak_df = pd.DataFrame(self.state['leaks'])
+        time_df = pd.DataFrame(self.timeseries)
+        site_df = pd.DataFrame(self.state['sites'])
+        leak_df.to_csv(output_directory + '/leaks_output.csv', index = False)
+        time_df.to_csv(output_directory + '/timeseries_output.csv', index = False)
+        site_df.to_csv(output_directory + '/sites_output.csv', index = False)
+        
+        # Make plots
+        make_plots(leak_df, time_df, site_df)
 
         # Write metadata
         metadata = open(output_directory + '/metadata.txt','w')

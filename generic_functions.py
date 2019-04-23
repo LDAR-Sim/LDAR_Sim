@@ -37,3 +37,4 @@ def gap_calculator (condition_vector):
         max_gap = max(start_gap, mid_gap, end_gap)
         
     return (max_gap)
+
