@@ -65,35 +65,44 @@ def make_plots(leak_df, time_df, site_df):
       xlab('Number of days the leak was active') + ylab('Count'))
     plot_leak_1.save(filename = 'plot_leak_1.png', width = 5, height = 4, dpi = 300)
 
-    # Final plot requires playing with the data a bit    
-    leaks_active = leak_df[leak_df.status == 'active']
-    leaks_repaired = leak_df[leak_df.status == 'repaired']
-
-    leaks_active['x'] = list(leaks_active.index)
-    leaks_active['x'] = leaks_active['x']/max(leaks_active['x'])
-    leaks_active['y'] = np.cumsum(sorted(leaks_active['rate'], reverse = True))
-    leaks_active['y'] = leaks_active['y']/max(leaks_active['y'])
+    # Following plots require playing with the data a bit    
+    leaks_active = leak_df[leak_df.status == 'active'].sort_values('rate', ascending = False)
+    leaks_repaired = leak_df[leak_df.status == 'repaired'].sort_values('rate', ascending = False)
     
-    leaks_repaired['x'] = list(leaks_repaired.index)
-    leaks_repaired['x'] = leaks_repaired['x']/max(leaks_repaired['x'])
-    leaks_repaired['y'] = np.cumsum(sorted(leaks_repaired['rate'], reverse = True))
-    leaks_repaired['y'] = leaks_repaired['y']/max(leaks_repaired['y'])
+    leaks_active['cum_frac_leaks'] = list(np.arange(0, 1, 1/len(leaks_active)))
+    leaks_active['cum_rate'] = np.cumsum(leaks_active['rate'])
+    leaks_active['cum_frac_rate'] = leaks_active['cum_rate']/max(leaks_active['cum_rate'])
+    
+    leaks_repaired['cum_frac_leaks'] = list(np.linspace(0, 1, len(leaks_repaired)))
+    leaks_repaired['cum_rate'] = np.cumsum(leaks_repaired['rate'])
+    leaks_repaired['cum_frac_rate'] = leaks_repaired['cum_rate']/max(leaks_repaired['cum_rate'])
 
     leaks_df_2 = leaks_active.append(leaks_repaired)
     
-    plot_leak_2 = (ggplot(leaks_df_2, aes('x', 'y', colour = 'status')) +
+    plot_leak_2 = (ggplot(leaks_df_2, aes('cum_frac_leaks', 'cum_frac_rate', colour = 'status')) +
       geom_line(size = 2) + theme_xkcd() +
-      theme(panel_border = element_rect(colour = "black", fill = None, size=1)) +
+      theme(panel_border = element_rect(colour = "black", fill = None, size=1),
+            legend_position = (0.7, 0.3),
+            legend_title = element_blank()) +
       xlab('Cumulative fraction of leak sources') +
       ylab('Cumulative leak rate fraction') +
-      ggtitle('Empirical cumulative distributions of active and repaired leaks'))
-    
-    plot_leak_2.save(filename = 'plot_leak_2.png', width = 7, height = 3, dpi = 300)
+      ggtitle('Fractional cumulative distribution'))
+   
+    plot_leak_2.save(filename = 'plot_leak_2.png', width = 4, height = 4, dpi = 300)
+        
+    plot_leak_3 = (ggplot(leaks_df_2, aes('cum_frac_leaks', 'cum_rate', colour = 'status')) +
+      geom_line(size = 2) + theme_xkcd() +
+      theme(panel_border = element_rect(colour = "black", fill = None, size=1),
+            legend_position = (0.6, 0.6),
+            legend_direction = 'horizontal',
+            legend_title = element_blank()) +
+      scale_y_continuous(trans='log10') +
+      xlab('Cumulative fraction of leak sources') +
+      ylab('Cumulative emissions (kg/day)') +
+      ggtitle('Absolute cumulative distribution')) 
+   
+    plot_leak_3.save(filename = 'plot_leak_3.png', width = 4, height = 4, dpi = 300)
   
-    
-    
-    
-    warnings.filterwarnings('default')
     return
 
 

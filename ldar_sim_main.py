@@ -45,9 +45,9 @@ parameters = {
     'repair_delay': 5,
     'WT_data': '5YearWT2011_2016.nc',
     'P_data': '5YearPrecip2011_2016.nc',
-    'infrastructure_file': 'AER_sites_500_OGI.csv',
+    'infrastructure_file': 'AER_sites_50_OGI.csv',
     'leak_file': 'FWAQS_all.csv',
-    'output_folder': 'test_output_test',
+    'output_folder': 'test_output',
     'working_directory': "D:/OneDrive - University of Calgary/Documents/Thomas/PhD/Thesis/LDAR_Sim/model/python_v2"
 }
 
