@@ -222,14 +222,35 @@ class ldar_sim:
         for m in self.state['methods']:
             m.make_maps()
             m.site_reports()
- 
-        # Write csv files           
+    
+        # Generate some dataframes           
         for site in self.state['sites']:
             del site['n_new_leaks']
 
         leak_df = pd.DataFrame(self.state['leaks'])
         time_df = pd.DataFrame(self.timeseries)
         site_df = pd.DataFrame(self.state['sites'])
+ 
+        # Create some new variables for plotting
+        site_df['cum_frac_sites'] = list(site_df.index)
+        site_df['cum_frac_sites'] = site_df['cum_frac_sites']/max(site_df['cum_frac_sites'])
+        site_df['cum_frac_emissions'] = np.cumsum(sorted(site_df['total_emissions_kg'], reverse = True))
+        site_df['cum_frac_emissions'] = site_df['cum_frac_emissions']/max(site_df['cum_frac_emissions'])       
+        
+        leaks_active = leak_df[leak_df.status == 'active'].sort_values('rate', ascending = False)
+        leaks_repaired = leak_df[leak_df.status == 'repaired'].sort_values('rate', ascending = False)
+        
+        leaks_active['cum_frac_leaks'] = list(np.arange(0, 1, 1/len(leaks_active)))
+        leaks_active['cum_rate'] = np.cumsum(leaks_active['rate'])
+        leaks_active['cum_frac_rate'] = leaks_active['cum_rate']/max(leaks_active['cum_rate'])
+        
+        leaks_repaired['cum_frac_leaks'] = list(np.linspace(0, 1, len(leaks_repaired)))
+        leaks_repaired['cum_rate'] = np.cumsum(leaks_repaired['rate'])
+        leaks_repaired['cum_frac_rate'] = leaks_repaired['cum_rate']/max(leaks_repaired['cum_rate'])
+    
+        leak_df = leaks_active.append(leaks_repaired)
+        
+        # Write csv files
         leak_df.to_csv(output_directory + '/leaks_output.csv', index = False)
         time_df.to_csv(output_directory + '/timeseries_output.csv', index = False)
         site_df.to_csv(output_directory + '/sites_output.csv', index = False)

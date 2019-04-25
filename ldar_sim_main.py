@@ -47,7 +47,7 @@ parameters = {
     'P_data': '5YearPrecip2011_2016.nc',
     'infrastructure_file': 'AER_sites_50_OGI.csv',
     'leak_file': 'FWAQS_all.csv',
-    'output_folder': 'test_output',
+    'output_folder': 'test_output1',
     'working_directory': "D:/OneDrive - University of Calgary/Documents/Thomas/PhD/Thesis/LDAR_Sim/model/python_v2"
 }
 
