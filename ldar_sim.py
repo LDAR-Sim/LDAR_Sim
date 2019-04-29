@@ -251,15 +251,15 @@ class ldar_sim:
         leak_df = leaks_active.append(leaks_repaired)
         
         # Write csv files
-        leak_df.to_csv(output_directory + '/leaks_output.csv', index = False)
-        time_df.to_csv(output_directory + '/timeseries_output.csv', index = False)
-        site_df.to_csv(output_directory + '/sites_output.csv', index = False)
+        leak_df.to_csv(output_directory + '/leaks_output_' + self.parameters['simulation'] + '.csv', index = False)
+        time_df.to_csv(output_directory + '/timeseries_output_' + self.parameters['simulation'] + '.csv', index = False)
+        site_df.to_csv(output_directory + '/sites_output_' + self.parameters['simulation'] + '.csv', index = False)
         
         # Make plots
-        make_plots(leak_df, time_df, site_df)
+        make_plots(leak_df, time_df, site_df, self.parameters['simulation'])
 
         # Write metadata
-        metadata = open(output_directory + '/metadata.txt','w')
+        metadata = open(output_directory + '/metadata_' + self.parameters['simulation'] + '.txt','w')
         metadata.write(str(self.parameters) + '\n' +
         str(datetime.datetime.now()))
         metadata.close()

@@ -101,7 +101,7 @@ class OGI_company:
         os.chdir(output_directory)
 
         # Export 2D proportions matrix as map
-        output_raster = gdal.GetDriverByName('GTiff').Create('DD_OGI_map.tif', ncols, nrows, 1, gdal.GDT_Float32)
+        output_raster = gdal.GetDriverByName('GTiff').Create('DD_OGI_map_' + self.parameters['simulation'] + '.tif', ncols, nrows, 1, gdal.GDT_Float32)
         output_raster.SetGeoTransform(geotransform)              # Specify file coordinates
         srs = osr.SpatialReference()                             # Establish coordinate encoding
         srs.ImportFromEPSG(4326)                                 # Specify WGS84 lat/long
@@ -110,7 +110,7 @@ class OGI_company:
         output_raster = None
         
         # Exprot 2D MCB matrix as map
-        output_raster = gdal.GetDriverByName('GTiff').Create('MCB_OGI_map.tif', ncols, nrows, 1, gdal.GDT_Float32)
+        output_raster = gdal.GetDriverByName('GTiff').Create('MCB_OGI_map_' + self.parameters['simulation'] + '.tif', ncols, nrows, 1, gdal.GDT_Float32)
         output_raster.SetGeoTransform(geotransform)              # Specify file coordinates
         srs = osr.SpatialReference()                             # Establish coordinate encoding
         srs.ImportFromEPSG(4326)                                 # Specify WGS84 lat/long
