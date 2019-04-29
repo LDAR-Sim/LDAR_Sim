@@ -10,8 +10,11 @@
 # Created:      2019-Mar-26
 #
 #-------------------------------------------------------------------------------
-#-------------------------------------------------------------------------------
+#----------------------------Wrapper function-----------------------------------
 
+#for i in range(25):
+    
+#-------------------------------------------------------------------------------
 from weather_lookup import *
 from ldar_sim import *
 from time_counter import *
@@ -21,33 +24,33 @@ import numpy as np
 #----------------------Static user-defined input parameters---------------------
 
 parameters = {
-    'timesteps': 800,
+    'timesteps': 2100,
     'start_year': 2011,
     'methods': {
 #                'M21': {
-#                         'n_crews': 4,
+#                         'n_crews': 1,
 #                         'truck_types': ['silverado', 'tacoma', 'dodge'],
 #                         'min_temp': -25,
 #                         'max_wind': 20,
 #                         'max_precip': 5,
-#                         'min_interval': 10
-#                         },
-                'OGI': {
-                         'n_crews': 1,
-                         'truck_types': ['silverado', 'tacoma', 'dodge'],
-                         'min_temp': -20,
-                         'max_wind': 10,
-                         'max_precip': 1,
-                         'min_interval': 60
-                         }
+#                         'min_interval': 120
+#                         }
+                    'OGI': {
+                             'n_crews': 1,
+                             'truck_types': ['silverado', 'tacoma', 'dodge'],
+                             'min_temp': -25,
+                             'max_wind': 20,
+                             'max_precip': 5,
+                             'min_interval': 120
+                             }
                 },
 
-    'repair_delay': 5,
+    'repair_delay': 14,
     'WT_data': '5YearWT2011_2016.nc',
     'P_data': '5YearPrecip2011_2016.nc',
-    'infrastructure_file': 'AER_sites_50_OGI.csv',
+    'infrastructure_file': 'AER_sites_500_OGI_3vis.csv',
     'leak_file': 'FWAQS_all.csv',
-    'output_folder': 'test_output1',
+    'output_folder': 'Seans_cool_model_run',
     'working_directory': "D:/OneDrive - University of Calgary/Documents/Thomas/PhD/Thesis/LDAR_Sim/model/python_v2"
 }
 
@@ -88,12 +91,13 @@ if __name__ == '__main__':
     
     print ('Initialization complete!')
 
-    # Loop through timeseries
-    while state['t'].current_date <= state['t'].end_date:
-        sim.update ()
-        state['t'].next_day ()
+   
+# Loop through timeseries
+while state['t'].current_date <= state['t'].end_date:
+    sim.update ()
+    state['t'].next_day ()
 
-    # Clean up and write files
-    sim.finalize ()
+# Clean up and write files
+sim.finalize ()
 
 

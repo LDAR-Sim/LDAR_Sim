@@ -240,7 +240,7 @@ class ldar_sim:
         leaks_active = leak_df[leak_df.status == 'active'].sort_values('rate', ascending = False)
         leaks_repaired = leak_df[leak_df.status == 'repaired'].sort_values('rate', ascending = False)
         
-        leaks_active['cum_frac_leaks'] = list(np.arange(0, 1, 1/len(leaks_active)))
+        leaks_active['cum_frac_leaks'] = list(np.linspace(0, 1, len(leaks_active)))
         leaks_active['cum_rate'] = np.cumsum(leaks_active['rate'])
         leaks_active['cum_frac_rate'] = leaks_active['cum_rate']/max(leaks_active['cum_rate'])
         
@@ -264,6 +264,8 @@ class ldar_sim:
         str(datetime.datetime.now()))
         metadata.close()
         
+        # Return to original working directory
+        os.chdir(self.parameters['working_directory'])
 
         print ('Results have been written to output folder.')
         print ('Simulation complete. Thank you for using the LDAR Simulator.')
