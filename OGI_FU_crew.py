@@ -1,17 +1,19 @@
 import numpy as np
 from datetime import timedelta
+import math
+import numpy as np
 
-class M21_crew:
+class OGI_FU_crew:
     def __init__ (self, state, parameters, config, timeseries, deployment_days, id):
         '''
-        Constructs an individual M21 crew based on defined configuration.
+        Constructs an individual OGI_FU crew based on defined configuration.
         '''
         self.state = state
         self.parameters = parameters
         self.config = config
         self.timeseries = timeseries
         self.deployment_days = deployment_days
-        self.crewstate = {'id': id}     # Crewstate is unique to this agent
+        self.crewstate = {'id': id}                 # Crewstate is unique to this agent
         self.crewstate['truck'] = np.random.choice (self.config['truck_types'])
         self.crewstate['lat'] = 0.0
         self.crewstate['lon'] = 0.0
@@ -33,30 +35,24 @@ class M21_crew:
 
     def choose_site (self):
         '''
-        Choose a site to survey.
+        Choose a site to follow up.
 
         '''
-            
-        # Sort all sites based on a neglect ranking
-        self.state['sites'] = sorted(self.state['sites'], key=lambda k: k['t_since_last_LDAR_M21'], reverse = True)
-
+        # Sort flagged sites based on a neglect ranking
+        self.state['flags'] = sorted(self.state['flags'], key=lambda k: k['t_since_last_LDAR_OGI_FU'], reverse = True)
         facility_ID = None                                  # The facility ID gets assigned if a site is found
-        found_site = False                                  # The found site flag is updated if a site is found
+        found_site = False                                  # The found site flag is updated if a site is found      
 
         # Then, starting with the most neglected site, check if conditions are suitable for LDAR
-        for site in self.state['sites']:
-
-            # If the site hasn't been attempted yet today
-            if site['attempted_today_M21?'] == False:
-            
-                # If the site is 'unripened' (i.e. hasn't met the minimum interval set out in the LDAR regulations/policy), break out - no LDAR today
-                if site['t_since_last_LDAR_M21'] < self.parameters['methods']['M21']['min_interval']:
-                    self.state['t'].current_date = self.state['t'].current_date.replace(hour = 23)
-                    break
+        if len(self.state['flags']) == 0:
+            site = None
+        
+        if len(self.state['flags']) > 0: 
+            for site in self.state['flags']:
     
-                # Else if site-specific required visits have not been met for the year
-                elif site['surveys_done_this_year_M21'] < int(site['required_surveys_M21']):
-    
+                # If the site hasn't been attempted yet today
+                if site['attempted_today_OGI_FU?'] == False:
+                        
                     # Check the weather for that site
                     if self.deployment_days[site['lon_index'], site['lat_index'], self.state['t'].current_timestep] == True:
                     
@@ -65,13 +61,12 @@ class M21_crew:
                         found_site = True
     
                         # Update site
-                        site['surveys_conducted_M21'] += 1
-                        site['surveys_done_this_year_M21'] += 1
-                        site['t_since_last_LDAR_M21'] = 0
+                        site['surveys_conducted_OGI_FU'] += 1
+                        site['t_since_last_LDAR_OGI_FU'] = 0                                    
                         break
                                             
                     else:
-                        site['attempted_today_M21?'] = True
+                        site['attempted_today_OGI_FU?'] = True
 
         return (facility_ID, found_site, site)
 
@@ -81,23 +76,41 @@ class M21_crew:
         '''
 
         # Identify all the leaks at a site
-        self.leaks_present = []
+        leaks_present = []
         for leak in self.state['leaks']:
             if leak['facility_ID'] == facility_ID:
                 if leak['status'] == 'active':
-                    self.leaks_present.append(leak)
+                    leaks_present.append(leak)
 
-        # Add these leaks to the 'tag pool'
-        for leak in self.leaks_present:
-            leak['date_found'] = self.state['t'].current_date
-            leak['found_by_company'] = 'M21_company'
-            leak['found_by_crew'] = self.crewstate['id']
-            self.state['tags'].append(leak)
+        # Detection module from Ravikumar et al 2018, assuming 3 m distance
+        for leak in leaks_present:
+            k = np.random.normal(4.9, 0.3)
+            x0 = np.random.normal(0.47, 0.01)
+            if leak['rate'] == 0:
+                prob_detect = 0
+            else:
+                x = math.log10(leak['rate']*41.6667)            # Convert from kg/day to g/h
+                prob_detect = 1/(1 + math.exp(-k*(x-x0)))
+            detect = np.random.binomial(1, prob_detect)
+            
+            if detect == True:
+                # Add these leaks to the 'tag pool'
+                leak['date_found'] = self.state['t'].current_date
+                leak['found_by_company'] = 'OGI_FU_company'
+                leak['found_by_crew'] = self.crewstate['id']
+                self.state['tags'].append(leak)
+                
+            elif detect == False:
+                site['missed_leaks_OGI_FU'] += 1
+                
+        self.state['t'].current_date += timedelta(minutes = int(site['OGI_FU_time']))
 
-        self.state['t'].current_date += timedelta(minutes = int(site['M21_time']))
+        # Remove site from flag pool
+        site['flagged'] = False
 
 
-        self.random_disaster ()         # See if there's a disaster
+        # See if there's a disaster
+        self.random_disaster ()         
         return
 
 
@@ -107,8 +120,8 @@ class M21_crew:
         '''
 
         if np.random.random() > 0.9999:
-            disaster = np.random.choice (['car crash', 'M21 device failure', 'tire blowout'])
-            print ('M21 crew ' + str (self.crewstate['id']) + ' with a ' + \
+            disaster = np.random.choice (['car crash', 'OGI camera failure', 'tire blowout'])
+            print ('OGI_FU crew ' + str (self.crewstate['id']) + ' with a ' + \
                     self.crewstate['truck'] + ' truck had a ' + disaster)
 
             # no more sites today

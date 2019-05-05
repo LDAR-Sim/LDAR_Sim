@@ -1,10 +1,12 @@
 import numpy as np
 from datetime import timedelta
+import math
+import numpy as np
 
-class M21_crew:
+class aircraft_crew:
     def __init__ (self, state, parameters, config, timeseries, deployment_days, id):
         '''
-        Constructs an individual M21 crew based on defined configuration.
+        Constructs an individual aircraft crew based on defined configuration.
         '''
         self.state = state
         self.parameters = parameters
@@ -12,7 +14,6 @@ class M21_crew:
         self.timeseries = timeseries
         self.deployment_days = deployment_days
         self.crewstate = {'id': id}     # Crewstate is unique to this agent
-        self.crewstate['truck'] = np.random.choice (self.config['truck_types'])
         self.crewstate['lat'] = 0.0
         self.crewstate['lon'] = 0.0
         return
@@ -38,7 +39,7 @@ class M21_crew:
         '''
             
         # Sort all sites based on a neglect ranking
-        self.state['sites'] = sorted(self.state['sites'], key=lambda k: k['t_since_last_LDAR_M21'], reverse = True)
+        self.state['sites'] = sorted(self.state['sites'], key=lambda k: k['t_since_last_LDAR_aircraft'], reverse = True)
 
         facility_ID = None                                  # The facility ID gets assigned if a site is found
         found_site = False                                  # The found site flag is updated if a site is found
@@ -47,15 +48,15 @@ class M21_crew:
         for site in self.state['sites']:
 
             # If the site hasn't been attempted yet today
-            if site['attempted_today_M21?'] == False:
+            if site['attempted_today_aircraft?'] == False:
             
                 # If the site is 'unripened' (i.e. hasn't met the minimum interval set out in the LDAR regulations/policy), break out - no LDAR today
-                if site['t_since_last_LDAR_M21'] < self.parameters['methods']['M21']['min_interval']:
+                if site['t_since_last_LDAR_aircraft'] < self.parameters['methods']['aircraft']['min_interval']:
                     self.state['t'].current_date = self.state['t'].current_date.replace(hour = 23)
                     break
     
                 # Else if site-specific required visits have not been met for the year
-                elif site['surveys_done_this_year_M21'] < int(site['required_surveys_M21']):
+                elif site['surveys_done_this_year_aircraft'] < int(site['required_surveys_aircraft']):
     
                     # Check the weather for that site
                     if self.deployment_days[site['lon_index'], site['lat_index'], self.state['t'].current_timestep] == True:
@@ -65,52 +66,40 @@ class M21_crew:
                         found_site = True
     
                         # Update site
-                        site['surveys_conducted_M21'] += 1
-                        site['surveys_done_this_year_M21'] += 1
-                        site['t_since_last_LDAR_M21'] = 0
+                        site['surveys_conducted_aircraft'] += 1
+                        site['surveys_done_this_year_aircraft'] += 1
+                        site['t_since_last_LDAR_aircraft'] = 0
                         break
                                             
                     else:
-                        site['attempted_today_M21?'] = True
+                        site['attempted_today_aircraft?'] = True
 
         return (facility_ID, found_site, site)
 
     def visit_site (self, facility_ID, site):
         '''
-        Look for leaks at the chosen site.
+        Look for emissions at the chosen site.
         '''
 
-        # Identify all the leaks at a site
-        self.leaks_present = []
+        # Sum all the emissions at the site
+        leaks_present = []
+        site_cum_rate = 0
         for leak in self.state['leaks']:
             if leak['facility_ID'] == facility_ID:
                 if leak['status'] == 'active':
-                    self.leaks_present.append(leak)
-
-        # Add these leaks to the 'tag pool'
-        for leak in self.leaks_present:
-            leak['date_found'] = self.state['t'].current_date
-            leak['found_by_company'] = 'M21_company'
-            leak['found_by_crew'] = self.crewstate['id']
-            self.state['tags'].append(leak)
-
-        self.state['t'].current_date += timedelta(minutes = int(site['M21_time']))
-
-
-        self.random_disaster ()         # See if there's a disaster
-        return
-
-
-    def random_disaster (self):
-        '''
-        random disasters
-        '''
-
-        if np.random.random() > 0.9999:
-            disaster = np.random.choice (['car crash', 'M21 device failure', 'tire blowout'])
-            print ('M21 crew ' + str (self.crewstate['id']) + ' with a ' + \
-                    self.crewstate['truck'] + ' truck had a ' + disaster)
-
-            # no more sites today
-            self.state['t'].current_date = self.state['t'].current_date.replace(hour = 23)
-        return
+                    leaks_present.append(leak)
+                    site_cum_rate += leak['rate']    
+                    
+        # Simple detection module based optimistically on Fox et al 2019 lower bound (lit review)
+        detect = False
+        if site_cum_rate > (2000*0.024):  # g/hour to kg/day
+            detect = True    
+        
+        if detect == True:
+            # Flag the site for follow up
+            site['flagged'] = True
+                
+        elif detect == False:
+            site['missed_leaks_aircraft'] += len(leaks_present)
+                
+        self.state['t'].current_date += timedelta(minutes = int(site['aircraft_time']))

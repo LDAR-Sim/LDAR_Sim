@@ -7,7 +7,8 @@ import sys
 import random
 from OGI_company import *
 from M21_company import *
-from truck_company import *
+from OGI_FU_company import *
+from aircraft_company import *
 from plotter import *
 
 class ldar_sim:
@@ -56,6 +57,12 @@ class ldar_sim:
                     self.parameters, self.parameters['methods'][m], timeseries))
             elif m == 'M21':
                 self.state['methods'].append (M21_company (self.state,
+                    self.parameters, self.parameters['methods'][m], timeseries))
+            elif m == 'OGI_FU':
+                self.state['methods'].append (OGI_FU_company (self.state,
+                    self.parameters, self.parameters['methods'][m], timeseries))
+            elif m == 'aircraft':
+                self.state['methods'].append (aircraft_company (self.state,
                     self.parameters, self.parameters['methods'][m], timeseries))
             else:
                 print ('Cannot add this method: ' + m)
@@ -244,9 +251,10 @@ class ldar_sim:
         leaks_active['cum_rate'] = np.cumsum(leaks_active['rate'])
         leaks_active['cum_frac_rate'] = leaks_active['cum_rate']/max(leaks_active['cum_rate'])
         
-        leaks_repaired['cum_frac_leaks'] = list(np.linspace(0, 1, len(leaks_repaired)))
-        leaks_repaired['cum_rate'] = np.cumsum(leaks_repaired['rate'])
-        leaks_repaired['cum_frac_rate'] = leaks_repaired['cum_rate']/max(leaks_repaired['cum_rate'])
+        if len(leaks_repaired) > 0:
+            leaks_repaired['cum_frac_leaks'] = list(np.linspace(0, 1, len(leaks_repaired)))
+            leaks_repaired['cum_rate'] = np.cumsum(leaks_repaired['rate'])
+            leaks_repaired['cum_frac_rate'] = leaks_repaired['cum_rate']/max(leaks_repaired['cum_rate'])
     
         leak_df = leaks_active.append(leaks_repaired)
         

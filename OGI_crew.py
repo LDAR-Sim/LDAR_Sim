@@ -23,7 +23,6 @@ class OGI_crew:
         '''
         Go to work and find the leaks for a given day
         '''
-                                                              # Reset well count
         self.state['t'].current_date = self.state['t'].current_date.replace(hour = 8)              # Set start of work day
         while self.state['t'].current_date.hour < 18:
             facility_ID, found_site, site = self.choose_site ()
@@ -75,7 +74,6 @@ class OGI_crew:
                                             
                     else:
                         site['attempted_today_OGI?'] = True
-                        self.timeseries['wells_skipped_weather'][self.state['t'].current_timestep] += 1
 
         return (facility_ID, found_site, site)
 
@@ -85,14 +83,14 @@ class OGI_crew:
         '''
 
         # Identify all the leaks at a site
-        self.leaks_present = []
+        leaks_present = []
         for leak in self.state['leaks']:
             if leak['facility_ID'] == facility_ID:
                 if leak['status'] == 'active':
-                    self.leaks_present.append(leak)
+                    leaks_present.append(leak)
 
         # Detection module from Ravikumar et al 2018, assuming 3 m distance
-        for leak in self.leaks_present:
+        for leak in leaks_present:
             k = np.random.normal(4.9, 0.3)
             x0 = np.random.normal(0.47, 0.01)
             if leak['rate'] == 0:
@@ -129,6 +127,6 @@ class OGI_crew:
             print ('OGI crew ' + str (self.crewstate['id']) + ' with a ' + \
                     self.crewstate['truck'] + ' truck had a ' + disaster)
 
-            # no more wells today
+            # no more sites today
             self.state['t'].current_date = self.state['t'].current_date.replace(hour = 23)
         return

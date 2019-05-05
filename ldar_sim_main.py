@@ -1,4 +1,4 @@
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 # Name:         LDAR-Sim User Interface
 #
 # Purpose:      Simulate an LDAR program for a set of user-defined conditions.
@@ -9,64 +9,77 @@
 #
 # Created:      2019-Mar-26
 #
-#-------------------------------------------------------------------------------
-
- 
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 from weather_lookup import *
 from ldar_sim import *
 from time_counter import *
 import numpy as np
 
-#-------------------------------------------------------------------------------
-#----------------------Static user-defined input parameters---------------------
-n_simulations = 10
+#------------------------------------------------------------------------------
+#----------------------Static user-defined input parameters--------------------
+n_simulations = 2
 for i in range(n_simulations):
     parameters = {
         'simulation': str(i),
         'timesteps': 2100,
         'start_year': 2011,
         'methods': {
-    #                'M21': {
-    #                         'n_crews': 1,
-    #                         'truck_types': ['silverado', 'tacoma', 'dodge'],
-    #                         'min_temp': -25,
-    #                         'max_wind': 20,
-    #                         'max_precip': 5,
-    #                         'min_interval': 120
-    #                         }
-                        'OGI': {
+#                    'M21': {
+#                             'n_crews': 1,
+#                             'truck_types': ['silverado', 'tacoma', 'dodge'],
+#                             'min_temp': -25,
+#                             'max_wind': 20,
+#                             'max_precip': 5,
+#                             'min_interval': 120
+#                             },
+#                        'OGI': {
+#                                 'n_crews': 1,
+#                                 'truck_types': ['silverado', 'tacoma', 'dodge'],
+#                                 'min_temp': -25,
+#                                 'max_wind': 20,
+#                                 'max_precip': 5,
+#                                 'min_interval': 120
+#                                 },
+                        'OGI_FU': {
                                  'n_crews': 1,
                                  'truck_types': ['silverado', 'tacoma', 'dodge'],
                                  'min_temp': -25,
                                  'max_wind': 20,
+                                 'max_precip': 5
+                                 },
+                        'aircraft': {
+                                 'n_crews': 1,
+                                 'min_temp': -30,
+                                 'max_wind': 20,
                                  'max_precip': 5,
-                                 'min_interval': 120
+                                 'min_interval': 30
                                  }
                     },
     
         'repair_delay': 14,
         'WT_data': '5YearWT2011_2016.nc',
         'P_data': '5YearPrecip2011_2016.nc',
-        'infrastructure_file': 'AER_sites_500_OGI_3vis.csv',
+        'infrastructure_file': 'AER_sites_500_aircraft.csv',
         'leak_file': 'FWAQS_all.csv',
-        'output_folder': 'OGI_Program_test',
+        'output_folder': 'aircraft_program_test',
         'working_directory': "D:/OneDrive - University of Calgary/Documents/Thomas/PhD/Thesis/LDAR_Sim/model/python_v2"
     }
     
-    #-------------------------------------------------------------------------------
-    #-----------------------Initialize dynamic model state--------------------------
+#------------------------------------------------------------------------------
+#-----------------------Initialize dynamic model state-------------------------
     
     state = {
         't': None,                 
         'methods': [],          # list of methods in action
         'sites': [],            # sites in the simulation
-        'tags': [],             # leaks that have been tagged for repair
+        'flags': [],            # list of sites flagged for follow-up
         'leaks': [],            # list of all current leaks
+        'tags': [],             # leaks that have been tagged for repair
         'weather': None,        # this gets assigned during initialization
     }
     
-    #------------------------Initialize timeseries data-----------------------------
+#------------------------Initialize timeseries data----------------------------
     
     timeseries = {
         'datetime': [],
@@ -74,11 +87,10 @@ for i in range(n_simulations):
         'new_leaks': [],
         'n_tags': [],
         'cum_repaired_leaks': [],
-        'daily_emissions_kg': [],
-        'wells_skipped_weather': [0]*parameters['timesteps']
+        'daily_emissions_kg': []
     }
     
-    #-----------------------------Run simulations-----------------------------------
+#-----------------------------Run simulations----------------------------------
     
     if __name__ == '__main__':
     
