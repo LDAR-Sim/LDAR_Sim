@@ -18,7 +18,7 @@ import numpy as np
 
 #------------------------------------------------------------------------------
 #----------------------Static user-defined input parameters--------------------
-n_simulations = 2
+n_simulations = 5
 for i in range(n_simulations):
     parameters = {
         'simulation': str(i),
@@ -41,28 +41,35 @@ for i in range(n_simulations):
 #                                 'max_precip': 5,
 #                                 'min_interval': 120
 #                                 },
-                        'OGI_FU': {
-                                 'n_crews': 1,
-                                 'truck_types': ['silverado', 'tacoma', 'dodge'],
-                                 'min_temp': -25,
-                                 'max_wind': 20,
-                                 'max_precip': 5
-                                 },
-                        'aircraft': {
-                                 'n_crews': 1,
-                                 'min_temp': -30,
-                                 'max_wind': 20,
-                                 'max_precip': 5,
-                                 'min_interval': 30
-                                 }
+#                        'OGI_FU': {
+#                                 'n_crews': 1,
+#                                 'truck_types': ['silverado', 'tacoma', 'dodge'],
+#                                 'min_temp': -25,
+#                                 'max_wind': 20,
+#                                 'max_precip': 5
+#                                 },
+#                        'aircraft': {
+#                                 'n_crews': 1,
+#                                 'min_temp': -30,
+#                                 'max_wind': 20,
+#                                 'max_precip': 5,
+#                                 'min_interval': 30,
+#                                 },
+#                        'truck': {
+#                                 'n_crews': 1,
+#                                 'min_temp': -30,
+#                                 'max_wind': 20,
+#                                 'max_precip': 5,
+#                                 'min_interval': 30
+#                                 }
                     },
     
         'repair_delay': 14,
         'WT_data': '5YearWT2011_2016.nc',
         'P_data': '5YearPrecip2011_2016.nc',
-        'infrastructure_file': 'AER_sites_500_aircraft.csv',
+        'infrastructure_file': 'AER_sites_500_OGI.csv',
         'leak_file': 'FWAQS_all.csv',
-        'output_folder': 'aircraft_program_test',
+        'output_folder': 'null_program_test_WAD2',
         'working_directory': "D:/OneDrive - University of Calgary/Documents/Thomas/PhD/Thesis/LDAR_Sim/model/python_v2"
     }
     
@@ -70,13 +77,15 @@ for i in range(n_simulations):
 #-----------------------Initialize dynamic model state-------------------------
     
     state = {
-        't': None,                 
+        't': None,   
+        'operator': None,       # operator gets assigned during initialization
         'methods': [],          # list of methods in action
         'sites': [],            # sites in the simulation
         'flags': [],            # list of sites flagged for follow-up
         'leaks': [],            # list of all current leaks
         'tags': [],             # leaks that have been tagged for repair
         'weather': None,        # this gets assigned during initialization
+        'init_leaks': []
     }
     
 #------------------------Initialize timeseries data----------------------------
@@ -98,7 +107,7 @@ for i in range(n_simulations):
         print('Initializing, please wait...')
         
         state['weather'] = weather_lookup (state, parameters)
-        state['t'] = time_counter(parameters)
+        state['t'] = time_counter (parameters)
         sim = ldar_sim (state, parameters, timeseries)
         
         print ('Initialization complete!')

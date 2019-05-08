@@ -5,10 +5,12 @@ import os
 import datetime
 import sys
 import random
+from operator_agent import *
 from OGI_company import *
 from M21_company import *
 from OGI_FU_company import *
 from aircraft_company import *
+from truck_company import *
 from plotter import *
 
 class ldar_sim:
@@ -50,6 +52,9 @@ class ldar_sim:
             if float(site['lon'])%360 < min(self.state['weather'].longitude):
                 sys.exit('Simulation terminated: One or more sites is too far West and is outside the spatial bounds of your weather data!')
         
+        # Initialize operator
+        self.state['operator'] = operator_agent (state)
+        
         # Initialize method(s) to be used; append to state
         for m in self.parameters['methods']:
             if m == 'OGI':
@@ -64,6 +69,9 @@ class ldar_sim:
             elif m == 'aircraft':
                 self.state['methods'].append (aircraft_company (self.state,
                     self.parameters, self.parameters['methods'][m], timeseries))
+            elif m == 'truck':
+                self.state['methods'].append (truck_company (self.state,
+                    self.parameters, self.parameters['methods'][m], timeseries))
             else:
                 print ('Cannot add this method: ' + m)
 
@@ -73,9 +81,11 @@ class ldar_sim:
         for site in self.state['sites']:
             n_leaks = round(np.random.normal(6.186, 6.717))                       # Placeholder mean and stdev from FEAST - need to empirically justify this distribution
             if n_leaks <= 0:
-                site.update({'n_new_leaks': 0})
+                site.update({'initial_leaks': 0})
+                self.state['init_leaks'].append(site['initial_leaks'])
             else:
-                site.update({'n_new_leaks': n_leaks})
+                site.update({'initial_leaks': n_leaks})
+                self.state['init_leaks'].append(site['initial_leaks'])
 
         # Second, load empirical leak-size data, switch from pandas to numpy (for speed), and convert g/s to kg/day
         self.empirical_leaks = pd.read_csv(self.parameters['leak_file'])
@@ -83,8 +93,8 @@ class ldar_sim:
 
         # Third, for each leak, create a dictionary and populate values for relevant keys
         for site in self.state['sites']:
-            if site['n_new_leaks'] > 0:
-                for leak in range(site['n_new_leaks']):
+            if site['initial_leaks'] > 0:
+                for leak in range(site['initial_leaks']):
                     self.state['leaks'].append({
                                                 'leak_ID': site['facility_ID'] + '_' + str(len(self.state['leaks']) + 1).zfill(10),
                                                 'facility_ID': site['facility_ID'],
@@ -166,6 +176,9 @@ class ldar_sim:
         for m in self.state['methods']:
             m.find_leaks ()
 
+        if self.state['t'].current_date.weekday() == 0:
+            self.state['operator'].work_a_day()
+            
         return
 
     def repair_leaks (self):
