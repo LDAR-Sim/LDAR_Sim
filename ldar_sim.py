@@ -51,10 +51,7 @@ class ldar_sim:
                 sys.exit('Simulation terminated: One or more sites is too far East and is outside the spatial bounds of your weather data!')
             if float(site['lon'])%360 < min(self.state['weather'].longitude):
                 sys.exit('Simulation terminated: One or more sites is too far West and is outside the spatial bounds of your weather data!')
-        
-        # Initialize operator
-        self.state['operator'] = operator_agent (state)
-        
+
         # Initialize method(s) to be used; append to state
         for m in self.parameters['methods']:
             if m == 'OGI':
@@ -111,6 +108,9 @@ class ldar_sim:
                                                 'requires_shutdown': False,
                                                 })
 
+        # Initialize operator
+        self.state['operator'] = operator_agent (self.timeseries, self.parameters, self.state)
+    
         return
 
     def update (self):
@@ -134,13 +134,20 @@ class ldar_sim:
             if leak['status'] == 'active':
                 leak['days_active'] += 1
 
+        self.active_leaks = []
+        for leak in self.state['leaks']:
+            if leak['status'] == 'active':
+                self.active_leaks.append(leak)
+        self.timeseries['active_leaks'].append(len(self.active_leaks))
+        self.timeseries['datetime'].append(self.state['t'].current_date)
+
     def add_leaks (self):
         '''
         add new leaks to the leak pool
         '''
         # First, determine whether each site gets a new leak or not
         for site in self.state['sites']:
-            n_leaks = np.random.binomial(1, 0.00133)
+            n_leaks = np.random.binomial(1, self.parameters['LPR'])
             if n_leaks == 0:
                 site.update({'n_new_leaks': 0})
             else:
@@ -201,19 +208,13 @@ class ldar_sim:
         '''
 
         # Update timeseries
-        active_leaks = []
-        for leak in self.state['leaks']:
-            if leak['status'] == 'active':
-                active_leaks.append(leak)
-        
-        self.timeseries['datetime'].append(self.state['t'].current_date)
-        self.timeseries['active_leaks'].append(len(active_leaks))
         self.timeseries['new_leaks'].append(sum(d['n_new_leaks'] for d in self.state['sites']))
         self.timeseries['cum_repaired_leaks'].append(sum(d['status'] == 'repaired' for d in self.state['leaks']))
-        self.timeseries['daily_emissions_kg'].append(sum(d['rate'] for d in active_leaks))
+        self.timeseries['daily_emissions_kg'].append(sum(d['rate'] for d in self.active_leaks))
         self.timeseries['n_tags'].append(len(self.state['tags']))
 
         print ('Day ' + str(self.state['t'].current_timestep) + ' complete!')
+        
         return
 
 
@@ -277,7 +278,7 @@ class ldar_sim:
         site_df.to_csv(output_directory + '/sites_output_' + self.parameters['simulation'] + '.csv', index = False)
         
         # Make plots
-        make_plots(leak_df, time_df, site_df, self.parameters['simulation'])
+        make_plots(leak_df, time_df, site_df, self.parameters['simulation'], output_directory)
 
         # Write metadata
         metadata = open(output_directory + '/metadata_' + self.parameters['simulation'] + '.txt','w')
