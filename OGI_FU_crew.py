@@ -14,7 +14,6 @@ class OGI_FU_crew:
         self.timeseries = timeseries
         self.deployment_days = deployment_days
         self.crewstate = {'id': id}                 # Crewstate is unique to this agent
-        self.crewstate['truck'] = np.random.choice (self.config['truck_types'])
         self.crewstate['lat'] = 0.0
         self.crewstate['lon'] = 0.0
         return
@@ -107,23 +106,5 @@ class OGI_FU_crew:
 
         # Remove site from flag pool
         site['flagged'] = False
-
-
-        # See if there's a disaster
-        self.random_disaster ()         
-        return
-
-
-    def random_disaster (self):
-        '''
-        random disasters
-        '''
-
-        if np.random.random() > 0.9999:
-            disaster = np.random.choice (['car crash', 'OGI camera failure', 'tire blowout'])
-            print ('OGI_FU crew ' + str (self.crewstate['id']) + ' with a ' + \
-                    self.crewstate['truck'] + ' truck had a ' + disaster)
-
-            # no more sites today
-            self.state['t'].current_date = self.state['t'].current_date.replace(hour = 23)
+     
         return

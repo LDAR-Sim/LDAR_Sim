@@ -22,54 +22,51 @@ n_simulations = 10
 for i in range(n_simulations):
     parameters = {
         'simulation': str(i),
-        'timesteps': 5800,
+        'timesteps': 2100,
         'start_year': 2001,
         'methods': {
 #                    'M21': {
 #                             'n_crews': 1,
-#                             'truck_types': ['silverado', 'tacoma', 'dodge'],
 #                             'min_temp': -25,
 #                             'max_wind': 20,
 #                             'max_precip': 5,
 #                             'min_interval': 120
 #                             },
-#                        'OGI': {
-#                                 'n_crews': 1,
-#                                 'truck_types': ['silverado', 'tacoma', 'dodge'],
-#                                 'min_temp': -35,
-#                                 'max_wind': 20,
-#                                 'max_precip': 5,
-#                                 'min_interval': 121
-#                                 },
-#                        'OGI_FU': {
-#                                 'n_crews': 1,
-#                                 'truck_types': ['silverado', 'tacoma', 'dodge'],
-#                                 'min_temp': -25,
-#                                 'max_wind': 20,
-#                                 'max_precip': 5
-#                                 },
-#                        'aircraft': {
-#                                 'n_crews': 1,
-#                                 'min_temp': -30,
-#                                 'max_wind': 20,
-#                                 'max_precip': 5,
-#                                 'min_interval': 60,
-#                                 },
-#                        'truck': {
-#                                 'n_crews': 1,
-#                                 'min_temp': -30,
-#                                 'max_wind': 20,
-#                                 'max_precip': 5,
-#                                 'min_interval': 30
-#                                 }
+#                    'OGI': {
+#                             'n_crews': 1,
+#                             'min_temp': -35,
+#                             'max_wind': 20,
+#                             'max_precip': 5,
+#                             'min_interval': 121
+#                             },
+#                    'OGI_FU': {
+#                             'n_crews': 1,
+#                             'min_temp': -25,
+#                             'max_wind': 20,
+#                             'max_precip': 5
+#                             },
+#                    'aircraft': {
+#                             'n_crews': 1,
+#                             'min_temp': -30,
+#                             'max_wind': 20,
+#                             'max_precip': 5,
+#                             'min_interval': 60,
+#                             },
+#                    'truck': {
+#                             'n_crews': 1,
+#                             'min_temp': -30,
+#                             'max_wind': 20,
+#                             'max_precip': 5,
+#                             'min_interval': 30
+#                             }
                     },
     
         'repair_delay': 14,
         'WT_data': '15YearWT2001_2016.nc',
         'P_data': '15YearPrecip2001_2016.nc',
-        'infrastructure_file': 'AER_sites_500_aircraft.csv',
+        'infrastructure_file': 'AER_sites_500_OGI.csv',
         'leak_file': 'FWAQS_all.csv',
-        'output_folder': 'null_0.00133____',
+        'output_folder': 'test_test',
         'working_directory': "D:/OneDrive - University of Calgary/Documents/Thomas/PhD/Thesis/LDAR_Sim/model/python_v2",
         'LPR': 0.00133
     }
