@@ -22,8 +22,26 @@ class OGI_FU_crew:
         '''
         Go to work and find the leaks for a given day
         '''
-        self.state['t'].current_date = self.state['t'].current_date.replace(hour = 8)              # Set start of work day
-        while self.state['t'].current_date.hour < 18:
+        work_hours = None
+        max_work = self.parameters['methods']['OGI_FU']['max_workday']
+        
+        if self.parameters['consider_daylight'] == True:
+            daylight_hours = self.state['daylight'].get_daylight(self.state['t'].current_timestep)
+            if daylight_hours <= max_work:
+                work_hours = daylight_hours
+            elif daylight_hours > max_work:
+                work_hours = max_work
+        elif self.parameters['consider_daylight'] == False:
+            work_hours = max_work
+        
+        if work_hours < 24 and work_hours != 0:
+            start_hour = (24 - work_hours) / 2
+            end_hour = start_hour + work_hours
+        else:
+            print('Unreasonable number of work hours specified for OGI Follow-up crew ' + str(self.crewstate['id']))
+               
+        self.state['t'].current_date = self.state['t'].current_date.replace(hour = int(start_hour))              # Set start of work day
+        while self.state['t'].current_date.hour < int(end_hour):
             facility_ID, found_site, site = self.choose_site ()
             if not found_site:
                 break                                   # Break out if no site can be found

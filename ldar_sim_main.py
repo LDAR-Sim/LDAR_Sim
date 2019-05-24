@@ -22,7 +22,7 @@ n_simulations = 1
 for i in range(n_simulations):
     parameters = {
         'simulation': str(i),
-        'timesteps': 1500,
+        'timesteps': 500,
         'start_year': 2001,
         'methods': {
 #                    'M21': {
@@ -33,21 +33,21 @@ for i in range(n_simulations):
 #                             'min_interval': 120,
 #                             'max_workday': 10  
 #                             },
-                    'OGI': {
-                             'n_crews': 1,
-                             'min_temp': -35,
-                             'max_wind': 20,
-                             'max_precip': 5,
-                             'min_interval': 120,
-                             'max_workday': 10  
-                             },
-#                    'OGI_FU': {
+#                    'OGI': {
 #                             'n_crews': 1,
 #                             'min_temp': -35,
 #                             'max_wind': 20,
 #                             'max_precip': 5,
-#                             'max_workday': 10          
+#                             'min_interval': 120,
+#                             'max_workday': 10  
 #                             },
+                    'OGI_FU': {
+                             'n_crews': 1,
+                             'min_temp': -35,
+                             'max_wind': 20,
+                             'max_precip': 5,
+                             'max_workday': 10          
+                             },
 #                    'aircraft': {
 #                             'n_crews': 1,
 #                             'min_temp': -30,
@@ -69,12 +69,12 @@ for i in range(n_simulations):
         'repair_delay': 14,
         'WT_data': '15YearWT2001_2016.nc',
         'P_data': '15YearPrecip2001_2016.nc',
-        'infrastructure_file': 'AER_sites_500_reg_OGI.csv',
+        'infrastructure_file': 'AER_Baytex_truck6_only.csv',
         'leak_file': 'FWAQS_all.csv',
-        'output_folder': 'test2_True',
+        'output_folder': 'test_truck_False',
         'working_directory': "D:/OneDrive - University of Calgary/Documents/Thomas/PhD/Thesis/LDAR_Sim/model/python_v2",
         'LPR': 0.00133,
-        'consider_daylight': True,
+        'consider_daylight': False,
         'max_det_op': 0.00   # Operator max additional detection probability of largest leak
     }
     
