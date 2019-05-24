@@ -18,11 +18,11 @@ import numpy as np
 
 #------------------------------------------------------------------------------
 #----------------------Static user-defined input parameters--------------------
-n_simulations = 10
+n_simulations = 1
 for i in range(n_simulations):
     parameters = {
         'simulation': str(i),
-        'timesteps': 2100,
+        'timesteps': 1500,
         'start_year': 2001,
         'methods': {
 #                    'M21': {
@@ -30,20 +30,23 @@ for i in range(n_simulations):
 #                             'min_temp': -25,
 #                             'max_wind': 20,
 #                             'max_precip': 5,
-#                             'min_interval': 120
+#                             'min_interval': 120,
+#                             'max_workday': 10  
 #                             },
-#                    'OGI': {
+                    'OGI': {
+                             'n_crews': 1,
+                             'min_temp': -35,
+                             'max_wind': 20,
+                             'max_precip': 5,
+                             'min_interval': 120,
+                             'max_workday': 10  
+                             },
+#                    'OGI_FU': {
 #                             'n_crews': 1,
 #                             'min_temp': -35,
 #                             'max_wind': 20,
 #                             'max_precip': 5,
-#                             'min_interval': 121
-#                             },
-#                    'OGI_FU': {
-#                             'n_crews': 1,
-#                             'min_temp': -25,
-#                             'max_wind': 20,
-#                             'max_precip': 5
+#                             'max_workday': 10          
 #                             },
 #                    'aircraft': {
 #                             'n_crews': 1,
@@ -51,24 +54,28 @@ for i in range(n_simulations):
 #                             'max_wind': 20,
 #                             'max_precip': 5,
 #                             'min_interval': 60,
+#                             'max_workday': 10,
 #                             },
 #                    'truck': {
 #                             'n_crews': 1,
 #                             'min_temp': -30,
 #                             'max_wind': 20,
 #                             'max_precip': 5,
-#                             'min_interval': 30
+#                             'min_interval': 30,
+#                             'max_workday': 10  
 #                             }
                     },
     
         'repair_delay': 14,
         'WT_data': '15YearWT2001_2016.nc',
         'P_data': '15YearPrecip2001_2016.nc',
-        'infrastructure_file': 'AER_sites_500_OGI.csv',
+        'infrastructure_file': 'AER_sites_500_reg_OGI.csv',
         'leak_file': 'FWAQS_all.csv',
-        'output_folder': 'test_test',
+        'output_folder': 'test2_True',
         'working_directory': "D:/OneDrive - University of Calgary/Documents/Thomas/PhD/Thesis/LDAR_Sim/model/python_v2",
-        'LPR': 0.00133
+        'LPR': 0.00133,
+        'consider_daylight': True,
+        'max_det_op': 0.00   # Operator max additional detection probability of largest leak
     }
     
 #------------------------------------------------------------------------------
@@ -83,7 +90,9 @@ for i in range(n_simulations):
         'leaks': [],            # list of all current leaks
         'tags': [],             # leaks that have been tagged for repair
         'weather': None,        # this gets assigned during initialization
-        'init_leaks': []
+        'daylight': None,
+        'init_leaks': [],       # the initial leaks generated at timestep 1
+        'max_rate': None        # the largest leak in the input file
     }
     
 #------------------------Initialize timeseries data----------------------------

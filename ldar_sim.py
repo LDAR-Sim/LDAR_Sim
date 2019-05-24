@@ -12,6 +12,7 @@ from OGI_FU_company import *
 from aircraft_company import *
 from truck_company import *
 from plotter import *
+from daylight_calculator import *
 
 class ldar_sim:
     def __init__ (self, state, parameters, timeseries):
@@ -86,7 +87,8 @@ class ldar_sim:
 
         # Second, load empirical leak-size data, switch from pandas to numpy (for speed), and convert g/s to kg/day
         self.empirical_leaks = pd.read_csv(self.parameters['leak_file'])
-        self.empirical_leaks = np.array (self.empirical_leaks.iloc [:, 0])*84.4
+        self.empirical_leaks = np.array (self.empirical_leaks.iloc [:, 0])*84.
+        self.state['max_rate'] = max(self.empirical_leaks)
 
         # Third, for each leak, create a dictionary and populate values for relevant keys
         for site in self.state['sites']:
@@ -110,6 +112,10 @@ class ldar_sim:
 
         # Initialize operator
         self.state['operator'] = operator_agent (self.timeseries, self.parameters, self.state)
+        
+        # Initialize daylight 
+        if self.parameters['consider_daylight'] == True:
+            self.state['daylight'] = daylight_calculator_ave(self.state, self.parameters)
     
         return
 
