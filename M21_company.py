@@ -19,7 +19,8 @@ class M21_company:
         self.timeseries = timeseries
         self.crews = []                         # Empty list of M21 agents (crews)
         self.deployment_days = self.state['weather'].deployment_days('M21')
-        self.timeseries['prop_sites_avail_M21'] = []
+        self.timeseries['prop_sites_avail_M21'] = []        
+        self.timeseries['M21_cost'] = np.zeros(self.parameters['timesteps'])
         
         # Additional variable(s) for each site       
         for site in self.state['sites']:

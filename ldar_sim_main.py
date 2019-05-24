@@ -26,43 +26,48 @@ for i in range(n_simulations):
         'start_year': 2001,
         'methods': {
 #                    'M21': {
-#                             'n_crews': 1,
+#                             'n_crews': 2,
 #                             'min_temp': -25,
 #                             'max_wind': 20,
 #                             'max_precip': 5,
 #                             'min_interval': 120,
-#                             'max_workday': 10  
+#                             'max_workday': 10,
+#                             'cost_per_day': 400
 #                             },
 #                    'OGI': {
-#                             'n_crews': 1,
+#                             'n_crews': 3,
 #                             'min_temp': -35,
 #                             'max_wind': 20,
 #                             'max_precip': 5,
 #                             'min_interval': 120,
-#                             'max_workday': 10  
+#                             'max_workday': 10,  
+#                             'cost_per_day': 600
 #                             },
                     'OGI_FU': {
-                             'n_crews': 1,
+                             'n_crews': 8,
                              'min_temp': -35,
                              'max_wind': 20,
                              'max_precip': 5,
-                             'max_workday': 10          
+                             'max_workday': 10,
+                             'cost_per_day': 600
+                             },
+                    'truck': {
+                             'n_crews': 1,
+                             'min_temp': -30,
+                             'max_wind': 20,
+                             'max_precip': 5,
+                             'min_interval': 30,
+                             'max_workday': 10,
+                             'cost_per_day': 500
                              },
 #                    'aircraft': {
-#                             'n_crews': 1,
+#                             'n_crews': 2,
 #                             'min_temp': -30,
 #                             'max_wind': 20,
 #                             'max_precip': 5,
 #                             'min_interval': 60,
 #                             'max_workday': 10,
-#                             },
-#                    'truck': {
-#                             'n_crews': 1,
-#                             'min_temp': -30,
-#                             'max_wind': 20,
-#                             'max_precip': 5,
-#                             'min_interval': 30,
-#                             'max_workday': 10  
+#                             'cost_per_day': 2000
 #                             }
                     },
     
@@ -71,10 +76,10 @@ for i in range(n_simulations):
         'P_data': '15YearPrecip2001_2016.nc',
         'infrastructure_file': 'AER_Baytex_truck6_only.csv',
         'leak_file': 'FWAQS_all.csv',
-        'output_folder': 'test_truck_False',
+        'output_folder': 'test_truck',
         'working_directory': "D:/OneDrive - University of Calgary/Documents/Thomas/PhD/Thesis/LDAR_Sim/model/python_v2",
         'LPR': 0.00133,
-        'consider_daylight': False,
+        'consider_daylight': True,
         'max_det_op': 0.00   # Operator max additional detection probability of largest leak
     }
     

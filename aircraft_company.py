@@ -20,7 +20,9 @@ class aircraft_company:
         self.crews = []                         # Empty list of aircraft agents (crews)
         self.deployment_days = self.state['weather'].deployment_days('aircraft')
         self.timeseries['prop_sites_avail_aircraft'] = []
- 
+        self.timeseries['aircraft_cost'] = np.zeros(self.parameters['timesteps'])
+        self.timeseries['flags_aircraft'] = np.zeros(self.parameters['timesteps'])
+        
         # Additional variable(s) for each site       
         for site in self.state['sites']:
             site.update( {'t_since_last_LDAR_aircraft': 0})

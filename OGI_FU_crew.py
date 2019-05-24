@@ -16,12 +16,14 @@ class OGI_FU_crew:
         self.crewstate = {'id': id}                 # Crewstate is unique to this agent
         self.crewstate['lat'] = 0.0
         self.crewstate['lon'] = 0.0
+        self.worked_today = False
         return
 
     def work_a_day (self):
         '''
         Go to work and find the leaks for a given day
         '''
+        self.worked_today = False
         work_hours = None
         max_work = self.parameters['methods']['OGI_FU']['max_workday']
         
@@ -46,6 +48,10 @@ class OGI_FU_crew:
             if not found_site:
                 break                                   # Break out if no site can be found
             self.visit_site (facility_ID, site)
+            self.worked_today = True
+        
+        if self.worked_today == True:
+            self.timeseries['OGI_FU_cost'][self.state['t'].current_timestep] += self.parameters['methods']['OGI_FU']['cost_per_day']
 
         return
 
@@ -79,7 +85,8 @@ class OGI_FU_crew:
     
                         # Update site
                         site['surveys_conducted_OGI_FU'] += 1
-                        site['t_since_last_LDAR_OGI_FU'] = 0                                    
+                        site['t_since_last_LDAR_OGI_FU'] = 0   
+                        site['attempted_today_OGI_FU?'] = True                                 
                         break
                                             
                     else:

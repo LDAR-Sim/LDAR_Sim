@@ -16,12 +16,14 @@ class aircraft_crew:
         self.crewstate = {'id': id}     # Crewstate is unique to this agent
         self.crewstate['lat'] = 0.0
         self.crewstate['lon'] = 0.0
+        self.worked_today = False
         return
 
     def work_a_day (self):
         '''
         Go to work and find the leaks for a given day
         '''
+        self.worked_today = False
         work_hours = None
         max_work = self.parameters['methods']['aircraft']['max_workday']
         
@@ -46,6 +48,10 @@ class aircraft_crew:
             if not found_site:
                 break                                   # Break out if no site can be found
             self.visit_site (facility_ID, site)
+            self.worked_today = True
+        
+        if self.worked_today == True:
+            self.timeseries['aircraft_cost'][self.state['t'].current_timestep] += self.parameters['methods']['aircraft']['cost_per_day']
 
         return
 
@@ -116,6 +122,7 @@ class aircraft_crew:
         if detect == True:
             # Flag the site for follow up
             site['flagged'] = True
+            self.timeseries['flags_aircraft'][self.state['t'].current_timestep] += 1
                 
         elif detect == False:
             site['missed_leaks_aircraft'] += len(leaks_present)

@@ -20,6 +20,8 @@ class truck_company:
         self.crews = []                         # Empty list of truck agents (crews)
         self.deployment_days = self.state['weather'].deployment_days('truck')
         self.timeseries['prop_sites_avail_truck'] = []
+        self.timeseries['truck_cost'] = np.zeros(self.parameters['timesteps'])       
+        self.timeseries['flags_truck'] = np.zeros(self.parameters['timesteps'])        
  
         # Additional variable(s) for each site       
         for site in self.state['sites']:

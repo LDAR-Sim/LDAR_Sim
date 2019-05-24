@@ -20,6 +20,7 @@ class OGI_FU_company:
         self.crews = []                         # Empty list of OGI_FU agents (crews)
         self.deployment_days = self.state['weather'].deployment_days('OGI_FU')
         self.timeseries['prop_sites_avail_OGI_FU'] = []
+        self.timeseries['OGI_FU_cost'] = np.zeros(self.parameters['timesteps'])
  
         # Additional variable(s) for each site       
         for site in self.state['sites']:
