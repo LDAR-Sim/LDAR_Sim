@@ -15,17 +15,19 @@
 from weather_lookup import *
 from ldar_sim import *
 from time_counter import *
+from plotter_batch import *
 import numpy as np
 import os
 
 #------------------------------------------------------------------------------
 #--------------------------------Set programs----------------------------------
-master_output_folder = 'reg_vs_aircraft/'
-n_simulations = 20
+master_output_folder = 'reg_aircraft_truck_3/'
+n_simulations = 2
+n_timesteps = 500
 programs = [{
             'output_folder': master_output_folder + 'OGI_regulatory',
             'simulation': None,
-            'timesteps': 5600,
+            'timesteps': n_timesteps,          # Up to ~5600 for 16 year file
             'start_year': 2001,
             'methods': {
                     'OGI': {
@@ -49,9 +51,9 @@ programs = [{
             'max_det_op': 0.00   # Operator max additional detection probability of largest leak
         },
         {
-            'output_folder': master_output_folder + 'aircraft_1',
+            'output_folder': master_output_folder + 'aircraft',
             'simulation': None,
-            'timesteps': 1000,
+            'timesteps': n_timesteps,
             'start_year': 2001,
             'methods': {
                     'aircraft': {
@@ -81,9 +83,43 @@ programs = [{
             'LPR': 0.00133,
             'consider_daylight': True,
             'max_det_op': 0.00   # Operator max additional detection probability of largest leak
+        },
+                {
+            'output_folder': master_output_folder + 'truck',
+            'simulation': None,
+            'timesteps': n_timesteps,
+            'start_year': 2001,
+            'methods': {
+                    'truck': {
+                             'n_crews': 1,
+                             'min_temp': -35,
+                             'max_wind': 25,
+                             'max_precip': 10,
+                             'min_interval': 30,    
+                             'max_workday': 10,
+                             'cost_per_day': 500
+                             },
+                    'OGI_FU': {
+                             'n_crews': 1,
+                             'min_temp': -10,
+                             'max_wind': 10,
+                             'max_precip': 2,
+                             'max_workday': 10,
+                             'cost_per_day': 600
+                             }                        
+                        },        
+            'repair_delay': 14,
+            'WT_data': '15YearWT2001_2016.nc',
+            'P_data': '15YearPrecip2001_2016.nc',
+            'infrastructure_file': 'AER_Baytex_truck6_only.csv',
+            'leak_file': 'FWAQS_all.csv',
+            'working_directory': "D:/OneDrive - University of Calgary/Documents/Thomas/PhD/Thesis/LDAR_Sim/model/python_v2",
+            'LPR': 0.00133,
+            'consider_daylight': True,
+            'max_det_op': 0.00   # Operator max additional detection probability of largest leak
         }]
 
-output_directory = os.path.join(programs[0]['working_directory'], master_output_folder)
+output_directory = programs[0]['working_directory'] + '/' + master_output_folder
 if not os.path.exists(output_directory):
     os.makedirs(output_directory)
     
@@ -142,7 +178,8 @@ for program in programs:
         
         # Clean up and write files
         sim.finalize ()
-    
+
+batch_plots (output_directory)
     
     
 #---------------------------------Method library-------------------------------
