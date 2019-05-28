@@ -78,7 +78,7 @@ def batch_plots(output_directory):
             geom_ribbon(df, aes(ymin = 'low', ymax = 'high', fill = 'program'), alpha = 0.2) +
             ylab('Daily emissions (kg)') + xlab('') +
             scale_colour_hue(h = 0.15, l = 0.25, s = 0.9) +
-            scale_x_datetime(breaks = date_breaks('1 years'), labels = date_format('%Y')) +
+            scale_x_datetime(labels = date_format('%Y')) +
             scale_y_continuous(trans='log10') +  labs(color = 'Program', fill = 'Program') +
             theme(panel_border = element_rect(colour = "black", fill = None, size = 2), 
             panel_grid_minor_x = element_blank(), panel_grid_major_x = element_blank(),
