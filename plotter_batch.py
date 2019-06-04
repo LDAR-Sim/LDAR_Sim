@@ -74,8 +74,8 @@ def batch_plots(output_directory):
     # Make plots from list of dataframes - one entry per dataframe
     theme_set(theme_linedraw())
     plot1 = (ggplot(None) + aes('datetime', 'value', group = 'program') +
-            geom_line(df, aes('datetime', 'mean', colour = 'program'), size = 1) +
             geom_ribbon(df, aes(ymin = 'low', ymax = 'high', fill = 'program'), alpha = 0.2) +
+            geom_line(df, aes('datetime', 'mean', colour = 'program'), size = 1) +
             ylab('Daily emissions (kg)') + xlab('') +
             scale_colour_hue(h = 0.15, l = 0.25, s = 0.9) +
             scale_x_datetime(labels = date_format('%Y')) +
