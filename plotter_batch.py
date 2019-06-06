@@ -16,6 +16,7 @@ import csv
 from mizani.breaks import date_breaks
 from mizani.formatters import date_format
 from scipy import stats
+import math
 
 
 def batch_plots(output_directory, start_year, ref_program):
@@ -86,7 +87,21 @@ def batch_plots(output_directory, start_year, ref_program):
     df_p1 = dfs_p1[0]
     for i in dfs_p1[1:]:
         df_p1 = df_p1.append(i, ignore_index = True)
-         
+
+    # Axe spinup year
+    df_p1['datetime'] = pd.to_datetime(df_p1['datetime'])
+    start_date = '12-31-' + str(start_year)
+    mask = (df_p1['datetime'] > start_date)
+    df_p1 = df_p1.loc[mask]
+    
+    # Find values to set plot scale min and max
+    min_mean = df_p1['mean'].min()
+    max_mean = df_p1['mean'].max()
+    exp_min = math.floor(math.log10(min_mean))
+    exp_max = math.ceil(math.log10(max_mean))
+    y_min = 10**exp_min
+    y_max = 10**exp_max
+    
     # Make plots from list of dataframes - one entry per dataframe
     theme_set(theme_linedraw())
     plot1 = (ggplot(None) + aes('datetime', 'value', group = 'program') +
@@ -95,7 +110,9 @@ def batch_plots(output_directory, start_year, ref_program):
             ylab('Daily emissions (kg)') + xlab('') +
             scale_colour_hue(h = 0.15, l = 0.25, s = 0.9) +
             scale_x_datetime(labels = date_format('%Y')) +
-            scale_y_continuous(trans='log10') +  labs(color = 'Program', fill = 'Program') +
+            scale_y_continuous(trans = 'log10') +
+            coord_cartesian(ylim = (y_min, y_max)) +
+            labs(color = 'Program', fill = 'Program') +
             theme(panel_border = element_rect(colour = "black", fill = None, size = 2), 
             panel_grid_minor_x = element_blank(), panel_grid_major_x = element_blank(),
             panel_grid_minor_y = element_line(colour = 'black', linewidth = 0.5, alpha = 0.3), 
