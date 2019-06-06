@@ -23,16 +23,18 @@ import datetime
 #------------------------------------------------------------------------------
 #--------------------------------Set programs----------------------------------
 master_output_folder = 'mitigation_plot_test_3/'
-n_simulations = 2           # Run a minimum of 2 simulations
-n_timesteps = 2000           # Min. 2000; Up to ~5600 for 16 year nc file
+ref_program = 'Regulatory OGI'      # Name must match reference program below
+n_simulations = 2                   # Run a minimum of 2 simulations
+n_timesteps = 2000                  # Min. 2000; Up to ~5600 for 16 year nc file
+start_year = 2001
 
 # Define programs. Your first program listed should be the reference program.
 programs = [
         {
-            'output_folder': master_output_folder + 'Program 1',
+            'output_folder': master_output_folder + 'Regulatory OGI',
             'simulation': None,
             'timesteps': n_timesteps,        
-            'start_year': 2001,
+            'start_year': start_year,
             'methods': {
                     'OGI': {
                              'n_crews': 1,
@@ -55,10 +57,10 @@ programs = [
             'max_det_op': 0.00   # Operator max additional detection probability of largest leak
         },
         {
-            'output_folder': master_output_folder + 'OGI_same',
+            'output_folder': master_output_folder + 'Reg OGI duplicate',
             'simulation': None,
             'timesteps': n_timesteps,        
-            'start_year': 2001,
+            'start_year': start_year,
             'methods': {
                     'OGI': {
                              'n_crews': 1,
@@ -80,88 +82,88 @@ programs = [
             'consider_daylight': True,
             'max_det_op': 0.00   # Operator max additional detection probability of largest leak
         },
-#        {
-#            'output_folder': master_output_folder + 'Program 2',
-#            'simulation': None,
-#            'timesteps': n_timesteps,
-#            'start_year': 2001,
-#            'methods': {
-#                    'aircraft': {
-#                             'n_crews': 1,
-#                             'min_temp': -20,
-#                             'max_wind': 5,
-#                             'max_precip': 0,
-#                             'min_interval': 60,
-#                             'max_workday': 10,
-#                             'cost_per_day': 2000
-#                             },
-#                    'OGI_FU': {
-#                             'n_crews': 1,
-#                             'min_temp': -10,
-#                             'max_wind': 5,
-#                             'max_precip': 1,
-#                             'max_workday': 10,
-#                             'cost_per_day': 600
-#                             }                        
-#                        },        
-#            'repair_delay': 14,
-#            'WT_data': '15YearWT2001_2016.nc',
-#            'P_data': '15YearPrecip2001_2016.nc',
-#            'infrastructure_file': 'AER_Baytex_aircraft6_only.csv',
-#            'leak_file': 'FWAQS_all.csv',
-#            'working_directory': "D:/OneDrive - University of Calgary/Documents/Thomas/PhD/Thesis/LDAR_Sim/model/python_v2",
-#            'LPR': 0.00133,
-#            'consider_daylight': True,
-#            'max_det_op': 0.00   # Operator max additional detection probability of largest leak
-#        },
-#        {
-#            'output_folder': master_output_folder + 'Program 3',
-#            'simulation': None,
-#            'timesteps': n_timesteps,
-#            'start_year': 2001,
-#            'methods': {
-#                    'aircraft': {
-#                             'n_crews': 1,
-#                             'min_temp': -20,
-#                             'max_wind': 5,
-#                             'max_precip': 0,
-#                             'min_interval': 60,
-#                             'max_workday': 10,
-#                             'cost_per_day': 2000
-#                             },
-#                    'OGI': {
-#                             'n_crews': 1,
-#                             'min_temp': -10,
-#                             'max_wind': 5,
-#                             'max_precip': 1,
-#                             'min_interval': 60,
-#                             'max_workday': 10,  
-#                             'cost_per_day': 600
-#                             },
-#                    'OGI_FU': {
-#                             'n_crews': 1,
-#                             'min_temp': -10,
-#                             'max_wind': 5,
-#                             'max_precip': 1,
-#                             'max_workday': 10,
-#                             'cost_per_day': 600
-#                             }                        
-#                        },        
-#            'repair_delay': 14,
-#            'WT_data': '15YearWT2001_2016.nc',
-#            'P_data': '15YearPrecip2001_2016.nc',
-#            'infrastructure_file': 'AER_Baytex_aircraft6_OGI1.csv',
-#            'leak_file': 'FWAQS_all.csv',
-#            'working_directory': "D:/OneDrive - University of Calgary/Documents/Thomas/PhD/Thesis/LDAR_Sim/model/python_v2",
-#            'LPR': 0.00133,
-#            'consider_daylight': True,
-#            'max_det_op': 0.00   # Operator max additional detection probability of largest leak
-#        },
+        {
+            'output_folder': master_output_folder + 'Aircraft only',
+            'simulation': None,
+            'timesteps': n_timesteps,
+            'start_year': start_year,
+            'methods': {
+                    'aircraft': {
+                             'n_crews': 1,
+                             'min_temp': -20,
+                             'max_wind': 5,
+                             'max_precip': 0,
+                             'min_interval': 60,
+                             'max_workday': 10,
+                             'cost_per_day': 2000
+                             },
+                    'OGI_FU': {
+                             'n_crews': 1,
+                             'min_temp': -10,
+                             'max_wind': 5,
+                             'max_precip': 1,
+                             'max_workday': 10,
+                             'cost_per_day': 600
+                             }                        
+                        },        
+            'repair_delay': 14,
+            'WT_data': '15YearWT2001_2016.nc',
+            'P_data': '15YearPrecip2001_2016.nc',
+            'infrastructure_file': 'AER_Baytex_aircraft6_only.csv',
+            'leak_file': 'FWAQS_all.csv',
+            'working_directory': "D:/OneDrive - University of Calgary/Documents/Thomas/PhD/Thesis/LDAR_Sim/model/python_v2",
+            'LPR': 0.00133,
+            'consider_daylight': True,
+            'max_det_op': 0.00   # Operator max additional detection probability of largest leak
+        },
+        {
+            'output_folder': master_output_folder + 'Aircraft + OGI',
+            'simulation': None,
+            'timesteps': n_timesteps,
+            'start_year': start_year,
+            'methods': {
+                    'aircraft': {
+                             'n_crews': 1,
+                             'min_temp': -20,
+                             'max_wind': 5,
+                             'max_precip': 0,
+                             'min_interval': 60,
+                             'max_workday': 10,
+                             'cost_per_day': 2000
+                             },
+                    'OGI': {
+                             'n_crews': 1,
+                             'min_temp': -10,
+                             'max_wind': 5,
+                             'max_precip': 1,
+                             'min_interval': 60,
+                             'max_workday': 10,  
+                             'cost_per_day': 600
+                             },
+                    'OGI_FU': {
+                             'n_crews': 1,
+                             'min_temp': -10,
+                             'max_wind': 5,
+                             'max_precip': 1,
+                             'max_workday': 10,
+                             'cost_per_day': 600
+                             }                        
+                        },        
+            'repair_delay': 14,
+            'WT_data': '15YearWT2001_2016.nc',
+            'P_data': '15YearPrecip2001_2016.nc',
+            'infrastructure_file': 'AER_Baytex_aircraft6_OGI1.csv',
+            'leak_file': 'FWAQS_all.csv',
+            'working_directory': "D:/OneDrive - University of Calgary/Documents/Thomas/PhD/Thesis/LDAR_Sim/model/python_v2",
+            'LPR': 0.00133,
+            'consider_daylight': True,
+            'max_det_op': 0.00   # Operator max additional detection probability of largest leak
+        },
 #        {
 #            'output_folder': master_output_folder + 'Program 4',
 #            'simulation': None,
 #            'timesteps': n_timesteps,
-#            'start_year': 2001,
+#            'start_year': start_year,
 #            'methods': {
 #                    'aircraft': {
 #                             'n_crews': 1,
@@ -204,7 +206,7 @@ programs = [
 #            'output_folder': master_output_folder + 'Program 5',
 #            'simulation': None,
 #            'timesteps': n_timesteps,
-#            'start_year': 2001,
+#            'start_year': start_year,
 #            'methods': {
 #                    'truck': {
 #                             'n_crews': 1,
@@ -296,7 +298,7 @@ for program in programs:
         # Clean up and write files
         sim.finalize ()
 
-batch_plots (output_directory, programs[0]['start_year'])
+batch_plots (output_directory, programs[0]['start_year'], ref_program)
 # Write metadata
 metadata = open(output_directory + '/metadata.txt','w')
 metadata.write(str(programs) + '\n' +

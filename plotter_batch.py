@@ -18,7 +18,7 @@ from mizani.formatters import date_format
 from scipy import stats
 
 
-def batch_plots(output_directory, start_year):
+def batch_plots(output_directory, start_year, ref_program):
     """
     This function makes equivalence plots comparing programs in batch mode.
     """
@@ -67,7 +67,12 @@ def batch_plots(output_directory, start_year):
         dfs[i]['low'] = dfs[i].iloc[:,0:n_cols].quantile(0.025, axis=1)
         dfs[i]['high'] = dfs[i].iloc[:,0:n_cols].quantile(0.975, axis=1)
         dfs[i]['program'] = os.listdir()[i]
-
+        
+    # Move reference program to the top of the list
+    for i, df in enumerate(dfs):
+        if df['program'][0] == ref_program:
+            dfs.insert(0, dfs.pop(i))
+              
     # Arrange dfs for plot 1
     dfs_p1 = dfs.copy()
     for i in range(len(dfs_p1)):        
