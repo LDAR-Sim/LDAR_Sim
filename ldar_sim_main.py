@@ -35,11 +35,11 @@ for i in range(n_simulations):
 #                             'cost_per_day': 400
 #                             },
 #                    'OGI': {
-#                             'n_crews': 3,
-#                             'min_temp': -35,
-#                             'max_wind': 20,
-#                             'max_precip': 5,
-#                             'min_interval': 120,
+#                             'n_crews': 1,
+#                             'min_temp': -10,
+#                             'max_wind': 5,
+#                             'max_precip': 1,
+#                             'min_interval': 60,
 #                             'max_workday': 10,  
 #                             'cost_per_day': 600
 #                             },
@@ -60,26 +60,30 @@ for i in range(n_simulations):
                              'max_workday': 10,
                              'cost_per_day': 500
                              },
-#                    'aircraft': {
-#                             'n_crews': 2,
-#                             'min_temp': -30,
-#                             'max_wind': 20,
-#                             'max_precip': 5,
-#                             'min_interval': 60,
-#                             'max_workday': 10,
-#                             'cost_per_day': 2000
-#                             }
+                    'aircraft': {
+                             'n_crews': 2,
+                             'min_temp': -30,
+                             'max_wind': 20,
+                             'max_precip': 5,
+                             'min_interval': 60,
+                             'max_workday': 10,
+                             'cost_per_day': 2000
+                             }
                     },
     
         'repair_delay': 14,
         'WT_data': '15YearWT2001_2016.nc',
         'P_data': '15YearPrecip2001_2016.nc',
-        'infrastructure_file': 'AER_Baytex_truck6_only.csv',
+        'infrastructure_file': 'AER_Baytex_aircraft_truck.csv',
         'leak_file': 'FWAQS_all.csv',
-        'output_folder': 'test_truck',
+        'vent_file': 'ZA_site_emissions_2018.csv',          # File containing site-level total emissions in g/sec
+        'output_folder': 'testing_Venting2_True',
         'working_directory': "D:/OneDrive - University of Calgary/Documents/Thomas/PhD/Thesis/LDAR_Sim/model/python_v2",
         'LPR': 0.00133,
+        'leaks_per_site_mean': 6.186,
+        'leaks_per_site_std': 6.717,
         'consider_daylight': True,
+        'consider_venting': True,
         'max_det_op': 0.00   # Operator max additional detection probability of largest leak
     }
     
@@ -97,6 +101,7 @@ for i in range(n_simulations):
         'weather': None,        # this gets assigned during initialization
         'daylight': None,
         'init_leaks': [],       # the initial leaks generated at timestep 1
+        'empirical_vents': [],
         'max_rate': None        # the largest leak in the input file
     }
     

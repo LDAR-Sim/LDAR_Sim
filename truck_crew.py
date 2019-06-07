@@ -112,7 +112,12 @@ class truck_crew:
             if leak['facility_ID'] == facility_ID:
                 if leak['status'] == 'active':
                     leaks_present.append(leak)
-                    site_cum_rate += leak['rate']    
+                    site_cum_rate += leak['rate']  
+                    
+        # Add vented emissions
+        if self.parameters['consider_venting'] == True:
+            venting = self.state['empirical_vents'][np.random.randint(0, len(self.state['empirical_vents']))]
+            site_cum_rate += venting
                     
         # Simple detection module based optimistically on Fox et al 2019 lower bound (lit review)
         detect = False

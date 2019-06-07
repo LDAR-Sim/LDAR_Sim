@@ -77,7 +77,7 @@ class ldar_sim:
         # First, generate initial leak count for each site
         print('Initializing leaks...')
         for site in self.state['sites']:
-            n_leaks = round(np.random.normal(6.186, 6.717))                       # Placeholder mean and stdev from FEAST - need to empirically justify this distribution
+            n_leaks = round(np.random.normal(self.parameters['leaks_per_site_mean'], self.parameters['leaks_per_site_std']))
             if n_leaks <= 0:
                 site.update({'initial_leaks': 0})
                 self.state['init_leaks'].append(site['initial_leaks'])
@@ -116,7 +116,28 @@ class ldar_sim:
         # Initialize daylight 
         if self.parameters['consider_daylight'] == True:
             self.state['daylight'] = daylight_calculator_ave(self.state, self.parameters)
-    
+            
+        # Initialize empirical distribution of vented emissions
+        if self.parameters['consider_venting'] == True:
+        
+        # Load empirical site emissions data, switch from pandas to numpy (for speed), and convert g/s to kg/day
+            self.empirical_site = pd.read_csv(self.parameters['vent_file'])
+            self.empirical_site = np.array (self.empirical_site.iloc [:, 0])*84.
+            
+        # Run Monte Carlo simulations to get distribution of vented emissions
+            for i in range(1000):
+                n_MC_leaks = round(np.random.normal(self.parameters['leaks_per_site_mean'], self.parameters['leaks_per_site_std']))
+                MC_leaks = []
+                for leak in range(n_MC_leaks):
+                    MC_leaks.append(self.empirical_leaks[np.random.randint(0, len(self.empirical_leaks))])
+                MC_leak_total = sum(MC_leaks)
+                MC_site_total = self.empirical_site[np.random.randint(0, len(self.empirical_site))]
+                MC_vent_total = MC_site_total - MC_leak_total
+                self.state['empirical_vents'].append(MC_vent_total)
+            
+            # Change negatives to zero
+            self.state['empirical_vents'] = [0 if i < 0 else i for i in self.state['empirical_vents']]
+            
         return
 
     def update (self):
