@@ -126,7 +126,7 @@ class truck_crew:
         
         if detect == True:
             # Flag the site for follow up
-            site['flagged'] = True
+            site['currently_flagged'] = True
             self.timeseries['flags_truck'][self.state['t'].current_timestep] += 1
                 
         elif detect == False:

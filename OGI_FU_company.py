@@ -28,7 +28,6 @@ class OGI_FU_company:
             site.update( {'attempted_today_OGI_FU?': False})
             site.update( {'surveys_conducted_OGI_FU': 0})
             site.update( {'missed_leaks_OGI_FU': 0})
-            site.update( {'flagged': False})
             
         # Initialize 2D matrices to store deployment day (DD) counts and MCBs
         self.DD_OGI_FU_map = np.zeros((len(self.state['weather'].longitude), len(self.state['weather'].latitude)))
@@ -53,7 +52,7 @@ class OGI_FU_company:
             site['t_since_last_LDAR_OGI_FU'] += 1
             site['attempted_today_OGI_FU?'] = False
             
-        self.state['flags'] = [flag for flag in self.state['sites'] if flag['flagged'] == True]
+        self.state['flags'] = [flag for flag in self.state['sites'] if flag['currently_flagged'] == True]
 
         # Calculate proportion sites available
         available_sites = 0

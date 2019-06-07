@@ -77,7 +77,7 @@ for i in range(n_simulations):
         'infrastructure_file': 'AER_Baytex_aircraft_truck.csv',
         'leak_file': 'FWAQS_all.csv',
         'vent_file': 'ZA_site_emissions_2018.csv',          # File containing site-level total emissions in g/sec
-        'output_folder': 'testing_Venting2_True',
+        'output_folder': 'testXXX2',
         'working_directory': "D:/OneDrive - University of Calgary/Documents/Thomas/PhD/Thesis/LDAR_Sim/model/python_v2",
         'LPR': 0.00133,
         'leaks_per_site_mean': 6.186,

@@ -38,6 +38,7 @@ class ldar_sim:
             site.update( {'total_emissions_kg': 0})
             site.update( {'active_leaks': 0})
             site.update( {'repaired_leaks': 0})
+            site.update( {'currently_flagged': False})
             site.update( {'lat_index': min(range(len(self.state['weather'].latitude)), 
                            key=lambda i: abs(self.state['weather'].latitude[i]-float(site['lat'])))})
             site.update( {'lon_index': min(range(len(self.state['weather'].longitude)), 

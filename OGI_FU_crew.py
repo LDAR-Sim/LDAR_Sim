@@ -130,6 +130,6 @@ class OGI_FU_crew:
         self.state['t'].current_date += timedelta(minutes = int(site['OGI_FU_time']))
 
         # Remove site from flag pool
-        site['flagged'] = False
+        site['currently_flagged'] = False
      
         return
