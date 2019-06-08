@@ -39,6 +39,7 @@ class ldar_sim:
             site.update( {'active_leaks': 0})
             site.update( {'repaired_leaks': 0})
             site.update( {'currently_flagged': False})
+            site.update( {'date_flagged': None})
             site.update( {'lat_index': min(range(len(self.state['weather'].latitude)), 
                            key=lambda i: abs(self.state['weather'].latitude[i]-float(site['lat'])))})
             site.update( {'lon_index': min(range(len(self.state['weather'].longitude)), 
@@ -221,7 +222,7 @@ class ldar_sim:
         Repair tagged leaks and remove from tag pool.
         '''
         for tag in self.state['tags']:
-            if (self.state['t'].current_date - tag['date_found']).days  == self.parameters['repair_delay']:
+            if (self.state['t'].current_date - tag['date_found']).days  >= self.parameters['repair_delay']:
                 tag['status'] = 'repaired'
                 tag['date_repaired'] = self.state['t'].current_date
                 tag['repair_delay'] = (tag['date_repaired'] - tag['date_found']).days

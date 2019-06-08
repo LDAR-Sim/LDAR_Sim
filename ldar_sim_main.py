@@ -49,7 +49,8 @@ for i in range(n_simulations):
                              'max_wind': 20,
                              'max_precip': 5,
                              'max_workday': 10,
-                             'cost_per_day': 600
+                             'cost_per_day': 600,
+                             'days_to_follow_up': 7
                              },
                     'truck': {
                              'n_crews': 1,

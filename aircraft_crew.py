@@ -127,6 +127,7 @@ class aircraft_crew:
         if detect == True:
             # Flag the site for follow up
             site['currently_flagged'] = True
+            site['date_flagged'] = self.state['t'].current_date
             self.timeseries['flags_aircraft'][self.state['t'].current_timestep] += 1
                 
         elif detect == False:

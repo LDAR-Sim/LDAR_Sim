@@ -72,25 +72,28 @@ class OGI_FU_crew:
         
         if len(self.state['flags']) > 0: 
             for site in self.state['flags']:
+                
+                # If the site is ripe
+                if (self.state['t'].current_date - site['date_flagged']).days  >= self.config['days_to_follow_up']:
     
-                # If the site hasn't been attempted yet today
-                if site['attempted_today_OGI_FU?'] == False:
+                    # If the site hasn't been attempted yet today
+                    if site['attempted_today_OGI_FU?'] == False:
+                            
+                        # Check the weather for that site
+                        if self.deployment_days[site['lon_index'], site['lat_index'], self.state['t'].current_timestep] == True:
                         
-                    # Check the weather for that site
-                    if self.deployment_days[site['lon_index'], site['lat_index'], self.state['t'].current_timestep] == True:
-                    
-                        # The site passes all the tests! Choose it!
-                        facility_ID = site['facility_ID']   
-                        found_site = True
-    
-                        # Update site
-                        site['surveys_conducted_OGI_FU'] += 1
-                        site['t_since_last_LDAR_OGI_FU'] = 0   
-                        site['attempted_today_OGI_FU?'] = True                                 
-                        break
-                                            
-                    else:
-                        site['attempted_today_OGI_FU?'] = True
+                            # The site passes all the tests! Choose it!
+                            facility_ID = site['facility_ID']   
+                            found_site = True
+        
+                            # Update site
+                            site['surveys_conducted_OGI_FU'] += 1
+                            site['t_since_last_LDAR_OGI_FU'] = 0   
+                            site['attempted_today_OGI_FU?'] = True                                 
+                            break
+                                                
+                        else:
+                            site['attempted_today_OGI_FU?'] = True
 
         return (facility_ID, found_site, site)
 
