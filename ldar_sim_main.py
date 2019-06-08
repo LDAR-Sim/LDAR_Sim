@@ -59,7 +59,8 @@ for i in range(n_simulations):
                              'max_precip': 5,
                              'min_interval': 30,
                              'max_workday': 10,
-                             'cost_per_day': 500
+                             'cost_per_day': 500,
+                             'follow_up_thresh': 0
                              },
                     'aircraft': {
                              'n_crews': 2,
@@ -68,7 +69,8 @@ for i in range(n_simulations):
                              'max_precip': 5,
                              'min_interval': 60,
                              'max_workday': 10,
-                             'cost_per_day': 2000
+                             'cost_per_day': 2000,
+                             'follow_up_thresh': 0
                              }
                     },
     
@@ -78,7 +80,7 @@ for i in range(n_simulations):
         'infrastructure_file': 'AER_Baytex_aircraft_truck.csv',
         'leak_file': 'FWAQS_all.csv',
         'vent_file': 'ZA_site_emissions_2018.csv',          # File containing site-level total emissions in g/sec
-        'output_folder': 'testXXX2',
+        'output_folder': 'testXXX3',
         'working_directory': "D:/OneDrive - University of Calgary/Documents/Thomas/PhD/Thesis/LDAR_Sim/model/python_v2",
         'LPR': 0.00133,
         'leaks_per_site_mean': 6.186,

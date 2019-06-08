@@ -22,10 +22,10 @@ import datetime
 
 #------------------------------------------------------------------------------
 #--------------------------------Set programs----------------------------------
-master_output_folder = 'batch_followup_test/'
+master_output_folder = 'batch_followup_test_2/'
 ref_program = 'Regulatory OGI'      # Name must match reference program below
 n_simulations = 2                   # Run a minimum of 2 simulations
-n_timesteps = 2000                  # Min. 2000; Up to ~5600 for 16 year nc file
+n_timesteps = 500                  # Min. 2000; Up to ~5600 for 16 year nc file
 start_year = 2001
 
 # Define programs. Your first program listed should be the reference program.
@@ -73,7 +73,8 @@ programs = [
                              'max_precip': 0,
                              'min_interval': 60,
                              'max_workday': 10,
-                             'cost_per_day': 2000
+                             'cost_per_day': 2000,
+                             'follow_up_thresh': 0
                              },
                     'OGI_FU': {
                              'n_crews': 1,
@@ -112,7 +113,8 @@ programs = [
                              'max_precip': 10,
                              'min_interval': 30,
                              'max_workday': 10,
-                             'cost_per_day': 500
+                             'cost_per_day': 500,
+                             'follow_up_thresh': 5000
                              },
                     'OGI_FU': {
                              'n_crews': 1,
@@ -236,7 +238,8 @@ metadata.close()
 #                             'max_wind': 25,
 #                             'max_precip': 10,
 #                             'max_workday': 10,
-#                             'cost_per_day': 600
+#                             'cost_per_day': 600,
+#                             'days_to_follow_up': 7
 #                             },
 #                    'truck': {
 #                             'n_crews': 1,
@@ -245,7 +248,8 @@ metadata.close()
 #                             'max_precip': 10,
 #                             'min_interval': 30,
 #                             'max_workday': 10,
-#                             'cost_per_day': 500
+#                             'cost_per_day': 500,
+#                             'follow_up_thresh': 0
 #                             },
 #                    'aircraft': {
 #                             'n_crews': 1,
@@ -254,5 +258,6 @@ metadata.close()
 #                             'max_precip': 10,
 #                             'min_interval': 60,
 #                             'max_workday': 10,
-#                             'cost_per_day': 2000
+#                             'cost_per_day': 2000,
+#                             'follow_up_thresh': 0
 #                             }

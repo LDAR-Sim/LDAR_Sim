@@ -125,10 +125,11 @@ class truck_crew:
             detect = True    
         
         if detect == True:
-            # Flag the site for follow up
-            site['currently_flagged'] = True
-            site['date_flagged'] = self.state['t'].current_date
-            self.timeseries['flags_truck'][self.state['t'].current_timestep] += 1
+            if site_cum_rate > self.config['follow_up_thresh']:
+                # Flag the site for follow up
+                site['currently_flagged'] = True
+                site['date_flagged'] = self.state['t'].current_date
+                self.timeseries['flags_truck'][self.state['t'].current_timestep] += 1
                 
         elif detect == False:
             site['missed_leaks_truck'] += len(leaks_present)
