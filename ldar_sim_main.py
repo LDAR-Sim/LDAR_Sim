@@ -23,7 +23,7 @@ for i in range(n_simulations):
     parameters = {
         'simulation': str(i),
         'timesteps': 500,
-        'start_year': 2001,
+        'start_year': 2011,
         'methods': {
 #                    'M21': {
 #                             'n_crews': 2,
@@ -44,7 +44,7 @@ for i in range(n_simulations):
 #                             'cost_per_day': 600
 #                             },
                     'OGI_FU': {
-                             'n_crews': 8,
+                             'n_crews': 2,
                              'min_temp': -35,
                              'max_wind': 20,
                              'max_precip': 5,
@@ -53,35 +53,35 @@ for i in range(n_simulations):
                              'days_to_follow_up': 7
                              },
                     'truck': {
-                             'n_crews': 1,
+                             'n_crews': 2,
                              'min_temp': -30,
                              'max_wind': 20,
                              'max_precip': 5,
                              'min_interval': 30,
                              'max_workday': 10,
                              'cost_per_day': 500,
-                             'follow_up_thresh': 0
+                             'follow_up_thresh': 0.5
                              },
                     'aircraft': {
                              'n_crews': 2,
                              'min_temp': -30,
                              'max_wind': 20,
                              'max_precip': 5,
-                             'min_interval': 60,
+                             'min_interval': 30,
                              'max_workday': 10,
                              'cost_per_day': 2000,
-                             'follow_up_thresh': 0
+                             'follow_up_thresh': 60
                              }
                     },
     
         'repair_delay': 14,
-        'WT_data': '15YearWT2001_2016.nc',
-        'P_data': '15YearPrecip2001_2016.nc',
+        'WT_data': '5YearWT2011_2016.nc',
+        'P_data': '5YearPrecip2011_2016.nc',
         'infrastructure_file': 'AER_Baytex_aircraft_truck.csv',
         'leak_file': 'FWAQS_all.csv',
         'vent_file': 'ZA_site_emissions_2018.csv',          # File containing site-level total emissions in g/sec
-        'output_folder': 'testXXX3',
-        'working_directory': "D:/OneDrive - University of Calgary/Documents/Thomas/PhD/Thesis/LDAR_Sim/model/python_v2",
+        'output_folder': 'test_laptop1',
+        'working_directory': "C:/Users/tarca/Desktop/ldar_sim_working",
         'LPR': 0.00133,
         'leaks_per_site_mean': 6.186,
         'leaks_per_site_std': 6.717,

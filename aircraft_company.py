@@ -21,7 +21,10 @@ class aircraft_company:
         self.deployment_days = self.state['weather'].deployment_days('aircraft')
         self.timeseries['prop_sites_avail_aircraft'] = []
         self.timeseries['aircraft_cost'] = np.zeros(self.parameters['timesteps'])
-        self.timeseries['flags_aircraft'] = np.zeros(self.parameters['timesteps'])
+        self.timeseries['aircraft_eff_flags'] = np.zeros(self.parameters['timesteps'])
+        self.timeseries['aircraft_flags_redund1'] = np.zeros(self.parameters['timesteps'])
+        self.timeseries['aircraft_flags_redund2'] = np.zeros(self.parameters['timesteps'])
+        self.timeseries['aircraft_flags_redund3'] = np.zeros(self.parameters['timesteps'])
         
         # Additional variable(s) for each site       
         for site in self.state['sites']:

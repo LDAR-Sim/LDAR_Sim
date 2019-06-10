@@ -125,11 +125,31 @@ class truck_crew:
             detect = True    
         
         if detect == True:
+            # If source is above follow-up threshold
             if site_cum_rate > self.config['follow_up_thresh']:
-                # Flag the site for follow up
-                site['currently_flagged'] = True
-                site['date_flagged'] = self.state['t'].current_date
-                self.timeseries['flags_truck'][self.state['t'].current_timestep] += 1
+                
+                # If the site is already flagged, your flag is redundant
+                if site['currently_flagged'] == True:
+                    self.timeseries['truck_flags_redund1'][self.state['t'].current_timestep] += 1
+                
+                elif site['currently_flagged'] == False:
+                    # Flag the site for follow up
+                    site['currently_flagged'] = True
+                    site['date_flagged'] = self.state['t'].current_date
+                    self.timeseries['truck_eff_flags'][self.state['t'].current_timestep] += 1
+                    
+                    # Does the chosen site already have tagged leaks?
+                    redund2 = False
+                    for leak in leaks_present:
+                        if leak['date_found'] != None:
+                            redund2 = True
+                            
+                    if redund2 == True:
+                        self.timeseries['truck_flags_redund2'][self.state['t'].current_timestep] += 1
+                    
+                    # Would the site have been chosen without venting?
+                    if (site_cum_rate - venting) < self.config['follow_up_thresh']:
+                        self.timeseries['truck_flags_redund3'][self.state['t'].current_timestep] += 1
                 
         elif detect == False:
             site['missed_leaks_truck'] += len(leaks_present)

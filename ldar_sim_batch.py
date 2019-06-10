@@ -22,11 +22,12 @@ import datetime
 
 #------------------------------------------------------------------------------
 #--------------------------------Set programs----------------------------------
-master_output_folder = 'batch_followup_test_2/'
+master_output_folder = 'batch_laptop_2/'
+wd = 'C:/Users/tarca/Desktop/ldar_sim_working'
 ref_program = 'Regulatory OGI'      # Name must match reference program below
-n_simulations = 2                   # Run a minimum of 2 simulations
-n_timesteps = 500                  # Min. 2000; Up to ~5600 for 16 year nc file
-start_year = 2001
+n_simulations = 3                   # Run a minimum of 2 simulations
+n_timesteps = 2000                  # Min. 2000; Up to ~5600 for 16 year nc file
+start_year = 2011
 
 # Define programs. Your first program listed should be the reference program.
 programs = [
@@ -47,12 +48,12 @@ programs = [
                              }
                         },        
             'repair_delay': 14, 
-            'WT_data': '15YearWT2001_2016.nc',
-            'P_data': '15YearPrecip2001_2016.nc',
+            'WT_data': '5YearWT2011_2016.nc',
+            'P_data': '5YearPrecip2011_2016.nc',
             'infrastructure_file': 'AER_Baytex_OGI_reg.csv',
             'leak_file': 'FWAQS_all.csv',
             'vent_file': 'ZA_site_emissions_2018.csv',
-            'working_directory': "D:/OneDrive - University of Calgary/Documents/Thomas/PhD/Thesis/LDAR_Sim/model/python_v2",
+            'working_directory': wd,
             'LPR': 0.00133,
             'leaks_per_site_mean': 6.186,
             'leaks_per_site_std': 6.717,              
@@ -74,7 +75,7 @@ programs = [
                              'min_interval': 60,
                              'max_workday': 10,
                              'cost_per_day': 2000,
-                             'follow_up_thresh': 0
+                             'follow_up_thresh': 60
                              },
                     'OGI_FU': {
                              'n_crews': 1,
@@ -87,12 +88,12 @@ programs = [
                              }                        
                         },        
             'repair_delay': 14,
-            'WT_data': '15YearWT2001_2016.nc',
-            'P_data': '15YearPrecip2001_2016.nc',
+            'WT_data': '5YearWT2011_2016.nc',
+            'P_data': '5YearPrecip2011_2016.nc',
             'infrastructure_file': 'AER_Baytex_aircraft6_only.csv',
             'leak_file': 'FWAQS_all.csv',
             'vent_file': 'ZA_site_emissions_2018.csv',
-            'working_directory': "D:/OneDrive - University of Calgary/Documents/Thomas/PhD/Thesis/LDAR_Sim/model/python_v2",
+            'working_directory': wd,
             'LPR': 0.00133,
             'leaks_per_site_mean': 6.186,
             'leaks_per_site_std': 6.717,              
@@ -114,7 +115,7 @@ programs = [
                              'min_interval': 30,
                              'max_workday': 10,
                              'cost_per_day': 500,
-                             'follow_up_thresh': 5000
+                             'follow_up_thresh': 0.5
                              },
                     'OGI_FU': {
                              'n_crews': 1,
@@ -127,12 +128,12 @@ programs = [
                              }                        
                         },        
             'repair_delay': 14,
-            'WT_data': '15YearWT2001_2016.nc',
-            'P_data': '15YearPrecip2001_2016.nc',
+            'WT_data': '5YearWT2011_2016.nc',
+            'P_data': '5YearPrecip2011_2016.nc',
             'infrastructure_file': 'AER_Baytex_truck6_only.csv',
             'leak_file': 'FWAQS_all.csv',
             'vent_file': 'ZA_site_emissions_2018.csv',
-            'working_directory': "D:/OneDrive - University of Calgary/Documents/Thomas/PhD/Thesis/LDAR_Sim/model/python_v2",
+            'working_directory': wd,
             'LPR': 0.00133,
             'leaks_per_site_mean': 6.186,
             'leaks_per_site_std': 6.717,            
