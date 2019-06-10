@@ -21,6 +21,7 @@ class OGI_company:
         self.deployment_days = self.state['weather'].deployment_days('OGI')
         self.timeseries['prop_sites_avail_OGI'] = []
         self.timeseries['OGI_cost'] = np.zeros(self.parameters['timesteps'])
+        self.timeseries['OGI_redund_tags'] = np.zeros(self.parameters['timesteps'])
  
         # Additional variable(s) for each site       
         for site in self.state['sites']:

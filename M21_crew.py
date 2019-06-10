@@ -112,10 +112,15 @@ class M21_crew:
 
         # Add these leaks to the 'tag pool'
         for leak in self.leaks_present:
-            leak['date_found'] = self.state['t'].current_date
-            leak['found_by_company'] = 'M21_company'
-            leak['found_by_crew'] = self.crewstate['id']
-            self.state['tags'].append(leak)
+            if leak['tagged'] == True:
+                self.timeseries['M21_redund_tags'][self.state['t'].current_timestep] += 1  
+            
+            elif leak['tagged'] == False:
+                leak['tagged'] = True
+                leak['date_found'] = self.state['t'].current_date
+                leak['found_by_company'] = 'M21_company'
+                leak['found_by_crew'] = self.crewstate['id']
+                self.state['tags'].append(leak)
 
         self.state['t'].current_date += timedelta(minutes = int(site['M21_time']))
 

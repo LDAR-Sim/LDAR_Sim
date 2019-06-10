@@ -13,6 +13,7 @@ class operator_agent:
         self.init_mean_leaks = np.mean(self.state['init_leaks'])
         self.init_sum_leaks = np.sum(self.state['init_leaks']) 
         self.n_sites = len(self.state['sites'])
+        self.timeseries['operator_redund_tags'] = np.zeros(self.parameters['timesteps'])
 
         return
 
@@ -42,7 +43,7 @@ class operator_agent:
     def work_a_day (self):
         '''
         Detect leaks during operator visits. 
-        Detection is a function of leak-size.
+        Detection can be a function of leak-size.
         '''      
         
         active_leaks = self.timeseries['active_leaks'][self.state['t'].current_timestep]
@@ -55,11 +56,16 @@ class operator_agent:
                 detect = np.random.binomial(1, prob_detect)
 
                 if detect == True:
-                    # Add these leaks to the 'tag pool'
-                    leak['date_found'] = self.state['t'].current_date
-                    leak['found_by_company'] = 'operator'
-                    leak['found_by_crew'] = 1
-                    self.state['tags'].append(leak)
+                    if leak['tagged'] == True:
+                        self.timeseries['operator_redund_tags'][self.state['t'].current_timestep] += 1
+                        
+                    elif leak['tagged'] == False:
+                        # Add these leaks to the 'tag pool'
+                        leak['tagged'] = True
+                        leak['date_found'] = self.state['t'].current_date
+                        leak['found_by_company'] = 'operator'
+                        leak['found_by_crew'] = 1
+                        self.state['tags'].append(leak)
                         
         return
     

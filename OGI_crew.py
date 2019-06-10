@@ -124,11 +124,16 @@ class OGI_crew:
             detect = np.random.binomial(1, prob_detect)
             
             if detect == True:
+                if leak['tagged'] == True:
+                    self.timeseries['OGI_redund_tags'][self.state['t'].current_timestep] += 1  
+                
                 # Add these leaks to the 'tag pool'
-                leak['date_found'] = self.state['t'].current_date
-                leak['found_by_company'] = 'OGI_company'
-                leak['found_by_crew'] = self.crewstate['id']
-                self.state['tags'].append(leak)
+                elif leak['tagged'] == False:
+                    leak['tagged'] = True
+                    leak['date_found'] = self.state['t'].current_date
+                    leak['found_by_company'] = 'OGI_company'
+                    leak['found_by_crew'] = self.crewstate['id']
+                    self.state['tags'].append(leak)
                 
             elif detect == False:
                 site['missed_leaks_OGI'] += 1

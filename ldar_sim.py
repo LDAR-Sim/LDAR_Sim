@@ -101,6 +101,7 @@ class ldar_sim:
                                                 'facility_ID': site['facility_ID'],
                                                 'rate': self.empirical_leaks[np.random.randint(0, len(self.empirical_leaks))],
                                                 'status': 'active',
+                                                'tagged': False,
                                                 'days_active': 0,
                                                 'component': 'unknown',
                                                 'date_began': self.state['t'].current_date,
@@ -192,6 +193,7 @@ class ldar_sim:
                                                 'rate': self.empirical_leaks[np.random.randint(0, len(self.empirical_leaks))],
                                                 'status': 'active',
                                                 'days_active': 0,
+                                                'tagged': False,
                                                 'component': 'unknown',
                                                 'date_began': self.state['t'].current_date,
                                                 'date_found': None,
@@ -224,6 +226,7 @@ class ldar_sim:
         for tag in self.state['tags']:
             if (self.state['t'].current_date - tag['date_found']).days  >= self.parameters['repair_delay']:
                 tag['status'] = 'repaired'
+                tag['tagged'] = False
                 tag['date_repaired'] = self.state['t'].current_date
                 tag['repair_delay'] = (tag['date_repaired'] - tag['date_found']).days
         
