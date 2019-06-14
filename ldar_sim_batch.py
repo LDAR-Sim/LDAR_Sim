@@ -22,11 +22,12 @@ import datetime
 
 #------------------------------------------------------------------------------
 #--------------------------------Set programs----------------------------------
-master_output_folder = 'batch_laptop_2/'
-wd = 'C:/Users/tarca/Desktop/ldar_sim_working'
+master_output_folder = 'batch_test_1/'
+# wd = 'C:/Users/tarca/Desktop/ldar_sim_working'
+wd = 'D:/OneDrive - University of Calgary/Documents/Thomas/PhD/Thesis/LDAR_Sim/model/python_v2'
 ref_program = 'Regulatory OGI'      # Name must match reference program below
-n_simulations = 3                   # Run a minimum of 2 simulations
-n_timesteps = 2000                  # Min. 2000; Up to ~5600 for 16 year nc file
+n_simulations = 2                   # Run a minimum of 2 simulations
+n_timesteps = 600                  # Min. 2000; Up to ~5600 for 16 year nc file
 start_year = 2011
 
 # Define programs. Your first program listed should be the reference program.
@@ -38,18 +39,20 @@ programs = [
             'start_year': start_year,
             'methods': {
                     'OGI': {
+                             'name': 'OGI',
                              'n_crews': 1,
                              'min_temp': -10,
                              'max_wind': 5,
                              'max_precip': 1,
                              'min_interval': 60,
                              'max_workday': 10,  
-                             'cost_per_day': 600
+                             'cost_per_day': 600,
+                             'reporting_delay': 2
                              }
                         },        
             'repair_delay': 14, 
-            'WT_data': '5YearWT2011_2016.nc',
-            'P_data': '5YearPrecip2011_2016.nc',
+            'WT_data': '15YearWT2001_2016.nc',
+            'P_data': '15YearPrecip2001_2016.nc',
             'infrastructure_file': 'AER_Baytex_OGI_reg.csv',
             'leak_file': 'FWAQS_all.csv',
             'vent_file': 'ZA_site_emissions_2018.csv',
@@ -68,28 +71,31 @@ programs = [
             'start_year': start_year,
             'methods': {
                     'aircraft': {
+                             'name': 'aircraft',
                              'n_crews': 1,
                              'min_temp': -20,
                              'max_wind': 5,
                              'max_precip': 0,
-                             'min_interval': 60,
+                             'min_interval': 30,
                              'max_workday': 10,
                              'cost_per_day': 2000,
-                             'follow_up_thresh': 60
+                             'follow_up_thresh': 60,
+                             'reporting_delay': 2
                              },
                     'OGI_FU': {
+                             'name': 'OGI_FU',
                              'n_crews': 1,
                              'min_temp': -10,
                              'max_wind': 5,
                              'max_precip': 1,
                              'max_workday': 10,
                              'cost_per_day': 600,
-                             'days_to_follow_up': 7
+                             'reporting_delay': 2
                              }                        
                         },        
             'repair_delay': 14,
-            'WT_data': '5YearWT2011_2016.nc',
-            'P_data': '5YearPrecip2011_2016.nc',
+            'WT_data': '15YearWT2001_2016.nc',
+            'P_data': '15YearPrecip2001_2016.nc',
             'infrastructure_file': 'AER_Baytex_aircraft6_only.csv',
             'leak_file': 'FWAQS_all.csv',
             'vent_file': 'ZA_site_emissions_2018.csv',
@@ -108,6 +114,7 @@ programs = [
             'start_year': start_year,
             'methods': {
                     'truck': {
+                             'name': 'truck',
                              'n_crews': 1,
                              'min_temp': -35,
                              'max_wind': 25,
@@ -115,21 +122,23 @@ programs = [
                              'min_interval': 30,
                              'max_workday': 10,
                              'cost_per_day': 500,
-                             'follow_up_thresh': 0.5
+                             'follow_up_thresh': 0.5,
+                             'reporting_delay': 2
                              },
                     'OGI_FU': {
+                             'name': 'OGI_FU',
                              'n_crews': 1,
                              'min_temp': -10,
                              'max_wind': 5,
                              'max_precip': 1,
                              'max_workday': 10,
                              'cost_per_day': 600,
-                             'days_to_follow_up': 7
+                             'reporting_delay': 2
                              }                        
                         },        
             'repair_delay': 14,
-            'WT_data': '5YearWT2011_2016.nc',
-            'P_data': '5YearPrecip2011_2016.nc',
+            'WT_data': '15YearWT2001_2016.nc',
+            'P_data': '15YearPrecip2001_2016.nc',
             'infrastructure_file': 'AER_Baytex_truck6_only.csv',
             'leak_file': 'FWAQS_all.csv',
             'vent_file': 'ZA_site_emissions_2018.csv',
@@ -216,33 +225,39 @@ metadata.close()
 #---------------------------------Method library-------------------------------
 #
 #                    'M21': {
+#                             'name': 'M21',
 #                             'n_crews': 1,
 #                             'min_temp': -35,
 #                             'max_wind': 25,
 #                             'max_precip': 10,
 #                             'min_interval': 60,
 #                             'max_workday': 10,
-#                             'cost_per_day': 400
+#                             'cost_per_day': 400,
+#                             'reporting_delay': 2
 #                             },
 #                    'OGI': {
+#                             'name': 'OGI',
 #                             'n_crews': 1,
 #                             'min_temp': -35,
 #                             'max_wind': 25,
 #                             'max_precip': 10,
 #                             'min_interval': 60,
 #                             'max_workday': 10,  
-#                             'cost_per_day': 600
+#                             'cost_per_day': 600,
+#                             'reporting_delay': 2
 #                             },
 #                    'OGI_FU': {
+#                             'name': 'OGI_FU',
 #                             'n_crews': 1,
 #                             'min_temp': -35,
 #                             'max_wind': 25,
 #                             'max_precip': 10,
 #                             'max_workday': 10,
 #                             'cost_per_day': 600,
-#                             'days_to_follow_up': 7
+#                             'reporting_delay': 2
 #                             },
 #                    'truck': {
+#                             'name': 'truck',
 #                             'n_crews': 1,
 #                             'min_temp': -35,
 #                             'max_wind': 25,
@@ -250,9 +265,11 @@ metadata.close()
 #                             'min_interval': 30,
 #                             'max_workday': 10,
 #                             'cost_per_day': 500,
-#                             'follow_up_thresh': 0
+#                             'follow_up_thresh': 0,
+#                             'reporting_delay': 2
 #                             },
 #                    'aircraft': {
+#                             'name': 'aircraft',
 #                             'n_crews': 1,
 #                             'min_temp': -35,
 #                             'max_wind': 25,
@@ -260,5 +277,6 @@ metadata.close()
 #                             'min_interval': 60,
 #                             'max_workday': 10,
 #                             'cost_per_day': 2000,
-#                             'follow_up_thresh': 0
+#                             'follow_up_thresh': 0,
+#                             'reporting_delay': 2
 #                             }
