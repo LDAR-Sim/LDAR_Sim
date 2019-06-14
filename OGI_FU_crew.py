@@ -74,7 +74,7 @@ class OGI_FU_crew:
             for site in self.state['flags']:
                 
                 # If the site is ripe
-                if (self.state['t'].current_date - site['date_flagged']).days  >= self.config['days_to_follow_up']:
+                if (self.state['t'].current_date - site['date_flagged']).days  >= self.parameters['methods'][site['flagged_by']]['reporting_delay']:
     
                     # If the site hasn't been attempted yet today
                     if site['attempted_today_OGI_FU?'] == False:
@@ -128,7 +128,7 @@ class OGI_FU_crew:
                 elif leak['tagged'] == False:
                     leak['tagged'] = True
                     leak['date_found'] = self.state['t'].current_date
-                    leak['found_by_company'] = 'OGI_FU_company'
+                    leak['found_by_company'] = self.config['name']
                     leak['found_by_crew'] = self.crewstate['id']
                     self.state['tags'].append(leak)
                 

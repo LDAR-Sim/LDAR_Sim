@@ -131,7 +131,7 @@ class OGI_crew:
                 elif leak['tagged'] == False:
                     leak['tagged'] = True
                     leak['date_found'] = self.state['t'].current_date
-                    leak['found_by_company'] = 'OGI_company'
+                    leak['found_by_company'] = self.config['name']
                     leak['found_by_crew'] = self.crewstate['id']
                     self.state['tags'].append(leak)
                 

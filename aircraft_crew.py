@@ -137,6 +137,7 @@ class aircraft_crew:
                     # Flag the site for follow up
                     site['currently_flagged'] = True
                     site['date_flagged'] = self.state['t'].current_date
+                    site['flagged_by'] = self.config['name']
                     self.timeseries['aircraft_eff_flags'][self.state['t'].current_timestep] += 1
                     
                     # Does the chosen site already have tagged leaks?

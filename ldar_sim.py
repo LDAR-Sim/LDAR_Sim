@@ -39,6 +39,7 @@ class ldar_sim:
             site.update( {'active_leaks': 0})
             site.update( {'repaired_leaks': 0})
             site.update( {'currently_flagged': False})
+            site.update( {'flagged_by': None})
             site.update( {'date_flagged': None})
             site.update( {'lat_index': min(range(len(self.state['weather'].latitude)), 
                            key=lambda i: abs(self.state['weather'].latitude[i]-float(site['lat'])))})
@@ -224,13 +225,20 @@ class ldar_sim:
         Repair tagged leaks and remove from tag pool.
         '''
         for tag in self.state['tags']:
-            if (self.state['t'].current_date - tag['date_found']).days  >= self.parameters['repair_delay']:
-                tag['status'] = 'repaired'
-                tag['tagged'] = False
-                tag['date_repaired'] = self.state['t'].current_date
-                tag['repair_delay'] = (tag['date_repaired'] - tag['date_found']).days
-        
-        self.state['tags'] = [tag for tag in self.state['tags'] if tag['status'] == 'active']
+            if tag['found_by_company'] != 'operator':
+                if (self.state['t'].current_date - tag['date_found']).days  >= (self.parameters['repair_delay'] + self.parameters['methods'][tag['found_by_company']]['reporting_delay']):
+                    tag['status'] = 'repaired'
+                    tag['tagged'] = False
+                    tag['date_repaired'] = self.state['t'].current_date
+                    tag['repair_delay'] = (tag['date_repaired'] - tag['date_found']).days
+            elif tag['found_by_company'] == 'operator':
+                if (self.state['t'].current_date - tag['date_found']).days  >= self.parameters['repair_delay']:
+                    tag['status'] = 'repaired'
+                    tag['tagged'] = False
+                    tag['date_repaired'] = self.state['t'].current_date
+                    tag['repair_delay'] = (tag['date_repaired'] - tag['date_found']).days
+                    
+            self.state['tags'] = [tag for tag in self.state['tags'] if tag['status'] == 'active']
 
         return
 

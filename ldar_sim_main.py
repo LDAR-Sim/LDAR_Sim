@@ -25,34 +25,40 @@ for i in range(n_simulations):
         'timesteps': 500,
         'start_year': 2011,
         'methods': {
-#                    'M21': {
-#                             'n_crews': 2,
-#                             'min_temp': -25,
-#                             'max_wind': 20,
-#                             'max_precip': 5,
-#                             'min_interval': 120,
-#                             'max_workday': 10,
-#                             'cost_per_day': 400
-#                             },
-#                    'OGI': {
-#                             'n_crews': 1,
-#                             'min_temp': -10,
-#                             'max_wind': 5,
-#                             'max_precip': 1,
-#                             'min_interval': 60,
-#                             'max_workday': 10,  
-#                             'cost_per_day': 600
-#                             },
+                    'M21': {
+                             'name': 'M21',
+                             'n_crews': 2,
+                             'min_temp': -25,
+                             'max_wind': 20,
+                             'max_precip': 5,
+                             'min_interval': 120,
+                             'max_workday': 10,
+                             'cost_per_day': 400,
+                             'reporting_delay': 2
+                             },
+                    'OGI': {
+                             'name': 'OGI',
+                             'n_crews': 1,
+                             'min_temp': -10,
+                             'max_wind': 5,
+                             'max_precip': 1,
+                             'min_interval': 60,
+                             'max_workday': 10,  
+                             'cost_per_day': 600,
+                             'reporting_delay': 2
+                             },
                     'OGI_FU': {
+                             'name': 'OGI_FU',
                              'n_crews': 2,
                              'min_temp': -35,
                              'max_wind': 20,
                              'max_precip': 5,
                              'max_workday': 10,
                              'cost_per_day': 600,
-                             'days_to_follow_up': 7
+                             'reporting_delay': 2                             
                              },
                     'truck': {
+                             'name': 'truck',
                              'n_crews': 2,
                              'min_temp': -30,
                              'max_wind': 20,
@@ -60,9 +66,11 @@ for i in range(n_simulations):
                              'min_interval': 30,
                              'max_workday': 10,
                              'cost_per_day': 500,
-                             'follow_up_thresh': 0.5
+                             'follow_up_thresh': 0.5,
+                             'reporting_delay': 2
                              },
                     'aircraft': {
+                             'name': 'aircraft',
                              'n_crews': 2,
                              'min_temp': -30,
                              'max_wind': 20,
@@ -70,18 +78,19 @@ for i in range(n_simulations):
                              'min_interval': 30,
                              'max_workday': 10,
                              'cost_per_day': 2000,
-                             'follow_up_thresh': 60
+                             'follow_up_thresh': 60,
+                             'reporting_delay': 2
                              }
                     },
     
         'repair_delay': 14,
         'WT_data': '5YearWT2011_2016.nc',
         'P_data': '5YearPrecip2011_2016.nc',
-        'infrastructure_file': 'AER_Baytex_aircraft_truck.csv',
+        'infrastructure_file': 'AER_Baytex_template.csv',
         'leak_file': 'FWAQS_all.csv',
         'vent_file': 'ZA_site_emissions_2018.csv',          # File containing site-level total emissions in g/sec
-        'output_folder': 'test_laptop1',
-        'working_directory': "C:/Users/tarca/Desktop/ldar_sim_working",
+        'output_folder': 'test_delays_2',
+        'working_directory': "D:/OneDrive - University of Calgary/Documents/Thomas/PhD/Thesis/LDAR_Sim/model/python_v2",
         'LPR': 0.00133,
         'leaks_per_site_mean': 6.186,
         'leaks_per_site_std': 6.717,
