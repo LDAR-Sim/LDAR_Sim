@@ -11,6 +11,8 @@ from M21_company import *
 from OGI_FU_company import *
 from aircraft_company import *
 from truck_company import *
+from drone_company import *
+from satellite_company import *
 from plotter import *
 from daylight_calculator import *
 
@@ -72,6 +74,12 @@ class ldar_sim:
                     self.parameters, self.parameters['methods'][m], timeseries))
             elif m == 'truck':
                 self.state['methods'].append (truck_company (self.state,
+                    self.parameters, self.parameters['methods'][m], timeseries))
+            elif m == 'drone':
+                self.state['methods'].append (drone_company (self.state,
+                    self.parameters, self.parameters['methods'][m], timeseries))
+            elif m == 'satellite':
+                self.state['methods'].append (satellite_company (self.state,
                     self.parameters, self.parameters['methods'][m], timeseries))
             else:
                 print ('Cannot add this method: ' + m)

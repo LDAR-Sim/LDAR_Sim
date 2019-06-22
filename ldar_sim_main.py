@@ -25,6 +25,30 @@ for i in range(n_simulations):
         'timesteps': 500,
         'start_year': 2011,
         'methods': {
+                    'drone': {
+                             'name': 'drone',
+                             'n_crews': 2,
+                             'min_temp': -20,
+                             'max_wind': 10,
+                             'max_precip': 0,
+                             'min_interval': 30,
+                             'max_workday': 10,
+                             'cost_per_day': 3000,
+                             'follow_up_thresh': 2,
+                             'reporting_delay': 2
+                             },
+                    'satellite': {
+                             'name': 'satellite',
+                             'n_crews': 2,
+                             'min_temp': -50,
+                             'max_wind': 30,
+                             'max_precip': 0,
+                             'min_interval': 30,
+                             'max_workday': 23,
+                             'cost_per_day': 1000,
+                             'follow_up_thresh': 100,
+                             'reporting_delay': 2
+                             },
                     'M21': {
                              'name': 'M21',
                              'n_crews': 2,
@@ -89,8 +113,8 @@ for i in range(n_simulations):
         'infrastructure_file': 'AER_Baytex_template.csv',
         'leak_file': 'FWAQS_all.csv',
         'vent_file': 'ZA_site_emissions_2018.csv',          # File containing site-level total emissions in g/sec
-        'output_folder': 'test_delays_2',
-        'working_directory': "D:/OneDrive - University of Calgary/Documents/Thomas/PhD/Thesis/LDAR_Sim/model/python_v2",
+        'output_folder': 'BLAH_1',
+        'working_directory': "C:/Users/tarca/Desktop/ldar_sim_working",
         'LPR': 0.00133,
         'leaks_per_site_mean': 6.186,
         'leaks_per_site_std': 6.717,

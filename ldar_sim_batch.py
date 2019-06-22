@@ -22,16 +22,59 @@ import datetime
 
 #------------------------------------------------------------------------------
 #--------------------------------Set programs----------------------------------
-master_output_folder = 'batch_test_1/'
+master_output_folder = 'multi_comparison/'
 # wd = 'C:/Users/tarca/Desktop/ldar_sim_working'
-wd = 'D:/OneDrive - University of Calgary/Documents/Thomas/PhD/Thesis/LDAR_Sim/model/python_v2'
+wd = 'C:/Users/tarca/Desktop/ldar_sim_working'
 ref_program = 'Regulatory OGI'      # Name must match reference program below
-n_simulations = 2                   # Run a minimum of 2 simulations
-n_timesteps = 600                  # Min. 2000; Up to ~5600 for 16 year nc file
-start_year = 2011
+n_simulations = 5                   # Run a minimum of 2 simulations
+n_timesteps = 4500                # Min. 2000; Up to ~5600 for 16 year nc file
+start_year = 2001
 
 # Define programs. Your first program listed should be the reference program.
 programs = [
+        {
+            'output_folder': master_output_folder + 'Drone',
+            'simulation': None,
+            'timesteps': n_timesteps,
+            'start_year': start_year,
+            'methods': {
+                    'drone': {
+                             'name': 'drone',
+                             'n_crews': 1,
+                             'min_temp': -20,
+                             'max_wind': 10,
+                             'max_precip': 0,
+                             'min_interval': 100,
+                             'max_workday': 10,
+                             'cost_per_day': 3000,
+                             'follow_up_thresh': 0,
+                             'reporting_delay': 2
+                             },
+                    'OGI_FU': {
+                             'name': 'OGI_FU',
+                             'n_crews': 1,
+                             'min_temp': -10,
+                             'max_wind': 5,
+                             'max_precip': 1,
+                             'max_workday': 10,
+                             'cost_per_day': 600,
+                             'reporting_delay': 2
+                             }                        
+                        },        
+            'repair_delay': 14,
+            'WT_data': '15YearWT2001_2016.nc',
+            'P_data': '15YearPrecip2001_2016.nc',
+            'infrastructure_file': 'AER_Baytex_3_drone.csv',
+            'leak_file': 'FWAQS_all.csv',
+            'vent_file': 'ZA_site_emissions_2018.csv',
+            'working_directory': wd,
+            'LPR': 0.00133,
+            'leaks_per_site_mean': 6.186,
+            'leaks_per_site_std': 6.717,            
+            'consider_daylight': True,
+            'consider_venting': True,
+            'max_det_op': 0.00   # Operator max additional detection probability of largest leak
+        },                 
         {
             'output_folder': master_output_folder + 'Regulatory OGI',
             'simulation': None,
@@ -44,7 +87,7 @@ programs = [
                              'min_temp': -10,
                              'max_wind': 5,
                              'max_precip': 1,
-                             'min_interval': 60,
+                             'min_interval': 100,
                              'max_workday': 10,  
                              'cost_per_day': 600,
                              'reporting_delay': 2
@@ -76,10 +119,10 @@ programs = [
                              'min_temp': -20,
                              'max_wind': 5,
                              'max_precip': 0,
-                             'min_interval': 30,
+                             'min_interval': 100,
                              'max_workday': 10,
                              'cost_per_day': 2000,
-                             'follow_up_thresh': 60,
+                             'follow_up_thresh': 110,
                              'reporting_delay': 2
                              },
                     'OGI_FU': {
@@ -96,7 +139,7 @@ programs = [
             'repair_delay': 14,
             'WT_data': '15YearWT2001_2016.nc',
             'P_data': '15YearPrecip2001_2016.nc',
-            'infrastructure_file': 'AER_Baytex_aircraft6_only.csv',
+            'infrastructure_file': 'AER_Baytex_3_aircraft.csv',
             'leak_file': 'FWAQS_all.csv',
             'vent_file': 'ZA_site_emissions_2018.csv',
             'working_directory': wd,
@@ -119,10 +162,10 @@ programs = [
                              'min_temp': -35,
                              'max_wind': 25,
                              'max_precip': 10,
-                             'min_interval': 30,
+                             'min_interval': 100,
                              'max_workday': 10,
                              'cost_per_day': 500,
-                             'follow_up_thresh': 0.5,
+                             'follow_up_thresh': 0,
                              'reporting_delay': 2
                              },
                     'OGI_FU': {
@@ -139,7 +182,7 @@ programs = [
             'repair_delay': 14,
             'WT_data': '15YearWT2001_2016.nc',
             'P_data': '15YearPrecip2001_2016.nc',
-            'infrastructure_file': 'AER_Baytex_truck6_only.csv',
+            'infrastructure_file': 'AER_Baytex_3_truck.csv',
             'leak_file': 'FWAQS_all.csv',
             'vent_file': 'ZA_site_emissions_2018.csv',
             'working_directory': wd,
@@ -279,4 +322,28 @@ metadata.close()
 #                             'cost_per_day': 2000,
 #                             'follow_up_thresh': 0,
 #                             'reporting_delay': 2
-#                             }
+#                             },
+#                    'drone': {
+#                             'name': 'truck',
+#                             'n_crews': 2,
+#                             'min_temp': -20,
+#                             'max_wind': 10,
+#                             'max_precip': 0,
+#                             'min_interval': 30,
+#                             'max_workday': 10,
+#                             'cost_per_day': 3000,
+#                             'follow_up_thresh': 2,
+#                             'reporting_delay': 2
+#                             },
+#                    'satellite': {
+#                             'name': 'satellite',
+#                             'n_crews': 2,
+#                             'min_temp': -50,
+#                             'max_wind': 30,
+#                             'max_precip': 0,
+#                             'min_interval': 30,
+#                             'max_workday': 23,
+#                             'cost_per_day': 1000,
+#                             'follow_up_thresh': 100,
+#                             'reporting_delay': 2
+#                             },
