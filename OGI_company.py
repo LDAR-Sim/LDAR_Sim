@@ -19,17 +19,17 @@ class OGI_company:
         self.timeseries = timeseries
         self.crews = []                         # Empty list of OGI agents (crews)
         self.deployment_days = self.state['weather'].deployment_days('OGI')
-        self.timeseries['prop_sites_avail_OGI'] = []
+        self.timeseries['OGI_prop_sites_avail'] = []
         self.timeseries['OGI_cost'] = np.zeros(self.parameters['timesteps'])
         self.timeseries['OGI_redund_tags'] = np.zeros(self.parameters['timesteps'])
  
         # Additional variable(s) for each site       
         for site in self.state['sites']:
-            site.update( {'t_since_last_LDAR_OGI': 0})
-            site.update( {'surveys_conducted_OGI': 0})
+            site.update( {'OGI_t_since_last_LDAR': 0})
+            site.update( {'OGI_surveys_conducted': 0})
             site.update( {'attempted_today_OGI?': False})
             site.update( {'surveys_done_this_year_OGI': 0})
-            site.update( {'missed_leaks_OGI': 0})
+            site.update( {'OGI_missed_leaks': 0})
             
         # Initialize 2D matrices to store deployment day (DD) counts and MCBs
         self.DD_OGI_map = np.zeros((len(self.state['weather'].longitude), len(self.state['weather'].latitude)))
@@ -51,7 +51,7 @@ class OGI_company:
 
         # Update method-specific site variables each day
         for site in self.state['sites']:
-            site['t_since_last_LDAR_OGI'] += 1
+            site['OGI_t_since_last_LDAR'] += 1
             site['attempted_today_OGI?'] = False
             
         if self.state['t'].current_date.day == 1 and self.state['t'].current_date.month == 1:
@@ -64,7 +64,7 @@ class OGI_company:
             if self.deployment_days[site['lon_index'], site['lat_index'], self.state['t'].current_timestep] == True:
                 available_sites += 1
         prop_avail = available_sites/len(self.state['sites'])
-        self.timeseries['prop_sites_avail_OGI'].append(prop_avail) 
+        self.timeseries['OGI_prop_sites_avail'].append(prop_avail) 
             
         return
     
@@ -130,8 +130,8 @@ class OGI_company:
         print ('Generating site-level reports for OGI company...')
         
         for site in self.state['sites']:
-            site['prop_DDs_OGI'] = self.DD_OGI_map[site['lon_index'], site['lat_index']]
-            site['MCB_OGI'] = self.MCB_OGI_map[site['lon_index'], site['lat_index']]
+            site['OGI_prop_DDs'] = self.DD_OGI_map[site['lon_index'], site['lat_index']]
+            site['OGI_MCB'] = self.MCB_OGI_map[site['lon_index'], site['lat_index']]
         
         return
             

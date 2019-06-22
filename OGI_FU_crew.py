@@ -62,7 +62,7 @@ class OGI_FU_crew:
 
         '''
         # Sort flagged sites based on a neglect ranking
-        self.state['flags'] = sorted(self.state['flags'], key=lambda k: k['t_since_last_LDAR_OGI_FU'], reverse = True)
+        self.state['flags'] = sorted(self.state['flags'], key=lambda k: k['OGI_FU_t_since_last_LDAR'], reverse = True)
         facility_ID = None                                  # The facility ID gets assigned if a site is found
         found_site = False                                  # The found site flag is updated if a site is found      
 
@@ -87,8 +87,8 @@ class OGI_FU_crew:
                             found_site = True
         
                             # Update site
-                            site['surveys_conducted_OGI_FU'] += 1
-                            site['t_since_last_LDAR_OGI_FU'] = 0   
+                            site['OGI_FU_surveys_conducted'] += 1
+                            site['OGI_FU_t_since_last_LDAR'] = 0   
                             site['attempted_today_OGI_FU?'] = True                                 
                             break
                                                 
@@ -133,7 +133,7 @@ class OGI_FU_crew:
                     self.state['tags'].append(leak)
                 
             elif detect == False:
-                site['missed_leaks_OGI_FU'] += 1
+                site['OGI_FU_missed_leaks'] += 1
                 
         self.state['t'].current_date += timedelta(minutes = int(site['OGI_FU_time']))
 

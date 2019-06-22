@@ -61,7 +61,7 @@ class M21_crew:
         '''
             
         # Sort all sites based on a neglect ranking
-        self.state['sites'] = sorted(self.state['sites'], key=lambda k: k['t_since_last_LDAR_M21'], reverse = True)
+        self.state['sites'] = sorted(self.state['sites'], key=lambda k: k['M21_t_since_last_LDAR'], reverse = True)
 
         facility_ID = None                                  # The facility ID gets assigned if a site is found
         found_site = False                                  # The found site flag is updated if a site is found
@@ -73,12 +73,12 @@ class M21_crew:
             if site['attempted_today_M21?'] == False:
             
                 # If the site is 'unripened' (i.e. hasn't met the minimum interval set out in the LDAR regulations/policy), break out - no LDAR today
-                if site['t_since_last_LDAR_M21'] < self.parameters['methods']['M21']['min_interval']:
+                if site['M21_t_since_last_LDAR'] < self.parameters['methods']['M21']['min_interval']:
                     self.state['t'].current_date = self.state['t'].current_date.replace(hour = 23)
                     break
     
                 # Else if site-specific required visits have not been met for the year
-                elif site['surveys_done_this_year_M21'] < int(site['required_surveys_M21']):
+                elif site['surveys_done_this_year_M21'] < int(site['M21_required_surveys']):
     
                     # Check the weather for that site
                     if self.deployment_days[site['lon_index'], site['lat_index'], self.state['t'].current_timestep] == True:
@@ -88,9 +88,9 @@ class M21_crew:
                         found_site = True
     
                         # Update site
-                        site['surveys_conducted_M21'] += 1
+                        site['M21_surveys_conducted'] += 1
                         site['surveys_done_this_year_M21'] += 1
-                        site['t_since_last_LDAR_M21'] = 0
+                        site['M21_t_since_last_LDAR'] = 0
                         break
                                             
                     else:

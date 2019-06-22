@@ -19,16 +19,16 @@ class OGI_FU_company:
         self.timeseries = timeseries
         self.crews = []                         # Empty list of OGI_FU agents (crews)
         self.deployment_days = self.state['weather'].deployment_days('OGI_FU')
-        self.timeseries['prop_sites_avail_OGI_FU'] = []
+        self.timeseries['OGI_FU_prop_sites_avail'] = []
         self.timeseries['OGI_FU_cost'] = np.zeros(self.parameters['timesteps'])
         self.timeseries['OGI_FU_redund_tags'] = np.zeros(self.parameters['timesteps'])
  
         # Additional variable(s) for each site       
         for site in self.state['sites']:
-            site.update( {'t_since_last_LDAR_OGI_FU': 0})
+            site.update( {'OGI_FU_t_since_last_LDAR': 0})
             site.update( {'attempted_today_OGI_FU?': False})
-            site.update( {'surveys_conducted_OGI_FU': 0})
-            site.update( {'missed_leaks_OGI_FU': 0})
+            site.update( {'OGI_FU_surveys_conducted': 0})
+            site.update( {'OGI_FU_missed_leaks': 0})
             
         # Initialize 2D matrices to store deployment day (DD) counts and MCBs
         self.DD_OGI_FU_map = np.zeros((len(self.state['weather'].longitude), len(self.state['weather'].latitude)))
@@ -50,7 +50,7 @@ class OGI_FU_company:
 
         # Update method-specific site variables each day
         for site in self.state['sites']:
-            site['t_since_last_LDAR_OGI_FU'] += 1
+            site['OGI_FU_t_since_last_LDAR'] += 1
             site['attempted_today_OGI_FU?'] = False
             
         self.state['flags'] = [flag for flag in self.state['sites'] if flag['currently_flagged'] == True]
@@ -61,7 +61,7 @@ class OGI_FU_company:
             if self.deployment_days[site['lon_index'], site['lat_index'], self.state['t'].current_timestep] == True:
                 available_sites += 1
         prop_avail = available_sites/len(self.state['sites'])
-        self.timeseries['prop_sites_avail_OGI_FU'].append(prop_avail) 
+        self.timeseries['OGI_FU_prop_sites_avail'].append(prop_avail) 
             
         return
     
@@ -127,8 +127,8 @@ class OGI_FU_company:
         print ('Generating site-level reports for OGI_FU company...')
         
         for site in self.state['sites']:
-            site['prop_DDs_OGI_FU'] = self.DD_OGI_FU_map[site['lon_index'], site['lat_index']]
-            site['MCB_OGI_FU'] = self.MCB_OGI_FU_map[site['lon_index'], site['lat_index']]
+            site['OGI_FU_prop_DDs'] = self.DD_OGI_FU_map[site['lon_index'], site['lat_index']]
+            site['OGI_FU_MCB'] = self.MCB_OGI_FU_map[site['lon_index'], site['lat_index']]
         
         return
             

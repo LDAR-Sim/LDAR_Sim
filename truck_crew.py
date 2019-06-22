@@ -63,7 +63,7 @@ class truck_crew:
         '''
             
         # Sort all sites based on a neglect ranking
-        self.state['sites'] = sorted(self.state['sites'], key=lambda k: k['t_since_last_LDAR_truck'], reverse = True)
+        self.state['sites'] = sorted(self.state['sites'], key=lambda k: k['truck_t_since_last_LDAR'], reverse = True)
 
         facility_ID = None                                  # The facility ID gets assigned if a site is found
         found_site = False                                  # The found site flag is updated if a site is found
@@ -75,12 +75,12 @@ class truck_crew:
             if site['attempted_today_truck?'] == False:
             
                 # If the site is 'unripened' (i.e. hasn't met the minimum interval set out in the LDAR regulations/policy), break out - no LDAR today
-                if site['t_since_last_LDAR_truck'] < self.parameters['methods']['truck']['min_interval']:
+                if site['truck_t_since_last_LDAR'] < self.parameters['methods']['truck']['min_interval']:
                     self.state['t'].current_date = self.state['t'].current_date.replace(hour = 23)
                     break
     
                 # Else if site-specific required visits have not been met for the year
-                elif site['surveys_done_this_year_truck'] < int(site['required_surveys_truck']):
+                elif site['surveys_done_this_year_truck'] < int(site['truck_required_surveys']):
     
                     # Check the weather for that site
                     if self.deployment_days[site['lon_index'], site['lat_index'], self.state['t'].current_timestep] == True:
@@ -90,9 +90,9 @@ class truck_crew:
                         found_site = True
     
                         # Update site
-                        site['surveys_conducted_truck'] += 1
+                        site['truck_surveys_conducted'] += 1
                         site['surveys_done_this_year_truck'] += 1
-                        site['t_since_last_LDAR_truck'] = 0
+                        site['truck_t_since_last_LDAR'] = 0
                         break
                                             
                     else:
@@ -153,6 +153,6 @@ class truck_crew:
                         self.timeseries['truck_flags_redund3'][self.state['t'].current_timestep] += 1
                 
         elif detect == False:
-            site['missed_leaks_truck'] += len(leaks_present)
+            site['truck_missed_leaks'] += len(leaks_present)
                 
         self.state['t'].current_date += timedelta(minutes = int(site['truck_time']))

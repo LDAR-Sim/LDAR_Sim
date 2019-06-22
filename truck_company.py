@@ -19,7 +19,7 @@ class truck_company:
         self.timeseries = timeseries
         self.crews = []                         # Empty list of truck agents (crews)
         self.deployment_days = self.state['weather'].deployment_days('truck')
-        self.timeseries['prop_sites_avail_truck'] = []
+        self.timeseries['truck_prop_sites_avail'] = []
         self.timeseries['truck_cost'] = np.zeros(self.parameters['timesteps'])       
         self.timeseries['truck_eff_flags'] = np.zeros(self.parameters['timesteps'])       
         self.timeseries['truck_flags_redund1'] = np.zeros(self.parameters['timesteps'])
@@ -28,11 +28,11 @@ class truck_company:
  
         # Additional variable(s) for each site       
         for site in self.state['sites']:
-            site.update( {'t_since_last_LDAR_truck': 0})
-            site.update( {'surveys_conducted_truck': 0})
+            site.update( {'truck_t_since_last_LDAR': 0})
+            site.update( {'truck_surveys_conducted': 0})
             site.update( {'attempted_today_truck?': False})
             site.update( {'surveys_done_this_year_truck': 0})
-            site.update( {'missed_leaks_truck': 0})
+            site.update( {'truck_missed_leaks': 0})
             
         # Initialize 2D matrices to store deployment day (DD) counts and MCBs
         self.DD_truck_map = np.zeros((len(self.state['weather'].longitude), len(self.state['weather'].latitude)))
@@ -54,7 +54,7 @@ class truck_company:
 
         # Update method-specific site variables each day
         for site in self.state['sites']:
-            site['t_since_last_LDAR_truck'] += 1
+            site['truck_t_since_last_LDAR'] += 1
             site['attempted_today_truck?'] = False
             
         if self.state['t'].current_date.day == 1 and self.state['t'].current_date.month == 1:
@@ -67,7 +67,7 @@ class truck_company:
             if self.deployment_days[site['lon_index'], site['lat_index'], self.state['t'].current_timestep] == True:
                 available_sites += 1
         prop_avail = available_sites/len(self.state['sites'])
-        self.timeseries['prop_sites_avail_truck'].append(prop_avail) 
+        self.timeseries['truck_prop_sites_avail'].append(prop_avail) 
             
         return
     
@@ -133,8 +133,8 @@ class truck_company:
         print ('Generating site-level reports for truck company...')
         
         for site in self.state['sites']:
-            site['prop_DDs_truck'] = self.DD_truck_map[site['lon_index'], site['lat_index']]
-            site['MCB_truck'] = self.MCB_truck_map[site['lon_index'], site['lat_index']]
+            site['truck_prop_DDs'] = self.DD_truck_map[site['lon_index'], site['lat_index']]
+            site['truck_MCB'] = self.MCB_truck_map[site['lon_index'], site['lat_index']]
         
         return
             

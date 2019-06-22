@@ -19,14 +19,14 @@ class M21_company:
         self.timeseries = timeseries
         self.crews = []                         # Empty list of M21 agents (crews)
         self.deployment_days = self.state['weather'].deployment_days('M21')
-        self.timeseries['prop_sites_avail_M21'] = []        
+        self.timeseries['M21_prop_sites_avail'] = []        
         self.timeseries['M21_cost'] = np.zeros(self.parameters['timesteps'])
         self.timeseries['M21_redund_tags'] = np.zeros(self.parameters['timesteps'])
         
         # Additional variable(s) for each site       
         for site in self.state['sites']:
-            site.update( {'t_since_last_LDAR_M21': 0})
-            site.update( {'surveys_conducted_M21': 0})
+            site.update( {'M21_t_since_last_LDAR': 0})
+            site.update( {'M21_surveys_conducted': 0})
             site.update( {'attempted_today_M21?': False})
             site.update( {'surveys_done_this_year_M21': 0})
 
@@ -50,7 +50,7 @@ class M21_company:
             
         # Update method-specific site variables each day
         for site in self.state['sites']:
-            site['t_since_last_LDAR_M21'] += 1
+            site['M21_t_since_last_LDAR'] += 1
             site['attempted_today_M21?'] = False
             
         if self.state['t'].current_date.day == 1 and self.state['t'].current_date.month == 1:
@@ -63,7 +63,7 @@ class M21_company:
             if self.deployment_days[site['lon_index'], site['lat_index'], self.state['t'].current_timestep] == True:
                 available_sites += 1
         prop_avail = available_sites/len(self.state['sites'])
-        self.timeseries['prop_sites_avail_M21'].append(prop_avail) 
+        self.timeseries['M21_prop_sites_avail'].append(prop_avail) 
             
         return
     
@@ -129,8 +129,8 @@ class M21_company:
         print ('Generating site-level reports for Method 21 company...')
         
         for site in self.state['sites']:
-            site['prop_DDs_M21'] = self.DD_M21_map[site['lon_index'], site['lat_index']]
-            site['MCB_M21'] = self.MCB_M21_map[site['lon_index'], site['lat_index']]
+            site['M21_prop_DDs'] = self.DD_M21_map[site['lon_index'], site['lat_index']]
+            site['M21_MCB'] = self.MCB_M21_map[site['lon_index'], site['lat_index']]
         
         return
             

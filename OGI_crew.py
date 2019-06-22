@@ -63,7 +63,7 @@ class OGI_crew:
         '''
             
         # Sort all sites based on a neglect ranking
-        self.state['sites'] = sorted(self.state['sites'], key=lambda k: k['t_since_last_LDAR_OGI'], reverse = True)
+        self.state['sites'] = sorted(self.state['sites'], key=lambda k: k['OGI_t_since_last_LDAR'], reverse = True)
 
         facility_ID = None                                  # The facility ID gets assigned if a site is found
         found_site = False                                  # The found site flag is updated if a site is found
@@ -75,12 +75,12 @@ class OGI_crew:
             if site['attempted_today_OGI?'] == False:
             
                 # If the site is 'unripened' (i.e. hasn't met the minimum interval set out in the LDAR regulations/policy), break out - no LDAR today
-                if site['t_since_last_LDAR_OGI'] < self.parameters['methods']['OGI']['min_interval']:
+                if site['OGI_t_since_last_LDAR'] < self.parameters['methods']['OGI']['min_interval']:
                     self.state['t'].current_date = self.state['t'].current_date.replace(hour = 23)
                     break
     
                 # Else if site-specific required visits have not been met for the year
-                elif site['surveys_done_this_year_OGI'] < int(site['required_surveys_OGI']):
+                elif site['surveys_done_this_year_OGI'] < int(site['OGI_required_surveys']):
     
                     # Check the weather for that site
                     if self.deployment_days[site['lon_index'], site['lat_index'], self.state['t'].current_timestep] == True:
@@ -90,9 +90,9 @@ class OGI_crew:
                         found_site = True
     
                         # Update site
-                        site['surveys_conducted_OGI'] += 1
+                        site['OGI_surveys_conducted'] += 1
                         site['surveys_done_this_year_OGI'] += 1
-                        site['t_since_last_LDAR_OGI'] = 0
+                        site['OGI_t_since_last_LDAR'] = 0
                         break
                                             
                     else:
@@ -136,7 +136,7 @@ class OGI_crew:
                     self.state['tags'].append(leak)
                 
             elif detect == False:
-                site['missed_leaks_OGI'] += 1
+                site['OGI_missed_leaks'] += 1
                 
         self.state['t'].current_date += timedelta(minutes = int(site['OGI_time']))
         
