@@ -4,7 +4,7 @@ import numpy as np
 class weather_lookup:
     def __init__ (self, state, parameters):
         '''
-        Read in a NetCDF file and returns the weather at a given place in time.
+        Read in NetCDF files and returns the environment at a given place in time.
 
         '''
         print('Initializing weather...')
@@ -13,9 +13,9 @@ class weather_lookup:
 
         # Read in weather data as NetCDF file(s)
 
-        self.wind_temp_data = Dataset(self.parameters['WT_data'])                 # Load wind and temp data
+        self.wind_temp_data = Dataset(self.parameters['an_data'])                 # Load wind and temp data
         self.wind_temp_data.set_auto_mask(False)                                  # Load wind and temp data
-        self.precip_data = Dataset(self.parameters['P_data'])                     # Load precip data
+        self.precip_data = Dataset(self.parameters['fc_data'])                     # Load precip data
         self.precip_data.set_auto_mask(False)                                     # Load precip data
         self.temps = np.array(self.wind_temp_data.variables['t2m'])               # Extract temperatures
         self.temps = self.temps - 273.15                                          # Convert to degrees Celcius (time, lat, long)

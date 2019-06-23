@@ -15,28 +15,40 @@ from ecmwfapi import ECMWFDataServer
 
 server = ECMWFDataServer()
     
+# Download environmental analysis data
 server.retrieve({
     'stream'    : "oper",
     'levtype'   : "sfc",
-    # Snow depth, Cloud cover, Temperature, Wind speed, Precipitation
-    'param'     : "141.128/164.128/167.128/207.128/228.128",
+    # Snow depth, Cloud cover, Temperature, Wind components 
+    'param'     : "141.128/164.128/165.128/166.128/167.128",
     'dataset'   : "interim",
     'step'      : "0",
-    'grid'      : "0.75/0.75",
+    'grid'      : "0.5/0.5",
     'time'      : "12",
-    'date'      : "2003-01-01/to/2018-12-31",
+    'date'      : "2003-01-01/to/2018-12-31", # Up to 2018-12-31
     'type'      : "an",
     'class'     : "ei",
     # North/West/South/East
-    'area'      : "60/-120/49/-110",
+    'area'      : "60/240/49/250",
     'format'    : "netcdf",
-    'target'    : "LDAR_SIM_2003_2018_AB.nc"
+    'target'    : "an_2003_2018_AB.nc"
 })
 
-# Notes
-# It may be that Precipitation variable requires a step
-# If so, it may be that step and time cannot  both be specified?
-# If so, may have to download instantaneous and time-integrated data separately
-# Alternatively, could use a different measure of precip (e.g. rate)
-# Not clear how coordinates translate to 360? Automatic?
-# May want to also download errors at some point (type = "ae")
+# Download time-integrated environmental data
+server.retrieve({
+    'stream'    : "oper",
+    'levtype'   : "sfc",
+    # Precipitation 
+    'param'     : "228.128",
+    'dataset'   : "interim",
+    'step'      : "6",
+    'grid'      : "0.5/0.5",
+    'time'      : "12",
+    'date'      : "2003-01-01/to/2018-12-31", # Up to 2018-12-31
+    'type'      : "fc",
+    'class'     : "ei",
+    # North/West/South/East
+    'area'      : "60/240/49/250",
+    'format'    : "netcdf",
+    'target'    : "fc_2003_2018_AB.nc"
+})
