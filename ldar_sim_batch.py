@@ -21,65 +21,23 @@ import os
 import datetime
 
 #------------------------------------------------------------------------------
-#--------------------------------Set programs----------------------------------
-master_output_folder = 'multi_comparison/'
-# wd = 'C:/Users/tarca/Desktop/ldar_sim_working'
-wd = 'C:/Users/tarca/Desktop/ldar_sim_working'
+#-----------------------------Global parameters--------------------------------
+master_output_folder = 'count_test3/'
 ref_program = 'Regulatory OGI'      # Name must match reference program below
-n_simulations = 5                   # Run a minimum of 2 simulations
-n_timesteps = 4500                # Min. 2000; Up to ~5600 for 16 year nc file
+n_simulations = 5                   # Minimum of 2; recommended 10+
+n_timesteps = 2000                  # Spin-up is 365 days; Up to ~5600 for 16 year nc file
 start_year = 2001
+an_data = 'an_2003_2018_AB.nc'
+fc_data = 'fc_2003_2018_AB.nc'
+sites = 'AER_Baytex_template.csv'
+leaks = 'rates_Clearstone.csv'
+counts = 'counts_Clearstone.csv'
+vents = 'ZA_site_emissions_2018.csv'
+wd = 'D:\OneDrive - University of Calgary\Documents\Thomas\PhD\Thesis\LDAR_Sim\model\python_v2'
 
-# Define programs. Your first program listed should be the reference program.
+#-----------------------------Define programs----------------------------------
 programs = [
         {
-            'output_folder': master_output_folder + 'Drone',
-            'simulation': None,
-            'timesteps': n_timesteps,
-            'start_year': start_year,
-            'methods': {
-                    'drone': {
-                             'name': 'drone',
-                             'n_crews': 1,
-                             'min_temp': -20,
-                             'max_wind': 10,
-                             'max_precip': 0,
-                             'min_interval': 100,
-                             'max_workday': 10,
-                             'cost_per_day': 3000,
-                             'follow_up_thresh': 0,
-                             'reporting_delay': 2
-                             },
-                    'OGI_FU': {
-                             'name': 'OGI_FU',
-                             'n_crews': 1,
-                             'min_temp': -10,
-                             'max_wind': 5,
-                             'max_precip': 1,
-                             'max_workday': 10,
-                             'cost_per_day': 600,
-                             'reporting_delay': 2
-                             }                        
-                        },        
-            'repair_delay': 14,
-            'WT_data': '15YearWT2001_2016.nc',
-            'P_data': '15YearPrecip2001_2016.nc',
-            'infrastructure_file': 'AER_Baytex_3_drone.csv',
-            'leak_file': 'FWAQS_all.csv',
-            'vent_file': 'ZA_site_emissions_2018.csv',
-            'working_directory': wd,
-            'LPR': 0.00133,
-            'leaks_per_site_mean': 6.186,
-            'leaks_per_site_std': 6.717,            
-            'consider_daylight': True,
-            'consider_venting': True,
-            'max_det_op': 0.00   # Operator max additional detection probability of largest leak
-        },                 
-        {
-            'output_folder': master_output_folder + 'Regulatory OGI',
-            'simulation': None,
-            'timesteps': n_timesteps,        
-            'start_year': start_year,
             'methods': {
                     'OGI': {
                              'name': 'OGI',
@@ -93,25 +51,24 @@ programs = [
                              'reporting_delay': 2
                              }
                         },        
-            'repair_delay': 14, 
-            'WT_data': '15YearWT2001_2016.nc',
-            'P_data': '15YearPrecip2001_2016.nc',
-            'infrastructure_file': 'AER_Baytex_OGI_reg.csv',
-            'leak_file': 'FWAQS_all.csv',
-            'vent_file': 'ZA_site_emissions_2018.csv',
-            'working_directory': wd,
-            'LPR': 0.00133,
-            'leaks_per_site_mean': 6.186,
-            'leaks_per_site_std': 6.717,              
-            'consider_daylight': True,
-            'consider_venting': True,
-            'max_det_op': 0.00   # Operator max additional detection probability of largest leak
-        },
-        {
-            'output_folder': master_output_folder + 'Aircraft',
-            'simulation': None,
+            'output_folder': master_output_folder + 'Regulatory OGI',
             'timesteps': n_timesteps,
             'start_year': start_year,
+            'an_data': an_data,
+            'fc_data': fc_data,
+            'infrastructure_file': sites,
+            'leak_file': leaks,
+            'count_file': counts,
+            'vent_file': vents,
+            'working_directory': wd,
+            'simulation': None,
+            'consider_daylight': True,
+            'consider_venting': True,
+            'repair_delay': 14,
+            'LPR': 0.00133,           
+            'max_det_op': 0.00                  # Operator max additional detection probability of largest leak
+        },
+        {
             'methods': {
                     'aircraft': {
                              'name': 'aircraft',
@@ -136,25 +93,24 @@ programs = [
                              'reporting_delay': 2
                              }                        
                         },        
-            'repair_delay': 14,
-            'WT_data': '15YearWT2001_2016.nc',
-            'P_data': '15YearPrecip2001_2016.nc',
-            'infrastructure_file': 'AER_Baytex_3_aircraft.csv',
-            'leak_file': 'FWAQS_all.csv',
-            'vent_file': 'ZA_site_emissions_2018.csv',
-            'working_directory': wd,
-            'LPR': 0.00133,
-            'leaks_per_site_mean': 6.186,
-            'leaks_per_site_std': 6.717,              
-            'consider_daylight': True,
-            'consider_venting': True,
-            'max_det_op': 0.00   # Operator max additional detection probability of largest leak
-        },
-        {
-            'output_folder': master_output_folder + 'Truck',
-            'simulation': None,
+            'output_folder': master_output_folder + 'Aircraft',
             'timesteps': n_timesteps,
             'start_year': start_year,
+            'an_data': an_data,
+            'fc_data': fc_data,
+            'infrastructure_file': sites,
+            'leak_file': leaks,
+            'count_file': counts,
+            'vent_file': vents,
+            'working_directory': wd,
+            'simulation': None,
+            'consider_daylight': True,
+            'consider_venting': False,
+            'repair_delay': 14,
+            'LPR': 0.00133,           
+            'max_det_op': 0.00                  # Operator max additional detection probability of largest leak
+        },
+        {
             'methods': {
                     'truck': {
                              'name': 'truck',
@@ -179,19 +135,22 @@ programs = [
                              'reporting_delay': 2
                              }                        
                         },        
-            'repair_delay': 14,
-            'WT_data': '15YearWT2001_2016.nc',
-            'P_data': '15YearPrecip2001_2016.nc',
-            'infrastructure_file': 'AER_Baytex_3_truck.csv',
-            'leak_file': 'FWAQS_all.csv',
-            'vent_file': 'ZA_site_emissions_2018.csv',
+            'output_folder': master_output_folder + 'Truck',
+            'timesteps': n_timesteps,
+            'start_year': start_year,
+            'an_data': an_data,
+            'fc_data': fc_data,
+            'infrastructure_file': sites,
+            'leak_file': leaks,
+            'count_file': counts,
+            'vent_file': vents,
             'working_directory': wd,
-            'LPR': 0.00133,
-            'leaks_per_site_mean': 6.186,
-            'leaks_per_site_std': 6.717,            
+            'simulation': None,
             'consider_daylight': True,
             'consider_venting': True,
-            'max_det_op': 0.00   # Operator max additional detection probability of largest leak
+            'repair_delay': 14,
+            'LPR': 0.00133,          
+            'max_det_op': 0.00                  # Operator max additional detection probability of largest leak
         },
         ]
 

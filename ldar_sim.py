@@ -87,14 +87,12 @@ class ldar_sim:
         # Initialize baseline leaks for each site
         # First, generate initial leak count for each site
         print('Initializing leaks...')
+        empirical_counts = pd.read_csv(self.parameters['count_file'])
+        empirical_counts = np.array(empirical_counts.iloc[:, 0])
         for site in self.state['sites']:
-            n_leaks = round(np.random.normal(self.parameters['leaks_per_site_mean'], self.parameters['leaks_per_site_std']))
-            if n_leaks <= 0:
-                site.update({'initial_leaks': 0})
-                self.state['init_leaks'].append(site['initial_leaks'])
-            else:
-                site.update({'initial_leaks': n_leaks})
-                self.state['init_leaks'].append(site['initial_leaks'])
+            n_leaks = empirical_counts[np.random.randint(0, len(empirical_counts))]
+            site.update({'initial_leaks': n_leaks})
+            self.state['init_leaks'].append(site['initial_leaks'])
 
         # Second, load empirical leak-size data, switch from pandas to numpy (for speed), and convert g/s to kg/day
         self.empirical_leaks = pd.read_csv(self.parameters['leak_file'])
@@ -138,7 +136,7 @@ class ldar_sim:
             
         # Run Monte Carlo simulations to get distribution of vented emissions
             for i in range(1000):
-                n_MC_leaks = round(np.random.normal(self.parameters['leaks_per_site_mean'], self.parameters['leaks_per_site_std']))
+                n_MC_leaks = empirical_counts[np.random.randint(0, len(empirical_counts))]
                 MC_leaks = []
                 for leak in range(n_MC_leaks):
                     MC_leaks.append(self.empirical_leaks[np.random.randint(0, len(self.empirical_leaks))])
