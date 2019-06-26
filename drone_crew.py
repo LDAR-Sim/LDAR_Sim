@@ -149,8 +149,9 @@ class drone_crew:
                         self.timeseries['drone_flags_redund2'][self.state['t'].current_timestep] += 1
                     
                     # Would the site have been chosen without venting?
-                    if (site_cum_rate - venting) < self.config['follow_up_thresh']:
-                        self.timeseries['drone_flags_redund3'][self.state['t'].current_timestep] += 1
+                    if self.parameters['consider_venting'] == True:
+                        if (site_cum_rate - venting) < self.config['follow_up_thresh']:
+                            self.timeseries['drone_flags_redund3'][self.state['t'].current_timestep] += 1
                 
         elif detect == False:
             site['drone_missed_leaks'] += len(leaks_present)
