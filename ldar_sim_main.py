@@ -111,13 +111,12 @@ for i in range(n_simulations):
         'an_data': 'an_2003_2018_AB.nc',
         'fc_data': 'fc_2003_2018_AB.nc',
         'infrastructure_file': 'AER_Baytex_template.csv',
-        'leak_file': 'FWAQS_all.csv',
+        'leak_file': 'rates_Clearstone.csv',
+        'count_file': 'counts_Clearstone.csv',
         'vent_file': 'ZA_site_emissions_2018.csv',          # File containing site-level total emissions in g/sec
-        'output_folder': 'nc_test4',
+        'output_folder': 'main_test',
         'working_directory': "D:\OneDrive - University of Calgary\Documents\Thomas\PhD\Thesis\LDAR_Sim\model\python_v2",
         'LPR': 0.00133,
-        'leaks_per_site_mean': 6.186,
-        'leaks_per_site_std': 6.717,
         'consider_daylight': True,
         'consider_venting': True,
         'max_det_op': 0.00   # Operator max additional detection probability of largest leak
