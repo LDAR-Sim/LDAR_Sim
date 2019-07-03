@@ -18,11 +18,12 @@ import numpy as np
 
 #------------------------------------------------------------------------------
 #----------------------Static user-defined input parameters--------------------
-n_simulations = 10
+n_simulations = 2
 for i in range(n_simulations):
     parameters = {
         'simulation': str(i),
         'timesteps': 1000,
+        'spin_up': 0,
         'start_year': 2003,
         'methods': {
 #                    'drone': {
@@ -114,13 +115,13 @@ for i in range(n_simulations):
         'leak_file': 'rates_Clearstone.csv',
         'count_file': 'counts_Clearstone.csv',
         'vent_file': 'ZA_site_emissions_2018.csv',          # File containing site-level total emissions in g/sec
-        'output_folder': 'OGI_test3',
+        'output_folder': 'OGI_test5',
         'working_directory': "D:\OneDrive - University of Calgary\Documents\Thomas\PhD\Thesis\LDAR_Sim\model\python_v2",
         'LPR': 0.00133,
         'consider_daylight': True,
         'consider_venting': True,
         'max_det_op': 0.00,   # Operator max additional detection probability of largest leak
-        'make_plots': False,
+        'make_plots': True,
         'make_maps': False
     }
     

@@ -15,11 +15,13 @@ import pandas as pd
 import csv
 from mizani.breaks import date_breaks
 from mizani.formatters import date_format
+from datetime import datetime
+from datetime import timedelta
 from scipy import stats
 import math
 
 
-def batch_plots(output_directory, start_year, ref_program):
+def batch_plots(output_directory, start_year, spin_up, ref_program):
     """
     This function makes equivalence plots comparing programs in batch mode.
     """
@@ -90,7 +92,8 @@ def batch_plots(output_directory, start_year, ref_program):
 
     # Axe spinup year
     df_p1['datetime'] = pd.to_datetime(df_p1['datetime'])
-    start_date = '12-31-' + str(start_year)
+    start_date = datetime(start_year, 1, 1) + timedelta(days = spin_up)
+    start_date = start_date.strftime("%m-%d-%Y")    
     mask = (df_p1['datetime'] > start_date)
     df_p1 = df_p1.loc[mask]
     
@@ -163,7 +166,8 @@ def batch_plots(output_directory, start_year, ref_program):
         
     # Axe spinup year
     df_p2['datetime'] = pd.to_datetime(df_p2['datetime'])
-    start_date = '12-31-' + str(start_year)
+    start_date = datetime(start_year, 1, 1) + timedelta(days = spin_up)
+    start_date = start_date.strftime("%m-%d-%Y")
     mask = (df_p2['datetime'] > start_date)
     df_p2 = df_p2.loc[mask]
         

@@ -22,10 +22,11 @@ import datetime
 
 #------------------------------------------------------------------------------
 #-----------------------------Global parameters--------------------------------
-master_output_folder = 'count_test5/'
+master_output_folder = 'spinup_test_5/'
 ref_program = 'Regulatory OGI'      # Name must match reference program below
-n_simulations = 2                   # Minimum of 2; recommended 10+
-n_timesteps = 1000                  # Spin-up is 365 days; Up to ~5600 for 16 year nc file
+n_simulations = 15                   # Minimum of 2; recommended 10+
+n_timesteps = 1000                  # Up to ~5600 for 16 year nc file
+spin_up = 0
 start_year = 2003
 an_data = 'an_2003_2018_AB.nc'
 fc_data = 'fc_2003_2018_AB.nc'
@@ -69,6 +70,7 @@ programs = [
             'repair_delay': 14,
             'LPR': 0.00133,           
             'max_det_op': 0.00,
+            'spin_up': spin_up,
             'make_plots': make_plots,
             'make_maps': make_maps
         },
@@ -113,6 +115,7 @@ programs = [
             'repair_delay': 14,
             'LPR': 0.00133,           
             'max_det_op': 0.00,
+            'spin_up': spin_up,
             'make_plots': make_plots,
             'make_maps': make_maps
         },
@@ -157,6 +160,7 @@ programs = [
             'repair_delay': 14,
             'LPR': 0.00133,          
             'max_det_op': 0.00,
+            'spin_up': spin_up,
             'make_plots': make_plots,
             'make_maps': make_maps
         },
@@ -223,7 +227,7 @@ for program in programs:
         # Clean up and write files
         sim.finalize ()
 
-batch_plots (output_directory, programs[0]['start_year'], ref_program)
+batch_plots (output_directory, programs[0]['start_year'], spin_up, ref_program)
 # Write metadata
 metadata = open(output_directory + '/metadata.txt','w')
 metadata.write(str(programs) + '\n' +

@@ -328,8 +328,8 @@ class ldar_sim:
         site_df.to_csv(output_directory + '/sites_output_' + self.parameters['simulation'] + '.csv', index = False)
         
         # Make plots
-        if self.parameters['make_maps'] == True:
-            make_plots(leak_df, time_df, site_df, self.parameters['simulation'], output_directory)
+        if self.parameters['make_plots'] == True:
+            make_plots(leak_df, time_df, site_df, self.parameters['simulation'], self.parameters['spin_up'], output_directory)
 
         # Write metadata
         metadata = open(output_directory + '/metadata_' + self.parameters['simulation'] + '.txt','w')

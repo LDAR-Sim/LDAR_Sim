@@ -12,7 +12,7 @@ import numpy as np
 import warnings
 from mizani.formatters import date_format
 
-def make_plots(leak_df, time_df, site_df, sim_n, output_directory):
+def make_plots(leak_df, time_df, site_df, sim_n, spin_up, output_directory):
     """
     This function makes a set of standard plots to output at end of simulation.
     """
@@ -21,7 +21,7 @@ def make_plots(leak_df, time_df, site_df, sim_n, output_directory):
     theme_set(theme_linedraw())
     
     # Chop off spin-up year (only for plots, still exists in raw output)
-    time_df_adj = time_df.iloc[365:,]
+    time_df_adj = time_df.iloc[spin_up:,]
 
     # Timeseries plots
     plot_time_1 = (ggplot(time_df_adj, aes('datetime', 'daily_emissions_kg')) +
