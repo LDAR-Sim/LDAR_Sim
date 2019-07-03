@@ -18,48 +18,48 @@ import numpy as np
 
 #------------------------------------------------------------------------------
 #----------------------Static user-defined input parameters--------------------
-n_simulations = 1
+n_simulations = 10
 for i in range(n_simulations):
     parameters = {
         'simulation': str(i),
-        'timesteps': 500,
+        'timesteps': 1000,
         'start_year': 2003,
         'methods': {
-                    'drone': {
-                             'name': 'drone',
-                             'n_crews': 2,
-                             'min_temp': -20,
-                             'max_wind': 20,
-                             'max_precip': 0,
-                             'min_interval': 30,
-                             'max_workday': 10,
-                             'cost_per_day': 3000,
-                             'follow_up_thresh': 2,
-                             'reporting_delay': 2
-                             },
-                    'satellite': {
-                             'name': 'satellite',
-                             'n_crews': 2,
-                             'min_temp': -50,
-                             'max_wind': 20,
-                             'max_precip': 0,
-                             'min_interval': 30,
-                             'max_workday': 23,
-                             'cost_per_day': 1000,
-                             'follow_up_thresh': 100,
-                             'reporting_delay': 2
-                             },
-                    'M21': {
-                             'name': 'M21',
-                             'n_crews': 2,
-                             'min_temp': -25,
-                             'max_wind': 20,
-                             'max_precip': 5,
-                             'min_interval': 120,
-                             'max_workday': 10,
-                             'cost_per_day': 400,
-                             'reporting_delay': 2
-                             },
+#                    'drone': {
+#                             'name': 'drone',
+#                             'n_crews': 2,
+#                             'min_temp': -20,
+#                             'max_wind': 20,
+#                             'max_precip': 0,
+#                             'min_interval': 30,
+#                             'max_workday': 10,
+#                             'cost_per_day': 3000,
+#                             'follow_up_thresh': 2,
+#                             'reporting_delay': 2
+#                             },
+#                    'satellite': {
+#                             'name': 'satellite',
+#                             'n_crews': 2,
+#                             'min_temp': -50,
+#                             'max_wind': 20,
+#                             'max_precip': 0,
+#                             'min_interval': 30,
+#                             'max_workday': 23,
+#                             'cost_per_day': 1000,
+#                             'follow_up_thresh': 100,
+#                             'reporting_delay': 2
+#                             },
+#                    'M21': {
+#                             'name': 'M21',
+#                             'n_crews': 2,
+#                             'min_temp': -25,
+#                             'max_wind': 20,
+#                             'max_precip': 5,
+#                             'min_interval': 120,
+#                             'max_workday': 10,
+#                             'cost_per_day': 400,
+#                             'reporting_delay': 2
+#                             },
                     'OGI': {
                              'name': 'OGI',
                              'n_crews': 1,
@@ -71,40 +71,40 @@ for i in range(n_simulations):
                              'cost_per_day': 600,
                              'reporting_delay': 2
                              },
-                    'OGI_FU': {
-                             'name': 'OGI_FU',
-                             'n_crews': 2,
-                             'min_temp': -35,
-                             'max_wind': 20,
-                             'max_precip': 5,
-                             'max_workday': 10,
-                             'cost_per_day': 600,
-                             'reporting_delay': 2                             
-                             },
-                    'truck': {
-                             'name': 'truck',
-                             'n_crews': 2,
-                             'min_temp': -30,
-                             'max_wind': 20,
-                             'max_precip': 5,
-                             'min_interval': 30,
-                             'max_workday': 10,
-                             'cost_per_day': 500,
-                             'follow_up_thresh': 0.5,
-                             'reporting_delay': 2
-                             },
-                    'aircraft': {
-                             'name': 'aircraft',
-                             'n_crews': 2,
-                             'min_temp': -30,
-                             'max_wind': 20,
-                             'max_precip': 5,
-                             'min_interval': 30,
-                             'max_workday': 10,
-                             'cost_per_day': 2000,
-                             'follow_up_thresh': 60,
-                             'reporting_delay': 2
-                             }
+#                    'OGI_FU': {
+#                             'name': 'OGI_FU',
+#                             'n_crews': 2,
+#                             'min_temp': -35,
+#                             'max_wind': 20,
+#                             'max_precip': 5,
+#                             'max_workday': 10,
+#                             'cost_per_day': 600,
+#                             'reporting_delay': 2                             
+#                             },
+#                    'truck': {
+#                             'name': 'truck',
+#                             'n_crews': 2,
+#                             'min_temp': -30,
+#                             'max_wind': 20,
+#                             'max_precip': 5,
+#                             'min_interval': 30,
+#                             'max_workday': 10,
+#                             'cost_per_day': 500,
+#                             'follow_up_thresh': 0.5,
+#                             'reporting_delay': 2
+#                             },
+#                    'aircraft': {
+#                             'name': 'aircraft',
+#                             'n_crews': 2,
+#                             'min_temp': -30,
+#                             'max_wind': 20,
+#                             'max_precip': 5,
+#                             'min_interval': 30,
+#                             'max_workday': 10,
+#                             'cost_per_day': 2000,
+#                             'follow_up_thresh': 60,
+#                             'reporting_delay': 2
+#                             }
                     },
     
         'repair_delay': 14,
@@ -114,7 +114,7 @@ for i in range(n_simulations):
         'leak_file': 'rates_Clearstone.csv',
         'count_file': 'counts_Clearstone.csv',
         'vent_file': 'ZA_site_emissions_2018.csv',          # File containing site-level total emissions in g/sec
-        'output_folder': 'main_test',
+        'output_folder': 'OGI_test',
         'working_directory': "D:\OneDrive - University of Calgary\Documents\Thomas\PhD\Thesis\LDAR_Sim\model\python_v2",
         'LPR': 0.00133,
         'consider_daylight': True,

@@ -123,6 +123,9 @@ class ldar_sim:
         # Initialize operator
         self.state['operator'] = operator_agent (self.timeseries, self.parameters, self.state)
         
+        if bool(self.parameters['methods']) == False:
+            self.state['t'].current_date = self.state['t'].current_date.replace(hour = 1)
+        
         # Initialize daylight 
         if self.parameters['consider_daylight'] == True:
             self.state['daylight'] = daylight_calculator_ave(self.state, self.parameters)
@@ -217,10 +220,10 @@ class ldar_sim:
         '''
         Loop over all your methods in the simulation and ask them to find some leaks.
         '''
-
+           
         for m in self.state['methods']:
             m.find_leaks ()
-
+    
         if self.state['t'].current_date.weekday() == 0:
             self.state['operator'].work_a_day()
             
