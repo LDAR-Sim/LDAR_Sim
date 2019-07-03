@@ -289,9 +289,10 @@ class ldar_sim:
                     break
 
         # Make maps and append site-level DD and MCB data
-        for m in self.state['methods']:
-            m.make_maps()
-            m.site_reports()
+        if self.parameters['make_maps'] == True:
+            for m in self.state['methods']:
+                m.make_maps()
+                m.site_reports()
     
         # Generate some dataframes           
         for site in self.state['sites']:
@@ -327,7 +328,8 @@ class ldar_sim:
         site_df.to_csv(output_directory + '/sites_output_' + self.parameters['simulation'] + '.csv', index = False)
         
         # Make plots
-        make_plots(leak_df, time_df, site_df, self.parameters['simulation'], output_directory)
+        if self.parameters['make_maps'] == True:
+            make_plots(leak_df, time_df, site_df, self.parameters['simulation'], output_directory)
 
         # Write metadata
         metadata = open(output_directory + '/metadata_' + self.parameters['simulation'] + '.txt','w')

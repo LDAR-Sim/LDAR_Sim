@@ -22,11 +22,11 @@ import datetime
 
 #------------------------------------------------------------------------------
 #-----------------------------Global parameters--------------------------------
-master_output_folder = 'count_test3/'
+master_output_folder = 'count_test5/'
 ref_program = 'Regulatory OGI'      # Name must match reference program below
-n_simulations = 5                   # Minimum of 2; recommended 10+
-n_timesteps = 2000                  # Spin-up is 365 days; Up to ~5600 for 16 year nc file
-start_year = 2001
+n_simulations = 2                   # Minimum of 2; recommended 10+
+n_timesteps = 1000                  # Spin-up is 365 days; Up to ~5600 for 16 year nc file
+start_year = 2003
 an_data = 'an_2003_2018_AB.nc'
 fc_data = 'fc_2003_2018_AB.nc'
 sites = 'AER_Baytex_template.csv'
@@ -34,6 +34,8 @@ leaks = 'rates_Clearstone.csv'
 counts = 'counts_Clearstone.csv'
 vents = 'ZA_site_emissions_2018.csv'
 wd = 'D:\OneDrive - University of Calgary\Documents\Thomas\PhD\Thesis\LDAR_Sim\model\python_v2'
+make_plots = False
+make_maps = False
 
 #-----------------------------Define programs----------------------------------
 programs = [
@@ -66,7 +68,9 @@ programs = [
             'consider_venting': True,
             'repair_delay': 14,
             'LPR': 0.00133,           
-            'max_det_op': 0.00                  # Operator max additional detection probability of largest leak
+            'max_det_op': 0.00,
+            'make_plots': make_plots,
+            'make_maps': make_maps
         },
         {
             'methods': {
@@ -108,7 +112,9 @@ programs = [
             'consider_venting': False,
             'repair_delay': 14,
             'LPR': 0.00133,           
-            'max_det_op': 0.00                  # Operator max additional detection probability of largest leak
+            'max_det_op': 0.00,
+            'make_plots': make_plots,
+            'make_maps': make_maps
         },
         {
             'methods': {
@@ -150,7 +156,9 @@ programs = [
             'consider_venting': True,
             'repair_delay': 14,
             'LPR': 0.00133,          
-            'max_det_op': 0.00                  # Operator max additional detection probability of largest leak
+            'max_det_op': 0.00,
+            'make_plots': make_plots,
+            'make_maps': make_maps
         },
         ]
 

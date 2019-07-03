@@ -60,17 +60,17 @@ for i in range(n_simulations):
 #                             'cost_per_day': 400,
 #                             'reporting_delay': 2
 #                             },
-                    'OGI': {
-                             'name': 'OGI',
-                             'n_crews': 1,
-                             'min_temp': -10,
-                             'max_wind': 20,
-                             'max_precip': 1,
-                             'min_interval': 60,
-                             'max_workday': 10,  
-                             'cost_per_day': 600,
-                             'reporting_delay': 2
-                             },
+#                    'OGI': {
+#                             'name': 'OGI',
+#                             'n_crews': 1,
+#                             'min_temp': -10,
+#                             'max_wind': 20,
+#                             'max_precip': 1,
+#                             'min_interval': 60,
+#                             'max_workday': 10,  
+#                             'cost_per_day': 600,
+#                             'reporting_delay': 2
+#                             },
 #                    'OGI_FU': {
 #                             'name': 'OGI_FU',
 #                             'n_crews': 2,
@@ -114,12 +114,14 @@ for i in range(n_simulations):
         'leak_file': 'rates_Clearstone.csv',
         'count_file': 'counts_Clearstone.csv',
         'vent_file': 'ZA_site_emissions_2018.csv',          # File containing site-level total emissions in g/sec
-        'output_folder': 'OGI_test',
+        'output_folder': 'OGI_test3',
         'working_directory': "D:\OneDrive - University of Calgary\Documents\Thomas\PhD\Thesis\LDAR_Sim\model\python_v2",
         'LPR': 0.00133,
         'consider_daylight': True,
         'consider_venting': True,
-        'max_det_op': 0.00   # Operator max additional detection probability of largest leak
+        'max_det_op': 0.00,   # Operator max additional detection probability of largest leak
+        'make_plots': False,
+        'make_maps': False
     }
     
 #------------------------------------------------------------------------------
