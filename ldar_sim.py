@@ -5,6 +5,7 @@ import os
 import datetime
 import sys
 import random
+from sensitivity import *
 from operator_agent import *
 from OGI_company import *
 from M21_company import *
@@ -25,6 +26,16 @@ class ldar_sim:
         self.state = state
         self.parameters = parameters
         self.timeseries = timeseries
+        
+        # Read in data files
+        self.state['empirical_counts'] = np.array(pd.read_csv(self.parameters['count_file']).iloc[:, 0])
+        self.state['empirical_leaks'] = np.array(pd.read_csv(self.parameters['leak_file']).iloc [:, 0])*84. # Convert g/s to kg/day
+        if self.parameters['consider_venting'] == True:
+            self.state['empirical_sites'] = np.array(pd.read_csv(self.parameters['vent_file']).iloc [:, 0])*84. # Convert g/s to kg/day
+        
+        # Configure sensitivity analysis, if requested
+        if self.parameters['sensitivity'][0] == True:
+            self.sensitivity = sensitivity(self.parameters, self.timeseries, self.state)
 
         # Read in the sites as a list of dictionaries
         print('Initializing sites...')
@@ -85,28 +96,23 @@ class ldar_sim:
                 print ('Cannot add this method: ' + m)
 
         # Initialize baseline leaks for each site
-        # First, generate initial leak count for each site
+        # Generate initial leak count for each site
         print('Initializing leaks...')
-        empirical_counts = pd.read_csv(self.parameters['count_file'])
-        empirical_counts = np.array(empirical_counts.iloc[:, 0])
         for site in self.state['sites']:
-            n_leaks = empirical_counts[np.random.randint(0, len(empirical_counts))]
+            n_leaks = self.state['empirical_counts'][np.random.randint(0, len(self.state['empirical_counts']))]
             site.update({'initial_leaks': n_leaks})
             self.state['init_leaks'].append(site['initial_leaks'])
 
-        # Second, load empirical leak-size data, switch from pandas to numpy (for speed), and convert g/s to kg/day
-        self.empirical_leaks = pd.read_csv(self.parameters['leak_file'])
-        self.empirical_leaks = np.array (self.empirical_leaks.iloc [:, 0])*84.
-        self.state['max_rate'] = max(self.empirical_leaks)
+        self.state['max_rate'] = max(self.state['empirical_leaks'])
 
-        # Third, for each leak, create a dictionary and populate values for relevant keys
+        # For each leak, create a dictionary and populate values for relevant keys
         for site in self.state['sites']:
             if site['initial_leaks'] > 0:
                 for leak in range(site['initial_leaks']):
                     self.state['leaks'].append({
                                                 'leak_ID': site['facility_ID'] + '_' + str(len(self.state['leaks']) + 1).zfill(10),
                                                 'facility_ID': site['facility_ID'],
-                                                'rate': self.empirical_leaks[np.random.randint(0, len(self.empirical_leaks))],
+                                                'rate': self.state['empirical_leaks'][np.random.randint(0, len(self.state['empirical_leaks']))],
                                                 'status': 'active',
                                                 'tagged': False,
                                                 'days_active': 0,
@@ -132,25 +138,21 @@ class ldar_sim:
             
         # Initialize empirical distribution of vented emissions
         if self.parameters['consider_venting'] == True:
-        
-        # Load empirical site emissions data, switch from pandas to numpy (for speed), and convert g/s to kg/day
-            self.empirical_site = pd.read_csv(self.parameters['vent_file'])
-            self.empirical_site = np.array (self.empirical_site.iloc [:, 0])*84.
-            
+                  
         # Run Monte Carlo simulations to get distribution of vented emissions
             for i in range(1000):
-                n_MC_leaks = empirical_counts[np.random.randint(0, len(empirical_counts))]
+                n_MC_leaks = self.state['empirical_counts'][np.random.randint(0, len(self.state['empirical_counts']))]
                 MC_leaks = []
                 for leak in range(n_MC_leaks):
-                    MC_leaks.append(self.empirical_leaks[np.random.randint(0, len(self.empirical_leaks))])
+                    MC_leaks.append(self.state['empirical_leaks'][np.random.randint(0, len(self.state['empirical_leaks']))])
                 MC_leak_total = sum(MC_leaks)
-                MC_site_total = self.empirical_site[np.random.randint(0, len(self.empirical_site))]
+                MC_site_total = self.state['empirical_sites'][np.random.randint(0, len(self.state['empirical_sites']))]
                 MC_vent_total = MC_site_total - MC_leak_total
                 self.state['empirical_vents'].append(MC_vent_total)
             
             # Change negatives to zero
             self.state['empirical_vents'] = [0 if i < 0 else i for i in self.state['empirical_vents']]
-            
+                    
         return
 
     def update (self):
@@ -200,7 +202,7 @@ class ldar_sim:
                     self.state['leaks'].append({
                                                 'leak_ID': site['facility_ID'] + '_' + str(len(self.state['leaks']) + 1).zfill(10),
                                                 'facility_ID': site['facility_ID'],
-                                                'rate': self.empirical_leaks[np.random.randint(0, len(self.empirical_leaks))],
+                                                'rate': self.state['empirical_leaks'][np.random.randint(0, len(self.state['empirical_leaks']))],
                                                 'status': 'active',
                                                 'days_active': 0,
                                                 'tagged': False,
@@ -337,6 +339,11 @@ class ldar_sim:
         str(datetime.datetime.now()))
         metadata.close()
         
+        # Write sensitivity analysis data, if requested
+        if self.parameters['sensitivity'][0] == True:
+            self.sensitivity.write_data()
+            
+            
         # Return to original working directory
         os.chdir(self.parameters['working_directory'])
 

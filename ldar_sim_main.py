@@ -18,14 +18,15 @@ import numpy as np
 
 #------------------------------------------------------------------------------
 #----------------------Static user-defined input parameters--------------------
-n_simulations = 2
+n_simulations = 3
 for i in range(n_simulations):
+              
     parameters = {
-        'simulation': str(i),
-        'timesteps': 1000,
-        'spin_up': 0,
-        'start_year': 2003,
-        'methods': {
+    'simulation': str(i),
+    'timesteps': 400,
+    'spin_up': 0,
+    'start_year': 2003,
+    'methods': {
 #                    'drone': {
 #                             'name': 'drone',
 #                             'n_crews': 2,
@@ -106,24 +107,25 @@ for i in range(n_simulations):
 #                             'follow_up_thresh': 60,
 #                             'reporting_delay': 2
 #                             }
-                    },
-    
-        'repair_delay': 14,
-        'an_data': 'an_2003_2018_AB.nc',
-        'fc_data': 'fc_2003_2018_AB.nc',
-        'infrastructure_file': 'AER_Baytex_template.csv',
-        'leak_file': 'rates_Clearstone.csv',
-        'count_file': 'counts_Clearstone.csv',
-        'vent_file': 'ZA_site_emissions_2018.csv',          # File containing site-level total emissions in g/sec
-        'output_folder': 'OGI_test5',
-        'working_directory': "D:\OneDrive - University of Calgary\Documents\Thomas\PhD\Thesis\LDAR_Sim\model\python_v2",
-        'LPR': 0.00133,
-        'consider_daylight': True,
-        'consider_venting': True,
-        'max_det_op': 0.00,   # Operator max additional detection probability of largest leak
-        'make_plots': True,
-        'make_maps': False
-    }
+                },
+
+    'an_data': 'an_2003_2018_AB.nc',
+    'fc_data': 'fc_2003_2018_AB.nc',
+    'infrastructure_file': 'AER_Baytex_template.csv',
+    'leak_file': 'rates_Clearstone.csv',
+    'count_file': 'counts_Clearstone.csv',
+    'vent_file': 'ZA_site_emissions_2018.csv',
+    'output_folder': 'sensitivity_test_7',
+    'working_directory': "D:\OneDrive - University of Calgary\Documents\Thomas\PhD\Thesis\LDAR_Sim\model\python_v2",
+    'LPR': 0.00133,         # Will be overwritten if sensitivity == True
+    'repair_delay': 14,     # Will be overwritten if sensitivity == True
+    'max_det_op': 0.00,     # Will be overwritten if sensitivity == True
+    'consider_daylight': True,
+    'consider_venting': True,
+    'make_plots': False,
+    'make_maps': False,
+    'sensitivity': [True, 'operator']
+        }
     
 #------------------------------------------------------------------------------
 #-----------------------Initialize dynamic model state-------------------------
@@ -139,6 +141,9 @@ for i in range(n_simulations):
         'weather': None,        # this gets assigned during initialization
         'daylight': None,
         'init_leaks': [],       # the initial leaks generated at timestep 1
+        'empirical_counts': [],
+        'empirical_leaks': [],
+        'empirical_sites': [],
         'empirical_vents': [],
         'max_rate': None        # the largest leak in the input file
     }
