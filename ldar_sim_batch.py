@@ -22,9 +22,9 @@ import datetime
 
 #------------------------------------------------------------------------------
 #-----------------------------Global parameters--------------------------------
-master_output_folder = 'spinup_test_5/'
-ref_program = 'Regulatory OGI'      # Name must match reference program below
-n_simulations = 15                   # Minimum of 2; recommended 10+
+master_output_folder = 'batch_sensitivity_3/'
+ref_program = 'OGI_constant'        # Name must match reference program below
+n_simulations = 2                   # Minimum of 2; recommended 10+
 n_timesteps = 1000                  # Up to ~5600 for 16 year nc file
 spin_up = 0
 start_year = 2003
@@ -51,10 +51,12 @@ programs = [
                              'min_interval': 100,
                              'max_workday': 10,  
                              'cost_per_day': 600,
-                             'reporting_delay': 2
+                             'reporting_delay': 2,
+                             'MDL': [0.47, 0.01]
                              }
                         },        
-            'output_folder': master_output_folder + 'Regulatory OGI',
+            'master_output_folder': master_output_folder,
+            'output_folder': master_output_folder + 'OGI_reference',
             'timesteps': n_timesteps,
             'start_year': start_year,
             'an_data': an_data,
@@ -65,86 +67,33 @@ programs = [
             'vent_file': vents,
             'working_directory': wd,
             'simulation': None,
-            'consider_daylight': True,
-            'consider_venting': True,
-            'repair_delay': 14,
-            'LPR': 0.00133,           
-            'max_det_op': 0.00,
-            'spin_up': spin_up,
-            'make_plots': make_plots,
-            'make_maps': make_maps
-        },
-        {
-            'methods': {
-                    'aircraft': {
-                             'name': 'aircraft',
-                             'n_crews': 1,
-                             'min_temp': -20,
-                             'max_wind': 5,
-                             'max_precip': 0,
-                             'min_interval': 100,
-                             'max_workday': 10,
-                             'cost_per_day': 2000,
-                             'follow_up_thresh': 110,
-                             'reporting_delay': 2
-                             },
-                    'OGI_FU': {
-                             'name': 'OGI_FU',
-                             'n_crews': 1,
-                             'min_temp': -10,
-                             'max_wind': 5,
-                             'max_precip': 1,
-                             'max_workday': 10,
-                             'cost_per_day': 600,
-                             'reporting_delay': 2
-                             }                        
-                        },        
-            'output_folder': master_output_folder + 'Aircraft',
-            'timesteps': n_timesteps,
-            'start_year': start_year,
-            'an_data': an_data,
-            'fc_data': fc_data,
-            'infrastructure_file': sites,
-            'leak_file': leaks,
-            'count_file': counts,
-            'vent_file': vents,
-            'working_directory': wd,
-            'simulation': None,
-            'consider_daylight': True,
+            'consider_daylight': False,
             'consider_venting': False,
             'repair_delay': 14,
             'LPR': 0.00133,           
             'max_det_op': 0.00,
             'spin_up': spin_up,
             'make_plots': make_plots,
-            'make_maps': make_maps
+            'make_maps': make_maps,
+            'sensitivity': [True, 'reference']
         },
         {
             'methods': {
-                    'truck': {
-                             'name': 'truck',
-                             'n_crews': 1,
-                             'min_temp': -35,
-                             'max_wind': 25,
-                             'max_precip': 10,
-                             'min_interval': 100,
-                             'max_workday': 10,
-                             'cost_per_day': 500,
-                             'follow_up_thresh': 0,
-                             'reporting_delay': 2
-                             },
-                    'OGI_FU': {
-                             'name': 'OGI_FU',
+                    'OGI': {
+                             'name': 'OGI',
                              'n_crews': 1,
                              'min_temp': -10,
                              'max_wind': 5,
                              'max_precip': 1,
-                             'max_workday': 10,
+                             'min_interval': 100,
+                             'max_workday': 10,  
                              'cost_per_day': 600,
-                             'reporting_delay': 2
-                             }                        
+                             'reporting_delay': 2,
+                             'MDL': [0.47, 0.01]
+                             }
                         },        
-            'output_folder': master_output_folder + 'Truck',
+            'master_output_folder': master_output_folder,
+            'output_folder': master_output_folder + 'OGI_sensitivity',
             'timesteps': n_timesteps,
             'start_year': start_year,
             'an_data': an_data,
@@ -155,15 +104,16 @@ programs = [
             'vent_file': vents,
             'working_directory': wd,
             'simulation': None,
-            'consider_daylight': True,
-            'consider_venting': True,
+            'consider_daylight': False,
+            'consider_venting': False,
             'repair_delay': 14,
-            'LPR': 0.00133,          
+            'LPR': 0.00133,           
             'max_det_op': 0.00,
             'spin_up': spin_up,
             'make_plots': make_plots,
-            'make_maps': make_maps
-        },
+            'make_maps': make_maps,
+            'sensitivity': [True, 'OGI']
+        }
         ]
 
 output_directory = programs[0]['working_directory'] + '/' + master_output_folder

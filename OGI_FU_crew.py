@@ -112,7 +112,7 @@ class OGI_FU_crew:
         # Detection module from Ravikumar et al 2018, assuming 3 m distance
         for leak in leaks_present:
             k = np.random.normal(4.9, 0.3)
-            x0 = np.random.normal(0.47, 0.01)
+            x0 = np.random.normal(self.config['MDL'][0], self.config['MDL'][1])
             if leak['rate'] == 0:
                 prob_detect = 0
             else:

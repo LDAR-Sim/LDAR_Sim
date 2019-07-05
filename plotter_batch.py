@@ -40,13 +40,16 @@ def batch_plots(output_directory, start_year, spin_up, ref_program):
             if os.path.isfile(os.path.join(path,j)) and 'timeseries' in j:
                 file_lists[i].append(j)
                 
+    # Delete any empty lists (to enable additional folders, e.g. for sensitivity analysis)
+    file_lists = [item for item in file_lists if len(item) > 0]
+            
     # Read csv files to lists
     all_data = [[] for i in range(len(file_lists))]
     for i in range(len(file_lists)):
         for file in file_lists[i]:
             path = output_directory + os.listdir()[i] + '/' + file
             all_data[i].append(pd.read_csv(path))
-
+            
     # Get vector of dates
     dates = pd.read_csv(output_directory + os.listdir()[0] + '/' + file_lists[0][0])['datetime']
     dates = pd.to_datetime(dates)
@@ -62,11 +65,6 @@ def batch_plots(output_directory, start_year, spin_up, ref_program):
         # New columns
         dfs[i]['mean'] = dfs[i].iloc[:,0:n_cols].mean(axis = 1)
         dfs[i]['std'] = dfs[i].iloc[:,0:n_cols].std(axis = 1)
-#        dfs[i]['std_rol10'] = dfs[i]['std'].rolling(10, center = True).mean()
-#        dfs[i]['low'] = dfs[i]['mean'] - 2*dfs[i]['std_rol10']
-#        dfs[i]['high'] = dfs[i]['mean'] + 2*dfs[i]['std_rol10']               
-#        dfs[i]['low'] = dfs[i]['mean'] - 2*dfs[i]['std']
-#        dfs[i]['high'] = dfs[i]['mean'] + 2*dfs[i]['std']
         dfs[i]['low'] = dfs[i].iloc[:,0:n_cols].quantile(0.025, axis=1)
         dfs[i]['high'] = dfs[i].iloc[:,0:n_cols].quantile(0.975, axis=1)
         dfs[i]['program'] = os.listdir()[i]

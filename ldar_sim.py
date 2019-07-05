@@ -33,10 +33,6 @@ class ldar_sim:
         if self.parameters['consider_venting'] == True:
             self.state['empirical_sites'] = np.array(pd.read_csv(self.parameters['vent_file']).iloc [:, 0])*84. # Convert g/s to kg/day
         
-        # Configure sensitivity analysis, if requested
-        if self.parameters['sensitivity'][0] == True:
-            self.sensitivity = sensitivity(self.parameters, self.timeseries, self.state)
-
         # Read in the sites as a list of dictionaries
         print('Initializing sites...')
         with open(self.parameters['infrastructure_file']) as f:
@@ -68,6 +64,10 @@ class ldar_sim:
                 sys.exit('Simulation terminated: One or more sites is too far East and is outside the spatial bounds of your weather data!')
             if float(site['lon'])%360 < min(self.state['weather'].longitude):
                 sys.exit('Simulation terminated: One or more sites is too far West and is outside the spatial bounds of your weather data!')
+
+        # Configure sensitivity analysis, if requested (code must remain here - after site and before method initialization)
+        if self.parameters['sensitivity'][0] == True:
+            self.sensitivity = sensitivity(self.parameters, self.timeseries, self.state)
 
         # Initialize method(s) to be used; append to state
         for m in self.parameters['methods']:
@@ -342,8 +342,7 @@ class ldar_sim:
         # Write sensitivity analysis data, if requested
         if self.parameters['sensitivity'][0] == True:
             self.sensitivity.write_data()
-            
-            
+                    
         # Return to original working directory
         os.chdir(self.parameters['working_directory'])
 
