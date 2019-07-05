@@ -100,6 +100,8 @@ class ldar_sim:
         print('Initializing leaks...')
         for site in self.state['sites']:
             n_leaks = self.state['empirical_counts'][np.random.randint(0, len(self.state['empirical_counts']))]
+            if n_leaks < 0: # This can happen during sensitivity analysis
+                n_leaks = 0
             site.update({'initial_leaks': n_leaks})
             self.state['init_leaks'].append(site['initial_leaks'])
 

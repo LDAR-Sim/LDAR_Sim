@@ -22,9 +22,9 @@ import datetime
 
 #------------------------------------------------------------------------------
 #-----------------------------Global parameters--------------------------------
-master_output_folder = 'batch_sensitivity_3/'
+master_output_folder = 'batch_sensitivity_8/'
 ref_program = 'OGI_constant'        # Name must match reference program below
-n_simulations = 2                   # Minimum of 2; recommended 10+
+n_simulations = 5                   # Minimum of 2; recommended 10+
 n_timesteps = 1000                  # Up to ~5600 for 16 year nc file
 spin_up = 0
 start_year = 2003

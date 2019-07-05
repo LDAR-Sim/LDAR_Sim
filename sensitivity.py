@@ -113,34 +113,40 @@ class sensitivity:
             return
 
     def write_data (self):
-        
-        # Make folder for sensitivity analysis outputs
-        output_directory = os.path.join(self.parameters['working_directory'], self.parameters['master_output_folder'], 'sensitivity_analysis')
-        if not os.path.exists(output_directory):
-            os.makedirs(output_directory) 
-        
+              
         if self.parameters['sensitivity'][1] == 'operator':
+
+            # Make folder for sensitivity analysis outputs
+            output_directory = os.path.join(self.parameters['working_directory'], self.parameters['output_folder'], 'sensitivity_analysis')
+            if not os.path.exists(output_directory):
+                os.makedirs(output_directory) 
+
             
             # Build output dataframe
             df_dict = {
-                    # Sensitivity input variables here
-                    'simulation': [self.parameters['simulation']],
-                    'LSD_shift': [self.sens_params['LSD_shift']],
-                    'LSD_stretch': [self.sens_params['LSD_stretch']],
-                    'LSD_outliers': [self.sens_params['LSD_outliers']],
-                    'LCD_shift': [self.sens_params['LCD_shift']],
-                    'LCD_stretch': [self.sens_params['LCD_stretch']],
-                    'LCD_outliers': [self.sens_params['LCD_outliers']],
-                    'site_rate_shift': [self.sens_params['site_rate_shift']],
-                    'site_rate_stretch': [self.sens_params['site_rate_stretch']],
-                    'site_rate_outliers': [self.sens_params['site_rate_outliers']],
-                    'repair_delay': [self.sens_params['repair_delay']],
-                    'LPR': [self.sens_params['LPR']],
-                    'max_det_op': [self.sens_params['max_det_op']],
+            # SA inputs
+            'simulation': [self.parameters['simulation']],
+            'LSD_shift': [self.sens_params['LSD_shift']],
+            'LSD_stretch': [self.sens_params['LSD_stretch']],
+            'LSD_outliers': [self.sens_params['LSD_outliers']],
+            'LCD_shift': [self.sens_params['LCD_shift']],
+            'LCD_stretch': [self.sens_params['LCD_stretch']],
+            'LCD_outliers': [self.sens_params['LCD_outliers']],
+            'site_rate_shift': [self.sens_params['site_rate_shift']],
+            'site_rate_stretch': [self.sens_params['site_rate_stretch']],
+            'site_rate_outliers': [self.sens_params['site_rate_outliers']],
+            'repair_delay': [self.sens_params['repair_delay']],
+            'LPR': [self.sens_params['LPR']],
+            'max_det_op': [self.sens_params['max_det_op']],
 
-                    # Output metrics here
-                    'dail_site_em_mean': np.mean(np.array(self.timeseries['daily_emissions_kg'][self.parameters['spin_up']:])/len(self.state['sites'])),
-                    'dail_site_em_std': np.std(np.array(self.timeseries['daily_emissions_kg'][self.parameters['spin_up']:])/len(self.state['sites'])),
+            # SA outputs
+            'mean_dail_site_em': np.mean(np.array(self.timeseries['daily_emissions_kg'][self.parameters['spin_up']:])/len(self.state['sites'])),
+            'std_dail_site_em': np.std(np.array(self.timeseries['daily_emissions_kg'][self.parameters['spin_up']:])/len(self.state['sites'])),
+            'cum_repaired_leaks': self.timeseries['cum_repaired_leaks'][-1:],
+            'med_active_leaks': np.median(np.array(self.timeseries['active_leaks'][self.parameters['spin_up']:])),
+            'med_days_active': np.median(pd.DataFrame(self.state['leaks'])['days_active']),
+            'med_leak_rate': np.median(pd.DataFrame(self.state['leaks'])['rate']),
+            'cum_init_leaks': np.sum(pd.DataFrame(self.state['sites'])['initial_leaks']),
                     }
             
             # Build a dataframe for export
@@ -159,6 +165,12 @@ class sensitivity:
                 
                 
         if self.parameters['sensitivity'][1] == 'reference':
+
+            # Make folder for sensitivity analysis outputs
+            output_directory = os.path.join(self.parameters['working_directory'], self.parameters['master_output_folder'], 'sensitivity_analysis')
+            if not os.path.exists(output_directory):
+                os.makedirs(output_directory) 
+
             
             # Sensitivity input variables here
             OGI_times = []
@@ -172,6 +184,7 @@ class sensitivity:
             mean_OGI_required_surveys = np.mean(OGI_surveys)
             
             df_dict = {
+            # SA inputs
             'simulation': [self.parameters['simulation']],
             'consider_daylight': [self.parameters['consider_daylight']],
             'n_crews': [self.parameters['methods']['OGI']['n_crews']],
@@ -186,9 +199,20 @@ class sensitivity:
             'mean_OGI_time': [mean_OGI_time],
             'mean_OGI_required_surveys': [mean_OGI_required_surveys],
            
-            # Output metrics here
-            'dail_site_em_mean': np.mean(np.array(self.timeseries['daily_emissions_kg'][self.parameters['spin_up']:])/len(self.state['sites'])),
-            'dail_site_em_std': np.std(np.array(self.timeseries['daily_emissions_kg'][self.parameters['spin_up']:])/len(self.state['sites']))
+            # SA outputs
+            'mean_dail_site_em': np.mean(np.array(self.timeseries['daily_emissions_kg'][self.parameters['spin_up']:])/len(self.state['sites'])),
+            'std_dail_site_em': np.std(np.array(self.timeseries['daily_emissions_kg'][self.parameters['spin_up']:])/len(self.state['sites'])),
+            'cum_program_cost': np.sum(np.array(self.timeseries['OGI_cost'][self.parameters['spin_up']:])),
+            'cum_repaired_leaks': self.timeseries['cum_repaired_leaks'][-1:],
+            'med_active_leaks': np.median(np.array(self.timeseries['active_leaks'][self.parameters['spin_up']:])),
+            'med_prop_sites_avail': np.median(np.array(self.timeseries['OGI_prop_sites_avail'][self.parameters['spin_up']:])),
+
+            'med_days_active': np.median(pd.DataFrame(self.state['leaks'])['days_active']),
+            'med_leak_rate': np.median(pd.DataFrame(self.state['leaks'])['rate']),
+
+            'cum_init_leaks': np.sum(pd.DataFrame(self.state['sites'])['initial_leaks']),
+            'cum_missed_leaks': np.sum(pd.DataFrame(self.state['sites'])['OGI_missed_leaks']),
+            'cum_OGI_surveys': np.sum(pd.DataFrame(self.state['sites'])['OGI_surveys_conducted'])
                 }
 
             # Build a dataframe for export
@@ -208,6 +232,11 @@ class sensitivity:
         
         if self.parameters['sensitivity'][1] == 'OGI':
             
+            # Make folder for sensitivity analysis outputs
+            output_directory = os.path.join(self.parameters['working_directory'], self.parameters['master_output_folder'], 'sensitivity_analysis')
+            if not os.path.exists(output_directory):
+                os.makedirs(output_directory) 
+
             # Sensitivity input variables here
             OGI_times = []
             for site in self.state['sites']:
@@ -220,6 +249,7 @@ class sensitivity:
             mean_OGI_required_surveys = np.mean(OGI_surveys)
 
             df_dict = {
+            # SA inputs
             'simulation': [self.parameters['simulation']],
             'consider_daylight': [self.sens_params['consider_daylight']],
             'n_crews': [self.sens_params['n_crews']],
@@ -234,9 +264,20 @@ class sensitivity:
             'mean_OGI_time': mean_OGI_time,
             'mean_OGI_required_surveys': mean_OGI_required_surveys,
             
-            # Output metrics here
-            'dail_site_em_mean': np.mean(np.array(self.timeseries['daily_emissions_kg'][self.parameters['spin_up']:])/len(self.state['sites'])),
-            'dail_site_em_std': np.std(np.array(self.timeseries['daily_emissions_kg'][self.parameters['spin_up']:])/len(self.state['sites']))
+            # SA outputs
+            'mean_dail_site_em': np.mean(np.array(self.timeseries['daily_emissions_kg'][self.parameters['spin_up']:])/len(self.state['sites'])),
+            'std_dail_site_em': np.std(np.array(self.timeseries['daily_emissions_kg'][self.parameters['spin_up']:])/len(self.state['sites'])),
+            'cum_program_cost': np.sum(np.array(self.timeseries['OGI_cost'][self.parameters['spin_up']:])),
+            'cum_repaired_leaks': self.timeseries['cum_repaired_leaks'][-1:],
+            'med_active_leaks': np.median(np.array(self.timeseries['active_leaks'][self.parameters['spin_up']:])),
+            'med_prop_sites_avail': np.median(np.array(self.timeseries['OGI_prop_sites_avail'][self.parameters['spin_up']:])),
+
+            'med_days_active': np.median(pd.DataFrame(self.state['leaks'])['days_active']),
+            'med_leak_rate': np.median(pd.DataFrame(self.state['leaks'])['rate']),
+
+            'cum_init_leaks': np.sum(pd.DataFrame(self.state['sites'])['initial_leaks']),
+            'cum_missed_leaks': np.sum(pd.DataFrame(self.state['sites'])['OGI_missed_leaks']),
+            'cum_OGI_surveys': np.sum(pd.DataFrame(self.state['sites'])['OGI_surveys_conducted'])
                 }
 
             # Build a dataframe for export
@@ -262,6 +303,7 @@ class sensitivity:
             
                 # Build new dataframe
                 df_combine = {
+                # SA inputs
                 'simulation': list(df_OGI['simulation']),
                 'consider_daylight': list(df_OGI['consider_daylight']),
                 'n_crews_dif': list(df_ref['n_crews'] - df_OGI['n_crews']),
@@ -276,8 +318,9 @@ class sensitivity:
                 'mean_OGI_time_dif': list(df_ref['mean_OGI_time'] - df_OGI['mean_OGI_time']),
                 'mean_OGI_required_surveys_dif': list(df_ref['mean_OGI_required_surveys'] - df_OGI['mean_OGI_required_surveys']),
                 
-                'dail_site_em_mean_dif': list(df_ref['dail_site_em_mean'] - df_OGI['dail_site_em_mean']),
-                'dail_site_em_std_dif': list(df_ref['dail_site_em_std'] - df_OGI['dail_site_em_std'])
+                # SA outputs
+                'mean_dail_site_em_dif': list(df_ref['mean_dail_site_em'] - df_OGI['mean_dail_site_em']),
+                'std_dail_site_em_dif': list(df_ref['std_dail_site_em'] - df_OGI['std_dail_site_em'])
                     }
     
                 # Export
