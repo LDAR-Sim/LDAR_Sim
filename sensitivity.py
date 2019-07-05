@@ -139,8 +139,8 @@ class sensitivity:
                     'max_det_op': [self.sens_params['max_det_op']],
 
                     # Output metrics here
-                    'dail_site_em_mean': np.mean(np.array(self.timeseries['daily_emissions_kg'])/len(self.state['sites'])),
-                    'dail_site_em_std': np.std(np.array(self.timeseries['daily_emissions_kg'])/len(self.state['sites'])),
+                    'dail_site_em_mean': np.mean(np.array(self.timeseries['daily_emissions_kg'][self.parameters['spin_up']:])/len(self.state['sites'])),
+                    'dail_site_em_std': np.std(np.array(self.timeseries['daily_emissions_kg'][self.parameters['spin_up']:])/len(self.state['sites'])),
                     }
             
             # Build a dataframe for export
@@ -187,8 +187,8 @@ class sensitivity:
             'mean_OGI_required_surveys': [mean_OGI_required_surveys],
            
             # Output metrics here
-            'dail_site_em_mean': np.mean(np.array(self.timeseries['daily_emissions_kg'])/len(self.state['sites'])),
-            'dail_site_em_std': np.std(np.array(self.timeseries['daily_emissions_kg'])/len(self.state['sites']))
+            'dail_site_em_mean': np.mean(np.array(self.timeseries['daily_emissions_kg'][self.parameters['spin_up']:])/len(self.state['sites'])),
+            'dail_site_em_std': np.std(np.array(self.timeseries['daily_emissions_kg'][self.parameters['spin_up']:])/len(self.state['sites']))
                 }
 
             # Build a dataframe for export
@@ -235,8 +235,8 @@ class sensitivity:
             'mean_OGI_required_surveys': mean_OGI_required_surveys,
             
             # Output metrics here
-            'dail_site_em_mean': np.mean(np.array(self.timeseries['daily_emissions_kg'])/len(self.state['sites'])),
-            'dail_site_em_std': np.std(np.array(self.timeseries['daily_emissions_kg'])/len(self.state['sites']))
+            'dail_site_em_mean': np.mean(np.array(self.timeseries['daily_emissions_kg'][self.parameters['spin_up']:])/len(self.state['sites'])),
+            'dail_site_em_std': np.std(np.array(self.timeseries['daily_emissions_kg'][self.parameters['spin_up']:])/len(self.state['sites']))
                 }
 
             # Build a dataframe for export
@@ -281,7 +281,7 @@ class sensitivity:
                     }
     
                 # Export
-                df_new = pd.DataFrame(df_combine)            
+                df_new = pd.DataFrame(df_combine) 
                 output_file = os.path.join(output_directory, 'comparison.csv')                        
                 df_new.to_csv(output_file, index = False)                                                                                   
 
@@ -291,5 +291,5 @@ class sensitivity:
             
             
             
-            
+                            
             
