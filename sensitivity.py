@@ -92,16 +92,16 @@ class sensitivity:
         if self.parameters['sensitivity'][1] == 'OGI':
             self.sens_params = {
             'consider_daylight': bool(np.random.binomial(1, 0.5)),
-            'n_crews': 1,
-            'min_temp': 1,
-            'max_wind': 1,
-            'max_precip': 1,
-            'min_interval': 1,
-            'max_workday': 10,  
-            'reporting_delay': 1,
-            'OGI_time': 100,
-            'OGI_required_surveys': 1 ,
-            'MDL': [np.random.uniform(0, 2), 0.01]
+            'n_crews': np.random.poisson(0.5) + 1,
+            'min_temp': np.random.normal(-20, 10),
+            'max_wind': np.random.normal(15, 3), 
+            'max_precip': np.random.normal(3, 1), # Need to change according to measurement units
+            'max_workday': round(np.random.uniform(6, 14)),  
+            'reporting_delay': np.random.uniform(0,7),
+            'OGI_time': np.random.uniform(30,300),
+            'OGI_required_surveys': np.random.uniform(1, 4),
+            'min_interval': np.random.uniform(0, 90),
+            'MDL': [np.random.uniform(0, 2.5), 0.01]
             }     
 
             # Set scalar parameters
