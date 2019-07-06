@@ -23,22 +23,20 @@ class sensitivity:
         
         if self.parameters['sensitivity'][1] == 'operator':
 
+            # Define SA parameters
             self.sens_params = {
-            'LSD_shift': np.random.normal(0, 0.5),
-            'LSD_stretch': np.random.normal(1, 0.2),
             'LSD_outliers': int(np.round(np.random.normal(0, 1))),
+            'LSD_samples': int(np.random.normal(len(self.state['empirical_leaks']), len(self.state['empirical_leaks'])/4)),
             
-            'LCD_shift': int(np.round(np.random.normal(0, 2))),
-            'LCD_stretch': np.random.normal(1, 0.2),
             'LCD_outliers': int(np.round(np.random.normal(0, 1))),
+            'LCD_samples': int(np.random.normal(len(self.state['empirical_counts']), len(self.state['empirical_counts'])/4)),
             
-            'site_rate_shift': np.random.normal(0, 0.5),
-            'site_rate_stretch': np.random.normal(1, 0.2),
             'site_rate_outliers': int(np.round(np.random.normal(0, 1))),
+            'site_rate_samples': int(np.random.normal(len(self.state['empirical_sites']), len(self.state['empirical_sites'])/4)),
             
+            'LPR': np.random.gamma(1.39, 0.00338),
             'repair_delay': np.random.uniform(0, 100),
-            'LPR': np.random.triangular(0.000133, 0.00133, 0.0133),
-            'max_det_op': np.random.beta(1, 10)
+            'max_det_op': np.random.exponential(1/10)
             }  
             
             # Set scalar parameters
@@ -47,38 +45,48 @@ class sensitivity:
             self.parameters['max_det_op'] = self.sens_params['max_det_op']
             
             # Modify input distributions - leak rates
-            self.state['empirical_leaks'] = (self.state['empirical_leaks'] + self.sens_params['LSD_shift']) * self.sens_params['LSD_stretch']
             if self.sens_params['LSD_outliers'] < 0:
                 for i in range(abs(self.sens_params['LSD_outliers'])):
                     self.state['empirical_leaks'] = np.delete(self.state['empirical_leaks'], np.where(self.state['empirical_leaks'] == max(self.state['empirical_leaks'])))
-                
             if self.sens_params['LSD_outliers'] > 0:
                 for i in range(self.sens_params['LSD_outliers']):
                     new_value = max(self.state['empirical_leaks']) * 2
                     self.state['empirical_leaks'] = np.append(self.state['empirical_leaks'], new_value)
+
+            while self.sens_params['LSD_samples'] < 10:
+                self.sens_params['LSD_samples'] = int(np.random.normal(len(self.state['empirical_leaks']), len(self.state['empirical_leaks'])/4))
                         
+            self.state['empirical_leaks'] = np.random.choice(self.state['empirical_leaks'], self.sens_params['LSD_samples'])
+                
             # Modify input distributions - leak counts
-            self.state['empirical_counts'] = ((self.state['empirical_counts'] + self.sens_params['LCD_shift']) * self.sens_params['LCD_stretch']).astype(int)
             if self.sens_params['LCD_outliers'] < 0:
                 for i in range(abs(self.sens_params['LCD_outliers'])):
-                    self.state['empirical_counts'] = np.delete(self.state['empirical_counts'], np.where(self.state['empirical_counts'] == max(self.state['empirical_counts'])))
-                
+                    self.state['empirical_counts'] = np.delete(self.state['empirical_counts'], np.where(self.state['empirical_counts'] == max(self.state['empirical_counts'])))                
             if self.sens_params['LCD_outliers'] > 0:
                 for i in range(self.sens_params['LCD_outliers']):
                     new_value = max(self.state['empirical_counts']) * 2
                     self.state['empirical_counts'] = np.append(self.state['empirical_counts'], new_value)
+
+            while self.sens_params['LCD_samples'] < 10:
+                self.sens_params['LCD_samples'] = int(np.random.normal(len(self.state['empirical_counts']), len(self.state['empirical_counts'])/4))
+                        
+            self.state['empirical_counts'] = np.random.choice(self.state['empirical_counts'], self.sens_params['LCD_samples'])
+
             
-            # Modify input distributions - site emissions (for venting)
+            # Modify input distributions - site emissions (for venting - if requested)
             if self.parameters['consider_venting'] == True:
-                self.state['empirical_sites'] = (self.state['empirical_sites'] + self.sens_params['site_rate_shift']) * self.sens_params['site_rate_stretch']
                 if self.sens_params['site_rate_outliers'] < 0:
                     for i in range(abs(self.sens_params['site_rate_outliers'])):
-                        self.state['empirical_sites'] = np.delete(self.state['empirical_sites'], np.where(self.state['empirical_sites'] == max(self.state['empirical_sites'])))
-                
+                        self.state['empirical_sites'] = np.delete(self.state['empirical_sites'], np.where(self.state['empirical_sites'] == max(self.state['empirical_sites'])))               
                 if self.sens_params['site_rate_outliers'] > 0:
                     for i in range(self.sens_params['site_rate_outliers']):
                         new_value = max(self.state['empirical_sites']) * 2
                         self.state['empirical_sites'] = np.append(self.state['empirical_sites'], new_value)
+
+            while self.sens_params['site_rate_samples'] < 10:
+                self.sens_params['site_rate_samples'] = int(np.random.normal(len(self.state['empirical_sites']), len(self.state['empirical_sites'])/4))
+                        
+            self.state['empirical_sites'] = np.random.choice(self.state['empirical_sites'], self.sens_params['site_rate_samples'])
                       
         
         if self.parameters['sensitivity'][1] == 'OGI':
@@ -126,17 +134,14 @@ class sensitivity:
             df_dict = {
             # SA inputs
             'simulation': [self.parameters['simulation']],
-            'LSD_shift': [self.sens_params['LSD_shift']],
-            'LSD_stretch': [self.sens_params['LSD_stretch']],
             'LSD_outliers': [self.sens_params['LSD_outliers']],
-            'LCD_shift': [self.sens_params['LCD_shift']],
-            'LCD_stretch': [self.sens_params['LCD_stretch']],
+            'LSD_samples': [self.sens_params['LSD_samples']],
             'LCD_outliers': [self.sens_params['LCD_outliers']],
-            'site_rate_shift': [self.sens_params['site_rate_shift']],
-            'site_rate_stretch': [self.sens_params['site_rate_stretch']],
+            'LCD_samples': [self.sens_params['LCD_samples']],
             'site_rate_outliers': [self.sens_params['site_rate_outliers']],
-            'repair_delay': [self.sens_params['repair_delay']],
+            'site_rate_samples': [self.sens_params['site_rate_samples']],
             'LPR': [self.sens_params['LPR']],
+            'repair_delay': [self.sens_params['repair_delay']],
             'max_det_op': [self.sens_params['max_det_op']],
 
             # SA outputs
@@ -303,6 +308,7 @@ class sensitivity:
             
                 # Build new dataframe
                 df_combine = {
+                
                 # SA inputs
                 'simulation': list(df_OGI['simulation']),
                 'consider_daylight': list(df_OGI['consider_daylight']),
@@ -320,7 +326,19 @@ class sensitivity:
                 
                 # SA outputs
                 'mean_dail_site_em_dif': list(df_ref['mean_dail_site_em'] - df_OGI['mean_dail_site_em']),
-                'std_dail_site_em_dif': list(df_ref['std_dail_site_em'] - df_OGI['std_dail_site_em'])
+                'std_dail_site_em_dif': list(df_ref['std_dail_site_em'] - df_OGI['std_dail_site_em']),
+
+                'cum_program_cost_dif': list(df_ref['cum_program_cost'] - df_OGI['cum_program_cost']),
+                'repaired_leaks_dif': list(df_ref['cum_repaired_leaks'] - df_OGI['cum_repaired_leaks']),
+                'med_active_leaks_dif': list(df_ref['med_active_leaks'] - df_OGI['med_active_leaks']),
+                'med_prop_sites_avail_dif': list(df_ref['med_prop_sites_avail'] - df_OGI['med_prop_sites_avail']),
+
+                'med_days_active_dif': list(df_ref['med_days_active'] - df_OGI['med_days_active']),
+                'med_leak_rate_dif': list(df_ref['med_leak_rate'] - df_OGI['med_leak_rate']),
+
+                'cum_init_leaks_dif': list(df_ref['cum_init_leaks'] - df_OGI['cum_init_leaks']),
+                'cum_missed_leaks_dif': list(df_ref['cum_missed_leaks'] - df_OGI['cum_missed_leaks']),
+                'cum_OGI_surveys_dif': list(df_ref['cum_OGI_surveys'] - df_OGI['cum_OGI_surveys'])                             
                     }
     
                 # Export
@@ -329,10 +347,3 @@ class sensitivity:
                 df_new.to_csv(output_file, index = False)                                                                                   
 
             return
-            
-
-            
-            
-            
-                            
-            
