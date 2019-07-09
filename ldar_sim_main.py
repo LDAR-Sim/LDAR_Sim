@@ -15,17 +15,37 @@ from weather_lookup import *
 from ldar_sim import *
 from time_counter import *
 import numpy as np
+import time
 
 #------------------------------------------------------------------------------
 #----------------------Static user-defined input parameters--------------------
-n_simulations = 10
-for i in range(n_simulations):
-              
+n_simulations = 2
+for i in range(n_simulations):       
     parameters = {
     'simulation': str(i),
-    'timesteps': 1000,
+    'timesteps': 5000,
     'spin_up': 0,
     'start_year': 2003,
+    'an_data': 'an_2003_2018_AB.nc',
+    'fc_data': 'fc_2003_2018_AB.nc',
+    'infrastructure_file': 'AER_Baytex_template.csv',
+    'leak_file': 'rates_Clearstone.csv',
+    'count_file': 'counts_Clearstone.csv',
+    'vent_file': 'ZA_site_emissions_2018.csv',
+    'output_folder': 'solo_operator_2',
+    'working_directory': "D:\OneDrive - University of Calgary\Documents\Thomas\PhD\Thesis\LDAR_Sim\model\python_v2",
+    'LPR': 0.00133,         # Will be overwritten if sensitivity == True
+    'repair_delay': 14,     # Will be overwritten if sensitivity == True
+    'max_det_op': 0.00,     # Will be overwritten if sensitivity == True
+    'consider_daylight': True,
+    'consider_venting': True,
+    'write_data': True, # Must be TRUE to make plots and maps
+    'make_plots': True,
+    'make_maps': False,
+    'start_time': time.time(),
+    'sensitivity': {'perform': False, 
+                    'program': 'aircraft', 
+                    'batch': False},
     'methods': {
 #                    'drone': {
 #                             'name': 'drone',
@@ -71,7 +91,8 @@ for i in range(n_simulations):
 #                             'min_interval': 60,
 #                             'max_workday': 10,  
 #                             'cost_per_day': 600,
-#                             'reporting_delay': 2
+#                             'reporting_delay': 2,
+#                             'MDL': [0.47, 0.01]
 #                             },
 #                    'OGI_FU': {
 #                             'name': 'OGI_FU',
@@ -81,7 +102,8 @@ for i in range(n_simulations):
 #                             'max_precip': 5,
 #                             'max_workday': 10,
 #                             'cost_per_day': 600,
-#                             'reporting_delay': 2                             
+#                             'reporting_delay': 2  ,
+#                             'MDL': [0.47, 0.01]
 #                             },
 #                    'truck': {
 #                             'name': 'truck',
@@ -105,26 +127,10 @@ for i in range(n_simulations):
 #                             'max_workday': 10,
 #                             'cost_per_day': 2000,
 #                             'follow_up_thresh': 60,
-#                             'reporting_delay': 2
+#                             'reporting_delay': 2,
+#                             'MDL': 2000 # grams/hour
 #                             }
-                },
-
-    'an_data': 'an_2003_2018_AB.nc',
-    'fc_data': 'fc_2003_2018_AB.nc',
-    'infrastructure_file': 'AER_Baytex_template.csv',
-    'leak_file': 'rates_Clearstone.csv',
-    'count_file': 'counts_Clearstone.csv',
-    'vent_file': 'ZA_site_emissions_2018.csv',
-    'output_folder': 'operator_sensitivity_2',
-    'working_directory': "D:\OneDrive - University of Calgary\Documents\Thomas\PhD\Thesis\LDAR_Sim\model\python_v2",
-    'LPR': 0.00133,         # Will be overwritten if sensitivity == True
-    'repair_delay': 14,     # Will be overwritten if sensitivity == True
-    'max_det_op': 0.00,     # Will be overwritten if sensitivity == True
-    'consider_daylight': True,
-    'consider_venting': True,
-    'make_plots': False,
-    'make_maps': False,
-    'sensitivity': [True, 'operator']
+                }
         }
     
 #------------------------------------------------------------------------------

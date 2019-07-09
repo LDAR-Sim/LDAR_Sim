@@ -19,13 +19,14 @@ from plotter_batch import *
 import numpy as np
 import os
 import datetime
+import time
 
 #------------------------------------------------------------------------------
 #-----------------------------Global parameters--------------------------------
-master_output_folder = 'batch_sensitivity_8/'
-ref_program = 'OGI_constant'        # Name must match reference program below
-n_simulations = 5                   # Minimum of 2; recommended 10+
-n_timesteps = 1000                  # Up to ~5600 for 16 year nc file
+master_output_folder = 'operator_vs_OGI_2/'
+ref_program = 'operator'        # Name must match reference program below
+n_simulations = 5                  # Minimum of 2; recommended 10+
+n_timesteps = 2000                  # Up to ~5600 for 16 year nc file
 spin_up = 0
 start_year = 2003
 an_data = 'an_2003_2018_AB.nc'
@@ -35,6 +36,7 @@ leaks = 'rates_Clearstone.csv'
 counts = 'counts_Clearstone.csv'
 vents = 'ZA_site_emissions_2018.csv'
 wd = 'D:\OneDrive - University of Calgary\Documents\Thomas\PhD\Thesis\LDAR_Sim\model\python_v2'
+write_data = True # Must be TRUE to make plots and maps
 make_plots = False
 make_maps = False
 
@@ -42,21 +44,21 @@ make_maps = False
 programs = [
         {
             'methods': {
-                    'OGI': {
-                             'name': 'OGI',
-                             'n_crews': 1,
-                             'min_temp': -10,
-                             'max_wind': 5,
-                             'max_precip': 1,
-                             'min_interval': 100,
-                             'max_workday': 10,  
-                             'cost_per_day': 600,
-                             'reporting_delay': 2,
-                             'MDL': [0.47, 0.01]
-                             }
+#                    'OGI': {
+#                             'name': 'OGI',
+#                             'n_crews': 1,
+#                             'min_temp': -10,
+#                             'max_wind': 5,
+#                             'max_precip': 1,
+#                             'min_interval': 100,
+#                             'max_workday': 10,  
+#                             'cost_per_day': 600,
+#                             'reporting_delay': 2,
+#                             'MDL': [0.47, 0.01]
+#                             }
                         },        
             'master_output_folder': master_output_folder,
-            'output_folder': master_output_folder + 'OGI_reference',
+            'output_folder': master_output_folder + 'operator',
             'timesteps': n_timesteps,
             'start_year': start_year,
             'an_data': an_data,
@@ -73,17 +75,21 @@ programs = [
             'LPR': 0.00133,           
             'max_det_op': 0.00,
             'spin_up': spin_up,
+            'write_data': write_data,
             'make_plots': make_plots,
             'make_maps': make_maps,
-            'sensitivity': [True, 'reference']
+            'start_time': time.time(),
+            'sensitivity': {'perform': True, 
+                            'program': 'operator', 
+                            'batch': [True, 1]}
         },
         {
             'methods': {
                     'OGI': {
                              'name': 'OGI',
                              'n_crews': 1,
-                             'min_temp': -10,
-                             'max_wind': 5,
+                             'min_temp': -20,
+                             'max_wind': 10,
                              'max_precip': 1,
                              'min_interval': 100,
                              'max_workday': 10,  
@@ -93,7 +99,7 @@ programs = [
                              }
                         },        
             'master_output_folder': master_output_folder,
-            'output_folder': master_output_folder + 'OGI_sensitivity',
+            'output_folder': master_output_folder + 'OGI',
             'timesteps': n_timesteps,
             'start_year': start_year,
             'an_data': an_data,
@@ -104,15 +110,19 @@ programs = [
             'vent_file': vents,
             'working_directory': wd,
             'simulation': None,
-            'consider_daylight': False,
-            'consider_venting': False,
+            'consider_daylight': True,
+            'consider_venting': True,
             'repair_delay': 14,
             'LPR': 0.00133,           
             'max_det_op': 0.00,
             'spin_up': spin_up,
+            'write_data': write_data,
             'make_plots': make_plots,
             'make_maps': make_maps,
-            'sensitivity': [True, 'OGI']
+            'start_time': time.time(),
+            'sensitivity': {'perform': True, 
+                            'program': 'OGI', 
+                            'batch': [True, 2]}
         }
         ]
 
@@ -177,7 +187,8 @@ for program in programs:
         # Clean up and write files
         sim.finalize ()
 
-batch_plots (output_directory, programs[0]['start_year'], spin_up, ref_program)
+if write_data == True:
+    batch_plots (output_directory, programs[0]['start_year'], spin_up, ref_program)
 # Write metadata
 metadata = open(output_directory + '/metadata.txt','w')
 metadata.write(str(programs) + '\n' +

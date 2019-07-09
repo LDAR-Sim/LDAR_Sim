@@ -30,12 +30,12 @@ def batch_plots(output_directory, start_year, spin_up, ref_program):
     os.chdir(output_directory)
     
     # For each folder, build a dataframe combining all necessary files
-    num_lists = len(os.listdir())
-    file_lists = [[] for i in range(num_lists)]
+    directories = next(os.walk('.'))[1]
+    file_lists = [[] for i in range(len(directories))]
     
     # List files
-    for i in range(len(os.listdir())):
-        path = output_directory + os.listdir()[i]
+    for i in range(len(directories)):
+        path = output_directory + directories[i]
         for j in os.listdir(path):
             if os.path.isfile(os.path.join(path,j)) and 'timeseries' in j:
                 file_lists[i].append(j)
@@ -47,11 +47,11 @@ def batch_plots(output_directory, start_year, spin_up, ref_program):
     all_data = [[] for i in range(len(file_lists))]
     for i in range(len(file_lists)):
         for file in file_lists[i]:
-            path = output_directory + os.listdir()[i] + '/' + file
+            path = output_directory + directories[i] + '/' + file
             all_data[i].append(pd.read_csv(path))
             
     # Get vector of dates
-    dates = pd.read_csv(output_directory + os.listdir()[0] + '/' + file_lists[0][0])['datetime']
+    dates = pd.read_csv(output_directory + directories[0] + '/' + file_lists[0][0])['datetime']
     dates = pd.to_datetime(dates)
         
     # Extract emissions from each csv and combined into df; add dates & new cols
@@ -67,7 +67,7 @@ def batch_plots(output_directory, start_year, spin_up, ref_program):
         dfs[i]['std'] = dfs[i].iloc[:,0:n_cols].std(axis = 1)
         dfs[i]['low'] = dfs[i].iloc[:,0:n_cols].quantile(0.025, axis=1)
         dfs[i]['high'] = dfs[i].iloc[:,0:n_cols].quantile(0.975, axis=1)
-        dfs[i]['program'] = os.listdir()[i]
+        dfs[i]['program'] = directories[i]
         
     # Move reference program to the top of the list
     for i, df in enumerate(dfs):

@@ -30,8 +30,7 @@ class ldar_sim:
         # Read in data files
         self.state['empirical_counts'] = np.array(pd.read_csv(self.parameters['count_file']).iloc[:, 0])
         self.state['empirical_leaks'] = np.array(pd.read_csv(self.parameters['leak_file']).iloc [:, 0])*84. # Convert g/s to kg/day
-        if self.parameters['consider_venting'] == True:
-            self.state['empirical_sites'] = np.array(pd.read_csv(self.parameters['vent_file']).iloc [:, 0])*84. # Convert g/s to kg/day
+        self.state['empirical_sites'] = np.array(pd.read_csv(self.parameters['vent_file']).iloc [:, 0])*84. # Convert g/s to kg/day
         
         # Read in the sites as a list of dictionaries
         print('Initializing sites...')
@@ -66,7 +65,7 @@ class ldar_sim:
                 sys.exit('Simulation terminated: One or more sites is too far West and is outside the spatial bounds of your weather data!')
 
         # Configure sensitivity analysis, if requested (code must remain here - after site and before method initialization)
-        if self.parameters['sensitivity'][0] == True:
+        if self.parameters['sensitivity']['perform'] == True:
             self.sensitivity = sensitivity(self.parameters, self.timeseries, self.state)
 
         # Initialize method(s) to be used; append to state
@@ -279,70 +278,72 @@ class ldar_sim:
         output_directory = os.path.join(self.parameters['working_directory'], self.parameters['output_folder'])
         if not os.path.exists(output_directory):
             os.makedirs(output_directory)       
+
+        if self.parameters['write_data'] == True:
          
-        # Attribute individual leak emissions to site totals
-        for leak in self.state['leaks']:
-            tot_emissions_kg = leak['days_active']*leak['rate']
+            # Attribute individual leak emissions to site totals
+            for leak in self.state['leaks']:
+                tot_emissions_kg = leak['days_active']*leak['rate']
+                for site in self.state['sites']:
+                    if site['facility_ID'] == leak['facility_ID']:
+                        site['total_emissions_kg'] += tot_emissions_kg
+                        if leak['status'] == 'active':
+                            site['active_leaks'] += 1
+                        elif leak['status'] == 'repaired':
+                            site['repaired_leaks'] += 1
+                        break
+        
+            # Generate some dataframes           
             for site in self.state['sites']:
-                if site['facility_ID'] == leak['facility_ID']:
-                    site['total_emissions_kg'] += tot_emissions_kg
-                    if leak['status'] == 'active':
-                        site['active_leaks'] += 1
-                    elif leak['status'] == 'repaired':
-                        site['repaired_leaks'] += 1
-                    break
+                del site['n_new_leaks']
+    
+            leak_df = pd.DataFrame(self.state['leaks'])
+            time_df = pd.DataFrame(self.timeseries)
+            site_df = pd.DataFrame(self.state['sites'])
+     
+            # Create some new variables for plotting
+            site_df['cum_frac_sites'] = list(site_df.index)
+            site_df['cum_frac_sites'] = site_df['cum_frac_sites']/max(site_df['cum_frac_sites'])
+            site_df['cum_frac_emissions'] = np.cumsum(sorted(site_df['total_emissions_kg'], reverse = True))
+            site_df['cum_frac_emissions'] = site_df['cum_frac_emissions']/max(site_df['cum_frac_emissions'])       
+            
+            leaks_active = leak_df[leak_df.status == 'active'].sort_values('rate', ascending = False)
+            leaks_repaired = leak_df[leak_df.status == 'repaired'].sort_values('rate', ascending = False)
+            
+            leaks_active['cum_frac_leaks'] = list(np.linspace(0, 1, len(leaks_active)))
+            leaks_active['cum_rate'] = np.cumsum(leaks_active['rate'])
+            leaks_active['cum_frac_rate'] = leaks_active['cum_rate']/max(leaks_active['cum_rate'])
+            
+            if len(leaks_repaired) > 0:
+                leaks_repaired['cum_frac_leaks'] = list(np.linspace(0, 1, len(leaks_repaired)))
+                leaks_repaired['cum_rate'] = np.cumsum(leaks_repaired['rate'])
+                leaks_repaired['cum_frac_rate'] = leaks_repaired['cum_rate']/max(leaks_repaired['cum_rate'])
+        
+            leak_df = leaks_active.append(leaks_repaired)
+            
+            # Write csv files
+            leak_df.to_csv(output_directory + '/leaks_output_' + self.parameters['simulation'] + '.csv', index = False)
+            time_df.to_csv(output_directory + '/timeseries_output_' + self.parameters['simulation'] + '.csv', index = False)
+            site_df.to_csv(output_directory + '/sites_output_' + self.parameters['simulation'] + '.csv', index = False)
+            
+            # Write metadata
+            metadata = open(output_directory + '/metadata_' + self.parameters['simulation'] + '.txt','w')
+            metadata.write(str(self.parameters) + '\n' +
+            str(datetime.datetime.now()))
+            metadata.close()
 
         # Make maps and append site-level DD and MCB data
         if self.parameters['make_maps'] == True:
             for m in self.state['methods']:
                 m.make_maps()
                 m.site_reports()
-    
-        # Generate some dataframes           
-        for site in self.state['sites']:
-            del site['n_new_leaks']
 
-        leak_df = pd.DataFrame(self.state['leaks'])
-        time_df = pd.DataFrame(self.timeseries)
-        site_df = pd.DataFrame(self.state['sites'])
- 
-        # Create some new variables for plotting
-        site_df['cum_frac_sites'] = list(site_df.index)
-        site_df['cum_frac_sites'] = site_df['cum_frac_sites']/max(site_df['cum_frac_sites'])
-        site_df['cum_frac_emissions'] = np.cumsum(sorted(site_df['total_emissions_kg'], reverse = True))
-        site_df['cum_frac_emissions'] = site_df['cum_frac_emissions']/max(site_df['cum_frac_emissions'])       
-        
-        leaks_active = leak_df[leak_df.status == 'active'].sort_values('rate', ascending = False)
-        leaks_repaired = leak_df[leak_df.status == 'repaired'].sort_values('rate', ascending = False)
-        
-        leaks_active['cum_frac_leaks'] = list(np.linspace(0, 1, len(leaks_active)))
-        leaks_active['cum_rate'] = np.cumsum(leaks_active['rate'])
-        leaks_active['cum_frac_rate'] = leaks_active['cum_rate']/max(leaks_active['cum_rate'])
-        
-        if len(leaks_repaired) > 0:
-            leaks_repaired['cum_frac_leaks'] = list(np.linspace(0, 1, len(leaks_repaired)))
-            leaks_repaired['cum_rate'] = np.cumsum(leaks_repaired['rate'])
-            leaks_repaired['cum_frac_rate'] = leaks_repaired['cum_rate']/max(leaks_repaired['cum_rate'])
-    
-        leak_df = leaks_active.append(leaks_repaired)
-        
-        # Write csv files
-        leak_df.to_csv(output_directory + '/leaks_output_' + self.parameters['simulation'] + '.csv', index = False)
-        time_df.to_csv(output_directory + '/timeseries_output_' + self.parameters['simulation'] + '.csv', index = False)
-        site_df.to_csv(output_directory + '/sites_output_' + self.parameters['simulation'] + '.csv', index = False)
-        
         # Make plots
         if self.parameters['make_plots'] == True:
             make_plots(leak_df, time_df, site_df, self.parameters['simulation'], self.parameters['spin_up'], output_directory)
-
-        # Write metadata
-        metadata = open(output_directory + '/metadata_' + self.parameters['simulation'] + '.txt','w')
-        metadata.write(str(self.parameters) + '\n' +
-        str(datetime.datetime.now()))
-        metadata.close()
         
         # Write sensitivity analysis data, if requested
-        if self.parameters['sensitivity'][0] == True:
+        if self.parameters['sensitivity']['perform'] == True:
             self.sensitivity.write_data()
                     
         # Return to original working directory

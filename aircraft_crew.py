@@ -121,7 +121,7 @@ class aircraft_crew:
                     
         # Simple detection module based optimistically on Fox et al 2019 lower bound (lit review)
         detect = False
-        if site_cum_rate > (2000*0.024):  # g/hour to kg/day
+        if site_cum_rate > (self.config['MDL']*0.024):  # g/hour to kg/day
             detect = True    
         
         if detect == True:
