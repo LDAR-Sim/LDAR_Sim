@@ -136,6 +136,7 @@ class OGI_FU_crew:
                 site['OGI_FU_missed_leaks'] += 1
                 
         self.state['t'].current_date += timedelta(minutes = int(site['OGI_FU_time']))
+        self.state['t'].current_date += timedelta(minutes = int(self.state['offsite_times'][np.random.randint(0, len(self.state['offsite_times']))]))
 
         # Remove site from flag pool
         site['currently_flagged'] = False

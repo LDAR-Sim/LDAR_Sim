@@ -139,5 +139,6 @@ class OGI_crew:
                 site['OGI_missed_leaks'] += 1
                 
         self.state['t'].current_date += timedelta(minutes = int(site['OGI_time']))
+        self.state['t'].current_date += timedelta(minutes = int(self.state['offsite_times'][np.random.randint(0, len(self.state['offsite_times']))]))
         
         return

@@ -157,3 +157,5 @@ class drone_crew:
             site['drone_missed_leaks'] += len(leaks_present)
                 
         self.state['t'].current_date += timedelta(minutes = int(site['drone_time']))
+        self.state['t'].current_date += timedelta(minutes = int(self.state['offsite_times'][np.random.randint(0, len(self.state['offsite_times']))]))
+

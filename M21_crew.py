@@ -123,5 +123,6 @@ class M21_crew:
                 self.state['tags'].append(leak)
 
         self.state['t'].current_date += timedelta(minutes = int(site['M21_time']))
+        self.state['t'].current_date += timedelta(minutes = int(self.state['offsite_times'][np.random.randint(0, len(self.state['offsite_times']))]))
 
         return

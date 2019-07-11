@@ -32,7 +32,8 @@ for i in range(n_simulations):
     'leak_file': 'rates_Clearstone.csv',
     'count_file': 'counts_Clearstone.csv',
     'vent_file': 'ZA_site_emissions_2018.csv',
-    'output_folder': 'solo_operator_2',
+    't_offsite_file': 'time_offsite_ground.csv',
+    'output_folder': 'solo_OGI_2',
     'working_directory': "D:\OneDrive - University of Calgary\Documents\Thomas\PhD\Thesis\LDAR_Sim\model\python_v2",
     'LPR': 0.00133,         # Will be overwritten if sensitivity == True
     'repair_delay': 14,     # Will be overwritten if sensitivity == True
@@ -82,18 +83,18 @@ for i in range(n_simulations):
 #                             'cost_per_day': 400,
 #                             'reporting_delay': 2
 #                             },
-#                    'OGI': {
-#                             'name': 'OGI',
-#                             'n_crews': 1,
-#                             'min_temp': -10,
-#                             'max_wind': 20,
-#                             'max_precip': 1,
-#                             'min_interval': 60,
-#                             'max_workday': 10,  
-#                             'cost_per_day': 600,
-#                             'reporting_delay': 2,
-#                             'MDL': [0.47, 0.01]
-#                             },
+                    'OGI': {
+                             'name': 'OGI',
+                             'n_crews': 1,
+                             'min_temp': -10,
+                             'max_wind': 20,
+                             'max_precip': 1,
+                             'min_interval': 60,
+                             'max_workday': 10,  
+                             'cost_per_day': 600,
+                             'reporting_delay': 2,
+                             'MDL': [0.47, 0.01]
+                             },
 #                    'OGI_FU': {
 #                             'name': 'OGI_FU',
 #                             'n_crews': 2,

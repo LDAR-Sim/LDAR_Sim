@@ -31,6 +31,7 @@ class ldar_sim:
         self.state['empirical_counts'] = np.array(pd.read_csv(self.parameters['count_file']).iloc[:, 0])
         self.state['empirical_leaks'] = np.array(pd.read_csv(self.parameters['leak_file']).iloc [:, 0])*84. # Convert g/s to kg/day
         self.state['empirical_sites'] = np.array(pd.read_csv(self.parameters['vent_file']).iloc [:, 0])*84. # Convert g/s to kg/day
+        self.state['offsite_times'] = np.array(pd.read_csv(self.parameters['t_offsite_file']).iloc [:, 0])
         
         # Read in the sites as a list of dictionaries
         print('Initializing sites...')

@@ -23,9 +23,9 @@ import time
 
 #------------------------------------------------------------------------------
 #-----------------------------Global parameters--------------------------------
-master_output_folder = 'operator_vs_OGI_2/'
+master_output_folder = 'operator_vs_OGI_3/'
 ref_program = 'operator'        # Name must match reference program below
-n_simulations = 5                  # Minimum of 2; recommended 10+
+n_simulations = 2                  # Minimum of 2; recommended 10+
 n_timesteps = 2000                  # Up to ~5600 for 16 year nc file
 spin_up = 0
 start_year = 2003
@@ -35,6 +35,7 @@ sites = 'AER_Baytex_template.csv'
 leaks = 'rates_Clearstone.csv'
 counts = 'counts_Clearstone.csv'
 vents = 'ZA_site_emissions_2018.csv'
+t_offsite = 'time_offsite_ground.csv'
 wd = 'D:\OneDrive - University of Calgary\Documents\Thomas\PhD\Thesis\LDAR_Sim\model\python_v2'
 write_data = True # Must be TRUE to make plots and maps
 make_plots = False
@@ -67,6 +68,7 @@ programs = [
             'leak_file': leaks,
             'count_file': counts,
             'vent_file': vents,
+            't_offsite_file': t_offsite,
             'working_directory': wd,
             'simulation': None,
             'consider_daylight': False,
@@ -79,7 +81,7 @@ programs = [
             'make_plots': make_plots,
             'make_maps': make_maps,
             'start_time': time.time(),
-            'sensitivity': {'perform': True, 
+            'sensitivity': {'perform': False, 
                             'program': 'operator', 
                             'batch': [True, 1]}
         },
@@ -108,6 +110,7 @@ programs = [
             'leak_file': leaks,
             'count_file': counts,
             'vent_file': vents,
+            't_offsite_file': t_offsite,
             'working_directory': wd,
             'simulation': None,
             'consider_daylight': True,
@@ -120,7 +123,7 @@ programs = [
             'make_plots': make_plots,
             'make_maps': make_maps,
             'start_time': time.time(),
-            'sensitivity': {'perform': True, 
+            'sensitivity': {'perform': False, 
                             'program': 'OGI', 
                             'batch': [True, 2]}
         }
