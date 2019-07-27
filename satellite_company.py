@@ -25,6 +25,7 @@ class satellite_company:
         self.timeseries['satellite_flags_redund1'] = np.zeros(self.parameters['timesteps'])
         self.timeseries['satellite_flags_redund2'] = np.zeros(self.parameters['timesteps'])
         self.timeseries['satellite_flags_redund3'] = np.zeros(self.parameters['timesteps'])
+        self.timeseries['satellite_sites_visited'] = np.zeros(self.parameters['timesteps'])
         
         # Additional variable(s) for each site       
         for site in self.state['sites']:

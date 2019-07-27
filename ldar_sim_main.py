@@ -19,11 +19,11 @@ import time
 
 #------------------------------------------------------------------------------
 #----------------------Static user-defined input parameters--------------------
-n_simulations = 2
+n_simulations = 1
 for i in range(n_simulations):       
     parameters = {
     'simulation': str(i),
-    'timesteps': 5000,
+    'timesteps': 1000,
     'spin_up': 0,
     'start_year': 2003,
     'an_data': 'an_2003_2018_AB.nc',
@@ -33,11 +33,12 @@ for i in range(n_simulations):
     'count_file': 'counts_Clearstone.csv',
     'vent_file': 'ZA_site_emissions_2018.csv',
     't_offsite_file': 'time_offsite_ground.csv',
-    'output_folder': 'solo_OGI_2',
+    'output_folder': 'new_test9',
     'working_directory': "D:\OneDrive - University of Calgary\Documents\Thomas\PhD\Thesis\LDAR_Sim\model\python_v2",
-    'LPR': 0.00133,         # Will be overwritten if sensitivity == True
+    'LPR': 0.0065,         # Will be overwritten if sensitivity == True
     'repair_delay': 14,     # Will be overwritten if sensitivity == True
     'max_det_op': 0.00,     # Will be overwritten if sensitivity == True
+    'operator_strength': 0, 
     'consider_daylight': True,
     'consider_venting': True,
     'write_data': True, # Must be TRUE to make plots and maps
@@ -48,33 +49,35 @@ for i in range(n_simulations):
                     'program': 'aircraft', 
                     'batch': False},
     'methods': {
-#                    'drone': {
-#                             'name': 'drone',
-#                             'n_crews': 2,
-#                             'min_temp': -20,
-#                             'max_wind': 20,
-#                             'max_precip': 0,
-#                             'min_interval': 30,
-#                             'max_workday': 10,
-#                             'cost_per_day': 3000,
-#                             'follow_up_thresh': 2,
-#                             'reporting_delay': 2
-#                             },
-#                    'satellite': {
-#                             'name': 'satellite',
-#                             'n_crews': 2,
-#                             'min_temp': -50,
-#                             'max_wind': 20,
-#                             'max_precip': 0,
-#                             'min_interval': 30,
-#                             'max_workday': 23,
-#                             'cost_per_day': 1000,
-#                             'follow_up_thresh': 100,
-#                             'reporting_delay': 2
-#                             },
+                    'drone': {
+                             'name': 'drone',
+                             'n_crews': 1,
+                             'min_temp': -20,
+                             'max_wind': 20,
+                             'max_precip': 0,
+                             'min_interval': 30,
+                             'max_workday': 10,
+                             'cost_per_day': 3000,
+                             'follow_up_thresh': 2,
+                             'follow_up_ratio': 0,
+                             'reporting_delay': 2
+                             },
+                    'satellite': {
+                             'name': 'satellite',
+                             'n_crews': 1,
+                             'min_temp': -50,
+                             'max_wind': 20,
+                             'max_precip': 0,
+                             'min_interval': 30,
+                             'max_workday': 23,
+                             'cost_per_day': 1000,
+                             'follow_up_thresh': 100,
+                             'follow_up_ratio': 0,
+                             'reporting_delay': 2
+                             },
 #                    'M21': {
 #                             'name': 'M21',
-#                             'n_crews': 2,
+#                             'n_crews': 1,
 #                             'min_temp': -25,
 #                             'max_wind': 20,
 #                             'max_precip': 5,
@@ -83,54 +86,57 @@ for i in range(n_simulations):
 #                             'cost_per_day': 400,
 #                             'reporting_delay': 2
 #                             },
-                    'OGI': {
-                             'name': 'OGI',
+#                    'OGI': {
+#                             'name': 'OGI',
+#                             'n_crews': 1,
+#                             'min_temp': -10,
+#                             'max_wind': 20,
+#                             'max_precip': 1,
+#                             'min_interval': 60,
+#                             'max_workday': 10,  
+#                             'cost_per_day': 600,
+#                             'reporting_delay': 2,
+#                             'MDL': [0.47, 0.01]
+#                             },
+                    'OGI_FU': {
+                             'name': 'OGI_FU',
                              'n_crews': 1,
-                             'min_temp': -10,
+                             'min_temp': -35,
                              'max_wind': 20,
-                             'max_precip': 1,
-                             'min_interval': 60,
-                             'max_workday': 10,  
+                             'max_precip': 5,
+                             'max_workday': 10,
                              'cost_per_day': 600,
                              'reporting_delay': 2,
                              'MDL': [0.47, 0.01]
                              },
-#                    'OGI_FU': {
-#                             'name': 'OGI_FU',
-#                             'n_crews': 2,
-#                             'min_temp': -35,
-#                             'max_wind': 20,
-#                             'max_precip': 5,
-#                             'max_workday': 10,
-#                             'cost_per_day': 600,
-#                             'reporting_delay': 2  ,
-#                             'MDL': [0.47, 0.01]
-#                             },
-#                    'truck': {
-#                             'name': 'truck',
-#                             'n_crews': 2,
-#                             'min_temp': -30,
-#                             'max_wind': 20,
-#                             'max_precip': 5,
-#                             'min_interval': 30,
-#                             'max_workday': 10,
-#                             'cost_per_day': 500,
-#                             'follow_up_thresh': 0.5,
-#                             'reporting_delay': 2
-#                             },
-#                    'aircraft': {
-#                             'name': 'aircraft',
-#                             'n_crews': 2,
-#                             'min_temp': -30,
-#                             'max_wind': 20,
-#                             'max_precip': 5,
-#                             'min_interval': 30,
-#                             'max_workday': 10,
-#                             'cost_per_day': 2000,
-#                             'follow_up_thresh': 60,
-#                             'reporting_delay': 2,
-#                             'MDL': 2000 # grams/hour
-#                             }
+                    'truck': {
+                             'name': 'truck',
+                             'n_crews': 1,
+                             'min_temp': -30,
+                             'max_wind': 20,
+                             'max_precip': 5,
+                             'min_interval': 30,
+                             'max_workday': 10,
+                             'cost_per_day': 500,
+                             'follow_up_thresh': 0.5,
+                             'follow_up_ratio': 0,
+                             'reporting_delay': 2
+                             },
+                    'aircraft': {
+                             'name': 'aircraft',
+                             'n_crews': 1,
+                             'min_temp': -30,
+                             'max_wind': 20,
+                             'max_precip': 5,
+                             'min_interval': 30,
+                             'max_workday': 10,
+                             'cost_per_day': 2000,
+                             'follow_up_thresh': 60,
+                             'follow_up_ratio': 0,
+                             'reporting_delay': 2,
+                             't_lost_per_site': 10,
+                             'MDL': 2000 # grams/hour
+                             }
                 }
         }
     

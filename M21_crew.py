@@ -124,5 +124,6 @@ class M21_crew:
 
         self.state['t'].current_date += timedelta(minutes = int(site['M21_time']))
         self.state['t'].current_date += timedelta(minutes = int(self.state['offsite_times'][np.random.randint(0, len(self.state['offsite_times']))]))
+        self.timeseries['M21_sites_visited'][self.state['t'].current_timestep] += 1
 
         return

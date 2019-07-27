@@ -14,6 +14,7 @@ class operator_agent:
         self.init_sum_leaks = np.sum(self.state['init_leaks']) 
         self.n_sites = len(self.state['sites'])
         self.timeseries['operator_redund_tags'] = np.zeros(self.parameters['timesteps'])
+        self.timeseries['operator_tags'] = np.zeros(self.parameters['timesteps'])
 
         return
  
@@ -32,6 +33,7 @@ class operator_agent:
                 prob_detect += self.parameters['max_det_op'] * (leak['rate']/self.state['max_rate'])
                 if prob_detect > 1:
                     prob_detect = 1
+                prob_detect = prob_detect * self.parameters['operator_strength']
                 detect = np.random.binomial(1, prob_detect)
 
                 if detect == True:
@@ -45,6 +47,7 @@ class operator_agent:
                         leak['found_by_company'] = 'operator'
                         leak['found_by_crew'] = 1
                         self.state['tags'].append(leak)
+                        self.timeseries['operator_tags'][self.state['t'].current_timestep] += 1
                         
         return
     

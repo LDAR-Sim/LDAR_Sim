@@ -22,6 +22,7 @@ class M21_company:
         self.timeseries['M21_prop_sites_avail'] = []        
         self.timeseries['M21_cost'] = np.zeros(self.parameters['timesteps'])
         self.timeseries['M21_redund_tags'] = np.zeros(self.parameters['timesteps'])
+        self.timeseries['M21_sites_visited'] = np.zeros(self.parameters['timesteps'])
         
         # Additional variable(s) for each site       
         for site in self.state['sites']:

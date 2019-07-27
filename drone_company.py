@@ -25,6 +25,7 @@ class drone_company:
         self.timeseries['drone_flags_redund1'] = np.zeros(self.parameters['timesteps'])
         self.timeseries['drone_flags_redund2'] = np.zeros(self.parameters['timesteps'])
         self.timeseries['drone_flags_redund3'] = np.zeros(self.parameters['timesteps'])
+        self.timeseries['drone_sites_visited'] = np.zeros(self.parameters['timesteps'])
  
         # Additional variable(s) for each site       
         for site in self.state['sites']:

@@ -22,6 +22,7 @@ class OGI_FU_company:
         self.timeseries['OGI_FU_prop_sites_avail'] = []
         self.timeseries['OGI_FU_cost'] = np.zeros(self.parameters['timesteps'])
         self.timeseries['OGI_FU_redund_tags'] = np.zeros(self.parameters['timesteps'])
+        self.timeseries['OGI_FU_sites_visited'] = np.zeros(self.parameters['timesteps'])
  
         # Additional variable(s) for each site       
         for site in self.state['sites']:

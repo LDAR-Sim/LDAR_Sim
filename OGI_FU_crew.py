@@ -137,6 +137,7 @@ class OGI_FU_crew:
                 
         self.state['t'].current_date += timedelta(minutes = int(site['OGI_FU_time']))
         self.state['t'].current_date += timedelta(minutes = int(self.state['offsite_times'][np.random.randint(0, len(self.state['offsite_times']))]))
+        self.timeseries['OGI_FU_sites_visited'][self.state['t'].current_timestep] += 1
 
         # Remove site from flag pool
         site['currently_flagged'] = False
