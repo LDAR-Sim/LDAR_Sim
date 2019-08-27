@@ -39,6 +39,10 @@ class ldar_sim:
             self.state['sites'] = [{k: v for k, v in row.items()}
                     for row in csv.DictReader(f, skipinitialspace=True)]
         
+        # Sample sites
+        if self.parameters['site_samples'][0] == True:
+            self.state['sites'] = random.sample(self.state['sites'], self.parameters['site_samples'][1])        
+            
         # Shuffle all the entries to randomize order for identical 't_Since_last_LDAR' values
         random.shuffle(self.state['sites'])
             

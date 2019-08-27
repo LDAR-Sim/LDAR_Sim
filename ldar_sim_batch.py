@@ -23,11 +23,11 @@ import time
 
 #------------------------------------------------------------------------------
 #-----------------------------Global parameters--------------------------------
-master_output_folder = 'OGI_batch_manuscript_50_2/'
+master_output_folder = 'sensitivity_test/'
 ref_program = 'P_ref'        # Name must match reference program below
-n_simulations = 25                  # Minimum of 2; recommended 10+
-n_timesteps = 2500                  # Up to ~5600 for 16 year nc file
-spin_up = 0
+n_simulations = 10                  # Minimum of 2; recommended 10+
+n_timesteps = 1595                  # Up to ~5600 for 16 year nc file
+spin_up = 500
 start_year = 2011
 operator_strength = 0
 an_data = 'an_2003_2018_AB.nc'
@@ -38,8 +38,9 @@ counts = 'counts_Clearstone.csv'
 vents = 'ZA_site_emissions_2018.csv'
 t_offsite = 'time_offsite_ground.csv'
 wd = 'D:\OneDrive - University of Calgary\Documents\Thomas\PhD\Thesis\LDAR_Sim\model\python_v2'
-write_data = True # Must be TRUE to make plots and maps
-make_plots = True
+site_samples = [True, 50]
+write_data = False # Must be TRUE to make plots and maps
+make_plots = False
 make_maps = False
 
 #-----------------------------Define programs----------------------------------
@@ -54,7 +55,7 @@ programs = [
                              'max_precip': 0.01,
                              'min_interval': 120,
                              'max_workday': 10,  
-                             'cost_per_day': 600,
+                             'cost_per_day': 1500,
                              'reporting_delay': 2,
                              'MDL': [0.47, 0.01]
                              }
@@ -71,6 +72,7 @@ programs = [
             'vent_file': vents,
             't_offsite_file': t_offsite,
             'working_directory': wd,
+            'site_samples': site_samples,
             'simulation': None,
             'consider_daylight': False,
             'consider_venting': False,
@@ -83,8 +85,8 @@ programs = [
             'make_maps': make_maps,
             'start_time': time.time(),
             'operator_strength': operator_strength,
-            'sensitivity': {'perform': False, 
-                            'program': 'operator', 
+            'sensitivity': {'perform': True, 
+                            'program': 'OGI', 
                             'batch': [True, 1]}
         },
         {
@@ -92,61 +94,18 @@ programs = [
                     'OGI': {
                              'name': 'OGI',
                              'n_crews': 3,
-                             'min_temp': 0,
-                             'max_wind': 5,
-                             'max_precip': 0.001,
-                             'min_interval': 120,
-                             'max_workday': 10,  
-                             'cost_per_day': 600,
-                             'reporting_delay': 2,
-                             'MDL': [0.47, 0.01]
-                             }
-                        },        
-            'master_output_folder': master_output_folder,
-            'output_folder': master_output_folder + 'P_W',
-            'timesteps': n_timesteps,
-            'start_year': start_year,
-            'an_data': an_data,
-            'fc_data': fc_data,
-            'infrastructure_file': sites,
-            'leak_file': leaks,
-            'count_file': counts,
-            'vent_file': vents,
-            't_offsite_file': t_offsite,
-            'working_directory': wd,
-            'simulation': None,
-            'consider_daylight': True,
-            'consider_venting': True,
-            'repair_delay': 14,
-            'LPR': 0.0065,           
-            'max_det_op': 0.00,
-            'spin_up': spin_up,
-            'write_data': write_data,
-            'make_plots': make_plots,
-            'make_maps': make_maps,
-            'start_time': time.time(),
-            'operator_strength': operator_strength,
-            'sensitivity': {'perform': False, 
-                            'program': 'OGI', 
-                            'batch': [True, 2]}
-        },
-        {
-            'methods': {
-                    'OGI': {
-                             'name': 'OGI',
-                             'n_crews': 1,
                              'min_temp': -30,
                              'max_wind': 20,
                              'max_precip': 0.01,
                              'min_interval': 120,
                              'max_workday': 10,  
-                             'cost_per_day': 600,
+                             'cost_per_day': 1500,
                              'reporting_delay': 2,
                              'MDL': [0.47, 0.01]
                              }
                         },        
             'master_output_folder': master_output_folder,
-            'output_folder': master_output_folder + 'P_L',
+            'output_folder': master_output_folder + 'P_sens',
             'timesteps': n_timesteps,
             'start_year': start_year,
             'an_data': an_data,
@@ -157,9 +116,10 @@ programs = [
             'vent_file': vents,
             't_offsite_file': t_offsite,
             'working_directory': wd,
+            'site_samples': site_samples,
             'simulation': None,
-            'consider_daylight': True,
-            'consider_venting': True,
+            'consider_daylight': False,
+            'consider_venting': False,
             'repair_delay': 14,
             'LPR': 0.0065,           
             'max_det_op': 0.00,
@@ -169,50 +129,7 @@ programs = [
             'make_maps': make_maps,
             'start_time': time.time(),
             'operator_strength': operator_strength,
-            'sensitivity': {'perform': False, 
-                            'program': 'OGI', 
-                            'batch': [True, 2]}
-        },
-        {
-            'methods': {
-                    'OGI': {
-                             'name': 'OGI',
-                             'n_crews': 1,
-                             'min_temp': 0,
-                             'max_wind': 5,
-                             'max_precip': 0.001,
-                             'min_interval': 120,
-                             'max_workday': 10,  
-                             'cost_per_day': 600,
-                             'reporting_delay': 2,
-                             'MDL': [0.47, 0.01]
-                             }
-                        },        
-            'master_output_folder': master_output_folder,
-            'output_folder': master_output_folder + 'P_W_L',
-            'timesteps': n_timesteps,
-            'start_year': start_year,
-            'an_data': an_data,
-            'fc_data': fc_data,
-            'infrastructure_file': sites,
-            'leak_file': leaks,
-            'count_file': counts,
-            'vent_file': vents,
-            't_offsite_file': t_offsite,
-            'working_directory': wd,
-            'simulation': None,
-            'consider_daylight': True,
-            'consider_venting': True,
-            'repair_delay': 14,
-            'LPR': 0.0065,           
-            'max_det_op': 0.00,
-            'spin_up': spin_up,
-            'write_data': write_data,
-            'make_plots': make_plots,
-            'make_maps': make_maps,
-            'start_time': time.time(),
-            'operator_strength': operator_strength,
-            'sensitivity': {'perform': False, 
+            'sensitivity': {'perform': True, 
                             'program': 'OGI', 
                             'batch': [True, 2]}
         }
