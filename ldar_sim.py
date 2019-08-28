@@ -133,7 +133,8 @@ class ldar_sim:
                                                 })
 
         # Initialize operator
-        self.state['operator'] = operator_agent (self.timeseries, self.parameters, self.state)
+        if self.parameters['consider_operator'] == True:
+            self.state['operator'] = operator_agent (self.timeseries, self.parameters, self.state)
         
         if bool(self.parameters['methods']) == False:
             self.state['t'].current_date = self.state['t'].current_date.replace(hour = 1)
@@ -144,6 +145,7 @@ class ldar_sim:
             
         # Initialize empirical distribution of vented emissions
         if self.parameters['consider_venting'] == True:
+            self.state['empirical_vents'] = []
                   
         # Run Monte Carlo simulations to get distribution of vented emissions
             for i in range(1000):
@@ -231,9 +233,10 @@ class ldar_sim:
            
         for m in self.state['methods']:
             m.find_leaks ()
-    
-        if self.state['t'].current_date.weekday() == 0:
-            self.state['operator'].work_a_day()
+        
+        if self.parameters['consider_operator'] == True:
+            if self.state['t'].current_date.weekday() == 0:
+                self.state['operator'].work_a_day()
             
         return
 

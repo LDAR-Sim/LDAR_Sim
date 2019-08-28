@@ -1,7 +1,6 @@
 import numpy as np
 from datetime import timedelta
 import math
-import numpy as np
 
 class OGI_crew:
     def __init__ (self, state, parameters, config, timeseries, deployment_days, id):

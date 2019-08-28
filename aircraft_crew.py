@@ -120,6 +120,7 @@ class aircraft_crew:
                     site_cum_rate += leak['rate']
                     
         # Add vented emissions
+        venting = 0
         if self.parameters['consider_venting'] == True:
             venting = self.state['empirical_vents'][np.random.randint(0, len(self.state['empirical_vents']))]
             site_cum_rate += venting
@@ -129,8 +130,7 @@ class aircraft_crew:
         if site_cum_rate > (self.config['MDL']*0.024):  # g/hour to kg/day
             detect = True    
         
-        if detect == True:
-            
+        if detect == True:            
             # If source is above follow-up threshold
             if site_cum_rate > self.config['follow_up_thresh']:
                 

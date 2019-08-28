@@ -23,9 +23,9 @@ import time
 
 #------------------------------------------------------------------------------
 #-----------------------------Global parameters--------------------------------
-master_output_folder = 'sensitivity_test/'
+master_output_folder = 'OGI_sensitivity_10000/'
 ref_program = 'P_ref'        # Name must match reference program below
-n_simulations = 10                  # Minimum of 2; recommended 10+
+n_simulations = 10000                  # Minimum of 2; recommended 10+
 n_timesteps = 1595                  # Up to ~5600 for 16 year nc file
 spin_up = 500
 start_year = 2011
@@ -49,11 +49,11 @@ programs = [
             'methods': {
                     'OGI': {
                              'name': 'OGI',
-                             'n_crews': 3,
-                             'min_temp': -30,
-                             'max_wind': 20,
-                             'max_precip': 0.01,
-                             'min_interval': 120,
+                             'n_crews': 1,
+                             'min_temp': -35,
+                             'max_wind': 25,
+                             'max_precip': 10,
+                             'min_interval': 60,
                              'max_workday': 10,  
                              'cost_per_day': 1500,
                              'reporting_delay': 2,
@@ -61,7 +61,7 @@ programs = [
                              }
                         },        
             'master_output_folder': master_output_folder,
-            'output_folder': master_output_folder + 'P_ref',
+            'output_folder': master_output_folder + 'OGI_sens',
             'timesteps': n_timesteps,
             'start_year': start_year,
             'an_data': an_data,
@@ -74,6 +74,7 @@ programs = [
             'working_directory': wd,
             'site_samples': site_samples,
             'simulation': None,
+            'consider_operator': False,
             'consider_daylight': False,
             'consider_venting': False,
             'repair_delay': 14,
@@ -87,52 +88,66 @@ programs = [
             'operator_strength': operator_strength,
             'sensitivity': {'perform': True, 
                             'program': 'OGI', 
-                            'batch': [True, 1]}
+                            'batch': [False, 1]}
         },
-        {
-            'methods': {
-                    'OGI': {
-                             'name': 'OGI',
-                             'n_crews': 3,
-                             'min_temp': -30,
-                             'max_wind': 20,
-                             'max_precip': 0.01,
-                             'min_interval': 120,
-                             'max_workday': 10,  
-                             'cost_per_day': 1500,
-                             'reporting_delay': 2,
-                             'MDL': [0.47, 0.01]
-                             }
-                        },        
-            'master_output_folder': master_output_folder,
-            'output_folder': master_output_folder + 'P_sens',
-            'timesteps': n_timesteps,
-            'start_year': start_year,
-            'an_data': an_data,
-            'fc_data': fc_data,
-            'infrastructure_file': sites,
-            'leak_file': leaks,
-            'count_file': counts,
-            'vent_file': vents,
-            't_offsite_file': t_offsite,
-            'working_directory': wd,
-            'site_samples': site_samples,
-            'simulation': None,
-            'consider_daylight': False,
-            'consider_venting': False,
-            'repair_delay': 14,
-            'LPR': 0.0065,           
-            'max_det_op': 0.00,
-            'spin_up': spin_up,
-            'write_data': write_data,
-            'make_plots': make_plots,
-            'make_maps': make_maps,
-            'start_time': time.time(),
-            'operator_strength': operator_strength,
-            'sensitivity': {'perform': True, 
-                            'program': 'OGI', 
-                            'batch': [True, 2]}
-        }
+#        {
+#            'methods': {
+#                    'truck': {
+#                             'name': 'truck',
+#                             'n_crews': 1,
+#                             'min_temp': -35,
+#                             'max_wind': 25,
+#                             'max_precip': 10,
+#                             'min_interval': 30,
+#                             'max_workday': 10,
+#                             'cost_per_day': 1500,
+#                             'follow_up_thresh': 0,
+#                             'follow_up_ratio': 0.5,
+#                             'reporting_delay': 2,
+#                             'MDL': 100, # grams/hour
+#                             },
+#                    'OGI_FU': {
+#                             'name': 'OGI_FU',
+#                             'n_crews': 1,
+#                             'min_temp': -35,
+#                             'max_wind': 25,
+#                             'max_precip': 10,
+#                             'max_workday': 10,
+#                             'cost_per_day': 1500,
+#                             'reporting_delay': 2,
+#                             'MDL': [0.47, 0.01]
+#                             },
+#                        },        
+#            'master_output_folder': master_output_folder,
+#            'output_folder': master_output_folder + 'truck_sens',
+#            'timesteps': n_timesteps,
+#            'start_year': start_year,
+#            'an_data': an_data,
+#            'fc_data': fc_data,
+#            'infrastructure_file': sites,
+#            'leak_file': leaks,
+#            'count_file': counts,
+#            'vent_file': vents,
+#            't_offsite_file': t_offsite,
+#            'working_directory': wd,
+#            'site_samples': site_samples,
+#            'simulation': None,
+#            'consider_operator': False,
+#            'consider_daylight': False,
+#            'consider_venting': False,
+#            'repair_delay': 14,
+#            'LPR': 0.0065,           
+#            'max_det_op': 0.00,
+#            'spin_up': spin_up,
+#            'write_data': write_data,
+#            'make_plots': make_plots,
+#            'make_maps': make_maps,
+#            'start_time': time.time(),
+#            'operator_strength': operator_strength,
+#            'sensitivity': {'perform': True, 
+#                            'program': 'truck', 
+#                            'batch': [True, 2]}
+#        }
         ]
 
 output_directory = programs[0]['working_directory'] + '/' + master_output_folder
@@ -159,7 +174,7 @@ for program in programs:
             'weather': None,        # this gets assigned during initialization
             'daylight': None,
             'init_leaks': [],       # the initial leaks generated at timestep 1
-            'empirical_vents': [],
+            'empirical_vents': [0],
             'max_rate': None        # the largest leak in the input file
         }
         
@@ -227,7 +242,7 @@ metadata.close()
 #                             'max_precip': 10,
 #                             'min_interval': 60,
 #                             'max_workday': 10,  
-#                             'cost_per_day': 600,
+#                             'cost_per_day': 1500,
 #                             'reporting_delay': 2,
 #                             'MDL': [0.47, 0.01]
 #                             },
@@ -238,7 +253,7 @@ metadata.close()
 #                             'max_wind': 25,
 #                             'max_precip': 10,
 #                             'max_workday': 10,
-#                             'cost_per_day': 600,
+#                             'cost_per_day': 1500,
 #                             'reporting_delay': 2,
 #                             'MDL': [0.47, 0.01]
 #                             },
@@ -250,10 +265,11 @@ metadata.close()
 #                             'max_precip': 10,
 #                             'min_interval': 30,
 #                             'max_workday': 10,
-#                             'cost_per_day': 500,
+#                             'cost_per_day': 1500,
 #                             'follow_up_thresh': 0,
 #                             'follow_up_ratio': 0.5,
-#                             'reporting_delay': 2
+#                             'reporting_delay': 2,
+#                             'MDL': 100 # grams/hour  
 #                             },
 #                    'aircraft': {
 #                             'name': 'aircraft',
@@ -263,7 +279,7 @@ metadata.close()
 #                             'max_precip': 10,
 #                             'min_interval': 60,
 #                             'max_workday': 10,
-#                             'cost_per_day': 2000,
+#                             'cost_per_day': 10000,
 #                             'follow_up_thresh': 0,
 #                             'follow_up_ratio': 0.5,
 #                             't_lost_per_site': 10,                             
