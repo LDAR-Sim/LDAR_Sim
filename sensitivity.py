@@ -218,11 +218,11 @@ class sensitivity:
                     'OGI_reporting_delay': self.SA_params['OGI_reporting_delay'],
                     'OGI_MDL': self.SA_params['OGI_MDL'],
                     'OGI_time': self.SA_params['OGI_time'],
-                    'OGI_mean_required_surveys': self.SA_params['OGI_required_surveys'],        
+                    'OGI_required_surveys': self.SA_params['OGI_required_surveys'],        
                     
                     # New OGI outputs
                     'OGI_cum_program_cost': np.sum(np.array(self.timeseries['OGI_cost'][self.parameters['spin_up']:])),
-                    'OGI_mean_prop_sites_avail': np.mean(np.array(self.timeseries['OGI_prop_sites_avail'][self.parameters['spin_up']:])),      
+                    'OGI_prop_sites_avail': np.mean(np.array(self.timeseries['OGI_prop_sites_avail'][self.parameters['spin_up']:])),      
                     'OGI_cum_missed_leaks': np.sum(pd.DataFrame(self.state['sites'])['OGI_missed_leaks']),
                     'OGI_cum_surveys': np.sum(pd.DataFrame(self.state['sites'])['OGI_surveys_conducted'])
                     }
@@ -255,17 +255,17 @@ class sensitivity:
                     'truck_follow_up_thresh': self.SA_params['truck_follow_up_thresh'],
                     'truck_follow_up_ratio': self.SA_params['truck_follow_up_ratio'],
                     'truck_time': self.SA_params['truck_time'],
-                    'truck_mean_required_surveys': self.SA_params['truck_required_surveys'],
+                    'truck_required_surveys': self.SA_params['truck_required_surveys'],
                     
                     # New OGI_FU outputs
                     'OGI_FU_cum_program_cost': np.sum(np.array(self.timeseries['OGI_FU_cost'][self.parameters['spin_up']:])),
-                    'OGI_FU_mean_prop_sites_avail': np.mean(np.array(self.timeseries['OGI_FU_prop_sites_avail'][self.parameters['spin_up']:])),      
+                    'OGI_FU_prop_sites_avail': np.mean(np.array(self.timeseries['OGI_FU_prop_sites_avail'][self.parameters['spin_up']:])),      
                     'OGI_FU_cum_missed_leaks': np.sum(pd.DataFrame(self.state['sites'])['OGI_FU_missed_leaks']),
                     'OGI_FU_cum_surveys': np.sum(pd.DataFrame(self.state['sites'])['OGI_FU_surveys_conducted']),
                     
                     # New truck outputs
                     'truck_cum_program_cost': np.sum(np.array(self.timeseries['truck_cost'][self.parameters['spin_up']:])),
-                    'truck_mean_prop_sites_avail': np.mean(np.array(self.timeseries['truck_prop_sites_avail'][self.parameters['spin_up']:])),      
+                    'truck_prop_sites_avail': np.mean(np.array(self.timeseries['truck_prop_sites_avail'][self.parameters['spin_up']:])),      
                     'truck_cum_missed_leaks': np.sum(pd.DataFrame(self.state['sites'])['truck_missed_leaks']),
                     'truck_cum_surveys': np.sum(pd.DataFrame(self.state['sites'])['truck_surveys_conducted']),
                     'truck_cum_eff_flags': np.sum(np.array(self.timeseries['truck_eff_flags'][self.parameters['spin_up']:]))                 
