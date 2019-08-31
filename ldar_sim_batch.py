@@ -20,12 +20,13 @@ import numpy as np
 import os
 import datetime
 import time
+import gc
 
 #------------------------------------------------------------------------------
 #-----------------------------Global parameters--------------------------------
-master_output_folder = 'OGI_sensitivity_10000/'
+master_output_folder = 'truck_sensitivity_50000/'
 ref_program = 'P_ref'        # Name must match reference program below
-n_simulations = 10000                  # Minimum of 2; recommended 10+
+n_simulations = 50000                  # Minimum of 2; recommended 10+
 n_timesteps = 1595                  # Up to ~5600 for 16 year nc file
 spin_up = 500
 start_year = 2011
@@ -88,76 +89,79 @@ programs = [
             'operator_strength': operator_strength,
             'sensitivity': {'perform': True, 
                             'program': 'OGI', 
-                            'batch': [False, 1]}
+                            'batch': [True, 1]}
         },
-#        {
-#            'methods': {
-#                    'truck': {
-#                             'name': 'truck',
-#                             'n_crews': 1,
-#                             'min_temp': -35,
-#                             'max_wind': 25,
-#                             'max_precip': 10,
-#                             'min_interval': 30,
-#                             'max_workday': 10,
-#                             'cost_per_day': 1500,
-#                             'follow_up_thresh': 0,
-#                             'follow_up_ratio': 0.5,
-#                             'reporting_delay': 2,
-#                             'MDL': 100, # grams/hour
-#                             },
-#                    'OGI_FU': {
-#                             'name': 'OGI_FU',
-#                             'n_crews': 1,
-#                             'min_temp': -35,
-#                             'max_wind': 25,
-#                             'max_precip': 10,
-#                             'max_workday': 10,
-#                             'cost_per_day': 1500,
-#                             'reporting_delay': 2,
-#                             'MDL': [0.47, 0.01]
-#                             },
-#                        },        
-#            'master_output_folder': master_output_folder,
-#            'output_folder': master_output_folder + 'truck_sens',
-#            'timesteps': n_timesteps,
-#            'start_year': start_year,
-#            'an_data': an_data,
-#            'fc_data': fc_data,
-#            'infrastructure_file': sites,
-#            'leak_file': leaks,
-#            'count_file': counts,
-#            'vent_file': vents,
-#            't_offsite_file': t_offsite,
-#            'working_directory': wd,
-#            'site_samples': site_samples,
-#            'simulation': None,
-#            'consider_operator': False,
-#            'consider_daylight': False,
-#            'consider_venting': False,
-#            'repair_delay': 14,
-#            'LPR': 0.0065,           
-#            'max_det_op': 0.00,
-#            'spin_up': spin_up,
-#            'write_data': write_data,
-#            'make_plots': make_plots,
-#            'make_maps': make_maps,
-#            'start_time': time.time(),
-#            'operator_strength': operator_strength,
-#            'sensitivity': {'perform': True, 
-#                            'program': 'truck', 
-#                            'batch': [True, 2]}
-#        }
+        {
+            'methods': {
+                    'truck': {
+                             'name': 'truck',
+                             'n_crews': 1,
+                             'min_temp': -35,
+                             'max_wind': 25,
+                             'max_precip': 10,
+                             'min_interval': 30,
+                             'max_workday': 10,
+                             'cost_per_day': 1500,
+                             'follow_up_thresh': 0,
+                             'follow_up_ratio': 0.5,
+                             'reporting_delay': 2,
+                             'MDL': 100, # grams/hour
+                             },
+                    'OGI_FU': {
+                             'name': 'OGI_FU',
+                             'n_crews': 1,
+                             'min_temp': -35,
+                             'max_wind': 25,
+                             'max_precip': 10,
+                             'max_workday': 10,
+                             'cost_per_day': 1500,
+                             'reporting_delay': 2,
+                             'MDL': [0.47, 0.01]
+                             },
+                        },        
+            'master_output_folder': master_output_folder,
+            'output_folder': master_output_folder + 'truck_sens',
+            'timesteps': n_timesteps,
+            'start_year': start_year,
+            'an_data': an_data,
+            'fc_data': fc_data,
+            'infrastructure_file': sites,
+            'leak_file': leaks,
+            'count_file': counts,
+            'vent_file': vents,
+            't_offsite_file': t_offsite,
+            'working_directory': wd,
+            'site_samples': site_samples,
+            'simulation': None,
+            'consider_operator': False,
+            'consider_daylight': False,
+            'consider_venting': False,
+            'repair_delay': 14,
+            'LPR': 0.0065,           
+            'max_det_op': 0.00,
+            'spin_up': spin_up,
+            'write_data': write_data,
+            'make_plots': make_plots,
+            'make_maps': make_maps,
+            'start_time': time.time(),
+            'operator_strength': operator_strength,
+            'sensitivity': {'perform': True, 
+                            'program': 'truck', 
+                            'batch': [True, 2]}
+        }
         ]
 
 output_directory = programs[0]['working_directory'] + '/' + master_output_folder
 if not os.path.exists(output_directory):
     os.makedirs(output_directory)
     
-for program in programs:
-    parameters = program
+for i in range(n_simulations):
+    for j in range(len(programs)):
+        parameters = programs[j]
     
-    for i in range(n_simulations): 
+        gc.collect()
+        print('Program ' + str(j) + '; simulation ' + str(i) + ' of ' + str(n_simulations))
+        
         parameters['simulation'] = str(i)
     
 #------------------------------------------------------------------------------
@@ -194,14 +198,11 @@ for program in programs:
         if __name__ == '__main__':
         
             # Initialize objects
-            print('Initializing, please wait...')
             
             state['weather'] = weather_lookup (state, parameters)
             state['t'] = time_counter (parameters)
             sim = ldar_sim (state, parameters, timeseries)
-            
-            print ('Initialization complete!')
-        
+                    
            
         # Loop through timeseries
         while state['t'].current_date <= state['t'].end_date:

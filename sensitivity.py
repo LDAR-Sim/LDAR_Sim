@@ -44,10 +44,10 @@ class sensitivity:
         'offsite_times_outliers': int(np.round(np.random.normal(0, 1))),
         'offsite_times_samples': int(np.random.normal(len(self.state['offsite_times']), len(self.state['offsite_times'])/4)),
         
-        'LPR': np.random.gamma(1.39, 0.00338),
+        'LPR': np.random.gamma(0.8327945, 0.03138632365),
         'repair_delay': np.random.uniform(0, 100),
         'operator_strength':np.random.exponential(0.1),
-        'max_det_op': np.random.exponential(1/10),
+        'max_det_op': np.random.exponential(1/5),
         'consider_operator': bool(np.random.binomial(1, 0.2)),
         'consider_daylight': bool(np.random.binomial(1, 0.5)),
         'consider_venting': bool(np.random.binomial(1, 0.5)),
@@ -58,12 +58,12 @@ class sensitivity:
         'OGI_n_crews': np.random.poisson(0.5) + 1,
         'OGI_min_temp': np.random.normal(-20, 10),
         'OGI_max_wind': np.random.normal(15, 3), 
-        'OGI_max_precip': np.random.normal(3, 1), # Need to change according to measurement units
-        'OGI_reporting_delay': np.random.uniform(0,7),
-        'OGI_time': np.random.uniform(30,300),
+        'OGI_max_precip': np.random.uniform(0, 0.1), # in meters
+        'OGI_reporting_delay': np.random.uniform(0,30),
+        'OGI_time': np.random.uniform(30,500),
         'OGI_required_surveys': np.random.uniform(1, 4),
         'OGI_min_interval': np.random.uniform(0, 90),
-        'OGI_MDL': np.random.uniform(0, 2.5)
+        'OGI_MDL': np.random.uniform(0, 2)
         }
         
         # If batch, must communicate global parameters to next program
@@ -82,13 +82,13 @@ class sensitivity:
             'truck_n_crews': np.random.poisson(0.5) + 1,
             'truck_min_temp': np.random.normal(-20, 10),
             'truck_max_wind': np.random.normal(15, 3),
-            'truck_max_precip': np.random.normal(3, 1),
-            'truck_reporting_delay': np.random.uniform(0,7),
+            'truck_max_precip': np.random.uniform(0, 0.1),
+            'truck_reporting_delay': np.random.uniform(0,30),
             'truck_time': np.random.uniform(1,30),
             'truck_required_surveys': np.random.uniform(1, 4),
             'truck_min_interval': np.random.uniform(0, 90),
-            'truck_MDL': np.random.uniform(6, 200), # grams/hour
-            'truck_follow_up_thresh': np.random.uniform(0, 1000),
+            'truck_MDL': np.random.uniform(1, 100), # grams/hour
+            'truck_follow_up_thresh': np.random.uniform(0, 500),
             'truck_follow_up_ratio': np.random.uniform(0.1, 1)
                 })
 #--------------Update model parameters according to SA definition--------------
@@ -181,7 +181,7 @@ class sensitivity:
         'max_det_op': self.SA_params['max_det_op'],
 
         # SA outputs
-        'mean_dail_site_em': np.mean(np.array(self.timeseries['daily_emissions_kg'][self.parameters['spin_up']:])/len(self.state['sites'])),
+        'dail_site_em': np.mean(np.array(self.timeseries['daily_emissions_kg'][self.parameters['spin_up']:])/len(self.state['sites'])),
         'std_dail_site_em': np.std(np.array(self.timeseries['daily_emissions_kg'][self.parameters['spin_up']:])/len(self.state['sites'])),
         'cum_repaired_leaks': self.timeseries['cum_repaired_leaks'][-1:][0],
         'med_active_leaks': np.median(np.array(self.timeseries['active_leaks'][self.parameters['spin_up']:])),
@@ -208,16 +208,6 @@ class sensitivity:
         # If this is an OGI program, add relevant variables to dictionary before exporting
         if self.parameters['sensitivity']['program'] == 'OGI':
             
-            OGI_times = []
-            for site in self.state['sites']:
-                OGI_times.append(float(site['OGI_time']))
-            OGI_mean_time = np.mean(OGI_times)
-
-            OGI_surveys = []
-            for site in self.state['sites']:
-                OGI_surveys.append(float(site['OGI_required_surveys']))
-            OGI_mean_required_surveys = np.mean(OGI_surveys)
-
             OGI_dict = {
                     # New OGI inputs
                     'OGI_n_crews': self.SA_params['OGI_n_crews'],
@@ -227,8 +217,8 @@ class sensitivity:
                     'OGI_min_interval': self.SA_params['OGI_min_interval'],
                     'OGI_reporting_delay': self.SA_params['OGI_reporting_delay'],
                     'OGI_MDL': self.SA_params['OGI_MDL'],
-                    'OGI_mean_time': OGI_mean_time,
-                    'OGI_mean_required_surveys': OGI_mean_required_surveys,        
+                    'OGI_time': self.SA_params['OGI_time'],
+                    'OGI_mean_required_surveys': self.SA_params['OGI_required_surveys'],        
                     
                     # New OGI outputs
                     'OGI_cum_program_cost': np.sum(np.array(self.timeseries['OGI_cost'][self.parameters['spin_up']:])),
@@ -243,19 +233,6 @@ class sensitivity:
         # If this is a screening (truck) program, add relevant variables to dictionary before exporting
         if self.parameters['sensitivity']['program'] == 'truck':
 
-            OGI_FU_times = []
-            truck_times = []
-            for site in self.state['sites']:
-                OGI_FU_times.append(float(site['OGI_FU_time']))
-                truck_times.append(float(site['truck_time']))
-            OGI_FU_mean_time = np.mean(OGI_FU_times)
-            truck_mean_time = np.mean(truck_times)
-
-            truck_surveys = []
-            for site in self.state['sites']:
-                truck_surveys.append(float(site['truck_required_surveys']))
-            truck_mean_required_surveys = np.mean(truck_surveys)
-
             truck_dict = {
                     # New OGI_FU inputs
                     'OGI_FU_n_crews': self.SA_params['OGI_n_crews'],
@@ -265,7 +242,7 @@ class sensitivity:
                     'OGI_FU_min_interval': self.SA_params['OGI_min_interval'],
                     'OGI_FU_reporting_delay': self.SA_params['OGI_reporting_delay'],
                     'OGI_FU_MDL': self.SA_params['OGI_MDL'],
-                    'OGI_FU_mean_time': OGI_FU_mean_time,
+                    'OGI_FU_time': self.SA_params['OGI_time'],
                     
                     # New truck inputs
                     'truck_n_crews': self.SA_params['truck_n_crews'],
@@ -277,8 +254,8 @@ class sensitivity:
                     'truck_MDL': self.SA_params['truck_MDL'],
                     'truck_follow_up_thresh': self.SA_params['truck_follow_up_thresh'],
                     'truck_follow_up_ratio': self.SA_params['truck_follow_up_ratio'],
-                    'truck_mean_time': truck_mean_time,
-                    'truck_mean_required_surveys': truck_mean_required_surveys,
+                    'truck_time': self.SA_params['truck_time'],
+                    'truck_mean_required_surveys': self.SA_params['truck_required_surveys'],
                     
                     # New OGI_FU outputs
                     'OGI_FU_cum_program_cost': np.sum(np.array(self.timeseries['OGI_FU_cost'][self.parameters['spin_up']:])),
@@ -298,9 +275,7 @@ class sensitivity:
             self.export_SA(df_dict, self.output_directory, 'sensitivity_truck.csv')
                                                                                                     
         return
-        
-
-        
+               
     def adjust_distribution (self, distribution, outliers, samples):
         if outliers < 0:
             for i in range(abs(outliers)):

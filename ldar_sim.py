@@ -29,12 +29,12 @@ class ldar_sim:
         
         # Read in data files
         self.state['empirical_counts'] = np.array(pd.read_csv(self.parameters['count_file']).iloc[:, 0])
-        self.state['empirical_leaks'] = np.array(pd.read_csv(self.parameters['leak_file']).iloc [:, 0])*84. # Convert g/s to kg/day
-        self.state['empirical_sites'] = np.array(pd.read_csv(self.parameters['vent_file']).iloc [:, 0])*84. # Convert g/s to kg/day
+        self.state['empirical_leaks'] = np.array(pd.read_csv(self.parameters['leak_file']).iloc [:, 0])*86.4 # Convert g/s to kg/day
+        self.state['empirical_sites'] = np.array(pd.read_csv(self.parameters['vent_file']).iloc [:, 0])*86.4 # Convert g/s to kg/day
         self.state['offsite_times'] = np.array(pd.read_csv(self.parameters['t_offsite_file']).iloc [:, 0])
         
         # Read in the sites as a list of dictionaries
-        print('Initializing sites...')
+#        print('Initializing sites...')
         with open(self.parameters['infrastructure_file']) as f:
             self.state['sites'] = [{k: v for k, v in row.items()}
                     for row in csv.DictReader(f, skipinitialspace=True)]
@@ -101,7 +101,7 @@ class ldar_sim:
 
         # Initialize baseline leaks for each site
         # Generate initial leak count for each site
-        print('Initializing leaks...')
+#        print('Initializing leaks...')
         for site in self.state['sites']:
             n_leaks = self.state['empirical_counts'][np.random.randint(0, len(self.state['empirical_counts']))]
             if n_leaks < 0: # This can happen during sensitivity analysis
@@ -273,7 +273,7 @@ class ldar_sim:
         self.timeseries['daily_emissions_kg'].append(sum(d['rate'] for d in self.active_leaks))
         self.timeseries['n_tags'].append(len(self.state['tags']))
 
-        print ('Day ' + str(self.state['t'].current_timestep) + ' complete!')
+#        print ('Day ' + str(self.state['t'].current_timestep) + ' complete!')
         
         return
 
@@ -282,7 +282,7 @@ class ldar_sim:
         '''
         Compile and write output files.
         '''
-        print ('Finalizing simulation...')
+#        print ('Finalizing simulation...')
         output_directory = os.path.join(self.parameters['working_directory'], self.parameters['output_folder'])
         if not os.path.exists(output_directory):
             os.makedirs(output_directory)       
@@ -357,7 +357,7 @@ class ldar_sim:
         # Return to original working directory
         os.chdir(self.parameters['working_directory'])
 
-        print ('Results have been written to output folder.')
+#        print ('Results have been written to output folder.')
         print ('Simulation complete. Thank you for using the LDAR Simulator.')
         return
 
