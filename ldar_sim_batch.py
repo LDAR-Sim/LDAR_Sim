@@ -24,10 +24,10 @@ import gc
 
 #------------------------------------------------------------------------------
 #-----------------------------Global parameters--------------------------------
-master_output_folder = 'truck_sensitivity_50000/'
-ref_program = 'P_ref'        # Name must match reference program below
-n_simulations = 50000                  # Minimum of 2; recommended 10+
-n_timesteps = 1595                  # Up to ~5600 for 16 year nc file
+master_output_folder = 'batch_single_test_7/'
+ref_program = 'OGI_sens'           # Name must match reference program below for batch plots
+n_simulations = 2                  # Minimum of 2 simulations to get batch plots
+n_timesteps = 800                  # Up to ~5600 for 16 year nc file
 spin_up = 500
 start_year = 2011
 operator_strength = 0
@@ -40,12 +40,12 @@ vents = 'ZA_site_emissions_2018.csv'
 t_offsite = 'time_offsite_ground.csv'
 wd = 'D:\OneDrive - University of Calgary\Documents\Thomas\PhD\Thesis\LDAR_Sim\model\python_v2'
 site_samples = [True, 50]
-write_data = False # Must be TRUE to make plots and maps
-make_plots = False
-make_maps = False
+write_data = True # Must be TRUE to make plots and maps
+make_plots = True
+make_maps = True
 
 #-----------------------------Define programs----------------------------------
-programs = [
+programs = [        # Minimum 2 programs to get batch plots
         {
             'methods': {
                     'OGI': {
@@ -89,66 +89,66 @@ programs = [
             'operator_strength': operator_strength,
             'sensitivity': {'perform': True, 
                             'program': 'OGI', 
-                            'batch': [True, 1]}
+                            'batch': [False, 1]}
         },
-        {
-            'methods': {
-                    'truck': {
-                             'name': 'truck',
-                             'n_crews': 1,
-                             'min_temp': -35,
-                             'max_wind': 25,
-                             'max_precip': 10,
-                             'min_interval': 30,
-                             'max_workday': 10,
-                             'cost_per_day': 1500,
-                             'follow_up_thresh': 0,
-                             'follow_up_ratio': 0.5,
-                             'reporting_delay': 2,
-                             'MDL': 100, # grams/hour
-                             },
-                    'OGI_FU': {
-                             'name': 'OGI_FU',
-                             'n_crews': 1,
-                             'min_temp': -35,
-                             'max_wind': 25,
-                             'max_precip': 10,
-                             'max_workday': 10,
-                             'cost_per_day': 1500,
-                             'reporting_delay': 2,
-                             'MDL': [0.47, 0.01]
-                             },
-                        },        
-            'master_output_folder': master_output_folder,
-            'output_folder': master_output_folder + 'truck_sens',
-            'timesteps': n_timesteps,
-            'start_year': start_year,
-            'an_data': an_data,
-            'fc_data': fc_data,
-            'infrastructure_file': sites,
-            'leak_file': leaks,
-            'count_file': counts,
-            'vent_file': vents,
-            't_offsite_file': t_offsite,
-            'working_directory': wd,
-            'site_samples': site_samples,
-            'simulation': None,
-            'consider_operator': False,
-            'consider_daylight': False,
-            'consider_venting': False,
-            'repair_delay': 14,
-            'LPR': 0.0065,           
-            'max_det_op': 0.00,
-            'spin_up': spin_up,
-            'write_data': write_data,
-            'make_plots': make_plots,
-            'make_maps': make_maps,
-            'start_time': time.time(),
-            'operator_strength': operator_strength,
-            'sensitivity': {'perform': True, 
-                            'program': 'truck', 
-                            'batch': [True, 2]}
-        }
+#        {
+#            'methods': {
+#                    'truck': {
+#                             'name': 'truck',
+#                             'n_crews': 1,
+#                             'min_temp': -35,
+#                             'max_wind': 25,
+#                             'max_precip': 10,
+#                             'min_interval': 30,
+#                             'max_workday': 10,
+#                             'cost_per_day': 1500,
+#                             'follow_up_thresh': 0,
+#                             'follow_up_ratio': 0.5,
+#                             'reporting_delay': 2,
+#                             'MDL': 100, # grams/hour
+#                             },
+#                    'OGI_FU': {
+#                             'name': 'OGI_FU',
+#                             'n_crews': 1,
+#                             'min_temp': -35,
+#                             'max_wind': 25,
+#                             'max_precip': 10,
+#                             'max_workday': 10,
+#                             'cost_per_day': 1500,
+#                             'reporting_delay': 2,
+#                             'MDL': [0.47, 0.01]
+#                             },
+#                        },        
+#            'master_output_folder': master_output_folder,
+#            'output_folder': master_output_folder + 'truck_sens',
+#            'timesteps': n_timesteps,
+#            'start_year': start_year,
+#            'an_data': an_data,
+#            'fc_data': fc_data,
+#            'infrastructure_file': sites,
+#            'leak_file': leaks,
+#            'count_file': counts,
+#            'vent_file': vents,
+#            't_offsite_file': t_offsite,
+#            'working_directory': wd,
+#            'site_samples': site_samples,
+#            'simulation': None,
+#            'consider_operator': False,
+#            'consider_daylight': False,
+#            'consider_venting': False,
+#            'repair_delay': 14,
+#            'LPR': 0.0065,           
+#            'max_det_op': 0.00,
+#            'spin_up': spin_up,
+#            'write_data': write_data,
+#            'make_plots': make_plots,
+#            'make_maps': make_maps,
+#            'start_time': time.time(),
+#            'operator_strength': operator_strength,
+#            'sensitivity': {'perform': False, 
+#                            'program': 'truck', 
+#                            'batch': [True, 2]}
+#        }
         ]
 
 output_directory = programs[0]['working_directory'] + '/' + master_output_folder
@@ -160,7 +160,7 @@ for i in range(n_simulations):
         parameters = programs[j]
     
         gc.collect()
-        print('Program ' + str(j) + '; simulation ' + str(i) + ' of ' + str(n_simulations))
+        print('Program ' + str(j) + '; simulation ' + str(i + 1) + ' of ' + str(n_simulations))
         
         parameters['simulation'] = str(i)
     
@@ -213,7 +213,11 @@ for i in range(n_simulations):
         sim.finalize ()
 
 if write_data == True:
-    batch_plots (output_directory, programs[0]['start_year'], spin_up, ref_program)
+    if len(programs) > 1:
+        if n_simulations > 1:
+            batch_plots (output_directory, programs[0]['start_year'], spin_up, ref_program)
+
+
 # Write metadata
 metadata = open(output_directory + '/metadata.txt','w')
 metadata.write(str(programs) + '\n' +
