@@ -7,15 +7,9 @@ import sys
 import random
 from sensitivity import *
 from operator_agent import *
-from OGI_company import *
-from M21_company import *
-from OGI_FU_company import *
-from aircraft_company import *
-from truck_company import *
-from drone_company import *
-from satellite_company import *
 from plotter import *
 from daylight_calculator import *
+
 
 class ldar_sim:
     def __init__ (self, state, parameters, timeseries):
@@ -75,29 +69,14 @@ class ldar_sim:
 
         # Initialize method(s) to be used; append to state
         for m in self.parameters['methods']:
-            if m == 'OGI':
-                self.state['methods'].append (OGI_company (self.state,
-                    self.parameters, self.parameters['methods'][m], timeseries))
-            elif m == 'M21':
-                self.state['methods'].append (M21_company (self.state,
-                    self.parameters, self.parameters['methods'][m], timeseries))
-            elif m == 'OGI_FU':
-                self.state['methods'].append (OGI_FU_company (self.state,
-                    self.parameters, self.parameters['methods'][m], timeseries))
-            elif m == 'aircraft':
-                self.state['methods'].append (aircraft_company (self.state,
-                    self.parameters, self.parameters['methods'][m], timeseries))
-            elif m == 'truck':
-                self.state['methods'].append (truck_company (self.state,
-                    self.parameters, self.parameters['methods'][m], timeseries))
-            elif m == 'drone':
-                self.state['methods'].append (drone_company (self.state,
-                    self.parameters, self.parameters['methods'][m], timeseries))
-            elif m == 'satellite':
-                self.state['methods'].append (satellite_company (self.state,
-                    self.parameters, self.parameters['methods'][m], timeseries))
-            else:
-                print ('Cannot add this method: ' + m)
+            try:
+                company_name = str(m) + '_company'
+                module = __import__(company_name)
+                func = getattr(module, company_name)
+                self.state['methods'].append (func(self.state,
+                        self.parameters, self.parameters['methods'][m], timeseries))
+            except: print ('Cannot add this method: ' + m)
+                
 
         # Initialize baseline leaks for each site
         # Generate initial leak count for each site
