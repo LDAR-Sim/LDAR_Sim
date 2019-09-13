@@ -17,7 +17,7 @@ class truck_company:
         self.parameters = parameters
         self.config = config
         self.timeseries = timeseries
-        self.crews = []                         # Empty list of truck agents (crews)
+        self.crews = []
         self.deployment_days = self.state['weather'].deployment_days('truck')
         self.timeseries['truck_prop_sites_avail'] = []
         self.timeseries['truck_cost'] = np.zeros(self.parameters['timesteps'])       

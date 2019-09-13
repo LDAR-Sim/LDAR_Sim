@@ -125,7 +125,7 @@ class truck_crew:
             venting = self.state['empirical_vents'][np.random.randint(0, len(self.state['empirical_vents']))]
             site_cum_rate += venting
                     
-        # Simple detection module based optimistically on Fox et al 2019 lower bound (lit review)
+        # Simple binary detection module 
         detect = False
         if site_cum_rate > (self.config['MDL']*0.024):  # g/hour to kg/day
             detect = True    

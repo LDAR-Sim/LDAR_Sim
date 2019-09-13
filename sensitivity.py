@@ -91,6 +91,7 @@ class sensitivity:
             'truck_follow_up_thresh': np.random.uniform(0, 500),
             'truck_follow_up_ratio': np.random.uniform(0.1, 1)
                 })
+
 #--------------Update model parameters according to SA definition--------------
 
         self.parameters['LPR'] = self.SA_params['LPR']

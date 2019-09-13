@@ -28,7 +28,6 @@ class ldar_sim:
         self.state['offsite_times'] = np.array(pd.read_csv(self.parameters['t_offsite_file']).iloc [:, 0])
         
         # Read in the sites as a list of dictionaries
-#        print('Initializing sites...')
         with open(self.parameters['infrastructure_file']) as f:
             self.state['sites'] = [{k: v for k, v in row.items()}
                     for row in csv.DictReader(f, skipinitialspace=True)]
@@ -63,7 +62,7 @@ class ldar_sim:
             if float(site['lon'])%360 < min(self.state['weather'].longitude):
                 sys.exit('Simulation terminated: One or more sites is too far West and is outside the spatial bounds of your weather data!')
 
-        # Configure sensitivity analysis, if requested (code must remain here - after site and before method initialization)
+        # Configure sensitivity analysis, if requested (code block must remain here - after site initialization and before method initialization)
         if self.parameters['sensitivity']['perform'] == True:
             self.sensitivity = sensitivity(self.parameters, self.timeseries, self.state)
 
@@ -78,12 +77,10 @@ class ldar_sim:
             except: print ('Cannot add this method: ' + m)
                 
 
-        # Initialize baseline leaks for each site
         # Generate initial leak count for each site
-#        print('Initializing leaks...')
         for site in self.state['sites']:
             n_leaks = self.state['empirical_counts'][np.random.randint(0, len(self.state['empirical_counts']))]
-            if n_leaks < 0: # This can happen during sensitivity analysis
+            if n_leaks < 0:     # This can happen occasionally during sensitivity analysis 
                 n_leaks = 0
             site.update({'initial_leaks': n_leaks})
             self.state['init_leaks'].append(site['initial_leaks'])
@@ -115,6 +112,7 @@ class ldar_sim:
         if self.parameters['consider_operator'] == True:
             self.state['operator'] = operator_agent (self.timeseries, self.parameters, self.state)
         
+        # If working without methods (operator only), need to get the first day going
         if bool(self.parameters['methods']) == False:
             self.state['t'].current_date = self.state['t'].current_date.replace(hour = 1)
         
@@ -252,6 +250,7 @@ class ldar_sim:
         self.timeseries['daily_emissions_kg'].append(sum(d['rate'] for d in self.active_leaks))
         self.timeseries['n_tags'].append(len(self.state['tags']))
 
+        # Optional day tracking through simulation (uncomment following line to enable)
 #        print ('Day ' + str(self.state['t'].current_timestep) + ' complete!')
         
         return
@@ -261,7 +260,6 @@ class ldar_sim:
         '''
         Compile and write output files.
         '''
-#        print ('Finalizing simulation...')
         output_directory = os.path.join(self.parameters['working_directory'], self.parameters['output_folder'])
         if not os.path.exists(output_directory):
             os.makedirs(output_directory)       
@@ -336,7 +334,6 @@ class ldar_sim:
         # Return to original working directory
         os.chdir(self.parameters['working_directory'])
 
-#        print ('Results have been written to output folder.')
         print ('Simulation complete. Thank you for using the LDAR Simulator.')
         return
 

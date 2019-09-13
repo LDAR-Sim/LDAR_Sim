@@ -17,7 +17,7 @@ class aircraft_company:
         self.parameters = parameters
         self.config = config
         self.timeseries = timeseries
-        self.crews = []                         # Empty list of aircraft agents (crews)
+        self.crews = []                         
         self.deployment_days = self.state['weather'].deployment_days('aircraft')
         self.timeseries['aircraft_prop_sites_avail'] = []
         self.timeseries['aircraft_cost'] = np.zeros(self.parameters['timesteps'])
@@ -108,20 +108,20 @@ class aircraft_company:
 
         # Export 2D proportions matrix as map
         output_raster = gdal.GetDriverByName('GTiff').Create('DD_aircraft_map_' + self.parameters['simulation'] + '.tif', ncols, nrows, 1, gdal.GDT_Float32)
-        output_raster.SetGeoTransform(geotransform)              # Specify file coordinates
-        srs = osr.SpatialReference()                             # Establish coordinate encoding
-        srs.ImportFromEPSG(4326)                                 # Specify WGS84 lat/long
-        output_raster.SetProjection(srs.ExportToWkt())           # Exports the coordinate system to the file
-        output_raster.GetRasterBand(1).WriteArray(DD_aircraft_output)    # Writes my array to the raster
+        output_raster.SetGeoTransform(geotransform)                       # Specify file coordinates
+        srs = osr.SpatialReference()                                      # Establish coordinate encoding
+        srs.ImportFromEPSG(4326)                                          # Specify WGS84 lat/long
+        output_raster.SetProjection(srs.ExportToWkt())                    # Exports the coordinate system to the file
+        output_raster.GetRasterBand(1).WriteArray(DD_aircraft_output)     # Writes my array to the raster
         output_raster = None
         
         # Exprot 2D MCB matrix as map
         output_raster = gdal.GetDriverByName('GTiff').Create('MCB_aircraft_map_' + self.parameters['simulation'] + '.tif', ncols, nrows, 1, gdal.GDT_Float32)
-        output_raster.SetGeoTransform(geotransform)              # Specify file coordinates
-        srs = osr.SpatialReference()                             # Establish coordinate encoding
-        srs.ImportFromEPSG(4326)                                 # Specify WGS84 lat/long
-        output_raster.SetProjection(srs.ExportToWkt())           # Exports the coordinate system to the file
-        output_raster.GetRasterBand(1).WriteArray(MCB_aircraft_output)   # Writes my array to the raster
+        output_raster.SetGeoTransform(geotransform)                       # Specify file coordinates
+        srs = osr.SpatialReference()                                      # Establish coordinate encoding
+        srs.ImportFromEPSG(4326)                                          # Specify WGS84 lat/long
+        output_raster.SetProjection(srs.ExportToWkt())                    # Exports the coordinate system to the file
+        output_raster.GetRasterBand(1).WriteArray(MCB_aircraft_output)    # Writes my array to the raster
         output_raster = None
               
         return

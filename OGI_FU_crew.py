@@ -13,7 +13,7 @@ class OGI_FU_crew:
         self.config = config
         self.timeseries = timeseries
         self.deployment_days = deployment_days
-        self.crewstate = {'id': id}                 # Crewstate is unique to this agent
+        self.crewstate = {'id': id}
         self.crewstate['lat'] = 0.0
         self.crewstate['lon'] = 0.0
         self.worked_today = False

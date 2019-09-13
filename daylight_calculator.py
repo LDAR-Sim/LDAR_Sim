@@ -2,10 +2,10 @@ import ephem
 import numpy as np
 import datetime
 
+# Calculate the study area average daylight for each day of the simulation
 class daylight_calculator_ave: 
-    # daylight_calculator was created based on pyephem package(detail: https://rhodesmill.org/pyephem/rise-set.html#computing-twilight) 
-    def __init__(self, state, parameters): 
-        
+    
+    def __init__(self, state, parameters):      
         self.state = state
         self.parameters = parameters
         
@@ -52,7 +52,6 @@ class daylight_calculator_ave:
     
 #-----------------------------------------------------------------------------#
 class daylight_calculator_all: 
-    # daylight_calculator was created based on pyephem package(detail: https://rhodesmill.org/pyephem/rise-set.html#computing-twilight) 
     def __init__(self,latitude,longitude,date): 
         
         self.time = date

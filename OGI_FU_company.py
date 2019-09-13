@@ -17,7 +17,7 @@ class OGI_FU_company:
         self.parameters = parameters
         self.config = config
         self.timeseries = timeseries
-        self.crews = []                         # Empty list of OGI_FU agents (crews)
+        self.crews = []
         self.deployment_days = self.state['weather'].deployment_days('OGI_FU')
         self.timeseries['OGI_FU_prop_sites_avail'] = []
         self.timeseries['OGI_FU_cost'] = np.zeros(self.parameters['timesteps'])
