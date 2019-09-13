@@ -34,8 +34,16 @@ class ldar_sim:
         
         # Sample sites
         if self.parameters['site_samples'][0] == True:
-            self.state['sites'] = random.sample(self.state['sites'], self.parameters['site_samples'][1])        
+            self.state['sites'] = random.sample(self.state['sites'], self.parameters['site_samples'][1])  
             
+        if self.parameters['subtype_times'][0] == True:
+            subtype_times = pd.read_csv(self.parameters['subtype_times'][1])
+            cols_to_add = subtype_times.columns[1:].tolist()
+            for col in cols_to_add:
+                for site in self.state['sites']:
+                    site[col] = subtype_times.loc[subtype_times['subtype_code'] == 
+                         int(site['subtype_code']), col].iloc[0]
+                                   
         # Shuffle all the entries to randomize order for identical 't_Since_last_LDAR' values
         random.shuffle(self.state['sites'])
             

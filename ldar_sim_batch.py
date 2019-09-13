@@ -22,7 +22,7 @@ import gc
 
 #------------------------------------------------------------------------------
 #-----------------------------Global parameters--------------------------------
-master_output_folder = 'test_1/'
+master_output_folder = 'test_5/'
 ref_program = 'OGI_sens'           # Name must match reference program below for batch plots
 n_simulations = 2                  # Minimum of 2 simulations to get batch plots
 n_timesteps = 800                  # Up to ~5600 for 16 year nc file
@@ -36,6 +36,7 @@ leaks = 'rates_Clearstone.csv'
 counts = 'counts_Clearstone.csv'
 vents = 'ZA_site_emissions_2018.csv'
 t_offsite = 'time_offsite_ground.csv'
+subtype_times = [True, 'subtype_times.csv']     # If True, will overwrite site-specific times using subtype times
 wd = 'D:\OneDrive - University of Calgary\Documents\Thomas\PhD\Thesis\LDAR_Sim\model\python_v2'
 site_samples = [True, 50]
 write_data = True # Must be TRUE to make plots and maps
@@ -70,6 +71,7 @@ programs = [        # Minimum 2 programs to get batch plots
             'count_file': counts,
             'vent_file': vents,
             't_offsite_file': t_offsite,
+            'subtype_times': subtype_times,
             'working_directory': wd,
             'site_samples': site_samples,
             'simulation': None,
@@ -143,6 +145,7 @@ programs = [        # Minimum 2 programs to get batch plots
             'count_file': counts,
             'vent_file': vents,
             't_offsite_file': t_offsite,
+            'subtype_times': subtype_times,
             'working_directory': wd,
             'site_samples': site_samples,
             'simulation': None,
