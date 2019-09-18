@@ -13,7 +13,7 @@
 from weather_lookup import *
 from ldar_sim import *
 from time_counter import *
-from plotter_batch import *
+from batch_reporting import *
 import numpy as np
 import os
 import datetime
@@ -22,10 +22,10 @@ import gc
 
 #------------------------------------------------------------------------------
 #-----------------------------Global parameters--------------------------------
-master_output_folder = 'test_5/'
+master_output_folder = 'test_1/'
 ref_program = 'OGI_sens'           # Name must match reference program below for batch plots
-n_simulations = 2                  # Minimum of 2 simulations to get batch plots
-n_timesteps = 800                  # Up to ~5600 for 16 year nc file
+n_simulations = 20                  # Minimum of 2 simulations to get batch plots
+n_timesteps = 1200                  # Up to ~5600 for 16 year nc file
 spin_up = 500
 start_year = 2011
 operator_strength = 0
@@ -38,10 +38,10 @@ vents = 'ZA_site_emissions_2018.csv'
 t_offsite = 'time_offsite_ground.csv'
 subtype_times = [True, 'subtype_times.csv']     # If True, will overwrite site-specific times using subtype times
 wd = 'D:\OneDrive - University of Calgary\Documents\Thomas\PhD\Thesis\LDAR_Sim\model\python_v2'
-site_samples = [True, 50]
+site_samples = [True, 200]
 write_data = True # Must be TRUE to make plots and maps
 make_plots = True
-make_maps = True
+make_maps = False
 
 #-----------------------------Define programs----------------------------------
 programs = [        # Minimum 2 programs to get batch plots
@@ -62,6 +62,52 @@ programs = [        # Minimum 2 programs to get batch plots
                         },        
             'master_output_folder': master_output_folder,
             'output_folder': master_output_folder + 'OGI_sens',
+            'timesteps': n_timesteps,
+            'start_year': start_year,
+            'an_data': an_data,
+            'fc_data': fc_data,
+            'infrastructure_file': sites,
+            'leak_file': leaks,
+            'count_file': counts,
+            'vent_file': vents,
+            't_offsite_file': t_offsite,
+            'subtype_times': subtype_times,
+            'working_directory': wd,
+            'site_samples': site_samples,
+            'simulation': None,
+            'consider_operator': False,
+            'consider_daylight': False,
+            'consider_venting': False,
+            'repair_delay': 14,
+            'LPR': 0.0065,           
+            'max_det_op': 0.00,
+            'spin_up': spin_up,
+            'write_data': write_data,
+            'make_plots': make_plots,
+            'make_maps': make_maps,
+            'start_time': time.time(),
+            'operator_strength': operator_strength,
+            'sensitivity': {'perform': False, 
+                            'program': 'OGI', 
+                            'batch': [False, 1]}
+        },
+        {
+            'methods': {
+                    'OGI': {
+                             'name': 'OGI',
+                             'n_crews': 1,
+                             'min_temp': -35,
+                             'max_wind': 25,
+                             'max_precip': 10,
+                             'min_interval': 60,
+                             'max_workday': 10,  
+                             'cost_per_day': 1500,
+                             'reporting_delay': 2,
+                             'MDL': [0.47, 0.01]
+                             }
+                        },        
+            'master_output_folder': master_output_folder,
+            'output_folder': master_output_folder + 'OGI_sens2',
             'timesteps': n_timesteps,
             'start_year': start_year,
             'an_data': an_data,
@@ -176,7 +222,7 @@ for i in range(n_simulations):
         parameters = programs[j]
     
         gc.collect()
-        print('Program ' + str(j) + '; simulation ' + str(i + 1) + ' of ' + str(n_simulations))
+        print('Program ' + str(j + 1) + ' of ' + str(len(programs)) + '; simulation ' + str(i + 1) + ' of ' + str(n_simulations))
         
         parameters['simulation'] = str(i)
     
@@ -228,10 +274,15 @@ for i in range(n_simulations):
         # Clean up and write files
         sim.finalize ()
 
+# Do batch reporting
 if write_data == True:
-    if len(programs) > 1:
-        if n_simulations > 1:
-            batch_plots (output_directory, programs[0]['start_year'], spin_up, ref_program)
+    # Create a data object...
+    reporting_data = batch_reporting(output_directory, programs[0]['start_year'], spin_up, ref_program)
+    if n_simulations > 1:
+        reporting_data.program_report()
+        if len(programs) > 1:        
+           reporting_data.batch_report()
+           reporting_data.batch_plots()
 
 
 # Write metadata
