@@ -258,21 +258,11 @@ class batch_reporting:
                 ref_std = dfs_p2[0].loc[dfs_p2[0].index[j], 'std']
                 alt_mean = i.loc[i.index[j], 'mean']
                 alt_std = i.loc[i.index[j], 'std']
-                difs = []
-                ratios = []
-                
-                for k in range(100):
-                    ref = np.random.normal(loc = ref_mean, scale = ref_std)
-                    alt = np.random.normal(loc = alt_mean, scale = alt_std)
-                    dif = alt - ref
-                    ratio = alt/ref
-                    difs.append(dif)
-                    ratios.append(ratio)
-                    
-                i.loc[i.index[j], 'mean_dif'] = np.mean(difs)
-                i.loc[i.index[j], 'std_dif'] = np.std(difs)
-                i.loc[i.index[j], 'mean_ratio'] = np.mean(ratios)
-                i.loc[i.index[j], 'std_ratio'] = np.std(ratios)
+
+                i.loc[i.index[j], 'mean_dif'] = alt_mean - ref_mean
+                i.loc[i.index[j], 'std_dif'] = math.sqrt(math.pow(alt_std, 2) + math.pow(ref_std, 2))
+                i.loc[i.index[j], 'mean_ratio'] = alt_mean / ref_mean
+                i.loc[i.index[j], 'std_ratio'] = math.sqrt(math.pow((alt_std/alt_mean), 2) + math.pow((ref_std/ref_mean), 2))
                         
         # Build plotting dataframe
         df_p2 = self.dates_trunc.copy().to_frame()
@@ -313,21 +303,16 @@ class batch_reporting:
             panel_grid_major_y = element_line(colour = 'black', linewidth = 1, alpha = 0.5))
         )                         
         plot2.save(self.output_directory + 'relative_mitigation.png', width = 7, height = 3, dpi = 900)    
-            
-    
-        y_min = 0
-        y_max = 3      
+                  
         # Make plot 3    
         plot3 = (ggplot(None) + aes('datetime', 'mean_ratio', group = 'program') +
             geom_ribbon(df_p2, aes(ymin = 'low_ratio', ymax = 'high_ratio', fill = 'program'), alpha = 0.2) +
-            geom_line(df_p2, aes('datetime', 'mean_ratio', colour = 'program'), size = 1) +
             geom_hline(yintercept = 1, size = 0.5, colour = 'blue') +
+            geom_line(df_p2, aes('datetime', 'mean_ratio', colour = 'program'), size = 1) +
             ylab('Daily emissions ratio (kg)') + xlab('') +
             scale_colour_hue(h = 0.15, l = 0.25, s = 0.9) +
             scale_x_datetime(labels = date_format('%Y')) +
-            ggtitle('Ratios of individual days may be unstable for small sample sizes. \nIf unstable, need more simulations (or more sites). \nLook also at ratio of mean daily emissions over entire timeseries.') +
-            coord_cartesian(ylim = (y_min, y_max)) +
-    #        scale_y_continuous(trans='log10') +  
+            ggtitle('Blue line represents equivalence. \nIf uncertainty is high, use more simulations and/or sites. \nLook also at ratio of mean daily emissions over entire timeseries.') +
             labs(color = 'Program', fill = 'Program') +
             theme(panel_border = element_rect(colour = "black", fill = None, size = 2), 
             panel_grid_minor_x = element_blank(), panel_grid_major_x = element_blank(),
