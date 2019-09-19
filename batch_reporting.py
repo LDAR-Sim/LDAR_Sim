@@ -279,14 +279,14 @@ class batch_reporting:
         
         df_p2['low_dif'] = dfs_p2[1]['mean_dif'] - 2*dfs_p2[1]['std_dif']
         df_p2['high_dif'] = dfs_p2[1]['mean_dif'] + 2*dfs_p2[1]['std_dif']
-        df_p2['low_ratio'] = dfs_p2[1]['mean_ratio'] - 2*dfs_p2[1]['std_ratio']
+        df_p2['low_ratio'] = dfs_p2[1]['mean_ratio'] / (dfs_p2[1]['mean_ratio'] + 2*dfs_p2[1]['std_ratio'])
         df_p2['high_ratio'] = dfs_p2[1]['mean_ratio'] + 2*dfs_p2[1]['std_ratio']
         
         pd.options.mode.chained_assignment = None
         for i in dfs_p2[2:]:
             i['low_dif'] = i['mean_dif'] - 2*i['std_dif']
             i['high_dif'] = i['mean_dif'] + 2*i['std_dif']
-            i['low_ratio'] = i['mean_ratio'] - 2*i['std_ratio']
+            i['low_ratio'] = i['mean_ratio'] / (i['mean_ratio'] + 2*i['std_ratio'])
             i['high_ratio'] = i['mean_ratio'] + 2*i['std_ratio']
             short_df = i[['program','mean_dif', 'std_dif', 'low_dif', 'high_dif', 'mean_ratio', 'std_ratio', 'low_ratio', 'high_ratio']]
             short_df['datetime'] = np.array(self.dates_trunc)
@@ -299,7 +299,7 @@ class batch_reporting:
             ylab('Daily emissions difference (kg/site)') + xlab('') +
             scale_colour_hue(h = 0.15, l = 0.25, s = 0.9) +
             scale_x_datetime(labels = date_format('%Y')) +
-            ggtitle('Differences of individual days may be unstable for small sample sizes. \nBetter to take ratio of mean daily emissions over entire timeseries.') +
+            ggtitle('Daily differences may be uncertain for small sample sizes') +
     #        scale_y_continuous(trans='log10') +  
             labs(color = 'Program', fill = 'Program') +
             theme(panel_border = element_rect(colour = "black", fill = None, size = 2), 
