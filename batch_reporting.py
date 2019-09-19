@@ -30,7 +30,7 @@ class batch_reporting:
         
         start_date = datetime(self.start_year, 1, 1) + timedelta(days = self.spin_up)
         start_date = start_date.strftime("%m-%d-%Y")  
-        
+                
         # Go to directory with program folders
         os.chdir(self.output_directory)
         
@@ -61,13 +61,18 @@ class batch_reporting:
         
         mask = (dates > start_date)
         self.dates_trunc = dates.loc[mask]        
-
+        
+        # Figure out the number of sites used in the simulation (have to do it this way because n can be sampled or not)
+        site_path = self.output_directory + self.directories[0]
+        self.n_sites = len(pd.read_csv(site_path + '/sites_output_0.csv'))
+        
 ############## Build list of emissions dataframes #############################
         self.emission_dfs = [[] for i in range(len(all_data))]
         for i in range(len(all_data)):
             for j in all_data[i]:
                 self.emission_dfs[i].append(j["daily_emissions_kg"])
             self.emission_dfs[i] = pd.concat(self.emission_dfs[i], axis = 1, keys = [i for i in range(len(all_data[i]))]) 
+            self.emission_dfs[i] = self.emission_dfs[i]/self.n_sites
             
             # New columns
             self.emission_dfs[i]['program'] = self.directories[i]
@@ -231,7 +236,7 @@ class batch_reporting:
         plot1 = (ggplot(None) + aes('datetime', 'value', group = 'program') +
                 geom_ribbon(df_p1, aes(ymin = 'low', ymax = 'high', fill = 'program'), alpha = 0.2) +
                 geom_line(df_p1, aes('datetime', 'mean', colour = 'program'), size = 1) +
-                ylab('Daily emissions (kg)') + xlab('') +
+                ylab('Daily emissions (kg/site)') + xlab('') +
                 scale_colour_hue(h = 0.15, l = 0.25, s = 0.9) +
                 scale_x_datetime(labels = date_format('%Y')) +
                 scale_y_continuous(trans = 'log10') +
@@ -291,7 +296,7 @@ class batch_reporting:
         plot2 = (ggplot(None) + aes('datetime', 'mean_dif', group = 'program') +
             geom_ribbon(df_p2, aes(ymin = 'low_dif', ymax = 'high_dif', fill = 'program'), alpha = 0.2) +
             geom_line(df_p2, aes('datetime', 'mean_dif', colour = 'program'), size = 1) +
-            ylab('Daily emissions difference (kg)') + xlab('') +
+            ylab('Daily emissions difference (kg/site)') + xlab('') +
             scale_colour_hue(h = 0.15, l = 0.25, s = 0.9) +
             scale_x_datetime(labels = date_format('%Y')) +
             ggtitle('Differences of individual days may be unstable for small sample sizes. \nBetter to take ratio of mean daily emissions over entire timeseries.') +
@@ -309,7 +314,7 @@ class batch_reporting:
             geom_ribbon(df_p2, aes(ymin = 'low_ratio', ymax = 'high_ratio', fill = 'program'), alpha = 0.2) +
             geom_hline(yintercept = 1, size = 0.5, colour = 'blue') +
             geom_line(df_p2, aes('datetime', 'mean_ratio', colour = 'program'), size = 1) +
-            ylab('Daily emissions ratio (kg)') + xlab('') +
+            ylab('Emissions ratio') + xlab('') +
             scale_colour_hue(h = 0.15, l = 0.25, s = 0.9) +
             scale_x_datetime(labels = date_format('%Y')) +
             ggtitle('Blue line represents equivalence. \nIf uncertainty is high, use more simulations and/or sites. \nLook also at ratio of mean daily emissions over entire timeseries.') +
