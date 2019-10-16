@@ -1,11 +1,14 @@
 #------------------------------------------------------------------------------
-# Name:         LDAR-Sim Sensitivity Analysis - Operator
+# Program:     The LDAR Simulator (LDAR-Sim) 
+# File:        Sensitivity analysis
+# Purpose:     Module to enable sensitivity analysis
 #
-# Authors:      Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
+# Copyright (C) 2019  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
+#    
+# This file is for peer review. Do not distribute or modify it in any way.
+# This program is presented WITHOUT ANY WARRANTY; without even the implied
+# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #
-# Created:      2019-Jul-02
-#
-#------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 import numpy as np
 import pandas as pd

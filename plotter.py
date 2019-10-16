@@ -1,11 +1,14 @@
 #------------------------------------------------------------------------------
-# Name:        Plotter
-# Purpose:     Generic standard plotting outputs for each run of model
+# Program:     The LDAR Simulator (LDAR-Sim) 
+# File:        Plotter
+# Purpose:     Generate standard plots for each run of LDAR-Sim
 #
-# Authors:     Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
+# Copyright (C) 2019  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
+#    
+# This file is for peer review. Do not distribute or modify it in any way.
+# This program is presented WITHOUT ANY WARRANTY; without even the implied
+# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #
-# Created:     22-04-2019
-
 #------------------------------------------------------------------------------
 from plotnine import *
 import numpy as np

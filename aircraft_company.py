@@ -1,3 +1,16 @@
+#------------------------------------------------------------------------------
+# Program:     The LDAR Simulator (LDAR-Sim) 
+# File:        Aircraft company
+# Purpose:     Company managing aircraft agents
+#
+# Copyright (C) 2019  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
+#    
+# This file is for peer review. Do not distribute or modify it in any way.
+# This program is presented WITHOUT ANY WARRANTY; without even the implied
+# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#
+#------------------------------------------------------------------------------
+
 from aircraft_crew import *
 from weather_lookup import *
 from generic_functions import gap_calculator

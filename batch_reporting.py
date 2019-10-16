@@ -1,12 +1,16 @@
 #------------------------------------------------------------------------------
-# Name:        Batch reporting
+# Program:     The LDAR Simulator (LDAR-Sim) 
+# File:        Batch reporting
 # Purpose:     Creates outputs across multiple programs and simulations
 #
-# Authors:     Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
+# Copyright (C) 2019  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
+#    
+# This file is for peer review. Do not distribute or modify it in any way.
+# This program is presented WITHOUT ANY WARRANTY; without even the implied
+# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #
-# Created:     17-09-2019
-
 #------------------------------------------------------------------------------
+
 import numpy as np
 import pandas as pd
 import math
@@ -204,7 +208,7 @@ class batch_reporting:
             dfs[i]['mean'] = dfs[i].iloc[:,0:n_cols].mean(axis = 1)
             dfs[i]['std'] = dfs[i].iloc[:,0:n_cols].std(axis = 1)
             dfs[i]['low'] = dfs[i].iloc[:,0:n_cols].quantile(0.025, axis=1)
-            dfs[i]['high'] = dfs[i].iloc[:,0:n_cols].quantile(0.975, axis=1)
+            dfs[i]['high'] = dfs[i].iloc[:,0:n_cols].quantile(0.975, axis=1)           
             dfs[i]['program'] = self.directories[i] 
         
         # Move reference program to the top of the list
@@ -241,6 +245,7 @@ class batch_reporting:
                 scale_x_datetime(labels = date_format('%Y')) +
                 scale_y_continuous(trans = 'log10') +
                 coord_cartesian(ylim = (y_min, y_max)) +
+                ggtitle('To reduce uncertainty, use more simulations.') +
                 labs(color = 'Program', fill = 'Program') +
                 theme(panel_border = element_rect(colour = "black", fill = None, size = 2), 
                 panel_grid_minor_x = element_blank(), panel_grid_major_x = element_blank(),

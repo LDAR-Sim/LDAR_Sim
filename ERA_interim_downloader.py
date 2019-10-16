@@ -1,17 +1,17 @@
 #------------------------------------------------------------------------------
-# Name:         ERA Interim Downloader
+# Program:     The LDAR Simulator (LDAR-Sim) 
+# File:        ERA Interim downloader
+# Purpose:     Downloads ERA Interim data
 #
-# Purpose:      Downloads ERA Interim data
-#
-# Authors:      Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
-#
-# Created:      2019-Jun-14
+# Copyright (C) 2019  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
+#    
+# This file is for peer review. Do not distribute or modify it in any way.
+# This program is presented WITHOUT ANY WARRANTY; without even the implied
+# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #
 #------------------------------------------------------------------------------
-#------------------------------------------------------------------------------
-from ecmwfapi import ECMWFDataServer
 
-#------------------------------------------------------------------------------
+from ecmwfapi import ECMWFDataServer
 
 server = ECMWFDataServer()
     
