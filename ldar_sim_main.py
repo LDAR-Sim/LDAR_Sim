@@ -38,14 +38,14 @@ counts = 'counts_Clearstone.csv'
 vents = 'ZA_site_emissions_2018.csv'
 t_offsite = 'time_offsite_ground.csv'
 subtype_times = [False, 'subtype_times.csv']     # If True, will overwrite site-specific times using subtype times
-wd = '<wd here>'
-site_samples = [False, 200]
+wd = 'D:\OneDrive - University of Calgary\Documents\Thomas\PhD\Thesis\LDAR_Sim\model\python_v2'
+site_samples = [False, 500]
 write_data = True # Must be TRUE to make plots and maps
 make_plots = True
 make_maps = False
 
 #-----------------------------Define programs----------------------------------
-programs = [        # Minimum 2 programs to get batch plots
+programs = [
         {
             'methods': {
                     'OGI': {
@@ -73,8 +73,11 @@ programs = [        # Minimum 2 programs to get batch plots
             'vent_file': vents,
             't_offsite_file': t_offsite,
             'working_directory': wd,
+            'site_samples': site_samples,
+            'subtype_times': subtype_times,
             'simulation': None,
             'consider_daylight': False,
+            'consider_operator': False,
             'consider_venting': False,
             'repair_delay': 14,
             'LPR': 0.0065,           
@@ -116,8 +119,11 @@ programs = [        # Minimum 2 programs to get batch plots
             'vent_file': vents,
             't_offsite_file': t_offsite,
             'working_directory': wd,
+            'site_samples': site_samples,
+            'subtype_times': subtype_times,
             'simulation': None,
             'consider_daylight': True,
+            'consider_operator': False,
             'consider_venting': True,
             'repair_delay': 14,
             'LPR': 0.0065,           
@@ -159,8 +165,11 @@ programs = [        # Minimum 2 programs to get batch plots
             'vent_file': vents,
             't_offsite_file': t_offsite,
             'working_directory': wd,
+            'site_samples': site_samples,
+            'subtype_times': subtype_times,
             'simulation': None,
             'consider_daylight': True,
+            'consider_operator': False,
             'consider_venting': True,
             'repair_delay': 14,
             'LPR': 0.0065,           
@@ -202,8 +211,11 @@ programs = [        # Minimum 2 programs to get batch plots
             'vent_file': vents,
             't_offsite_file': t_offsite,
             'working_directory': wd,
+            'site_samples': site_samples,
+            'subtype_times': subtype_times,
             'simulation': None,
             'consider_daylight': True,
+            'consider_operator': False,
             'consider_venting': True,
             'repair_delay': 14,
             'LPR': 0.0065,           
