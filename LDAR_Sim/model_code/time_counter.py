@@ -3,7 +3,7 @@
 # File:        Time counter
 # Purpose:     Initialize time object and keeps track of simulation time
 #
-# Copyright (C) 2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
+# Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
 #    
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published
