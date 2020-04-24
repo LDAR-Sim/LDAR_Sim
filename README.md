@@ -5,8 +5,11 @@ The Leak Detection and Repair Simulator (LDAR-Sim) is an open-source modeling fr
 To learn more about LDAR-Sim, you can read about it in *this paper*.
 
 Thomas Fox: t.arcadius@gmail.com / thomas.fox@ucalgary.ca
+
 Mozhou Gao: mozhou.gao@ucalgary.ca
+
 Thomas Barchyn: tbarchyn@ucalgary.ca
+
 Chris Hugenholtz: chhugenh@ucalgary.ca
 
 ## LDAR-Sim Licensing and Use
