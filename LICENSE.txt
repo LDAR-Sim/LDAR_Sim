@@ -1,6 +1,6 @@
 
 The LDAR Simulator (LDAR-Sim)
-Copyright (C) 2020 Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
+Copyright (C) 2018-2020 Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
 
                        TERMS AND CONDITIONS
 

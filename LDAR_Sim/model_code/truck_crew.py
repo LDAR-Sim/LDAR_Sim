@@ -1,13 +1,21 @@
 #------------------------------------------------------------------------------
 # Program:     The LDAR Simulator (LDAR-Sim) 
-# File:        Aircraft crew
-# Purpose:     Initialize each aircraft crew under aircraft company
+# File:        Truck crew
+# Purpose:     Initialize each truck crew under truck company
 #
-# Copyright (C) 2019  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
+# Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
 #    
-# This file is for peer review. Do not distribute or modify it in any way.
-# This program is presented WITHOUT ANY WARRANTY; without even the implied
-# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, version 3.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 #------------------------------------------------------------------------------
 
@@ -16,10 +24,10 @@ from datetime import timedelta
 import math
 import numpy as np
 
-class aircraft_crew:
+class truck_crew:
     def __init__ (self, state, parameters, config, timeseries, deployment_days, id):
         '''
-        Constructs an individual aircraft crew based on defined configuration.
+        Constructs an individual truck crew based on defined configuration.
         '''
         self.state = state
         self.parameters = parameters
@@ -39,7 +47,7 @@ class aircraft_crew:
         self.worked_today = False
         self.candidate_flags = []
         work_hours = None
-        max_work = self.parameters['methods']['aircraft']['max_workday']
+        max_work = self.parameters['methods']['truck']['max_workday']
         
         if self.parameters['consider_daylight'] == True:
             daylight_hours = self.state['daylight'].get_daylight(self.state['t'].current_timestep)
@@ -54,7 +62,7 @@ class aircraft_crew:
             start_hour = (24 - work_hours) / 2
             end_hour = start_hour + work_hours
         else:
-            print('Unreasonable number of work hours specified for Aircraft crew ' + str(self.crewstate['id']))
+            print('Unreasonable number of work hours specified for truck crew ' + str(self.crewstate['id']))
                
         self.state['t'].current_date = self.state['t'].current_date.replace(hour = int(start_hour))              # Set start of work day
         while self.state['t'].current_date.hour < int(end_hour):
@@ -63,13 +71,13 @@ class aircraft_crew:
                 break                                   # Break out if no site can be found
             self.visit_site (facility_ID, site)
             self.worked_today = True
-            
+        
         # Flag sites according to the flag ratio
         if len(self.candidate_flags) > 0:
             self.flag_sites(self.candidate_flags)
-        
+
         if self.worked_today == True:
-            self.timeseries['aircraft_cost'][self.state['t'].current_timestep] += self.parameters['methods']['aircraft']['cost_per_day']
+            self.timeseries['truck_cost'][self.state['t'].current_timestep] += self.parameters['methods']['truck']['cost_per_day']
 
         return
 
@@ -81,7 +89,7 @@ class aircraft_crew:
         '''
             
         # Sort all sites based on a neglect ranking
-        self.state['sites'] = sorted(self.state['sites'], key=lambda k: k['aircraft_t_since_last_LDAR'], reverse = True)
+        self.state['sites'] = sorted(self.state['sites'], key=lambda k: k['truck_t_since_last_LDAR'], reverse = True)
 
         facility_ID = None                                  # The facility ID gets assigned if a site is found
         found_site = False                                  # The found site flag is updated if a site is found
@@ -90,15 +98,15 @@ class aircraft_crew:
         for site in self.state['sites']:
 
             # If the site hasn't been attempted yet today
-            if site['attempted_today_aircraft?'] == False:
+            if site['attempted_today_truck?'] == False:
             
                 # If the site is 'unripened' (i.e. hasn't met the minimum interval set out in the LDAR regulations/policy), break out - no LDAR today
-                if site['aircraft_t_since_last_LDAR'] < self.parameters['methods']['aircraft']['min_interval']:
+                if site['truck_t_since_last_LDAR'] < self.parameters['methods']['truck']['min_interval']:
                     self.state['t'].current_date = self.state['t'].current_date.replace(hour = 23)
                     break
     
                 # Else if site-specific required visits have not been met for the year
-                elif site['surveys_done_this_year_aircraft'] < int(site['aircraft_required_surveys']):
+                elif site['surveys_done_this_year_truck'] < int(site['truck_required_surveys']):
     
                     # Check the weather for that site
                     if self.deployment_days[site['lon_index'], site['lat_index'], self.state['t'].current_timestep] == True:
@@ -108,13 +116,13 @@ class aircraft_crew:
                         found_site = True
     
                         # Update site
-                        site['aircraft_surveys_conducted'] += 1
-                        site['surveys_done_this_year_aircraft'] += 1
-                        site['aircraft_t_since_last_LDAR'] = 0
+                        site['truck_surveys_conducted'] += 1
+                        site['surveys_done_this_year_truck'] += 1
+                        site['truck_t_since_last_LDAR'] = 0
                         break
                                             
                     else:
-                        site['attempted_today_aircraft?'] = True
+                        site['attempted_today_truck?'] = True
 
         return (facility_ID, found_site, site)
 
@@ -130,7 +138,7 @@ class aircraft_crew:
             if leak['facility_ID'] == facility_ID:
                 if leak['status'] == 'active':
                     leaks_present.append(leak)
-                    site_cum_rate += leak['rate']
+                    site_cum_rate += leak['rate']  
                     
         # Add vented emissions
         venting = 0
@@ -138,12 +146,12 @@ class aircraft_crew:
             venting = self.state['empirical_vents'][np.random.randint(0, len(self.state['empirical_vents']))]
             site_cum_rate += venting
                     
-        # Simple detection module based on strict minimum detection limit
+        # Simple binary detection module 
         detect = False
         if site_cum_rate > (self.config['MDL']*0.024):  # g/hour to kg/day
             detect = True    
         
-        if detect == True:            
+        if detect == True:
             # If source is above follow-up threshold
             if site_cum_rate > self.config['follow_up_thresh']:
                 
@@ -157,13 +165,12 @@ class aircraft_crew:
                 
                 self.candidate_flags.append(site_dict)
                 
-                
         elif detect == False:
-            site['aircraft_missed_leaks'] += len(leaks_present)
+            site['truck_missed_leaks'] += len(leaks_present)
                 
-        self.state['t'].current_date += timedelta(minutes = int(site['aircraft_time']))
-        self.state['t'].current_date += timedelta(minutes = int(self.config['t_lost_per_site']))
-        self.timeseries['aircraft_sites_visited'][self.state['t'].current_timestep] += 1
+        self.state['t'].current_date += timedelta(minutes = int(site['truck_time']))
+        self.state['t'].current_date += timedelta(minutes = int(self.state['offsite_times'][np.random.randint(0, len(self.state['offsite_times']))]))
+        self.timeseries['truck_sites_visited'][self.state['t'].current_timestep] += 1
 
     def flag_sites (self, candidate_flags):
         '''
@@ -194,14 +201,14 @@ class aircraft_crew:
             
             # If the site is already flagged, your flag is redundant
             if site['currently_flagged'] == True:
-                self.timeseries['aircraft_flags_redund1'][self.state['t'].current_timestep] += 1
+                self.timeseries['truck_flags_redund1'][self.state['t'].current_timestep] += 1
             
             elif site['currently_flagged'] == False:
                 # Flag the site for follow up
                 site['currently_flagged'] = True
                 site['date_flagged'] = self.state['t'].current_date
                 site['flagged_by'] = self.config['name']
-                self.timeseries['aircraft_eff_flags'][self.state['t'].current_timestep] += 1
+                self.timeseries['truck_eff_flags'][self.state['t'].current_timestep] += 1
                 
                 # Does the chosen site already have tagged leaks?
                 redund2 = False
@@ -210,11 +217,11 @@ class aircraft_crew:
                         redund2 = True
                         
                 if redund2 == True:
-                    self.timeseries['aircraft_flags_redund2'][self.state['t'].current_timestep] += 1
+                    self.timeseries['truck_flags_redund2'][self.state['t'].current_timestep] += 1
                 
                 # Would the site have been chosen without venting?
                 if self.parameters['consider_venting'] == True:
                     if (site_cum_rate - venting) < self.config['follow_up_thresh']:
-                        self.timeseries['aircraft_flags_redund3'][self.state['t'].current_timestep] += 1        
+                        self.timeseries['truck_flags_redund3'][self.state['t'].current_timestep] += 1        
 
         return 

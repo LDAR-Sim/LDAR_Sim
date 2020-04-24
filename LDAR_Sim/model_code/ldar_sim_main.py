@@ -3,11 +3,19 @@
 # File:        LDAR-Sim main
 # Purpose:     Interface for parameterizing and running LDAR-Sim.
 #
-# Copyright (C) 2019  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
+# Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
 #    
-# This file is for peer review. Do not distribute or modify it in any way.
-# This program is presented WITHOUT ANY WARRANTY; without even the implied
-# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, version 3.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 #------------------------------------------------------------------------------
 
@@ -38,7 +46,7 @@ counts = 'counts_Clearstone.csv'
 vents = 'ZA_site_emissions_2018.csv'
 t_offsite = 'time_offsite_ground.csv'
 subtype_times = [False, 'subtype_times.csv']     # If True, will overwrite site-specific times using subtype times
-wd = 'D:\OneDrive - University of Calgary\Documents\Thomas\PhD\Thesis\LDAR_Sim\model\python_v2'
+wd = 'C:\Example\Documents\File\etc\code_and_inputs_folder'
 site_samples = [False, 500]
 write_data = True # Must be TRUE to make plots and maps
 make_plots = True
