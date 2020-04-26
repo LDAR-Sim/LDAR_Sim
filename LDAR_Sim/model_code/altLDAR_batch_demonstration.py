@@ -112,7 +112,7 @@ programs = [
                              'follow_up_ratio': 0.5,
                              't_lost_per_site': 10,                             
                              'reporting_delay': 2,
-                             'MDL': 5000 # grams/hour                             
+                             'MDL': 5000  # grams/hour
                              },
                     'OGI_FU': {
                              'name': 'OGI_FU',

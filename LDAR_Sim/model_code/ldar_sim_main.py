@@ -49,24 +49,38 @@ wd = 'C:/Users/tarca/PycharmProjects/LDAR_Sim/Dev'
 site_samples = [False, 500]
 write_data = True  # Must be TRUE to make plots and maps
 make_plots = True
-make_maps = False
+make_maps = True
 
 # -----------------------------Define programs----------------------------------
 programs = [
     {
         'methods': {
-            'OGI': {
-                'name': 'OGI',
-                'n_crews': 3,
-                'min_temp': -30,
-                'max_wind': 20,
-                'max_precip': 0.01,
-                'min_interval': 120,
-                'max_workday': 10,
-                'cost_per_day': 1500,
-                'reporting_delay': 2,
-                'MDL': [0.47, 0.01]
-            }
+           'aircraft': {
+                    'name': 'aircraft',
+                    'n_crews': 1,
+                    'min_temp': -35,
+                    'max_wind': 25,
+                    'max_precip': 10,
+                    'min_interval': 60,
+                    'max_workday': 10,
+                    'cost_per_day': 10000,
+                    'follow_up_thresh': 0,
+                    'follow_up_ratio': 0.5,
+                    't_lost_per_site': 10,
+                    'reporting_delay': 2,
+                    'MDL': 2000 # grams/hour
+                    },
+           'OGI_FU': {
+                    'name': 'OGI_FU',
+                    'n_crews': 1,
+                    'min_temp': -35,
+                    'max_wind': 25,
+                    'max_precip': 10,
+                    'max_workday': 10,
+                    'cost_per_day': 1500,
+                    'reporting_delay': 2,
+                    'MDL': [0.47, 0.01]
+                    }
         },
         'master_output_folder': master_output_folder,
         'output_folder': master_output_folder + 'P_ref',
@@ -83,9 +97,9 @@ programs = [
         'site_samples': site_samples,
         'subtype_times': subtype_times,
         'simulation': None,
-        'consider_daylight': False,
-        'consider_operator': False,
-        'consider_venting': False,
+        'consider_daylight': True,
+        'consider_operator': True,
+        'consider_venting': True,
         'repair_delay': 14,
         'LPR': 0.0065,
         'max_det_op': 0.00,
