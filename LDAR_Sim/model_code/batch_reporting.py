@@ -237,14 +237,6 @@ class BatchReporting:
         for i in dfs_p1[1:]:
             df_p1 = df_p1.append(i, ignore_index=True)
 
-        # Find values to set plot scale min and max
-        min_mean = df_p1['mean'].min()
-        max_mean = df_p1['mean'].max()
-        exp_min = math.floor(math.log10(min_mean))
-        exp_max = math.ceil(math.log10(max_mean))
-        y_min = 10 ** exp_min
-        y_max = 10 ** exp_max
-
         # Make plots from list of dataframes - one entry per dataframe
         theme_set(theme_linedraw())
         plot1 = (ggplot(None) + aes('datetime', 'value', group='program') +
@@ -254,7 +246,6 @@ class BatchReporting:
                  scale_colour_hue(h=0.15, l=0.25, s=0.9) +
                  scale_x_datetime(labels=date_format('%Y')) +
                  scale_y_continuous(trans='log10') +
-                 coord_cartesian(ylim=(y_min, y_max)) +
                  ggtitle('To reduce uncertainty, use more simulations.') +
                  labs(color='Program', fill='Program') +
                  theme(panel_border=element_rect(colour="black", fill=None, size=2),

@@ -33,7 +33,7 @@ import gc
 master_output_folder = 'demonstration/'
 ref_program = 'P_ref'  # Name must match reference program below for batch plots
 n_simulations = 2  # Minimum of 2 simulations to get batch plots
-n_timesteps = 2500 # Up to ~5600 for 16 year nc file
+n_timesteps = 1000 # Up to ~5600 for 16 year nc file
 spin_up = 0
 start_year = 2011
 operator_strength = 1
