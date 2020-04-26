@@ -23,12 +23,12 @@ from netCDF4 import Dataset
 import numpy as np
 
 
-class weather_lookup:
+class WeatherLookup:
     def __init__(self, state, parameters):
-        '''
+        """
         Read in NetCDF files and returns the environment at a given place in time.
 
-        '''
+        """
         print('Initializing weather...')
         self.state = state
         self.parameters = parameters
@@ -59,14 +59,14 @@ class weather_lookup:
         return
 
     def deployment_days(self, method):
-        '''
+        """
         Generate a 3D space-time matrix of all days on which weather
         conditions are suitable for a given method to conduct LDAR.
-        
+
         Should only be called once/method during initialization.
-        
+
         DD = deployment day
-        '''
+        """
 
         # Initialize empty boolean arrays for threshold pass(1)/fail(0)
         bool_temp = np.zeros((self.lon_length, self.lat_length, self.parameters['timesteps']))
@@ -93,4 +93,4 @@ class weather_lookup:
         bool_sum = np.add(bool_temp, np.add(bool_wind, bool_precip))
         DD_all = bool_sum == 3
 
-        return (DD_all)
+        return DD_all

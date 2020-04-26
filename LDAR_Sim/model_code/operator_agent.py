@@ -22,12 +22,12 @@
 import numpy as np
 
 
-class operator_agent:
+class OperatorAgent:
     def __init__(self, timeseries, parameters, state):
-        '''
+        """
         Constructs an operator who visits all sites and occasionally finds
         a leak.
-        '''
+        """
         print('Initializing operator...')
         self.parameters = parameters
         self.state = state
@@ -41,10 +41,10 @@ class operator_agent:
         return
 
     def work_a_day(self):
-        '''
-        Detect leaks during operator visits. 
+        """
+        Detect leaks during operator visits.
         Detection can be a function of leak-size.
-        '''
+        """
 
         active_leaks = self.timeseries['active_leaks'][self.state['t'].current_timestep]
         leak_term = (self.init_sum_leaks / active_leaks) * self.init_mean_leaks
@@ -58,11 +58,11 @@ class operator_agent:
                 prob_detect = prob_detect * self.parameters['operator_strength']
                 detect = np.random.binomial(1, prob_detect)
 
-                if detect == True:
-                    if leak['tagged'] == True:
+                if detect:
+                    if leak['tagged']:
                         self.timeseries['operator_redund_tags'][self.state['t'].current_timestep] += 1
 
-                    elif leak['tagged'] == False:
+                    elif not leak['tagged']:
                         # Add these leaks to the 'tag pool'
                         leak['tagged'] = True
                         leak['date_found'] = self.state['t'].current_date

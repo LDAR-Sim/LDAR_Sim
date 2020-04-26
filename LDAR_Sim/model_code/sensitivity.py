@@ -24,12 +24,12 @@ import os
 import time
 
 
-class sensitivity:
+class Sensitivity:
     def __init__(self, parameters, timeseries, state):
-        '''
+        """
         Initialize a sensitivity analysis for a given program.
 
-        '''
+        """
         self.parameters = parameters
         self.timeseries = timeseries
         self.state = state
@@ -131,7 +131,7 @@ class sensitivity:
                                  self.SA_params['LCD_samples'])
         self.adjust_distribution(self.state['offsite_times'], self.SA_params['offsite_times_outliers'],
                                  self.SA_params['offsite_times_samples'])
-        if self.parameters['consider_venting'] == True:
+        if self.parameters['consider_venting']:
             self.adjust_distribution(self.state['empirical_sites'], self.SA_params['site_rate_outliers'],
                                      self.SA_params['site_rate_samples'])
 
@@ -316,7 +316,7 @@ class sensitivity:
         while samples < 10:
             samples = int(np.random.normal(len(distribution), len(distribution) / 4))
         distribution = np.random.choice(distribution, samples)
-        return
+        return distribution
 
     def export_SA(self, dictionary, output_directory, name):
         df_new = pd.DataFrame([dictionary])

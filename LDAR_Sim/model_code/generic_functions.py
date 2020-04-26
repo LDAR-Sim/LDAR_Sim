@@ -49,4 +49,4 @@ def gap_calculator(condition_vector):
         end_gap = len(condition_vector) - indices[0][-1]
         max_gap = max(start_gap, mid_gap, end_gap)
 
-    return (max_gap)
+    return max_gap

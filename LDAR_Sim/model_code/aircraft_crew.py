@@ -24,7 +24,7 @@ import math
 import numpy as np
 
 
-class AircraftCrew:
+class aircraft_crew:
     def __init__(self, state, parameters, config, timeseries, deployment_days, id):
         """
         Constructs an individual aircraft crew based on defined configuration.

@@ -19,7 +19,6 @@
 #
 # ------------------------------------------------------------------------------
 from plotnine import *
-import numpy as np
 import warnings
 from mizani.formatters import date_format
 

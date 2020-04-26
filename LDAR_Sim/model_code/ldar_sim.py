@@ -32,11 +32,11 @@ from plotter import *
 from daylight_calculator import *
 
 
-class ldar_sim:
+class LdarSim:
     def __init__(self, state, parameters, timeseries):
-        '''
+        """
         Construct the simulation.
-        '''
+        """
 
         self.state = state
         self.parameters = parameters
@@ -56,10 +56,10 @@ class ldar_sim:
                                    for row in csv.DictReader(f, skipinitialspace=True)]
 
         # Sample sites
-        if self.parameters['site_samples'][0] == True:
+        if self.parameters['site_samples'][0]:
             self.state['sites'] = random.sample(self.state['sites'], self.parameters['site_samples'][1])
 
-        if self.parameters['subtype_times'][0] == True:
+        if self.parameters['subtype_times'][0]:
             subtype_times = pd.read_csv(self.parameters['subtype_times'][1])
             cols_to_add = subtype_times.columns[1:].tolist()
             for col in cols_to_add:
@@ -87,20 +87,25 @@ class ldar_sim:
             # Check to make sure site is within range of grid-based data
             if float(site['lat']) > max(self.state['weather'].latitude):
                 sys.exit(
-                    'Simulation terminated: One or more sites is too far North and is outside the spatial bounds of your weather data!')
+                    'Simulation terminated: One or more sites is too far North and is outside the spatial bounds of '
+                    'your weather data!')
             if float(site['lat']) < min(self.state['weather'].latitude):
                 sys.exit(
-                    'Simulation terminated: One or more sites is too far South and is outside the spatial bounds of your weather data!')
+                    'Simulation terminated: One or more sites is too far South and is outside the spatial bounds of '
+                    'your weather data!')
             if float(site['lon']) % 360 > max(self.state['weather'].longitude):
                 sys.exit(
-                    'Simulation terminated: One or more sites is too far East and is outside the spatial bounds of your weather data!')
+                    'Simulation terminated: One or more sites is too far East and is outside the spatial bounds of '
+                    'your weather data!')
             if float(site['lon']) % 360 < min(self.state['weather'].longitude):
                 sys.exit(
-                    'Simulation terminated: One or more sites is too far West and is outside the spatial bounds of your weather data!')
+                    'Simulation terminated: One or more sites is too far West and is outside the spatial bounds of '
+                    'your weather data!')
 
-        # Configure sensitivity analysis, if requested (code block must remain here - after site initialization and before method initialization)
-        if self.parameters['sensitivity']['perform'] == True:
-            self.sensitivity = sensitivity(self.parameters, self.timeseries, self.state)
+        # Configure sensitivity analysis, if requested (code block must remain here -
+        # after site initialization and before method initialization)
+        if self.parameters['sensitivity']['perform']:
+            self.sensitivity = Sensitivity(self.parameters, self.timeseries, self.state)
 
         # Initialize method(s) to be used; append to state
         for m in self.parameters['methods']:
@@ -145,32 +150,32 @@ class ldar_sim:
                     })
 
         # Initialize operator
-        if self.parameters['consider_operator'] == True:
-            self.state['operator'] = operator_agent(self.timeseries, self.parameters, self.state)
+        if self.parameters['consider_operator']:
+            self.state['operator'] = OperatorAgent(self.timeseries, self.parameters, self.state)
 
         # If working without methods (operator only), need to get the first day going
-        if bool(self.parameters['methods']) == False:
+        if not bool(self.parameters['methods']):
             self.state['t'].current_date = self.state['t'].current_date.replace(hour=1)
 
         # Initialize daylight 
-        if self.parameters['consider_daylight'] == True:
+        if self.parameters['consider_daylight']:
             self.state['daylight'] = DaylightCalculatorAve(self.state, self.parameters)
 
         # Initialize empirical distribution of vented emissions
-        if self.parameters['consider_venting'] == True:
+        if self.parameters['consider_venting']:
             self.state['empirical_vents'] = []
 
             # Run Monte Carlo simulations to get distribution of vented emissions
             for i in range(1000):
-                n_MC_leaks = self.state['empirical_counts'][np.random.randint(0, len(self.state['empirical_counts']))]
-                MC_leaks = []
-                for leak in range(n_MC_leaks):
-                    MC_leaks.append(
+                n_mc_leaks = self.state['empirical_counts'][np.random.randint(0, len(self.state['empirical_counts']))]
+                mc_leaks = []
+                for leak in range(n_mc_leaks):
+                    mc_leaks.append(
                         self.state['empirical_leaks'][np.random.randint(0, len(self.state['empirical_leaks']))])
-                MC_leak_total = sum(MC_leaks)
-                MC_site_total = self.state['empirical_sites'][np.random.randint(0, len(self.state['empirical_sites']))]
-                MC_vent_total = MC_site_total - MC_leak_total
-                self.state['empirical_vents'].append(MC_vent_total)
+                mc_leak_total = sum(mc_leaks)
+                mc_site_total = self.state['empirical_sites'][np.random.randint(0, len(self.state['empirical_sites']))]
+                mc_vent_total = mc_site_total - mc_leak_total
+                self.state['empirical_vents'].append(mc_vent_total)
 
             # Change negatives to zero
             self.state['empirical_vents'] = [0 if i < 0 else i for i in self.state['empirical_vents']]
@@ -178,10 +183,10 @@ class ldar_sim:
         return
 
     def update(self):
-        '''
+        """
         this rolls the model forward one timestep
         returns nothing
-        '''
+        """
 
         self.update_state()  # Update state of sites and leaks
         self.add_leaks()  # Add leaks to the leak pool
@@ -191,9 +196,9 @@ class ldar_sim:
         return
 
     def update_state(self):
-        '''
+        """
         update the state of active leaks
-        '''
+        """
         for leak in self.state['leaks']:
             if leak['status'] == 'active':
                 leak['days_active'] += 1
@@ -206,9 +211,9 @@ class ldar_sim:
         self.timeseries['datetime'].append(self.state['t'].current_date)
 
     def add_leaks(self):
-        '''
+        """
         add new leaks to the leak pool
-        '''
+        """
         # First, determine whether each site gets a new leak or not
         for site in self.state['sites']:
             n_leaks = np.random.binomial(1, self.parameters['LPR'])
@@ -241,28 +246,28 @@ class ldar_sim:
         return
 
     def find_leaks(self):
-        '''
+        """
         Loop over all your methods in the simulation and ask them to find some leaks.
-        '''
+        """
 
         for m in self.state['methods']:
             m.find_leaks()
 
-        if self.parameters['consider_operator'] == True:
+        if self.parameters['consider_operator']:
             if self.state['t'].current_date.weekday() == 0:
                 self.state['operator'].work_a_day()
 
         return
 
     def repair_leaks(self):
-        '''
+        """
         Repair tagged leaks and remove from tag pool.
-        '''
+        """
         for tag in self.state['tags']:
             if tag['found_by_company'] != 'operator':
                 if (self.state['t'].current_date - tag['date_found']).days >= (
                         self.parameters['repair_delay'] + self.parameters['methods'][tag['found_by_company']][
-                    'reporting_delay']):
+                        'reporting_delay']):
                     tag['status'] = 'repaired'
                     tag['tagged'] = False
                     tag['date_repaired'] = self.state['t'].current_date
@@ -279,9 +284,9 @@ class ldar_sim:
         return
 
     def report(self):
-        '''
+        """
         Daily reporting of leaks, repairs, and emissions.
-        '''
+        """
 
         # Update timeseries
         self.timeseries['new_leaks'].append(sum(d['n_new_leaks'] for d in self.state['sites']))
@@ -295,14 +300,14 @@ class ldar_sim:
         return
 
     def finalize(self):
-        '''
+        """
         Compile and write output files.
-        '''
+        """
         output_directory = os.path.join(self.parameters['working_directory'], self.parameters['output_folder'])
         if not os.path.exists(output_directory):
             os.makedirs(output_directory)
 
-        if self.parameters['write_data'] == True:
+        if self.parameters['write_data']:
 
             # Attribute individual leak emissions to site totals
             for leak in self.state['leaks']:
@@ -357,18 +362,18 @@ class ldar_sim:
             metadata.close()
 
         # Make maps and append site-level DD and MCB data
-        if self.parameters['make_maps'] == True:
+        if self.parameters['make_maps']:
             for m in self.state['methods']:
                 m.make_maps()
                 m.site_reports()
 
         # Make plots
-        if self.parameters['make_plots'] == True:
+        if self.parameters['make_plots']:
             make_plots(leak_df, time_df, site_df, self.parameters['simulation'], self.parameters['spin_up'],
                        output_directory)
 
         # Write sensitivity analysis data, if requested
-        if self.parameters['sensitivity']['perform'] == True:
+        if self.parameters['sensitivity']['perform']:
             self.sensitivity.write_data()
 
         # Return to original working directory

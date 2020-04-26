@@ -27,9 +27,9 @@ import numpy as np
 
 class truck_crew:
     def __init__(self, state, parameters, config, timeseries, deployment_days, id):
-        '''
+        """
         Constructs an individual truck crew based on defined configuration.
-        '''
+        """
         self.state = state
         self.parameters = parameters
         self.config = config
@@ -42,21 +42,21 @@ class truck_crew:
         return
 
     def work_a_day(self):
-        '''
+        """
         Go to work and find the leaks for a given day
-        '''
+        """
         self.worked_today = False
         self.candidate_flags = []
         work_hours = None
         max_work = self.parameters['methods']['truck']['max_workday']
 
-        if self.parameters['consider_daylight'] == True:
+        if self.parameters['consider_daylight']:
             daylight_hours = self.state['daylight'].get_daylight(self.state['t'].current_timestep)
             if daylight_hours <= max_work:
                 work_hours = daylight_hours
             elif daylight_hours > max_work:
                 work_hours = max_work
-        elif self.parameters['consider_daylight'] == False:
+        elif not self.parameters['consider_daylight']:
             work_hours = max_work
 
         if work_hours < 24 and work_hours != 0:
@@ -78,17 +78,17 @@ class truck_crew:
         if len(self.candidate_flags) > 0:
             self.flag_sites(self.candidate_flags)
 
-        if self.worked_today == True:
+        if self.worked_today:
             self.timeseries['truck_cost'][self.state['t'].current_timestep] += self.parameters['methods']['truck'][
                 'cost_per_day']
 
         return
 
     def choose_site(self):
-        '''
+        """
         Choose a site to survey.
 
-        '''
+        """
 
         # Sort all sites based on a neglect ranking
         self.state['sites'] = sorted(self.state['sites'], key=lambda k: k['truck_t_since_last_LDAR'], reverse=True)
@@ -100,9 +100,9 @@ class truck_crew:
         for site in self.state['sites']:
 
             # If the site hasn't been attempted yet today
-            if site['attempted_today_truck?'] == False:
+            if not site['attempted_today_truck?']:
 
-                # If the site is 'unripened' (i.e. hasn't met the minimum interval set out in the LDAR regulations/policy), break out - no LDAR today
+                # If the site is 'unripened' (i.e. hasn't met the minimum interval), break out - no LDAR today
                 if site['truck_t_since_last_LDAR'] < self.parameters['methods']['truck']['min_interval']:
                     self.state['t'].current_date = self.state['t'].current_date.replace(hour=23)
                     break
@@ -111,8 +111,7 @@ class truck_crew:
                 elif site['surveys_done_this_year_truck'] < int(site['truck_required_surveys']):
 
                     # Check the weather for that site
-                    if self.deployment_days[
-                        site['lon_index'], site['lat_index'], self.state['t'].current_timestep] == True:
+                    if self.deployment_days[site['lon_index'], site['lat_index'], self.state['t'].current_timestep]:
 
                         # The site passes all the tests! Choose it!
                         facility_ID = site['facility_ID']
@@ -130,9 +129,9 @@ class truck_crew:
         return (facility_ID, found_site, site)
 
     def visit_site(self, facility_ID, site):
-        '''
+        """
         Look for emissions at the chosen site.
-        '''
+        """
 
         # Sum all the emissions at the site
         leaks_present = []
@@ -145,7 +144,7 @@ class truck_crew:
 
                     # Add vented emissions
         venting = 0
-        if self.parameters['consider_venting'] == True:
+        if self.parameters['consider_venting']:
             venting = self.state['empirical_vents'][np.random.randint(0, len(self.state['empirical_vents']))]
             site_cum_rate += venting
 
@@ -154,7 +153,7 @@ class truck_crew:
         if site_cum_rate > (self.config['MDL'] * 0.024):  # g/hour to kg/day
             detect = True
 
-        if detect == True:
+        if detect:
             # If source is above follow-up threshold
             if site_cum_rate > self.config['follow_up_thresh']:
                 # Put all necessary information in a dictionary to be assessed at end of day
@@ -167,7 +166,7 @@ class truck_crew:
 
                 self.candidate_flags.append(site_dict)
 
-        elif detect == False:
+        elif not detect:
             site['truck_missed_leaks'] += len(leaks_present)
 
         self.state['t'].current_date += timedelta(minutes=int(site['truck_time']))
@@ -176,10 +175,10 @@ class truck_crew:
         self.timeseries['truck_sites_visited'][self.state['t'].current_timestep] += 1
 
     def flag_sites(self, candidate_flags):
-        '''
+        """
         Flag the most important sites for follow-up.
 
-        '''
+        """
         # First, figure out how many sites you're going to choose
         n_sites_to_flag = len(candidate_flags) * self.config['follow_up_ratio']
         n_sites_to_flag = int(math.ceil(n_sites_to_flag))
@@ -203,10 +202,10 @@ class truck_crew:
             venting = i['venting']
 
             # If the site is already flagged, your flag is redundant
-            if site['currently_flagged'] == True:
+            if site['currently_flagged']:
                 self.timeseries['truck_flags_redund1'][self.state['t'].current_timestep] += 1
 
-            elif site['currently_flagged'] == False:
+            elif not site['currently_flagged']:
                 # Flag the site for follow up
                 site['currently_flagged'] = True
                 site['date_flagged'] = self.state['t'].current_date
@@ -216,14 +215,14 @@ class truck_crew:
                 # Does the chosen site already have tagged leaks?
                 redund2 = False
                 for leak in leaks_present:
-                    if leak['date_found'] != None:
+                    if leak['date_found'] is not None:
                         redund2 = True
 
-                if redund2 == True:
+                if redund2:
                     self.timeseries['truck_flags_redund2'][self.state['t'].current_timestep] += 1
 
                 # Would the site have been chosen without venting?
-                if self.parameters['consider_venting'] == True:
+                if self.parameters['consider_venting']:
                     if (site_cum_rate - venting) < self.config['follow_up_thresh']:
                         self.timeseries['truck_flags_redund3'][self.state['t'].current_timestep] += 1
 

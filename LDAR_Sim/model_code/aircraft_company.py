@@ -28,7 +28,7 @@ from osgeo import gdal
 from osgeo import osr
 
 
-class AircraftCompany:
+class aircraft_company:
     def __init__(self, state, parameters, config, timeseries):
         """
         Initialize a company to manage the aircraft crews (e.g. a contracting company).
@@ -63,7 +63,7 @@ class AircraftCompany:
 
         # Initialize the individual aircraft crews (the agents)
         for i in range(config['n_crews']):
-            self.crews.append(AircraftCrew(state, parameters, config, timeseries, self.deployment_days, id=i + 1))
+            self.crews.append(aircraft_crew(state, parameters, config, timeseries, self.deployment_days, id=i + 1))
 
         return
 

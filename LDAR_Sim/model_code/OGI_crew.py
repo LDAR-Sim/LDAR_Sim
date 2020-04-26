@@ -26,9 +26,9 @@ import math
 
 class OGI_crew:
     def __init__(self, state, parameters, config, timeseries, deployment_days, id):
-        '''
+        """
         Constructs an individual OGI crew based on defined configuration.
-        '''
+        """
         self.state = state
         self.parameters = parameters
         self.config = config
@@ -41,20 +41,20 @@ class OGI_crew:
         return
 
     def work_a_day(self):
-        '''
+        """
         Go to work and find the leaks for a given day
-        '''
+        """
         self.worked_today = False
         work_hours = None
         max_work = self.parameters['methods']['OGI']['max_workday']
 
-        if self.parameters['consider_daylight'] == True:
+        if self.parameters['consider_daylight']:
             daylight_hours = self.state['daylight'].get_daylight(self.state['t'].current_timestep)
             if daylight_hours <= max_work:
                 work_hours = daylight_hours
             elif daylight_hours > max_work:
                 work_hours = max_work
-        elif self.parameters['consider_daylight'] == False:
+        elif not self.parameters['consider_daylight']:
             work_hours = max_work
 
         if work_hours < 24 and work_hours != 0:
@@ -72,17 +72,17 @@ class OGI_crew:
             self.visit_site(facility_ID, site)
             self.worked_today = True
 
-        if self.worked_today == True:
+        if self.worked_today:
             self.timeseries['OGI_cost'][self.state['t'].current_timestep] += self.parameters['methods']['OGI'][
                 'cost_per_day']
 
         return
 
     def choose_site(self):
-        '''
+        """
         Choose a site to survey.
 
-        '''
+        """
 
         # Sort all sites based on a neglect ranking
         self.state['sites'] = sorted(self.state['sites'], key=lambda k: k['OGI_t_since_last_LDAR'], reverse=True)
@@ -94,9 +94,9 @@ class OGI_crew:
         for site in self.state['sites']:
 
             # If the site hasn't been attempted yet today
-            if site['attempted_today_OGI?'] == False:
+            if not site['attempted_today_OGI?']:
 
-                # If the site is 'unripened' (i.e. hasn't met the minimum interval set out in the LDAR regulations/policy), break out - no LDAR today
+                # If the site is 'unripened' (i.e. hasn't met the minimum interval), break out - no LDAR today
                 if site['OGI_t_since_last_LDAR'] < self.parameters['methods']['OGI']['min_interval']:
                     self.state['t'].current_date = self.state['t'].current_date.replace(hour=23)
                     break
@@ -105,8 +105,7 @@ class OGI_crew:
                 elif site['surveys_done_this_year_OGI'] < int(site['OGI_required_surveys']):
 
                     # Check the weather for that site
-                    if self.deployment_days[
-                        site['lon_index'], site['lat_index'], self.state['t'].current_timestep] == True:
+                    if self.deployment_days[site['lon_index'], site['lat_index'], self.state['t'].current_timestep]:
 
                         # The site passes all the tests! Choose it!
                         facility_ID = site['facility_ID']
@@ -124,9 +123,9 @@ class OGI_crew:
         return (facility_ID, found_site, site)
 
     def visit_site(self, facility_ID, site):
-        '''
+        """
         Look for leaks at the chosen site.
-        '''
+        """
 
         # Identify all the leaks at a site
         leaks_present = []
@@ -146,19 +145,19 @@ class OGI_crew:
                 prob_detect = 1 / (1 + math.exp(-k * (x - x0)))
             detect = np.random.binomial(1, prob_detect)
 
-            if detect == True:
-                if leak['tagged'] == True:
+            if detect:
+                if leak['tagged']:
                     self.timeseries['OGI_redund_tags'][self.state['t'].current_timestep] += 1
 
                     # Add these leaks to the 'tag pool'
-                elif leak['tagged'] == False:
+                elif not leak['tagged']:
                     leak['tagged'] = True
                     leak['date_found'] = self.state['t'].current_date
                     leak['found_by_company'] = self.config['name']
                     leak['found_by_crew'] = self.crewstate['id']
                     self.state['tags'].append(leak)
 
-            elif detect == False:
+            elif not detect:
                 site['OGI_missed_leaks'] += 1
 
         self.state['t'].current_date += timedelta(minutes=int(site['OGI_time']))

@@ -27,9 +27,9 @@ import numpy as np
 
 class OGI_FU_crew:
     def __init__(self, state, parameters, config, timeseries, deployment_days, id):
-        '''
+        """
         Constructs an individual OGI_FU crew based on defined configuration.
-        '''
+        """
         self.state = state
         self.parameters = parameters
         self.config = config
@@ -42,20 +42,20 @@ class OGI_FU_crew:
         return
 
     def work_a_day(self):
-        '''
+        """
         Go to work and find the leaks for a given day
-        '''
+        """
         self.worked_today = False
         work_hours = None
         max_work = self.parameters['methods']['OGI_FU']['max_workday']
 
-        if self.parameters['consider_daylight'] == True:
+        if self.parameters['consider_daylight']:
             daylight_hours = self.state['daylight'].get_daylight(self.state['t'].current_timestep)
             if daylight_hours <= max_work:
                 work_hours = daylight_hours
             elif daylight_hours > max_work:
                 work_hours = max_work
-        elif self.parameters['consider_daylight'] == False:
+        elif not self.parameters['consider_daylight']:
             work_hours = max_work
 
         if work_hours < 24 and work_hours != 0:
@@ -73,17 +73,17 @@ class OGI_FU_crew:
             self.visit_site(facility_ID, site)
             self.worked_today = True
 
-        if self.worked_today == True:
+        if self.worked_today:
             self.timeseries['OGI_FU_cost'][self.state['t'].current_timestep] += self.parameters['methods']['OGI_FU'][
                 'cost_per_day']
 
         return
 
     def choose_site(self):
-        '''
+        """
         Choose a site to follow up.
 
-        '''
+        """
         # Sort flagged sites based on a neglect ranking
         self.state['flags'] = sorted(self.state['flags'], key=lambda k: k['OGI_FU_t_since_last_LDAR'], reverse=True)
         facility_ID = None  # The facility ID gets assigned if a site is found
@@ -101,11 +101,10 @@ class OGI_FU_crew:
                         self.parameters['methods'][site['flagged_by']]['reporting_delay']:
 
                     # If the site hasn't been attempted yet today
-                    if site['attempted_today_OGI_FU?'] == False:
+                    if not site['attempted_today_OGI_FU?']:
 
                         # Check the weather for that site
-                        if self.deployment_days[
-                            site['lon_index'], site['lat_index'], self.state['t'].current_timestep] == True:
+                        if self.deployment_days[site['lon_index'], site['lat_index'], self.state['t'].current_timestep]:
 
                             # The site passes all the tests! Choose it!
                             facility_ID = site['facility_ID']
@@ -123,9 +122,9 @@ class OGI_FU_crew:
         return (facility_ID, found_site, site)
 
     def visit_site(self, facility_ID, site):
-        '''
+        """
         Look for leaks at the chosen site.
-        '''
+        """
 
         # Identify all the leaks at a site
         leaks_present = []
@@ -145,19 +144,19 @@ class OGI_FU_crew:
                 prob_detect = 1 / (1 + math.exp(-k * (x - x0)))
             detect = np.random.binomial(1, prob_detect)
 
-            if detect == True:
-                if leak['tagged'] == True:
+            if detect:
+                if leak['tagged']:
                     self.timeseries['OGI_FU_redund_tags'][self.state['t'].current_timestep] += 1
 
                     # Add these leaks to the 'tag pool'
-                elif leak['tagged'] == False:
+                elif not leak['tagged']:
                     leak['tagged'] = True
                     leak['date_found'] = self.state['t'].current_date
                     leak['found_by_company'] = self.config['name']
                     leak['found_by_crew'] = self.crewstate['id']
                     self.state['tags'].append(leak)
 
-            elif detect == False:
+            elif not detect:
                 site['OGI_FU_missed_leaks'] += 1
 
         self.state['t'].current_date += timedelta(minutes=int(site['OGI_FU_time']))

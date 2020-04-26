@@ -30,10 +30,10 @@ from osgeo import osr
 
 class truck_company:
     def __init__(self, state, parameters, config, timeseries):
-        '''
+        """
         Initialize a company to manage the truck crews (e.g. a contracting company).
 
-        '''
+        """
         print('Initializing truck company...')
         self.state = state
         self.parameters = parameters
@@ -68,9 +68,9 @@ class truck_company:
         return
 
     def find_leaks(self):
-        '''
+        """
         The truck company tells all the crews to get to work.
-        '''
+        """
 
         for i in self.crews:
             i.work_a_day()
@@ -87,7 +87,7 @@ class truck_company:
         # Calculate proportion sites available
         available_sites = 0
         for site in self.state['sites']:
-            if self.deployment_days[site['lon_index'], site['lat_index'], self.state['t'].current_timestep] == True:
+            if self.deployment_days[site['lon_index'], site['lat_index'], self.state['t'].current_timestep]:
                 available_sites += 1
         prop_avail = available_sites / len(self.state['sites'])
         self.timeseries['truck_prop_sites_avail'].append(prop_avail)
@@ -95,10 +95,10 @@ class truck_company:
         return
 
     def make_maps(self):
-        '''
+        """
         If requested, makes maps of proportion of timesteps that are deployment days.
         Also outputs a map of MCB (maximum condition blackout) over period of analysis.
-        '''
+        """
 
         print('Generating truck maps...')
 
@@ -151,9 +151,9 @@ class truck_company:
         return
 
     def site_reports(self):
-        '''
+        """
         Writes site-level deployment days (DDs) and maximum condition blackouts (MCBs) for each site.
-        '''
+        """
 
         print('Generating site-level reports for truck company...')
 
