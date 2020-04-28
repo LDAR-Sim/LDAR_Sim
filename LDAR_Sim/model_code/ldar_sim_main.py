@@ -30,13 +30,13 @@ import gc
 
 # ------------------------------------------------------------------------------
 # -----------------------------Global parameters--------------------------------
-master_output_folder = 'demonstration/'
+master_output_folder = 'live_plot/'
 ref_program = 'P_ref'  # Name must match reference program below for batch plots
-n_simulations = 2  # Minimum of 2 simulations to get batch plots
-n_timesteps = 1000 # Up to ~5600 for 16 year nc file
+n_simulations = 8  # Minimum of 2 simulations to get batch plots
+n_timesteps = 3000 # Up to ~5600 for 16 year nc file
 spin_up = 0
 start_year = 2011
-operator_strength = 1
+operator_strength = 0.5
 an_data = 'an_2003_2018_AB.nc'
 fc_data = 'fc_2003_2018_AB.nc'
 sites = '1169_anonym_template.csv'
@@ -46,7 +46,7 @@ vents = 'ZA_site_emissions_2018.csv'
 t_offsite = 'time_offsite_ground.csv'
 subtype_times = [False, 'subtype_times.csv']  # If True, will overwrite site-specific times using subtype times
 wd = 'C:/Users/tarca/PycharmProjects/LDAR_Sim/Dev'
-site_samples = [False, 500]
+site_samples = [True, 500]
 write_data = True  # Must be TRUE to make plots and maps
 make_plots = True
 make_maps = True
@@ -57,7 +57,7 @@ programs = [
         'methods': {
             'OGI': {
                 'name': 'OGI',
-                'n_crews': 3,
+                'n_crews': 2,
                 'min_temp': 0,
                 'max_wind': 5,
                 'max_precip': 0.001,
@@ -83,9 +83,9 @@ programs = [
         'site_samples': site_samples,
         'subtype_times': subtype_times,
         'simulation': None,
-        'consider_daylight': True,
+        'consider_daylight': False,
         'consider_operator': True,
-        'consider_venting': True,
+        'consider_venting': False,
         'repair_delay': 14,
         'LPR': 0.0065,
         'max_det_op': 0.00,
@@ -107,28 +107,14 @@ programs = [
                     'min_temp': -35,
                     'max_wind': 25,
                     'max_precip': 10,
-                    'min_interval': 60,
-                    'max_workday': 10,
-                    'cost_per_day': 10000,
-                    'follow_up_thresh': 0,
-                    'follow_up_ratio': 0.5,
-                    't_lost_per_site': 10,
-                    'reporting_delay': 2,
-                    'MDL': 2000 # grams/hour
-                    },
-           'truck': {
-                    'name': 'truck',
-                    'n_crews': 1,
-                    'min_temp': -35,
-                    'max_wind': 25,
-                    'max_precip': 10,
-                    'min_interval': 30,
+                    'min_interval': 90,
                     'max_workday': 10,
                     'cost_per_day': 1500,
                     'follow_up_thresh': 0,
                     'follow_up_ratio': 0.5,
+                    't_lost_per_site': 10,
                     'reporting_delay': 2,
-                    'MDL': 100 # grams/hour
+                    'MDL': 500 # grams/hour
                     },
            'OGI_FU': {
                     'name': 'OGI_FU',
@@ -157,9 +143,9 @@ programs = [
         'site_samples': site_samples,
         'subtype_times': subtype_times,
         'simulation': None,
-        'consider_daylight': True,
+        'consider_daylight': False,
         'consider_operator': True,
-        'consider_venting': True,
+        'consider_venting': False,
         'repair_delay': 14,
         'LPR': 0.0065,
         'max_det_op': 0.00,
