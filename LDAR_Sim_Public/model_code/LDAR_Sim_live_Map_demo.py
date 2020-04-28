@@ -1,84 +1,156 @@
-import netCDF4 as nc 
-import numpy as np 
-import matplotlib.pyplot as plt 
+from netCDF4 import Dataset
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.dates import DateFormatter
+from matplotlib import ticker
 from mpl_toolkits.basemap import Basemap
-import pandas as pd 
-from random import random 
+import pandas as pd
+import os
 
+wd = 'C:/Users/tarca/PycharmProjects/LDAR_Sim/Dev/live_plot/'  # Output folder with two programs to compare
 
-def livemap (weather,df,lat,lon,nc_lat,nc_lon):
+def livemap(wd):
+    os.chdir(wd)
+    ref_sites = pd.read_csv(wd + '/P_ref/sites_output_0.csv')
+    alt_sites = pd.read_csv(wd + '/P_alt/sites_output_0.csv')
+    ref_costs = pd.read_csv(wd + '/P_ref/timeseries_output_0.csv')
+    alt_costs = pd.read_csv(wd + '/P_alt/timeseries_output_0.csv')
+    em_ts = pd.read_csv(wd + 'mean_emissions.csv')
+    al_ts = pd.read_csv(wd + 'mean_active_leaks.csv')
+
+    os.chdir("..")
+    weather = Dataset('an_2003_2018_AB.nc', 'r')
+    os.chdir(wd)
+
+    lat_ref = np.array(ref_sites['lat'])  # [ref_samples]
+    lon_ref = np.array(ref_sites['lon'])  # [ref_samples]
+    lat_alt = np.array(alt_sites['lat'])  # [alt_samples]
+    lon_alt = np.array(alt_sites['lon'])  # [alt_samples]
+
+    # Get grid positions
+    nc_lat = weather.variables['latitude'][:]
+    nc_lon = []
+    lon_360 = weather.variables['longitude'][:]
+    for ele in lon_360:
+        a = (ele + 180) % 360 - 180
+        nc_lon.append(a)
+
     plt.ion()
-    ES = [0]
-    ES_daily = 0 
-    day_list = [0]
-    day = 0 
-    fig = plt.figure(figsize=(10,10))
+
+    dates = pd.to_datetime((ref_costs.datetime))
+    n_sims = len(ref_costs)
+    day_list = []
+    date_form = DateFormatter("%e %b %Y")
+
+    fig = plt.figure(figsize=(15, 20))
+
+    # Figure 1: Map
     ax1 = fig.add_subplot(121)
-    # I used basemap package to plot map, you can use backgrounds like arcgisimage, detail can be found in https://basemaptutorial.readthedocs.io/en/latest/backgrounds.html
-    m = Basemap(llcrnrlon=-120, llcrnrlat = 49.,urcrnrlon=-110,urcrnrlat =60,ax=ax1)
+    map = Basemap(epsg=3401, llcrnrlon=-121, llcrnrlat=48.5, urcrnrlon=-107, urcrnrlat=60.5, resolution='i',
+                  area_thresh=10000.)
+    map.fillcontinents(color='#272626', alpha=0.7)
+    map.drawcountries(color='white', linewidth=1)
+    map.drawstates(color='white', linewidth=1)
+    map.drawparallels(np.arange(49., 60., 3.), color="white", labels=[1, 0, 0, 0], fontsize=10, linewidth=0.2)
+    map.drawmeridians(np.arange(-120., -110., 3.), color="white", labels=[0, 0, 0, 1], fontsize=10, linewidth=0.2)
+
+    # Build grid for raster
     m_lon, m_lat = np.meshgrid(nc_lon, nc_lat)
-    xi, yi = m(m_lon,m_lat)
-    # Add O&G sites
-    x,y = m(lon,lat)
-    m.plot(x,y,"*",color='black',markersize=8,label ="O&G sites")
-    ax1.legend()
-    # Add Boundaries
-    m.drawcountries()
-    m.drawstates(color='black')
+    xi, yi = map(m_lon, m_lat)
 
-    # Add Grid Lines
-    m.drawparallels(np.arange(49., 60., 3.), labels=[1,0,0,0], fontsize=10,linewidth=0.2)
-    m.drawmeridians(np.arange(-120., -110., 3.), labels=[0,0,0,1], fontsize=10,linewidth=0.2)
-    
+    # Add O&G facilities to map
+    x1, y1 = map(lon_alt, lat_alt)
+    x2, y2 = map(lon_ref, lat_ref)
+    x1 = np.append(x1, x2)
+    y1 = np.append(y1, y2)
+    vals = ['Regulatory Program'] * int(len(x1) / 2) + ['Alternative Program'] * int(len(x1) / 2)
+    df = pd.DataFrame(dict(x1=x1, y1=y1, vals=vals))
+    groups = df.groupby('vals')
+    colors = {'Regulatory Program': '#b87a02', 'Alternative Program': '#396dc5'}
+    for name, group in groups:
+        map.plot(group.x1, group.y1, marker='o', linestyle='', ms=4, label=name, c=colors[name],
+                 markeredgecolor='black', markeredgewidth=0.8)
+    ax1.legend(markerscale=2.5)
 
-    ax2 = fig.add_subplot(122)
-    ax2.set_xlim([0,20])
-    ax2.set_ylim([0,12])
-    ax2.set_xlabel('time')
-    ax2.set_ylabel('emission size(g/s)')
+    # Figure 2: Emissions
+    ref_emissions = np.array(em_ts['mean'][0:(n_sims-1)])
+    alt_emissions = np.array(em_ts['mean'][-(n_sims-1):])
+    ES1 = []
+    ES2 = []
+    ax2 = fig.add_subplot(322)
+    #ax2.set_xlim([0, 1000])
+    #ax2.set_ylim([0, 15])
+    ax2.xaxis.set_major_formatter(date_form)
+    ax2.xaxis.set_major_locator(ticker.MaxNLocator(5))
+    ax2.set_xlabel('')
+    ax2.set_ylabel('Emission rate (kg/day/facility)')
 
-    for index,row in df.iterrows():
-        # fig 1 
-        ax1.set_title("Map")
-        tm = weather.variables['t2m'][day,:,:] -273.15
-        cs = m.pcolor(xi,yi,np.squeeze(tm),alpha=0.5) # alpha represents the transparency of temperature
-        
-        cbar = m.colorbar(cs, location='bottom', pad="5%")
-        cbar.set_label('celsius degree',fontsize =12)
-        
-        # current location: you can change this to the input of the livemap function, 
-        # update current location of ldar team based on progress of LDAR SIM
-        p_lat = row['lat']
-        p_lon = row['lon']
-        x2,y2 =m(p_lon,p_lat)
-        m.plot(x2,y2,"*",color ='red',markersize=8,label ="location of LDAR team")
-        
-        # fig 2
-        ax2.set_title("emissionsize vs time")
-        # update the emission size 
-        ES_daily = ES_daily + random() # I used random number in this demo. You also can change this to the input call function at the end of each time step 
-        ES.append(ES_daily)
-        #update the time 
-        day = day + 1 
-        day_list.append(day)
-        ax2.plot(day_list,ES)
-        
-        plt.pause(0.4)
-        
-        if index!=df.shape[0]-1:
+    # Figure 3: Active Leaks
+    ref_leaks = np.array(al_ts['mean'][0:(n_sims-1)])
+    alt_leaks = np.array(al_ts['mean'][-(n_sims-1):])
+    AL1 = []
+    AL2 = []
+    ax3 = fig.add_subplot(324)
+    #ax3.set_xlim([0, 1000])
+    #ax3.set_ylim([0, 650])
+    ax3.xaxis.set_major_formatter(date_form)
+    ax3.xaxis.set_major_locator(ticker.MaxNLocator(5))
+    ax3.set_xlabel('')
+    ax3.set_ylabel('Total active leaks (all facilities)')
+
+    # Figure 4: Cost
+    ref_costs = np.array(ref_costs['OGI_cost']) / 500
+    alt_costs = (np.array(alt_costs['aircraft_cost']) + np.array(alt_costs['OGI_FU_cost'])) / 500
+    C1 = []
+    C2 = []
+    ax4 = fig.add_subplot(326)
+    #ax4.set_xlim([dates[0], dates[len(dates) - 1]])
+    ax4.xaxis.set_major_formatter(date_form)
+    ax4.xaxis.set_major_locator(ticker.MaxNLocator(5))
+    ax4.set_ylabel('Estimated program cost \n(USD/facility/year)')
+
+    # Plotting loops
+    pi = 20  # Plotting interval
+    for t in range(int(n_sims/pi)):
+        day_list.append(dates[int(t*pi)])
+
+        if int(t*pi) > 120:
+            date_form = DateFormatter("%b %Y")
+            ax2.xaxis.set_major_formatter(date_form)
+            ax3.xaxis.set_major_formatter(date_form)
+            ax4.xaxis.set_major_formatter(date_form)
+
+        # Figure 1: Map
+        tm = weather.variables['t2m'][int(t*pi), :, :] - 273.15
+        cs = map.pcolor(xi, yi, np.squeeze(tm), alpha=0.3, ax=ax1, vmin=-20, vmax=20)
+        cbar = map.colorbar(cs, location='bottom', pad="5%", ax=ax1)
+        cbar.set_alpha(1)
+        cbar.draw_all()
+        cbar.set_label('Temperature (' + u'\N{DEGREE SIGN}' + 'C)', fontsize=12)
+
+        # Figure 2: Emissions
+        ES1.append(ref_emissions[int(t*pi)])
+        ES2.append(alt_emissions[int(t*pi)])
+        ax2.plot(day_list, ES1, color='#b87a02')
+        ax2.plot(day_list, ES2, color='#396dc5')
+
+        # Figure 3: Active leaks
+        AL1.append(ref_leaks[int(t*pi)])
+        AL2.append(alt_leaks[int(t*pi)])
+        ax3.plot(day_list, AL1, color='#b87a02')
+        ax3.plot(day_list, AL2, color='#396dc5')
+
+        # Figure 4: Costs
+        C1.append(sum(ref_costs[0:t*pi]) * 365/((t+1)*pi))
+        C2.append(sum(alt_costs[0:t*pi]) * 365/((t+1)*pi))
+        ax4.plot(day_list, C1, color='#b87a02')
+        ax4.plot(day_list, C2, color='#396dc5')
+
+        plt.pause(0.00004)
+
+        if int(t*pi) != ref_costs.shape[0] - 1:
             cbar.remove()
-        
+
     weather.close()
 
-df = pd.read_excel('test.xlsx')
-weather= nc.Dataset('an_2003_2018_AB.nc','r')
-lat = np.array(df.lat)
-lon = np.array(df.lon)
-lon_360 = weather.variables['longitude'][:]
-nc_lat = weather.variables['latitude'][:]
-nc_lon =[]
-for ele in lon_360: 
-    a = (ele + 180) % 360 - 180
-    nc_lon.append(a)
-    
-livemap(weather,df,lat,lon,nc_lat,nc_lon)
+livemap(wd)
