@@ -211,6 +211,37 @@ class BatchReporting:
 
     def batch_plots(self):
 
+        # First, put together active leak data and output for live plotting functionality (no AL plot here currently)
+        dfs = self.active_leak_dfs
+
+        for i in range(len(dfs)):
+            n_cols = dfs[i].shape[1]
+            dfs[i]['mean'] = dfs[i].iloc[:, 0:n_cols].mean(axis=1)
+            dfs[i]['std'] = dfs[i].iloc[:, 0:n_cols].std(axis=1)
+            dfs[i]['low'] = dfs[i].iloc[:, 0:n_cols].quantile(0.025, axis=1)
+            dfs[i]['high'] = dfs[i].iloc[:, 0:n_cols].quantile(0.975, axis=1)
+            dfs[i]['program'] = self.directories[i]
+
+        # Move reference program to the top of the list
+        for i, df in enumerate(dfs):
+            if df['program'].iloc[0] == self.ref_program:
+                dfs.insert(0, dfs.pop(i))
+
+        # Arrange dfs for plot 1
+        dfs_p1 = dfs.copy()
+        for i in range(len(dfs_p1)):
+            # Reshape
+            dfs_p1[i] = pd.melt(dfs_p1[i], id_vars=['datetime', 'mean', 'std', 'low', 'high', 'program'])
+
+        # Combine dataframes into single dataframe for plotting
+        df_p1 = dfs_p1[0]
+        for i in dfs_p1[1:]:
+            df_p1 = df_p1.append(i, ignore_index=True)
+
+        # Output Emissions df for other uses (e.g. live plot)
+        df_p1.to_csv(self.output_directory + 'mean_active_leaks.csv', index=True)
+
+        # Now repeat for emissions (which will actually be used for batch plotting)
         dfs = self.emission_dfs
 
         for i in range(len(dfs)):
@@ -236,6 +267,9 @@ class BatchReporting:
         df_p1 = dfs_p1[0]
         for i in dfs_p1[1:]:
             df_p1 = df_p1.append(i, ignore_index=True)
+
+        # Output Emissions df for other uses (e.g. live plot)
+        df_p1.to_csv(self.output_directory + 'mean_emissions.csv', index=True)
 
         # Make plots from list of dataframes - one entry per dataframe
         theme_set(theme_linedraw())
