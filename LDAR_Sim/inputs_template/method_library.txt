@@ -1,0 +1,54 @@
+------------Method library--------
+
+'OGI': {
+        'name': 'OGI',
+        'n_crews': 1,
+        'min_temp': -35,
+        'max_wind': 25,
+        'max_precip': 10,
+        'min_interval': 60,
+        'max_workday': 10,  
+        'cost_per_day': 1500,
+        'reporting_delay': 2,
+        'MDL': [0.47, 0.01]
+        },
+'OGI_FU': {
+        'name': 'OGI_FU',
+        'n_crews': 1,
+        'min_temp': -35,
+        'max_wind': 25,
+        'max_precip': 10,
+        'max_workday': 10,
+        'cost_per_day': 1500,
+        'reporting_delay': 2,
+        'MDL': [0.47, 0.01]
+        },
+'truck': {
+        'name': 'truck',
+        'n_crews': 1,
+        'min_temp': -35,
+        'max_wind': 25,
+        'max_precip': 10,
+        'min_interval': 30,
+        'max_workday': 10,
+        'cost_per_day': 1500,
+        'follow_up_thresh': 0,
+        'follow_up_ratio': 0.5,
+        'reporting_delay': 2,
+        'MDL': 100 # grams/hour
+        },
+'aircraft': {
+        'name': 'aircraft',
+        'n_crews': 1,
+        'min_temp': -35,
+        'max_wind': 25,
+        'max_precip': 10,
+        'min_interval': 60,
+        'max_workday': 10,
+        'cost_per_day': 10000,
+        'follow_up_thresh': 0,
+        'follow_up_ratio': 0.5,
+        't_lost_per_site': 10,
+        'reporting_delay': 2,
+        'MDL': 2000 # grams/hour
+        }

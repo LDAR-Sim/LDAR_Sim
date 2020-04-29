@@ -1,0 +1,45 @@
+P_ref = {
+        'methods': {
+            'OGI': {
+                'name': 'OGI',
+                'n_crews': 2,
+                'min_temp': 0,
+                'max_wind': 5,
+                'max_precip': 0.001,
+                'min_interval': 120,
+                'max_workday': 10,
+                'cost_per_day': 1500,
+                'reporting_delay': 2,
+                'MDL': [0.47, 0.01]
+            }
+        },
+        'program_name': 'P_ref',
+        'n_simulations': 3, # Minimum of 2 simulations to get batch plots
+        'timesteps': 2000,  # Up to ~5600 for 16 year nc file
+        'start_year': 2011,
+        'an_data': 'an_2003_2018_AB.nc',
+        'fc_data': 'fc_2003_2018_AB.nc',
+        'infrastructure_file': '1169_anonym_template.csv',
+        'leak_file': 'rates_Clearstone.csv',
+        'count_file': 'counts_Clearstone.csv',
+        'vent_file': 'ZA_site_emissions_2018.csv',
+        't_offsite_file': 'time_offsite_ground.csv',
+        'site_samples': [True, 500],
+        'subtype_times': [False, 'subtype_times.csv'], # If True, will overwrite site-specific times with subtype times
+        'simulation': None,
+        'consider_daylight': False,
+        'consider_operator': False,
+        'consider_venting': False,
+        'repair_delay': 14,
+        'LPR': 0.0065,
+        'max_det_op': 0.00,
+        'spin_up': 0,
+        'write_data': True, # Must be TRUE to make plots and maps
+        'make_plots': True,
+        'make_maps': True,
+        'start_time': time.time(),
+        'operator_strength': 0.5,
+        'sensitivity': {'perform': False,
+                        'program': 'OGI',
+                        'batch': [True, 2]}
+    }
