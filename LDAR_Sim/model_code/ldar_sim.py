@@ -43,15 +43,17 @@ class LdarSim:
         self.timeseries = timeseries
 
         # Read in data files
-        self.state['empirical_counts'] = np.array(pd.read_csv(self.parameters['count_file']).iloc[:, 0])
-        self.state['empirical_leaks'] = np.array(
-            pd.read_csv(self.parameters['leak_file']).iloc[:, 0]) * 86.4  # Convert g/s to kg/day
-        self.state['empirical_sites'] = np.array(
-            pd.read_csv(self.parameters['vent_file']).iloc[:, 0]) * 86.4  # Convert g/s to kg/day
-        self.state['offsite_times'] = np.array(pd.read_csv(self.parameters['t_offsite_file']).iloc[:, 0])
+        self.state['empirical_counts'] = np.array(pd.read_csv(self.parameters['working_directory'] + 'inputs/' +
+                self.parameters['count_file']).iloc[:, 0])
+        self.state['empirical_leaks'] = np.array(pd.read_csv(self.parameters['working_directory'] + 'inputs/' +
+                self.parameters['leak_file']).iloc[:, 0]) * 86.4  # Convert g/s to kg/day
+        self.state['empirical_sites'] = np.array(pd.read_csv(self.parameters['working_directory'] + 'inputs/' +
+                self.parameters['vent_file']).iloc[:, 0]) * 86.4  # Convert g/s to kg/day
+        self.state['offsite_times'] = np.array(pd.read_csv(self.parameters['working_directory'] + 'inputs/' +
+                self.parameters['t_offsite_file']).iloc[:, 0])
 
         # Read in the sites as a list of dictionaries
-        with open(self.parameters['infrastructure_file']) as f:
+        with open(self.parameters['working_directory'] + 'inputs/' + self.parameters['infrastructure_file']) as f:
             self.state['sites'] = [{k: v for k, v in row.items()}
                                    for row in csv.DictReader(f, skipinitialspace=True)]
 
@@ -303,7 +305,7 @@ class LdarSim:
         """
         Compile and write output files.
         """
-        output_directory = os.path.join(self.parameters['working_directory'], self.parameters['output_folder'])
+        output_directory = os.path.join(self.parameters['working_directory'], 'outputs/', self.parameters['program_name'])
         if not os.path.exists(output_directory):
             os.makedirs(output_directory)
 
@@ -378,6 +380,7 @@ class LdarSim:
 
         # Return to original working directory
         os.chdir(self.parameters['working_directory'])
+        os.chdir('..')
 
         print('Simulation complete. Thank you for using the LDAR Simulator.')
         return
