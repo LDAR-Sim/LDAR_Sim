@@ -117,7 +117,7 @@ class OGI_FU_company:
         geotransform = (xmin, xres, 0, ymax, 0, -yres)
 
         # Set output directory
-        output_directory = os.path.join(self.parameters['working_directory'], self.parameters['output_folder'])
+        output_directory = os.path.join(self.parameters['working_directory'], 'outputs/', self.parameters['program_name'])
         if not os.path.exists(output_directory):
             os.makedirs(output_directory)
         os.chdir(output_directory)
