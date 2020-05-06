@@ -10,7 +10,7 @@ numpy = "*"
 matplotlib = "*"
 pandas = "*"
 pyproj = {path = "../install/windows_python_wheels/pyproj-2.6.1.post1-cp37-cp37m-win_amd64.whl"}
-basemap = {path = "../install/windows_python_wheels/basemap-1.2.1-cp37-cp37m-win_amd64.whl"}
+basemap = {file = "https://download.lfd.uci.edu/pythonlibs/s2jqpv5t/basemap-1.2.1-cp37-cp37m-win_amd64.whl"}
 cftime = {path = "../install/windows_python_wheels/cftime-1.1.2-cp37-cp37m-win_amd64.whl"}
 netcdf4 = {path = "../install/windows_python_wheels/netCDF4-1.5.3-cp37-cp37m-win_amd64.whl"}
 xlrd = "*"
