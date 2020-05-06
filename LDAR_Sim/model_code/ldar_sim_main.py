@@ -30,7 +30,8 @@ import gc
 
 # ------------------------------------------------------------------------------
 # -----------------------------Global parameters--------------------------------
-wd = "C:/Users/tarca/PycharmProjects/LDAR_Sim/Dev/test3/"
+wd = "../inputs_template/"
+wd = os.path.abspath (wd) + "/"
 program_list = ['P_ref', 'P_alt', 'P_alt2']  # Programs to compare; Position one should be the reference program (P_ref)
 
 # -----------------------------Set up programs----------------------------------
