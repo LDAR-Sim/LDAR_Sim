@@ -40,7 +40,7 @@ if __name__ == '__main__':
     # -----------------------------Set up programs----------------------------------
     programs = []
     for p in range(len(program_list)):
-        file = wd + 'inputs/' + program_list[p] + '.txt'
+        file = wd + program_list[p] + '.txt'
         exec(open(file).read())
         programs.append(eval(program_list[p]))
 

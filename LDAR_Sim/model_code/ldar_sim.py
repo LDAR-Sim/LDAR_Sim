@@ -43,17 +43,17 @@ class LdarSim:
         self.timeseries = timeseries
 
         # Read in data files
-        self.state['empirical_counts'] = np.array(pd.read_csv(self.parameters['working_directory'] + 'inputs/' +
+        self.state['empirical_counts'] = np.array(pd.read_csv(self.parameters['working_directory'] +
                 self.parameters['count_file']).iloc[:, 0])
-        self.state['empirical_leaks'] = np.array(pd.read_csv(self.parameters['working_directory'] + 'inputs/' +
+        self.state['empirical_leaks'] = np.array(pd.read_csv(self.parameters['working_directory'] +
                 self.parameters['leak_file']).iloc[:, 0]) * 86.4  # Convert g/s to kg/day
-        self.state['empirical_sites'] = np.array(pd.read_csv(self.parameters['working_directory'] + 'inputs/' +
+        self.state['empirical_sites'] = np.array(pd.read_csv(self.parameters['working_directory'] +
                 self.parameters['vent_file']).iloc[:, 0]) * 86.4  # Convert g/s to kg/day
-        self.state['offsite_times'] = np.array(pd.read_csv(self.parameters['working_directory'] + 'inputs/' +
+        self.state['offsite_times'] = np.array(pd.read_csv(self.parameters['working_directory'] +
                 self.parameters['t_offsite_file']).iloc[:, 0])
 
         # Read in the sites as a list of dictionaries
-        with open(self.parameters['working_directory'] + 'inputs/' + self.parameters['infrastructure_file']) as f:
+        with open(self.parameters['working_directory'] + self.parameters['infrastructure_file']) as f:
             self.state['sites'] = [{k: v for k, v in row.items()}
                                    for row in csv.DictReader(f, skipinitialspace=True)]
 

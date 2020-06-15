@@ -35,9 +35,9 @@ class WeatherLookup:
 
         # Read in weather data as NetCDF file(s)
 
-        self.wind_temp_data = Dataset(self.parameters['working_directory'] + 'inputs/' + self.parameters['an_data'])  # Load wind and temp data
+        self.wind_temp_data = Dataset(self.parameters['working_directory'] + self.parameters['an_data'])  # Load wind and temp data
         self.wind_temp_data.set_auto_mask(False)  # Load wind and temp data
-        self.precip_data = Dataset(self.parameters['working_directory'] + 'inputs/' + self.parameters['fc_data'])  # Load precip data
+        self.precip_data = Dataset(self.parameters['working_directory'] + self.parameters['fc_data'])  # Load precip data
         self.precip_data.set_auto_mask(False)  # Load precip data
         self.temps = np.array(self.wind_temp_data.variables['t2m'])  # Extract temperatures
         self.temps = self.temps - 273.15  # Convert to degrees Celcius (time, lat, long)
