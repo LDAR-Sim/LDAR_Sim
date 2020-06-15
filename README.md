@@ -33,7 +33,12 @@ Read and understand the LDAR-Sim LICENSE (GNU Affero General Public License Vers
 Read Fox et al 2020 to familiarize yourself with LDAR-Sim fundamentals.
 
 #### Step 2: Libraries and data
-Install python 3.x. and ensure all required python modules/packages/libraries are available: numpy, pandas, datetime, csv, sys, os, random, math, plotnine, ephem, gc, time, warnings, gdal (osgeo), osr (osgeo), Dataset (netCDF4), date_format (mizani.formatters), ECMWFDataServer (ecmwfapi).
+Install python 3.x. and ensure all required python modules/packages/libraries are available, as listed in the Pipfile.
+The easiest way to prepare your python installation is to use [pipenv](https://pipenv.pypa.io/en/latest/) to manage a virtual environment that has the required packages. Navigate to the model_code directory and type: 
+
+`pipenv install`
+
+To make things easier, we have included windows binaries for the specific versions of cftime, GDAL, netCDF4, and pyproj. In the Pipfile, basemap is downloaded directly from https://download.lfd.uci.edu/pythonlibs/s2jqpv5t/basemap-1.2.1-cp37-cp37m-win_amd64.whl. If this link breaks or the package is no longer available, this is not a problem for base operations of LDAR-Sim as basemap is only used in the live plotter demonstration.
 
 Open ldar_sim_main.py and set your working directory on line 49.
 Ensure that all input files and program files are in your working directory.
