@@ -1,0 +1,22 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+numpy = "*"
+matplotlib = "*"
+pandas = "*"
+pyproj = {path = "../install/windows_python_wheels/pyproj-2.6.1.post1-cp37-cp37m-win_amd64.whl"}
+basemap = {file = "https://download.lfd.uci.edu/pythonlibs/s2jqpv5t/basemap-1.2.1-cp37-cp37m-win_amd64.whl"}
+cftime = {path = "../install/windows_python_wheels/cftime-1.1.2-cp37-cp37m-win_amd64.whl"}
+netcdf4 = {path = "../install/windows_python_wheels/netCDF4-1.5.3-cp37-cp37m-win_amd64.whl"}
+xlrd = "*"
+plotnine = "*"
+ephem = "*"
+gdal = {path = "../install/windows_python_wheels/GDAL-3.0.4-cp37-cp37m-win_amd64.whl"}
+
+[requires]
+python_version = "3.7"
