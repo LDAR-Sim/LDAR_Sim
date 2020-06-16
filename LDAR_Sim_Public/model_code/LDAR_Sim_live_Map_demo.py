@@ -7,7 +7,7 @@ from mpl_toolkits.basemap import Basemap
 import pandas as pd
 import os
 
-wd = 'C:/Users/tarca/PycharmProjects/LDAR_Sim/Dev/test3/outputs/'  # Output folder with two programs to compare
+wd = 'C:/Users/tarca/PycharmProjects/LDAR_Sim/Dev/test_run/inputs/outputs/'  # Output folder with two programs to compare
 
 def livemap(wd):
     os.chdir(wd)
@@ -18,7 +18,6 @@ def livemap(wd):
     em_ts = pd.read_csv(wd + 'mean_emissions.csv')
     al_ts = pd.read_csv(wd + 'mean_active_leaks.csv')
 
-    os.chdir("..")
     os.chdir("..")
     weather = Dataset('an_2003_2018_AB.nc', 'r')
     os.chdir(wd)
