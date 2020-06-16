@@ -27,6 +27,8 @@ This release contains the exact code and inputs used in our LDAR-Sim synthesis p
 Preprint paper (Fox et al 2020): #PREPRINT LINK#
 Citation for this release: #DOI#
 
+You are currently in the master branch. The Fox et al. 2020 preprint release is immortalized in a separate branch that can be found by [clicking here](https://github.com/tarcadius/LDAR_Sim/tree/Fox_etal_2020_preprint).
+
 ### Getting started
 This guide is intended to help interested parties reproduce the results from Fox et al 2020, which introduces LDAR-Sim and presents a case study demonstrating various hypothetical LDAR programs in Alberta, Canada.
 
