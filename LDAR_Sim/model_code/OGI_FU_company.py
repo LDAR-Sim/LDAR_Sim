@@ -34,7 +34,6 @@ class OGI_FU_company:
         Initialize a follow-up company to manage the OGI_FU crews (e.g. a contracting company).
 
         """
-        print('Initializing OGI_FU follow-up company...')
         self.state = state
         self.parameters = parameters
         self.config = config
@@ -94,8 +93,6 @@ class OGI_FU_company:
         Also outputs a map of MCB (maximum condition blackout) over period of analysis.
         """
 
-        print('Generating OGI_FU maps...')
-
         # For each cell, sum the total number of deployment days and divide by total number of days        
         for lon in range(len(self.state['weather'].longitude)):
             for lat in range(len(self.state['weather'].latitude)):
@@ -148,8 +145,6 @@ class OGI_FU_company:
         """
         Writes site-level deployment days (DDs) and maximum condition blackouts (MCBs) for each site.
         """
-
-        print('Generating site-level reports for OGI_FU company...')
 
         for site in self.state['sites']:
             site['OGI_FU_prop_DDs'] = self.DD_OGI_FU_map[site['lon_index'], site['lat_index']]

@@ -34,7 +34,6 @@ class aircraft_company:
         Initialize a company to manage the aircraft crews (e.g. a contracting company).
 
         """
-        print('Initializing aircraft company...')
         self.state = state
         self.parameters = parameters
         self.config = config
@@ -100,8 +99,6 @@ class aircraft_company:
         Also outputs a map of MCB (maximum condition blackout) over period of analysis.
         """
 
-        print('Generating aircraft maps...')
-
         # For each cell, sum the total number of deployment days and divide by total number of days        
         for lon in range(len(self.state['weather'].longitude)):
             for lat in range(len(self.state['weather'].latitude)):
@@ -155,8 +152,6 @@ class aircraft_company:
         """
         Writes site-level deployment days (DDs) and maximum condition blackouts (MCBs) for each site.
         """
-
-        print('Generating site-level reports for aircraft company...')
 
         for site in self.state['sites']:
             site['aircraft_prop_DDs'] = self.DD_aircraft_map[site['lon_index'], site['lat_index']]

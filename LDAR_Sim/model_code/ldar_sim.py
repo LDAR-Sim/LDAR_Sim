@@ -296,9 +296,6 @@ class LdarSim:
         self.timeseries['daily_emissions_kg'].append(sum(d['rate'] for d in self.active_leaks))
         self.timeseries['n_tags'].append(len(self.state['tags']))
 
-        # Optional day tracking through simulation (uncomment following line to enable)
-        #        print ('Day ' + str(self.state['t'].current_timestep) + ' complete!')
-
         return
 
     def finalize(self):
@@ -382,5 +379,4 @@ class LdarSim:
         os.chdir(self.parameters['working_directory'])
         os.chdir('..')
 
-        print('Simulation complete. Thank you for using the LDAR Simulator.')
         return

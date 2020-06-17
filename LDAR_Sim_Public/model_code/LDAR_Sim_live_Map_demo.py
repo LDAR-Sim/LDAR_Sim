@@ -7,7 +7,7 @@ from mpl_toolkits.basemap import Basemap
 import pandas as pd
 import os
 
-wd = 'C:/Users/tarca/PycharmProjects/LDAR_Sim/Dev/test_run/inputs/outputs/'  # Output folder with two programs to compare
+wd = 'C:/Users/tarca/PycharmProjects/LDAR_Sim/Github/LDAR_Sim/inputs_template/outputs/'  # Output folder with two programs to compare
 
 def livemap(wd):
     os.chdir(wd)

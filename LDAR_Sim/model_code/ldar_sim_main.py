@@ -23,8 +23,6 @@ from batch_reporting import *
 from ldar_sim_run import *
 import os
 import datetime
-import time
-import gc
 import warnings
 import multiprocessing as mp
 
@@ -57,7 +55,7 @@ if __name__ == '__main__':
     simulations = []
     for i in range(n_simulations):
         for j in range(len(programs)):
-            opening_message = 'Program ' + str(j + 1) + ' of ' + str(len(programs)) + '; simulation ' + \
+            opening_message = 'Simulating program ' + str(j + 1) + ' of ' + str(len(programs)) + '; simulation ' + \
                                     str(i + 1) + ' of ' + str(n_simulations)
             simulations.append ([{'i': i, 'program': programs[j], 'wd': wd, 'opening_message': opening_message}])
 
