@@ -70,7 +70,7 @@ def livemap(wd):
     for name, group in groups:
         map.plot(group.x1, group.y1, marker='o', linestyle='', ms=4, label=name, c=colors[name],
                  markeredgecolor='black', markeredgewidth=0.8)
-    ax1.legend(markerscale=2.5)
+    ax1.legend(markerscale=4, prop={'size': 15}, loc = 9)
 
     # Figure 2: Emissions
     ref_emissions = np.array(em_ts['mean'][0:(n_sims-1)])
@@ -83,7 +83,7 @@ def livemap(wd):
     ax2.xaxis.set_major_formatter(date_form)
     ax2.xaxis.set_major_locator(ticker.MaxNLocator(5))
     ax2.set_xlabel('')
-    ax2.set_ylabel('Emission rate (kg/day/facility)')
+    ax2.set_ylabel('Average emission rate \n(kg/day/facility)', fontsize=13)
 
     # Figure 3: Active Leaks
     ref_leaks = np.array(al_ts['mean'][0:(n_sims-1)])
@@ -96,7 +96,7 @@ def livemap(wd):
     ax3.xaxis.set_major_formatter(date_form)
     ax3.xaxis.set_major_locator(ticker.MaxNLocator(5))
     ax3.set_xlabel('')
-    ax3.set_ylabel('Total active leaks (all facilities)')
+    ax3.set_ylabel('Total active leaks \n(all facilities)', fontsize=13)
 
     # Figure 4: Cost
     ref_costs = np.array(ref_costs['OGI_cost']) / 500
@@ -107,10 +107,11 @@ def livemap(wd):
     #ax4.set_xlim([dates[0], dates[len(dates) - 1]])
     ax4.xaxis.set_major_formatter(date_form)
     ax4.xaxis.set_major_locator(ticker.MaxNLocator(5))
-    ax4.set_ylabel('Estimated program cost \n(USD/facility/year)')
+    ax4.set_ylabel('Estimated program cost \n(USD/facility/year)', fontsize=13)
 
     # Plotting loops
     pi = 20  # Plotting interval
+    mi = 60  # Mapping interval (must be a multiple of the plotting interval)
     for t in range(int(n_sims/pi)):
         day_list.append(dates[int(t*pi)])
 
@@ -121,12 +122,17 @@ def livemap(wd):
             ax4.xaxis.set_major_formatter(date_form)
 
         # Figure 1: Map
-        tm = weather.variables['t2m'][int(t*pi), :, :] - 273.15
-        cs = map.pcolor(xi, yi, np.squeeze(tm), alpha=0.3, ax=ax1, vmin=-20, vmax=20)
-        cbar = map.colorbar(cs, location='bottom', pad="5%", ax=ax1)
-        cbar.set_alpha(1)
-        cbar.draw_all()
-        cbar.set_label('Temperature (' + u'\N{DEGREE SIGN}' + 'C)', fontsize=12)
+        if ((t*pi)/mi).is_integer():
+            if (t*pi)/mi >= 2:
+                cbar.remove()
+                cs.remove()
+            tm = weather.variables['t2m'][int(t*pi), :, :] - 273.15
+            cs = map.pcolor(xi, yi, np.squeeze(tm), alpha=0.8, ax=ax1, vmin=-20, vmax=20, cmap = 'jet')
+            cbar = map.colorbar(cs, location='bottom', pad="5%", ax=ax1)
+            cbar.set_alpha(1)
+            cbar.draw_all()
+            cbar.set_label('Temperature (' + u'\N{DEGREE SIGN}' + 'C)', fontsize=12)
+        ann = ax1.annotate(dates[int(t * pi)].strftime("%b %Y"), xy=(0.38, 0.83), xycoords='axes fraction', fontsize=17, color ='white')
 
         # Figure 2: Emissions
         ES1.append(ref_emissions[int(t*pi)])
@@ -146,10 +152,11 @@ def livemap(wd):
         ax4.plot(day_list, C1, color='#b87a02')
         ax4.plot(day_list, C2, color='#396dc5')
 
-        plt.pause(0.00004)
+        plt.pause(0.2)
+        ann.remove()
 
-        if int(t*pi) != ref_costs.shape[0] - 1:
-            cbar.remove()
+        # if int(t*pi) != ref_costs.shape[0] - 1:
+        #     cbar.remove()
 
     weather.close()
 
