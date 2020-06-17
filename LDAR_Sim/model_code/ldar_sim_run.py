@@ -23,9 +23,6 @@ from weather_lookup import *
 from ldar_sim import *
 from time_counter import *
 from batch_reporting import *
-import os
-import datetime
-import time
 import gc
 
 def ldar_sim_run (simulation):

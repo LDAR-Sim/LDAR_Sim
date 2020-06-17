@@ -29,7 +29,6 @@ class WeatherLookup:
         Read in NetCDF files and returns the environment at a given place in time.
 
         """
-        print('Initializing weather...')
         self.state = state
         self.parameters = parameters
 

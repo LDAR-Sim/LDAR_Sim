@@ -28,7 +28,6 @@ class OperatorAgent:
         Constructs an operator who visits all sites and occasionally finds
         a leak.
         """
-        print('Initializing operator...')
         self.parameters = parameters
         self.state = state
         self.timeseries = timeseries
