@@ -34,6 +34,9 @@ def ldar_sim_run (simulation):
     parameters = simulation['program']
     parameters['working_directory'] = simulation['wd']
 
+    parameters['output_directory'] = os.path.join (parameters['working_directory'], 'outputs/', parameters['program_name'])
+    if not os.path.exists (parameters['output_directory']):
+        os.makedirs (parameters['output_directory'])
     gc.collect ()
     print (simulation['opening_message'])
 
