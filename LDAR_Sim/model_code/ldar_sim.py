@@ -302,10 +302,6 @@ class LdarSim:
         """
         Compile and write output files.
         """
-        output_directory = os.path.join(self.parameters['working_directory'], 'outputs/', self.parameters['program_name'])
-        if not os.path.exists(output_directory):
-            os.makedirs(output_directory)
-
         if self.parameters['write_data']:
 
             # Attribute individual leak emissions to site totals
@@ -349,13 +345,13 @@ class LdarSim:
             leak_df = leaks_active.append(leaks_repaired)
 
             # Write csv files
-            leak_df.to_csv(output_directory + '/leaks_output_' + self.parameters['simulation'] + '.csv', index=False)
-            time_df.to_csv(output_directory + '/timeseries_output_' + self.parameters['simulation'] + '.csv',
+            leak_df.to_csv(self.parameters['output_directory'] + '/leaks_output_' + self.parameters['simulation'] + '.csv', index=False)
+            time_df.to_csv(self.parameters['output_directory'] + '/timeseries_output_' + self.parameters['simulation'] + '.csv',
                            index=False)
-            site_df.to_csv(output_directory + '/sites_output_' + self.parameters['simulation'] + '.csv', index=False)
+            site_df.to_csv(self.parameters['output_directory'] + '/sites_output_' + self.parameters['simulation'] + '.csv', index=False)
 
             # Write metadata
-            metadata = open(output_directory + '/metadata_' + self.parameters['simulation'] + '.txt', 'w')
+            metadata = open(self.parameters['output_directory'] + '/metadata_' + self.parameters['simulation'] + '.txt', 'w')
             metadata.write(str(self.parameters) + '\n' +
                            str(datetime.datetime.now()))
             metadata.close()
@@ -369,7 +365,7 @@ class LdarSim:
         # Make plots
         if self.parameters['make_plots']:
             make_plots(leak_df, time_df, site_df, self.parameters['simulation'], self.parameters['spin_up'],
-                       output_directory)
+                       self.parameters['output_directory'])
 
         # Write sensitivity analysis data, if requested
         if self.parameters['sensitivity']['perform']:
