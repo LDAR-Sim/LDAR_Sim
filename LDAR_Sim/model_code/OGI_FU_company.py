@@ -114,10 +114,7 @@ class OGI_FU_company:
         geotransform = (xmin, xres, 0, ymax, 0, -yres)
 
         # Set output directory
-        output_directory = os.path.join(self.parameters['working_directory'], 'outputs/', self.parameters['program_name'])
-        if not os.path.exists(output_directory):
-            os.makedirs(output_directory)
-        os.chdir(output_directory)
+        os.chdir(self.parameters['output_directory'])
 
         # Export 2D proportions matrix as map
         output_raster = gdal.GetDriverByName('GTiff').Create('DD_OGI_FU_map_' + self.parameters['simulation'] + '.tif',
