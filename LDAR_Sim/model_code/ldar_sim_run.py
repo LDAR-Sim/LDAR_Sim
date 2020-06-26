@@ -23,6 +23,7 @@ from weather_lookup import *
 from ldar_sim import *
 from time_counter import *
 from batch_reporting import *
+from stdout_redirect import *
 import gc
 
 def ldar_sim_run (simulation):
@@ -33,6 +34,16 @@ def ldar_sim_run (simulation):
     i = simulation['i']
     parameters = simulation['program']
     parameters['working_directory'] = simulation['wd']
+
+    parameters['output_directory'] = os.path.join (parameters['working_directory'], 'outputs/', parameters['program_name'])
+    if not os.path.exists (parameters['output_directory']):
+        os.makedirs (parameters['output_directory'])
+
+    logfile = open (os.path.join (parameters['output_directory'], 'logfile.txt'), 'w')
+    if not 'print_from_simulation' in simulation or simulation['print_from_simulation']:
+        sys.stdout = stdout_redirect ([sys.stdout, logfile])
+    else:
+        sys.stdout = stdout_redirect ([logfile])
 
     gc.collect ()
     print (simulation['opening_message'])
@@ -82,4 +93,5 @@ def ldar_sim_run (simulation):
 
     # Clean up and write files
     sim.finalize ()
+    logfile.close ()
     return
