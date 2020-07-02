@@ -31,6 +31,7 @@ LDAR-Sim code may not be modified without sharing the changes, pursuant to the G
 This release contains the exact code and inputs used in [our LDAR-Sim synthesis paper](https://eartharxiv.org/rzh92/) (currently in preprint and in review). Although this version may change with peer review, we recommend using this release, especially for first time users.
 
 Preprint pape: [Fox et al. 2020](https://eartharxiv.org/rzh92/)
+
 Citation for this release: Fox, Thomas A., Mozhou Gao, Thomas E. Barchyn, Yorwearth L. Jamin, and Chris H. Hugenholtz. 2020. “An Agent-based Model for Estimating Emissions Reduction Equivalence Among Leak Detection and Repair Programs.” EarthArXiv. doi:10.31223/osf.io/rzh92
 
 You are currently in the master branch, which is evolving dynamically and is not a stable release. The Fox et al. 2020 preprint release is immortalized in a separate branch that can be found by [clicking here](https://github.com/tarcadius/LDAR_Sim/tree/Fox_etal_2020_preprint).
@@ -48,7 +49,7 @@ The easiest way to prepare your python installation is to use [pipenv](https://p
 
 `pipenv install`
 
-To make things easier, we have included windows binaries for the specific versions of cftime, GDAL, netCDF4, and pyproj. In the Pipfile, basemap is downloaded directly from https://download.lfd.uci.edu/pythonlibs/s2jqpv5t/basemap-1.2.1-cp37-cp37m-win_amd64.whl. If this link breaks or the package is no longer available, this is not a problem for base operations of LDAR-Sim as basemap is only used in the live plotter demonstration.
+To make things easier, we have included windows binaries for the specific versions of cftime, GDAL, netCDF4, and pyproj. In the Pipfile, basemap is downloaded directly from [here](https://download.lfd.uci.edu/pythonlibs/s2jqpv5t/basemap-1.2.1-cp37-cp37m-win_amd64.whl). If this link breaks or the package is no longer available, this is not a problem for base operations of LDAR-Sim as basemap is only used in the live plotter demonstration.
 
 #### Step 3: Reproduce OGI simulations
 The ldar_sim_main file is currently configured for the OGI comparison case study presented in Fox et al 2020. Four different OGI-based LDAR programs are parameterized, which differ only according to weather and labour constraints.
