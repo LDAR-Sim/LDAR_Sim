@@ -8,7 +8,7 @@ LDAR-Sim has many potential uses, including:
   3) Predict the emissions mitigation of proposed or existing fugitive methane policies
   4) Inform the development and niche of technologies and work practices
 
-To learn more about LDAR-Sim, you can read about it in *this paper*.
+To learn more about LDAR-Sim, you can read about it in [this preprint](https://eartharxiv.org/rzh92/).
 
 For first time users, we recommend attempting to reproduce the case study results in Fox et al. 2020 (see below).
 
@@ -28,10 +28,10 @@ LDAR-Sim is free software: you can redistribute it and/or modify it under the te
 LDAR-Sim code may not be modified without sharing the changes, pursuant to the GNU Affero GPL v3 License.
 
 ## [Fox_etal_2020_preprint Release](https://github.com/tarcadius/LDAR_Sim/tree/Fox_etal_2020_preprint)
-This release contains the exact code and inputs used in our LDAR-Sim synthesis paper (currently in preprint and in review). Although this version may change with peer review, we recommend using this release, especially for first time users.
+This release contains the exact code and inputs used in [our LDAR-Sim synthesis paper](https://eartharxiv.org/rzh92/) (currently in preprint and in review). Although this version may change with peer review, we recommend using this release, especially for first time users.
 
-Preprint paper (Fox et al 2020): #PREPRINT LINK#
-Citation for this release: #DOI#
+Preprint pape: [Fox et al. 2020](https://eartharxiv.org/rzh92/)
+Citation for this release: Fox, Thomas A., Mozhou Gao, Thomas E. Barchyn, Yorwearth L. Jamin, and Chris H. Hugenholtz. 2020. “An Agent-based Model for Estimating Emissions Reduction Equivalence Among Leak Detection and Repair Programs.” EarthArXiv. doi:10.31223/osf.io/rzh92
 
 You are currently in the master branch, which is evolving dynamically and is not a stable release. The Fox et al. 2020 preprint release is immortalized in a separate branch that can be found by [clicking here](https://github.com/tarcadius/LDAR_Sim/tree/Fox_etal_2020_preprint).
 
@@ -40,7 +40,7 @@ This guide is intended to help interested parties reproduce the results from Fox
 
 #### Step 1: Before you begin
 Read and understand the LDAR-Sim LICENSE (GNU Affero General Public License Version 3).
-Read Fox et al 2020 to familiarize yourself with LDAR-Sim fundamentals.
+Read [Fox et al 2020](https://eartharxiv.org/rzh92/) to familiarize yourself with LDAR-Sim fundamentals.
 
 #### Step 2: Libraries and data
 Install python 3.x. and ensure all required python modules/packages/libraries are available, as listed in the Pipfile.
