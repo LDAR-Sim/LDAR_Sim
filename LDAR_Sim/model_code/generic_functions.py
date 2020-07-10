@@ -20,7 +20,9 @@
 # ------------------------------------------------------------------------------
 
 import numpy as np
-
+import os
+from osgeo import gdal
+from osgeo import osr
 
 def gap_calculator(condition_vector):
     """
@@ -50,3 +52,54 @@ def gap_calculator(condition_vector):
         max_gap = max(start_gap, mid_gap, end_gap)
 
     return max_gap
+
+def make_maps(company):
+    """
+    If requested, makes maps of proportion of timesteps that are deployment days.
+    Also outputs a map of MCB (maximum condition blackout) over period of analysis.
+    """
+
+    # For each cell, sum the total number of deployment days and divide by total number of days
+    for lon in range(len(company.state['weather'].longitude)):
+        for lat in range(len(company.state['weather'].latitude)):
+            company.DD_map[lon, lat] = (company.deployment_days[lon, lat, :].sum()) / company.parameters['timesteps']
+
+    # Calculate MCB for each cell
+    for lon in range(len(company.state['weather'].longitude)):
+        for lat in range(len(company.state['weather'].latitude)):
+            company.MCB_map[lon, lat] = gap_calculator(company.deployment_days[lon, lat, :])
+
+    # Set variables necessary for writing map files
+    DD_output = np.swapaxes(company.DD_map, axis1=0, axis2=1)
+    MCB_output = np.swapaxes(company.MCB_map, axis1=0, axis2=1)
+    lon, lat = company.state['weather'].longitude, company.state['weather'].latitude
+    xmin, ymin, xmax, ymax = [lon.min(), lat.min(), lon.max(), lat.max()]
+    nrows, ncols = np.shape(DD_output)
+    xres = (xmax - xmin) / float(ncols)
+    yres = (ymax - ymin) / float(nrows)
+    geotransform = (xmin, xres, 0, ymax, 0, -yres)
+
+    # Set output directory
+    os.chdir(company.parameters['output_directory'])
+
+    # Export 2D proportions matrix as map
+    output_raster = gdal.GetDriverByName('GTiff').Create('DD_' + company.name + '_map_' + company.parameters['simulation'] + '.tif',
+                                                         ncols, nrows, 1, gdal.GDT_Float32)
+    output_raster.SetGeoTransform(geotransform)  # Specify file coordinates
+    srs = osr.SpatialReference()  # Establish coordinate encoding
+    srs.ImportFromEPSG(4326)  # Specify WGS84 lat/long
+    output_raster.SetProjection(srs.ExportToWkt())  # Exports the coordinate system to the file
+    output_raster.GetRasterBand(1).WriteArray(DD_output)  # Writes my array to the raster
+    output_raster = None
+
+    # Export 2D MCB matrix as map
+    output_raster = gdal.GetDriverByName('GTiff').Create('MCB_' + company.name + '_map_' + company.parameters['simulation'] + '.tif',
+                                                         ncols, nrows, 1, gdal.GDT_Float32)
+    output_raster.SetGeoTransform(geotransform)  # Specify file coordinates
+    srs = osr.SpatialReference()  # Establish coordinate encoding
+    srs.ImportFromEPSG(4326)  # Specify WGS84 lat/long
+    output_raster.SetProjection(srs.ExportToWkt())  # Exports the coordinate system to the file
+    output_raster.GetRasterBand(1).WriteArray(MCB_output)  # Writes my array to the raster
+    output_raster = None
+
+    return

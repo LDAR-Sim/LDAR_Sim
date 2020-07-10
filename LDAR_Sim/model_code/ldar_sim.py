@@ -30,7 +30,7 @@ from sensitivity import *
 from operator_agent import *
 from plotter import *
 from daylight_calculator import *
-
+from generic_functions import make_maps
 
 class LdarSim:
     def __init__(self, state, parameters, timeseries):
@@ -359,8 +359,9 @@ class LdarSim:
         # Make maps and append site-level DD and MCB data
         if self.parameters['make_maps']:
             for m in self.state['methods']:
-                m.make_maps()
+                make_maps(m)
                 m.site_reports()
+
 
         # Make plots
         if self.parameters['make_plots']:
