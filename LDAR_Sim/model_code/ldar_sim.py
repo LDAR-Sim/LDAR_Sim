@@ -358,9 +358,10 @@ class LdarSim:
 
         # Make maps and append site-level DD and MCB data
         if self.parameters['make_maps']:
-            for m in self.state['methods']:
-                make_maps(m)
-                m.site_reports()
+            if self.parameters['simulation'] == '0':
+                for m in self.state['methods']:
+                    make_maps(m)
+                    m.site_reports()
 
 
         # Make plots

@@ -83,7 +83,7 @@ def make_maps(company):
     os.chdir(company.parameters['output_directory'])
 
     # Export 2D proportions matrix as map
-    output_raster = gdal.GetDriverByName('GTiff').Create('DD_' + company.name + '_map_' + company.parameters['simulation'] + '.tif',
+    output_raster = gdal.GetDriverByName('GTiff').Create('DD_' + company.name + '_map' + '.tif',
                                                          ncols, nrows, 1, gdal.GDT_Float32)
     output_raster.SetGeoTransform(geotransform)  # Specify file coordinates
     srs = osr.SpatialReference()  # Establish coordinate encoding
@@ -93,7 +93,7 @@ def make_maps(company):
     output_raster = None
 
     # Export 2D MCB matrix as map
-    output_raster = gdal.GetDriverByName('GTiff').Create('MCB_' + company.name + '_map_' + company.parameters['simulation'] + '.tif',
+    output_raster = gdal.GetDriverByName('GTiff').Create('MCB_' + company.name + '_map' + '.tif',
                                                          ncols, nrows, 1, gdal.GDT_Float32)
     output_raster.SetGeoTransform(geotransform)  # Specify file coordinates
     srs = osr.SpatialReference()  # Establish coordinate encoding
