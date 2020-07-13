@@ -360,7 +360,7 @@ class LdarSim:
         if self.parameters['make_maps']:
             if self.parameters['simulation'] == '0':
                 for m in self.state['methods']:
-                    make_maps(m)
+                    make_maps(m, site_df)
                     m.site_reports()
 
 

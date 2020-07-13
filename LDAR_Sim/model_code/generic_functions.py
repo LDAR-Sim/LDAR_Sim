@@ -20,6 +20,7 @@
 # ------------------------------------------------------------------------------
 
 import numpy as np
+import pandas as pd
 import os
 from osgeo import gdal
 from osgeo import osr
@@ -55,7 +56,7 @@ def gap_calculator(condition_vector):
 
     return max_gap
 
-def make_maps(company):
+def make_maps(company, sites):
     """
     If requested, makes maps of proportion of timesteps that are deployment days.
     Also outputs a map of MCB (maximum condition blackout) over period of analysis.
@@ -117,6 +118,9 @@ def make_maps(company):
     map.drawparallels(np.arange(ymin, ymax, round(abs(ymin-ymax)/3)), color="black", labels=[1, 0, 0, 0], fontsize=10, linewidth=0.2, zorder=5)
     map.drawmeridians(np.arange(xmin, xmax, round(abs(xmin-xmax)/3)), color="black", labels=[0, 0, 0, 1], fontsize=10, linewidth=0.2, zorder=6)
 
+    sitesx, sitesy = map((pd.to_numeric(sites['lon'])+360).tolist(), pd.to_numeric(sites['lat']).tolist())
+    map.scatter(sitesx, sitesy, marker='o', color = 'black', s = 1, zorder=7)
+
     m_lon, m_lat = np.meshgrid(lon, lat)
     xi, yi = map(m_lon, m_lat)
 
@@ -135,6 +139,7 @@ def make_maps(company):
     map2.drawstates(color='black', linewidth=1, zorder=4)
     map2.drawparallels(np.arange(ymin, ymax, round(abs(ymin-ymax)/3)), color="black", labels=[1, 0, 0, 0], fontsize=10, linewidth=0.2, zorder=5)
     map2.drawmeridians(np.arange(xmin, xmax, round(abs(xmin-xmax)/3)), color="black", labels=[0, 0, 0, 1], fontsize=10, linewidth=0.2, zorder=6)
+    map2.scatter(sitesx, sitesy, marker='o', color = 'black', s = 1, zorder=7)
 
     m_lon, m_lat = np.meshgrid(lon, lat)
     xi, yi = map(m_lon, m_lat)
@@ -145,6 +150,6 @@ def make_maps(company):
     cbar.draw_all()
     cbar.set_label('Maximum blackout period (days)', fontsize=12)
     plt.savefig('MCB_' + company.name + '_map' + '.png', dpi = 300)
-
+    plt.clf()
 
     return
