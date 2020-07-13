@@ -106,9 +106,6 @@ def make_maps(company, sites):
     output_raster = None
 
     # Make nice map images
-    ##### make epsg code an input
-    ##### add facilities as dots
-
     plt.rcParams["figure.figsize"] = (10, 10)
     map = Basemap(epsg=3401, llcrnrlon=xmin - 360 - 1, llcrnrlat= ymin - 1, urcrnrlon=xmax - 360 + 3,
                   urcrnrlat=ymax + 1, resolution='i', area_thresh=10000.)
