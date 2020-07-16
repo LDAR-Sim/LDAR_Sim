@@ -151,9 +151,9 @@ class OGI_FU_crew:
                     # Add these leaks to the 'tag pool'
                 elif not leak['tagged']:
                     leak['tagged'] = True
-                    leak['date_found'] = self.state['t'].current_date
-                    leak['found_by_company'] = self.config['name']
-                    leak['found_by_crew'] = self.crewstate['id']
+                    leak['date_tagged'] = self.state['t'].current_date
+                    leak['tagged_by_company'] = self.config['name']
+                    leak['tagged_by_crew'] = self.crewstate['id']
                     self.state['tags'].append(leak)
 
             elif not detect:

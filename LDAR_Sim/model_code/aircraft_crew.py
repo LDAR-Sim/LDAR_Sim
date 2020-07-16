@@ -215,7 +215,7 @@ class aircraft_crew:
                 # Does the chosen site already have tagged leaks?
                 redund2 = False
                 for leak in leaks_present:
-                    if leak['date_found'] is not None:
+                    if leak['date_tagged'] is not None:
                         redund2 = True
 
                 if redund2:
