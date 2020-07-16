@@ -138,17 +138,19 @@ class LdarSim:
                         'leak_ID': site['facility_ID'] + '_' + str(len(self.state['leaks']) + 1).zfill(10),
                         'facility_ID': site['facility_ID'],
                         'rate': self.state['empirical_leaks'][np.random.randint(0, len(self.state['empirical_leaks']))],
+                        'lat': float(site['lat']) + np.random.normal(0, 0.0001),
+                        'lon': float(site['lon']) + np.random.normal(0, 0.0001),
                         'status': 'active',
                         'tagged': False,
                         'days_active': 0,
                         'component': 'unknown',
                         'date_began': self.state['t'].current_date,
-                        'date_found': None,
+                        'date_tagged': None,
+                        'tagged_by_company': None,
+                        'tagged_by_crew': None,
+                        'requires_shutdown': False,
                         'date_repaired': None,
                         'repair_delay': None,
-                        'found_by_company': None,
-                        'found_by_crew': None,
-                        'requires_shutdown': False,
                     })
 
         # Initialize operator
@@ -232,17 +234,19 @@ class LdarSim:
                         'leak_ID': site['facility_ID'] + '_' + str(len(self.state['leaks']) + 1).zfill(10),
                         'facility_ID': site['facility_ID'],
                         'rate': self.state['empirical_leaks'][np.random.randint(0, len(self.state['empirical_leaks']))],
+                        'lat': float(site['lat']) + np.random.normal(0, 0.0001),
+                        'lon': float(site['lon']) + np.random.normal(0, 0.0001),
                         'status': 'active',
                         'days_active': 0,
                         'tagged': False,
                         'component': 'unknown',
                         'date_began': self.state['t'].current_date,
-                        'date_found': None,
+                        'date_tagged': None,
+                        'tagged_by_company': None,
+                        'tagged_by_crew': None,
+                        'requires_shutdown': False,
                         'date_repaired': None,
                         'repair_delay': None,
-                        'found_by_company': None,
-                        'found_by_crew': None,
-                        'requires_shutdown': False,
                     })
 
         return
@@ -266,20 +270,20 @@ class LdarSim:
         Repair tagged leaks and remove from tag pool.
         """
         for tag in self.state['tags']:
-            if tag['found_by_company'] != 'operator':
-                if (self.state['t'].current_date - tag['date_found']).days >= (
-                        self.parameters['repair_delay'] + self.parameters['methods'][tag['found_by_company']][
+            if tag['tagged_by_company'] != 'operator':
+                if (self.state['t'].current_date - tag['date_tagged']).days >= (
+                        self.parameters['repair_delay'] + self.parameters['methods'][tag['tagged_by_company']][
                         'reporting_delay']):
                     tag['status'] = 'repaired'
                     tag['tagged'] = False
                     tag['date_repaired'] = self.state['t'].current_date
-                    tag['repair_delay'] = (tag['date_repaired'] - tag['date_found']).days
-            elif tag['found_by_company'] == 'operator':
-                if (self.state['t'].current_date - tag['date_found']).days >= self.parameters['repair_delay']:
+                    tag['repair_delay'] = (tag['date_repaired'] - tag['date_tagged']).days
+            elif tag['tagged_by_company'] == 'operator':
+                if (self.state['t'].current_date - tag['date_tagged']).days >= self.parameters['repair_delay']:
                     tag['status'] = 'repaired'
                     tag['tagged'] = False
                     tag['date_repaired'] = self.state['t'].current_date
-                    tag['repair_delay'] = (tag['date_repaired'] - tag['date_found']).days
+                    tag['repair_delay'] = (tag['date_repaired'] - tag['date_tagged']).days
 
             self.state['tags'] = [tag for tag in self.state['tags'] if tag['status'] == 'active']
 
