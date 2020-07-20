@@ -333,6 +333,7 @@ class LdarSim:
             site_df['cum_frac_sites'] = site_df['cum_frac_sites'] / max(site_df['cum_frac_sites'])
             site_df['cum_frac_emissions'] = np.cumsum(sorted(site_df['total_emissions_kg'], reverse=True))
             site_df['cum_frac_emissions'] = site_df['cum_frac_emissions'] / max(site_df['cum_frac_emissions'])
+            site_df['mean_rate_kg_day'] = site_df['total_emissions_kg']/self.parameters['timesteps']
 
             leaks_active = leak_df[leak_df.status == 'active'].sort_values('rate', ascending=False)
             leaks_repaired = leak_df[leak_df.status == 'repaired'].sort_values('rate', ascending=False)
