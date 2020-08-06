@@ -8,7 +8,9 @@ LDAR-Sim has many potential uses, including:
   3) Predict the emissions mitigation of proposed or existing fugitive methane policies
   4) Inform the development and niche of technologies and work practices
 
-To learn more about LDAR-Sim, you can read about it in [this preprint](https://eartharxiv.org/rzh92/).
+To learn more about LDAR-Sim, you can:
+  1) Read our [story map](https://arcg.is/1rXeX10) (less technical introduction)
+  2) Read [this journal article](https://eartharxiv.org/rzh92/)
 
 For first time users, we recommend attempting to reproduce the case study results in Fox et al. 2020 (see below).
 
