@@ -9,8 +9,8 @@ LDAR-Sim has many potential uses, including:
   4) Inform the development and niche of technologies and work practices
 
 To learn more about LDAR-Sim, you can:
-  1) Read our [story map](https://arcg.is/1rXeX10) (less technical introduction)
-  2) Read [this journal article](https://eartharxiv.org/rzh92/)
+  1) Read our [story map](https://arcg.is/1rXeX10) (less technical introduction).
+  2) Read [this journal article](https://eartharxiv.org/rzh92/) (more detail).
 
 For first time users, we recommend attempting to reproduce the case study results in Fox et al. 2020 (see below).
 
