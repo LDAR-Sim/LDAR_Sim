@@ -46,28 +46,35 @@ class OperatorAgent:
         """
 
         active_leaks = self.timeseries['active_leaks'][self.state['t'].current_timestep]
-        leak_term = (self.init_sum_leaks / active_leaks) * self.init_mean_leaks
+        if active_leaks > 0:
+            leak_term = (self.init_sum_leaks / (active_leaks)) * self.init_mean_leaks
 
-        for leak in self.state['leaks']:
-            if leak['status'] == 'active':
-                prob_detect = self.parameters['LPR'] * 7 / leak_term
-                prob_detect += self.parameters['max_det_op'] * (leak['rate'] / self.state['max_rate'])
-                if prob_detect > 1:
-                    prob_detect = 1
-                prob_detect = prob_detect * self.parameters['operator_strength']
-                detect = np.random.binomial(1, prob_detect)
+            for leak in self.state['leaks']:
+                if leak['status'] == 'active':
+                    prob_detect = self.parameters['LPR'] * 7 / leak_term
+                    prob_detect += self.parameters['max_det_op'] * (leak['rate'] / (self.state['max_rate']))
+                    if prob_detect > 1:
+                        prob_detect = 1
+                    if prob_detect < 0:
+                        prob_detect = 0
+                    try:
+                        prob_detect = prob_detect * self.parameters['operator_strength']
+                    except:
+                        prob_detect = 0
+                    detect = np.random.binomial(1, prob_detect)
 
-                if detect:
-                    if leak['tagged']:
-                        self.timeseries['operator_redund_tags'][self.state['t'].current_timestep] += 1
 
-                    elif not leak['tagged']:
-                        # Add these leaks to the 'tag pool'
-                        leak['tagged'] = True
-                        leak['date_tagged'] = self.state['t'].current_date
-                        leak['tagged_by_company'] = 'operator'
-                        leak['tagged_by_crew'] = 1
-                        self.state['tags'].append(leak)
-                        self.timeseries['operator_tags'][self.state['t'].current_timestep] += 1
+                    if detect:
+                        if leak['tagged']:
+                            self.timeseries['operator_redund_tags'][self.state['t'].current_timestep] += 1
+
+                        elif not leak['tagged']:
+                            # Add these leaks to the 'tag pool'
+                            leak['tagged'] = True
+                            leak['date_tagged'] = self.state['t'].current_date
+                            leak['tagged_by_company'] = 'operator'
+                            leak['tagged_by_crew'] = 1
+                            self.state['tags'].append(leak)
+                            self.timeseries['operator_tags'][self.state['t'].current_timestep] += 1
 
         return
