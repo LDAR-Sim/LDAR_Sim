@@ -376,10 +376,12 @@ class LdarSim:
 
         # Write sensitivity analysis data, if requested
         if self.parameters['sensitivity']['perform']:
-            self.sensitivity.write_data()
+            sim_summary = self.sensitivity.write_data()
+        else:
+            sim_summary = {}
 
         # Return to original working directory
         os.chdir(self.parameters['working_directory'])
         os.chdir('..')
 
-        return
+        return(sim_summary)

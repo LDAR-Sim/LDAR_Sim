@@ -33,7 +33,7 @@ if __name__ == '__main__':
     wd = os.path.abspath (wd) + "/"
     program_list = ['P_ref', 'P_alt', 'P_alt2']  # Programs to compare; Position one should be the reference program (P_ref)
     n_processes = None  # Number of processes to use, None = all, 1 = one virtual core, and so on.
-    print_from_simulations = False  # Print informational messages from within the simulations
+    print_from_simulations = True  # Print informational messages from within the simulations
     warnings.filterwarnings('ignore')    # Temporarily mute warnings
 
     # -----------------------------Set up programs----------------------------------
@@ -57,13 +57,13 @@ if __name__ == '__main__':
     for i in range(n_simulations):
         for j in range(len(programs)):
             opening_message = 'Simulating program ' + str(j + 1) + ' of ' + str(len(programs)) + '; simulation ' + \
-                                    str(i + 1) + ' of ' + str(n_simulations)
-            simulations.append ([{'i': i, 'program': programs[j], 'wd': wd, 'opening_message': opening_message,
-                                  'print_from_simulation': print_from_simulations}])
+                                str(i + 1) + ' of ' + str(n_simulations)
+            simulations.append([{'i': i, 'program': programs[j], 'wd': wd, 'opening_message': opening_message,
+                                'print_from_simulation': print_from_simulations}])
 
     # Perform simulations in parallel
-    with mp.Pool (processes = n_processes) as p:
-        res = p.starmap (ldar_sim_run, simulations)
+    with mp.Pool(processes=n_processes) as p:
+        res = p.starmap(ldar_sim_run, simulations)
 
     # Do batch reporting
     if write_data:
@@ -82,4 +82,11 @@ if __name__ == '__main__':
 
     metadata.close()
 
+    # Write sensitivity analysis data on a program by program basis
+    sa_df = pd.DataFrame(res)
+    if 'program' in sa_df.columns:
+        for program in sa_df['program'].unique():
+            sa_out = sa_df.loc[sa_df['program'] == program, :]
+            sa_outfile_name = os.path.join(wd, 'sensitivity_analysis', 'sensitivity_' + program + '.csv')
+            sa_out.to_csv(sa_outfile_name, index=False)
 

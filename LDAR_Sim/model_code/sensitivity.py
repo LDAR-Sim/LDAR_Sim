@@ -35,83 +35,69 @@ class Sensitivity:
         self.state = state
 
         # Make folder for sensitivity analysis outputs
-        self.output_directory = os.path.join(self.parameters['working_directory'], self.parameters['output_folder'],
-                                             'sensitivity_analysis')
+        self.output_directory = os.path.join(self.parameters['working_directory'], 'sensitivity_analysis')
         if not os.path.exists(self.output_directory):
             os.makedirs(self.output_directory)
 
         # ------------------------Define SA input parameters----------------------------
+        output_file = os.path.join(self.output_directory, 'SA_params.csv')
+        param_df = pd.DataFrame()
+        if self.parameters['simulation'] == '0' and self.parameters['sensitivity']['order'] == '1':
+            for i in range(self.parameters['n_simulations']):
+                row = {
+                    # General inputs
+                    'LSD_outliers': int(np.round(np.random.normal(0, 1))),
+                    'LSD_samples': int(np.random.normal(len(self.state['empirical_leaks']), len(self.state['empirical_leaks']) / 4)),
+                    'LCD_outliers': int(np.round(np.random.normal(0, 1))),
+                    'LCD_samples': int(np.random.normal(len(self.state['empirical_counts']), len(self.state['empirical_counts']) / 4)),
+                    'site_rate_outliers': int(np.round(np.random.normal(0, 1))),
+                    'site_rate_samples': int(np.random.normal(len(self.state['empirical_sites']), len(self.state['empirical_sites']) / 4)),
+                    'offsite_times_outliers': int(np.round(np.random.normal(0, 1))),
+                    'offsite_times_samples': int(np.random.normal(len(self.state['offsite_times']), len(self.state['offsite_times']) / 4)),
 
-        self.SA_params = {
+                    'LPR': np.random.gamma(0.8327945, 0.03138632365),
+                    'repair_delay': np.random.uniform(0, 100),
+                    'operator_strength': np.random.exponential(0.1),
+                    'max_det_op': np.random.exponential(1 / 5),
+                    'consider_operator': bool(np.random.binomial(1, 0.2)),
+                    'consider_daylight': bool(np.random.binomial(1, 0.5)),
+                    'consider_venting': bool(np.random.binomial(1, 0.5)),
+                    'max_workday': round(np.random.uniform(6, 14)),
+                    'start_year': round(np.random.uniform(2003, 2012)),
 
-            # General inputs
-            'LSD_outliers': int(np.round(np.random.normal(0, 1))),
-            'LSD_samples': int(
-                np.random.normal(len(self.state['empirical_leaks']), len(self.state['empirical_leaks']) / 4)),
+                    # OGI inputs - only used if called
+                    'OGI_n_crews': np.random.poisson(0.5) + 1,
+                    'OGI_min_temp': np.random.normal(-20, 10),
+                    'OGI_max_wind': np.random.normal(15, 3),
+                    'OGI_max_precip': np.random.uniform(0, 0.1),  # in meters
+                    'OGI_reporting_delay': np.random.uniform(0, 30),
+                    'OGI_time': np.random.uniform(30, 500),
+                    'OGI_required_surveys': np.random.uniform(1, 4),
+                    'OGI_min_interval': np.random.uniform(0, 90),
+                    'OGI_MDL': np.random.uniform(0, 2),
 
-            'LCD_outliers': int(np.round(np.random.normal(0, 1))),
-            'LCD_samples': int(
-                np.random.normal(len(self.state['empirical_counts']), len(self.state['empirical_counts']) / 4)),
+                    # MGL inputs - only used if called
+                    'truck_n_crews': np.random.poisson(0.5) + 1,
+                    'truck_min_temp': np.random.normal(-20, 10),
+                    'truck_max_wind': np.random.normal(15, 3),
+                    'truck_max_precip': np.random.uniform(0, 0.1),
+                    'truck_reporting_delay': np.random.uniform(0, 30),
+                    'truck_time': np.random.uniform(1, 30),
+                    'truck_required_surveys': np.random.uniform(1, 4),
+                    'truck_min_interval': np.random.uniform(0, 90),
+                    'truck_MDL': np.random.uniform(1, 100),  # grams/hour
+                    'truck_follow_up_thresh': np.random.uniform(0, 500),
+                    'truck_follow_up_ratio': np.random.uniform(0.1, 1)
+                }
+                param_df = param_df.append(pd.DataFrame([row]))
+            param_df.to_csv(output_file, index=False)
 
-            'site_rate_outliers': int(np.round(np.random.normal(0, 1))),
-            'site_rate_samples': int(
-                np.random.normal(len(self.state['empirical_sites']), len(self.state['empirical_sites']) / 4)),
-
-            'offsite_times_outliers': int(np.round(np.random.normal(0, 1))),
-            'offsite_times_samples': int(
-                np.random.normal(len(self.state['offsite_times']), len(self.state['offsite_times']) / 4)),
-
-            'LPR': np.random.gamma(0.8327945, 0.03138632365),
-            'repair_delay': np.random.uniform(0, 100),
-            'operator_strength': np.random.exponential(0.1),
-            'max_det_op': np.random.exponential(1 / 5),
-            'consider_operator': bool(np.random.binomial(1, 0.2)),
-            'consider_daylight': bool(np.random.binomial(1, 0.5)),
-            'consider_venting': bool(np.random.binomial(1, 0.5)),
-            'max_workday': round(np.random.uniform(6, 14)),
-            'start_year': round(np.random.uniform(2003, 2012)),
-
-            # OGI inputs - only used if called
-            'OGI_n_crews': np.random.poisson(0.5) + 1,
-            'OGI_min_temp': np.random.normal(-20, 10),
-            'OGI_max_wind': np.random.normal(15, 3),
-            'OGI_max_precip': np.random.uniform(0, 0.1),  # in meters
-            'OGI_reporting_delay': np.random.uniform(0, 30),
-            'OGI_time': np.random.uniform(30, 500),
-            'OGI_required_surveys': np.random.uniform(1, 4),
-            'OGI_min_interval': np.random.uniform(0, 90),
-            'OGI_MDL': np.random.uniform(0, 2)
-        }
-
-        # If batch, must communicate global parameters to next program
-        if self.parameters['sensitivity']['batch'] == [True, 1]:
-            self.export_SA(self.SA_params,
-                           os.path.join(self.parameters['working_directory'], self.parameters['master_output_folder']),
-                           'batch_params.csv')
-
-        # Go find the secret message (i.e. load previously recorded params if needed)!
-        if self.parameters['sensitivity']['batch'] == [True, 2]:
-            B1_params = pd.read_csv(
-                os.path.join(self.parameters['working_directory'], self.parameters['master_output_folder'],
-                             'batch_params.csv'))
-            B1_params_row = B1_params.iloc[int(self.parameters['simulation'])]
-            B1_dict = B1_params_row.to_dict()
-            self.SA_params.update(B1_dict)
-
-            # Add screening inputs - use only if called
-        self.SA_params.update({
-            'truck_n_crews': np.random.poisson(0.5) + 1,
-            'truck_min_temp': np.random.normal(-20, 10),
-            'truck_max_wind': np.random.normal(15, 3),
-            'truck_max_precip': np.random.uniform(0, 0.1),
-            'truck_reporting_delay': np.random.uniform(0, 30),
-            'truck_time': np.random.uniform(1, 30),
-            'truck_required_surveys': np.random.uniform(1, 4),
-            'truck_min_interval': np.random.uniform(0, 90),
-            'truck_MDL': np.random.uniform(1, 100),  # grams/hour
-            'truck_follow_up_thresh': np.random.uniform(0, 500),
-            'truck_follow_up_ratio': np.random.uniform(0.1, 1)
-        })
+        while not os.path.exists(output_file):
+            time.sleep(1)
+        if os.path.isfile(output_file):
+            params = pd.read_csv(output_file)
+            current_row = params.iloc[int(self.parameters['simulation'])]
+            self.SA_params = current_row.to_dict()
 
         # --------------Update model parameters according to SA definition--------------
 
@@ -125,15 +111,15 @@ class Sensitivity:
         self.parameters['consider_venting'] = self.SA_params['consider_venting']
 
         # Modify input distributions
-        self.adjust_distribution(self.state['empirical_leaks'], self.SA_params['LSD_outliers'],
-                                 self.SA_params['LSD_samples'])
-        self.adjust_distribution(self.state['empirical_counts'], self.SA_params['LCD_outliers'],
-                                 self.SA_params['LCD_samples'])
-        self.adjust_distribution(self.state['offsite_times'], self.SA_params['offsite_times_outliers'],
-                                 self.SA_params['offsite_times_samples'])
+        self.state['empirical_leaks'] = self.adjust_distribution(self.state['empirical_leaks'],
+            self.SA_params['LSD_outliers'], self.SA_params['LSD_samples'])
+        self.state['empirical_counts'] = self.adjust_distribution(self.state['empirical_counts'],
+            self.SA_params['LCD_outliers'], self.SA_params['LCD_samples'])
+        self.state['offsite_times'] = self.adjust_distribution(self.state['offsite_times'],
+            self.SA_params['offsite_times_outliers'], self.SA_params['offsite_times_samples'])
         if self.parameters['consider_venting']:
-            self.adjust_distribution(self.state['empirical_sites'], self.SA_params['site_rate_outliers'],
-                                     self.SA_params['site_rate_samples'])
+            self.state['empirical_sites'] = self.adjust_distribution(self.state['empirical_sites'],
+                self.SA_params['site_rate_outliers'], self.SA_params['site_rate_samples'])
 
         # Set OGI parameters                      
         if self.parameters['sensitivity']['program'] == 'OGI':
@@ -187,6 +173,7 @@ class Sensitivity:
         # Build generic output dataframe
         df_dict = {
             # SA inputs
+            'program': self.parameters['sensitivity']['program'],
             'simulation': self.parameters['simulation'],
             'run_time': time.time() - self.parameters['start_time'],
             'timesteps': self.parameters['timesteps'],
@@ -303,7 +290,7 @@ class Sensitivity:
             df_dict.update(truck_dict)
             self.export_SA(df_dict, self.output_directory, 'sensitivity_truck.csv')
 
-        return
+        return (df_dict)
 
     def adjust_distribution(self, distribution, outliers, samples):
         if outliers < 0:
@@ -319,12 +306,23 @@ class Sensitivity:
         return distribution
 
     def export_SA(self, dictionary, output_directory, name):
-        df_new = pd.DataFrame([dictionary])
-        output_file = os.path.join(output_directory, name)
-        if not os.path.exists(output_file):
-            df_new.to_csv(output_file, index=False)
-        elif os.path.exists(output_file):
-            df_old = pd.read_csv(output_file)
-            df_old = df_old.append(df_new)
-            df_old.to_csv(output_file, index=False)
+        if 'write_results_postsim' in self.parameters['sensitivity']:
+            export_data = self.parameters['sensitivity']['write_results_postsim']
+        else:
+            export_data = True
+
+        if export_data:
+            df_new = pd.DataFrame([dictionary])
+            output_file = os.path.join(output_directory, name)
+            if not os.path.exists(output_file):
+                df_new.to_csv(output_file, index=False)
+            elif os.path.exists(output_file):
+                for attempts in range(int(1e10)):
+                    try:
+                        df_old = pd.read_csv(output_file)
+                        break
+                    except: continue
+
+                df_old = df_old.append(df_new)
+                df_old.to_csv(output_file, index=False)
         return
