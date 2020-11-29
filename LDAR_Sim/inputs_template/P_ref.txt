@@ -15,7 +15,7 @@ P_ref = {
         },
         'program_name': 'P_ref',
         'n_simulations': 3, # Minimum of 2 simulations to get batch plots
-        'timesteps': 2000,  # Up to ~5600 for 16 year nc file
+        'timesteps': 1000,  # Up to ~5600 for 16 year nc file
         'start_year': 2011,
         'an_data': 'an_2003_2018_AB.nc',
         'fc_data': 'fc_2003_2018_AB.nc',
