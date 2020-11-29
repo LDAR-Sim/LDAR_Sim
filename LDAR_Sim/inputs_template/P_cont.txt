@@ -1,0 +1,56 @@
+P_cont = {
+        'methods': {
+	                 'fixed': {
+                            'name': 'fixed',
+                            'min_temp': -35,
+                            'max_wind': 25,
+                            'max_precip': 10,
+                            'cost_per_day': 10,
+                            'follow_up_thresh': 0,
+                            'follow_up_ratio': 1,  
+			    'time_to_detection': 7,                           
+                            'reporting_delay': 2,
+                            'MDL': 1800 			# grams/hour   (0.5 g/s)                          
+                            },
+                   'OGI_FU': {
+                            'name': 'OGI_FU',
+                            'n_crews': 1,
+                            'min_temp': -35,
+                            'max_wind': 25,
+                            'max_precip': 10,
+                            'max_workday': 10,
+                            'cost_per_day': 1500,
+                            'reporting_delay': 2,
+                            'MDL': [0.47, 0.01]
+                            }
+        },
+        'program_name': 'P_cont',
+        'n_simulations': 3, 	# Minimum of 2 simulations to get batch plots
+        'timesteps': 1000,  	# Up to ~5600 for 16 year nc file
+        'start_year': 2011,
+        'an_data': 'an_2003_2018_AB.nc',
+        'fc_data': 'fc_2003_2018_AB.nc',
+        'infrastructure_file': '1169_anonym_template.csv',
+        'leak_file': 'rates_Clearstone.csv',
+        'count_file': 'counts_Clearstone.csv',
+        'vent_file': 'ZA_site_emissions_2018.csv',
+        't_offsite_file': 'time_offsite_ground.csv',
+        'site_samples': [True, 500],
+        'subtype_times': [False, 'subtype_times.csv'], # If True, will overwrite site-specific times with subtype times
+        'simulation': None,
+        'consider_daylight': False,
+        'consider_operator': False,
+        'consider_venting': False,
+        'repair_delay': 14,
+        'LPR': 0.0065,
+        'max_det_op': 0.00,
+        'spin_up': 0,
+        'write_data': True, # Must be TRUE to make plots and maps
+        'make_plots': True,
+        'make_maps': True,
+        'start_time': time.time(),
+        'operator_strength': 0.5,
+        'sensitivity': {'perform': False,
+                        'program': 'OGI',
+                        'batch': [True, 2]}
+    }
