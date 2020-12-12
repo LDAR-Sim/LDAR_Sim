@@ -138,6 +138,26 @@ class BatchReporting:
             mask = (self.repair_leak_dfs[i]['datetime'] > start_date)
             self.repair_leak_dfs[i] = self.repair_leak_dfs[i].loc[mask]
 
+        ############## Build list of cost dataframes #############################
+        self.cost_dfs = [[] for i in range(len(all_data))]
+        for i in range(len(all_data)):
+            for j in all_data[i]:
+                self.cost_dfs[i].append(j["rolling_cost_estimate"])
+            self.cost_dfs[i] = pd.concat(self.cost_dfs[i], axis=1, keys=[i for i in range(len(all_data[i]))])
+            self.cost_dfs[i] = self.cost_dfs[i]
+
+            # New columns
+            self.cost_dfs[i]['program'] = self.directories[i]
+
+        # Add dates
+        for i in range(len(self.cost_dfs)):
+            self.cost_dfs[i] = pd.concat([self.cost_dfs[i], dates], axis=1)
+
+            # Axe spinup year
+            self.cost_dfs[i]['datetime'] = pd.to_datetime(self.cost_dfs[i]['datetime'])
+            mask = (self.cost_dfs[i]['datetime'] > start_date)
+            self.cost_dfs[i] = self.cost_dfs[i].loc[mask]
+
         return
 
     def program_report(self):
@@ -368,5 +388,53 @@ class BatchReporting:
                        panel_grid_major_y=element_line(colour='black', linewidth=1, alpha=0.5))
                  )
         plot3.save(self.output_directory + 'relative_mitigation2.png', width=7, height=3, dpi=900)
+
+        ##################################
+        ### Attempted figure for cost ####
+        dfs = self.cost_dfs
+
+        for i in range(len(dfs)):
+            n_cols = dfs[i].shape[1]
+            dfs[i]['mean'] = dfs[i].iloc[:, 0:n_cols].mean(axis=1)
+            dfs[i]['std'] = dfs[i].iloc[:, 0:n_cols].std(axis=1)
+            dfs[i]['low'] = dfs[i].iloc[:, 0:n_cols].quantile(0.025, axis=1)
+            dfs[i]['high'] = dfs[i].iloc[:, 0:n_cols].quantile(0.975, axis=1)
+            dfs[i]['program'] = self.directories[i]
+
+            # Move reference program to the top of the list
+        for i, df in enumerate(dfs):
+            if df['program'].iloc[0] == self.ref_program:
+                dfs.insert(0, dfs.pop(i))
+
+        # Arrange dfs for plot 1
+        dfs_p1 = dfs.copy()
+        for i in range(len(dfs_p1)):
+            # Reshape
+            dfs_p1[i] = pd.melt(dfs_p1[i], id_vars=['datetime', 'mean', 'std', 'low', 'high', 'program'])
+
+        # Combine dataframes into single dataframe for plotting
+        df_p1 = dfs_p1[0]
+        for i in dfs_p1[1:]:
+            df_p1 = df_p1.append(i, ignore_index=True)
+
+        # Output Emissions df for other uses (e.g. live plot)
+        df_p1.to_csv(self.output_directory + 'mean_costs.csv', index=True)
+
+        # Make plots from list of dataframes - one entry per dataframe
+        theme_set(theme_linedraw())
+        plot1 = (ggplot(None) + aes('datetime', 'value', group='program') +
+                 geom_ribbon(df_p1, aes(ymin='low', ymax='high', fill='program'), alpha=0.2) +
+                 geom_line(df_p1, aes('datetime', 'mean', colour='program'), size=1) +
+                 ylab('Estimated cost per facility') + xlab('') +
+                 scale_colour_hue(h=0.15, l=0.25, s=0.9) +
+                 scale_x_datetime(labels=date_format('%Y')) +
+                 #scale_y_continuous(trans='log10') +
+                 labs(color='Program', fill='Program') +
+                 theme(panel_border=element_rect(colour="black", fill=None, size=2),
+                       panel_grid_minor_x=element_blank(), panel_grid_major_x=element_blank(),
+                       panel_grid_minor_y=element_line(colour='black', linewidth=0.5, alpha=0.3),
+                       panel_grid_major_y=element_line(colour='black', linewidth=1, alpha=0.5))
+                 )
+        plot1.save(self.output_directory + 'cost_comparison.png', width=7, height=3, dpi=900)
 
         return
