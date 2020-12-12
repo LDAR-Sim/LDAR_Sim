@@ -104,6 +104,9 @@ class LdarSim:
                     'Simulation terminated: One or more sites is too far West and is outside the spatial bounds of '
                     'your weather data!')
 
+        # Additional timeseries variables
+        self.timeseries['total_daily_cost'] = np.zeros(self.parameters['timesteps'])
+
         # Configure sensitivity analysis, if requested (code block must remain here -
         # after site initialization and before method initialization)
         if self.parameters['sensitivity']['perform']:
@@ -163,7 +166,7 @@ class LdarSim:
 
         # Initialize daylight 
         if self.parameters['consider_daylight']:
-            self.state['daylight'] = DaylightCalculatorAve(self.state, self.parameters)
+                self.state['daylight'] = DaylightCalculatorAve(self.state, self.parameters)
 
         # Initialize empirical distribution of vented emissions
         if self.parameters['consider_venting']:
@@ -234,8 +237,8 @@ class LdarSim:
                         'leak_ID': site['facility_ID'] + '_' + str(len(self.state['leaks']) + 1).zfill(10),
                         'facility_ID': site['facility_ID'],
                         'rate': self.state['empirical_leaks'][np.random.randint(0, len(self.state['empirical_leaks']))],
-                        'lat': float(site['lat']) + np.random.normal(0, 0.0001),
-                        'lon': float(site['lon']) + np.random.normal(0, 0.0001),
+                        'lat': float(site['lat']),
+                        'lon': float(site['lon']),
                         'status': 'active',
                         'days_active': 0,
                         'tagged': False,
@@ -299,6 +302,7 @@ class LdarSim:
         self.timeseries['cum_repaired_leaks'].append(sum(d['status'] == 'repaired' for d in self.state['leaks']))
         self.timeseries['daily_emissions_kg'].append(sum(d['rate'] for d in self.active_leaks))
         self.timeseries['n_tags'].append(len(self.state['tags']))
+        self.timeseries['rolling_cost_estimate'].append(sum(self.timeseries['total_daily_cost'])/(len(self.timeseries['rolling_cost_estimate'])+1)*365/200)
 
         return
 
