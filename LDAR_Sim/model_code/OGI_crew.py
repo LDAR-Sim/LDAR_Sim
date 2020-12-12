@@ -73,8 +73,10 @@ class OGI_crew:
             self.worked_today = True
 
         if self.worked_today:
-            self.timeseries['OGI_cost'][self.state['t'].current_timestep] += self.parameters['methods']['OGI'][
-                'cost_per_day']
+            self.timeseries['OGI_cost'][self.state['t'].current_timestep] += \
+                self.parameters['methods']['OGI']['cost_per_day']
+            self.timeseries['total_daily_cost'][self.state['t'].current_timestep] += \
+                self.parameters['methods']['OGI']['cost_per_day']
 
         return
 

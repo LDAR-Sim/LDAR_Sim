@@ -31,7 +31,7 @@ if __name__ == '__main__':
     # -----------------------------Global parameters--------------------------------
     wd = "../inputs_template/"
     wd = os.path.abspath (wd) + "/"
-    program_list = ['P_ref', 'P_alt', 'P_alt2']  # Programs to compare; Position one should be the reference program (P_ref)
+    program_list = ['P_ref','P_alt']  # Programs to compare; Position one should be the reference program (P_ref)
     n_processes = None  # Number of processes to use, None = all, 1 = one virtual core, and so on.
     print_from_simulations = True  # Print informational messages from within the simulations
     warnings.filterwarnings('ignore')    # Temporarily mute warnings

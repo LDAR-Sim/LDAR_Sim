@@ -75,6 +75,7 @@ def ldar_sim_run (simulation):
         'active_leaks': [],
         'new_leaks': [],
         'n_tags': [],
+        'rolling_cost_estimate': [],
         'cum_repaired_leaks': [],
         'daily_emissions_kg': []
     }
