@@ -1,6 +1,0 @@
-facility_ID,subtype_code,lat,lon,OGI_required_surveys,truck_required_surveys,aircraft_required_surveys,OGI_time,aircraft_time,truck_time,OGI_FU_time,fixed_sensors
-ABRAND00001,601,55.05,-119.99,1,4,2,120,5,30,120,1
-ABRAND00002,601,54.74,-119.98,1,4,2,120,5,30,120,1
-ABRAND00003,601,55.25,-119.96,1,4,2,120,5,30,120,1
-ABRAND00004,601,55.32,-119.96,1,4,2,120,5,30,120,1
-ABRAND00005,601,55.19,-119.95,1,4,2,120,5,30,120,1
