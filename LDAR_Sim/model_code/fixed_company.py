@@ -23,6 +23,7 @@ from fixed_crew import *
 from weather_lookup import *
 import numpy as np
 import math
+from generic_functions import get_prop_rate
 
 class fixed_company:
     def __init__(self, state, parameters, config, timeseries):
@@ -43,15 +44,14 @@ class fixed_company:
         self.timeseries['fixed_flags_redund1'] = np.zeros(self.parameters['timesteps'])
         self.timeseries['fixed_flags_redund2'] = np.zeros(self.parameters['timesteps'])
         self.timeseries['fixed_flags_redund3'] = np.zeros(self.parameters['timesteps'])
-        #self.timeseries['fixed_sites_visited'] = np.zeros(self.parameters['timesteps'])
 
-        # Additional variable(s) for each site       
-        #for site in self.state['sites']:
-            #site.update({'fixed_t_since_last_LDAR': 0})
-            #site.update({'fixed_surveys_conducted': 0})
-            #site.update({'attempted_today_fixed?': False})
-            #site.update({'surveys_done_this_year_fixed': 0})
-            #site.update({'fixed_missed_leaks': 0})
+        # Assign the correct follow-up threshold
+        if self.config['follow_up_thresh'][1] == "absolute":
+            self.config['follow_up_thresh'] = self.config['follow_up_thresh'][0]
+        elif self.config['follow_up_thresh'][1] == "proportion":
+            self.config['follow_up_thresh'] = get_prop_rate(self.config['follow_up_thresh'][0], self.state['empirical_leaks'])
+        else:
+            print('Follow-up threshold type not recognized. Must be "absolute" or "proportion".')
 
         # Initialize 2D matrices to store deployment day (DD) counts and MCBs
         self.DD_map = np.zeros((len(self.state['weather'].longitude), len(self.state['weather'].latitude)))

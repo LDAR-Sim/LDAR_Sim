@@ -22,6 +22,7 @@
 from truck_crew import *
 from weather_lookup import *
 import numpy as np
+from generic_functions import get_prop_rate
 
 class truck_company:
     def __init__(self, state, parameters, config, timeseries):
@@ -43,6 +44,14 @@ class truck_company:
         self.timeseries['truck_flags_redund2'] = np.zeros(self.parameters['timesteps'])
         self.timeseries['truck_flags_redund3'] = np.zeros(self.parameters['timesteps'])
         self.timeseries['truck_sites_visited'] = np.zeros(self.parameters['timesteps'])
+
+        # Assign the correct follow-up threshold
+        if self.config['follow_up_thresh'][1] == "absolute":
+            self.config['follow_up_thresh'] = self.config['follow_up_thresh'][0]
+        elif self.config['follow_up_thresh'][1] == "proportion":
+            self.config['follow_up_thresh'] = get_prop_rate(self.config['follow_up_thresh'][0], self.state['empirical_leaks'])
+        else:
+            print('Follow-up threshold type not recognized. Must be "absolute" or "proportion".')
 
         # Additional variable(s) for each site       
         for site in self.state['sites']:

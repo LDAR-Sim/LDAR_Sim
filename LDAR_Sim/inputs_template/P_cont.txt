@@ -6,7 +6,7 @@ P_cont = {
                             'max_wind': 25,
                             'max_precip': 10,
                             'cost_per_day': 7,
-                            'follow_up_thresh': 0,
+                            'follow_up_thresh': [0.01, "proportion"],
                             'follow_up_ratio': 1,  
 			    'time_to_detection': 7,                           
                             'reporting_delay': 2,
@@ -25,8 +25,8 @@ P_cont = {
                             }
         },
         'program_name': 'P_cont',
-        'n_simulations': 3, 	# Minimum of 2 simulations to get batch plots
-        'timesteps': 2000,  	# Up to ~5600 for 16 year nc file
+        'n_simulations': 2, 	# Minimum of 2 simulations to get batch plots
+        'timesteps': 1000,  	# Up to ~5600 for 16 year nc file
         'start_year': 2014,
         'an_data': 'an_2003_2018_AB.nc',
         'fc_data': 'fc_2003_2018_AB.nc',
