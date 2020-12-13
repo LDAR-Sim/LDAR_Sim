@@ -56,6 +56,48 @@ def gap_calculator(condition_vector):
 
     return max_gap
 
+def get_prop_rate(proportion, rates):
+    """
+     The purpose of this function is to calculate the emission rate(s) that
+     correspond(s) with a desired proportion total emissions for a given emission
+     size distribution. It estimates the MDL needed to find the top X percent
+     of sources for a given leak size distribution.
+
+     Inputs are: (1) a proportion value (or list a list of values) that represents
+     top emitting sources, and (2) a distribution of emission rates (either leaks or sites).
+
+     For example, given a proportion of 0.01 and a leak-size distribution,
+     this function will return an estimate of the detection limit that will
+     ensure that all leaks in the top 1% of leak sizes are found.
+
+    """
+
+    # Sort emission rates, get cumulative rates, and convert to proportions
+    rates_sorted = sorted(rates)
+    cum_rates = np.cumsum(rates_sorted)
+    cum_rates_prop = cum_rates / max(cum_rates)
+
+    # Get relative position of each element in emissions distribution
+    p = 1. * np.arange(len(rates)) / (len(rates) - 1)
+
+    # Estimate proportion of emissions that correspond with a given proportion of top emitters.
+    # 100% of sites account for 100% of emissions. 0% of sites account for 0% of emissions.
+    f = lambda x: np.interp(x, xp=p, fp=cum_rates_prop)
+    prop_rate = f(1 - proportion)
+    prop_above = 1 - prop_rate
+
+    # Convert result (prop emissions) back to cumulative rate
+    cum_rate = prop_rate * max(cum_rates)
+
+    # Estimate emission rate that corresponds with cumulative rate
+    f2 = lambda x: np.interp(x, cum_rates, rates_sorted)
+    rate = f2(cum_rate)
+
+    # A dataframe of all the useful info, if ever needed for a list of thresholds (not returned by function)
+    # df = pd.DataFrame({'Proportion': proportion, 'Prop Emissions': prop_above, 'follow_up_thresh': rate})
+
+    return (rate)
+
 def make_maps(company, sites):
     """
     If requested, makes maps of proportion of timesteps that are deployment days.
