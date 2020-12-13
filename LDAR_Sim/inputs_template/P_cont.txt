@@ -10,7 +10,8 @@ P_cont = {
                             'follow_up_ratio': 1,  
 			    'time_to_detection': 7,                           
                             'reporting_delay': 2,
-                            'MDL': 1800 			# grams/hour   (0.5 g/s)                          
+                            'MDL': 1800, 			# grams/hour   (0.5 g/s)  
+			    'QE': 0                        
                             },
                    'OGI_FU': {
                             'name': 'OGI_FU',

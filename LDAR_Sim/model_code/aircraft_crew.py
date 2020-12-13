@@ -156,13 +156,23 @@ class aircraft_crew:
             detect = True
 
         if detect == True:
+            # If source is above follow-up threshold, calculate measured rate using quantification error
+            quant_error = np.random.normal(0, self.config['QE'])
+            measured_rate = None
+            if quant_error >= 0:
+                measured_rate = site_cum_rate + site_cum_rate*quant_error
+            if quant_error < 0:
+                denom = abs(quant_error - 1)
+                measured_rate = site_cum_rate/denom
+
             # If source is above follow-up threshold
-            if site_cum_rate > self.config['follow_up_thresh']:
+            if measured_rate > self.config['follow_up_thresh']:
                 # Put all necessary information in a dictionary to be assessed at end of day
                 site_dict = {
                     'site': site,
                     'leaks_present': leaks_present,
                     'site_cum_rate': site_cum_rate,
+                    'measured_rate': measured_rate,
                     'venting': venting
                 }
 
@@ -185,16 +195,16 @@ class aircraft_crew:
         n_sites_to_flag = len(candidate_flags) * self.config['follow_up_ratio']
         n_sites_to_flag = int(math.ceil(n_sites_to_flag))
 
+        measured_rates = []
         sites_to_flag = []
-        site_cum_rates = []
 
         for i in candidate_flags:
-            site_cum_rates.append(i['site_cum_rate'])
-        site_cum_rates.sort(reverse=True)
-        target_rates = site_cum_rates[:n_sites_to_flag]
+            measured_rates.append(i['measured_rate'])
+        measured_rates.sort(reverse=True)
+        target_rates = measured_rates[:n_sites_to_flag]
 
         for i in candidate_flags:
-            if i['site_cum_rate'] in target_rates:
+            if i['measured_rate'] in target_rates:
                 sites_to_flag.append(i)
 
         for i in sites_to_flag:

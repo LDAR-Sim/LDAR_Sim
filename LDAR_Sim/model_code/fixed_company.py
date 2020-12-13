@@ -107,15 +107,15 @@ class fixed_company:
         n_sites_to_flag = int(math.ceil(n_sites_to_flag))
 
         sites_to_flag = []
-        site_cum_rates = []
+        measured_rates = []
 
         for i in candidate_flags:
-            site_cum_rates.append(i['site_cum_rate'])
-        site_cum_rates.sort(reverse=True)
-        target_rates = site_cum_rates[:n_sites_to_flag]
+            measured_rates.append(i['measured_rate'])
+        measured_rates.sort(reverse=True)
+        target_rates = measured_rates[:n_sites_to_flag]
 
         for i in candidate_flags:
-            if i['site_cum_rate'] in target_rates:
+            if i['measured_rate'] in target_rates:
                 sites_to_flag.append(i)
 
         for i in sites_to_flag:

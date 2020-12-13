@@ -12,7 +12,8 @@ P_alt2 = {
                             'follow_up_thresh': [0.01, "proportion"],
                             'follow_up_ratio': 0.5,
                             'reporting_delay': 2,
-                            'MDL': 5 # grams/hour  
+                            'MDL': 5, # grams/hour  
+			    'QE': 0
                             },
                    'OGI_FU': {
                             'name': 'OGI_FU',
