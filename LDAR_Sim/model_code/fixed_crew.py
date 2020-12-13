@@ -66,13 +66,23 @@ class fixed_crew:
             detect = True
 
         if detect == True:
+            # If source is above follow-up threshold, calculate measured rate using quantification error
+            quant_error = np.random.normal(0, self.config['QE'])
+            measured_rate = None
+            if quant_error >= 0:
+                measured_rate = site_cum_rate + site_cum_rate*quant_error
+            if quant_error < 0:
+                denom = abs(quant_error - 1)
+                measured_rate = site_cum_rate/denom
+
             # If source is above follow-up threshold
-            if site_cum_rate > self.config['follow_up_thresh']:
+            if measured_rate > self.config['follow_up_thresh']:
                 # Put all necessary information in a dictionary to be assessed at end of day
                 site_dict = {
                     'site': self.site,
                     'leaks_present': leaks_present,
                     'site_cum_rate': site_cum_rate,
+                    'measured_rate': measured_rate,
                     'venting': venting
                 }
 
