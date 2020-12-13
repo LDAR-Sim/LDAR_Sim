@@ -10,11 +10,11 @@ LDAR-Sim has many potential uses, including:
 
 To learn more about LDAR-Sim, you can:
   1) Read our [story map](https://arcg.is/1rXeX10) (less technical introduction).
-  2) Read [this journal article](https://www.sciencedirect.com/science/article/pii/S0959652620352811) (more detail).
+  2) Read [Fox et al., 2020](https://www.sciencedirect.com/science/article/pii/S0959652620352811).
 
 For first time users, we recommend attempting to reproduce the case study results in Fox et al. 2020 (see below).
 
-Thomas Fox: t.arcadius@gmail.com / thomas.fox@ucalgary.ca
+Thomas Fox: thomas@highwoodemissions.com
 
 Mozhou Gao: mozhou.gao@ucalgary.ca
 
