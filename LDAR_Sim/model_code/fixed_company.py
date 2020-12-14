@@ -77,16 +77,7 @@ class fixed_company:
 
         # Flag sites according to the flag ratio
         if len(self.candidate_flags) > 0:
-            self.flag_sites(self.candidate_flags)
-
-        # Update method-specific site variables each day
-#        for site in self.state['sites']:
-#            site['fixed_t_since_last_LDAR'] += 1
-#            site['attempted_today_fixed?'] = False
-
-#        if self.state['t'].current_date.day == 1 and self.state['t'].current_date.month == 1:
-#            for site in self.state['sites']:
-#                site['surveys_done_this_year_fixed'] = 0
+            self.flag_sites()
 
         # Calculate proportion sites available
         available_sites = 0
@@ -98,25 +89,24 @@ class fixed_company:
 
         return
 
-
-    def flag_sites(self, candidate_flags):
+    def flag_sites(self):
         """
         Flag the most important sites for follow-up.
 
         """
         # First, figure out how many sites you're going to choose
-        n_sites_to_flag = len(candidate_flags) * self.config['follow_up_ratio']
+        n_sites_to_flag = len(self.candidate_flags) * self.config['follow_up_ratio']
         n_sites_to_flag = int(math.ceil(n_sites_to_flag))
 
         sites_to_flag = []
         measured_rates = []
 
-        for i in candidate_flags:
+        for i in self.candidate_flags:
             measured_rates.append(i['measured_rate'])
         measured_rates.sort(reverse=True)
         target_rates = measured_rates[:n_sites_to_flag]
 
-        for i in candidate_flags:
+        for i in self.candidate_flags:
             if i['measured_rate'] in target_rates:
                 sites_to_flag.append(i)
 
