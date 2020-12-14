@@ -62,6 +62,8 @@ class fixed_company:
             n_fixed = int(site['fixed_sensors'])
             for i in range(n_fixed):
                 self.crews.append(fixed_crew(state, parameters, config, timeseries, site, self.deployment_days, id=site['facility_ID'] + '-' + str(i + 1)))
+                self.timeseries['fixed_cost'][self.state['t'].current_timestep] += \
+                    self.parameters['methods']['fixed']['up_front_cost']
 
         return
 
