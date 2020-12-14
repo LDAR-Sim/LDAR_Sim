@@ -59,6 +59,7 @@
         'min_temp': -35,
         'max_wind': 25,
         'max_precip': 10,
+	'up_front_cost': 2000,
         'cost_per_day': 7,
         'follow_up_thresh': [0.01, "proportion"],
         'follow_up_ratio': 1,  
