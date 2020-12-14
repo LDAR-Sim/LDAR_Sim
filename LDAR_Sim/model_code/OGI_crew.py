@@ -34,10 +34,11 @@ class OGI_crew:
         self.config = config
         self.timeseries = timeseries
         self.deployment_days = deployment_days
-        self.crewstate = {'id': id}  # Crewstate is unique to this agent
+        self.crewstate = {'id': id}
         self.crewstate['lat'] = 0.0
         self.crewstate['lon'] = 0.0
         self.worked_today = False
+        self.rollover = []
         return
 
     def work_a_day(self):
@@ -63,14 +64,47 @@ class OGI_crew:
         else:
             print('Unreasonable number of work hours specified for OGI crew ' + str(self.crewstate['id']))
 
-        self.state['t'].current_date = self.state['t'].current_date.replace(
-            hour=int(start_hour))  # Set start of work day
-        while self.state['t'].current_date.hour < int(end_hour):
+        self.allowed_end_time = self.state['t'].current_date.replace(hour=int(end_hour), minute=0, second=0)
+        self.state['t'].current_date = self.state['t'].current_date.replace(hour=int(start_hour))  # Set start of work day
+
+        # Check if there is a partially finished site from yesterday
+        if len(self.rollover) > 0:
+            # Check to see if the remainder of this site can be finished today (if not, this one is huge!)
+            projected_end_time = self.state['t'].current_date + timedelta(minutes=int(self.rollover[1]))
+            if projected_end_time > self.allowed_end_time:
+                # There's not enough time left for that site today - get started and figure out how much time remains
+                minutes_remaining = (projected_end_time - self.allowed_end_time).total_seconds()/60
+                self.rollover = []
+                self.rollover.append(self.rollover[0])
+                self.rollover.append(minutes_remaining)
+                self.state['t'].current_date = self.allowed_end_time
+                self.worked_today = True
+            elif projected_end_time <= self.allowed_end_time:
+                # Looks like we can finish off that site today
+                self.visit_site(self.rollover[0])
+                self.rollover = []
+                self.worked_today = True
+
+        while self.state['t'].current_date < self.allowed_end_time:
             facility_ID, found_site, site = self.choose_site()
             if not found_site:
                 break  # Break out if no site can be found
-            self.visit_site(facility_ID, site)
-            self.worked_today = True
+
+            # Check to make sure there's enough time left in the day to do this site
+            if found_site:
+                projected_end_time = self.state['t'].current_date + timedelta(minutes = int(site['OGI_time']))
+                if projected_end_time > self.allowed_end_time:
+                    # There's not enough time left for that site today - get started and figure out how much time remains
+                    minutes_remaining = (projected_end_time - self.allowed_end_time).total_seconds()/60
+                    self.rollover = []
+                    self.rollover.append(site)
+                    self.rollover.append(minutes_remaining)
+                    self.state['t'].current_date = self.allowed_end_time
+
+                # There's enough time left in the day for this site
+                elif projected_end_time <= self.allowed_end_time:
+                    self.visit_site(site)
+                self.worked_today = True
 
         if self.worked_today:
             self.timeseries['OGI_cost'][self.state['t'].current_timestep] += \
@@ -124,7 +158,7 @@ class OGI_crew:
 
         return (facility_ID, found_site, site)
 
-    def visit_site(self, facility_ID, site):
+    def visit_site(self, site):
         """
         Look for leaks at the chosen site.
         """
@@ -132,7 +166,7 @@ class OGI_crew:
         # Identify all the leaks at a site
         leaks_present = []
         for leak in self.state['leaks']:
-            if leak['facility_ID'] == facility_ID:
+            if leak['facility_ID'] == site['facility_ID']:
                 if leak['status'] == 'active':
                     leaks_present.append(leak)
 
