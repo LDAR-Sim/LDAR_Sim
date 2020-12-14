@@ -61,11 +61,11 @@ class BatchReporting:
         file_lists = [item for item in file_lists if len(item) > 0]
 
         # Read csv files to lists
-        all_data = [[] for i in range(len(file_lists))]
+        self.all_data = [[] for i in range(len(file_lists))]
         for i in range(len(file_lists)):
             for file in file_lists[i]:
                 path = self.output_directory + self.directories[i] + '/' + file
-                all_data[i].append(pd.read_csv(path))
+                self.all_data[i].append(pd.read_csv(path))
 
         # Get vector of dates
         dates = pd.read_csv(self.output_directory + self.directories[0] + '/' + file_lists[0][0])['datetime']
@@ -79,11 +79,11 @@ class BatchReporting:
         self.n_sites = len(pd.read_csv(site_path + '/sites_output_0.csv'))
 
         ############## Build list of emissions dataframes #############################
-        self.emission_dfs = [[] for i in range(len(all_data))]
-        for i in range(len(all_data)):
-            for j in all_data[i]:
+        self.emission_dfs = [[] for i in range(len(self.all_data))]
+        for i in range(len(self.all_data)):
+            for j in self.all_data[i]:
                 self.emission_dfs[i].append(j["daily_emissions_kg"])
-            self.emission_dfs[i] = pd.concat(self.emission_dfs[i], axis=1, keys=[i for i in range(len(all_data[i]))])
+            self.emission_dfs[i] = pd.concat(self.emission_dfs[i], axis=1, keys=[i for i in range(len(self.all_data[i]))])
             self.emission_dfs[i] = self.emission_dfs[i] / self.n_sites
 
             # New columns
@@ -99,12 +99,12 @@ class BatchReporting:
             self.emission_dfs[i] = self.emission_dfs[i].loc[mask]
 
         ############# Build list of active leak dataframes ############################
-        self.active_leak_dfs = [[] for i in range(len(all_data))]
-        for i in range(len(all_data)):
-            for j in all_data[i]:
+        self.active_leak_dfs = [[] for i in range(len(self.all_data))]
+        for i in range(len(self.all_data)):
+            for j in self.all_data[i]:
                 self.active_leak_dfs[i].append(j["active_leaks"])
             self.active_leak_dfs[i] = pd.concat(self.active_leak_dfs[i], axis=1,
-                                                keys=[i for i in range(len(all_data[i]))])
+                                                keys=[i for i in range(len(self.all_data[i]))])
 
             # New columns
             self.active_leak_dfs[i]['program'] = self.directories[i]
@@ -119,12 +119,12 @@ class BatchReporting:
             self.active_leak_dfs[i] = self.active_leak_dfs[i].loc[mask]
 
         ################ Build list of repaired leak dataframes #######################
-        self.repair_leak_dfs = [[] for i in range(len(all_data))]
-        for i in range(len(all_data)):
-            for j in all_data[i]:
+        self.repair_leak_dfs = [[] for i in range(len(self.all_data))]
+        for i in range(len(self.all_data)):
+            for j in self.all_data[i]:
                 self.repair_leak_dfs[i].append(j["cum_repaired_leaks"])
             self.repair_leak_dfs[i] = pd.concat(self.repair_leak_dfs[i], axis=1,
-                                                keys=[i for i in range(len(all_data[i]))])
+                                                keys=[i for i in range(len(self.all_data[i]))])
 
             # New columns
             self.repair_leak_dfs[i]['program'] = self.directories[i]
@@ -139,11 +139,11 @@ class BatchReporting:
             self.repair_leak_dfs[i] = self.repair_leak_dfs[i].loc[mask]
 
         ############## Build list of cost dataframes #############################
-        self.cost_dfs = [[] for i in range(len(all_data))]
-        for i in range(len(all_data)):
-            for j in all_data[i]:
+        self.cost_dfs = [[] for i in range(len(self.all_data))]
+        for i in range(len(self.all_data)):
+            for j in self.all_data[i]:
                 self.cost_dfs[i].append(j["rolling_cost_estimate"])
-            self.cost_dfs[i] = pd.concat(self.cost_dfs[i], axis=1, keys=[i for i in range(len(all_data[i]))])
+            self.cost_dfs[i] = pd.concat(self.cost_dfs[i], axis=1, keys=[i for i in range(len(self.all_data[i]))])
             self.cost_dfs[i] = self.cost_dfs[i]
 
             # New columns
@@ -153,7 +153,7 @@ class BatchReporting:
         for i in range(len(self.cost_dfs)):
             self.cost_dfs[i] = pd.concat([self.cost_dfs[i], dates], axis=1)
 
-            # Axe spinup year
+            # Axe spinup
             self.cost_dfs[i]['datetime'] = pd.to_datetime(self.cost_dfs[i]['datetime'])
             mask = (self.cost_dfs[i]['datetime'] > start_date)
             self.cost_dfs[i] = self.cost_dfs[i].loc[mask]
@@ -390,7 +390,7 @@ class BatchReporting:
         plot3.save(self.output_directory + 'relative_mitigation2.png', width=7, height=3, dpi=900)
 
         ##################################
-        ### Attempted figure for cost ####
+        ### Figure to compare costs ####
         dfs = self.cost_dfs
 
         for i in range(len(dfs)):
@@ -401,7 +401,7 @@ class BatchReporting:
             dfs[i]['high'] = dfs[i].iloc[:, 0:n_cols].quantile(0.975, axis=1)
             dfs[i]['program'] = self.directories[i]
 
-            # Move reference program to the top of the list
+        # Move reference program to the top of the list
         for i, df in enumerate(dfs):
             if df['program'].iloc[0] == self.ref_program:
                 dfs.insert(0, dfs.pop(i))
@@ -418,7 +418,7 @@ class BatchReporting:
             df_p1 = df_p1.append(i, ignore_index=True)
 
         # Output Emissions df for other uses (e.g. live plot)
-        df_p1.to_csv(self.output_directory + 'mean_costs.csv', index=True)
+        df_p1.to_csv(self.output_directory + 'rolling_cost_estimates.csv', index=True)
 
         # Make plots from list of dataframes - one entry per dataframe
         theme_set(theme_linedraw())
@@ -435,6 +435,46 @@ class BatchReporting:
                        panel_grid_minor_y=element_line(colour='black', linewidth=0.5, alpha=0.3),
                        panel_grid_major_y=element_line(colour='black', linewidth=1, alpha=0.5))
                  )
-        plot1.save(self.output_directory + 'cost_comparison.png', width=7, height=3, dpi=900)
+        plot1.save(self.output_directory + 'cost_estimate_temporal.png', width=7, height=3, dpi=900)
+
+        ########################################
+        ### Cost breakdown by program and method
+        method_lists = []
+        for i in range(len(self.directories)):
+            df = pd.read_csv(self.output_directory + self.directories[i] + "/timeseries_output_0.csv")
+            df = df.filter(regex='cost$', axis=1)
+            df = df.drop(columns = ["total_daily_cost"])
+            method_lists.append(list(df))
+
+        costs = [[] for i in range(len(self.all_data))]
+        for i in range(len(self.all_data)):
+            for j in range(len(self.all_data[i])):
+                simcosts = []
+                for k in range(len(method_lists[i])):
+                    timesteps = len(self.all_data[i][j][method_lists[i][k]])
+                    simcosts.append((sum(self.all_data[i][j][method_lists[i][k]])/timesteps/self.n_sites)*365)
+                costs[i].append(simcosts)
+
+        rows_list = []
+        for i in range(len(costs)):
+            df_temp = pd.DataFrame(costs[i])
+            for j in range(len(df_temp.columns)):
+                dict = {}
+                dict.update({'Program': self.directories[i]})
+                dict.update({'Mean Cost': round(df_temp.iloc[:,j].mean())})
+                dict.update({'St. Dev.': df_temp.iloc[:,j].std()})
+                dict.update({'Method': method_lists[i][j].replace('_cost', '')})
+                rows_list.append(dict)
+        df = pd.DataFrame(rows_list)
+
+        plot = (ggplot(df, aes(x='Program', y='Mean Cost', fill='Method', label = 'Mean Cost')) + geom_bar(stat="identity") +
+                ylab('Cost per Site per Year') + xlab('Program') + scale_fill_hue(h=0.15, l=0.25, s=0.9) +
+                geom_text(size=15, position=position_stack(vjust=0.5)) +
+                theme(panel_border=element_rect(colour="black", fill=None, size=2),
+                       panel_grid_minor_x=element_blank(), panel_grid_major_x=element_blank(),
+                       panel_grid_minor_y=element_line(colour='black', linewidth=0.5, alpha=0.3),
+                       panel_grid_major_y=element_line(colour='black', linewidth=1, alpha=0.5)))
+        plot.save(self.output_directory + 'cost_comparison.png', width=7, height=3, dpi=900)
+
 
         return
