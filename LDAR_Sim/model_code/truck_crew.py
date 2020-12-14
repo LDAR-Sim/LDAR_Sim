@@ -41,12 +41,12 @@ class truck_crew:
         self.worked_today = False
         return
 
-    def work_a_day(self):
+    def work_a_day(self, candidate_flags):
         """
         Go to work and find the leaks for a given day
         """
         self.worked_today = False
-        self.candidate_flags = []
+        self.candidate_flags = candidate_flags
         work_hours = None
         max_work = self.parameters['methods']['truck']['max_workday']
 
@@ -73,10 +73,6 @@ class truck_crew:
                 break  # Break out if no site can be found
             self.visit_site(facility_ID, site)
             self.worked_today = True
-
-        # Flag sites according to the flag ratio
-        if len(self.candidate_flags) > 0:
-            self.flag_sites(self.candidate_flags)
 
         if self.worked_today:
             self.timeseries['truck_cost'][self.state['t'].current_timestep] += \
@@ -185,57 +181,5 @@ class truck_crew:
         self.state['t'].current_date += timedelta(
             minutes=int(self.state['offsite_times'][np.random.randint(0, len(self.state['offsite_times']))]))
         self.timeseries['truck_sites_visited'][self.state['t'].current_timestep] += 1
-
-    def flag_sites(self, candidate_flags):
-        """
-        Flag the most important sites for follow-up.
-
-        """
-        # First, figure out how many sites you're going to choose
-        n_sites_to_flag = len(candidate_flags) * self.config['follow_up_ratio']
-        n_sites_to_flag = int(math.ceil(n_sites_to_flag))
-
-        sites_to_flag = []
-        measured_rates = []
-
-        for i in candidate_flags:
-            measured_rates.append(i['measured_rate'])
-        measured_rates.sort(reverse=True)
-        target_rates = measured_rates[:n_sites_to_flag]
-
-        for i in candidate_flags:
-            if i['measured_rate'] in target_rates:
-                sites_to_flag.append(i)
-
-        for i in sites_to_flag:
-            site = i['site']
-            leaks_present = i['leaks_present']
-            site_cum_rate = i['site_cum_rate']
-            venting = i['venting']
-
-            # If the site is already flagged, your flag is redundant
-            if site['currently_flagged']:
-                self.timeseries['truck_flags_redund1'][self.state['t'].current_timestep] += 1
-
-            elif not site['currently_flagged']:
-                # Flag the site for follow up
-                site['currently_flagged'] = True
-                site['date_flagged'] = self.state['t'].current_date
-                site['flagged_by'] = self.config['name']
-                self.timeseries['truck_eff_flags'][self.state['t'].current_timestep] += 1
-
-                # Does the chosen site already have tagged leaks?
-                redund2 = False
-                for leak in leaks_present:
-                    if leak['date_tagged'] is not None:
-                        redund2 = True
-
-                if redund2:
-                    self.timeseries['truck_flags_redund2'][self.state['t'].current_timestep] += 1
-
-                # Would the site have been chosen without venting?
-                if self.parameters['consider_venting']:
-                    if (site_cum_rate - venting) < self.config['follow_up_thresh']:
-                        self.timeseries['truck_flags_redund3'][self.state['t'].current_timestep] += 1
 
         return

@@ -76,8 +76,13 @@ class aircraft_company:
         The aircraft company tells all the crews to get to work.
         """
 
+        self.candidate_flags = []
         for i in self.crews:
-            i.work_a_day()
+            i.work_a_day(self.candidate_flags)
+
+        # Flag sites according to the flag ratio
+        if len(self.candidate_flags) > 0:
+            self.flag_sites()
 
         # Update method-specific site variables each day
         for site in self.state['sites']:
@@ -97,6 +102,58 @@ class aircraft_company:
         self.timeseries['aircraft_prop_sites_avail'].append(prop_avail)
 
         return
+
+    def flag_sites(self):
+        """
+        Flag the most important sites for follow-up.
+
+        """
+        # First, figure out how many sites you're going to choose
+        n_sites_to_flag = len(self.candidate_flags) * self.config['follow_up_ratio']
+        n_sites_to_flag = int(math.ceil(n_sites_to_flag))
+
+        sites_to_flag = []
+        measured_rates = []
+
+        for i in self.candidate_flags:
+            measured_rates.append(i['measured_rate'])
+        measured_rates.sort(reverse=True)
+        target_rates = measured_rates[:n_sites_to_flag]
+
+        for i in self.candidate_flags:
+            if i['measured_rate'] in target_rates:
+                sites_to_flag.append(i)
+
+        for i in sites_to_flag:
+            site = i['site']
+            leaks_present = i['leaks_present']
+            site_cum_rate = i['site_cum_rate']
+            venting = i['venting']
+
+            # If the site is already flagged, your flag is redundant
+            if site['currently_flagged']:
+                self.timeseries['aircraft_flags_redund1'][self.state['t'].current_timestep] += 1
+
+            elif not site['currently_flagged']:
+                # Flag the site for follow up
+                site['currently_flagged'] = True
+                site['date_flagged'] = self.state['t'].current_date
+                site['flagged_by'] = self.config['name']
+                self.timeseries['aircraft_eff_flags'][self.state['t'].current_timestep] += 1
+
+                # Does the chosen site already have tagged leaks?
+                redund2 = False
+                for leak in leaks_present:
+                    if leak['date_tagged'] is not None:
+                        redund2 = True
+
+                if redund2:
+                    self.timeseries['aircraft_flags_redund2'][self.state['t'].current_timestep] += 1
+
+                # Would the site have been chosen without venting?
+                if self.parameters['consider_venting']:
+                    if (site_cum_rate - venting) < self.config['follow_up_thresh']:
+                        self.timeseries['aircraft_flags_redund3'][self.state['t'].current_timestep] += 1
 
     def site_reports(self):
         """
