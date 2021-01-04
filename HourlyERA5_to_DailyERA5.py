@@ -9,7 +9,7 @@ import netCDF4 as nc
 import pandas as pd 
 import numpy as np
 
-yrs = [2015,2016,2017,2018,2019]
+yrs = [2017,2018,2019]
 
 Wbase = np.empty((1,45,41),dtype=np.float)
 Tbase = np.empty((1,45,41),dtype=np.float)
@@ -83,7 +83,7 @@ new_lat.long_name = 'latitude'
 new_lon = ncfile.createVariable('lon', np.float32, ('lon',))
 new_lon.units = 'degrees_east'
 new_lon.long_name = 'longitude' 
-new_time = ncfile.createVariable('time', np.float64, ('time',))
+new_time = ncfile.createVariable('time', np.int, ('time',))
 new_time.units = 'days since 2015-01-01'
 new_time.long_name = 'time'
 
@@ -108,6 +108,7 @@ precip.standard_name = 'daily average 2 meter air temperature'
 # writing data 
 new_lat[:] = lat
 new_lon[:] = lon 
+new_time[:] = arange(ti)
 temp[:] = T5
 wind[:] = W5
 precip[:] = P5
