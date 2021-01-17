@@ -29,7 +29,7 @@ import multiprocessing as mp
 if __name__ == '__main__':
     # ------------------------------------------------------------------------------
     # -----------------------------Global parameters--------------------------------
-    wd = "../Enhance_LDAR-Sim/"
+    wd = "../inputs_template/"
     program_list = ['P_ref','P_alt', 'P_alt2', 'P_cont']  # Programs to compare; Position one should be the reference program (P_ref)
 
     # -----------------------------Set up programs----------------------------------
