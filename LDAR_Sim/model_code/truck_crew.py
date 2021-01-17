@@ -50,13 +50,13 @@ class truck_crew:
         work_hours = None
         max_work = self.parameters['methods']['truck']['max_workday']
 
-        if self.parameters['consider_daylight']:
+        if self.parameters['methods']['truck']['consider_daylight']:
             daylight_hours = self.state['daylight'].get_daylight(self.state['t'].current_timestep)
             if daylight_hours <= max_work:
                 work_hours = daylight_hours
             elif daylight_hours > max_work:
                 work_hours = max_work
-        elif not self.parameters['consider_daylight']:
+        elif not self.parameters['methods']['truck']['consider_daylight']:
             work_hours = max_work
 
         if work_hours < 24 and work_hours != 0:

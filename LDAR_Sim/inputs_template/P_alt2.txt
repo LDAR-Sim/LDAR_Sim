@@ -13,18 +13,20 @@ P_alt2 = {
                             'follow_up_ratio': 1,
                             'reporting_delay': 2,
                             'MDL': 0.05,   
-			    'QE': 0
+			    'QE': 0,
+			    'consider_daylight': False 
                             },
                    'OGI_FU': {
                             'name': 'OGI_FU',
-                            'n_crews': 2,
+                            'n_crews': 1,
                             'min_temp': -100,
                             'max_wind': 100,
                             'max_precip': 100,
                             'max_workday': 10,
                             'cost_per_day': 1500,
                             'reporting_delay': 2,
-                            'MDL': [0.00081978, 0.01] 
+                            'MDL': [0.00081978, 0.01],
+			    'consider_daylight': False  
                             }
         },
         'program_name': 'P_alt2',
@@ -42,7 +44,6 @@ P_alt2 = {
         'site_samples': [True, 500],
         'subtype_times': [False, 'subtype_times.csv'], # If True, will overwrite site-specific times with subtype times
         'simulation': None,
-        'consider_daylight': False,
         'consider_operator': False,
         'consider_venting': False,
         'repair_delay': 14,

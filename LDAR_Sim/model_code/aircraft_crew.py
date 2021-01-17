@@ -49,13 +49,13 @@ class aircraft_crew:
         work_hours = None
         max_work = self.parameters['methods']['aircraft']['max_workday']
 
-        if self.parameters['consider_daylight'] == True:
+        if self.parameters['methods']['aircraft']['consider_daylight']:
             daylight_hours = self.state['daylight'].get_daylight(self.state['t'].current_timestep)
             if daylight_hours <= max_work:
                 work_hours = daylight_hours
             elif daylight_hours > max_work:
                 work_hours = max_work
-        elif self.parameters['consider_daylight'] == False:
+        elif self.parameters['methods']['aircraft']['consider_daylight'] == False:
             work_hours = max_work
 
         if work_hours < 24 and work_hours != 0:
