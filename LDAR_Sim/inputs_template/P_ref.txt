@@ -2,10 +2,10 @@ P_ref = {
         'methods': {
             'OGI': {
                 'name': 'OGI',
-                'n_crews': 2,
-                'min_temp': -40,
-                'max_wind': 30,
-                'max_precip': 0.1,
+                'n_crews': 1,
+                'min_temp': -100,
+                'max_wind': 100,
+                'max_precip': 100,
                 'min_interval': 110,
                 'max_workday': 10,
                 'cost_per_day': 1500,
