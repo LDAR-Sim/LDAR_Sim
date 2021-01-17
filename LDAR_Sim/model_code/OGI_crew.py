@@ -67,11 +67,17 @@ class OGI_crew:
         self.allowed_end_time = self.state['t'].current_date.replace(hour=int(end_hour), minute=0, second=0)
         self.state['t'].current_date = self.state['t'].current_date.replace(hour=int(start_hour))  # Set start of work day
 
+        # Start day with random "offsite time" required for driving to first site
+        self.state['t'].current_date += timedelta(
+            minutes=int(self.state['offsite_times'][np.random.randint(0, len(self.state['offsite_times']))]))
+
         # Check if there is a partially finished site from yesterday
         if len(self.rollover) > 0:
             # Check to see if the remainder of this site can be finished today (if not, this one is huge!)
+            # This projection includes the time it would time to drive back to the home base
             projected_end_time = self.state['t'].current_date + timedelta(minutes=int(self.rollover[1]))
-            if projected_end_time > self.allowed_end_time:
+            drive_home = timedelta(minutes=int(self.state['offsite_times'][np.random.randint(0, len(self.state['offsite_times']))]))
+            if (projected_end_time + drive_home) > self.allowed_end_time:
                 # There's not enough time left for that site today - get started and figure out how much time remains
                 minutes_remaining = (projected_end_time - self.allowed_end_time).total_seconds()/60
                 self.rollover = []
@@ -79,7 +85,7 @@ class OGI_crew:
                 self.rollover.append(minutes_remaining)
                 self.state['t'].current_date = self.allowed_end_time
                 self.worked_today = True
-            elif projected_end_time <= self.allowed_end_time:
+            elif (projected_end_time + drive_home) <= self.allowed_end_time:
                 # Looks like we can finish off that site today
                 self.visit_site(self.rollover[0])
                 self.rollover = []
@@ -91,9 +97,11 @@ class OGI_crew:
                 break  # Break out if no site can be found
 
             # Check to make sure there's enough time left in the day to do this site
+            # This projection includes the time it would time to drive back to the home base
             if found_site:
                 projected_end_time = self.state['t'].current_date + timedelta(minutes = int(site['OGI_time']))
-                if projected_end_time > self.allowed_end_time:
+                drive_home = timedelta(minutes=int(self.state['offsite_times'][np.random.randint(0, len(self.state['offsite_times']))]))
+                if (projected_end_time + drive_home) > self.allowed_end_time:
                     # There's not enough time left for that site today - get started and figure out how much time remains
                     minutes_remaining = (projected_end_time - self.allowed_end_time).total_seconds()/60
                     self.rollover = []
@@ -102,7 +110,7 @@ class OGI_crew:
                     self.state['t'].current_date = self.allowed_end_time
 
                 # There's enough time left in the day for this site
-                elif projected_end_time <= self.allowed_end_time:
+                elif (projected_end_time + drive_home) <= self.allowed_end_time:
                     self.visit_site(site)
                 self.worked_today = True
 

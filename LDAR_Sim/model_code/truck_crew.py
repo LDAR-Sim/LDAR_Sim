@@ -65,8 +65,12 @@ class truck_crew:
         else:
             print('Unreasonable number of work hours specified for truck crew ' + str(self.crewstate['id']))
 
-        self.state['t'].current_date = self.state['t'].current_date.replace(
-            hour=int(start_hour))  # Set start of work day
+        self.state['t'].current_date = self.state['t'].current_date.replace(hour=int(start_hour))  # Set start of work day
+
+        # Start day with random "offsite time" required for driving to first site
+        self.state['t'].current_date += timedelta(
+            minutes=int(self.state['offsite_times'][np.random.randint(0, len(self.state['offsite_times']))]))
+
         while self.state['t'].current_date.hour < int(end_hour):
             facility_ID, found_site, site = self.choose_site()
             if not found_site:
