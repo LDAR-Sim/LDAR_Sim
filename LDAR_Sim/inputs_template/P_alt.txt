@@ -31,7 +31,8 @@ P_alt = {
         'program_name': 'P_alt',
         'n_simulations': 2, 	# Minimum of 2 simulations to get batch plots
         'timesteps': 1000,  	# Up to ~5600 for 16 year nc file
-        'start_year': 2014,
+        'n_processes': None,
+	'start_year': 2014,
         'an_data': 'an_2003_2018_AB.nc',
         'fc_data': 'fc_2003_2018_AB.nc',
         'infrastructure_file': 'facility_list_template.csv',
@@ -52,6 +53,7 @@ P_alt = {
         'write_data': True, # Must be TRUE to make plots and maps
         'make_plots': True,
         'make_maps': True,
+	'print_from_simulations': True,
         'start_time': time.time(),
         'operator_strength': 0.5,
         'sensitivity': {'perform': False,
