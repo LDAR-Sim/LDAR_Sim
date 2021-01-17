@@ -10,7 +10,8 @@ P_ref = {
                 'max_workday': 10,
                 'cost_per_day': 1500,
                 'reporting_delay': 2,
-                'MDL': [0.00081978, 0.01] 
+                'MDL': [0.00081978, 0.01],
+		'consider_daylight': False 
             }
         },
         'program_name': 'P_ref',
@@ -28,7 +29,6 @@ P_ref = {
         'site_samples': [True, 500],
         'subtype_times': [False, 'subtype_times.csv'], # If True, will overwrite site-specific times with subtype times
         'simulation': None,
-        'consider_daylight': False,
         'consider_operator': False,
         'consider_venting': False,
         'repair_delay': 14,

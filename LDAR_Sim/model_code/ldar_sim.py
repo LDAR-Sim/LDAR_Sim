@@ -164,8 +164,12 @@ class LdarSim:
         if not bool(self.parameters['methods']):
             self.state['t'].current_date = self.state['t'].current_date.replace(hour=1)
 
-        # Initialize daylight 
-        if self.parameters['consider_daylight']:
+        # Initialize daylight
+        calculate_daylight = False
+        for m in self.parameters['methods']:
+            if self.parameters['methods'][m]['consider_daylight'] == True:
+                calculate_daylight = True
+        if calculate_daylight:
                 self.state['daylight'] = DaylightCalculatorAve(self.state, self.parameters)
 
         # Initialize empirical distribution of vented emissions

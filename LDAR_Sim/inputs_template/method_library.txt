@@ -10,7 +10,8 @@
                 'max_workday': 10,
                 'cost_per_day': 1500,
                 'reporting_delay': 2,
-                'MDL': [0.00081978, 0.01] 
+                'MDL': [0.00081978, 0.01],
+		'consider_daylight': False  
             }
 
                    'OGI_FU': {
@@ -22,7 +23,8 @@
                             'max_workday': 10,
                             'cost_per_day': 1500,
                             'reporting_delay': 2,
-                            'MDL': [0.00081978, 0.01] 
+                            'MDL': [0.00081978, 0.01],
+			    'consider_daylight': False  
                             }
 
 
@@ -40,7 +42,8 @@
                             't_lost_per_site': 10,                             
                             'reporting_delay': 2,
                             'MDL': 0.2,         
-			    'QE': 0                     
+			    'QE': 0,
+			    'consider_daylight': False                      
                             }
 
 
@@ -57,7 +60,8 @@
                             'follow_up_ratio': 1,
                             'reporting_delay': 2,
                             'MDL': 0.05,   
-			    'QE': 0
+			    'QE': 0,
+			    'consider_daylight': False 
                             }
 
 
@@ -74,5 +78,6 @@
 			    'time_to_detection': 7,                           
                             'reporting_delay': 2,
                             'MDL': 0.01, 			  
-			    'QE': 0                        
+			    'QE': 0,
+			    'consider_daylight': False                         
                             }
