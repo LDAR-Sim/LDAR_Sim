@@ -12,7 +12,7 @@ P_alt2 = {
                             'follow_up_thresh': [0.01, "proportion"],
                             'follow_up_ratio': 0.5,
                             'reporting_delay': 2,
-                            'MDL': 5, # grams/hour  
+                            'MDL': 0.05,   
 			    'QE': 0
                             },
                    'OGI_FU': {
@@ -24,7 +24,7 @@ P_alt2 = {
                             'max_workday': 10,
                             'cost_per_day': 1500,
                             'reporting_delay': 2,
-                            'MDL': [0.47, 0.01]
+                            'MDL': [0.00081978, 0.01] 
                             }
         },
         'program_name': 'P_alt2',

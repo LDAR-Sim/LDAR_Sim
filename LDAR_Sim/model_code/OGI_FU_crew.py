@@ -172,11 +172,12 @@ class OGI_FU_crew:
         # Detection module from Ravikumar et al 2018, assuming 3 m distance
         for leak in leaks_present:
             k = np.random.normal(4.9, 0.3)
-            x0 = np.random.normal(self.config['MDL'][0], self.config['MDL'][1])
+            x0 = math.log(self.config['MDL'][0] * 3600)  # Convert from g/s to g/h and take log
+            x0 = np.random.normal(x0, self.config['MDL'][1])
             if leak['rate'] == 0:
                 prob_detect = 0
             else:
-                x = math.log10(leak['rate'] * 41.6667)  # Convert from kg/day to g/h
+                x = math.log10(leak['rate'] * 3600)  # Convert from g/s to g/h
                 prob_detect = 1 / (1 + math.exp(-k * (x - x0)))
             detect = np.random.binomial(1, prob_detect)
 

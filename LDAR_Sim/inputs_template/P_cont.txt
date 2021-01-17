@@ -11,7 +11,7 @@ P_cont = {
                             'follow_up_ratio': 1,  
 			    'time_to_detection': 7,                           
                             'reporting_delay': 2,
-                            'MDL': 1800, 			# grams/hour   (0.5 g/s)  
+                            'MDL': 0.01, 			  
 			    'QE': 0                        
                             },
                    'OGI_FU': {
@@ -23,7 +23,7 @@ P_cont = {
                             'max_workday': 10,
                             'cost_per_day': 1500,
                             'reporting_delay': 2,
-                            'MDL': [0.47, 0.01]
+                            'MDL': [0.00081978, 0.01] 
                             }
         },
         'program_name': 'P_cont',
