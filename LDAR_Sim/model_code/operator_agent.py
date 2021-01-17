@@ -63,7 +63,6 @@ class OperatorAgent:
                         prob_detect = 0
                     detect = np.random.binomial(1, prob_detect)
 
-
                     if detect:
                         if leak['tagged']:
                             self.timeseries['operator_redund_tags'][self.state['t'].current_timestep] += 1
