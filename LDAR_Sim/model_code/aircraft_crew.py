@@ -105,7 +105,7 @@ class aircraft_crew:
                     break
 
                 # Else if site-specific required visits have not been met for the year
-                elif site['surveys_done_this_year_aircraft'] < int(site['aircraft_required_surveys']):
+                elif site['surveys_done_this_year_aircraft'] < int(site['aircraft_RS']):
 
                     # Check the weather for that site
                     if self.deployment_days[
