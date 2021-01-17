@@ -72,7 +72,7 @@ class Sensitivity:
                     'OGI_max_precip': np.random.uniform(0, 0.1),  # in meters
                     'OGI_reporting_delay': np.random.uniform(0, 30),
                     'OGI_time': np.random.uniform(30, 500),
-                    'OGI_required_surveys': np.random.uniform(1, 4),
+                    'OGI_RS': np.random.uniform(1, 4),
                     'OGI_min_interval': np.random.uniform(0, 90),
                     'OGI_MDL': np.random.uniform(0, 2),
 
@@ -83,7 +83,7 @@ class Sensitivity:
                     'truck_max_precip': np.random.uniform(0, 0.1),
                     'truck_reporting_delay': np.random.uniform(0, 30),
                     'truck_time': np.random.uniform(1, 30),
-                    'truck_required_surveys': np.random.uniform(1, 4),
+                    'truck_RS': np.random.uniform(1, 4),
                     'truck_min_interval': np.random.uniform(0, 90),
                     'truck_MDL': np.random.uniform(1, 100),  # grams/hour
                     'truck_follow_up_thresh': np.random.uniform(0, 500),
@@ -134,7 +134,7 @@ class Sensitivity:
 
             for site in self.state['sites']:
                 site['OGI_time'] = self.SA_params['OGI_time']
-                site['OGI_required_surveys'] = self.SA_params['OGI_required_surveys']
+                site['OGI_RS'] = self.SA_params['OGI_RS']
 
         # Set screening (truck) parameters                      
         if self.parameters['sensitivity']['program'] == 'truck':
@@ -160,9 +160,9 @@ class Sensitivity:
             for site in self.state['sites']:
                 site['OGI_time'] = self.SA_params['OGI_time']
                 site['OGI_FU_time'] = self.SA_params['OGI_time']
-                site['OGI_required_surveys'] = self.SA_params['OGI_required_surveys']
+                site['OGI_RS'] = self.SA_params['OGI_RS']
                 site['truck_time'] = self.SA_params['truck_time']
-                site['truck_required_surveys'] = self.SA_params['truck_required_surveys']
+                site['truck_RS'] = self.SA_params['truck_RS']
 
         return
 
@@ -231,7 +231,7 @@ class Sensitivity:
                 'OGI_reporting_delay': self.SA_params['OGI_reporting_delay'],
                 'OGI_MDL': self.SA_params['OGI_MDL'],
                 'OGI_time': self.SA_params['OGI_time'],
-                'OGI_required_surveys': self.SA_params['OGI_required_surveys'],
+                'OGI_RS': self.SA_params['OGI_RS'],
 
                 # New OGI outputs
                 'OGI_cum_program_cost': np.sum(np.array(self.timeseries['OGI_cost'][self.parameters['spin_up']:])),
@@ -268,7 +268,7 @@ class Sensitivity:
                 'truck_follow_up_thresh': self.SA_params['truck_follow_up_thresh'],
                 'truck_follow_up_ratio': self.SA_params['truck_follow_up_ratio'],
                 'truck_time': self.SA_params['truck_time'],
-                'truck_required_surveys': self.SA_params['truck_required_surveys'],
+                'truck_RS': self.SA_params['truck_RS'],
 
                 # New OGI_FU outputs
                 'OGI_FU_cum_program_cost': np.sum(

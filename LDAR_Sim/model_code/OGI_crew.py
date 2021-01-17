@@ -138,7 +138,7 @@ class OGI_crew:
                     break
 
                 # Else if site-specific required visits have not been met for the year
-                elif site['surveys_done_this_year_OGI'] < int(site['OGI_required_surveys']):
+                elif site['surveys_done_this_year_OGI'] < int(site['OGI_RS']):
 
                     # Check the weather for that site
                     if self.deployment_days[site['lon_index'], site['lat_index'], self.state['t'].current_timestep]:
