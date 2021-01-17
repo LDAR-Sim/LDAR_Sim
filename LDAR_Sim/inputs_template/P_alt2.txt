@@ -13,7 +13,7 @@ P_alt2 = {
                             'follow_up_ratio': 1,
                             'reporting_delay': 2,
                             'MDL': 0.05,   
-			    'QE': 0
+			                      'QE': 0
                             },
                    'OGI_FU': {
                             'name': 'OGI_FU',

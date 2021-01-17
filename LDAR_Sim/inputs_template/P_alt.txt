@@ -14,7 +14,7 @@ P_alt = {
                             't_lost_per_site': 10,                             
                             'reporting_delay': 2,
                             'MDL': 0.2,         
-			    'QE': 0                     
+			                      'QE': 0                     
                             },
                    'OGI_FU': {
                             'name': 'OGI_FU',
