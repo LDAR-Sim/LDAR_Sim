@@ -13,7 +13,7 @@ P_alt = {
                             'follow_up_ratio': 0.8,
                             't_lost_per_site': 10,                             
                             'reporting_delay': 2,
-                            'MDL': 1000, 			# grams/hour        
+                            'MDL': 0.2,         
 			    'QE': 0                     
                             },
                    'OGI_FU': {
@@ -25,7 +25,7 @@ P_alt = {
                             'max_workday': 10,
                             'cost_per_day': 1500,
                             'reporting_delay': 2,
-                            'MDL': [0.47, 0.01]
+                            'MDL': [0.00081978, 0.01] 
                             }
         },
         'program_name': 'P_alt',

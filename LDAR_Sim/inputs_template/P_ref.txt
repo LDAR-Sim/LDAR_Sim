@@ -10,7 +10,7 @@ P_ref = {
                 'max_workday': 10,
                 'cost_per_day': 1500,
                 'reporting_delay': 2,
-                'MDL': [0.47, 0.01]
+                'MDL': [0.00081978, 0.01] 
             }
         },
         'program_name': 'P_ref',
