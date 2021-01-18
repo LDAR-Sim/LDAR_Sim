@@ -1,7 +1,7 @@
 # ------------------------------------------------------------------------------
 # Program:     The LDAR Simulator (LDAR-Sim) 
-# File:        ERA Interim downloader
-# Purpose:     Downloads ERA Interim data
+# File:        ERA5 downloader
+# Purpose:     Downloads ERA5 data
 #
 # Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
 #    
@@ -19,44 +19,45 @@
 #
 # ------------------------------------------------------------------------------
 
-from ecmwfapi import ECMWFDataServer
+import cdsapi
+# downloads ERA5 total precipitation, 10 meter wind u component, 10 meter wind v component, and 2 meter air temperature 
+c = cdsapi.Client()
+# download hourly data for Alberta from 2017-01-01 to 2019-12-31
+yrs = ['2017','2018','2019'] 
+mns = ['01', '02', '03',
+            '04', '05', '06',
+            '07', '08', '09',
+            '10', '11', '12',]
+c.retrieve(
+    'reanalysis-era5-single-levels',
+    {
+        'product_type':'reanalysis',
+        'variable':[
+            'total_precipitation','10m_u_component_of_wind', 
+            '10m_v_component_of_wind', '2m_temperature',
+        ],
+        'year':yrs,
+        'month':mns,
+        'day':[
+            '01','02','03',
+            '04','05','06',
+            '07','08','09',
+            '10','11','12',
+            '13','14','15',
+            '16','17','18',
+            '19','20','21',
+            '22','23','24',
+            '25','26','27',
+            '28','29','30',
+            '31',
+        ],
+        'time':['00:00','01:00','02:00','03:00','04:00','05:00','06:00','07:00',
+                    '08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00',
+                   '16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00',
+                   ],
 
-server = ECMWFDataServer()
-
-# Download environmental analysis data
-server.retrieve({
-    'stream': "oper",
-    'levtype': "sfc",
-    # Snow depth, Cloud cover, Temperature, Wind components 
-    'param': "141.128/164.128/165.128/166.128/167.128",
-    'dataset': "interim",
-    'step': "0",
-    'grid': "0.5/0.5",
-    'time': "12",
-    'date': "2003-01-01/to/2018-12-31",  # Up to 2018-12-31
-    'type': "an",
-    'class': "ei",
-    # North/West/South/East
-    'area': "60/240/49/250",
-    'format': "netcdf",
-    'target': "an_2003_2018_AB.nc"
-})
-
-# Download time-integrated environmental data
-server.retrieve({
-    'stream': "oper",
-    'levtype': "sfc",
-    # Precipitation 
-    'param': "228.128",
-    'dataset': "interim",
-    'step': "6",
-    'grid': "0.5/0.5",
-    'time': "12",
-    'date': "2003-01-01/to/2018-12-31",  # Up to 2018-12-31
-    'type': "fc",
-    'class': "ei",
-    # North/West/South/East
-    'area': "60/240/49/250",
-    'format': "netcdf",
-    'target': "fc_2003_2018_AB.nc"
-})
+        'area': [60,-120,49,-110,],
+        'grid':[1,1],
+        'format':'netcdf',
+    },
+    r'ERA5_2017_2019_AB.nc')
