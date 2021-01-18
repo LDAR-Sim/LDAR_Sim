@@ -46,9 +46,9 @@ class LdarSim:
         self.state['empirical_counts'] = np.array(pd.read_csv(self.parameters['working_directory'] +
                 self.parameters['count_file']).iloc[:, 0])
         self.state['empirical_leaks'] = np.array(pd.read_csv(self.parameters['working_directory'] +
-                self.parameters['leak_file']).iloc[:, 0]) * 86.4  # Convert g/s to kg/day
+                self.parameters['leak_file']).iloc[:, 0])
         self.state['empirical_sites'] = np.array(pd.read_csv(self.parameters['working_directory'] +
-                self.parameters['vent_file']).iloc[:, 0]) * 86.4  # Convert g/s to kg/day
+                self.parameters['vent_file']).iloc[:, 0])
         self.state['offsite_times'] = np.array(pd.read_csv(self.parameters['working_directory'] +
                 self.parameters['t_offsite_file']).iloc[:, 0])
 
@@ -304,7 +304,7 @@ class LdarSim:
         # Update timeseries
         self.timeseries['new_leaks'].append(sum(d['n_new_leaks'] for d in self.state['sites']))
         self.timeseries['cum_repaired_leaks'].append(sum(d['status'] == 'repaired' for d in self.state['leaks']))
-        self.timeseries['daily_emissions_kg'].append(sum(d['rate'] for d in self.active_leaks))
+        self.timeseries['daily_emissions_kg'].append(sum(d['rate'] for d in self.active_leaks)) * 86.4) # convert g/s to kg/day
         self.timeseries['n_tags'].append(len(self.state['tags']))
         self.timeseries['rolling_cost_estimate'].append(sum(self.timeseries['total_daily_cost'])/(len(self.timeseries['rolling_cost_estimate'])+1)*365/200)
 
@@ -318,7 +318,7 @@ class LdarSim:
 
             # Attribute individual leak emissions to site totals
             for leak in self.state['leaks']:
-                tot_emissions_kg = leak['days_active'] * leak['rate']
+                tot_emissions_kg = leak['days_active'] * leak['rate'] * 86.4 # convert g/s to kg/day
                 for site in self.state['sites']:
                     if site['facility_ID'] == leak['facility_ID']:
                         site['total_emissions_kg'] += tot_emissions_kg
