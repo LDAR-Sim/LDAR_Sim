@@ -10,7 +10,7 @@ P_ref = {
                 'max_workday': 10,
                 'cost_per_day': 1500,
                 'reporting_delay': 2,
-                'MDL': [0.00081978, 0.01],
+                'MDL': [0.01275, 2.78e-6],
 		'consider_daylight': False 
             }
         },
@@ -27,8 +27,7 @@ P_ref = {
         'vent_file': 'site_rates.csv',
         't_offsite_file': 'time_offsite_ground.csv',
         'site_samples': [True, 500],
-        'subtype_times': [False, 'subtype_times.csv'], # If True, will overwrite site-specific times with subtype times
-        'simulation': None,
+        'subtype_times': [False, 'subtype_times.csv'], # If True, will overwrite site-specific times with subtype time
         'consider_operator': False,
         'consider_venting': False,
         'repair_delay': 14,
@@ -39,8 +38,9 @@ P_ref = {
         'make_plots': True,
         'make_maps': True,
 	'print_from_simulations': True,
-        'start_time': time.time(),
         'operator_strength': 0.5,
+	'repair_cost': 200,
+	'verification_cost': 25,
         'sensitivity': {'perform': False,
                         'program': 'OGI',
                         'batch': [True, 2]}
