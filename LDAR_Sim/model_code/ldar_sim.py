@@ -106,6 +106,8 @@ class LdarSim:
 
         # Additional timeseries variables
         self.timeseries['total_daily_cost'] = np.zeros(self.parameters['timesteps'])
+        self.timeseries['repair_cost'] = np.zeros(self.parameters['timesteps'])
+        self.timeseries['verification_cost'] = np.zeros(self.parameters['timesteps'])
 
         # Configure sensitivity analysis, if requested (code block must remain here -
         # after site initialization and before method initialization)
@@ -285,12 +287,18 @@ class LdarSim:
                     tag['tagged'] = False
                     tag['date_repaired'] = self.state['t'].current_date
                     tag['repair_delay'] = (tag['date_repaired'] - tag['date_tagged']).days
+                    self.timeseries['repair_cost'][self.state['t'].current_timestep] += self.parameters['repair_cost']
+                    self.timeseries['verification_cost'][self.state['t'].current_timestep] += self.parameters['verification_cost']
+                    self.timeseries['total_daily_cost'][self.state['t'].current_timestep] += self.parameters['repair_cost'] + self.parameters['verification_cost']
             elif tag['tagged_by_company'] == 'operator':
                 if (self.state['t'].current_date - tag['date_tagged']).days >= self.parameters['repair_delay']:
                     tag['status'] = 'repaired'
                     tag['tagged'] = False
                     tag['date_repaired'] = self.state['t'].current_date
                     tag['repair_delay'] = (tag['date_repaired'] - tag['date_tagged']).days
+                    self.timeseries['repair_cost'][self.state['t'].current_timestep] += self.parameters['repair_cost']
+                    self.timeseries['verification_cost'][self.state['t'].current_timestep] += self.parameters['verification_cost']
+                    self.timeseries['total_daily_cost'][self.state['t'].current_timestep] += self.parameters['repair_cost'] + self.parameters['verification_cost']
 
             self.state['tags'] = [tag for tag in self.state['tags'] if tag['status'] == 'active']
 
@@ -304,7 +312,7 @@ class LdarSim:
         # Update timeseries
         self.timeseries['new_leaks'].append(sum(d['n_new_leaks'] for d in self.state['sites']))
         self.timeseries['cum_repaired_leaks'].append(sum(d['status'] == 'repaired' for d in self.state['leaks']))
-        self.timeseries['daily_emissions_kg'].append(sum(d['rate'] for d in self.active_leaks)) * 86.4) # convert g/s to kg/day
+        self.timeseries['daily_emissions_kg'].append(sum(d['rate'] for d in self.active_leaks)* 86.4)  # convert g/s to kg/day
         self.timeseries['n_tags'].append(len(self.state['tags']))
         self.timeseries['rolling_cost_estimate'].append(sum(self.timeseries['total_daily_cost'])/(len(self.timeseries['rolling_cost_estimate'])+1)*365/200)
 
