@@ -288,8 +288,8 @@ class LdarSim:
                     tag['date_repaired'] = self.state['t'].current_date
                     tag['repair_delay'] = (tag['date_repaired'] - tag['date_tagged']).days
                     self.timeseries['repair_cost'][self.state['t'].current_timestep] += self.parameters['repair_cost']
-                    self.timeseries['verification_cost'][self.state['t'].current_timestep] += self.parameters['verification_cost']
                     self.timeseries['total_daily_cost'][self.state['t'].current_timestep] += self.parameters['repair_cost'] + self.parameters['verification_cost']
+                    self.timeseries['verification_cost'][self.state['t'].current_timestep] += self.parameters['verification_cost']
             elif tag['tagged_by_company'] == 'operator':
                 if (self.state['t'].current_date - tag['date_tagged']).days >= self.parameters['repair_delay']:
                     tag['status'] = 'repaired'
@@ -297,7 +297,6 @@ class LdarSim:
                     tag['date_repaired'] = self.state['t'].current_date
                     tag['repair_delay'] = (tag['date_repaired'] - tag['date_tagged']).days
                     self.timeseries['repair_cost'][self.state['t'].current_timestep] += self.parameters['repair_cost']
-                    self.timeseries['verification_cost'][self.state['t'].current_timestep] += self.parameters['verification_cost']
                     self.timeseries['total_daily_cost'][self.state['t'].current_timestep] += self.parameters['repair_cost'] + self.parameters['verification_cost']
 
             self.state['tags'] = [tag for tag in self.state['tags'] if tag['status'] == 'active']
