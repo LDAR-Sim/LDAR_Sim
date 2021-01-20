@@ -25,6 +25,7 @@ import os
 import datetime
 import warnings
 import multiprocessing as mp
+import boto3 # for downloading data from AWS
 
 if __name__ == '__main__':
     # ------------------------------------------------------------------------------
@@ -35,7 +36,26 @@ if __name__ == '__main__':
     n_processes = None  # Number of processes to use, None = all, 1 = one virtual core, and so on.
     print_from_simulations = True  # Print informational messages from within the simulations
     warnings.filterwarnings('ignore')    # Temporarily mute warnings
-
+    
+    #-------------------------------------------------------------------------------
+    #------------------------------Check ERA5 data in the working directory---------
+    def check_ERA5_file(Dir,era_file): 
+        ncfiles = [] 
+        for file in os.listdir(Dir):
+            if file.endswith(".nc"):
+                ncfiles.append(file)
+        if wfile in ncfiles: 
+            print ("Weather data checked")
+        else:
+            print ("I will donwload data for you...")
+            access_key = "AKIAIQ3KWS7VA4KSJIKA" # the access key and secret key will change in the future, these two keys are currently corresponding to my AWS account 
+            secret_key = "5b6a8z2lLMNkRdsEceL/gwYRNh2Ar5sPJjFwDD7n"
+            s3 = boto3.client('s3', aws_access_key_id=access_key , aws_secret_access_key=secret_key)
+            s3.download_file('eratest',era_file,r'{}/ERA5_AB_1x1_hourly_2015_2019.nc'.format(Dir))
+            print ("Weather data downloaded")
+            
+    era_file = r"ERA5_AB_1x1_hourly_2015_2019.nc"        
+    check_ERA5_file(wd,era_file)
     # -----------------------------Set up programs----------------------------------
     programs = []
     for p in range(len(program_list)):
