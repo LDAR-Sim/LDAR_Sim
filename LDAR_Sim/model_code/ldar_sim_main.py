@@ -48,8 +48,8 @@ if __name__ == '__main__':
             print ("Weather data checked")
         else:
             print ("I will donwload data for you...")
-            access_key = "AKIAIQ3KWS7VA4KSJIKA" # the access key and secret key will change in the future, these two keys are currently corresponding to my AWS account 
-            secret_key = "5b6a8z2lLMNkRdsEceL/gwYRNh2Ar5sPJjFwDD7n"
+            access_key = "" # the access key and secret key will change in the future, these two keys are currently corresponding to my AWS account 
+            secret_key = ""
             s3 = boto3.client('s3', aws_access_key_id=access_key , aws_secret_access_key=secret_key)
             s3.download_file('eratest',era_file,r'{}/{}'.format(Dir,era_file))
             print ("Weather data downloaded")
