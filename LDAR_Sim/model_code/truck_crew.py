@@ -50,13 +50,13 @@ class truck_crew:
         work_hours = None
         max_work = self.parameters['methods']['truck']['max_workday']
 
-        if self.parameters['consider_daylight']:
+        if self.parameters['methods']['truck']['consider_daylight']:
             daylight_hours = self.state['daylight'].get_daylight(self.state['t'].current_timestep)
             if daylight_hours <= max_work:
                 work_hours = daylight_hours
             elif daylight_hours > max_work:
                 work_hours = max_work
-        elif not self.parameters['consider_daylight']:
+        elif not self.parameters['methods']['truck']['consider_daylight']:
             work_hours = max_work
 
         if work_hours < 24 and work_hours != 0:
@@ -65,8 +65,12 @@ class truck_crew:
         else:
             print('Unreasonable number of work hours specified for truck crew ' + str(self.crewstate['id']))
 
-        self.state['t'].current_date = self.state['t'].current_date.replace(
-            hour=int(start_hour))  # Set start of work day
+        self.state['t'].current_date = self.state['t'].current_date.replace(hour=int(start_hour))  # Set start of work day
+
+        # Start day with random "offsite time" required for driving to first site
+        self.state['t'].current_date += timedelta(
+            minutes=int(self.state['offsite_times'][np.random.randint(0, len(self.state['offsite_times']))]))
+
         while self.state['t'].current_date.hour < int(end_hour):
             facility_ID, found_site, site = self.choose_site()
             if not found_site:
@@ -106,7 +110,7 @@ class truck_crew:
                     break
 
                 # Else if site-specific required visits have not been met for the year
-                elif site['surveys_done_this_year_truck'] < int(site['truck_required_surveys']):
+                elif site['surveys_done_this_year_truck'] < int(site['truck_RS']):
 
                     # Check the weather for that site
                     if self.deployment_days[site['lon_index'], site['lat_index'], self.state['t'].current_timestep]:
@@ -148,7 +152,7 @@ class truck_crew:
 
         # Simple binary detection module 
         detect = False
-        if site_cum_rate > (self.config['MDL'] * 0.024):  # g/hour to kg/day
+        if site_cum_rate > (self.config['MDL']):
             detect = True
 
         if detect:

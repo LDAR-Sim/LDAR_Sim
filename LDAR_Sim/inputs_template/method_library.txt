@@ -1,72 +1,83 @@
 ------------Method library--------
 
-'OGI': {
-        'name': 'OGI',
-        'n_crews': 1,
-        'min_temp': -35,
-        'max_wind': 25,
-        'max_precip': 10,
-        'min_interval': 60,
-        'max_workday': 10,  
-        'cost_per_day': 1500,
-        'reporting_delay': 2,
-        'MDL': [0.47, 0.01]
-        },
-'OGI_FU': {
-        'name': 'OGI_FU',
-        'n_crews': 1,
-        'min_temp': -35,
-        'max_wind': 25,
-        'max_precip': 10,
-        'max_workday': 10,
-        'cost_per_day': 1500,
-        'reporting_delay': 2,
-        'MDL': [0.47, 0.01]
-        },
-'truck': {
-        'name': 'truck',
-        'n_crews': 1,
-        'min_temp': -35,
-        'max_wind': 25,
-        'max_precip': 10,
-        'min_interval': 30,
-        'max_workday': 10,
-        'cost_per_day': 1500,
-        'follow_up_thresh': [0, "absolute"],
-        'follow_up_ratio': 0.5,
-        'reporting_delay': 2,
-        'MDL': 100,			# grams/hour
-	'QE': 0			 #Standard deviation of the percent error 
-        },
-'aircraft': {
-        'name': 'aircraft',
-        'n_crews': 1,
-        'min_temp': -35,
-        'max_wind': 25,
-        'max_precip': 10,
-        'min_interval': 60,
-        'max_workday': 10,
-        'cost_per_day': 10000,
-        'follow_up_thresh': [0, "absolute"],
-        'follow_up_ratio': 0.5,
-        't_lost_per_site': 10,
-        'reporting_delay': 2,
-        'MDL': 2000,		# grams/hour
-	'QE': 0			 #Standard deviation of the percent error 
-        },
-'fixed': {
-        'name': 'fixed',
-        'min_temp': -35,
-        'max_wind': 25,
-        'max_precip': 10,
-	'up_front_cost': 2000,
-        'cost_per_day': 7,
-        'follow_up_thresh': [0.01, "proportion"],
-        'follow_up_ratio': 1,  
-        'time_to_detection': 7,                           
-        'reporting_delay': 2,
-        'MDL': 1800, 			# grams/hour   (0.5 g/s)  
-	'QE': 0                        #Standard deviation of the percent error 
-        },
+            'OGI': {
+                'name': 'OGI',
+                'n_crews': 1,
+                'min_temp': -100,
+                'max_wind': 100,
+                'max_precip': 100,
+                'min_interval': 110,
+                'max_workday': 10,
+                'cost_per_day': 1500,
+                'reporting_delay': 2,
+                'MDL': [0.00081978, 0.01],
+		'consider_daylight': False  
+            }
 
-  
+                   'OGI_FU': {
+                            'name': 'OGI_FU',
+                            'n_crews': 1,
+                            'min_temp': -100,
+                            'max_wind': 100,
+                            'max_precip': 100,
+                            'max_workday': 10,
+                            'cost_per_day': 1500,
+                            'reporting_delay': 2,
+                            'MDL': [0.00081978, 0.01],
+			    'consider_daylight': False  
+                            }
+
+
+	                 'aircraft': {
+                            'name': 'aircraft',
+                            'n_crews': 1,
+                            'min_temp': -100,
+                            'max_wind': 100,
+                            'max_precip': 100,
+                            'min_interval': 180,
+                            'max_workday': 10,
+                            'cost_per_day': 10000,
+                            'follow_up_thresh': [0, "absolute"],
+                            'follow_up_ratio': 1,
+                            't_lost_per_site': 10,                             
+                            'reporting_delay': 2,
+                            'MDL': 0.2,         
+			    'QE': 0,
+			    'consider_daylight': False                      
+                            }
+
+
+                   'truck': {
+                            'name': 'truck',
+                            'n_crews': 1,
+                            'min_temp': -100,
+                            'max_wind': 100,
+                            'max_precip': 100,
+                            'min_interval': 90,
+                            'max_workday': 10,
+                            'cost_per_day': 1500,
+                            'follow_up_thresh': [0, "absolute"],
+                            'follow_up_ratio': 1,
+                            'reporting_delay': 2,
+                            'MDL': 0.05,   
+			    'QE': 0,
+			    'consider_daylight': False 
+                            }
+
+
+
+	                 'fixed': {
+                            'name': 'fixed',
+                            'min_temp': -100,
+                            'max_wind': 100,
+                            'max_precip': 100,
+                            'up_front_cost': 500,
+			    'cost_per_day': 1,	  	    
+                            'follow_up_thresh': [0, "absolute"],
+                            'follow_up_ratio': 1,  
+			    'time_to_detection': 7,                           
+                            'reporting_delay': 2,
+                            'MDL': 0.01, 			  
+			    'QE': 0,
+			    'consider_daylight': False                         
+                            }

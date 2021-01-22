@@ -31,12 +31,8 @@ if __name__ == '__main__':
     # ------------------------------------------------------------------------------
     # -----------------------------Global parameters--------------------------------
     wd = "../inputs_template/"
-    wd = os.path.abspath (wd) + "/"
     program_list = ['P_ref','P_alt', 'P_alt2', 'P_cont']  # Programs to compare; Position one should be the reference program (P_ref)
-    n_processes = None  # Number of processes to use, None = all, 1 = one virtual core, and so on.
-    print_from_simulations = True  # Print informational messages from within the simulations
-    warnings.filterwarnings('ignore')    # Temporarily mute warnings
-    
+
     #-------------------------------------------------------------------------------
     #------------------------------Check ERA5 data in the working directory---------
     def check_ERA5_file(Dir,era_file): 
@@ -56,13 +52,19 @@ if __name__ == '__main__':
             
     era_file = r"ERA5_AB_1x1_hourly_2015_2019.nc"        
     check_ERA5_file(wd,era_file)
+
     # -----------------------------Set up programs----------------------------------
     programs = []
+    wd = os.path.abspath (wd) + "/"
+    warnings.filterwarnings('ignore')    # Temporarily mute warnings
+
     for p in range(len(program_list)):
         file = wd + program_list[p] + '.txt'
         exec(open(file).read())
         programs.append(eval(program_list[p]))
 
+    n_processes = programs[0]['n_processes']
+    print_from_simulations = programs[0]['print_from_simulations']
     n_simulations = programs[0]['n_simulations']
     spin_up = programs[0]['spin_up']
     ref_program = program_list[0]

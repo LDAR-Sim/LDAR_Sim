@@ -62,7 +62,7 @@ class fixed_crew:
 
         # Simple detection module based on strict minimum detection limit
         detect = False
-        if site_cum_rate > (self.config['MDL'] * 0.024):  # g/hour to kg/day
+        if site_cum_rate > (self.config['MDL']):
             detect = True
 
         if detect == True:
