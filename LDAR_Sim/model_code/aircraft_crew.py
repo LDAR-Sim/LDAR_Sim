@@ -49,13 +49,13 @@ class aircraft_crew:
         work_hours = None
         max_work = self.parameters['methods']['aircraft']['max_workday']
 
-        if self.parameters['consider_daylight'] == True:
+        if self.parameters['methods']['aircraft']['consider_daylight']:
             daylight_hours = self.state['daylight'].get_daylight(self.state['t'].current_timestep)
             if daylight_hours <= max_work:
                 work_hours = daylight_hours
             elif daylight_hours > max_work:
                 work_hours = max_work
-        elif self.parameters['consider_daylight'] == False:
+        elif self.parameters['methods']['aircraft']['consider_daylight'] == False:
             work_hours = max_work
 
         if work_hours < 24 and work_hours != 0:
@@ -64,8 +64,11 @@ class aircraft_crew:
         else:
             print('Unreasonable number of work hours specified for Aircraft crew ' + str(self.crewstate['id']))
 
-        self.state['t'].current_date = self.state['t'].current_date.replace(
-            hour=int(start_hour))  # Set start of work day
+        self.state['t'].current_date = self.state['t'].current_date.replace(hour=int(start_hour))  # Set start of work day
+
+        # Start day with a time increment required for flying to first site
+        self.state['t'].current_date += timedelta(minutes=int(self.config['t_lost_per_site']))
+
         while self.state['t'].current_date.hour < int(end_hour):
             facility_ID, found_site, site = self.choose_site()
             if not found_site:
@@ -105,7 +108,7 @@ class aircraft_crew:
                     break
 
                 # Else if site-specific required visits have not been met for the year
-                elif site['surveys_done_this_year_aircraft'] < int(site['aircraft_required_surveys']):
+                elif site['surveys_done_this_year_aircraft'] < int(site['aircraft_RS']):
 
                     # Check the weather for that site
                     if self.deployment_days[
@@ -148,7 +151,7 @@ class aircraft_crew:
 
         # Simple detection module based on strict minimum detection limit
         detect = False
-        if site_cum_rate > (self.config['MDL'] * 0.024):  # g/hour to kg/day
+        if site_cum_rate > (self.config['MDL']):
             detect = True
 
         if detect == True:

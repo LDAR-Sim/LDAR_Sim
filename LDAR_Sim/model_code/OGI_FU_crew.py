@@ -50,13 +50,13 @@ class OGI_FU_crew:
         work_hours = None
         max_work = self.parameters['methods']['OGI_FU']['max_workday']
 
-        if self.parameters['consider_daylight']:
+        if self.parameters['methods']['OGI_FU']['consider_daylight']:
             daylight_hours = self.state['daylight'].get_daylight(self.state['t'].current_timestep)
             if daylight_hours <= max_work:
                 work_hours = daylight_hours
             elif daylight_hours > max_work:
                 work_hours = max_work
-        elif not self.parameters['consider_daylight']:
+        elif not self.parameters['methods']['OGI_FU']['consider_daylight']:
             work_hours = max_work
 
         if work_hours < 24 and work_hours != 0:
@@ -68,11 +68,17 @@ class OGI_FU_crew:
         self.allowed_end_time = self.state['t'].current_date.replace(hour=int(end_hour), minute=0, second=0)
         self.state['t'].current_date = self.state['t'].current_date.replace(hour=int(start_hour))  # Set start of work day
 
+        # Start day with random "offsite time" required for driving to first site
+        self.state['t'].current_date += timedelta(
+            minutes=int(self.state['offsite_times'][np.random.randint(0, len(self.state['offsite_times']))]))
+
         # Check if there is a partially finished site from yesterday
         if len(self.rollover) > 0:
             # Check to see if the remainder of this site can be finished today (if not, this one is huge!)
+            # This projection includes the time it would time to drive back to the home base
             projected_end_time = self.state['t'].current_date + timedelta(minutes=int(self.rollover[1]))
-            if projected_end_time > self.allowed_end_time:
+            drive_home = timedelta(minutes=int(self.state['offsite_times'][np.random.randint(0, len(self.state['offsite_times']))]))
+            if (projected_end_time + drive_home) > self.allowed_end_time:
                 # There's not enough time left for that site today - get started and figure out how much time remains
                 minutes_remaining = (projected_end_time - self.allowed_end_time).total_seconds()/60
                 self.rollover = []
@@ -80,7 +86,7 @@ class OGI_FU_crew:
                 self.rollover.append(minutes_remaining)
                 self.state['t'].current_date = self.allowed_end_time
                 self.worked_today = True
-            elif projected_end_time <= self.allowed_end_time:
+            elif (projected_end_time + drive_home) <= self.allowed_end_time:
                 # Looks like we can finish off that site today
                 self.visit_site(self.rollover[0])
                 self.rollover = []
@@ -92,9 +98,11 @@ class OGI_FU_crew:
                 break  # Break out if no site can be found
 
             # Check to make sure there's enough time left in the day to do this site
+            # This projection includes the time it would time to drive back to the home base
             if found_site:
                 projected_end_time = self.state['t'].current_date + timedelta(minutes = int(site['OGI_FU_time']))
-                if projected_end_time > self.allowed_end_time:
+                drive_home = timedelta(minutes=int(self.state['offsite_times'][np.random.randint(0, len(self.state['offsite_times']))]))
+                if (projected_end_time + drive_home) > self.allowed_end_time:
                     # There's not enough time left for that site today - get started and figure out how much time remains
                     minutes_remaining = (projected_end_time - self.allowed_end_time).total_seconds()/60
                     self.rollover = []
@@ -103,7 +111,7 @@ class OGI_FU_crew:
                     self.state['t'].current_date = self.allowed_end_time
 
                 # There's enough time left in the day for this site
-                elif projected_end_time <= self.allowed_end_time:
+                elif (projected_end_time + drive_home) <= self.allowed_end_time:
                     self.visit_site(site)
                 self.worked_today = True
 
@@ -173,10 +181,11 @@ class OGI_FU_crew:
         for leak in leaks_present:
             k = np.random.normal(4.9, 0.3)
             x0 = np.random.normal(self.config['MDL'][0], self.config['MDL'][1])
+            x0 = math.log10(x0 * 3600)  # Convert from g/s to g/h and take log
             if leak['rate'] == 0:
                 prob_detect = 0
             else:
-                x = math.log10(leak['rate'] * 41.6667)  # Convert from kg/day to g/h
+                x = math.log10(leak['rate'] * 3600)  # Convert from g/s to g/h
                 prob_detect = 1 / (1 + math.exp(-k * (x - x0)))
             detect = np.random.binomial(1, prob_detect)
 

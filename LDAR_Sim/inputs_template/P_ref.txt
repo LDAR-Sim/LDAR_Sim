@@ -2,32 +2,32 @@ P_ref = {
         'methods': {
             'OGI': {
                 'name': 'OGI',
-                'n_crews': 2,
-                'min_temp': -40,
-                'max_wind': 30,
-                'max_precip': 0.1,
+                'n_crews': 1,
+                'min_temp': -100,
+                'max_wind': 100,
+                'max_precip': 100,
                 'min_interval': 110,
                 'max_workday': 10,
                 'cost_per_day': 1500,
                 'reporting_delay': 2,
-                'MDL': [0.47, 0.01]
+                'MDL': [0.01275, 2.78e-6],
+		'consider_daylight': False 
             }
         },
         'program_name': 'P_ref',
         'n_simulations': 2, # Minimum of 2 simulations to get batch plots
         'timesteps': 1000,  # Up to ~5600 for 16 year nc file
-        'start_year': 2014,
+        'n_processes': 10,
+	'start_year': 2014,
         'an_data': 'an_2003_2018_AB.nc',
         'fc_data': 'fc_2003_2018_AB.nc',
         'infrastructure_file': 'facility_list_template.csv',
-        'leak_file': 'rates_Clearstone.csv',
-        'count_file': 'counts_Clearstone.csv',
-        'vent_file': 'ZA_site_emissions_2018.csv',
+        'leak_file': 'leak_rates.csv',
+        'count_file': 'leak_counts.csv',
+        'vent_file': 'site_rates.csv',
         't_offsite_file': 'time_offsite_ground.csv',
         'site_samples': [True, 500],
-        'subtype_times': [False, 'subtype_times.csv'], # If True, will overwrite site-specific times with subtype times
-        'simulation': None,
-        'consider_daylight': False,
+        'subtype_times': [False, 'subtype_times.csv'], # If True, will overwrite site-specific times with subtype time
         'consider_operator': False,
         'consider_venting': False,
         'repair_delay': 14,
@@ -37,8 +37,10 @@ P_ref = {
         'write_data': True, # Must be TRUE to make plots and maps
         'make_plots': True,
         'make_maps': True,
-        'start_time': time.time(),
+	'print_from_simulations': True,
         'operator_strength': 0.5,
+	'repair_cost': 200,
+	'verification_cost': 25,
         'sensitivity': {'perform': False,
                         'program': 'OGI',
                         'batch': [True, 2]}
