@@ -34,7 +34,7 @@ class WeatherLookup:
 
         # Read in weather data as NetCDF file(s)
 
-        self.weather_data = Dataset(self.parameters['working_directory'] + self.parameters['era5_data'],'r')  # Load wind and temp data
+        self.weather_data = Dataset(self.parameters['working_directory'] + self.parameters['ERA5_AB_1x1_hourly_2015_2019.nc'],'r')  # Load wind and temp data
         self.weather_data.set_auto_mask(False)  # Load wind and temp data
         self.temps = np.array(self.weather_data.variables['t2m'])  # Extract temperatures
         self.temps = self.temps - 273.15  # Convert to degrees Celcius (time, lat, long)
