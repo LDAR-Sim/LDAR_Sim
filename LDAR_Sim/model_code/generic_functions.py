@@ -203,8 +203,8 @@ def check_ERA5_file(Dir,loc):
     else:
         print ("I will donwload data for you...")
         era_file = "ERA5_{}_1x1_hourly_2015_2019.nc".format(loc)
-        access_key = "AKIAIKWYEQAIVZUCBK4Q"
-        secret_key = "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"
+        access_key = ""
+        secret_key = ""
         s3 = boto3.client('s3', aws_access_key_id=access_key , aws_secret_access_key=secret_key)
         s3.download_file('eratest',era_file,r'{}/{}'.format(Dir,era_file))
         print ("Weather data downloaded") 
