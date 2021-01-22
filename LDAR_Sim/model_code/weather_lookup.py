@@ -34,25 +34,23 @@ class WeatherLookup:
 
         # Read in weather data as NetCDF file(s)
 
-        self.wind_temp_data = Dataset(self.parameters['working_directory'] + self.parameters['era5_data'])  # Load wind and temp data
-        self.wind_temp_data.set_auto_mask(False)  # Load wind and temp data
-        self.precip_data = Dataset(self.parameters['working_directory'] + self.parameters['era5_data'])  # Load precip data
-        self.precip_data.set_auto_mask(False)  # Load precip data
-        self.temps = np.array(self.wind_temp_data.variables['t2m'])  # Extract temperatures
+        self.weather_data = Dataset(self.parameters['working_directory'] + self.parameters['era5_data'])  # Load wind and temp data
+        self.weather_data.set_auto_mask(False)  # Load wind and temp data
+        self.temps = np.array(self.weather_data.variables['t2m'])  # Extract temperatures
         self.temps = self.temps - 273.15  # Convert to degrees Celcius (time, lat, long)
-        self.u_wind = np.array(self.wind_temp_data.variables['u10'])  # Extract u wind component
-        self.v_wind = np.array(self.wind_temp_data.variables['v10'])  # Extract v wind component
+        self.u_wind = np.array(self.weather_data.variables['u10'])  # Extract u wind component
+        self.v_wind = np.array(self.weather_data.variables['v10'])  # Extract v wind component
         self.winds = np.add(np.square(self.u_wind), np.square(self.v_wind))  # Calculate the net wind speed
         self.winds = np.sqrt(self.winds.astype(float))  # Calculate the net wind speed (time, lat, long)
-        self.precip = np.array(self.precip_data.variables['tp'])  # Extract precipitation values (time, lat, long)
+        self.precip = np.array(self.weather_data.variables['tp'])  # Extract precipitation values (time, lat, long)
         self.precip = self.precip * 1000 # Convert m to mm (time, lat, long)
 
-        self.time_total = self.wind_temp_data.variables['time'][:]  # Extract time values
-        self.latitude = self.wind_temp_data.variables['latitude'][:]  # Extract latitude values
-        self.longitude = self.wind_temp_data.variables['longitude'][:]  # Extract longitude values
-        self.time_length = len(self.wind_temp_data.variables['time'])  # Length of time dimension - number of timesteps
-        self.lat_length = len(self.wind_temp_data.variables['latitude'])  # Length of latitude dimension - n cells
-        self.lon_length = len(self.wind_temp_data.variables['longitude'])  # Length of longitude dimension - n cells
+        self.time_total = self.weather_data.variables['time'][:]  # Extract time values
+        self.latitude = self.weather_data.variables['latitude'][:]  # Extract latitude values
+        self.longitude = self.weather_data.variables['longitude'][:]  # Extract longitude values
+        self.time_length = len(self.weather_data.variables['time'])  # Length of time dimension - number of timesteps
+        self.lat_length = len(self.weather_data.variables['latitude'])  # Length of latitude dimension - n cells
+        self.lon_length = len(self.weather_data.variables['longitude'])  # Length of longitude dimension - n cells
 
         return
 
