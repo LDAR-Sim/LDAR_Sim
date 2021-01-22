@@ -193,19 +193,21 @@ def make_maps(company, sites):
 
     return
 
-def check_ERA5_file(Dir,loc): 
+def check_ERA5_file(Dir): 
     ncfiles = [] 
     for file in os.listdir(Dir):
         if file.endswith(".nc"):
             ncfiles.append(file)
-    if len(ncfiles) !=0: 
+    if len(ncfiles) ==1: 
         print ("Weather data checked")
-    else:
+    elif len(ncfiles) == 0 
         print ("I will donwload data for you...")
-        era_file = "ERA5_{}_1x1_hourly_2015_2019.nc".format(loc)
+        era_file = "ERA5_AB_1x1_hourly_2015_2019.nc"
         access_key = ""
         secret_key = ""
         s3 = boto3.client('s3', aws_access_key_id=access_key , aws_secret_access_key=secret_key)
         s3.download_file('eratest',era_file,r'{}/{}'.format(Dir,era_file))
         print ("Weather data downloaded") 
+     else:
+        print ("Warning! You have more than one weather data file in your working directory!")
         
