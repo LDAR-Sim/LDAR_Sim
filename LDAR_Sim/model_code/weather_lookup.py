@@ -34,7 +34,7 @@ class WeatherLookup:
 
         # Read in weather data as NetCDF file(s)
 
-        self.weather_data = Dataset(self.parameters['working_directory'] + self.parameters['era5_data'])  # Load wind and temp data
+        self.weather_data = Dataset(self.parameters['working_directory'] + self.parameters['era5_data'],'r')  # Load wind and temp data
         self.weather_data.set_auto_mask(False)  # Load wind and temp data
         self.temps = np.array(self.weather_data.variables['t2m'])  # Extract temperatures
         self.temps = self.temps - 273.15  # Convert to degrees Celcius (time, lat, long)
@@ -51,7 +51,10 @@ class WeatherLookup:
         self.time_length = len(self.weather_data.variables['time'])  # Length of time dimension - number of timesteps
         self.lat_length = len(self.weather_data.variables['latitude'])  # Length of latitude dimension - n cells
         self.lon_length = len(self.weather_data.variables['longitude'])  # Length of longitude dimension - n cells
-
+        
+        self.weather_data.close() # close the netCDF4 file 
+        
+        
         return
 
     def deployment_days(self, method):
