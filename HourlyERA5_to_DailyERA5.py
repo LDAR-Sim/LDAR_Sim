@@ -1,9 +1,23 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Jan  4 16:48:15 2021
+# ------------------------------------------------------------------------------
+# Program:     The LDAR Simulator (LDAR-Sim) 
+# File:        ERA5 downloader
+# Purpose:     Downloads ERA5 data
+#
+# Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
+#    
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, version 3.
 
-@author: MZG
-"""
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+# ------------------------------------------------------------------------------
 
 import netCDF4 as nc 
 import pandas as pd 
@@ -15,7 +29,7 @@ Wbase = np.empty((1,45,41),dtype=np.float)
 Tbase = np.empty((1,45,41),dtype=np.float)
 Pbase = np.empty((1,45,41),dtype=np.float)
 for y in yrs: 
-    data = nc.Dataset(r"D:\ERA5AB\weather_04_19/weather_{}.nc".format(y),'r') # where you save data 
+    data = nc.Dataset(r"D:\ERA5AB\weather_04_19\weather_{}.nc".format(y),'r') # where you save data 
     t = len(data['time'][:])
     days =int(t/24)
     
