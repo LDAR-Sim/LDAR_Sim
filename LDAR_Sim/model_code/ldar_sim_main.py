@@ -34,25 +34,8 @@ if __name__ == '__main__':
     program_list = ['P_ref','P_alt', 'P_alt2', 'P_cont']  # Programs to compare; Position one should be the reference program (P_ref)
 
     #-------------------------------------------------------------------------------
-    #------------------------------Check ERA5 data in the working directory---------
-    def check_ERA5_file(Dir,era_file): 
-        ncfiles = [] 
-        for file in os.listdir(Dir):
-            if file.endswith(".nc"):
-                ncfiles.append(file)
-        if file in ncfiles: 
-            print ("Weather data checked")
-        else:
-            print ("I will donwload data for you...")
-            access_key = "" # the access key and secret key will change in the future, these two keys are currently corresponding to my AWS account 
-            secret_key = ""
-            s3 = boto3.client('s3', aws_access_key_id=access_key , aws_secret_access_key=secret_key)
-            s3.download_file('eratest',era_file,r'{}/{}'.format(Dir,era_file))
-            print ("Weather data downloaded")
-            
-    era_file = r"ERA5_AB_1x1_hourly_2015_2019.nc"        
-    check_ERA5_file(wd,era_file)
-
+    #------------------------------Check ERA5 data in the working directory---------    
+    check_ERA5_file(wd,"AB")
     # -----------------------------Set up programs----------------------------------
     programs = []
     wd = os.path.abspath (wd) + "/"
