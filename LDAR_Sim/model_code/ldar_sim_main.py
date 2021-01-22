@@ -31,15 +31,18 @@ if __name__ == '__main__':
     # ------------------------------------------------------------------------------
     # -----------------------------Global parameters--------------------------------
     wd = "../inputs_template/"
-    program_list = ['P_ref','P_alt', 'P_alt2', 'P_cont']  # Programs to compare; Position one should be the reference program (P_ref)
-
+    
     #-------------------------------------------------------------------------------
     #------------------------------Check ERA5 data in the working directory---------    
     check_ERA5_file(wd,"AB")
+
+    program_list = ['P_ref','P_alt', 'P_alt2', 'P_cont']  # Programs to compare; Position one should be the reference program (P_ref)
+
     # -----------------------------Set up programs----------------------------------
     programs = []
     wd = os.path.abspath (wd) + "/"
     warnings.filterwarnings('ignore')    # Temporarily mute warnings
+    
 
     for p in range(len(program_list)):
         file = wd + program_list[p] + '.txt'
