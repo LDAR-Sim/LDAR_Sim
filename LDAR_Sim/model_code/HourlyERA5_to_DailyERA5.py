@@ -19,67 +19,79 @@
 #
 # ------------------------------------------------------------------------------
 
+#-------------------------------------------------------------------------------
+#--------------------script to Conver hourly ERA5 data to daily ERA5 data-------
+# This script is created for converting hourly ERA5 data from multiple NetCDF4 files 
+# into one daily ERA5 NetCDF file. This script shows an example of combining and 
+# converting three hourly ERA5 NetCDF4 weather data of Alberta into one daily average 
+# ERA5 NetCDF4 weather data of Alberta.
+
 import netCDF4 as nc 
 import pandas as pd 
 import numpy as np
 
-yrs = [2017,2018,2019]
-
-Wbase = np.empty((1,45,41),dtype=np.float)
-Tbase = np.empty((1,45,41),dtype=np.float)
+yrs = [2017,2018,2019] # Here, we have weather data for 2017, 2018, and 2019.
+                       # Here, each data file includes four weather variables:
+                       # u and v wind components, temperature and wind. 
+                       # We also know there are 45 rows and 41 columns of grids 
+                       # for Alberta when each grid is 0.25-degree square.   
+                      
+ubase = np.empty((1,45,41),dtype=np.float) # create empty array for storing converted data 
+vbase = np.empty((1,45,41),dtype=np.float) 
+Tbase = np.empty((1,45,41),dtype=np.float)  
 Pbase = np.empty((1,45,41),dtype=np.float)
 for y in yrs: 
     data = nc.Dataset(r"D:\ERA5AB\weather_04_19\weather_{}.nc".format(y),'r') # where you save data 
-    t = len(data['time'][:])
+    t = len(data['time'][:]) # read time
     days =int(t/24)
-    
-    lat = data.variables["latitude"][:]
-    lon = data.variables['longitude'][:]
-    
-    WS = np.empty((days,45,41),dtype=np.float)
-    TMP = np.empty((days,45,41),dtype=np.float)
+    U10 = np.empty((days,45,41),dtype=np.float) # create empty arrays for each variable of ech file 
+    V10 = np.empty((days,45,41),dtype=np.float)
+    T2M = np.empty((days,45,41),dtype=np.float)
     TP = np.empty((days,45,41),dtype=np.float)
     li = 0
     ui = 23
-    index=0 
+    index=0 # for every 24 hours we calculate averages for each weather variable and assigne averags to 
+            # the predefined empty arrays
     while ui < t:
 
         #wind
-        v = data.variables['v10'][li:ui,:,:]
         u = data.variables['u10'][li:ui,:,:]
-        ws = (u ** 2 + v ** 2) ** 0.5
-        d_ave_ws = np.average(ws,axis=0)
-        WS[index,:,:] = d_ave_ws
-
+        v = data.variables['v10'][li:ui,:,:]
+        u_ave = np.average(u,axis=0)
+        v_ave = np.average(v,axis=0)
+        U10[index,:,:] = u_ave
+        V10[index,:,:] = v_ave
+        
         # temperature
-        tmp = data.variables['t2m'][li:ui,:,:]
-        tmp = tmp - 273.15 
-        d_ave_tmp = np.average(tmp,axis=0)
-        TMP[index,:,:] = d_ave_tmp
+        t2m = data.variables['t2m'][li:ui,:,:]
+        t2m_ave = np.average(t2m,axis=0)
+        T2M[index,:,:] = t2m_ave
 
         #Total precipitation
         tp = data.variables['tp'][li:ui,:,:]
-        tp = tp * 1000
-        d_ave_tp = np.average(tp,axis=0)
-        TP[index,:,:] = d_ave_tp
+        tp_ave = np.average(tp,axis=0)
+        TP[index,:,:] = tp_ave
 
         li += 24 
         ui += 24
         index += 1
     
-    Wbase = np.concatenate((Wbase,WS),axis=0)
-    Tbase = np.concatenate((Tbase,TMP),axis=0)
+    ubase = np.concatenate((ubase,U10),axis=0)
+    vbase = np.concatenate((vbase,V10),axis=0)
+    Tbase = np.concatenate((Tbase,T2M),axis=0)
     Pbase = np.concatenate((Pbase,TP),axis=0)
     data.close()
     print (y)
     
-W5 = Wbase[1:,:,:]
-T5 = Tbase[1:,:,:]
-P5 = Pbase[1:,:,:]
+# extract only effective values for each weather variable array
+u3 = ubase[1:,:,:] 
+v3 = vbase[1:,:,:]
+T3 = Tbase[1:,:,:]
+P3 = Pbase[1:,:,:]
 
-ti = W5.shape[0]
-la = W5.shape[1]
-lo = W5.shape[2]
+ti = u3.shape[0]
+la = u3.shape[1]
+lo = u3.shape[2]
 
 #write everything into one netcdf file 
 ncfile = nc.Dataset('D:\ERA5AB\ERA5_new.nc',mode='w',format='NETCDF4_CLASSIC') 
@@ -105,17 +117,21 @@ new_time.long_name = 'time'
 # create weather variables
 # tempertaure
 temp = ncfile.createVariable('t2m',np.float64,('time','lat','lon')) # note: unlimited dimension is leftmost
-temp.units = 'C' # degrees Celsius
+temp.units = 'K' 
 temp.standard_name = 'daily average 2 meter air temperature' # this is a CF standard name 
 
-# wind speed 
-wind = ncfile.createVariable('ws10',np.float64,('time','lat','lon')) 
-wind.units = "m/s" 
-wind.standard_name = 'daily average wind speed 10 meter above ground' 
+# wind components 
+u_comp = ncfile.createVariable('u10',np.float64,('time','lat','lon')) 
+u_comp.units = "m/s" 
+u_comp.standard_name = 'daily average 10 meter u wind component above ground' 
+
+v_comp = ncfile.createVariable('v10',np.float64,('time','lat','lon')) 
+v_comp.units = "m/s" 
+v_comp.standard_name = 'daily average 10 meter v wind component above ground' 
 
 # total precipitation 
 precip = ncfile.createVariable('tp',np.float64,('time','lat','lon')) 
-precip.units = "mm"
+precip.units = "m"
 precip.standard_name = 'daily average 2 meter air temperature' 
 
 
@@ -123,8 +139,9 @@ precip.standard_name = 'daily average 2 meter air temperature'
 new_lat[:] = lat
 new_lon[:] = lon 
 new_time[:] = arange(ti)
-temp[:] = T5
-wind[:] = W5
-precip[:] = P5
+temp[:] = T3
+u_comp[:] = u3
+v_comp[:] = v3
+precip[:] = P3
 
 ncfile.close()
