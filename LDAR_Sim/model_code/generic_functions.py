@@ -192,3 +192,25 @@ def make_maps(company, sites):
     plt.clf()
 
     return
+
+def check_ERA5_file(Dir,loc):
+    era_file = "ERA5_{}_1x1_hourly_2015_2019.nc".format(loc)
+    ncfiles = [] 
+    # search netCDF file in the working directory
+    for file in os.listdir(Dir):
+        if file.endswith(".nc"):
+            ncfiles.append(file)
+    if len(ncfiles) > 1:
+        print ("Warning: You have more than one NetCDF file in your working directory!")
+    elif len(ncfiles) == 1: 
+        if ncfiles[0] != era_file: 
+            print ("Warning: Wrong weathr data, please delete your NetCDF file from working directory.")
+        else:
+            print ("Weather Data checked")
+    else: 
+        print ("I will donwload weather data for you...")
+        access_key = ""
+        secret_key = ""
+        s3 = boto3.client('s3', aws_access_key_id=access_key , aws_secret_access_key=secret_key)
+        s3.download_file('eratest',era_file,r'{}/{}'.format(Dir,era_file))
+        print ("Weather data downloaded")
