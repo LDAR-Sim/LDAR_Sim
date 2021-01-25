@@ -25,6 +25,7 @@ import os
 import datetime
 import warnings
 import multiprocessing as mp
+from generic_functions import check_ERA5_file
 
 if __name__ == '__main__':
     # ------------------------------------------------------------------------------
@@ -49,6 +50,9 @@ if __name__ == '__main__':
     ref_program = program_list[0]
     write_data = programs[0]['write_data']
     output_directory = wd + 'outputs/'
+
+    # Check whether ERA5 data is already in the working directory and download data if not
+    check_ERA5_file(wd, programs[0]['weather_file'])
 
     if not os.path.exists(output_directory):
         os.makedirs(output_directory)
