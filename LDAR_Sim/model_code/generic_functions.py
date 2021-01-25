@@ -150,7 +150,7 @@ def make_maps(company, sites):
 
     # Make nice map images
     plt.rcParams["figure.figsize"] = (10, 10)
-    map = Basemap(epsg=3401, llcrnrlon=xmin - 360 - 1, llcrnrlat= ymin - 1, urcrnrlon=xmax - 360 + 3,
+    map = Basemap(epsg=3401, llcrnrlon= xmin - 1, llcrnrlat= ymin - 1, urcrnrlon=xmax + 3,
                   urcrnrlat=ymax + 1, resolution='i', area_thresh=10000.)
     map.fillcontinents(color='#e8e8e8', alpha=1, zorder=1)
     map.drawcountries(color='black', linewidth=2, zorder=3)
@@ -172,7 +172,7 @@ def make_maps(company, sites):
     plt.savefig('DD_' + company.name + '_map' + '.png', dpi=300)
     plt.clf()
 
-    map2 = Basemap(epsg=3401, llcrnrlon=xmin - 360 - 1, llcrnrlat= ymin - 1, urcrnrlon=xmax - 360 + 3,
+    map2 = Basemap(epsg=3401, llcrnrlon=xmin - 1, llcrnrlat= ymin - 1, urcrnrlon=xmax + 3,
                   urcrnrlat=ymax + 1, resolution='i', area_thresh=10000.)
     map2.fillcontinents(color='#e8e8e8', alpha=1, zorder=1)
     map2.drawcountries(color='black', linewidth=2, zorder=3)

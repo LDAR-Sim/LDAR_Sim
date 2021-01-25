@@ -50,7 +50,7 @@ for y in yrs:
     TP = np.empty((days,45,41),dtype=np.float)
     li = 0
     ui = 23
-    index=0 # for every 24 hours we calculate averages for each weather variable and assigne averags to 
+    index=0 # for every 24 hours we calculate averages for each weather variable and assign averages to
             # the predefined empty arrays
     while ui < t:
 
