@@ -50,11 +50,11 @@ class WeatherLookup:
         self.precip = self.precip * 1000 # Convert m to mm (time, lat, long)
 
         self.time_total = self.weather_data.variables['time'][:]  # Extract time values
-        self.latitude = self.weather_data.variables['latitude'][:]  # Extract latitude values
-        self.longitude = self.weather_data.variables['longitude'][:]  # Extract longitude values
-        self.time_length = len(self.weather_data.variables['time'])  # Length of time dimension - number of timesteps
-        self.lat_length = len(self.weather_data.variables['latitude'])  # Length of latitude dimension - n cells
-        self.lon_length = len(self.weather_data.variables['longitude'])  # Length of longitude dimension - n cells
+        self.latitude = self.weather_data.variables['lat'][:]  # Extract latitude values
+        self.longitude = self.weather_data.variables['lon'][:]  # Extract longitude values
+        self.time_length = len(self.time_total)  # Length of time dimension - number of timesteps
+        self.lat_length = len(self.latitude)  # Length of latitude dimension - n cells
+        self.lon_length = len(self.longitude)  # Length of longitude dimension - n cells
         
         self.weather_data.close() # close the netCDF4 file 
         
