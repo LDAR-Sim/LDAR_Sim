@@ -21,6 +21,7 @@
 
 from netCDF4 import Dataset
 import numpy as np
+from generic_functions import check_ERA5_file
 
 
 class WeatherLookup:
@@ -32,9 +33,12 @@ class WeatherLookup:
         self.state = state
         self.parameters = parameters
 
+        # Check whether ERA5 data is already in the working directory and download data if not
+        check_ERA5_file(self.parameters['working_directory'], self.parameters['weather_file'])
+
         # Read in weather data as NetCDF file(s)
 
-        self.weather_data = Dataset(self.parameters['working_directory'] + self.parameters['ERA5_AB_1x1_hourly_2015_2019.nc'],'r')  # Load wind and temp data
+        self.weather_data = Dataset(self.parameters['working_directory'] + self.parameters['weather_file'],'r')  # Load wind and temp data
         self.weather_data.set_auto_mask(False)  # Load wind and temp data
         self.temps = np.array(self.weather_data.variables['t2m'])  # Extract temperatures
         self.temps = self.temps - 273.15  # Convert to degrees Celcius (time, lat, long)

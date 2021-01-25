@@ -26,6 +26,7 @@ from osgeo import gdal
 from osgeo import osr
 from mpl_toolkits.basemap import Basemap
 import matplotlib.pyplot as plt
+import boto3 # for downloading data from AWS
 
 def gap_calculator(condition_vector):
     """
@@ -193,24 +194,25 @@ def make_maps(company, sites):
 
     return
 
-def check_ERA5_file(Dir,loc):
-    era_file = "ERA5_{}_1x1_hourly_2015_2019.nc".format(loc)
-    ncfiles = [] 
+def check_ERA5_file(wd, target_file):
+    ncfiles = []
+    target_file_found = False
     # search netCDF file in the working directory
-    for file in os.listdir(Dir):
+    for file in os.listdir(wd):
         if file.endswith(".nc"):
             ncfiles.append(file)
-    if len(ncfiles) > 1:
-        print ("Warning: You have more than one NetCDF file in your working directory!")
-    elif len(ncfiles) == 1: 
-        if ncfiles[0] != era_file: 
-            print ("Warning: Wrong weathr data, please delete your NetCDF file from working directory.")
-        else:
-            print ("Weather Data checked")
-    else: 
-        print ("I will donwload weather data for you...")
+
+    for file in ncfiles:
+        if file == target_file:
+            target_file_found = True
+
+    if target_file_found:
+        print("Weather data checked. Continuing simulation.")
+
+    if not target_file_found:
+        print ("Weather data not found. Downloading now from AWS you...")
         access_key = ""
         secret_key = ""
         s3 = boto3.client('s3', aws_access_key_id=access_key , aws_secret_access_key=secret_key)
-        s3.download_file('eratest',era_file,r'{}/{}'.format(Dir,era_file))
-        print ("Weather data downloaded")
+        s3.download_file(target_file,target_file,r'{}/{}'.format(wd,target_file))
+        print ("Weather data download complete")
