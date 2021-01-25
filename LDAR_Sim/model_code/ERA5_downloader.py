@@ -61,7 +61,7 @@ c.retrieve(
                    ], # define hours you want to download in each day (temporal resolusion) 
 
         'area': [60,-120,49,-110,], #define the study area bounding box [north west south east]
-        'grid':[1,1], # define the size of weather grid (spatial resolusion)
+        'grid':[1,1], # define the size of weather grid in degrees (spatial resolution)
         'format':'netcdf',
     },
     r'ERA5_2017_2019_AB.nc') # define the name of file
