@@ -21,8 +21,6 @@
 
 from netCDF4 import Dataset
 import numpy as np
-from generic_functions import check_ERA5_file
-
 
 class WeatherLookup:
     def __init__(self, state, parameters):
@@ -32,9 +30,6 @@ class WeatherLookup:
         """
         self.state = state
         self.parameters = parameters
-
-        # Check whether ERA5 data is already in the working directory and download data if not
-        check_ERA5_file(self.parameters['working_directory'], self.parameters['weather_file'])
 
         # Read in weather data as NetCDF file(s)
 

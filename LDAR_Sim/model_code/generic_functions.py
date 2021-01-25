@@ -214,5 +214,5 @@ def check_ERA5_file(wd, target_file):
         access_key = ""
         secret_key = ""
         s3 = boto3.client('s3', aws_access_key_id=access_key , aws_secret_access_key=secret_key)
-        s3.download_file(target_file,target_file,r'{}/{}'.format(wd,target_file))
+        s3.download_file('eratest',target_file,r'{}/{}'.format(wd,target_file))
         print ("Weather data download complete")
