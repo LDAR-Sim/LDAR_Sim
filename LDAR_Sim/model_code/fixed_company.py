@@ -1,10 +1,10 @@
 # ------------------------------------------------------------------------------
-# Program:     The LDAR Simulator (LDAR-Sim) 
+# Program:     The LDAR Simulator (LDAR-Sim)
 # File:        fixed company
 # Purpose:     Company managing fixed agents
 #
 # Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
-#    
+#
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published
 # by the Free Software Foundation, version 3.
@@ -19,11 +19,11 @@
 #
 # ------------------------------------------------------------------------------
 
-from fixed_crew import *
-from weather_lookup import *
+from fixed_crew import fixed_crew
 import numpy as np
 import math
 from generic_functions import get_prop_rate
+
 
 class fixed_company:
     def __init__(self, state, parameters, config, timeseries):
@@ -49,19 +49,28 @@ class fixed_company:
         if self.config['follow_up_thresh'][1] == "absolute":
             self.config['follow_up_thresh'] = self.config['follow_up_thresh'][0]
         elif self.config['follow_up_thresh'][1] == "proportion":
-            self.config['follow_up_thresh'] = get_prop_rate(self.config['follow_up_thresh'][0], self.state['empirical_leaks'])
+            self.config['follow_up_thresh'] = get_prop_rate(
+                self.config['follow_up_thresh'][0],
+                self.state['empirical_leaks'])
         else:
             print('Follow-up threshold type not recognized. Must be "absolute" or "proportion".')
 
         # Initialize 2D matrices to store deployment day (DD) counts and MCBs
-        self.DD_map = np.zeros((len(self.state['weather'].longitude), len(self.state['weather'].latitude)))
-        self.MCB_map = np.zeros((len(self.state['weather'].longitude), len(self.state['weather'].latitude)))
+        self.DD_map = np.zeros(
+            (len(self.state['weather'].longitude),
+             len(self.state['weather'].latitude)))
+        self.MCB_map = np.zeros(
+            (len(self.state['weather'].longitude),
+             len(self.state['weather'].latitude)))
 
         # Initialize the individual fixed crews (the agents) - each is a single fixed sensor
         for site in self.state['sites']:
             n_fixed = int(site['fixed_sensors'])
             for i in range(n_fixed):
-                self.crews.append(fixed_crew(state, parameters, config, timeseries, site, self.deployment_days, id=site['facility_ID'] + '-' + str(i + 1)))
+                self.crews.append(
+                    fixed_crew(
+                        state, parameters, config, timeseries, site, self.deployment_days,
+                        id=site['facility_ID'] + '-' + str(i + 1)))
                 self.timeseries['fixed_cost'][self.state['t'].current_timestep] += \
                     self.parameters['methods']['fixed']['up_front_cost']
 
@@ -82,7 +91,9 @@ class fixed_company:
         # Calculate proportion sites available
         available_sites = 0
         for site in self.state['sites']:
-            if self.deployment_days[site['lon_index'], site['lat_index'], self.state['t'].current_timestep]:
+            if self.deployment_days[site['lon_index'],
+                                    site['lat_index'],
+                                    self.state['t'].current_timestep]:
                 available_sites += 1
         prop_avail = available_sites / len(self.state['sites'])
         self.timeseries['fixed_prop_sites_avail'].append(prop_avail)
@@ -139,12 +150,13 @@ class fixed_company:
                 # Would the site have been chosen without venting?
                 if self.parameters['consider_venting']:
                     if (site_cum_rate - venting) < self.config['follow_up_thresh']:
-                        self.timeseries['fixed_flags_redund3'][self.state['t'].current_timestep] += 1
-
+                        self.timeseries['fixed_flags_redund3'][
+                            self.state['t'].current_timestep] += 1
 
     def site_reports(self):
         """
-        Writes site-level deployment days (DDs) and maximum condition blackouts (MCBs) for each site.
+        Writes site-level deployment days (DDs) and maximum condition blackouts (MCBs)
+        for each site.
         """
 
         for site in self.state['sites']:

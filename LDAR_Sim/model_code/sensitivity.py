@@ -1,10 +1,10 @@
 # ------------------------------------------------------------------------------
-# Program:     The LDAR Simulator (LDAR-Sim) 
+# Program:     The LDAR Simulator (LDAR-Sim)
 # File:        Sensitivity analysis
 # Purpose:     Module to enable sensitivity analysis
 #
 # Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
-#    
+#
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published
 # by the Free Software Foundation, version 3.
@@ -25,35 +25,49 @@ import time
 
 
 class Sensitivity:
-    def __init__(self, parameters, timeseries, state):
+    def __init__(self, params, timeseries, state):
         """
         Initialize a sensitivity analysis for a given program.
 
         """
-        self.parameters = parameters
+        self.parameters = params
         self.timeseries = timeseries
         self.state = state
 
         # Make folder for sensitivity analysis outputs
-        self.output_directory = os.path.join(self.parameters['working_directory'], 'sensitivity_analysis')
+        self.output_directory = os.path.join(
+            params['working_directory'],
+            'sensitivity_analysis')
         if not os.path.exists(self.output_directory):
             os.makedirs(self.output_directory)
 
         # ------------------------Define SA input parameters----------------------------
         output_file = os.path.join(self.output_directory, 'SA_params.csv')
         param_df = pd.DataFrame()
-        if self.parameters['simulation'] == '0' and self.parameters['sensitivity']['order'] == '1':
-            for i in range(self.parameters['n_simulations']):
+        if params['simulation'] == '0' and params['sensitivity']['order'] == '1':
+            for i in range(params['n_simulations']):
                 row = {
                     # General inputs
                     'LSD_outliers': int(np.round(np.random.normal(0, 1))),
-                    'LSD_samples': int(np.random.normal(len(self.state['empirical_leaks']), len(self.state['empirical_leaks']) / 4)),
+                    'LSD_samples':
+                    int(np.random.normal(
+                        len(state['empirical_leaks']),
+                        len(state['empirical_leaks']) / 4)),
                     'LCD_outliers': int(np.round(np.random.normal(0, 1))),
-                    'LCD_samples': int(np.random.normal(len(self.state['empirical_counts']), len(self.state['empirical_counts']) / 4)),
+                    'LCD_samples':
+                    int(np.random.normal(
+                        len(state['empirical_counts']),
+                        len(state['empirical_counts']) / 4)),
                     'site_rate_outliers': int(np.round(np.random.normal(0, 1))),
-                    'site_rate_samples': int(np.random.normal(len(self.state['empirical_sites']), len(self.state['empirical_sites']) / 4)),
+                    'site_rate_samples':
+                    int(np.random.normal(
+                        len(state['empirical_sites']),
+                        len(state['empirical_sites']) / 4)),
                     'offsite_times_outliers': int(np.round(np.random.normal(0, 1))),
-                    'offsite_times_samples': int(np.random.normal(len(self.state['offsite_times']), len(self.state['offsite_times']) / 4)),
+                    'offsite_times_samples':
+                    int(np.random.normal(
+                        len(state['offsite_times']),
+                        len(state['offsite_times']) / 4)),
 
                     'LPR': np.random.gamma(0.8327945, 0.03138632365),
                     'repair_delay': np.random.uniform(0, 100),
@@ -96,68 +110,77 @@ class Sensitivity:
             time.sleep(1)
         if os.path.isfile(output_file):
             params = pd.read_csv(output_file)
-            current_row = params.iloc[int(self.parameters['simulation'])]
+            current_row = params.iloc[int(params['simulation'])]
             self.SA_params = current_row.to_dict()
 
         # --------------Update model parameters according to SA definition--------------
 
-        self.parameters['LPR'] = self.SA_params['LPR']
-        self.parameters['start_year'] = self.SA_params['start_year']
-        self.parameters['repair_delay'] = self.SA_params['repair_delay']
-        self.parameters['operator_strength'] = self.SA_params['operator_strength']
-        self.parameters['max_det_op'] = self.SA_params['max_det_op']
-        self.parameters['consider_operator'] = self.SA_params['consider_operator']
-        self.parameters['consider_daylight'] = self.SA_params['consider_daylight']
-        self.parameters['consider_venting'] = self.SA_params['consider_venting']
+        params['LPR'] = self.SA_params['LPR']
+        params['start_year'] = self.SA_params['start_year']
+        params['repair_delay'] = self.SA_params['repair_delay']
+        params['operator_strength'] = self.SA_params['operator_strength']
+        params['max_det_op'] = self.SA_params['max_det_op']
+        params['consider_operator'] = self.SA_params['consider_operator']
+        params['consider_daylight'] = self.SA_params['consider_daylight']
+        params['consider_venting'] = self.SA_params['consider_venting']
 
         # Modify input distributions
-        self.state['empirical_leaks'] = self.adjust_distribution(self.state['empirical_leaks'],
-            self.SA_params['LSD_outliers'], self.SA_params['LSD_samples'])
-        self.state['empirical_counts'] = self.adjust_distribution(self.state['empirical_counts'],
-            self.SA_params['LCD_outliers'], self.SA_params['LCD_samples'])
-        self.state['offsite_times'] = self.adjust_distribution(self.state['offsite_times'],
-            self.SA_params['offsite_times_outliers'], self.SA_params['offsite_times_samples'])
-        if self.parameters['consider_venting']:
-            self.state['empirical_sites'] = self.adjust_distribution(self.state['empirical_sites'],
-                self.SA_params['site_rate_outliers'], self.SA_params['site_rate_samples'])
+        state['empirical_leaks'] = self.adjust_distribution(
+            state['empirical_leaks'],
+            self.SA_params['LSD_outliers'],
+            self.SA_params['LSD_samples'])
+        state['empirical_counts'] = self.adjust_distribution(
+            state['empirical_counts'],
+            self.SA_params['LCD_outliers'],
+            self.SA_params['LCD_samples'])
+        state['offsite_times'] = self.adjust_distribution(
+            state['offsite_times'],
+            self.SA_params['offsite_times_outliers'],
+            self.SA_params['offsite_times_samples'])
+        if params['consider_venting']:
+            state['empirical_sites'] = self.adjust_distribution(
+                state['empirical_sites'],
+                self.SA_params['site_rate_outliers'],
+                self.SA_params['site_rate_samples'])
 
-        # Set OGI parameters                      
-        if self.parameters['sensitivity']['program'] == 'OGI':
-            self.parameters['methods']['OGI']['max_workday'] = self.SA_params['max_workday']
-            self.parameters['methods']['OGI']['n_crews'] = self.SA_params['OGI_n_crews']
-            self.parameters['methods']['OGI']['min_temp'] = self.SA_params['OGI_min_temp']
-            self.parameters['methods']['OGI']['max_wind'] = self.SA_params['OGI_max_wind']
-            self.parameters['methods']['OGI']['max_precip'] = self.SA_params['OGI_max_precip']
-            self.parameters['methods']['OGI']['min_interval'] = self.SA_params['OGI_min_interval']
-            self.parameters['methods']['OGI']['reporting_delay'] = self.SA_params['OGI_reporting_delay']
-            self.parameters['methods']['OGI']['MDL'][0] = self.SA_params['OGI_MDL']
+        # Set OGI parameters
+        methods = params['methods']
+        if params['sensitivity']['program'] == 'OGI':
+            methods['OGI']['max_workday'] = self.SA_params['max_workday']
+            methods['OGI']['n_crews'] = self.SA_params['OGI_n_crews']
+            methods['OGI']['min_temp'] = self.SA_params['OGI_min_temp']
+            methods['OGI']['max_wind'] = self.SA_params['OGI_max_wind']
+            methods['OGI']['max_precip'] = self.SA_params['OGI_max_precip']
+            methods['OGI']['min_interval'] = self.SA_params['OGI_min_interval']
+            methods['OGI']['reporting_delay'] = self.SA_params['OGI_reporting_delay']
+            methods['OGI']['MDL'][0] = self.SA_params['OGI_MDL']
 
-            for site in self.state['sites']:
+            for site in state['sites']:
                 site['OGI_time'] = self.SA_params['OGI_time']
                 site['OGI_RS'] = self.SA_params['OGI_RS']
 
-        # Set screening (truck) parameters                      
-        if self.parameters['sensitivity']['program'] == 'truck':
-            self.parameters['methods']['OGI_FU']['max_workday'] = self.SA_params['max_workday']
-            self.parameters['methods']['OGI_FU']['n_crews'] = self.SA_params['OGI_n_crews']
-            self.parameters['methods']['OGI_FU']['min_temp'] = self.SA_params['OGI_min_temp']
-            self.parameters['methods']['OGI_FU']['max_wind'] = self.SA_params['OGI_max_wind']
-            self.parameters['methods']['OGI_FU']['max_precip'] = self.SA_params['OGI_max_precip']
-            self.parameters['methods']['OGI_FU']['min_interval'] = self.SA_params['OGI_min_interval']
-            self.parameters['methods']['OGI_FU']['reporting_delay'] = self.SA_params['OGI_reporting_delay']
-            self.parameters['methods']['OGI_FU']['MDL'][0] = self.SA_params['OGI_MDL']
+        # Set screening (truck) parameters
+        if params['sensitivity']['program'] == 'truck':
+            methods['OGI_FU']['max_workday'] = self.SA_params['max_workday']
+            methods['OGI_FU']['n_crews'] = self.SA_params['OGI_n_crews']
+            methods['OGI_FU']['min_temp'] = self.SA_params['OGI_min_temp']
+            methods['OGI_FU']['max_wind'] = self.SA_params['OGI_max_wind']
+            methods['OGI_FU']['max_precip'] = self.SA_params['OGI_max_precip']
+            methods['OGI_FU']['min_interval'] = self.SA_params['OGI_min_interval']
+            methods['OGI_FU']['reporting_delay'] = self.SA_params['OGI_reporting_delay']
+            methods['OGI_FU']['MDL'][0] = self.SA_params['OGI_MDL']
 
-            self.parameters['methods']['truck']['max_workday'] = self.SA_params['max_workday']
-            self.parameters['methods']['truck']['min_temp'] = self.SA_params['truck_min_temp']
-            self.parameters['methods']['truck']['max_wind'] = self.SA_params['truck_max_wind']
-            self.parameters['methods']['truck']['max_precip'] = self.SA_params['truck_max_precip']
-            self.parameters['methods']['truck']['min_interval'] = self.SA_params['truck_min_interval']
-            self.parameters['methods']['truck']['reporting_delay'] = self.SA_params['truck_reporting_delay']
-            self.parameters['methods']['truck']['MDL'] = self.SA_params['truck_MDL']
-            self.parameters['methods']['truck']['follow_up_thresh'] = self.SA_params['truck_follow_up_thresh']
-            self.parameters['methods']['truck']['follow_up_ratio'] = self.SA_params['truck_follow_up_ratio']
+            methods['truck']['max_workday'] = self.SA_params['max_workday']
+            methods['truck']['min_temp'] = self.SA_params['truck_min_temp']
+            methods['truck']['max_wind'] = self.SA_params['truck_max_wind']
+            methods['truck']['max_precip'] = self.SA_params['truck_max_precip']
+            methods['truck']['min_interval'] = self.SA_params['truck_min_interval']
+            methods['truck']['reporting_delay'] = self.SA_params['truck_reporting_delay']
+            methods['truck']['MDL'] = self.SA_params['truck_MDL']
+            methods['truck']['follow_up_thresh'] = self.SA_params['truck_follow_up_thresh']
+            methods['truck']['follow_up_ratio'] = self.SA_params['truck_follow_up_ratio']
 
-            for site in self.state['sites']:
+            for site in state['sites']:
                 site['OGI_time'] = self.SA_params['OGI_time']
                 site['OGI_FU_time'] = self.SA_params['OGI_time']
                 site['OGI_RS'] = self.SA_params['OGI_RS']
@@ -169,16 +192,19 @@ class Sensitivity:
     # ------------------------------------------------------------------------------
 
     def write_data(self):
+        params = self.parameters
+        timeseries = self.timeseries
+        state = self.state
 
         # Build generic output dataframe
         df_dict = {
             # SA inputs
-            'program': self.parameters['sensitivity']['program'],
-            'simulation': self.parameters['simulation'],
-            'run_time': time.time() - self.parameters['start_time'],
-            'timesteps': self.parameters['timesteps'],
-            'spin_up': self.parameters['spin_up'],
-            'start_year': self.parameters['start_year'],
+            'program': params['sensitivity']['program'],
+            'simulation': params['simulation'],
+            'run_time': time.time() - params['start_time'],
+            'timesteps': params['timesteps'],
+            'spin_up': params['spin_up'],
+            'start_year': params['start_year'],
             'LSD_outliers': self.SA_params['LSD_outliers'],
             'LSD_samples': self.SA_params['LSD_samples'],
             'LCD_outliers': self.SA_params['LCD_outliers'],
@@ -191,23 +217,24 @@ class Sensitivity:
             'repair_delay': self.SA_params['repair_delay'],
             'operator_strength': self.SA_params['operator_strength'],
             'max_det_op': self.SA_params['max_det_op'],
-
             # SA outputs
-            'dail_site_em': np.mean(np.array(self.timeseries['daily_emissions_kg'][self.parameters['spin_up']:]) / len(
-                self.state['sites'])),
-            'std_dail_site_em': np.std(
-                np.array(self.timeseries['daily_emissions_kg'][self.parameters['spin_up']:]) / len(
-                    self.state['sites'])),
-            'cum_repaired_leaks': self.timeseries['cum_repaired_leaks'][-1:][0],
-            'med_active_leaks': np.median(np.array(self.timeseries['active_leaks'][self.parameters['spin_up']:])),
-            'med_days_active': np.median(pd.DataFrame(self.state['leaks'])['days_active']),
-            'med_leak_rate': np.median(pd.DataFrame(self.state['leaks'])['rate']),
-            'med_vent_rate': np.median(self.state['empirical_vents']),
-            'cum_init_leaks': np.sum(pd.DataFrame(self.state['sites'])['initial_leaks']),
+            'dail_site_em':
+                np.mean(np.array(timeseries['daily_emissions_kg']
+                                 [params['spin_up']:]) / len(state['sites'])),
+            'std_dail_site_em':
+                np.std(np.array(timeseries['daily_emissions_kg']
+                                [params['spin_up']:]) / len(state['sites'])),
+            'cum_repaired_leaks': timeseries['cum_repaired_leaks'][-1:][0],
+            'med_active_leaks':
+                np.median(np.array(timeseries['active_leaks'][params['spin_up']:])),
+            'med_days_active': np.median(pd.DataFrame(state['leaks'])['days_active']),
+            'med_leak_rate': np.median(pd.DataFrame(state['leaks'])['rate']),
+            'med_vent_rate': np.median(state['empirical_vents']),
+            'cum_init_leaks': np.sum(pd.DataFrame(state['sites'])['initial_leaks']),
         }
 
         # If this is an operator program, you're done - export the data
-        if self.parameters['sensitivity']['program'] == 'operator':
+        if params['sensitivity']['program'] == 'operator':
             self.export_SA(df_dict, self.output_directory, 'sensitivity_operator.csv')
 
             # Otherwise, this is an LDAR program - add generic inputs
@@ -220,7 +247,7 @@ class Sensitivity:
         df_dict.update(generic_dict)
 
         # If this is an OGI program, add relevant variables to dictionary before exporting
-        if self.parameters['sensitivity']['program'] == 'OGI':
+        if params['sensitivity']['program'] == 'OGI':
             OGI_dict = {
                 # New OGI inputs
                 'OGI_n_crews': self.SA_params['OGI_n_crews'],
@@ -234,18 +261,22 @@ class Sensitivity:
                 'OGI_RS': self.SA_params['OGI_RS'],
 
                 # New OGI outputs
-                'OGI_cum_program_cost': np.sum(np.array(self.timeseries['OGI_cost'][self.parameters['spin_up']:])),
+                'OGI_cum_program_cost':
+                    np.sum(np.array(timeseries['OGI_cost'][params['spin_up']:])),
                 'OGI_prop_sites_avail': np.mean(
-                    np.array(self.timeseries['OGI_prop_sites_avail'][self.parameters['spin_up']:])),
-                'OGI_cum_missed_leaks': np.sum(pd.DataFrame(self.state['sites'])['OGI_missed_leaks']),
-                'OGI_cum_surveys': np.sum(pd.DataFrame(self.state['sites'])['OGI_surveys_conducted'])
+                    np.array(timeseries['OGI_prop_sites_avail'][params['spin_up']:])),
+                'OGI_cum_missed_leaks':
+                    np.sum(pd.DataFrame(state['sites'])['OGI_missed_leaks']),
+                'OGI_cum_surveys':
+                    np.sum(pd.DataFrame(state['sites'])['OGI_surveys_conducted'])
             }
 
             df_dict.update(OGI_dict)
             self.export_SA(df_dict, self.output_directory, 'sensitivity_OGI.csv')
 
-        # If this is a screening (truck) program, add relevant variables to dictionary before exporting
-        if self.parameters['sensitivity']['program'] == 'truck':
+        # If this is a screening (truck) program, add relevant variables to dictionary
+        #  before exporting
+        if params['sensitivity']['program'] == 'truck':
             truck_dict = {
                 # New OGI_FU inputs
                 'OGI_FU_n_crews': self.SA_params['OGI_n_crews'],
@@ -272,19 +303,25 @@ class Sensitivity:
 
                 # New OGI_FU outputs
                 'OGI_FU_cum_program_cost': np.sum(
-                    np.array(self.timeseries['OGI_FU_cost'][self.parameters['spin_up']:])),
+                    np.array(timeseries['OGI_FU_cost'][params['spin_up']:])),
                 'OGI_FU_prop_sites_avail': np.mean(
-                    np.array(self.timeseries['OGI_FU_prop_sites_avail'][self.parameters['spin_up']:])),
-                'OGI_FU_cum_missed_leaks': np.sum(pd.DataFrame(self.state['sites'])['OGI_FU_missed_leaks']),
-                'OGI_FU_cum_surveys': np.sum(pd.DataFrame(self.state['sites'])['OGI_FU_surveys_conducted']),
+                    np.array(timeseries['OGI_FU_prop_sites_avail'][params['spin_up']:])),
+                'OGI_FU_cum_missed_leaks':
+                    np.sum(pd.DataFrame(state['sites'])['OGI_FU_missed_leaks']),
+                'OGI_FU_cum_surveys':
+                    np.sum(pd.DataFrame(state['sites'])['OGI_FU_surveys_conducted']),
 
                 # New truck outputs
-                'truck_cum_program_cost': np.sum(np.array(self.timeseries['truck_cost'][self.parameters['spin_up']:])),
-                'truck_prop_sites_avail': np.mean(
-                    np.array(self.timeseries['truck_prop_sites_avail'][self.parameters['spin_up']:])),
-                'truck_cum_missed_leaks': np.sum(pd.DataFrame(self.state['sites'])['truck_missed_leaks']),
-                'truck_cum_surveys': np.sum(pd.DataFrame(self.state['sites'])['truck_surveys_conducted']),
-                'truck_cum_eff_flags': np.sum(np.array(self.timeseries['truck_eff_flags'][self.parameters['spin_up']:]))
+                'truck_cum_program_cost':
+                    np.sum(np.array(timeseries['truck_cost'][params['spin_up']:])),
+                'truck_prop_sites_avail':
+                    np.mean(np.array(timeseries['truck_prop_sites_avail'][params['spin_up']:])),
+                'truck_cum_missed_leaks':
+                    np.sum(pd.DataFrame(state['sites'])['truck_missed_leaks']),
+                'truck_cum_surveys':
+                    np.sum(pd.DataFrame(state['sites'])['truck_surveys_conducted']),
+                'truck_cum_eff_flags':
+                    np.sum(np.array(timeseries['truck_eff_flags'][params['spin_up']:]))
             }
 
             df_dict.update(truck_dict)
@@ -321,7 +358,8 @@ class Sensitivity:
                     try:
                         df_old = pd.read_csv(output_file)
                         break
-                    except: continue
+                    except:  # noqa HBD - probably IOError
+                        continue
 
                 df_old = df_old.append(df_new)
                 df_old.to_csv(output_file, index=False)

@@ -1,10 +1,10 @@
 # ------------------------------------------------------------------------------
-# Program:     The LDAR Simulator (LDAR-Sim) 
+# Program:     The LDAR Simulator (LDAR-Sim)
 # File:        fixed crew
 # Purpose:     Initialize each fixed crew under fixed company
 #
 # Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
-#    
+#
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published
 # by the Free Software Foundation, version 3.
@@ -21,6 +21,7 @@
 
 import numpy as np
 
+
 class fixed_crew:
     def __init__(self, state, parameters, config, timeseries, site, deployment_days, id):
         """
@@ -35,7 +36,7 @@ class fixed_crew:
         self.crewstate = {'id': id}  # Crewstate is unique to this agent
         self.crewstate['lat'] = 0.0
         self.crewstate['lon'] = 0.0
-        #self.worked_today = False
+        # self.worked_today = False
         return
 
     def work_a_day(self, candidate_flags):
@@ -56,8 +57,9 @@ class fixed_crew:
 
         # Add vented emissions
         venting = 0
-        if self.parameters['consider_venting'] == True:
-            venting = self.state['empirical_vents'][np.random.randint(0, len(self.state['empirical_vents']))]
+        if self.parameters['consider_venting']:
+            venting = self.state['empirical_vents'][
+                np.random.randint(0, len(self.state['empirical_vents']))]
             site_cum_rate += venting
 
         # Simple detection module based on strict minimum detection limit
@@ -65,8 +67,9 @@ class fixed_crew:
         if site_cum_rate > (self.config['MDL']):
             detect = True
 
-        if detect == True:
-            # If source is above follow-up threshold, calculate measured rate using quantification error
+        if detect:
+            # If source is above follow-up threshold, calculate measured rate using
+            # quantification error
             quant_error = np.random.normal(0, self.config['QE'])
             measured_rate = None
             if quant_error >= 0:

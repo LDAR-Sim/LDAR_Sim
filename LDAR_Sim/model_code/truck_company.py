@@ -1,10 +1,10 @@
 # ------------------------------------------------------------------------------
-# Program:     The LDAR Simulator (LDAR-Sim) 
+# Program:     The LDAR Simulator (LDAR-Sim)
 # File:        Truck company
 # Purpose:     Company managing truck agents
 #
 # Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
-#    
+#
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published
 # by the Free Software Foundation, version 3.
@@ -19,10 +19,11 @@
 #
 # ------------------------------------------------------------------------------
 
-from truck_crew import *
-from weather_lookup import *
+from truck_crew import truck_crew
+import math
 import numpy as np
 from generic_functions import get_prop_rate
+
 
 class truck_company:
     def __init__(self, state, parameters, config, timeseries):
@@ -49,11 +50,13 @@ class truck_company:
         if self.config['follow_up_thresh'][1] == "absolute":
             self.config['follow_up_thresh'] = self.config['follow_up_thresh'][0]
         elif self.config['follow_up_thresh'][1] == "proportion":
-            self.config['follow_up_thresh'] = get_prop_rate(self.config['follow_up_thresh'][0], self.state['empirical_leaks'])
+            self.config['follow_up_thresh'] = get_prop_rate(
+                self.config['follow_up_thresh'][0],
+                self.state['empirical_leaks'])
         else:
             print('Follow-up threshold type not recognized. Must be "absolute" or "proportion".')
 
-        # Additional variable(s) for each site       
+        # Additional variable(s) for each site
         for site in self.state['sites']:
             site.update({'truck_t_since_last_LDAR': 0})
             site.update({'truck_surveys_conducted': 0})
@@ -62,12 +65,17 @@ class truck_company:
             site.update({'truck_missed_leaks': 0})
 
         # Initialize 2D matrices to store deployment day (DD) counts and MCBs
-        self.DD_map = np.zeros((len(self.state['weather'].longitude), len(self.state['weather'].latitude)))
-        self.MCB_map = np.zeros((len(self.state['weather'].longitude), len(self.state['weather'].latitude)))
+        self.DD_map = np.zeros(
+            (len(self.state['weather'].longitude),
+             len(self.state['weather'].latitude)))
+        self.MCB_map = np.zeros(
+            (len(self.state['weather'].longitude),
+             len(self.state['weather'].latitude)))
 
         # Initialize the individual truck crews (the agents)
         for i in range(config['n_crews']):
-            self.crews.append(truck_crew(state, parameters, config, timeseries, self.deployment_days, id=i + 1))
+            self.crews.append(truck_crew(state, parameters, config,
+                                         timeseries, self.deployment_days, id=i + 1))
 
         return
 
@@ -96,7 +104,9 @@ class truck_company:
         # Calculate proportion sites available
         available_sites = 0
         for site in self.state['sites']:
-            if self.deployment_days[site['lon_index'], site['lat_index'], self.state['t'].current_timestep]:
+            if self.deployment_days[site['lon_index'],
+                                    site['lat_index'],
+                                    self.state['t'].current_timestep]:
                 available_sites += 1
         prop_avail = available_sites / len(self.state['sites'])
         self.timeseries['truck_prop_sites_avail'].append(prop_avail)
@@ -153,11 +163,13 @@ class truck_company:
                 # Would the site have been chosen without venting?
                 if self.parameters['consider_venting']:
                     if (site_cum_rate - venting) < self.config['follow_up_thresh']:
-                        self.timeseries['truck_flags_redund3'][self.state['t'].current_timestep] += 1
+                        self.timeseries['truck_flags_redund3'][
+                            self.state['t'].current_timestep] += 1
 
     def site_reports(self):
         """
-        Writes site-level deployment days (DDs) and maximum condition blackouts (MCBs) for each site.
+        Writes site-level deployment days (DDs) and maximum condition blackouts (MCBs)
+        for each site.
         """
 
         for site in self.state['sites']:
