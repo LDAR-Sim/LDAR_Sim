@@ -78,6 +78,6 @@ Once familiar with the case study, users can explore different input configurati
 Several LDAR-Sim advances are not publicly available at this time, including more advanced equivalence scenario modeling, specific method modules, and cost-effectiveness comparisons.
 
 ## Contributions and collaboration
-The authors welcome all contributions and collaborations. Please reach out - we would love to hear from you and/or work with you!
+The Included python code follows strict PEP8 Standards for formatting with the a modification to the Line Length rule, where lines cannot exceed 100 characters. Contributed code will be rejected if it does not meet this standard. We suggest using PEP8 autoformatters and Linting (Flake8 , Black) when making contributions.
 
-Note that the python code follows strict PEP8 Standards for formatting with the a modification to the Line Length rule where lines cannot exceed 100 Characters. Contributed code will be rejected if it does not meet this standard. We suggest using PEP8 autoformatters and Linting (Flake8 , Black) when making contributions.   
+The authors welcome all contributions and collaborations. Please reach out - we would love to hear from you and/or work with you!   
