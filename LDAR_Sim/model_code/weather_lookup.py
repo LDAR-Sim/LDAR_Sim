@@ -1,10 +1,10 @@
 # ------------------------------------------------------------------------------
-# Program:     The LDAR Simulator (LDAR-Sim) 
+# Program:     The LDAR Simulator (LDAR-Sim)
 # File:        Weather lookup
 # Purpose:     Calculate deployment days for a method
 #
 # Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
-#    
+#
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published
 # by the Free Software Foundation, version 3.
@@ -22,6 +22,7 @@
 from netCDF4 import Dataset
 import numpy as np
 
+
 class WeatherLookup:
     def __init__(self, state, parameters):
         """
@@ -33,16 +34,21 @@ class WeatherLookup:
 
         # Read in weather data as NetCDF file(s)
 
-        self.weather_data = Dataset(self.parameters['working_directory'] + self.parameters['weather_file'],'r')  # Load wind and temp data
+        self.weather_data = Dataset(
+            self.parameters['working_directory'] + self.parameters['weather_file'],
+            'r')  # Load wind and temp data
         self.weather_data.set_auto_mask(False)  # Load wind and temp data
         self.temps = np.array(self.weather_data.variables['t2m'])  # Extract temperatures
         self.temps = self.temps - 273.15  # Convert to degrees Celcius (time, lat, long)
         self.u_wind = np.array(self.weather_data.variables['u10'])  # Extract u wind component
         self.v_wind = np.array(self.weather_data.variables['v10'])  # Extract v wind component
-        self.winds = np.add(np.square(self.u_wind), np.square(self.v_wind))  # Calculate the net wind speed
-        self.winds = np.sqrt(self.winds.astype(float))  # Calculate the net wind speed (time, lat, long)
-        self.precip = np.array(self.weather_data.variables['tp'])  # Extract precipitation values (time, lat, long)
-        self.precip = self.precip * 1000 # Convert m to mm (time, lat, long)
+        self.winds = np.add(np.square(self.u_wind), np.square(
+            self.v_wind))  # Calculate the net wind speed
+        # Calculate the net wind speed (time, lat, long)
+        self.winds = np.sqrt(self.winds.astype(float))
+        # Extract precipitation values (time, lat, long)
+        self.precip = np.array(self.weather_data.variables['tp'])
+        self.precip = self.precip * 1000  # Convert m to mm (time, lat, long)
 
         self.time_total = self.weather_data.variables['time'][:]  # Extract time values
         self.latitude = self.weather_data.variables['lat'][:]  # Extract latitude values
@@ -50,10 +56,9 @@ class WeatherLookup:
         self.time_length = len(self.time_total)  # Length of time dimension - number of timesteps
         self.lat_length = len(self.latitude)  # Length of latitude dimension - n cells
         self.lon_length = len(self.longitude)  # Length of longitude dimension - n cells
-        
-        self.weather_data.close() # close the netCDF4 file 
-        
-        
+
+        self.weather_data.close()  # close the netCDF4 file
+
         return
 
     def deployment_days(self, method):
@@ -79,13 +84,17 @@ class WeatherLookup:
                 for lon in range(self.lon_length):
                     # If you exceed minimum temperature...
                     if self.temps[day, lat, lon] >= self.parameters['methods'][method]['min_temp']:
-                        bool_temp[lon, lat, day] = 1  # Count one instrument day (instrument can be used)
+                        # Count one instrument day (instrument can be used)
+                        bool_temp[lon, lat, day] = 1
                     # If you are below the maximum wind...
                     if self.winds[day, lat, lon] <= self.parameters['methods'][method]['max_wind']:
-                        bool_wind[lon, lat, day] = 1  # Count one instrument day (instrument can be used)
+                        # Count one instrument day (instrument can be used)
+                        bool_wind[lon, lat, day] = 1
                     # If you are below the precipitation threshold...
-                    if self.precip[day, lat, lon] <= self.parameters['methods'][method]['max_precip']:
-                        bool_precip[lon, lat, day] = 1  # Count one instrument day (instrument can be used)
+                    if self.precip[day, lat, lon] <= self.parameters['methods'][method][
+                            'max_precip']:
+                        # Count one instrument day (instrument can be used)
+                        bool_precip[lon, lat, day] = 1
 
         # Check to see if all criteria (temp, wind, and precip) were met...
         bool_sum = np.add(bool_temp, np.add(bool_wind, bool_precip))

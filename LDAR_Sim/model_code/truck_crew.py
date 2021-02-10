@@ -1,10 +1,10 @@
 # ------------------------------------------------------------------------------
-# Program:     The LDAR Simulator (LDAR-Sim) 
+# Program:     The LDAR Simulator (LDAR-Sim)
 # File:        Truck crew
 # Purpose:     Initialize each truck crew under truck company
 #
 # Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
-#    
+#
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published
 # by the Free Software Foundation, version 3.
@@ -21,8 +21,6 @@
 
 import numpy as np
 from datetime import timedelta
-import math
-import numpy as np
 
 
 class truck_crew:
@@ -63,13 +61,18 @@ class truck_crew:
             start_hour = (24 - work_hours) / 2
             end_hour = start_hour + work_hours
         else:
-            print('Unreasonable number of work hours specified for truck crew ' + str(self.crewstate['id']))
+            print(
+                'Unreasonable number of work hours specified for truck crew ' +
+                str(self.crewstate['id']))
 
-        self.state['t'].current_date = self.state['t'].current_date.replace(hour=int(start_hour))  # Set start of work day
+        self.state['t'].current_date = self.state['t'].current_date.replace(
+            hour=int(start_hour))  # Set start of work day
 
         # Start day with random "offsite time" required for driving to first site
         self.state['t'].current_date += timedelta(
-            minutes=int(self.state['offsite_times'][np.random.randint(0, len(self.state['offsite_times']))]))
+            minutes=int(
+                self.state['offsite_times']
+                [np.random.randint(0, len(self.state['offsite_times']))]))
 
         while self.state['t'].current_date.hour < int(end_hour):
             facility_ID, found_site, site = self.choose_site()
@@ -93,7 +96,10 @@ class truck_crew:
         """
 
         # Sort all sites based on a neglect ranking
-        self.state['sites'] = sorted(self.state['sites'], key=lambda k: k['truck_t_since_last_LDAR'], reverse=True)
+        self.state['sites'] = sorted(
+            self.state['sites'],
+            key=lambda k: k['truck_t_since_last_LDAR'],
+            reverse=True)
 
         facility_ID = None  # The facility ID gets assigned if a site is found
         found_site = False  # The found site flag is updated if a site is found
@@ -104,8 +110,10 @@ class truck_crew:
             # If the site hasn't been attempted yet today
             if not site['attempted_today_truck?']:
 
-                # If the site is 'unripened' (i.e. hasn't met the minimum interval), break out - no LDAR today
-                if site['truck_t_since_last_LDAR'] < self.parameters['methods']['truck']['min_interval']:
+                # If the site is 'unripened' (i.e. hasn't met the minimum interval),
+                # break out - no LDAR today
+                if site['truck_t_since_last_LDAR'] \
+                        < self.parameters['methods']['truck']['min_interval']:
                     self.state['t'].current_date = self.state['t'].current_date.replace(hour=23)
                     break
 
@@ -113,7 +121,9 @@ class truck_crew:
                 elif site['surveys_done_this_year_truck'] < int(site['truck_RS']):
 
                     # Check the weather for that site
-                    if self.deployment_days[site['lon_index'], site['lat_index'], self.state['t'].current_timestep]:
+                    if self.deployment_days[site['lon_index'],
+                                            site['lat_index'],
+                                            self.state['t'].current_timestep]:
 
                         # The site passes all the tests! Choose it!
                         facility_ID = site['facility_ID']
@@ -147,16 +157,18 @@ class truck_crew:
                     # Add vented emissions
         venting = 0
         if self.parameters['consider_venting']:
-            venting = self.state['empirical_vents'][np.random.randint(0, len(self.state['empirical_vents']))]
+            venting = self.state['empirical_vents'][
+                np.random.randint(0, len(self.state['empirical_vents']))]
             site_cum_rate += venting
 
-        # Simple binary detection module 
+        # Simple binary detection module
         detect = False
         if site_cum_rate > (self.config['MDL']):
             detect = True
 
         if detect:
-            # If source is above follow-up threshold, calculate measured rate using quantification error
+            # If source is above follow-up threshold, calculate measured rate using
+            # quantification error
             quant_error = np.random.normal(0, self.config['QE'])
             measured_rate = None
             if quant_error >= 0:
@@ -183,7 +195,9 @@ class truck_crew:
 
         self.state['t'].current_date += timedelta(minutes=int(site['truck_time']))
         self.state['t'].current_date += timedelta(
-            minutes=int(self.state['offsite_times'][np.random.randint(0, len(self.state['offsite_times']))]))
+            minutes=int(
+                self.state['offsite_times']
+                [np.random.randint(0, len(self.state['offsite_times']))]))
         self.timeseries['truck_sites_visited'][self.state['t'].current_timestep] += 1
 
         return

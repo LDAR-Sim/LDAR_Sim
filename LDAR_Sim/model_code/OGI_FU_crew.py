@@ -1,10 +1,10 @@
 # ------------------------------------------------------------------------------
-# Program:     The LDAR Simulator (LDAR-Sim) 
+# Program:     The LDAR Simulator (LDAR-Sim)
 # File:        OGI follow-up crew
 # Purpose:     Initialize each follow-up crew under OGI follow-up company
 #
 # Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
-#    
+#
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published
 # by the Free Software Foundation, version 3.
@@ -22,7 +22,6 @@
 import numpy as np
 from datetime import timedelta
 import math
-import numpy as np
 
 
 class OGI_FU_crew:
@@ -63,23 +62,35 @@ class OGI_FU_crew:
             start_hour = (24 - work_hours) / 2
             end_hour = start_hour + work_hours
         else:
-            print('Unreasonable number of work hours specified for OGI Follow-up crew ' + str(self.crewstate['id']))
+            print(
+                'Unreasonable number of work hours specified for OGI Follow-up crew ' +
+                str(self.crewstate['id']))
 
-        self.allowed_end_time = self.state['t'].current_date.replace(hour=int(end_hour), minute=0, second=0)
-        self.state['t'].current_date = self.state['t'].current_date.replace(hour=int(start_hour))  # Set start of work day
+        self.allowed_end_time = self.state['t'].current_date.replace(
+            hour=int(end_hour), minute=0, second=0)
+        self.state['t'].current_date = self.state['t'].current_date.replace(
+            hour=int(start_hour))  # Set start of work day
 
         # Start day with random "offsite time" required for driving to first site
         self.state['t'].current_date += timedelta(
-            minutes=int(self.state['offsite_times'][np.random.randint(0, len(self.state['offsite_times']))]))
+            minutes=int(
+                self.state['offsite_times']
+                [np.random.randint(0, len(self.state['offsite_times']))]))
 
         # Check if there is a partially finished site from yesterday
         if len(self.rollover) > 0:
-            # Check to see if the remainder of this site can be finished today (if not, this one is huge!)
-            # This projection includes the time it would time to drive back to the home base
-            projected_end_time = self.state['t'].current_date + timedelta(minutes=int(self.rollover[1]))
-            drive_home = timedelta(minutes=int(self.state['offsite_times'][np.random.randint(0, len(self.state['offsite_times']))]))
+            # Check to see if the remainder of this site can be finished today
+            # (if not, this one is huge!)This projection includes the time it
+            # would time to drive back to the home base
+            projected_end_time = self.state['t'].current_date + \
+                timedelta(minutes=int(self.rollover[1]))
+            drive_home = timedelta(
+                minutes=int(
+                    self.state['offsite_times']
+                    [np.random.randint(0, len(self.state['offsite_times']))]))
             if (projected_end_time + drive_home) > self.allowed_end_time:
-                # There's not enough time left for that site today - get started and figure out how much time remains
+                # There's not enough time left for that site today -
+                #  get started and figure out how much time remains
                 minutes_remaining = (projected_end_time - self.allowed_end_time).total_seconds()/60
                 self.rollover = []
                 self.rollover.append(self.rollover[0])
@@ -100,11 +111,17 @@ class OGI_FU_crew:
             # Check to make sure there's enough time left in the day to do this site
             # This projection includes the time it would time to drive back to the home base
             if found_site:
-                projected_end_time = self.state['t'].current_date + timedelta(minutes = int(site['OGI_FU_time']))
-                drive_home = timedelta(minutes=int(self.state['offsite_times'][np.random.randint(0, len(self.state['offsite_times']))]))
+                projected_end_time = self.state['t'].current_date + \
+                    timedelta(minutes=int(site['OGI_FU_time']))
+                drive_home = timedelta(
+                    minutes=int(
+                        self.state['offsite_times']
+                        [np.random.randint(0, len(self.state['offsite_times']))]))
                 if (projected_end_time + drive_home) > self.allowed_end_time:
-                    # There's not enough time left for that site today - get started and figure out how much time remains
-                    minutes_remaining = (projected_end_time - self.allowed_end_time).total_seconds()/60
+                    # There's not enough time left for that site today -
+                    #  get started and figure out how much time remains
+                    minutes_remaining = (
+                        projected_end_time - self.allowed_end_time).total_seconds()/60
                     self.rollover = []
                     self.rollover.append(site)
                     self.rollover.append(minutes_remaining)
@@ -129,7 +146,10 @@ class OGI_FU_crew:
 
         """
         # Sort flagged sites based on a neglect ranking
-        self.state['flags'] = sorted(self.state['flags'], key=lambda k: k['OGI_FU_t_since_last_LDAR'], reverse=True)
+        self.state['flags'] = sorted(
+            self.state['flags'],
+            key=lambda k: k['OGI_FU_t_since_last_LDAR'],
+            reverse=True)
         facility_ID = None  # The facility ID gets assigned if a site is found
         found_site = False  # The found site flag is updated if a site is found
 
@@ -148,7 +168,9 @@ class OGI_FU_crew:
                     if not site['attempted_today_OGI_FU?']:
 
                         # Check the weather for that site
-                        if self.deployment_days[site['lon_index'], site['lat_index'], self.state['t'].current_timestep]:
+                        if self.deployment_days[site['lon_index'],
+                                                site['lat_index'],
+                                                self.state['t'].current_timestep]:
 
                             # The site passes all the tests! Choose it!
                             facility_ID = site['facility_ID']
@@ -206,7 +228,9 @@ class OGI_FU_crew:
 
         self.state['t'].current_date += timedelta(minutes=int(site['OGI_FU_time']))
         self.state['t'].current_date += timedelta(
-            minutes=int(self.state['offsite_times'][np.random.randint(0, len(self.state['offsite_times']))]))
+            minutes=int(
+                self.state['offsite_times']
+                [np.random.randint(0, len(self.state['offsite_times']))]))
         self.timeseries['OGI_FU_sites_visited'][self.state['t'].current_timestep] += 1
 
         # Remove site from flag pool

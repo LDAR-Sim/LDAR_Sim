@@ -2,3 +2,7 @@
 *.iml
 *.xml
 *.pyc
+*.vscode
+*.vscode
+**/outputs/
+*.nc
