@@ -1,10 +1,10 @@
 # ------------------------------------------------------------------------------
-# Program:     The LDAR Simulator (LDAR-Sim) 
+# Program:     The LDAR Simulator (LDAR-Sim)
 # File:        OGI follow-up company
 # Purpose:     Company managing follow-up OGI surveys.
 #
 # Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
-#    
+#
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published
 # by the Free Software Foundation, version 3.
@@ -19,9 +19,9 @@
 #
 # ------------------------------------------------------------------------------
 
-from OGI_FU_crew import *
-from weather_lookup import *
+from OGI_FU_crew import OGI_FU_crew
 import numpy as np
+
 
 class OGI_FU_company:
     def __init__(self, state, parameters, config, timeseries):
@@ -41,7 +41,7 @@ class OGI_FU_company:
         self.timeseries['OGI_FU_redund_tags'] = np.zeros(self.parameters['timesteps'])
         self.timeseries['OGI_FU_sites_visited'] = np.zeros(self.parameters['timesteps'])
 
-        # Additional variable(s) for each site       
+        # Additional variable(s) for each site
         for site in self.state['sites']:
             site.update({'OGI_FU_t_since_last_LDAR': 0})
             site.update({'attempted_today_OGI_FU?': False})
@@ -49,12 +49,17 @@ class OGI_FU_company:
             site.update({'OGI_FU_missed_leaks': 0})
 
         # Initialize 2D matrices to store deployment day (DD) counts and MCBs
-        self.DD_map = np.zeros((len(self.state['weather'].longitude), len(self.state['weather'].latitude)))
-        self.MCB_map = np.zeros((len(self.state['weather'].longitude), len(self.state['weather'].latitude)))
+        self.DD_map = np.zeros(
+            (len(self.state['weather'].longitude),
+             len(self.state['weather'].latitude)))
+        self.MCB_map = np.zeros(
+            (len(self.state['weather'].longitude),
+             len(self.state['weather'].latitude)))
 
         # Initialize the individual OGI_FU crews (the agents)
         for i in range(config['n_crews']):
-            self.crews.append(OGI_FU_crew(state, parameters, config, timeseries, self.deployment_days, id=i + 1))
+            self.crews.append(OGI_FU_crew(state, parameters, config,
+                                          timeseries, self.deployment_days, id=i + 1))
 
         return
 
@@ -76,7 +81,9 @@ class OGI_FU_company:
         # Calculate proportion sites available
         available_sites = 0
         for site in self.state['sites']:
-            if self.deployment_days[site['lon_index'], site['lat_index'], self.state['t'].current_timestep]:
+            if self.deployment_days[site['lon_index'],
+                                    site['lat_index'],
+                                    self.state['t'].current_timestep]:
                 available_sites += 1
         prop_avail = available_sites / len(self.state['sites'])
         self.timeseries['OGI_FU_prop_sites_avail'].append(prop_avail)
@@ -85,7 +92,8 @@ class OGI_FU_company:
 
     def site_reports(self):
         """
-        Writes site-level deployment days (DDs) and maximum condition blackouts (MCBs) for each site.
+        Writes site-level deployment days (DDs) and maximum condition blackouts (MCBs)
+        for each site.
         """
 
         for site in self.state['sites']:

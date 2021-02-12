@@ -1,10 +1,10 @@
 # ------------------------------------------------------------------------------
-# Program:     The LDAR Simulator (LDAR-Sim) 
-# File:        LDAR-Sim 
+# Program:     The LDAR Simulator (LDAR-Sim)
+# File:        LDAR-Sim
 # Purpose:     Primary module of LDAR-Sim
 #
 # Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
-#    
+#
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published
 # by the Free Software Foundation, version 3.
@@ -26,130 +26,139 @@ import os
 import datetime
 import sys
 import random
-from sensitivity import *
-from operator_agent import *
-from plotter import *
-from daylight_calculator import *
+from sensitivity import Sensitivity
+from operator_agent import OperatorAgent
+from plotter import make_plots
+from daylight_calculator import DaylightCalculatorAve
 from generic_functions import make_maps
 
+
 class LdarSim:
-    def __init__(self, state, parameters, timeseries):
+    def __init__(self, state, params, timeseries):
         """
         Construct the simulation.
         """
 
         self.state = state
-        self.parameters = parameters
+        self.parameters = params
         self.timeseries = timeseries
 
         # Read in data files
-        self.state['empirical_counts'] = np.array(pd.read_csv(self.parameters['working_directory'] +
-                self.parameters['count_file']).iloc[:, 0])
-        self.state['empirical_leaks'] = np.array(pd.read_csv(self.parameters['working_directory'] +
-                self.parameters['leak_file']).iloc[:, 0])
-        self.state['empirical_sites'] = np.array(pd.read_csv(self.parameters['working_directory'] +
-                self.parameters['vent_file']).iloc[:, 0])
-        self.state['offsite_times'] = np.array(pd.read_csv(self.parameters['working_directory'] +
-                self.parameters['t_offsite_file']).iloc[:, 0])
+        state['empirical_counts'] = np.array(pd.read_csv(
+            params['working_directory'] + params['count_file']).iloc[:, 0])
+        state['empirical_leaks'] = np.array(pd.read_csv(
+            params['working_directory'] + params['leak_file']).iloc[:, 0])
+        state['empirical_sites'] = np.array(pd.read_csv(
+            params['working_directory'] + params['vent_file']).iloc[:, 0])
+        state['offsite_times'] = np.array(pd.read_csv(
+            params['working_directory'] + params['t_offsite_file']).iloc[:, 0])
 
         # Read in the sites as a list of dictionaries
-        with open(self.parameters['working_directory'] + self.parameters['infrastructure_file']) as f:
-            self.state['sites'] = [{k: v for k, v in row.items()}
-                                   for row in csv.DictReader(f, skipinitialspace=True)]
+        with open(params['working_directory'] + params['infrastructure_file']) as f:
+            state['sites'] = [{k: v for k, v in row.items()}
+                              for row in csv.DictReader(f, skipinitialspace=True)]
 
         # Sample sites
-        if self.parameters['site_samples'][0]:
-            self.state['sites'] = random.sample(self.state['sites'], self.parameters['site_samples'][1])
+        if params['site_samples'][0]:
+            state['sites'] = random.sample(
+                state['sites'],
+                params['site_samples'][1])
 
-        if self.parameters['subtype_times'][0]:
-            subtype_times = pd.read_csv(self.parameters['subtype_times'][1])
+        if params['subtype_times'][0]:
+            subtype_times = pd.read_csv(params['subtype_times'][1])
             cols_to_add = subtype_times.columns[1:].tolist()
             for col in cols_to_add:
-                for site in self.state['sites']:
+                for site in state['sites']:
                     site[col] = subtype_times.loc[subtype_times['subtype_code'] ==
                                                   int(site['subtype_code']), col].iloc[0]
 
         # Shuffle all the entries to randomize order for identical 't_Since_last_LDAR' values
-        random.shuffle(self.state['sites'])
+        random.shuffle(state['sites'])
 
         # Additional variable(s) for each site
-        for site in self.state['sites']:
+        for site in state['sites']:
             site.update({'total_emissions_kg': 0})
             site.update({'active_leaks': 0})
             site.update({'repaired_leaks': 0})
             site.update({'currently_flagged': False})
             site.update({'flagged_by': None})
             site.update({'date_flagged': None})
-            site.update({'lat_index': min(range(len(self.state['weather'].latitude)),
-                                          key=lambda i: abs(self.state['weather'].latitude[i] - float(site['lat'])))})
-            site.update({'lon_index': min(range(len(self.state['weather'].longitude)),
-                                          key=lambda i: abs(
-                                              self.state['weather'].longitude[i] - float(site['lon']) % 360))})
+            site.update({'lat_index': min(
+                range(len(state['weather'].latitude)), key=lambda i: abs(
+                    state['weather'].latitude[i] - float(site['lat'])))})
+            site.update({'lon_index': min(
+                range(len(state['weather'].longitude)), key=lambda i: abs(
+                    state['weather'].longitude[i] - float(site['lon']) % 360))})
 
             # Check to make sure site is within range of grid-based data
-            if float(site['lat']) > max(self.state['weather'].latitude):
+            if float(site['lat']) > max(state['weather'].latitude):
                 sys.exit(
-                    'Simulation terminated: One or more sites is too far North and is outside the spatial bounds of '
+                    'Simulation terminated: One or more sites is too '
+                    'far North and is outside the spatial bounds of '
                     'your weather data!')
-            if float(site['lat']) < min(self.state['weather'].latitude):
+            if float(site['lat']) < min(state['weather'].latitude):
                 sys.exit(
-                    'Simulation terminated: One or more sites is too far South and is outside the spatial bounds of '
+                    'Simulation terminated: One or more sites is too '
+                    'far South and is outside the spatial bounds of '
                     'your weather data!')
-            if float(site['lon']) > max(self.state['weather'].longitude):
+            if float(site['lon']) > max(state['weather'].longitude):
                 sys.exit(
-                    'Simulation terminated: One or more sites is too far East and is outside the spatial bounds of '
+                    'Simulation terminated: One or more sites is too '
+                    'far East and is outside the spatial bounds of '
                     'your weather data!')
-            if float(site['lon']) < min(self.state['weather'].longitude):
+            if float(site['lon']) < min(state['weather'].longitude):
                 sys.exit(
-                    'Simulation terminated: One or more sites is too far West and is outside the spatial bounds of '
+                    'Simulation terminated: One or more sites is too'
+                    'far West and is outside the spatial bounds of '
                     'your weather data!')
 
         # Additional timeseries variables
-        self.timeseries['total_daily_cost'] = np.zeros(self.parameters['timesteps'])
-        self.timeseries['repair_cost'] = np.zeros(self.parameters['timesteps'])
-        self.timeseries['verification_cost'] = np.zeros(self.parameters['timesteps'])
+        timeseries['total_daily_cost'] = np.zeros(params['timesteps'])
+        timeseries['repair_cost'] = np.zeros(params['timesteps'])
+        timeseries['verification_cost'] = np.zeros(params['timesteps'])
 
         # Configure sensitivity analysis, if requested (code block must remain here -
         # after site initialization and before method initialization)
-        if self.parameters['sensitivity']['perform']:
-            self.sensitivity = Sensitivity(self.parameters, self.timeseries, self.state)
+        if params['sensitivity']['perform']:
+            self.sensitivity = Sensitivity(params, timeseries, state)
 
         # Initialize method(s) to be used; append to state
-        for m in self.parameters['methods']:
+        for m in params['methods']:
             try:
                 company_name = str(m) + '_company'
                 module = __import__(company_name)
                 func = getattr(module, company_name)
-                self.state['methods'].append(func(self.state,
-                                                  self.parameters, self.parameters['methods'][m], timeseries))
-            except:
+                state['methods'].append(
+                    func(state, params, params['methods'][m], timeseries))
+            except AttributeError:
                 print('Cannot add this method: ' + m)
 
         # Generate initial leak count for each site
-        for site in self.state['sites']:
-            n_leaks = self.state['empirical_counts'][np.random.randint(0, len(self.state['empirical_counts']))]
+        for site in state['sites']:
+            n_leaks = random.choice(state['empirical_counts'])
             if n_leaks < 0:  # This can happen occasionally during sensitivity analysis
                 n_leaks = 0
             site.update({'initial_leaks': n_leaks})
-            self.state['init_leaks'].append(site['initial_leaks'])
+            state['init_leaks'].append(site['initial_leaks'])
 
-        self.state['max_rate'] = max(self.state['empirical_leaks'])
+        state['max_rate'] = max(state['empirical_leaks'])
 
         # For each leak, create a dictionary and populate values for relevant keys
-        for site in self.state['sites']:
+        for site in state['sites']:
             if site['initial_leaks'] > 0:
                 for leak in range(site['initial_leaks']):
-                    self.state['leaks'].append({
-                        'leak_ID': site['facility_ID'] + '_' + str(len(self.state['leaks']) + 1).zfill(10),
+                    state['leaks'].append({
+                        'leak_ID': site['facility_ID'] + '_' + str(len(state['leaks']) + 1)
+                        .zfill(10),
                         'facility_ID': site['facility_ID'],
-                        'rate': self.state['empirical_leaks'][np.random.randint(0, len(self.state['empirical_leaks']))],
+                        'rate': random.choice(state['empirical_leaks']),
                         'lat': float(site['lat']) + np.random.normal(0, 0.0001),
                         'lon': float(site['lon']) + np.random.normal(0, 0.0001),
                         'status': 'active',
                         'tagged': False,
                         'days_active': 0,
                         'component': 'unknown',
-                        'date_began': self.state['t'].current_date,
+                        'date_began': state['t'].current_date,
                         'date_tagged': None,
                         'tagged_by_company': None,
                         'tagged_by_crew': None,
@@ -159,39 +168,39 @@ class LdarSim:
                     })
 
         # Initialize operator
-        if self.parameters['consider_operator']:
-            self.state['operator'] = OperatorAgent(self.timeseries, self.parameters, self.state)
+        if params['consider_operator']:
+            state['operator'] = OperatorAgent(timeseries, params, state)
 
         # If working without methods (operator only), need to get the first day going
-        if not bool(self.parameters['methods']):
-            self.state['t'].current_date = self.state['t'].current_date.replace(hour=1)
+        if not bool(params['methods']):
+            state['t'].current_date = state['t'].current_date.replace(hour=1)
 
         # Initialize daylight
         calculate_daylight = False
-        for m in self.parameters['methods']:
-            if self.parameters['methods'][m]['consider_daylight'] == True:
+        for m in params['methods']:
+            if params['methods'][m]['consider_daylight']:
                 calculate_daylight = True
         if calculate_daylight:
-                self.state['daylight'] = DaylightCalculatorAve(self.state, self.parameters)
+            state['daylight'] = DaylightCalculatorAve(state, params)
 
         # Initialize empirical distribution of vented emissions
-        if self.parameters['consider_venting']:
-            self.state['empirical_vents'] = []
+        if params['consider_venting']:
+            state['empirical_vents'] = []
 
             # Run Monte Carlo simulations to get distribution of vented emissions
             for i in range(1000):
-                n_mc_leaks = self.state['empirical_counts'][np.random.randint(0, len(self.state['empirical_counts']))]
+                n_mc_leaks = random.choice(state['empirical_counts'])
                 mc_leaks = []
                 for leak in range(n_mc_leaks):
-                    mc_leaks.append(
-                        self.state['empirical_leaks'][np.random.randint(0, len(self.state['empirical_leaks']))])
+                    mc_leaks.append(n_mc_leaks=random.choice(state['empirical_leaks']))
+
                 mc_leak_total = sum(mc_leaks)
-                mc_site_total = self.state['empirical_sites'][np.random.randint(0, len(self.state['empirical_sites']))]
+                mc_site_total = random.choice(state['empirical_sites'])
                 mc_vent_total = mc_site_total - mc_leak_total
-                self.state['empirical_vents'].append(mc_vent_total)
+                state['empirical_vents'].append(mc_vent_total)
 
             # Change negatives to zero
-            self.state['empirical_vents'] = [0 if i < 0 else i for i in self.state['empirical_vents']]
+            state['empirical_vents'] = [0 if i < 0 else i for i in state['empirical_vents']]
 
         return
 
@@ -240,9 +249,10 @@ class LdarSim:
             if site['n_new_leaks'] > 0:
                 for leak in range(site['n_new_leaks']):
                     self.state['leaks'].append({
-                        'leak_ID': site['facility_ID'] + '_' + str(len(self.state['leaks']) + 1).zfill(10),
+                        'leak_ID': site['facility_ID'] + '_' + str(len(self.state['leaks']) + 1)
+                        .zfill(10),
                         'facility_ID': site['facility_ID'],
-                        'rate': self.state['empirical_leaks'][np.random.randint(0, len(self.state['empirical_leaks']))],
+                        'rate': random.choice(self.state['empirical_leaks']),
                         'lat': float(site['lat']),
                         'lon': float(site['lon']),
                         'status': 'active',
@@ -278,28 +288,35 @@ class LdarSim:
         """
         Repair tagged leaks and remove from tag pool.
         """
-        for tag in self.state['tags']:
-            if tag['tagged_by_company'] != 'operator':
-                if (self.state['t'].current_date - tag['date_tagged']).days >= (
-                        self.parameters['repair_delay'] + self.parameters['methods'][tag['tagged_by_company']][
-                        'reporting_delay']):
-                    tag['status'] = 'repaired'
-                    tag['tagged'] = False
-                    tag['date_repaired'] = self.state['t'].current_date
-                    tag['repair_delay'] = (tag['date_repaired'] - tag['date_tagged']).days
-                    self.timeseries['repair_cost'][self.state['t'].current_timestep] += self.parameters['repair_cost']
-                    self.timeseries['total_daily_cost'][self.state['t'].current_timestep] += self.parameters['repair_cost'] + self.parameters['verification_cost']
-                    self.timeseries['verification_cost'][self.state['t'].current_timestep] += self.parameters['verification_cost']
-            elif tag['tagged_by_company'] == 'operator':
-                if (self.state['t'].current_date - tag['date_tagged']).days >= self.parameters['repair_delay']:
-                    tag['status'] = 'repaired'
-                    tag['tagged'] = False
-                    tag['date_repaired'] = self.state['t'].current_date
-                    tag['repair_delay'] = (tag['date_repaired'] - tag['date_tagged']).days
-                    self.timeseries['repair_cost'][self.state['t'].current_timestep] += self.parameters['repair_cost']
-                    self.timeseries['total_daily_cost'][self.state['t'].current_timestep] += self.parameters['repair_cost'] + self.parameters['verification_cost']
+        params = self.parameters
+        timeseries = self.timeseries
+        state = self.state
 
-            self.state['tags'] = [tag for tag in self.state['tags'] if tag['status'] == 'active']
+        for tag in state['tags']:
+            if tag['tagged_by_company'] != 'operator':
+                if (state['t'].current_date - tag['date_tagged']).days \
+                    >= (params['repair_delay'] + params[
+                        'methods'][tag['tagged_by_company']]['reporting_delay']):
+                    tag['status'] = 'repaired'
+                    tag['tagged'] = False
+                    tag['date_repaired'] = state['t'].current_date
+                    tag['repair_delay'] = (tag['date_repaired'] - tag['date_tagged']).days
+                    timeseries['repair_cost'][state['t'].current_timestep] += params['repair_cost']
+                    timeseries['total_daily_cost'][state['t'].current_timestep] \
+                        += params['repair_cost'] + params['verification_cost']
+                    timeseries['verification_cost'][
+                        state['t'].current_timestep] += params['verification_cost']
+            elif tag['tagged_by_company'] == 'operator':
+                if (state['t'].current_date - tag['date_tagged']).days >= params['repair_delay']:
+                    tag['status'] = 'repaired'
+                    tag['tagged'] = False
+                    tag['date_repaired'] = state['t'].current_date
+                    tag['repair_delay'] = (tag['date_repaired'] - tag['date_tagged']).days
+                    timeseries['repair_cost'][state['t'].current_timestep] += params['repair_cost']
+                    timeseries['total_daily_cost'][state['t'].current_timestep] \
+                        += params['repair_cost'] + params['verification_cost']
+
+            state['tags'] = [tag for tag in state['tags'] if tag['status'] == 'active']
 
         return
 
@@ -307,13 +324,19 @@ class LdarSim:
         """
         Daily reporting of leaks, repairs, and emissions.
         """
+        timeseries = self.timeseries
+        state = self.state
 
         # Update timeseries
-        self.timeseries['new_leaks'].append(sum(d['n_new_leaks'] for d in self.state['sites']))
-        self.timeseries['cum_repaired_leaks'].append(sum(d['status'] == 'repaired' for d in self.state['leaks']))
-        self.timeseries['daily_emissions_kg'].append(sum(d['rate'] for d in self.active_leaks)* 86.4)  # convert g/s to kg/day
-        self.timeseries['n_tags'].append(len(self.state['tags']))
-        self.timeseries['rolling_cost_estimate'].append(sum(self.timeseries['total_daily_cost'])/(len(self.timeseries['rolling_cost_estimate'])+1)*365/200)
+        timeseries['new_leaks'].append(sum(d['n_new_leaks'] for d in state['sites']))
+        timeseries['cum_repaired_leaks'].append(
+            sum(d['status'] == 'repaired' for d in state['leaks']))
+        # convert g/s to kg/day
+        timeseries['daily_emissions_kg'].append(sum(d['rate'] for d in self.active_leaks) * 86.4)
+        timeseries['n_tags'].append(len(state['tags']))
+        timeseries['rolling_cost_estimate'].append(
+            sum(timeseries['total_daily_cost']) /
+            (len(timeseries['rolling_cost_estimate']) + 1) * 365 / 200)
 
         return
 
@@ -321,11 +344,13 @@ class LdarSim:
         """
         Compile and write output files.
         """
-        if self.parameters['write_data']:
+        params = self.parameters
 
+        if params['write_data']:
             # Attribute individual leak emissions to site totals
             for leak in self.state['leaks']:
-                tot_emissions_kg = leak['days_active'] * leak['rate'] * 86.4 # convert g/s to kg/day
+                # convert g/s to kg/day
+                tot_emissions_kg = leak['days_active'] * leak['rate'] * 86.4
                 for site in self.state['sites']:
                     if site['facility_ID'] == leak['facility_ID']:
                         site['total_emissions_kg'] += tot_emissions_kg
@@ -335,7 +360,7 @@ class LdarSim:
                             site['repaired_leaks'] += 1
                         break
 
-            # Generate some dataframes           
+            # Generate some dataframes
             for site in self.state['sites']:
                 del site['n_new_leaks']
 
@@ -346,12 +371,14 @@ class LdarSim:
             # Create some new variables for plotting
             site_df['cum_frac_sites'] = list(site_df.index)
             site_df['cum_frac_sites'] = site_df['cum_frac_sites'] / max(site_df['cum_frac_sites'])
-            site_df['cum_frac_emissions'] = np.cumsum(sorted(site_df['total_emissions_kg'], reverse=True))
-            site_df['cum_frac_emissions'] = site_df['cum_frac_emissions'] / max(site_df['cum_frac_emissions'])
-            site_df['mean_rate_kg_day'] = site_df['total_emissions_kg']/self.parameters['timesteps']
-
+            site_df['cum_frac_emissions'] = np.cumsum(
+                sorted(site_df['total_emissions_kg'], reverse=True))
+            site_df['cum_frac_emissions'] = site_df['cum_frac_emissions'] \
+                / max(site_df['cum_frac_emissions'])
+            site_df['mean_rate_kg_day'] = site_df['total_emissions_kg'] / params['timesteps']
             leaks_active = leak_df[leak_df.status == 'active'].sort_values('rate', ascending=False)
-            leaks_repaired = leak_df[leak_df.status == 'repaired'].sort_values('rate', ascending=False)
+            leaks_repaired = leak_df[leak_df.status
+                                     == 'repaired'].sort_values('rate', ascending=False)
 
             leaks_active['cum_frac_leaks'] = list(np.linspace(0, 1, len(leaks_active)))
             leaks_active['cum_rate'] = np.cumsum(leaks_active['rate'])
@@ -360,43 +387,50 @@ class LdarSim:
             if len(leaks_repaired) > 0:
                 leaks_repaired['cum_frac_leaks'] = list(np.linspace(0, 1, len(leaks_repaired)))
                 leaks_repaired['cum_rate'] = np.cumsum(leaks_repaired['rate'])
-                leaks_repaired['cum_frac_rate'] = leaks_repaired['cum_rate'] / max(leaks_repaired['cum_rate'])
+                leaks_repaired['cum_frac_rate'] = leaks_repaired['cum_rate'] \
+                    / max(leaks_repaired['cum_rate'])
 
             leak_df = leaks_active.append(leaks_repaired)
 
             # Write csv files
-            leak_df.to_csv(self.parameters['output_directory'] + '/leaks_output_' + self.parameters['simulation'] + '.csv', index=False)
-            time_df.to_csv(self.parameters['output_directory'] + '/timeseries_output_' + self.parameters['simulation'] + '.csv',
-                           index=False)
-            site_df.to_csv(self.parameters['output_directory'] + '/sites_output_' + self.parameters['simulation'] + '.csv', index=False)
+            leak_df.to_csv(
+                params['output_directory'] + '/leaks_output_' + params
+                ['simulation'] + '.csv', index=False)
+            time_df.to_csv(
+                params['output_directory'] + '/timeseries_output_' + params
+                ['simulation'] + '.csv', index=False)
+            site_df.to_csv(
+                params['output_directory'] + '/sites_output_' + params
+                ['simulation'] + '.csv', index=False)
 
             # Write metadata
-            metadata = open(self.parameters['output_directory'] + '/metadata_' + self.parameters['simulation'] + '.txt', 'w')
-            metadata.write(str(self.parameters) + '\n' +
-                           str(datetime.datetime.now()))
+            f_name = "{}/metadata_{}.txt".format(params['output_directory'], params['simulation'])
+            metadata = open(f_name, 'w')
+            metadata.write(str(params) + '\n' + str(datetime.datetime.now()))
             metadata.close()
 
         # Make maps and append site-level DD and MCB data
-        if self.parameters['make_maps']:
-            if self.parameters['simulation'] == '0':
+        if params['make_maps']:
+            if params['simulation'] == '0':
                 for m in self.state['methods']:
                     make_maps(m, site_df)
                     m.site_reports()
 
-
         # Make plots
-        if self.parameters['make_plots']:
-            make_plots(leak_df, time_df, site_df, self.parameters['simulation'], self.parameters['spin_up'],
-                       self.parameters['output_directory'])
+        if params['make_plots']:
+            make_plots(
+                leak_df, time_df, site_df, params['simulation'],
+                params['spin_up'],
+                params['output_directory'])
 
         # Write sensitivity analysis data, if requested
-        if self.parameters['sensitivity']['perform']:
+        if params['sensitivity']['perform']:
             sim_summary = self.sensitivity.write_data()
         else:
             sim_summary = {}
 
         # Return to original working directory
-        os.chdir(self.parameters['working_directory'])
+        os.chdir(params['working_directory'])
         os.chdir('..')
 
         return(sim_summary)

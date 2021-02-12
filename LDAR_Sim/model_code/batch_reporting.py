@@ -1,10 +1,10 @@
 # ------------------------------------------------------------------------------
-# Program:     The LDAR Simulator (LDAR-Sim) 
+# Program:     The LDAR Simulator (LDAR-Sim)
 # File:        Batch reporting
 # Purpose:     Creates outputs across multiple programs and simulations
 #
 # Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
-#    
+#
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published
 # by the Free Software Foundation, version 3.
@@ -26,7 +26,7 @@ import os
 from datetime import datetime
 from datetime import timedelta
 from mizani.formatters import date_format
-from plotnine import *
+import plotnine as pn
 
 
 class BatchReporting:
@@ -68,22 +68,25 @@ class BatchReporting:
                 self.all_data[i].append(pd.read_csv(path))
 
         # Get vector of dates
-        dates = pd.read_csv(self.output_directory + self.directories[0] + '/' + file_lists[0][0])['datetime']
+        dates = pd.read_csv(
+            self.output_directory + self.directories[0] + '/' + file_lists[0][0])['datetime']
         dates = pd.to_datetime(dates)
 
         mask = (dates > start_date)
         self.dates_trunc = dates.loc[mask]
 
-        # Figure out the number of sites used in the simulation (have to do it this way because n can be sampled or not)
+        # Figure out the number of sites used in the simulation
+        # (have to do it this way because n can be sampled or not)
         site_path = self.output_directory + self.directories[0]
         self.n_sites = len(pd.read_csv(site_path + '/sites_output_0.csv'))
 
-        ############## Build list of emissions dataframes #############################
+        # ------- Build list of emissions dataframes ------ #
         self.emission_dfs = [[] for i in range(len(self.all_data))]
         for i in range(len(self.all_data)):
             for j in self.all_data[i]:
                 self.emission_dfs[i].append(j["daily_emissions_kg"])
-            self.emission_dfs[i] = pd.concat(self.emission_dfs[i], axis=1, keys=[i for i in range(len(self.all_data[i]))])
+            self.emission_dfs[i] = pd.concat(self.emission_dfs[i],
+                                             axis=1, keys=[i for i in range(len(self.all_data[i]))])
             self.emission_dfs[i] = self.emission_dfs[i] / self.n_sites
 
             # New columns
@@ -98,7 +101,7 @@ class BatchReporting:
             mask = (self.emission_dfs[i]['datetime'] > start_date)
             self.emission_dfs[i] = self.emission_dfs[i].loc[mask]
 
-        ############# Build list of active leak dataframes ############################
+        # ------- Build list of active leak dataframes ------- #
         self.active_leak_dfs = [[] for i in range(len(self.all_data))]
         for i in range(len(self.all_data)):
             for j in self.all_data[i]:
@@ -114,11 +117,12 @@ class BatchReporting:
             self.active_leak_dfs[i] = pd.concat([self.active_leak_dfs[i], dates], axis=1)
 
             # Axe spinup year
-            self.active_leak_dfs[i]['datetime'] = pd.to_datetime(self.active_leak_dfs[i]['datetime'])
+            self.active_leak_dfs[i]['datetime'] = pd.to_datetime(
+                self.active_leak_dfs[i]['datetime'])
             mask = (self.active_leak_dfs[i]['datetime'] > start_date)
             self.active_leak_dfs[i] = self.active_leak_dfs[i].loc[mask]
 
-        ################ Build list of repaired leak dataframes #######################
+        # ------- Build list of repaired leak dataframes ------- #
         self.repair_leak_dfs = [[] for i in range(len(self.all_data))]
         for i in range(len(self.all_data)):
             for j in self.all_data[i]:
@@ -134,16 +138,18 @@ class BatchReporting:
             self.repair_leak_dfs[i] = pd.concat([self.repair_leak_dfs[i], dates], axis=1)
 
             # Axe spinup year
-            self.repair_leak_dfs[i]['datetime'] = pd.to_datetime(self.repair_leak_dfs[i]['datetime'])
+            self.repair_leak_dfs[i]['datetime'] = pd.to_datetime(
+                self.repair_leak_dfs[i]['datetime'])
             mask = (self.repair_leak_dfs[i]['datetime'] > start_date)
             self.repair_leak_dfs[i] = self.repair_leak_dfs[i].loc[mask]
 
-        ############## Build list of cost dataframes #############################
+        # ------- Build list of cost dataframes ------- #
         self.cost_dfs = [[] for i in range(len(self.all_data))]
         for i in range(len(self.all_data)):
             for j in self.all_data[i]:
                 self.cost_dfs[i].append(j["rolling_cost_estimate"])
-            self.cost_dfs[i] = pd.concat(self.cost_dfs[i], axis=1, keys=[i for i in range(len(self.all_data[i]))])
+            self.cost_dfs[i] = pd.concat(self.cost_dfs[i], axis=1, keys=[
+                                         i for i in range(len(self.all_data[i]))])
             self.cost_dfs[i] = self.cost_dfs[i]
 
             # New columns
@@ -184,10 +190,13 @@ class BatchReporting:
             ]
             output_df = pd.DataFrame(data)
             output_df.rename(
-                index={0: 'median active leaks', 1: 'median daily emissions', 2: 'cumulative repaired leaks'},
+                index={0: 'median active leaks',
+                       1: 'median daily emissions',
+                       2: 'cumulative repaired leaks'},
                 inplace=True)
-            output_df.to_csv(self.output_directory + self.active_leak_dfs[i]['program'].iloc[0] + '_descriptives.csv',
-                             index=True)
+            output_df.to_csv(
+                self.output_directory + self.active_leak_dfs[i]['program'].iloc[0] +
+                '_descriptives.csv', index=True)
 
         return
 
@@ -231,7 +240,8 @@ class BatchReporting:
 
     def batch_plots(self):
 
-        # First, put together active leak data and output for live plotting functionality (no AL plot here currently)
+        # First, put together active leak data and output for live plotting functionality
+        # (no AL plot here currently)
         dfs = self.active_leak_dfs
 
         for i in range(len(dfs)):
@@ -251,7 +261,8 @@ class BatchReporting:
         dfs_p1 = dfs.copy()
         for i in range(len(dfs_p1)):
             # Reshape
-            dfs_p1[i] = pd.melt(dfs_p1[i], id_vars=['datetime', 'mean', 'std', 'low', 'high', 'program'])
+            dfs_p1[i] = pd.melt(dfs_p1[i], id_vars=['datetime', 'mean',
+                                                    'std', 'low', 'high', 'program'])
 
         # Combine dataframes into single dataframe for plotting
         df_p1 = dfs_p1[0]
@@ -281,7 +292,8 @@ class BatchReporting:
         dfs_p1 = dfs.copy()
         for i in range(len(dfs_p1)):
             # Reshape
-            dfs_p1[i] = pd.melt(dfs_p1[i], id_vars=['datetime', 'mean', 'std', 'low', 'high', 'program'])
+            dfs_p1[i] = pd.melt(dfs_p1[i], id_vars=['datetime', 'mean',
+                                                    'std', 'low', 'high', 'program'])
 
         # Combine dataframes into single dataframe for plotting
         df_p1 = dfs_p1[0]
@@ -292,20 +304,23 @@ class BatchReporting:
         df_p1.to_csv(self.output_directory + 'mean_emissions.csv', index=True)
 
         # Make plots from list of dataframes - one entry per dataframe
-        theme_set(theme_linedraw())
-        plot1 = (ggplot(None) + aes('datetime', 'value', group='program') +
-                 geom_ribbon(df_p1, aes(ymin='low', ymax='high', fill='program'), alpha=0.2) +
-                 geom_line(df_p1, aes('datetime', 'mean', colour='program'), size=1) +
-                 ylab('Daily emissions (kg/site)') + xlab('') +
-                 scale_colour_hue(h=0.15, l=0.25, s=0.9) +
-                 scale_x_datetime(labels=date_format('%Y')) +
-                 scale_y_continuous(trans='log10') +
-                 ggtitle('To reduce uncertainty, use more simulations.') +
-                 labs(color='Program', fill='Program') +
-                 theme(panel_border=element_rect(colour="black", fill=None, size=2),
-                       panel_grid_minor_x=element_blank(), panel_grid_major_x=element_blank(),
-                       panel_grid_minor_y=element_line(colour='black', linewidth=0.5, alpha=0.3),
-                       panel_grid_major_y=element_line(colour='black', linewidth=1, alpha=0.5))
+        pn.theme_set(pn.theme_linedraw())
+        plot1 = (pn.ggplot(None) + pn.aes('datetime', 'value', group='program') +
+                 pn.geom_ribbon(df_p1, pn.aes(ymin='low', ymax='high', fill='program'), alpha=0.2) +
+                 pn.geom_line(df_p1, pn.aes('datetime', 'mean', colour='program'), size=1) +
+                 pn.ylab('Daily emissions (kg/site)') + pn.xlab('') +
+                 pn.scale_colour_hue(h=0.15, l=0.25, s=0.9) +
+                 pn.scale_x_datetime(labels=date_format('%Y')) +
+                 pn.scale_y_continuous(trans='log10') +
+                 pn.ggtitle('To reduce uncertainty, use more simulations.') +
+                 pn.labs(color='Program', fill='Program') +
+                 pn.theme(panel_border=pn.element_rect(colour="black", fill=None, size=2),
+                          panel_grid_minor_x=pn.element_blank(),
+                          panel_grid_major_x=pn.element_blank(),
+                          panel_grid_minor_y=pn.element_line(
+                              colour='black', linewidth=0.5, alpha=0.3),
+                          panel_grid_major_y=pn.element_line(
+                              colour='black', linewidth=1, alpha=0.5))
                  )
         plot1.save(self.output_directory + 'program_comparison.png', width=7, height=3, dpi=900)
 
@@ -324,7 +339,8 @@ class BatchReporting:
                 alt_std = i.loc[i.index[j], 'std']
 
                 i.loc[i.index[j], 'mean_dif'] = alt_mean - ref_mean
-                i.loc[i.index[j], 'std_dif'] = math.sqrt(math.pow(alt_std, 2) + math.pow(ref_std, 2))
+                i.loc[i.index[j], 'std_dif'] = math.sqrt(
+                    math.pow(alt_std, 2) + math.pow(ref_std, 2))
                 i.loc[i.index[j], 'mean_ratio'] = alt_mean / ref_mean
                 i.loc[i.index[j], 'std_ratio'] = math.sqrt(
                     math.pow((alt_std / alt_mean), 2) + math.pow((ref_std / ref_mean), 2))
@@ -339,7 +355,8 @@ class BatchReporting:
 
         df_p2['low_dif'] = dfs_p2[1]['mean_dif'] - 2 * dfs_p2[1]['std_dif']
         df_p2['high_dif'] = dfs_p2[1]['mean_dif'] + 2 * dfs_p2[1]['std_dif']
-        df_p2['low_ratio'] = dfs_p2[1]['mean_ratio'] / (dfs_p2[1]['mean_ratio'] + 2 * dfs_p2[1]['std_ratio'])
+        df_p2['low_ratio'] = dfs_p2[1]['mean_ratio'] / (dfs_p2[1]
+                                                        ['mean_ratio'] + 2 * dfs_p2[1]['std_ratio'])
         df_p2['high_ratio'] = dfs_p2[1]['mean_ratio'] + 2 * dfs_p2[1]['std_ratio']
 
         pd.options.mode.chained_assignment = None
@@ -348,49 +365,58 @@ class BatchReporting:
             i['high_dif'] = i['mean_dif'] + 2 * i['std_dif']
             i['low_ratio'] = i['mean_ratio'] / (i['mean_ratio'] + 2 * i['std_ratio'])
             i['high_ratio'] = i['mean_ratio'] + 2 * i['std_ratio']
-            short_df = i[
-                ['program', 'mean_dif', 'std_dif', 'low_dif', 'high_dif', 'mean_ratio', 'std_ratio', 'low_ratio',
-                 'high_ratio']]
+            short_df = i[['program', 'mean_dif', 'std_dif', 'low_dif',
+                          'high_dif', 'mean_ratio', 'std_ratio', 'low_ratio', 'high_ratio']]
             short_df['datetime'] = np.array(self.dates_trunc)
             df_p2 = df_p2.append(short_df, ignore_index=True)
 
-        # Make plot 2    
-        plot2 = (ggplot(None) + aes('datetime', 'mean_dif', group='program') +
-                 geom_ribbon(df_p2, aes(ymin='low_dif', ymax='high_dif', fill='program'), alpha=0.2) +
-                 geom_line(df_p2, aes('datetime', 'mean_dif', colour='program'), size=1) +
-                 ylab('Daily emissions difference (kg/site)') + xlab('') +
-                 scale_colour_hue(h=0.15, l=0.25, s=0.9) +
-                 scale_x_datetime(labels=date_format('%Y')) +
-                 ggtitle('Daily differences may be uncertain for small sample sizes') +
-                 #        scale_y_continuous(trans='log10') +
-                 labs(color='Program', fill='Program') +
-                 theme(panel_border=element_rect(colour="black", fill=None, size=2),
-                       panel_grid_minor_x=element_blank(), panel_grid_major_x=element_blank(),
-                       panel_grid_minor_y=element_line(colour='black', linewidth=0.5, alpha=0.3),
-                       panel_grid_major_y=element_line(colour='black', linewidth=1, alpha=0.5))
+        # Make plot 2
+        plot2 = (pn.ggplot(None) + pn.aes('datetime', 'mean_dif', group='program') +
+                 pn.geom_ribbon(
+                     df_p2, pn.aes(ymin='low_dif', ymax='high_dif', fill='program'), alpha=0.2) +
+                 pn.geom_line(df_p2, pn.aes('datetime', 'mean_dif', colour='program'), size=1) +
+                 pn.ylab('Daily emissions difference (kg/site)') + pn.xlab('') +
+                 pn.scale_colour_hue(h=0.15, l=0.25, s=0.9) +
+                 pn.scale_x_datetime(labels=date_format('%Y')) +
+                 pn.ggtitle('Daily differences may be uncertain for small sample sizes') +
+                 #        pn.scale_y_continuous(trans='log10') +
+                 pn.labs(color='Program', fill='Program') +
+                 pn.theme(panel_border=pn.element_rect(colour="black", fill=None, size=2),
+                          panel_grid_minor_x=pn.element_blank(),
+                          panel_grid_major_x=pn.element_blank(),
+                          panel_grid_minor_y=pn.element_line(
+                              colour='black', linewidth=0.5, alpha=0.3),
+                          panel_grid_major_y=pn.element_line(
+                              colour='black', linewidth=1, alpha=0.5))
                  )
         plot2.save(self.output_directory + 'relative_mitigation.png', width=7, height=3, dpi=900)
 
-        # Make plot 3    
-        plot3 = (ggplot(None) + aes('datetime', 'mean_ratio', group='program') +
-                 geom_ribbon(df_p2, aes(ymin='low_ratio', ymax='high_ratio', fill='program'), alpha=0.2) +
-                 geom_hline(yintercept=1, size=0.5, colour='blue') +
-                 geom_line(df_p2, aes('datetime', 'mean_ratio', colour='program'), size=1) +
-                 ylab('Emissions ratio') + xlab('') +
-                 scale_colour_hue(h=0.15, l=0.25, s=0.9) +
-                 scale_x_datetime(labels=date_format('%Y')) +
-                 ggtitle(
-                     'Blue line represents equivalence. \nIf uncertainty is high, use more simulations and/or sites. \nLook also at ratio of mean daily emissions over entire timeseries.') +
-                 labs(color='Program', fill='Program') +
-                 theme(panel_border=element_rect(colour="black", fill=None, size=2),
-                       panel_grid_minor_x=element_blank(), panel_grid_major_x=element_blank(),
-                       panel_grid_minor_y=element_line(colour='black', linewidth=0.5, alpha=0.3),
-                       panel_grid_major_y=element_line(colour='black', linewidth=1, alpha=0.5))
+        # Make plot 3
+        plot3 = (pn.ggplot(None) + pn.aes('datetime', 'mean_ratio', group='program') +
+                 pn.geom_ribbon(df_p2, pn.aes(
+                     ymin='low_ratio', ymax='high_ratio', fill='program'), alpha=0.2) +
+                 pn.geom_hline(yintercept=1, size=0.5, colour='blue') +
+                 pn.geom_line(df_p2, pn.aes('datetime', 'mean_ratio', colour='program'), size=1) +
+                 pn.ylab('Emissions ratio') + pn.xlab('') +
+                 pn.scale_colour_hue(h=0.15, l=0.25, s=0.9) +
+                 pn.scale_x_datetime(labels=date_format('%Y')) +
+                 pn.ggtitle(
+                     'Blue line represents equivalence. \nIf uncertainty is high, use more '
+                     'simulations and/or sites. \nLook also at ratio of mean daily emissions'
+                     'over entire timeseries.') +
+                 pn.labs(color='Program', fill='Program') +
+                 pn.theme(panel_border=pn.element_rect(colour="black", fill=None, size=2),
+                          panel_grid_minor_x=pn.element_blank(),
+                          panel_grid_major_x=pn.element_blank(),
+                          panel_grid_minor_y=pn.element_line(
+                              colour='black', linewidth=0.5, alpha=0.3),
+                          panel_grid_major_y=pn.element_line(
+                              colour='black', linewidth=1, alpha=0.5))
                  )
         plot3.save(self.output_directory + 'relative_mitigation2.png', width=7, height=3, dpi=900)
 
-        ##################################
-        ### Figure to compare costs ####
+        # ---------------------------------------
+        # ------ Figure to compare costs  ------
         dfs = self.cost_dfs
 
         for i in range(len(dfs)):
@@ -410,7 +436,8 @@ class BatchReporting:
         dfs_p1 = dfs.copy()
         for i in range(len(dfs_p1)):
             # Reshape
-            dfs_p1[i] = pd.melt(dfs_p1[i], id_vars=['datetime', 'mean', 'std', 'low', 'high', 'program'])
+            dfs_p1[i] = pd.melt(dfs_p1[i], id_vars=['datetime', 'mean',
+                                                    'std', 'low', 'high', 'program'])
 
         # Combine dataframes into single dataframe for plotting
         df_p1 = dfs_p1[0]
@@ -421,29 +448,33 @@ class BatchReporting:
         df_p1.to_csv(self.output_directory + 'rolling_cost_estimates.csv', index=True)
 
         # Make plots from list of dataframes - one entry per dataframe
-        theme_set(theme_linedraw())
-        plot1 = (ggplot(None) + aes('datetime', 'value', group='program') +
-                 geom_ribbon(df_p1, aes(ymin='low', ymax='high', fill='program'), alpha=0.2) +
-                 geom_line(df_p1, aes('datetime', 'mean', colour='program'), size=1) +
-                 ylab('Estimated cost per facility') + xlab('') +
-                 scale_colour_hue(h=0.15, l=0.25, s=0.9) +
-                 scale_x_datetime(labels=date_format('%Y')) +
-                 #scale_y_continuous(trans='log10') +
-                 labs(color='Program', fill='Program') +
-                 theme(panel_border=element_rect(colour="black", fill=None, size=2),
-                       panel_grid_minor_x=element_blank(), panel_grid_major_x=element_blank(),
-                       panel_grid_minor_y=element_line(colour='black', linewidth=0.5, alpha=0.3),
-                       panel_grid_major_y=element_line(colour='black', linewidth=1, alpha=0.5))
+        pn.theme_set(pn.theme_linedraw())
+        plot1 = (pn.ggplot(None) + pn.aes('datetime', 'value', group='program') +
+                 pn.geom_ribbon(df_p1, pn.aes(ymin='low', ymax='high', fill='program'), alpha=0.2) +
+                 pn.geom_line(df_p1, pn.aes('datetime', 'mean', colour='program'), size=1) +
+                 pn.ylab('Estimated cost per facility') + pn.xlab('') +
+                 pn.scale_colour_hue(h=0.15, l=0.25, s=0.9) +
+                 pn.scale_x_datetime(labels=date_format('%Y')) +
+                 # pn.scale_y_continuous(trans='log10') +
+                 pn.labs(color='Program', fill='Program') +
+                 pn.theme(panel_border=pn.element_rect(colour="black", fill=None, size=2),
+                          panel_grid_minor_x=pn.element_blank(),
+                          panel_grid_major_x=pn.element_blank(),
+                          panel_grid_minor_y=pn.element_line(
+                              colour='black', linewidth=0.5, alpha=0.3),
+                          panel_grid_major_y=pn.element_line(
+                              colour='black', linewidth=1, alpha=0.5))
                  )
         plot1.save(self.output_directory + 'cost_estimate_temporal.png', width=7, height=3, dpi=900)
 
         ########################################
-        ### Cost breakdown by program and method
+        # Cost breakdown by program and method
         method_lists = []
         for i in range(len(self.directories)):
-            df = pd.read_csv(self.output_directory + self.directories[i] + "/timeseries_output_0.csv")
+            df = pd.read_csv(
+                self.output_directory + self.directories[i] + "/timeseries_output_0.csv")
             df = df.filter(regex='cost$', axis=1)
-            df = df.drop(columns = ["total_daily_cost"])
+            df = df.drop(columns=["total_daily_cost"])
             method_lists.append(list(df))
 
         costs = [[] for i in range(len(self.all_data))]
@@ -452,7 +483,8 @@ class BatchReporting:
                 simcosts = []
                 for k in range(len(method_lists[i])):
                     timesteps = len(self.all_data[i][j][method_lists[i][k]])
-                    simcosts.append((sum(self.all_data[i][j][method_lists[i][k]])/timesteps/self.n_sites)*365)
+                    simcosts.append(
+                        (sum(self.all_data[i][j][method_lists[i][k]])/timesteps/self.n_sites)*365)
                 costs[i].append(simcosts)
 
         rows_list = []
@@ -461,20 +493,27 @@ class BatchReporting:
             for j in range(len(df_temp.columns)):
                 dict = {}
                 dict.update({'Program': self.directories[i]})
-                dict.update({'Mean Cost': round(df_temp.iloc[:,j].mean())})
-                dict.update({'St. Dev.': df_temp.iloc[:,j].std()})
+                dict.update({'Mean Cost': round(df_temp.iloc[:, j].mean())})
+                dict.update({'St. Dev.': df_temp.iloc[:, j].std()})
                 dict.update({'Method': method_lists[i][j].replace('_cost', '')})
                 rows_list.append(dict)
         df = pd.DataFrame(rows_list)
 
-        plot = (ggplot(df, aes(x='Program', y='Mean Cost', fill='Method', label = 'Mean Cost')) + geom_bar(stat="identity") +
-                ylab('Cost per Site per Year') + xlab('Program') + scale_fill_hue(h=0.15, l=0.25, s=0.9) +
-                geom_text(size=15, position=position_stack(vjust=0.5)) +
-                theme(panel_border=element_rect(colour="black", fill=None, size=2),
-                       panel_grid_minor_x=element_blank(), panel_grid_major_x=element_blank(),
-                       panel_grid_minor_y=element_line(colour='black', linewidth=0.5, alpha=0.3),
-                       panel_grid_major_y=element_line(colour='black', linewidth=1, alpha=0.5)))
+        plot = (
+            pn.ggplot(
+                df, pn.aes(
+                    x='Program', y='Mean Cost', fill='Method', label='Mean Cost')) +
+            pn.geom_bar(stat="identity") + pn.ylab('Cost per Site per Year') + pn.xlab('Program') +
+            pn.scale_fill_hue(h=0.15, l=0.25, s=0.9) +
+            pn.geom_text(size=15, position=pn.position_stack(vjust=0.5)) +
+            pn.theme(
+                panel_border=pn.element_rect(colour="black", fill=None, size=2),
+                panel_grid_minor_x=pn.element_blank(),
+                panel_grid_major_x=pn.element_blank(),
+                panel_grid_minor_y=pn.element_line(
+                    colour='black', linewidth=0.5, alpha=0.3),
+                panel_grid_major_y=pn.element_line(
+                    colour='black', linewidth=1, alpha=0.5)))
         plot.save(self.output_directory + 'cost_comparison.png', width=7, height=3, dpi=900)
-
 
         return

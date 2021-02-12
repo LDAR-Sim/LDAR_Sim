@@ -18,37 +18,40 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 # ------------------------------------------------------------------------------
-
-from weather_lookup import *
-from ldar_sim import *
-from time_counter import *
-from batch_reporting import *
-from stdout_redirect import *
+import os
+import sys
+from weather_lookup import WeatherLookup
+from ldar_sim import LdarSim
+from time_counter import TimeCounter
+from stdout_redirect import stdout_redirect
 import gc
 
-def ldar_sim_run (simulation):
+
+def ldar_sim_run(simulation):
     """
     The ldar sim run function takes a simulation dictionary
     simulation = a dictionary of simulation parameters necessary to run LDAR-Sim
     """
-    i = simulation['i']
+    # i = simulation['i']
     parameters = simulation['program']
     parameters['working_directory'] = simulation['wd']
 
-    parameters['output_directory'] = os.path.join (parameters['working_directory'], 'outputs/', parameters['program_name'])
-    if not os.path.exists (parameters['output_directory']):
-        os.makedirs (parameters['output_directory'])
+    parameters['output_directory'] = os.path.join(
+        simulation['output_directory'],
+        parameters['program_name'])
+    if not os.path.exists(parameters['output_directory']):
+        os.makedirs(parameters['output_directory'])
 
-    logfile = open (os.path.join (parameters['output_directory'], 'logfile.txt'), 'w')
-    if not 'print_from_simulation' in simulation or simulation['print_from_simulation']:
-        sys.stdout = stdout_redirect ([sys.stdout, logfile])
+    logfile = open(os.path.join(parameters['output_directory'], 'logfile.txt'), 'w')
+    if 'print_from_simulation' not in simulation or simulation['print_from_simulation']:
+        sys.stdout = stdout_redirect([sys.stdout, logfile])
     else:
-        sys.stdout = stdout_redirect ([logfile])
+        sys.stdout = stdout_redirect([logfile])
 
-    gc.collect ()
-    print (simulation['opening_message'])
+    gc.collect()
+    print(simulation['opening_message'])
 
-    parameters['simulation'] = str (simulation['i'])
+    parameters['simulation'] = str(simulation['i'])
 
     # ------------------------------------------------------------------------------
     # -----------------------Initialize dynamic model state-------------------------
@@ -83,16 +86,16 @@ def ldar_sim_run (simulation):
     # -----------------------------Run simulations----------------------------------
 
     # Initialize objects
-    state['weather'] = WeatherLookup (state, parameters)
-    state['t'] = TimeCounter (parameters)
-    sim = LdarSim (state, parameters, timeseries)
+    state['weather'] = WeatherLookup(state, parameters)
+    state['t'] = TimeCounter(parameters)
+    sim = LdarSim(state, parameters, timeseries)
 
     # Loop through timeseries
     while state['t'].current_date <= state['t'].end_date:
-        sim.update ()
-        state['t'].next_day ()
+        sim.update()
+        state['t'].next_day()
 
     # Clean up and write files
-    sim_summary = sim.finalize ()
-    logfile.close ()
+    sim_summary = sim.finalize()
+    logfile.close()
     return (sim_summary)

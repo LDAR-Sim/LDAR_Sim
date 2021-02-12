@@ -49,12 +49,18 @@ The easiest way to prepare your python installation is to use [pipenv](https://p
 
 `pipenv install`
 
+
 To make things easier, we have included windows binaries for the specific versions of cftime, GDAL, netCDF4, and pyproj. In the Pipfile, basemap is downloaded directly from [here](https://download.lfd.uci.edu/pythonlibs/s2jqpv5t/basemap-1.2.1-cp37-cp37m-win_amd64.whl). If this link breaks or the package is no longer available, this is not a problem for base operations of LDAR-Sim as basemap is only used in the live plotter demonstration.
+
+#### Step 2 Alternative: Using Requirements.txt
+An alternative approach to using the PIPfile and the prebuilt wheels is by using Conda (Conda-forge) and the requirements file included in the "install folder" Follow the directions included in the Setting Up LDAR Sim Dev Environment file. The requirements.txt file can also be used with PIP and pipenv, but Python and GDAL (versions listed in the requirements file) should be installed seperately.
 
 #### Step 3: Reproduce OGI simulations
 The ldar_sim_main file is currently configured for the OGI comparison case study presented in Fox et al 2020. Four different OGI-based LDAR programs are parameterized, which differ only according to weather and labour constraints.
 
 Open and run ldar_sim_main.py - you may need to set your workding directory on line 32, but if you download the entire branch from Github, you should not need to. The working directory used in LDAR-Sim should contain all inputs (this is the case_study folder provided to you). If all input files and program files are in your working directory, no other changes should be required to run the OGI scenarios from the case study. 
+
+NOTE: As of Feb 10th, 2021: The Working Directory is set based on the location of ldar_sim_main.py and is independent of the users working directory. 
 
 The only difference between these simulations and those in the Fox et al. 2020 study is that only 3 repeat simulations are run for each program in this demonstration, whereas in the paper, 25 simulations are run for each program to constrain uncertainty. Running 3 sets of simulations for each program over multiple years, rather than 25, will take much less time. Results should resemble Figures 2C and 2D in Fox et al 2020 but will not be exactly the same as the model is stochastic.
 
@@ -72,4 +78,6 @@ Once familiar with the case study, users can explore different input configurati
 Several LDAR-Sim advances are not publicly available at this time, including more advanced equivalence scenario modeling, specific method modules, and cost-effectiveness comparisons.
 
 ## Contributions and collaboration
-The authors welcome all contributions and collaborations. Please reach out - we would love to hear from you and/or work with you!
+The Included python code follows strict PEP8 Standards for formatting with the a modification to the Line Length rule, where lines cannot exceed 100 characters. Contributed code will be rejected if it does not meet this standard. We suggest using PEP8 autoformatters and Linting (Flake8 , Black) when making contributions.
+
+The authors welcome all contributions and collaborations. Please reach out - we would love to hear from you and/or work with you!   
