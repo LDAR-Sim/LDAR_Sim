@@ -1,10 +1,10 @@
 # ------------------------------------------------------------------------------
-# Program:     The LDAR Simulator (LDAR-Sim) 
+# Program:     The LDAR Simulator (LDAR-Sim)
 # File:        LDAR-Sim main
 # Purpose:     Interface for parameterizing and running LDAR-Sim.
 #
 # Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
-#    
+#
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published
 # by the Free Software Foundation, version 3.
@@ -18,9 +18,11 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 # ------------------------------------------------------------------------------
+from pathlib import Path
 
-from batch_reporting import *
-from ldar_sim_run import *
+from batch_reporting import BatchReporting
+from ldar_sim_run import ldar_sim_run
+import pandas as pd
 import os
 import datetime
 import warnings
@@ -30,12 +32,17 @@ from generic_functions import check_ERA5_file
 if __name__ == '__main__':
     # ------------------------------------------------------------------------------
     # -----------------------------Global parameters--------------------------------
-    wd = "../inputs_template/"
-    program_list = ['P_ref', 'P_alt', 'P_alt2']  # Programs to compare; Position one should be the reference program (P_ref)
+    src_dir_path = Path(os.path.dirname(os.path.realpath(__file__)))
+    src_dir = str(src_dir_path)
+    root_dir = str(src_dir_path.parent)
+    wd = os.path.abspath(root_dir) + "/inputs_template/"
+    output_directory = os.path.abspath(root_dir) + "/outputs/"
+    # Programs to compare; Position one should be the reference program (P_ref)
+    program_list = ['P_ref', 'P_alt']  # , 'P_alt2']
 
     # -----------------------------Set up programs----------------------------------
     programs = []
-    wd = os.path.abspath (wd) + "/"
+
     warnings.filterwarnings('ignore')    # Temporarily mute warnings
 
     for p in range(len(program_list)):
@@ -49,7 +56,6 @@ if __name__ == '__main__':
     spin_up = programs[0]['spin_up']
     ref_program = program_list[0]
     write_data = programs[0]['write_data']
-    output_directory = wd + 'outputs/'
 
     # Check whether ERA5 data is already in the working directory and download data if not
     check_ERA5_file(wd, programs[0]['weather_file'])
@@ -61,11 +67,17 @@ if __name__ == '__main__':
     simulations = []
     for i in range(n_simulations):
         for j in range(len(programs)):
-            opening_message = 'Simulating program ' + str(j + 1) + ' of ' + str(len(programs)) + '; simulation ' + \
-                                str(i + 1) + ' of ' + str(n_simulations)
-            simulations.append([{'i': i, 'program': programs[j], 'wd': wd, 'opening_message': opening_message,
-                                'print_from_simulation': print_from_simulations}])
+            opening_message = "Simulating program {} of {} ; simulation {} of {}".format(
+                j + 1, len(programs), i + 1, n_simulations
+            )
+            simulations.append(
+                [{'i': i, 'program': programs[j],
+                  'wd': wd,
+                  'output_directory':output_directory,
+                  'opening_message': opening_message,
+                  'print_from_simulation': print_from_simulations}])
 
+    # ldar_sim_run(simulations[1][0])
     # Perform simulations in parallel
     with mp.Pool(processes=n_processes) as p:
         res = p.starmap(ldar_sim_run, simulations)
@@ -73,7 +85,9 @@ if __name__ == '__main__':
     # Do batch reporting
     if write_data:
         # Create a data object...
-        reporting_data = BatchReporting(output_directory, programs[0]['start_year'], spin_up, ref_program)
+        reporting_data = BatchReporting(
+            output_directory, programs[0]['start_year'],
+            spin_up, ref_program)
         if n_simulations > 1:
             reporting_data.program_report()
             if len(programs) > 1:
@@ -92,6 +106,6 @@ if __name__ == '__main__':
     if 'program' in sa_df.columns:
         for program in sa_df['program'].unique():
             sa_out = sa_df.loc[sa_df['program'] == program, :]
-            sa_outfile_name = os.path.join(wd, 'sensitivity_analysis', 'sensitivity_' + program + '.csv')
+            sa_outfile_name = os.path.join(wd, 'sensitivity_analysis',
+                                           'sensitivity_' + program + '.csv')
             sa_out.to_csv(sa_outfile_name, index=False)
-

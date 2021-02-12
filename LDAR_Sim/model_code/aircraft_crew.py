@@ -1,10 +1,10 @@
 # ------------------------------------------------------------------------------
-# Program:     The LDAR Simulator (LDAR-Sim) 
+# Program:     The LDAR Simulator (LDAR-Sim)
 # File:        Aircraft crew
 # Purpose:     Initialize each aircraft crew under aircraft company
 #
 # Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
-#    
+#
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published
 # by the Free Software Foundation, version 3.
@@ -20,7 +20,6 @@
 # ------------------------------------------------------------------------------
 
 from datetime import timedelta
-import math
 import numpy as np
 
 
@@ -55,16 +54,19 @@ class aircraft_crew:
                 work_hours = daylight_hours
             elif daylight_hours > max_work:
                 work_hours = max_work
-        elif self.parameters['methods']['aircraft']['consider_daylight'] == False:
+        else:
             work_hours = max_work
 
         if work_hours < 24 and work_hours != 0:
             start_hour = (24 - work_hours) / 2
             end_hour = start_hour + work_hours
         else:
-            print('Unreasonable number of work hours specified for Aircraft crew ' + str(self.crewstate['id']))
+            print(
+                'Unreasonable number of work hours specified for Aircraft crew ' +
+                str(self.crewstate['id']))
 
-        self.state['t'].current_date = self.state['t'].current_date.replace(hour=int(start_hour))  # Set start of work day
+        self.state['t'].current_date = self.state['t'].current_date.replace(
+            hour=int(start_hour))  # Set start of work day
 
         # Start day with a time increment required for flying to first site
         self.state['t'].current_date += timedelta(minutes=int(self.config['t_lost_per_site']))
@@ -76,7 +78,7 @@ class aircraft_crew:
             self.visit_site(facility_ID, site)
             self.worked_today = True
 
-        if self.worked_today == True:
+        if self.worked_today:
             self.timeseries['aircraft_cost'][self.state['t'].current_timestep] += \
                 self.parameters['methods']['aircraft']['cost_per_day']
             self.timeseries['total_daily_cost'][self.state['t'].current_timestep] += \
@@ -91,7 +93,10 @@ class aircraft_crew:
         """
 
         # Sort all sites based on a neglect ranking
-        self.state['sites'] = sorted(self.state['sites'], key=lambda k: k['aircraft_t_since_last_LDAR'], reverse=True)
+        self.state['sites'] = sorted(
+            self.state['sites'],
+            key=lambda k: k['aircraft_t_since_last_LDAR'],
+            reverse=True)
 
         facility_ID = None  # The facility ID gets assigned if a site is found
         found_site = False  # The found site flag is updated if a site is found
@@ -100,10 +105,12 @@ class aircraft_crew:
         for site in self.state['sites']:
 
             # If the site hasn't been attempted yet today
-            if site['attempted_today_aircraft?'] == False:
+            if not site['attempted_today_aircraft?']:
 
-                # If the site is 'unripened' (i.e. hasn't met the minimum interval set out in the LDAR regulations/policy), break out - no LDAR today
-                if site['aircraft_t_since_last_LDAR'] < self.parameters['methods']['aircraft']['min_interval']:
+                # If the site is 'unripened' (i.e. hasn't met the minimum interval set
+                # out in the LDAR regulations/policy), break out - no LDAR today
+                if site['aircraft_t_since_last_LDAR'] < self.parameters['methods']['aircraft'][
+                        'min_interval']:
                     self.state['t'].current_date = self.state['t'].current_date.replace(hour=23)
                     break
 
@@ -111,8 +118,9 @@ class aircraft_crew:
                 elif site['surveys_done_this_year_aircraft'] < int(site['aircraft_RS']):
 
                     # Check the weather for that site
-                    if self.deployment_days[
-                        site['lon_index'], site['lat_index'], self.state['t'].current_timestep] == True:
+                    if self.deployment_days[site['lon_index'],
+                                            site['lat_index'],
+                                            self.state['t'].current_timestep]:
 
                         # The site passes all the tests! Choose it!
                         facility_ID = site['facility_ID']
@@ -145,17 +153,15 @@ class aircraft_crew:
 
         # Add vented emissions
         venting = 0
-        if self.parameters['consider_venting'] == True:
-            venting = self.state['empirical_vents'][np.random.randint(0, len(self.state['empirical_vents']))]
+        if self.parameters['consider_venting']:
+            venting = self.state['empirical_vents'][
+                np.random.randint(0, len(self.state['empirical_vents']))]
             site_cum_rate += venting
-
         # Simple detection module based on strict minimum detection limit
-        detect = False
-        if site_cum_rate > (self.config['MDL']):
-            detect = True
 
-        if detect == True:
-            # If source is above follow-up threshold, calculate measured rate using quantification error
+        if site_cum_rate > (self.config['MDL']):
+            # If source is above follow-up threshold, calculate measured rate using quantification
+            # error
             quant_error = np.random.normal(0, self.config['QE'])
             measured_rate = None
             if quant_error >= 0:
@@ -176,8 +182,7 @@ class aircraft_crew:
                 }
 
                 self.candidate_flags.append(site_dict)
-
-        elif detect == False:
+        else:
             site['aircraft_missed_leaks'] += len(leaks_present)
 
         self.state['t'].current_date += timedelta(minutes=int(site['aircraft_time']))

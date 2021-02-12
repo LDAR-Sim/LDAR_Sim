@@ -19,12 +19,11 @@
 #
 # ------------------------------------------------------------------------------
 
-import sys
 import threading
-import datetime
+
 
 class stdout_redirect:
-    def __init__ (self, redirects):
+    def __init__(self, redirects):
         '''
         constructor takes a redirect stream
         redirects = a list of file like objects to push to
@@ -32,30 +31,27 @@ class stdout_redirect:
         self.redirects = redirects
         return
 
-    def write (self, text):
+    def write(self, text):
         '''
         text is the text to push to the stdout
         '''
         for w in self.redirects:
             try:
-                with threading.Lock ():
-                    w.write (text)
-            except:
+                with threading.Lock():
+                    w.write(text)
+            except ValueError:
                 pass
 
         return
 
-    def flush (self):
+    def flush(self):
         '''
         flush method
         '''
         for w in self.redirects:
             try:
-                w.flush ()
-            except:
+                w.flush()
+            except ValueError:
                 pass
 
         return
-
-
-

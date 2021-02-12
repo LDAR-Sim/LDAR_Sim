@@ -1,10 +1,10 @@
 # ------------------------------------------------------------------------------
-# Program:     The LDAR Simulator (LDAR-Sim) 
+# Program:     The LDAR Simulator (LDAR-Sim)
 # File:        Daylight calculator
 # Purpose:     Calculates daylight hours (daily) for a set of locations.
 #
 # Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
-#    
+#
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published
 # by the Free Software Foundation, version 3.
@@ -50,12 +50,13 @@ class DaylightCalculatorAve:
         for day in range(len(self.date_list)):
             # Create ephem object
             obs = ephem.Observer()
-            # Turn off PyEphem’s native mechanism for computing atmospheric refraction near the horizon
+            # Turn off PyEphem’s native mechanism for computing atmospheric refraction
+            # near the horizon
             obs.pressure = 0
             obs.horizon = '-6'  # -6 = civil twilight, -12 = nautical, -18 = astronomical
-            # Set the time 
+            # Set the time
             obs.date = self.date_list[day]
-            # set the latitude and longitude for object 
+            # set the latitude and longitude for object
             obs.lat = str(self.lat_ave)
             obs.lon = str(self.lon_ave)
 
@@ -87,12 +88,13 @@ class DaylightCalculatorAll:
         for i in range(len(self.time)):
             # Create ephem object
             obs = ephem.Observer()
-            # turn off PyEphem’s native mechanism for computing atmospheric refraction near the horizon
+            # turn off PyEphem’s native mechanism for computing atmospheric refraction
+            # near the horizon
             obs.pressure = 0
             obs.horizon = '-6'  # -6=civil twilight, -12=nautical, -18=astronomical
-            # set the time 
+            # set the time
             obs.date = self.time[i]
-            # set the latitude and longitude for object 
+            # set the latitude and longitude for object
             for j in range(len(self.lat)):
                 obs.lat = str(self.lat[j])
                 for k in range(len(self.lon)):
@@ -102,7 +104,7 @@ class DaylightCalculatorAll:
                     sunrise = obs.previous_rising(ephem.Sun(), use_center=True).datetime()
                     sunset = obs.next_setting(ephem.Sun(), use_center=True).datetime()
 
-                    # convert to local time 
+                    # convert to local time
                     sr = (sunrise.hour - 7) + (sunrise.minute / 100)
                     ss = (sunset.hour + 17) + (sunset.minute / 100)
 
@@ -110,7 +112,7 @@ class DaylightCalculatorAll:
                     self.sunset[i, j, k] = ss
 
     def get_sunrise(self, day, lat, lon):
-        # find latitude index 
+        # find latitude index
         tar_la = lat
         lat_index = 0
         i = 1
@@ -119,7 +121,7 @@ class DaylightCalculatorAll:
                 lat_index = i
             i = i + 1
         self.tar_lo = lon
-        # find longitude index 
+        # find longitude index
         lon_index = 0
         j = 1
         while j < len(self.lon):
@@ -138,7 +140,7 @@ class DaylightCalculatorAll:
         return self.sr
 
     def get_sunset(self, day, lat, lon):
-        # find latitude index 
+        # find latitude index
         tar_la = lat
         lat_index = 0
         i = 1
@@ -147,7 +149,7 @@ class DaylightCalculatorAll:
                 lat_index = i
             i = i + 1
         self.tar_lo = lon
-        # find longitude index 
+        # find longitude index
         lon_index = 0
         j = 1
         while j < len(self.lon):

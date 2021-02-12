@@ -1,10 +1,10 @@
 # ------------------------------------------------------------------------------
-# Program:     The LDAR Simulator (LDAR-Sim) 
+# Program:     The LDAR Simulator (LDAR-Sim)
 # File:        Generic functions
 # Purpose:     Generic functions for running LDAR-Sim.
 #
 # Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
-#    
+#
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published
 # by the Free Software Foundation, version 3.
@@ -22,11 +22,14 @@
 import numpy as np
 import pandas as pd
 import os
+import sys
 from osgeo import gdal
 from osgeo import osr
 from mpl_toolkits.basemap import Basemap
 import matplotlib.pyplot as plt
-import boto3 # for downloading data from AWS
+import boto3  # for downloading data from AWS
+from botocore.exceptions import ClientError
+
 
 def gap_calculator(condition_vector):
     """
@@ -36,7 +39,7 @@ def gap_calculator(condition_vector):
 
     # Find the index of all days in which the condition is true
     max_gap = None
-    indices = np.where(condition_vector == True)
+    indices = np.where(condition_vector)
 
     # If there are no condition days, max_gap equals the vector length
     if len(indices[0]) == 0:
@@ -48,7 +51,7 @@ def gap_calculator(condition_vector):
         end_gap = len(condition_vector) - indices[0][0]
         max_gap = max(start_gap, end_gap)
 
-    # If there are multiple condition days, calculate longest gap   
+    # If there are multiple condition days, calculate longest gap
     elif len(indices[0] > 1):
         start_gap = indices[0][0]
         mid_gap = max(abs(x - y) for (x, y) in zip(indices[0][1:], indices[0][:-1]))
@@ -56,6 +59,7 @@ def gap_calculator(condition_vector):
         max_gap = max(start_gap, mid_gap, end_gap)
 
     return max_gap
+
 
 def get_prop_rate(proportion, rates):
     """
@@ -83,21 +87,24 @@ def get_prop_rate(proportion, rates):
 
     # Estimate proportion of emissions that correspond with a given proportion of top emitters.
     # 100% of sites account for 100% of emissions. 0% of sites account for 0% of emissions.
-    f = lambda x: np.interp(x, xp=p, fp=cum_rates_prop)
+    def f(x): return np.interp(x, xp=p, fp=cum_rates_prop)
     prop_rate = f(1 - proportion)
-    prop_above = 1 - prop_rate
+    # prop_above = 1 - prop_rate
 
     # Convert result (prop emissions) back to cumulative rate
     cum_rate = prop_rate * max(cum_rates)
 
     # Estimate emission rate that corresponds with cumulative rate
-    f2 = lambda x: np.interp(x, cum_rates, rates_sorted)
+    def f2(x): return np.interp(x, cum_rates, rates_sorted)
     rate = f2(cum_rate)
 
-    # A dataframe of all the useful info, if ever needed for a list of thresholds (not returned by function)
-    # df = pd.DataFrame({'Proportion': proportion, 'Prop Emissions': prop_above, 'follow_up_thresh': rate})
+    # A dataframe of all the useful info, if ever needed for a list of thresholds
+    # (not returned by function)
+    # df = pd.DataFrame(
+    #     {'Proportion': proportion, 'Prop Emissions': prop_above, 'follow_up_thresh': rate})
 
     return (rate)
+
 
 def make_maps(company, sites):
     """
@@ -108,7 +115,8 @@ def make_maps(company, sites):
     # For each cell, sum the total number of deployment days and divide by total number of days
     for lon in range(len(company.state['weather'].longitude)):
         for lat in range(len(company.state['weather'].latitude)):
-            company.DD_map[lon, lat] = (company.deployment_days[lon, lat, :].sum()) / company.parameters['timesteps']
+            company.DD_map[lon, lat] = (
+                company.deployment_days[lon, lat, :].sum()) / company.parameters['timesteps']
 
     # Calculate MCB for each cell
     for lon in range(len(company.state['weather'].longitude)):
@@ -150,16 +158,24 @@ def make_maps(company, sites):
 
     # Make nice map images
     plt.rcParams["figure.figsize"] = (10, 10)
-    map = Basemap(epsg=3401, llcrnrlon= xmin - 1, llcrnrlat= ymin - 1, urcrnrlon=xmax + 3,
+    map = Basemap(epsg=3401, llcrnrlon=xmin - 1, llcrnrlat=ymin - 1, urcrnrlon=xmax + 3,
                   urcrnrlat=ymax + 1, resolution='i', area_thresh=10000.)
     map.fillcontinents(color='#e8e8e8', alpha=1, zorder=1)
     map.drawcountries(color='black', linewidth=2, zorder=3)
     map.drawstates(color='black', linewidth=1, zorder=4)
-    map.drawparallels(np.arange(ymin, ymax, round(abs(ymin-ymax)/3)), color="black", labels=[1, 0, 0, 0], fontsize=10, linewidth=0.2, zorder=5)
-    map.drawmeridians(np.arange(xmin, xmax, round(abs(xmin-xmax)/3)), color="black", labels=[0, 0, 0, 1], fontsize=10, linewidth=0.2, zorder=6)
+    map.drawparallels(
+        np.arange(ymin, ymax, round(abs(ymin - ymax) / 3)),
+        color="black", labels=[1, 0, 0, 0],
+        fontsize=10, linewidth=0.2, zorder=5)
+    map.drawmeridians(
+        np.arange(xmin, xmax, round(abs(xmin - xmax) / 3)),
+        color="black", labels=[0, 0, 0, 1],
+        fontsize=10, linewidth=0.2, zorder=6)
 
-    sitesx, sitesy = map((pd.to_numeric(sites['lon'])+360).tolist(), pd.to_numeric(sites['lat']).tolist())
-    map.scatter(sitesx, sitesy, marker='o', color = 'black', s = 1, zorder=7)
+    sitesx, sitesy = map(
+        (pd.to_numeric(sites['lon']) + 360).tolist(),
+        pd.to_numeric(sites['lat']).tolist())
+    map.scatter(sitesx, sitesy, marker='o', color='black', s=1, zorder=7)
 
     m_lon, m_lat = np.meshgrid(lon, lat)
     xi, yi = map(m_lon, m_lat)
@@ -172,27 +188,35 @@ def make_maps(company, sites):
     plt.savefig('DD_' + company.name + '_map' + '.png', dpi=300)
     plt.clf()
 
-    map2 = Basemap(epsg=3401, llcrnrlon=xmin - 1, llcrnrlat= ymin - 1, urcrnrlon=xmax + 3,
-                  urcrnrlat=ymax + 1, resolution='i', area_thresh=10000.)
+    map2 = Basemap(epsg=3401, llcrnrlon=xmin - 1, llcrnrlat=ymin - 1, urcrnrlon=xmax + 3,
+                   urcrnrlat=ymax + 1, resolution='i', area_thresh=10000.)
     map2.fillcontinents(color='#e8e8e8', alpha=1, zorder=1)
     map2.drawcountries(color='black', linewidth=2, zorder=3)
     map2.drawstates(color='black', linewidth=1, zorder=4)
-    map2.drawparallels(np.arange(ymin, ymax, round(abs(ymin-ymax)/3)), color="black", labels=[1, 0, 0, 0], fontsize=10, linewidth=0.2, zorder=5)
-    map2.drawmeridians(np.arange(xmin, xmax, round(abs(xmin-xmax)/3)), color="black", labels=[0, 0, 0, 1], fontsize=10, linewidth=0.2, zorder=6)
-    map2.scatter(sitesx, sitesy, marker='o', color = 'black', s = 1, zorder=7)
+    map2.drawparallels(
+        np.arange(ymin, ymax, round(abs(ymin - ymax) / 3)),
+        color="black", labels=[1, 0, 0, 0],
+        fontsize=10, linewidth=0.2, zorder=5)
+    map2.drawmeridians(
+        np.arange(xmin, xmax, round(abs(xmin - xmax) / 3)),
+        color="black", labels=[0, 0, 0, 1],
+        fontsize=10, linewidth=0.2, zorder=6)
+    map2.scatter(sitesx, sitesy, marker='o', color='black', s=1, zorder=7)
 
     m_lon, m_lat = np.meshgrid(lon, lat)
     xi, yi = map(m_lon, m_lat)
 
-    cs = map2.pcolor(xi, yi, np.squeeze(MCB_output), alpha=1, vmin=0, vmax=365, cmap='jet', zorder=2)
+    cs = map2.pcolor(xi, yi, np.squeeze(MCB_output), alpha=1,
+                     vmin=0, vmax=365, cmap='jet', zorder=2)
     cbar = map2.colorbar(cs, location='bottom', pad="5%")
     cbar.set_alpha(1)
     cbar.draw_all()
     cbar.set_label('Maximum blackout period (days)', fontsize=12)
-    plt.savefig('MCB_' + company.name + '_map' + '.png', dpi = 300)
+    plt.savefig('MCB_' + company.name + '_map' + '.png', dpi=300)
     plt.clf()
 
     return
+
 
 def check_ERA5_file(wd, target_file):
     ncfiles = []
@@ -210,9 +234,13 @@ def check_ERA5_file(wd, target_file):
         print("Weather data checked. Continuing simulation.")
 
     if not target_file_found:
-        print ("Weather data not found. Downloading now from AWS you...")
-        access_key = ""
-        secret_key = ""
-        s3 = boto3.client('s3', aws_access_key_id=access_key , aws_secret_access_key=secret_key)
-        s3.download_file('eratest',target_file,r'{}/{}'.format(wd,target_file))
-        print ("Weather data download complete")
+        print("Weather data not found. Downloading now from AWS you...")
+        access_key = os.getenv('AWS_KEY')
+        secret_key = os.getenv('AWS_SEC')
+        try:
+            s3 = boto3.client('s3', aws_access_key_id=access_key, aws_secret_access_key=secret_key)
+            s3.download_file('eratest', target_file, r'{}/{}'.format(wd, target_file))
+        except ClientError:
+            print("Authentication Failed or Server Unavailable. Exiting")
+            sys.exit()
+        print("Weather data download complete")
