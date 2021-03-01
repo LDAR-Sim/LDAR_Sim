@@ -499,6 +499,9 @@ class BatchReporting:
                 rows_list.append(dict)
         df = pd.DataFrame(rows_list)
 
+        # Output Emissions df for other uses
+        df.to_csv(self.output_directory + 'cost_comparison.csv', index=True)
+
         plot = (
             pn.ggplot(
                 df, pn.aes(
