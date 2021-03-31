@@ -2,7 +2,7 @@ python==3.7.9
 numpy==1.20.0
 matplotlib==3.3.4
 pandas==1.2.1
-pyproj==2.6.1
+pyproj
 basemap==1.2.2
 basemap-data-hires==1.2.2
 cftime==1.4.0
