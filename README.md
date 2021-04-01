@@ -25,9 +25,9 @@ Chris Hugenholtz: chhugenh@ucalgary.ca
 ## LDAR-Sim Licensing and Use
 LDAR-Sim was invented by Thomas Fox, Mozhou Gao, Thomas Barchyn, and Chris Hugenholtz at the University of Calgary's Centre for Smart Emissions Sensing Technologies. 
 
-LDAR-Sim is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, version 3. LDAR-Sim is distributed in the hope that it will be useful, but without any warranty; without even the implied warranty of merchantability or fitness for a particular purpose. See the GNU Affero General Public License for more details.
+LDAR-Sim is free software: you can redistribute it and/or modify it under the terms of the MIT License . LDAR-Sim is distributed in the hope that it will be useful, but without any warranty; without even the implied warranty of merchantability or fitness for a particular purpose.
 
-LDAR-Sim code may not be modified without sharing the changes, pursuant to the GNU Affero GPL v3 License.
+NOTE: This applies to all versions following Commit 69c27ec, Made on March 1st, 2021, Previous versions of LDAR-Sim were licensed under the GNU Affero General Public License. All redistributions or modifications made on LDAR-Sim versions created before Commit 69c27ec (March 1st, 2021) are required to be in compliance with version 3 of the GNU Affero General Public License.
 
 ## [Fox_etal_2020 Release](https://github.com/tarcadius/LDAR_Sim/tree/Fox_etal_2020)
 You are currently in the master branch, which is evolving dynamically and is not a stable release. The Fox et al. 2020 release is immortalized in a separate branch that can be found by [clicking here](https://github.com/tarcadius/LDAR_Sim/tree/Fox_etal_2020).
@@ -40,7 +40,7 @@ Citation for this release: Fox, Thomas A., Mozhou Gao, Thomas E. Barchyn, Yorwea
 This guide is intended to help interested parties reproduce the results from Fox et al 2020, which introduces LDAR-Sim and presents a case study demonstrating various hypothetical LDAR programs in Alberta, Canada.
 
 #### Step 1: Before you begin
-Read and understand the LDAR-Sim LICENSE (GNU Affero General Public License Version 3).
+Read and understand the LDAR-Sim LICENSE (MIT License).
 Read [Fox et al 2020](https://www.sciencedirect.com/science/article/pii/S0959652620352811) to familiarize yourself with LDAR-Sim fundamentals.
 
 #### Step 2: Libraries and data
