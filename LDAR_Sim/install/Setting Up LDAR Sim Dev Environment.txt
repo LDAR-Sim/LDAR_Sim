@@ -11,9 +11,8 @@ From Conda Shell:
 conda config --add channels conda-forge
 conda config --set channel_priority strict
 
-conda create -n ldar_sim_env python=3.7
+conda create -n ldar_sim_env --file requirements.txt
 conda activate ldar_sim_env
-conda install -c conda-forge --file requirements.txt
 
 The Access Key and Secret Key are added as environment variables   AWS_KEY and AWS_SEC. The code will call these 
 
