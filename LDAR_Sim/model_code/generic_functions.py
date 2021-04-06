@@ -237,9 +237,10 @@ def check_ERA5_file(wd, target_file):
         print("Weather data not found. Downloading now from AWS you...")
         access_key = os.getenv('AWS_KEY')
         secret_key = os.getenv('AWS_SEC')
+
         try:
             s3 = boto3.client('s3', aws_access_key_id=access_key, aws_secret_access_key=secret_key)
-            s3.download_file('eratest', target_file, r'{}/{}'.format(wd, target_file))
+            s3.download_file('im3sweather', target_file, r'{}/{}'.format(wd, target_file))
         except ClientError:
             print("Authentication Failed or Server Unavailable. Exiting")
             sys.exit()
