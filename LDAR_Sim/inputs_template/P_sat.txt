@@ -1,0 +1,63 @@
+P_sat = {
+        'methods': {
+	                 'Satellite': {
+                            'name': 'GHGSAT-D',
+                            'n_crews': 1,
+			    'min_temp': -100,
+                            'max_wind': 100,
+                            'max_precip': 100,
+                            'min_interval': 180,
+                            'max_workday': 24,
+                            'cost_per_day': 100000,
+                            'follow_up_thresh': [0.1, "proportion"],
+                            'follow_up_ratio': 1,
+                            't_lost_per_site': 0,                             
+                            'reporting_delay': 2,
+			    'consider_daylight': False,   
+			    'TLE_file': 'Sat_TLEs.txt', 
+                            'Satellite_grid': 'GHGSatD_2015_2019.nc',
+                            'CloudCover':'CloudCover_AB_2015_2019.nc',
+                            },
+                   'OGI_FU': {
+                            'name': 'OGI_FU',
+                            'n_crews': 1,
+            		    'min_temp': -20,
+              		    'max_wind': 10,
+                	    'max_precip': 0.1,
+                            'max_workday': 8,
+                            'cost_per_day': 2500,
+                            'reporting_delay': 2,
+                            'MDL': [0.01275, 2.78e-6],
+			    'consider_daylight': False  
+                            }
+        },
+        'program_name': 'P_sat',
+        'n_simulations': 2, 	# Minimum of 2 simulations to get batch plots
+        'timesteps': 365,  	# Up to ~5600 for 16 year nc file
+        'n_processes': None,
+	'start_year': 2015,
+	'weather_file': "ERA5_AB_1x1_hourly_2015_2019.nc",
+        'infrastructure_file': 'facility_list_template.csv',
+        'leak_file': 'leak_rates.csv',
+        'count_file': 'leak_counts.csv',
+        'vent_file': 'site_rates.csv',
+        't_offsite_file': 'time_offsite_ground.csv',
+        'site_samples': [True,100],
+        'subtype_times': [False, 'subtype_times.csv'], # If True, will overwrite site-specific times with subtype times
+        'consider_operator': True,
+        'consider_venting': False,
+        'repair_delay': 14,
+        'LPR': 0.0065,
+        'max_det_op': 0.00,
+        'spin_up': 0,
+        'write_data': True, # Must be TRUE to make plots and maps
+        'make_plots': True,
+        'make_maps': True,
+	'print_from_simulations': True,
+        'operator_strength': 0.1,
+	'repair_cost': 200,
+	'verification_cost': 25,
+        'sensitivity': {'perform': False,
+                        'program': 'OGI',
+                        'batch': [True, 2]}
+    }
