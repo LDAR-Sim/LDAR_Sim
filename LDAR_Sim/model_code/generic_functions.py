@@ -245,3 +245,41 @@ def check_ERA5_file(wd, target_file):
             print("Authentication Failed or Server Unavailable. Exiting")
             sys.exit()
         print("Weather data download complete")
+        
+def geo_idx(dd, dd_array):
+    """
+     - dd - the decimal degree (latitude or longitude)
+     - dd_array - the list of decimal degrees to search.
+     search for nearest decimal degree in an array of decimal degrees and return the index.
+     np.argmin returns the indices of minium value along an axis.
+     so subtract dd from all values in dd_array, take absolute value and find index of minium.
+   """
+    geo_idx = (np.abs(dd_array - dd)).argmin()
+    return geo_idx
+	
+def quick_cal_daylight(date,lat,lon):
+
+    # Create ephem object
+    obs = ephem.Observer()
+    # turn off PyEphem’s native mechanism for computing atmospheric refraction
+    # near the horizon
+    obs.pressure = 0
+    obs.horizon = '-6'  # -6=civil twilight, -12=nautical, -18=astronomical
+    # set the time
+    obs.date = date
+    # set the latitude and longitude for object
+    obs.lat = str(lat)
+    obs.lon = str(lon)
+
+    # get the sunset and sunrise UTC time
+    sunrise = obs.previous_rising(ephem.Sun(), use_center=True).datetime()
+    sunset = obs.next_setting(ephem.Sun(), use_center=True).datetime()
+
+    # convert to local time
+    sr = (sunrise.hour - 7) + (sunrise.minute / 100)
+    ss = (sunset.hour + 17) + (sunset.minute / 100)
+
+    sunrise = sr
+    sunset = ss
+
+    return (sunrise,sunset)
