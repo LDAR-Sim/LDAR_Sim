@@ -328,11 +328,11 @@ class LdarSim:
         state = self.state
 
         # Update timeseries
-        timeseries['new_leaks'].append(sum(d['n_new_leaks'] for d in state['sites']))
+        timeseries['new_leaks'].append(sum([d['n_new_leaks'] for d in state['sites']]))
         timeseries['cum_repaired_leaks'].append(
-            sum(d['status'] == 'repaired' for d in state['leaks']))
+            sum([d['status'] == 'repaired' for d in state['leaks']]))
         # convert g/s to kg/day
-        timeseries['daily_emissions_kg'].append(sum(d['rate'] for d in self.active_leaks) * 86.4)
+        timeseries['daily_emissions_kg'].append(sum([d['rate'] for d in self.active_leaks]) * 86.4)
         timeseries['n_tags'].append(len(state['tags']))
         timeseries['rolling_cost_estimate'].append(
             sum(timeseries['total_daily_cost']) /
