@@ -38,7 +38,7 @@ if __name__ == '__main__':
     wd = os.path.abspath(root_dir) + "/inputs_template/"
     output_directory = os.path.abspath(root_dir) + "/outputs/"
     # Programs to compare; Position one should be the reference program (P_ref)
-    program_list = ['P_ref', 'P_alt']  # , 'P_alt2']
+    program_list = ['P_ref', 'P_base']
 
     # -----------------------------Set up programs----------------------------------
     programs = []
