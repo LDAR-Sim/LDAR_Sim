@@ -34,8 +34,6 @@ class OperatorAgent:
         self.init_mean_leaks = np.mean(self.state['init_leaks'])
         self.init_sum_leaks = np.sum(self.state['init_leaks'])
         self.n_sites = len(self.state['sites'])
-        self.timeseries['operator_redund_tags'] = np.zeros(self.parameters['timesteps'])
-        self.timeseries['operator_tags'] = np.zeros(self.parameters['timesteps'])
 
         return
 
