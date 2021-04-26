@@ -42,6 +42,7 @@ class LdarSim:
         self.state = state
         self.parameters = params
         self.timeseries = timeseries
+        self.active_leaks = []
 
         # Read in data files
         state['empirical_counts'] = np.array(pd.read_csv(
@@ -116,6 +117,8 @@ class LdarSim:
         timeseries['total_daily_cost'] = np.zeros(params['timesteps'])
         timeseries['repair_cost'] = np.zeros(params['timesteps'])
         timeseries['verification_cost'] = np.zeros(params['timesteps'])
+        timeseries['operator_redund_tags'] = np.zeros(self.parameters['timesteps'])
+        timeseries['operator_tags'] = np.zeros(self.parameters['timesteps'])
 
         # Configure sensitivity analysis, if requested (code block must remain here -
         # after site initialization and before method initialization)
@@ -221,14 +224,27 @@ class LdarSim:
         """
         update the state of active leaks
         """
-        for leak in self.state['leaks']:
-            if leak['status'] == 'active':
-                leak['days_active'] += 1
-
         self.active_leaks = []
         for leak in self.state['leaks']:
             if leak['status'] == 'active':
+                leak['days_active'] += 1
                 self.active_leaks.append(leak)
+
+                # Tag by operator if leak is due for NR
+                if leak['days_active'] == self.parameters['NRd']:
+                    if leak['tagged']:
+                        self.timeseries['operator_redund_tags'][
+                            self.state['t'].current_timestep] += 1
+
+                    elif not leak['tagged']:
+                        # Add these leaks to the 'tag pool'
+                        leak['tagged'] = True
+                        leak['date_tagged'] = self.state['t'].current_date
+                        leak['tagged_by_company'] = 'operator'
+                        leak['tagged_by_crew'] = 1
+                        self.state['tags'].append(leak)
+                        self.timeseries['operator_tags'][self.state['t'].current_timestep] += 1
+
         self.timeseries['active_leaks'].append(len(self.active_leaks))
         self.timeseries['datetime'].append(self.state['t'].current_date)
 
