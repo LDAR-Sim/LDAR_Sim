@@ -10,7 +10,7 @@ SA_MGL = {
                              'max_workday': 10,
                              'cost_per_day': 1500,
                              'follow_up_thresh': 0,
-                             'follow_up_ratio': 0.8,
+                             'follow_up_prop': 0.8,
                              'reporting_delay': 2,
 			     'MDL': 100
                              },

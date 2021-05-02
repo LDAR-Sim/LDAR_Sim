@@ -119,7 +119,7 @@ class aircraft_company:
 
         """
         # First, figure out how many sites you're going to choose
-        n_sites_to_flag = len(self.candidate_flags) * self.config['follow_up_ratio']
+        n_sites_to_flag = len(self.candidate_flags) * self.config['follow_up_prop']
         n_sites_to_flag = int(math.ceil(n_sites_to_flag))
 
         sites_to_flag = []
