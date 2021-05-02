@@ -163,8 +163,7 @@ class OGI_crew:
 
                 # If the site is 'unripened' (i.e. hasn't met the minimum interval),
                 # break out - no LDAR today
-                if site['OGI_t_since_last_LDAR'] \
-                        < self.parameters['methods']['OGI']['min_interval']:
+                if site['OGI_t_since_last_LDAR'] < int(site['OGI_min_int']):
                     self.state['t'].current_date = self.state['t'].current_date.replace(hour=23)
                     break
 

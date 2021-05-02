@@ -6,7 +6,6 @@ P_ref = {
                 'min_temp': -20,
                 'max_wind': 10,
                 'max_precip': 0.1,
-                'min_interval': 110,
                 'max_workday': 8,
                 'cost_per_day': 2500,
                 'reporting_delay': 2,

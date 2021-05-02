@@ -6,7 +6,6 @@ P_alt = {
                             'min_temp': -30,
                             'max_wind': 10,
                             'max_precip': 1,
-                            'min_interval': 180,
                             'max_workday': 8,
                             'cost_per_day': 10000,
                             'follow_up_thresh': [0.1, "proportion"],
