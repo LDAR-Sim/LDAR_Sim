@@ -10,7 +10,7 @@ P_alt2 = {
                             'max_workday': 8,
                             'cost_per_day': 2000,
                             'follow_up_thresh': [0, "absolute"],
-                            'follow_up_ratio': 1,
+                            'follow_up_prop': 1,
                             'reporting_delay': 2,
                             'MDL': 0.05,   
 			    'QE': 0,
