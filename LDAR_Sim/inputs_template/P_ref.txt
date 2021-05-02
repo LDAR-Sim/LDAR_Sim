@@ -31,7 +31,7 @@ P_ref = {
         'consider_venting': False,
         'repair_delay': 14,
         'LPR': 0.0065,
-	'NRd': 50,
+	'NRd': 150,
         'max_det_op': 0.00,
         'spin_up': 0,
         'write_data': True, # Must be TRUE to make plots and maps

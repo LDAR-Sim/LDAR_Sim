@@ -42,10 +42,11 @@ P_alt2 = {
         't_offsite_file': 'time_offsite_ground.csv',
         'site_samples': [True, 500],
         'subtype_times': [False, 'subtype_times.csv'], # If True, will overwrite site-specific times with subtype times
-        'consider_operator': True,
+        'consider_operator': False,
         'consider_venting': False,
         'repair_delay': 14,
         'LPR': 0.0065,
+	'NRd': 150,
         'max_det_op': 0.00,
         'spin_up': 0,
         'write_data': True, # Must be TRUE to make plots and maps
