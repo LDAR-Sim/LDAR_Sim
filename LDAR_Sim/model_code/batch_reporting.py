@@ -303,16 +303,18 @@ class BatchReporting:
         # Output Emissions df for other uses (e.g. live plot)
         df_p1.to_csv(self.output_directory + 'mean_emissions.csv', index=True)
 
+        df_p1["var_prog"] = df_p1['variable'].astype(str) + df_p1['program'].astype(str)
+
         # Make plots from list of dataframes - one entry per dataframe
         pn.theme_set(pn.theme_linedraw())
         plot1 = (pn.ggplot(None) + pn.aes('datetime', 'value', group='program') +
-                 pn.geom_ribbon(df_p1, pn.aes(ymin='low', ymax='high', fill='program'), alpha=0.2) +
+                 pn.geom_line(df_p1, pn.aes('datetime', 'value', group='var_prog', colour='program'), size=0.1) +
                  pn.geom_line(df_p1, pn.aes('datetime', 'mean', colour='program'), size=1) +
                  pn.ylab('Daily emissions (kg/site)') + pn.xlab('') +
                  pn.scale_colour_hue(h=0.15, l=0.25, s=0.9) +
                  pn.scale_x_datetime(labels=date_format('%Y')) +
-                 pn.scale_y_continuous(trans='log10') +
-                 pn.ggtitle('To reduce uncertainty, use more simulations.') +
+                 pn.scale_y_continuous() +
+                 pn.aes(ymin=0) +
                  pn.labs(color='Program', fill='Program') +
                  pn.theme(panel_border=pn.element_rect(colour="black", fill=None, size=2),
                           panel_grid_minor_x=pn.element_blank(),
@@ -322,7 +324,23 @@ class BatchReporting:
                           panel_grid_major_y=pn.element_line(
                               colour='black', linewidth=1, alpha=0.5))
                  )
-        plot1.save(self.output_directory + 'program_comparison.png', width=7, height=3, dpi=900)
+        plot1.save(self.output_directory + 'emissions_timeseries.png', width=7, height=3, dpi=900)
+
+        boxplot = (pn.ggplot(None) + pn.aes('program', 'mean') +
+                   pn.geom_boxplot(df_p1, pn.aes('program', 'mean', fill = 'program')) +
+                   pn.ylab('Daily Emissions (kg/site)') +
+                   pn.scale_fill_hue(h=0.15, l=0.25, s=0.9) +
+                   pn.labs(color = 'program', fill = 'program')+
+                   pn.theme(panel_border=pn.element_rect(colour="black", fill=None, size=2),
+                          panel_grid_minor_x=pn.element_blank(),
+                          panel_grid_major_x=pn.element_blank(),
+                          panel_grid_minor_y=pn.element_line(
+                              colour='black', linewidth=0.5, alpha=0.3),
+                          panel_grid_major_y=pn.element_line(
+                              colour='black', linewidth=1, alpha=0.5))
+                   )
+        boxplot.save(self.output_directory + 'emissions_boxplot.png', dpi=900)
+
 
         # Build relative mitigation plots
         dfs_p2 = dfs.copy()
@@ -378,7 +396,6 @@ class BatchReporting:
                  pn.ylab('Daily emissions difference (kg/site)') + pn.xlab('') +
                  pn.scale_colour_hue(h=0.15, l=0.25, s=0.9) +
                  pn.scale_x_datetime(labels=date_format('%Y')) +
-                 pn.ggtitle('Daily differences may be uncertain for small sample sizes') +
                  #        pn.scale_y_continuous(trans='log10') +
                  pn.labs(color='Program', fill='Program') +
                  pn.theme(panel_border=pn.element_rect(colour="black", fill=None, size=2),
@@ -389,7 +406,7 @@ class BatchReporting:
                           panel_grid_major_y=pn.element_line(
                               colour='black', linewidth=1, alpha=0.5))
                  )
-        plot2.save(self.output_directory + 'relative_mitigation.png', width=7, height=3, dpi=900)
+        plot2.save(self.output_directory + 'emissions_difference.png', width=7, height=3, dpi=900)
 
         # Make plot 3
         plot3 = (pn.ggplot(None) + pn.aes('datetime', 'mean_ratio', group='program') +
@@ -400,10 +417,6 @@ class BatchReporting:
                  pn.ylab('Emissions ratio') + pn.xlab('') +
                  pn.scale_colour_hue(h=0.15, l=0.25, s=0.9) +
                  pn.scale_x_datetime(labels=date_format('%Y')) +
-                 pn.ggtitle(
-                     'Blue line represents equivalence. \nIf uncertainty is high, use more '
-                     'simulations and/or sites. \nLook also at ratio of mean daily emissions'
-                     'over entire timeseries.') +
                  pn.labs(color='Program', fill='Program') +
                  pn.theme(panel_border=pn.element_rect(colour="black", fill=None, size=2),
                           panel_grid_minor_x=pn.element_blank(),
@@ -413,7 +426,7 @@ class BatchReporting:
                           panel_grid_major_y=pn.element_line(
                               colour='black', linewidth=1, alpha=0.5))
                  )
-        plot3.save(self.output_directory + 'relative_mitigation2.png', width=7, height=3, dpi=900)
+        plot3.save(self.output_directory + 'emissions_ratio.png', width=7, height=3, dpi=900)
 
         # ---------------------------------------
         # ------ Figure to compare costs  ------
@@ -445,7 +458,7 @@ class BatchReporting:
             df_p1 = df_p1.append(i, ignore_index=True)
 
         # Output Emissions df for other uses (e.g. live plot)
-        df_p1.to_csv(self.output_directory + 'rolling_cost_estimates.csv', index=True)
+        df_p1.to_csv(self.output_directory + 'cost_estimate_temporal.csv', index=True)
 
         # Make plots from list of dataframes - one entry per dataframe
         pn.theme_set(pn.theme_linedraw())
@@ -508,7 +521,7 @@ class BatchReporting:
                     x='Program', y='Mean Cost', fill='Method', label='Mean Cost')) +
             pn.geom_bar(stat="identity") + pn.ylab('Cost per Site per Year') + pn.xlab('Program') +
             pn.scale_fill_hue(h=0.15, l=0.25, s=0.9) +
-            pn.geom_text(size=15, position=pn.position_stack(vjust=0.5)) +
+            #pn.geom_text(size=15, position=pn.position_stack(vjust=0.5)) +
             pn.theme(
                 panel_border=pn.element_rect(colour="black", fill=None, size=2),
                 panel_grid_minor_x=pn.element_blank(),
