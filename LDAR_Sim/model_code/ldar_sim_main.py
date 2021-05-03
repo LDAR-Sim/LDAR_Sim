@@ -95,7 +95,7 @@ if __name__ == '__main__':
                 reporting_data.batch_plots()
 
     # Write metadata
-    metadata = open(output_directory + '/metadata.txt', 'w')
+    metadata = open(output_directory + '/_metadata.txt', 'w')
     metadata.write(str(programs) + '\n' +
                    str(datetime.datetime.now()))
 
