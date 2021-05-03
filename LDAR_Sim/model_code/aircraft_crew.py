@@ -109,8 +109,7 @@ class aircraft_crew:
 
                 # If the site is 'unripened' (i.e. hasn't met the minimum interval set
                 # out in the LDAR regulations/policy), break out - no LDAR today
-                if site['aircraft_t_since_last_LDAR'] < self.parameters['methods']['aircraft'][
-                        'min_interval']:
+                if site['aircraft_t_since_last_LDAR'] < int(site['aircraft_min_int']):
                     self.state['t'].current_date = self.state['t'].current_date.replace(hour=23)
                     break
 

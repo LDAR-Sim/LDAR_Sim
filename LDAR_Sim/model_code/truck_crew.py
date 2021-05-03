@@ -112,8 +112,7 @@ class truck_crew:
 
                 # If the site is 'unripened' (i.e. hasn't met the minimum interval),
                 # break out - no LDAR today
-                if site['truck_t_since_last_LDAR'] \
-                        < self.parameters['methods']['truck']['min_interval']:
+                if site['truck_t_since_last_LDAR'] < int(site['truck_min_int']):
                     self.state['t'].current_date = self.state['t'].current_date.replace(hour=23)
                     break
 
