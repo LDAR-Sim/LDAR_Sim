@@ -8,23 +8,23 @@ substances = {
 # Mass in a tonne, Or volume in a cubic meter.
 in_metrics = {
     # Unit referse to either tonne or cubic meter
-    "cubic meters": {
+    "cubic meter": {
         'per_unit': 1,
         'type': 'volume',
     },
-    "grams": {
+    "gram": {
         'per_unit': 1000000,
         'type': 'mass',
     },
-    "kilograms": {
+    "kilogram": {
         'per_unit': 1000,
         'type': 'mass',
     },
-    "tonnes": {
+    "tonne": {
         'per_unit': 1,
         'type': 'mass',
     },
-    "pounds": {
+    "pound": {
         'per_unit': 2204.62,
         'type': 'mass',
     },
@@ -32,26 +32,26 @@ in_metrics = {
         'per_unit': 35.3147,
         'type': 'volume',
     },
-    "liters": {
+    "liter": {
         'per_unit': 1000,
         'type': 'volume',
     }
 }
 
 out_metrics = {
-    "grams": {
+    "gram": {
         'per_unit': 1000000,
         'type': 'mass',
     },
-    "kilograms": {
+    "kilogram": {
         'per_unit': 1000,
         'type': 'mass',
     },
-    "tonnes": {
+    "tonne": {
         'per_unit': 1,
         'type': 'mass',
     },
-    "pounds": {
+    "pound": {
         'per_unit': 2204.62,
         'type': 'mass',
     },
@@ -59,11 +59,11 @@ out_metrics = {
         'per_unit': 35.3147,
         'type': 'volume',
     },
-    "liters": {
+    "liter": {
         'per_unit': 1000,
         'type': 'volume',
     },
-    "cubic meters": {
+    "cubic meter": {
         'per_unit': 1,
         'type': 'volume',
     },
@@ -124,11 +124,11 @@ pressure_units = {
 def gas_convert(
         input_quantity=0, input_substance="natural gas",
         input_metric="cubic feet", input_increment="hour",
-        output_substance="natural gas", output_metric="grams",
+        output_substance="natural gas", output_metric="gram",
         output_increment="second",
-        NG_comp=0.949, T=20, P=100,
-        temperature_unit="C",
-        pressure_unit="kPa",
+        NG_comp=0.949, T=60, P=1,
+        temperature_unit="F",
+        pressure_unit="atm",
         GWP=25, carbon_price=40,
 ):
     """ Converts gas flow rates to different units, and time intervals
@@ -138,13 +138,13 @@ def gas_convert(
         input_substance (str, optional): Type of Input Gas. Defaults to "natural gas".
             options are natural gas, methane, carbon dioxide
         input_metric (str, optional): Unit of input quantity. Defaults to "cubic feet".
-            options are grams, kilograms, tonnes, pounds, cubic feet, liters, cubic meters
+            options are gram, kilogram, tonnes, pounds, cubic feet, liters, cubic meters
         input_increment (str, optional): Defaults to "hour".
             options are second, minute, hour, day, month, year
         output_substance (str, optional): Type of Output Gas. Defaults to "natural gas".
             options are natural gas, methane, carbon dioxide
-        output_metric (str, optional): Unit of output quantity. Defaults to "grams".
-            options are grams, kilograms, tonnes, pounds, cubic feet, liters, cubic meters
+        output_metric (str, optional): Unit of output quantity. Defaults to "gram".
+            options are gram, kilogram, tonne, pound, cubic feet, liter, cubic meter
         output_increment (str, optional). Defaults to "second".
              options are second, minute, hour, day, month, year
         NG_comp (float, optional): Natural gas methane composition. Defaults to 0.949.
@@ -177,6 +177,12 @@ def gas_convert(
     Returns:
         Float: Converted gas quantity
     """
+    input_substance = input_substance.lower()
+    input_metric = input_metric.lower()
+    input_increment = input_increment.lower()
+    output_substance = output_substance.lower()
+    output_metric = output_metric.lower()
+    output_increment = output_increment.lower()
 
     # --- Go from input to CO2e in tonnes per year ############
     if in_metrics[input_metric]['type'] == "mass":

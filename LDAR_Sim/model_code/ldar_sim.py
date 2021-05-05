@@ -31,7 +31,7 @@ from operator_agent import OperatorAgent
 from plotter import make_plots
 from daylight_calculator import DaylightCalculatorAve
 from generic_functions import make_maps
-from leak_processing.distributions import fit_dist, dist_rvs
+from leak_processing.distributions import fit_dist, leak_rvs
 
 
 class LdarSim:
@@ -56,7 +56,13 @@ class LdarSim:
             params['working_directory'] + params['t_offsite_file']).iloc[:, 0])
         if "leak_size_dist" in params:
             # Currently Accepts only lognormal leak distributions
-            _, mu, sigma = params['leak_size_dist']
+            if len(params['leak_size_dist']) > 3:
+                _, mu, sigma = params['leak_size_dist'][:-2]
+                state['leak_size_units'] = params['leak_size_dist'][-2:]
+            else:
+                _, mu, sigma = params['leak_size_dist']
+                state['leak_size_units'] = ['gram', 'second']
+
             state['leak_distribution'] = fit_dist(mu=mu, sigma=sigma)
         else:
             state['leak_distribution'] = fit_dist(samples=state['empirical_leaks'])
@@ -64,10 +70,6 @@ class LdarSim:
             state['max_rate'] = params['max_leak_size']
         else:
             state['max_rate'] = max(state['empirical_leaks'])
-        if "leak_size_dist_togpsec" in params:
-            state['leak_size_scaler'] = params['leak_size_scaler']
-        else:
-            state['leak_size_scaler'] = 1
         if "consider_weather" in params:
             state['consider_weather'] = params['consider_weather']
 
@@ -165,8 +167,8 @@ class LdarSim:
         for site in state['sites']:
             if site['initial_leaks'] > 0:
                 for leak in range(site['initial_leaks']):
-                    leaksize = dist_rvs(state['leak_distribution'], state['max_rate'],
-                                        state['leak_size_scaler'])
+                    leaksize = leak_rvs(state['leak_distribution'], state['max_rate'],
+                                        state['leak_size_units'])
                     state['leaks'].append({
                         'leak_ID': site['facility_ID'] + '_' + str(len(state['leaks']) + 1)
                         .zfill(10),
@@ -212,8 +214,8 @@ class LdarSim:
                 n_mc_leaks = random.choice(state['empirical_counts'])
                 mc_leaks = []
                 for leak in range(n_mc_leaks):
-                    leaksize = dist_rvs(state['leak_distribution'], state['max_rate'],
-                                        state['leak_size_scaler'])
+                    leaksize = leak_rvs(state['leak_distribution'], state['max_rate'],
+                                        state['leak_size_units'])
                     mc_leaks.append(n_mc_leaks=leaksize)
 
                 mc_leak_total = sum(mc_leaks)
@@ -283,8 +285,8 @@ class LdarSim:
         for site in self.state['sites']:
             if site['n_new_leaks'] > 0:
                 for leak in range(site['n_new_leaks']):
-                    leaksize = dist_rvs(self.state['leak_distribution'], self.state['max_rate'],
-                                        self.state['leak_size_scaler'])
+                    leaksize = leak_rvs(self.state['leak_distribution'], self.state['max_rate'],
+                                        self.state['leak_size_units'])
                     self.state['leaks'].append({
                         'leak_ID': site['facility_ID'] + '_' + str(len(self.state['leaks']) + 1)
                         .zfill(10),
