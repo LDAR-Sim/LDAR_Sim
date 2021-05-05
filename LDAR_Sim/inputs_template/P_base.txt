@@ -18,9 +18,8 @@ P_base = {
         'consider_venting': False,
         'repair_delay': 14,
         'LPR': 0.0065,
-        'leak_size_dist': ['lognorm',-4.523, 2.075],
-        'max_leak_size': 10, # g/s
-        'leak_size_scaler': 0.277777778,  # Convert Leaks to g/sec
+        'leak_size_dist': ['lognorm',-4.523, 2.075, "kilogram", "hour"],
+        'max_leak_size': 100, # g/s
 	'NRd': 150,
         'max_det_op': 0.00,
         'spin_up': 0,
