@@ -31,9 +31,9 @@ P_alt = {
         },
         'program_name': 'P_alt',
         'n_simulations': 2, 	# Minimum of 2 simulations to get batch plots
-        'timesteps': 2000,  	# Up to ~5600 for 16 year nc file
+        'timesteps': 1000,  	# Up to ~5600 for 16 year nc file
         'n_processes': None,
-	'start_year': 2015,
+	'start_year': 2017,
 	'weather_file': "ERA5_AB_1x1_hourly_2015_2019.nc",
         'infrastructure_file': 'facility_list_template.csv',
         'leak_file': 'leak_rates.csv',
@@ -45,6 +45,8 @@ P_alt = {
         'consider_operator': False,
         'consider_venting': False,
         'repair_delay': 14,
+        'leak_size_dist': ['lognorm',-4.523, 2.075, "kilogram", "hour"],
+        'max_leak_size': 100, # g/s
         'LPR': 0.0065,
 	'NRd': 150,
         'max_det_op': 0.00,

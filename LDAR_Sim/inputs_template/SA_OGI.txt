@@ -32,6 +32,8 @@ SA_OGI = {
         'consider_venting': True,
         'repair_delay': 14,
         'LPR': 0.0065,
+        'leak_size_dist': ['lognorm',-4.523, 2.075, "kilogram", "hour"],
+        'max_leak_size': 100, # g/s
         'max_det_op': 0.00,
         'spin_up': 500,
         'write_data': False, # Must be TRUE to make plots and maps
