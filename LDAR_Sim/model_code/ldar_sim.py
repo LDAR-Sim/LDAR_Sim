@@ -196,7 +196,7 @@ class LdarSim:
                 n_mc_leaks = random.choice(state['empirical_counts'])
                 mc_leaks = []
                 for leak in range(n_mc_leaks):
-                    mc_leaks.append(n_mc_leaks=random.choice(state['empirical_leaks']))
+                    mc_leaks.append(random.choice(state['empirical_leaks']))
 
                 mc_leak_total = sum(mc_leaks)
                 mc_site_total = random.choice(state['empirical_sites'])

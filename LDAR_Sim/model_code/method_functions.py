@@ -19,25 +19,15 @@
 #
 # ------------------------------------------------------------------------------
 
-def aggregate(site, leaks):
+import numpy as np
 
-    leaks_present = []
-    equipment_rates = []
-    site_rate = 0
+def measured_rate(true_rate, QE):
+    quant_error = np.random.normal(0, QE)
+    measured_rate = None
+    if quant_error >= 0:
+        measured_rate = true_rate + true_rate * quant_error
+    if quant_error < 0:
+        denom = abs(quant_error - 1)
+        measured_rate = true_rate / denom
 
-    # Make list of all leaks and add up all emissions at site
-    for leak in leaks:
-        if leak['facility_ID'] == site['facility_ID']:
-            if leak['status'] == 'active':
-                leaks_present.append(leak)
-                site_rate += leak['rate']
-
-    # Sum emissions by equipment group
-    for group in range(int(site['equipment_groups'])):
-        group_emissions = 0
-        for leak in leaks_present:
-            if leak['equipment_group'] == (group + 1):
-                group_emissions += leak['rate']
-        equipment_rates.append(group_emissions)
-
-    return leaks_present, equipment_rates, site_rate
+    return measured_rate
