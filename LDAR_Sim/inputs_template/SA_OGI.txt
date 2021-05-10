@@ -25,6 +25,7 @@ SA_OGI = {
         'vent_file': 'ZA_site_emissions_2018.csv',
         't_offsite_file': 'time_offsite_ground.csv',
         'site_samples': [True, 50],
+        'use_empirical_rates': False, # 'sample', 'fit', or False
         'subtype_times': [False, 'subtype_times.csv'], # If True, will overwrite site-specific times with subtype times
         'simulation': None,
         'consider_daylight': True,
@@ -32,8 +33,8 @@ SA_OGI = {
         'consider_venting': True,
         'repair_delay': 14,
         'LPR': 0.0065,
-        'leak_size_dist': ['lognorm',-4.523, 2.075, "kilogram", "hour"],
-        'max_leak_size': 100, # g/s
+        'leak_rate_dist': ['lognorm',-2.776, 1.462, "kilogram", "hour"],
+        'max_leak_rate': 100, # g/s
         'max_det_op': 0.00,
         'spin_up': 500,
         'write_data': False, # Must be TRUE to make plots and maps
