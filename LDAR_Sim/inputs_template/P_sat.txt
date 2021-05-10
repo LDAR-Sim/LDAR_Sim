@@ -1,15 +1,16 @@
 P_sat = {
         'methods': {
-	                 'Satellite': {
-                            'name': 'GHGSAT-D',
+	             'satellite': {
+                            'name': 'satellite',
+			    'sat':'GHGSAT-D',
                             'n_crews': 1,
 			    'min_temp': -100,
                             'max_wind': 100,
                             'max_precip': 100,
-                            'min_interval': 180,
+                            'min_interval': 20,
                             'max_workday': 24,
                             'cost_per_day': 100000,
-                            'follow_up_thresh': [0.1, "proportion"],
+                            'follow_up_thresh': [0.5, "proportion"],
                             'follow_up_ratio': 1,
                             't_lost_per_site': 0,                             
                             'reporting_delay': 2,
@@ -33,7 +34,7 @@ P_sat = {
         },
         'program_name': 'P_sat',
         'n_simulations': 2, 	# Minimum of 2 simulations to get batch plots
-        'timesteps': 365,  	# Up to ~5600 for 16 year nc file
+        'timesteps': 1000,  	# Up to ~5600 for 16 year nc file
         'n_processes': None,
 	'start_year': 2015,
 	'weather_file': "ERA5_AB_1x1_hourly_2015_2019.nc",
@@ -42,7 +43,7 @@ P_sat = {
         'count_file': 'leak_counts.csv',
         'vent_file': 'site_rates.csv',
         't_offsite_file': 'time_offsite_ground.csv',
-        'site_samples': [True,100],
+        'site_samples': [True,1000],
         'subtype_times': [False, 'subtype_times.csv'], # If True, will overwrite site-specific times with subtype times
         'consider_operator': True,
         'consider_venting': False,
