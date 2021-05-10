@@ -29,7 +29,7 @@ from mpl_toolkits.basemap import Basemap
 import matplotlib.pyplot as plt
 import boto3  # for downloading data from AWS
 from botocore.exceptions import ClientError
-
+import ephem
 
 def gap_calculator(condition_vector):
     """
