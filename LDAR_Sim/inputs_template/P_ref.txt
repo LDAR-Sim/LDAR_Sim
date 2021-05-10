@@ -27,11 +27,12 @@ P_ref = {
         'site_samples': [True, 500],
         'subtype_times': [False, 'subtype_times.csv'], # If True, will overwrite site-specific times with subtype time
         'consider_operator': False,
-        'consider_venting': False,
+        'consider_venting': True,
         'repair_delay': 14,
         'LPR': 0.0065,
-        'leak_size_dist': ['lognorm',-4.523, 2.075, "kilogram", "hour"],
-        'max_leak_size': 100, # g/s
+        'use_empirical_rates': False, # 'sample', 'fit', or False
+        'leak_rate_dist': ['lognorm',-2.776, 1.462, "kilogram", "hour"],
+        'max_leak_rate': 100, # g/s
 	'NRd': 150,
         'max_det_op': 0.00,
         'spin_up': 0,
