@@ -1,4 +1,26 @@
+# ------------------------------------------------------------------------------
+# Program:     The LDAR Simulator (LDAR-Sim)
+# File:        natural gas leak rate unit converter
+# Purpose:     convert leak rates into different units
+#
+# Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the MIT License as published
+# by the Free Software Foundation, version 3.
 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MIT License for more details.
+
+# You should have received a copy of the MIT License
+# along with this program.  If not, see <https://opensource.org/licenses/MIT>.
+#
+# ------------------------------------------------------------------------------
+
+
+# ---------------------Conversion Dictionaries--------------------------
 substances = {
     'methane': {'n': 16.04, "input": True, "output": True},
     'natural gas': {'n': 16.80, "input": True, "output": True},
@@ -119,6 +141,8 @@ pressure_units = {
         'offset': 0,
     }
 }
+# ----------------------------------------------------------------------
+# ------------------------------Functions-------------------------------
 
 
 def gas_convert(

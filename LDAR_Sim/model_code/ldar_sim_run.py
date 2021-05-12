@@ -20,11 +20,14 @@
 # ------------------------------------------------------------------------------
 import os
 import sys
+import gc
+import numpy as np
+
 from weather_lookup import WeatherLookup
 from ldar_sim import LdarSim
 from time_counter import TimeCounter
 from stdout_redirect import stdout_redirect
-import gc
+from leak_processing.distributions import fit_dist
 
 
 def ldar_sim_run(simulation):
@@ -35,7 +38,6 @@ def ldar_sim_run(simulation):
     # i = simulation['i']
     parameters = simulation['program']
     parameters['working_directory'] = simulation['wd']
-
     parameters['output_directory'] = os.path.join(
         simulation['output_directory'],
         parameters['program_name'])
@@ -50,11 +52,24 @@ def ldar_sim_run(simulation):
 
     gc.collect()
     print(simulation['opening_message'])
-
     parameters['simulation'] = str(simulation['i'])
-
-    # ------------------------------------------------------------------------------
-    # -----------------------Initialize dynamic model state-------------------------
+    parameters['dist'] = {}
+    # if "leak_rate_dist" in parameters and not parameters['use_empirical_rates'].lower():
+    if "leak_rate_dist" in parameters:
+        parameters['dist_type'] = parameters['leak_rate_dist'][0]
+        parameters['dist_scale'] = parameters['leak_rate_dist'][1]
+        parameters['dist_shape'] = parameters['leak_rate_dist'][2:-2]
+        parameters['leak_rate_units'] = parameters['leak_rate_dist'][-2:]
+        # lognorm is a common special case. used often for leaks. Mu is is commonly
+        # provided to discribe leak which is ln(dist_scale). For this type the model
+        # accepts mu in place of scale.
+        if parameters['dist_type'] == 'lognorm':
+            parameters['dist_scale'] = np.exp(parameters['dist_scale'])
+        parameters['leak_distribution'] = fit_dist(dist_type=parameters['dist_type'],
+                                                   shape=parameters['dist_shape'],
+                                                   scale=parameters['dist_scale'])
+        # ------------------------------------------------------------------------------
+        # -----------------------Initialize dynamic model state-------------------------
 
     state = {
         't': None,
@@ -68,7 +83,7 @@ def ldar_sim_run(simulation):
         'daylight': None,  # daylight hours calculated during initialization
         'init_leaks': [],  # the initial leaks generated at timestep 1
         'empirical_vents': [0],  # vent distribution created during initialization
-        'max_rate': None  # the largest leak in the input file
+        'max_leak_rate': None  # the largest leak in the input file
     }
 
     # ------------------------Initialize timeseries data----------------------------
