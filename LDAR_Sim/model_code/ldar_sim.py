@@ -73,7 +73,7 @@ class LdarSim:
                 params['site_samples'][1])
 
         if params['subtype_times'][0]:
-            subtype_times = pd.read_csv(params['subtype_times'][1])
+            subtype_times = pd.read_csv(params['working_directory'] + params['subtype_times'][1])
             cols_to_add = subtype_times.columns[1:].tolist()
             for col in cols_to_add:
                 for site in state['sites']:
@@ -91,6 +91,7 @@ class LdarSim:
             site.update({'currently_flagged': False})
             site.update({'flagged_by': None})
             site.update({'date_flagged': None})
+
             site.update({'lat_index': min(
                 range(len(state['weather'].latitude)), key=lambda i: abs(
                     state['weather'].latitude[i] - float(site['lat'])))})
@@ -119,6 +120,12 @@ class LdarSim:
                     'Simulation terminated: One or more sites is too'
                     'far West and is outside the spatial bounds of '
                     'your weather data!')
+
+            # Add a distribution and unit for each leak
+            if not params['subtype_distributions'][0]:
+                site['subtype_code'] = 0
+            site['leak_rate_dist'] = params['dists'][int(site['subtype_code'])]['dist']
+            site['leak_rate_units'] = params['dists'][int(site['subtype_code'])]['units']
 
         # Additional timeseries variables
         timeseries['total_daily_cost'] = np.zeros(params['timesteps'])
@@ -155,13 +162,13 @@ class LdarSim:
         for site in state['sites']:
             if site['initial_leaks'] > 0:
                 for leak in range(site['initial_leaks']):
-                    params['use_empirical_rates']
                     if params['use_empirical_rates'] == 'sample':
                         leaksize = random.choice(state['empirical_leaks'])
                     else:
-                        leaksize = leak_rvs(params['leak_distribution'],
-                                            params['max_leak_rate'],
-                                            params['leak_rate_units'])
+                        leaksize = leak_rvs(
+                            site['leak_rate_dist'],
+                            params['max_leak_rate'],
+                            site['leak_rate_units'])
                     state['leaks'].append({
                         'leak_ID': site['facility_ID'] + '_' + str(len(state['leaks']) + 1)
                         .zfill(10),
@@ -210,9 +217,10 @@ class LdarSim:
                     if params['use_empirical_rates'] == 'sample':
                         leaksize = random.choice(state['empirical_leaks']),
                     else:
-                        leaksize = leak_rvs(params['leak_distribution'],
-                                            params['max_leak_rate'],
-                                            params['leak_rate_units'])
+                        leaksize = leak_rvs(
+                            site['leak_rate_dist'],
+                            params['max_leak_rate'],
+                            site['leak_rate_units'])
                     mc_leaks.append(leaksize)
 
                 mc_leak_total = sum(mc_leaks)
@@ -286,9 +294,10 @@ class LdarSim:
                     if params['use_empirical_rates'] == 'sample':
                         leaksize = random.choice(self.state['empirical_leaks'])
                     else:
-                        leaksize = leak_rvs(params['leak_distribution'],
-                                            params['max_leak_rate'],
-                                            params['leak_rate_units'])
+                        leaksize = leak_rvs(
+                            site['leak_rate_dist'],
+                            params['max_leak_rate'],
+                            site['leak_rate_units'])
                     self.state['leaks'].append({
                         'leak_ID': site['facility_ID'] + '_' + str(len(self.state['leaks']) + 1)
                         .zfill(10),

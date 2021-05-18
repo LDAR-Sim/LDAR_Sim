@@ -19,6 +19,7 @@
 #
 # ------------------------------------------------------------------------------
 import scipy
+import json
 from leak_processing.unit_converter import gas_convert
 
 
@@ -29,7 +30,7 @@ def fit_dist(samples=None, dist_type="lognorm", loc=0, shape=None, scale=None):
         samples (list, optional): List of samples (leak rates in g/s)
         dist_type (str, optional): scipy distribution type. Defaults to "lognorm".
         loc (int, optional): scipy loc field - linear shift to dist. Defaults to 0.
-        shape (list): scipy shape parameters
+        shape (list, float, or string): scipy shape parameters
         scale/mu (float): scipy scale parameters* Except for lognorm. This willbe a mu value,
          scale = exp(mu).
 
@@ -50,6 +51,12 @@ def fit_dist(samples=None, dist_type="lognorm", loc=0, shape=None, scale=None):
         loc = param[-2],
         scale = param[-1]
         shape = param[:-2]
+    if isinstance(shape, str):
+        # IF shapes a string ie'[2,23.4]', then convert to pyobject (int or list)
+        shape = json.loads(shape)
+    if not isinstance(shape, list):
+        # If the shape is not a list, convert to a list
+        shape = [shape]
     return dist(*shape, loc=loc, scale=scale)
 
 
