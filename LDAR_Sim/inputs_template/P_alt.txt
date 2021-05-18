@@ -41,6 +41,7 @@ P_alt = {
         'vent_file': 'site_rates.csv',
         't_offsite_file': 'time_offsite_ground.csv',
         'site_samples': [True, 500],
+        'subtype_distributions': [False, 'subtype_distributions.csv'], # If True, will overwrite global Leak Dist
         'subtype_times': [False, 'subtype_times.csv'], # If True, will overwrite site-specific times with subtype times
         'consider_operator': False,
         'consider_venting': True,
@@ -56,7 +57,7 @@ P_alt = {
         'make_plots': True,
         'make_maps': True,
 	'print_from_simulations': True,
-        'operator_strength': 0.1,
+        'operator_strength': 0,
 	'repair_cost': 200,
 	'verification_cost': 25,
         'sensitivity': {'perform': False,

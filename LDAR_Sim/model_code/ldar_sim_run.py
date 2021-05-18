@@ -22,6 +22,7 @@ import os
 import sys
 import gc
 import numpy as np
+import pandas as pd
 
 from weather_lookup import WeatherLookup
 from ldar_sim import LdarSim
@@ -53,9 +54,34 @@ def ldar_sim_run(simulation):
     gc.collect()
     print(simulation['opening_message'])
     parameters['simulation'] = str(simulation['i'])
-    parameters['dist'] = {}
-    # if "leak_rate_dist" in parameters and not parameters['use_empirical_rates'].lower():
-    if "leak_rate_dist" in parameters:
+
+    # --------- Leak distributions -------------
+    parameters['dists'] = {}
+    _temp_dists = {}
+    # Use subtype_distribution file if true
+    if parameters['subtype_distributions'][0]:
+        subtype_dists = pd.read_csv(
+            parameters['working_directory'] + parameters['subtype_distributions'][1])
+        col_headers = subtype_dists.columns[1:].tolist()
+        for row in subtype_dists.iterrows():
+            subtype_dist = {}
+            # Generate A temp Distribution dict of dists in file
+            for col in col_headers:
+                subtype_dist[col] = row[1][col]
+            _temp_dists[row[1][0]] = subtype_dist
+
+    if len(_temp_dists) > 1:  # If there are sub_type dists
+        for key, dist in _temp_dists.items():
+            if dist['dist_type'] == 'lognorm':
+                scale = np.exp(dist['dist_mu'])
+            else:
+                scale = dist['dist_mu']
+            parameters['dists'][key] = {
+                'dist': fit_dist(dist_type=dist['dist_type'],
+                                 shape=dist['dist_sigma'],
+                                 scale=scale),
+                'units': [dist['dist_metric'], dist['dist_increment']]}
+    elif "leak_rate_dist" in parameters:
         parameters['dist_type'] = parameters['leak_rate_dist'][0]
         parameters['dist_scale'] = parameters['leak_rate_dist'][1]
         parameters['dist_shape'] = parameters['leak_rate_dist'][2:-2]
@@ -65,9 +91,12 @@ def ldar_sim_run(simulation):
         # accepts mu in place of scale.
         if parameters['dist_type'] == 'lognorm':
             parameters['dist_scale'] = np.exp(parameters['dist_scale'])
-        parameters['leak_distribution'] = fit_dist(dist_type=parameters['dist_type'],
-                                                   shape=parameters['dist_shape'],
-                                                   scale=parameters['dist_scale'])
+        parameters['dists'][0] = {
+            'dist': fit_dist(dist_type=parameters['dist_type'],
+                             shape=parameters['dist_shape'],
+                             scale=parameters['dist_scale']),
+            'units': parameters['leak_rate_units']}
+
         # ------------------------------------------------------------------------------
         # -----------------------Initialize dynamic model state-------------------------
 
