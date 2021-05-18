@@ -54,6 +54,10 @@ in_metrics = {
         'per_unit': 35.3147,
         'type': 'volume',
     },
+    "mscf": {
+        'per_unit': 0.03531,
+        'type': 'volume',
+    },
     "liter": {
         'per_unit': 1000,
         'type': 'volume',
@@ -87,6 +91,10 @@ out_metrics = {
     },
     "cubic meter": {
         'per_unit': 1,
+        'type': 'volume',
+    },
+    "mscf": {
+        'per_unit': 0.03531,
         'type': 'volume',
     },
 }
