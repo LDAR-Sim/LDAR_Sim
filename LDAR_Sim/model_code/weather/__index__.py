@@ -1,7 +1,7 @@
 # ------------------------------------------------------------------------------
 # Program:     The LDAR Simulator (LDAR-Sim)
-# File:        leak_processing
-# Purpose:     fit or convert units of leak rates
+# File:        weather
+# Purpose:     contains weather data processing
 #
 # Copyright (C) 2018-2021  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
 #

@@ -20,7 +20,7 @@
 # ------------------------------------------------------------------------------
 import scipy
 import json
-from leak_processing.unit_converter import gas_convert
+from utils.unit_converter import gas_convert
 
 
 def fit_dist(samples=None, dist_type="lognorm", loc=0, shape=None, scale=None):
