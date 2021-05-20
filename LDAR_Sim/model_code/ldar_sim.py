@@ -31,7 +31,7 @@ from operator_agent import OperatorAgent
 from plotter import make_plots
 from daylight_calculator import DaylightCalculatorAve
 from generic_functions import make_maps
-from leak_processing.distributions import leak_rvs, fit_dist
+from utils.distributions import leak_rvs, fit_dist
 
 
 class LdarSim:
@@ -473,11 +473,15 @@ class LdarSim:
                 params['spin_up'],
                 params['output_directory'])
 
+        sim_summary = {
+            'leaks': leak_df,
+            'timeseries': time_df,
+            'sites': site_df,
+        }
+
         # Write sensitivity analysis data, if requested
         if params['sensitivity']['perform']:
-            sim_summary = self.sensitivity.write_data()
-        else:
-            sim_summary = {}
+            sim_summary['sensitivity'] = self.sensitivity.write_data()
 
         # Return to original working directory
         os.chdir(params['working_directory'])
