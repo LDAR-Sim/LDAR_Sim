@@ -37,7 +37,10 @@ class fixed_company:
         self.config = config
         self.timeseries = timeseries
         self.crews = []
-        self.deployment_days = self.state['weather'].deployment_days('fixed')
+        self.deployment_days = self.state['weather'].deployment_days(
+            method_name=self.name,
+            start_date=self.state['t'].start_date,
+            consider_weather=parameters['consider_weather'])
         self.timeseries['fixed_prop_sites_avail'] = []
         self.timeseries['fixed_cost'] = np.zeros(self.parameters['timesteps'])
         self.timeseries['fixed_eff_flags'] = np.zeros(self.parameters['timesteps'])
