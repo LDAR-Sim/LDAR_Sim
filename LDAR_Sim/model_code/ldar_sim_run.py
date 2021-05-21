@@ -21,6 +21,7 @@
 import os
 import sys
 import gc
+import copy
 import numpy as np
 import pandas as pd
 
@@ -38,6 +39,7 @@ def ldar_sim_run(simulation):
     simulation = a dictionary of simulation parameters necessary to run LDAR-Sim
     """
     # i = simulation['i']
+    simulation = copy.deepcopy (simulation)
     parameters = simulation['program']
     parameters['working_directory'] = simulation['wd']
     parameters['output_directory'] = os.path.join(
