@@ -61,7 +61,7 @@ class WeatherLookup:
 
         return
 
-    def deployment_days(self, method):
+    def deployment_days(self, method_name, start_date, start_work_hour=0, consider_weather=False):
         """
         Generate a 3D space-time matrix of all days on which weather
         conditions are suitable for a given method to conduct LDAR.
@@ -83,16 +83,18 @@ class WeatherLookup:
             for lat in range(self.lat_length):
                 for lon in range(self.lon_length):
                     # If you exceed minimum temperature...
-                    if self.temps[day, lat, lon] >= self.parameters['methods'][method]['min_temp']:
+                    if self.temps[day, lat, lon] >= self.parameters['methods'][
+                            method_name]['min_temp']:
                         # Count one instrument day (instrument can be used)
                         bool_temp[lon, lat, day] = 1
                     # If you are below the maximum wind...
-                    if self.winds[day, lat, lon] <= self.parameters['methods'][method]['max_wind']:
+                    if self.winds[day, lat, lon] <= self.parameters['methods'][
+                            method_name]['max_wind']:
                         # Count one instrument day (instrument can be used)
                         bool_wind[lon, lat, day] = 1
                     # If you are below the precipitation threshold...
-                    if self.precip[day, lat, lon] <= self.parameters['methods'][method][
-                            'max_precip']:
+                    if self.precip[day, lat, lon] <= self.parameters['methods'][
+                            method_name]['max_precip']:
                         # Count one instrument day (instrument can be used)
                         bool_precip[lon, lat, day] = 1
 
