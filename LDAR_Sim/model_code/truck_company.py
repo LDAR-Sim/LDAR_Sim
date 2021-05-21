@@ -37,7 +37,11 @@ class truck_company:
         self.config = config
         self.timeseries = timeseries
         self.crews = []
-        self.deployment_days = self.state['weather'].deployment_days('truck')
+        self.deployment_days = self.state['weather'].deployment_days(
+            method_name=self.name,
+            start_date=self.state['t'].start_date,
+            start_work_hour=8,  # Start hour in day
+            consider_weather=parameters['consider_weather'])
         self.timeseries['truck_prop_sites_avail'] = []
         self.timeseries['truck_cost'] = np.zeros(self.parameters['timesteps'])
         self.timeseries['truck_eff_flags'] = np.zeros(self.parameters['timesteps'])

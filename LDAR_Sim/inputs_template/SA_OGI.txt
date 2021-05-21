@@ -13,12 +13,13 @@ SA_OGI = {
                 'MDL': [0.47, 0.01]
             }
         },
-        'program_name': 'OGI',
         'n_simulations': 2, 	# Minimum of 2 simulations to get batch plots
         'timesteps': 1000,  	# Up to ~5600 for 16 year nc file
         'n_processes': None,
-        'start_year': 2017,
-        'weather_file': "ERA5_AB_1x1_hourly_2015_2019.nc",
+	'start_year': 2017,
+        'UTC_offset': -6,
+	'weather_file': "ERA5_AB_1x1_hourly_2015_2019.nc",
+        'weather_is_hourly': False,
         'infrastructure_file': 'facility_list_template.csv',
         'leak_file': 'leak_rates.csv',
         'count_file': 'leak_counts.csv',
@@ -28,13 +29,15 @@ SA_OGI = {
         'subtype_distributions': [False, 'subtype_distributions.csv'], # If True, will overwrite global Leak Dist
         'subtype_times': [False, 'subtype_times.csv'], # If True, will overwrite site-specific times with subtype times
         'consider_operator': False,
-        'consider_venting': True,
+        'consider_venting': False,
+        'consider_weather': True,
         'repair_delay': 14,
+        'repair_cost': 200,
         'use_empirical_rates': False, # 'sample', 'fit', or False
         'leak_rate_dist': ['lognorm',-2.776, 1.462, "kilogram", "hour"],
         'max_leak_rate': 100, # g/s
         'LPR': 0.0065,
-	    'NRd': 150,
+	'NRd': 150,
         'max_det_op': 0.00,
         'spin_up': 0,
         'write_data': True, # Must be TRUE to make plots and maps
@@ -42,7 +45,6 @@ SA_OGI = {
         'make_maps': True,
 	'print_from_simulations': True,
         'operator_strength': 0,
-	'repair_cost': 200,
 	'verification_cost': 25,
         'sensitivity': {'perform': False,
                         'program': 'OGI',
