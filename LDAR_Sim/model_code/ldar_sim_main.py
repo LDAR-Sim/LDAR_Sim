@@ -24,6 +24,7 @@ from batch_reporting import BatchReporting
 from ldar_sim_run import ldar_sim_run
 import pandas as pd
 import os
+import shutil
 import datetime
 import warnings
 import multiprocessing as mp
@@ -60,8 +61,10 @@ if __name__ == '__main__':
     # Check whether ERA5 data is already in the working directory and download data if not
     check_ERA5_file(wd, programs[0]['weather_file'])
 
-    if not os.path.exists(output_directory):
-        os.makedirs(output_directory)
+    if os.path.exists(output_directory):
+        shutil.rmtree(output_directory)
+
+    os.makedirs(output_directory)
 
     # Set up simulation parameter files
     simulations = []
