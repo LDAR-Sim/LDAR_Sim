@@ -34,6 +34,7 @@ class TimeCounter:
         self.current_date = self.start_date
         self.current_timestep = 0
         self.end_date = self.start_date + timedelta(days=parameters['timesteps'])
+        self.UTC_offset = parameters['UTC_offset']
         return
 
     def next_day(self):

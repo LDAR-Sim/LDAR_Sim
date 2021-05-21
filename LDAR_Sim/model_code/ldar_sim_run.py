@@ -24,7 +24,8 @@ import gc
 import numpy as np
 import pandas as pd
 
-from weather.weather_lookup import WeatherLookup
+from weather.weather_lookup import WeatherLookup as WL
+from weather.weather_lookup_hourly import WeatherLookup as WL_h
 from ldar_sim import LdarSim
 from time_counter import TimeCounter
 from stdout_redirect import stdout_redirect
@@ -130,7 +131,10 @@ def ldar_sim_run(simulation):
     # -----------------------------Run simulations----------------------------------
 
     # Initialize objects
-    state['weather'] = WeatherLookup(state, parameters)
+    if 'weather_is_hourly' in parameters and parameters['weather_is_hourly']:
+        state['weather'] = WL_h(state, parameters)
+    else:
+        state['weather'] = WL(state, parameters)
     state['t'] = TimeCounter(parameters)
     sim = LdarSim(state, parameters, timeseries)
 
