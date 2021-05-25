@@ -52,8 +52,11 @@ class LdarSim:
             params['working_directory'] + params['leak_file']).iloc[:, 0])
         state['empirical_sites'] = np.array(pd.read_csv(
             params['working_directory'] + params['vent_file']).iloc[:, 0])
-        state['offsite_times'] = np.array(pd.read_csv(
-            params['working_directory'] + params['t_offsite_file']).iloc[:, 0])
+        if isinstance(params['time_offsite'], str):
+            state['offsite_times'] = np.array(pd.read_csv(
+                params['working_directory'] + params['time_offsite']).iloc[:, 0])
+        else:
+            state['offsite_times'] = np.array([params['time_offsite']])
         #  Empirical Leaks can be fit with the following
         if params['use_empirical_rates'] == 'fit':
             params['leak_distribution'] = fit_dist(
