@@ -36,6 +36,7 @@ class fixed_crew:
         self.crewstate = {'id': id}  # Crewstate is unique to this agent
         self.crewstate['lat'] = 0.0
         self.crewstate['lon'] = 0.0
+        self.days_skipped = 0
         # self.worked_today = False
         return
 
@@ -51,9 +52,11 @@ class fixed_crew:
         for leak in self.state['leaks']:
             if leak['facility_ID'] == self.site['facility_ID']:
                 if leak['status'] == 'active':
-                    if leak['days_active'] >= self.config['time_to_detection']:
-                        leaks_present.append(leak)
-                        site_cum_rate += leak['rate']
+                    if leak['days_active'] >= \
+                            (self.config['time_to_detection'] + self.days_skipped):
+                        if leak['days_active'] >= self.config['time_to_detection']:
+                            leaks_present.append(leak)
+                            site_cum_rate += leak['rate']
 
         # Add vented emissions
         venting = 0

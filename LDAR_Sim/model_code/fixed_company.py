@@ -37,7 +37,10 @@ class fixed_company:
         self.config = config
         self.timeseries = timeseries
         self.crews = []
-        self.deployment_days = self.state['weather'].deployment_days('fixed')
+        self.deployment_days = self.state['weather'].deployment_days(
+            method_name=self.name,
+            start_date=self.state['t'].start_date,
+            consider_weather=parameters['consider_weather'])
         self.timeseries['fixed_prop_sites_avail'] = []
         self.timeseries['fixed_cost'] = np.zeros(self.parameters['timesteps'])
         self.timeseries['fixed_eff_flags'] = np.zeros(self.parameters['timesteps'])
@@ -82,7 +85,12 @@ class fixed_company:
         """
         self.candidate_flags = []
         for i in self.crews:
-            i.work_a_day(self.candidate_flags)
+            if self.deployment_days[i.site['lon_index'],
+                                    i.site['lat_index'],
+                                    self.state['t'].current_timestep]:
+                i.work_a_day(self.candidate_flags)
+                i.days_skipped = 0
+            else: i.days_skipped += 1
 
         # Flag sites according to the flag ratio
         if len(self.candidate_flags) > 0:

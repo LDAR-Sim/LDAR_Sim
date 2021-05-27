@@ -31,6 +31,7 @@ from operator_agent import OperatorAgent
 from plotter import make_plots
 from daylight_calculator import DaylightCalculatorAve
 from generic_functions import make_maps
+from utils.distributions import leak_rvs, fit_dist
 
 
 class LdarSim:
@@ -51,9 +52,18 @@ class LdarSim:
             params['working_directory'] + params['leak_file']).iloc[:, 0])
         state['empirical_sites'] = np.array(pd.read_csv(
             params['working_directory'] + params['vent_file']).iloc[:, 0])
-        state['offsite_times'] = np.array(pd.read_csv(
-            params['working_directory'] + params['t_offsite_file']).iloc[:, 0])
-
+        if isinstance(params['time_offsite'], str):
+            state['offsite_times'] = np.array(pd.read_csv(
+                params['working_directory'] + params['time_offsite']).iloc[:, 0])
+        else:
+            state['offsite_times'] = np.array([params['time_offsite']])
+        #  Empirical Leaks can be fit with the following
+        if params['use_empirical_rates'] == 'fit':
+            params['leak_distribution'] = fit_dist(
+                samples=state['empirical_leaks'],
+                dist_type='lognorm')
+            params['leak_rate_units'] = ['gram', 'second']
+        state['max_leak_rate'] = params['max_leak_rate']
         # Read in the sites as a list of dictionaries
         with open(params['working_directory'] + params['infrastructure_file']) as f:
             state['sites'] = [{k: v for k, v in row.items()}
@@ -66,7 +76,7 @@ class LdarSim:
                 params['site_samples'][1])
 
         if params['subtype_times'][0]:
-            subtype_times = pd.read_csv(params['subtype_times'][1])
+            subtype_times = pd.read_csv(params['working_directory'] + params['subtype_times'][1])
             cols_to_add = subtype_times.columns[1:].tolist()
             for col in cols_to_add:
                 for site in state['sites']:
@@ -84,6 +94,7 @@ class LdarSim:
             site.update({'currently_flagged': False})
             site.update({'flagged_by': None})
             site.update({'date_flagged': None})
+
             site.update({'lat_index': min(
                 range(len(state['weather'].latitude)), key=lambda i: abs(
                     state['weather'].latitude[i] - float(site['lat'])))})
@@ -112,6 +123,12 @@ class LdarSim:
                     'Simulation terminated: One or more sites is too'
                     'far West and is outside the spatial bounds of '
                     'your weather data!')
+
+            # Add a distribution and unit for each leak
+            if not params['subtype_distributions'][0]:
+                site['subtype_code'] = 0
+            site['leak_rate_dist'] = params['dists'][int(site['subtype_code'])]['dist']
+            site['leak_rate_units'] = params['dists'][int(site['subtype_code'])]['units']
 
         # Additional timeseries variables
         timeseries['total_daily_cost'] = np.zeros(params['timesteps'])
@@ -144,18 +161,23 @@ class LdarSim:
             site.update({'initial_leaks': n_leaks})
             state['init_leaks'].append(site['initial_leaks'])
 
-        state['max_rate'] = max(state['empirical_leaks'])
-
         # For each leak, create a dictionary and populate values for relevant keys
         for site in state['sites']:
             if site['initial_leaks'] > 0:
                 for leak in range(site['initial_leaks']):
+                    if params['use_empirical_rates'] == 'sample':
+                        leaksize = random.choice(state['empirical_leaks'])
+                    else:
+                        leaksize = leak_rvs(
+                            site['leak_rate_dist'],
+                            params['max_leak_rate'],
+                            site['leak_rate_units'])
                     state['leaks'].append({
                         'leak_ID': site['facility_ID'] + '_' + str(len(state['leaks']) + 1)
                         .zfill(10),
                         'facility_ID': site['facility_ID'],
                         'equipment_group': random.randint(1,int(site['equipment_groups'])),
-                        'rate': random.choice(state['empirical_leaks']),
+                        'rate': leaksize,
                         'lat': float(site['lat']) + np.random.normal(0, 0.0001),
                         'lon': float(site['lon']) + np.random.normal(0, 0.0001),
                         'status': 'active',
@@ -196,7 +218,14 @@ class LdarSim:
                 n_mc_leaks = random.choice(state['empirical_counts'])
                 mc_leaks = []
                 for leak in range(n_mc_leaks):
-                    mc_leaks.append(random.choice(state['empirical_leaks']))
+                    if params['use_empirical_rates'] == 'sample':
+                        leaksize = random.choice(state['empirical_leaks']),
+                    else:
+                        leaksize = leak_rvs(
+                            site['leak_rate_dist'],
+                            params['max_leak_rate'],
+                            site['leak_rate_units'])
+                    mc_leaks.append(leaksize)
 
                 mc_leak_total = sum(mc_leaks)
                 mc_site_total = random.choice(state['empirical_sites'])
@@ -254,6 +283,7 @@ class LdarSim:
         add new leaks to the leak pool
         """
         # First, determine whether each site gets a new leak or not
+        params = self.parameters
         for site in self.state['sites']:
             n_leaks = np.random.binomial(1, self.parameters['LPR'])
             if n_leaks == 0:
@@ -265,12 +295,19 @@ class LdarSim:
         for site in self.state['sites']:
             if site['n_new_leaks'] > 0:
                 for leak in range(site['n_new_leaks']):
+                    if params['use_empirical_rates'] == 'sample':
+                        leaksize = random.choice(self.state['empirical_leaks'])
+                    else:
+                        leaksize = leak_rvs(
+                            site['leak_rate_dist'],
+                            params['max_leak_rate'],
+                            site['leak_rate_units'])
                     self.state['leaks'].append({
                         'leak_ID': site['facility_ID'] + '_' + str(len(self.state['leaks']) + 1)
                         .zfill(10),
                         'facility_ID': site['facility_ID'],
                         'equipment_group': random.randint(1, int(site['equipment_groups'])),
-                        'rate': random.choice(self.state['empirical_leaks']),
+                        'rate': leaksize,
                         'lat': float(site['lat']),
                         'lon': float(site['lon']),
                         'status': 'active',
@@ -441,11 +478,15 @@ class LdarSim:
                 params['spin_up'],
                 params['output_directory'])
 
+        sim_summary = {
+            'leaks': leak_df,
+            'timeseries': time_df,
+            'sites': site_df,
+        }
+
         # Write sensitivity analysis data, if requested
         if params['sensitivity']['perform']:
-            sim_summary = self.sensitivity.write_data()
-        else:
-            sim_summary = {}
+            sim_summary['sensitivity'] = self.sensitivity.write_data()
 
         # Return to original working directory
         os.chdir(params['working_directory'])
