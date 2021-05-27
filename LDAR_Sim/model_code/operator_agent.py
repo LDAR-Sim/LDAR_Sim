@@ -51,7 +51,8 @@ class OperatorAgent:
                 if leak['status'] == 'active':
                     prob_detect = self.parameters['LPR'] * 7 / leak_term
                     prob_detect  \
-                        += self.parameters['max_det_op'] * (leak['rate'] / (self.state['max_rate']))
+                        += self.parameters['max_det_op'] \
+                        * (leak['rate'] / (self.state['max_leak_rate']))
                     if prob_detect > 1:
                         prob_detect = 1
                     if prob_detect < 0:

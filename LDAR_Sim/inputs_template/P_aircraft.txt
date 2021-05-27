@@ -32,20 +32,28 @@ P_aircraft_site = {
         },
         'program_name': 'P_aircraft_site',
         'n_simulations': 2, 	# Minimum of 2 simulations to get batch plots
-        'timesteps': 2000,  	# Up to ~5600 for 16 year nc file
+        'timesteps': 1000,  	# Up to ~5600 for 16 year nc file
         'n_processes': None,
-	'start_year': 2015,
+	'start_year': 2017,
+        'UTC_offset': -6,
 	'weather_file': "ERA5_AB_1x1_hourly_2015_2019.nc",
+        'weather_is_hourly': False,
         'infrastructure_file': 'facility_list_template.csv',
         'leak_file': 'leak_rates.csv',
         'count_file': 'leak_counts.csv',
         'vent_file': 'site_rates.csv',
-        't_offsite_file': 'time_offsite_ground.csv',
+        'time_offsite': 'time_offsite_ground.csv',
         'site_samples': [True, 500],
+        'subtype_distributions': [False, 'subtype_distributions.csv'], # If True, will overwrite global Leak Dist
         'subtype_times': [False, 'subtype_times.csv'], # If True, will overwrite site-specific times with subtype times
         'consider_operator': False,
         'consider_venting': False,
+        'consider_weather': True,
         'repair_delay': 14,
+        'repair_cost': 200,
+        'use_empirical_rates': False, # 'sample', 'fit', or False
+        'leak_rate_dist': ['lognorm',-2.776, 1.462, "kilogram", "hour"],
+        'max_leak_rate': 100, # g/s
         'LPR': 0.0065,
 	'NRd': 150,
         'max_det_op': 0.00,
@@ -54,8 +62,7 @@ P_aircraft_site = {
         'make_plots': True,
         'make_maps': True,
 	'print_from_simulations': True,
-        'operator_strength': 0.1,
-	'repair_cost': 200,
+        'operator_strength': 0,
 	'verification_cost': 25,
         'sensitivity': {'perform': False,
                         'program': 'OGI',
