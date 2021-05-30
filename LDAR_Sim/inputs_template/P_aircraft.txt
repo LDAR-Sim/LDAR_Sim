@@ -1,4 +1,4 @@
-P_aircraft_site = {
+P_aircraft = {
         'methods': {
 	                 'aircraft': {
                             'name': 'aircraft',
@@ -7,7 +7,7 @@ P_aircraft_site = {
                             'max_wind': 10,
                             'max_precip': 1,
                             'max_workday': 8,
-			    'measurement_scale': "site",
+			    'measurement_scale': "equipment",
                             'cost_per_day': 10000,
                             'follow_up_thresh': [0, "absolute"],
                             'follow_up_prop': 1,
@@ -30,7 +30,7 @@ P_aircraft_site = {
 			    'consider_daylight': False  
                             }
         },
-        'program_name': 'P_aircraft_site',
+        'program_name': 'P_aircraft',
         'n_simulations': 2, 	# Minimum of 2 simulations to get batch plots
         'timesteps': 1000,  	# Up to ~5600 for 16 year nc file
         'n_processes': None,
