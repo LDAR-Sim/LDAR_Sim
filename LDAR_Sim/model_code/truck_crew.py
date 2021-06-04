@@ -19,9 +19,10 @@
 #
 # ------------------------------------------------------------------------------
 
-import numpy as np
 from datetime import timedelta
-
+from aggregator import aggregate
+from method_functions import measured_rate
+import numpy as np
 
 class truck_crew:
     def __init__(self, state, parameters, config, timeseries, deployment_days, id):
@@ -54,7 +55,7 @@ class truck_crew:
                 work_hours = daylight_hours
             elif daylight_hours > max_work:
                 work_hours = max_work
-        elif not self.parameters['methods']['truck']['consider_daylight']:
+        else:
             work_hours = max_work
 
         if work_hours < 24 and work_hours != 0:
@@ -78,7 +79,7 @@ class truck_crew:
             facility_ID, found_site, site = self.choose_site()
             if not found_site:
                 break  # Break out if no site can be found
-            self.visit_site(facility_ID, site)
+            self.visit_site(site)
             self.worked_today = True
 
         if self.worked_today:
@@ -139,57 +140,50 @@ class truck_crew:
 
         return (facility_ID, found_site, site)
 
-    def visit_site(self, facility_ID, site):
+    def visit_site(self, site):
         """
         Look for emissions at the chosen site.
         """
 
-        # Sum all the emissions at the site
-        leaks_present = []
-        site_cum_rate = 0
-        for leak in self.state['leaks']:
-            if leak['facility_ID'] == facility_ID:
-                if leak['status'] == 'active':
-                    leaks_present.append(leak)
-                    site_cum_rate += leak['rate']
+        # Aggregate true emissions to equipment and site level; get list of leaks present
+        leaks_present, equipment_rates, site_true_rate = aggregate(site, self.state['leaks'])
 
-                    # Add vented emissions
+        # Add vented emissions
         venting = 0
         if self.parameters['consider_venting']:
             venting = self.state['empirical_vents'][
                 np.random.randint(0, len(self.state['empirical_vents']))]
-            site_cum_rate += venting
+        site_true_rate += venting
+        for rate in range(len(equipment_rates)):
+            equipment_rates[rate] += venting/int(site['equipment_groups'])
 
-        # Simple binary detection module
-        detect = False
-        if site_cum_rate > (self.config['MDL']):
-            detect = True
+        # Test detection module
+        site_measured_rate = 0
+        if self.config["measurement_scale"] == "site":
+            if site_true_rate > (self.config['MDL']):
+                # If source is above follow-up threshold, calculate measured rate using QE
+                site_measured_rate = measured_rate(site_true_rate, self.config['QE'])
 
-        if detect:
-            # If source is above follow-up threshold, calculate measured rate using
-            # quantification error
-            quant_error = np.random.normal(0, self.config['QE'])
-            measured_rate = None
-            if quant_error >= 0:
-                measured_rate = site_cum_rate + site_cum_rate*quant_error
-            if quant_error < 0:
-                denom = abs(quant_error - 1)
-                measured_rate = site_cum_rate/denom
+        if self.config["measurement_scale"] == "equipment":
+            for rate in equipment_rates:
+                if rate > (self.config['MDL']):
+                    equip_measured_rate = measured_rate(rate, self.config['QE'])
+                    site_measured_rate += equip_measured_rate
 
-            # If source is above follow-up threshold
-            if measured_rate > self.config['follow_up_thresh']:
-                # Put all necessary information in a dictionary to be assessed at end of day
-                site_dict = {
-                    'site': site,
-                    'leaks_present': leaks_present,
-                    'site_cum_rate': site_cum_rate,
-                    'measured_rate': measured_rate,
-                    'venting': venting
-                }
+        # If source is above follow-up threshold
+        if site_measured_rate > self.config['follow_up_thresh']:
+            # Put all necessary information in a dictionary to be assessed at end of day
+            site_dict = {
+                'site': site,
+                'leaks_present': leaks_present,
+                'site_true_rate': site_true_rate,
+                'site_measured_rate': site_measured_rate,
+                'venting': venting
+            }
 
-                self.candidate_flags.append(site_dict)
+            self.candidate_flags.append(site_dict)
 
-        elif not detect:
+        else:
             site['truck_missed_leaks'] += len(leaks_present)
 
         self.state['t'].current_date += timedelta(minutes=int(site['truck_time']))
