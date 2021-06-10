@@ -130,18 +130,18 @@ class aircraft_company:
         measured_rates = []
 
         for i in self.candidate_flags:
-            measured_rates.append(i['measured_rate'])
+            measured_rates.append(i['site_measured_rate'])
         measured_rates.sort(reverse=True)
         target_rates = measured_rates[:n_sites_to_flag]
 
         for i in self.candidate_flags:
-            if i['measured_rate'] in target_rates:
+            if i['site_measured_rate'] in target_rates:
                 sites_to_flag.append(i)
 
         for i in sites_to_flag:
             site = i['site']
             leaks_present = i['leaks_present']
-            site_cum_rate = i['site_cum_rate']
+            site_true_rate = i['site_true_rate']
             venting = i['venting']
 
             # If the site is already flagged, your flag is redundant
@@ -166,7 +166,7 @@ class aircraft_company:
 
                 # Would the site have been chosen without venting?
                 if self.parameters['consider_venting']:
-                    if (site_cum_rate - venting) < self.config['follow_up_thresh']:
+                    if (site_true_rate - venting) < self.config['follow_up_thresh']:
                         self.timeseries['aircraft_flags_redund3'][
                             self.state['t'].current_timestep] += 1
 

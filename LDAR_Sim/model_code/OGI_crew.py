@@ -22,6 +22,7 @@
 import numpy as np
 from datetime import timedelta
 import math
+from OGI_camera import OGI_camera
 
 
 class OGI_crew:
@@ -39,6 +40,7 @@ class OGI_crew:
         self.crewstate['lon'] = 0.0
         self.worked_today = False
         self.rollover = []
+        self.OGI_camera = OGI_camera(state, parameters, config, timeseries, self.crewstate)
         return
 
     def work_a_day(self):
@@ -202,33 +204,8 @@ class OGI_crew:
                 if leak['status'] == 'active':
                     leaks_present.append(leak)
 
-        # Detection module from Ravikumar et al 2018
-        for leak in leaks_present:
-            k = np.random.normal(4.9, 0.3)
-            x0 = np.random.normal(self.config['MDL'][0], self.config['MDL'][1])
-            x0 = math.log10(x0 * 3600)  # Convert from g/s to g/h and take log
-
-            if leak['rate'] == 0:
-                prob_detect = 0
-            else:
-                x = math.log10(leak['rate'] * 3600)  # Convert from g/s to g/h
-                prob_detect = 1 / (1 + math.exp(-k * (x - x0)))
-            detect = np.random.binomial(1, prob_detect)
-
-            if detect:
-                if leak['tagged']:
-                    self.timeseries['OGI_redund_tags'][self.state['t'].current_timestep] += 1
-
-                    # Add these leaks to the 'tag pool'
-                elif not leak['tagged']:
-                    leak['tagged'] = True
-                    leak['date_tagged'] = self.state['t'].current_date
-                    leak['tagged_by_company'] = self.config['name']
-                    leak['tagged_by_crew'] = self.crewstate['id']
-                    self.state['tags'].append(leak)
-
-            elif not detect:
-                site['OGI_missed_leaks'] += 1
+        # Use an OGI camera to detect leaks
+        self.OGI_camera.detect_leaks(site, leaks_present)
 
         self.state['t'].current_date += timedelta(minutes=int(site['OGI_time']))
         self.state['t'].current_date += timedelta(
