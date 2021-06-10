@@ -1,26 +1,26 @@
-P_alt = {
+P_truck = {
         'methods': {
-	                 'aircraft': {
-                            'name': 'aircraft',
+                   'truck': {
+                            'name': 'truck',
                             'n_crews': 1,
-                            'min_temp': -30,
-                            'max_wind': 10,
-                            'max_precip': 1,
+                            'min_temp': -40,
+                            'max_wind': 20,
+                            'max_precip': 0.01,
                             'max_workday': 8,
-                            'cost_per_day': 10000,
-                            'follow_up_thresh': [0.1, "proportion"],
+			    'measurement_scale': "equipment",
+                            'cost_per_day': 2000,
+                            'follow_up_thresh': [0, "absolute"],
                             'follow_up_prop': 1,
-                            't_lost_per_site': 10,                             
                             'reporting_delay': 2,
-                            'MDL': 0.2,         
+                            'MDL': 0.05,   
 			    'QE': 0,
-			    'consider_daylight': False                      
+			    'consider_daylight': False 
                             },
                    'OGI_FU': {
                             'name': 'OGI_FU',
                             'n_crews': 1,
-            		    'min_temp': -20,
-              		    'max_wind': 10,
+             		    'min_temp': -20,
+                	    'max_wind': 10,
                 	    'max_precip': 0.1,
                             'max_workday': 8,
                             'cost_per_day': 2500,
@@ -29,7 +29,7 @@ P_alt = {
 			    'consider_daylight': False  
                             }
         },
-        'program_name': 'P_alt',
+        'program_name': 'P_truck',
         'n_simulations': 2, 	# Minimum of 2 simulations to get batch plots
         'timesteps': 1000,  	# Up to ~5600 for 16 year nc file
         'n_processes': None,

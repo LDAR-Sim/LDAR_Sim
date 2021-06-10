@@ -176,6 +176,7 @@ class LdarSim:
                         'leak_ID': site['facility_ID'] + '_' + str(len(state['leaks']) + 1)
                         .zfill(10),
                         'facility_ID': site['facility_ID'],
+                        'equipment_group': random.randint(1,int(site['equipment_groups'])),
                         'rate': leaksize,
                         'lat': float(site['lat']) + np.random.normal(0, 0.0001),
                         'lon': float(site['lon']) + np.random.normal(0, 0.0001),
@@ -305,6 +306,7 @@ class LdarSim:
                         'leak_ID': site['facility_ID'] + '_' + str(len(self.state['leaks']) + 1)
                         .zfill(10),
                         'facility_ID': site['facility_ID'],
+                        'equipment_group': random.randint(1, int(site['equipment_groups'])),
                         'rate': leaksize,
                         'lat': float(site['lat']),
                         'lon': float(site['lon']),
