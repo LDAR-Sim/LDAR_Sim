@@ -52,11 +52,12 @@ class LdarSim:
             params['working_directory'] + params['leak_file']).iloc[:, 0])
         state['empirical_sites'] = np.array(pd.read_csv(
             params['working_directory'] + params['vent_file']).iloc[:, 0])
-        if isinstance(params['time_offsite'], str):
-            state['offsite_times'] = np.array(pd.read_csv(
-                params['working_directory'] + params['time_offsite']).iloc[:, 0])
-        else:
-            state['offsite_times'] = np.array([params['time_offsite']])
+        if 'time_offsite' in params:
+            if isinstance(params['time_offsite'], str):
+                state['offsite_times'] = np.array(pd.read_csv(
+                    params['working_directory'] + params['time_offsite']).iloc[:, 0])
+            else:
+                state['offsite_times'] = np.array([params['time_offsite']])
         #  Empirical Leaks can be fit with the following
         if params['use_empirical_rates'] == 'fit':
             params['leak_distribution'] = fit_dist(
@@ -143,15 +144,21 @@ class LdarSim:
             self.sensitivity = Sensitivity(params, timeseries, state)
 
         # Initialize method(s) to be used; append to state
-        for m in params['methods']:
+        for m_key, m_obj in params['methods'].items():
             try:
-                company_name = str(m) + '_company'
+                if 't_bw_sites' in m_obj:
+                    if isinstance(m_obj['t_bw_sites'], str):
+                        m_obj['t_bw_sites'] = np.array(pd.read_csv(
+                            params['working_directory'] + m_obj['t_bw_sites']).iloc[:, 0])
+                    else:
+                        m_obj['t_bw_sites'] = np.array([m_obj['t_bw_sites']])
+                company_name = str(m_key) + '_company'
                 module = __import__(company_name)
                 func = getattr(module, company_name)
                 state['methods'].append(
-                    func(state, params, params['methods'][m], timeseries))
+                    func(state, params, m_obj, timeseries))
             except AttributeError:
-                print('Cannot add this method: ' + m)
+                print('Cannot add this method: ' + m_key)
 
         # Generate initial leak count for each site
         for site in state['sites']:
@@ -176,7 +183,7 @@ class LdarSim:
                         'leak_ID': site['facility_ID'] + '_' + str(len(state['leaks']) + 1)
                         .zfill(10),
                         'facility_ID': site['facility_ID'],
-                        'equipment_group': random.randint(1,int(site['equipment_groups'])),
+                        'equipment_group': random.randint(1, int(site['equipment_groups'])),
                         'rate': leaksize,
                         'lat': float(site['lat']) + np.random.normal(0, 0.0001),
                         'lon': float(site['lon']) + np.random.normal(0, 0.0001),
