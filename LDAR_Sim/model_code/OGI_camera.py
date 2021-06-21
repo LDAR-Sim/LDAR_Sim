@@ -34,11 +34,7 @@ class OGI_camera:
         self.config = config
         self.timeseries = timeseries
         self.crewstate = crewstate
-
-        try:
-            self.MDL = parameters['methods']['OGI']['MDL']
-        except:
-            self.MDL = parameters['methods']['OGI_FU']['MDL']
+        self.MDL = config['MDL']
 
         return
 
@@ -57,7 +53,8 @@ class OGI_camera:
 
             if detect:
                 if leak['tagged']:
-                    self.timeseries[self.config['name'] + '_redund_tags'][self.state['t'].current_timestep] += 1
+                    self.timeseries[self.config['name'] +
+                                    '_redund_tags'][self.state['t'].current_timestep] += 1
 
                 # Add these leaks to the 'tag pool'
                 elif not leak['tagged']:
