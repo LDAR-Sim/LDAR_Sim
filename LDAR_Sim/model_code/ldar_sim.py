@@ -427,7 +427,41 @@ class LdarSim:
                 del site['n_new_leaks']
 
             leak_df = pd.DataFrame(self.state['leaks'])
+            #------------------------------------------------------------------------------##
+            # fix the timeseries unequal issue with scheudling and OGI rollover
+            sd = self.state['t'].start_date.date()
+            ed = self.state['t'].end_date.date()
+            TotalTS = (ed - sd).days
+            date_list = [sd + datetime.timedelta(days=x) for x in range(TotalTS)]
+            if len(self.timeseries['datetime']) < params['timesteps']: 
+                date_list = [sd + datetime.timedelta(days=x) for x in range(TotalTS)]
+                malfun_key = [] 
+                for k in self.timeseries.keys(): 
+                    A = len(self.timeseries[k])  
+                    if A != TotalTS: 
+                        malfun_key.append(k)
+                i = 0 
+                mal_DT = [d.date() for d in self.timeseries['datetime']]
+                Real_datetime = [] 
+                for dt in date_list: 
+                    if dt not in mal_DT:
+                        NDT = datetime.datetime(year=dt.year,month=dt.month,
+                              day=dt.day,hour = 8,minute= 0,second = 0)
+                        Real_datetime.append(NDT)
+                        
+                        #loop through the malfunction field to fillpout 0 
+                        for key in malfun_key: 
+                            self.timeseries[key].insert(i,self.timeseries[key][i-1])
+                        
+                    else: 
+                        Real_datetime.append(self.timeseries['datetime'][i])
+                    i += 1 
+                
+                self.timeseries['datetime'] = Real_datetime
+            
+            
             time_df = pd.DataFrame(self.timeseries)
+            #------------------------------------------------------------------------------##
             site_df = pd.DataFrame(self.state['sites'])
 
             # Create some new variables for plotting
