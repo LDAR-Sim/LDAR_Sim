@@ -103,38 +103,55 @@ class company:
         """
         The company tells all the crews to get to work.
         """
-        if self.config['is_screening']:
-            self.candidate_flags = []
-            for i in self.crews:
-                i.work_a_day(self.candidate_flags)
-            # Flag sites according to the flag ratio
-            if len(self.candidate_flags) > 0:
-                self.flag_sites()
+        ###############################----Scheduling----####################################
+        #### scheduling['deployment_time_intervals'] defines whether to deploy technology at specific time 
+        #### scheduling['deployment_yeares'] defines specific years to deploy technology 
+        #### scheduling['depolyment_months'] defines specific month to deply technology
+        self.scheduling  = self.parameters['methods'][self.name]['scheduling']
+        if self.scheduling['deployment_time_intervals']: 
+            required_year = self.scheduling['deployment_yeares']
+            required_month = self.scheduling['depolyment_months']
         else:
-            for i in self.crews:
-                i.work_a_day()
-
-            # Update method-specific site variables each day
-        for site in self.state['sites']:
-            site['{}_t_since_last_LDAR'.format(self.name)] += 1
-            site['{}_attempted_today?'.format(self.name)] = False
-
-        if self.config['is_follow_up']:
-            self.state['flags'] = [flag for flag in self.state['sites']
-                                   if flag['currently_flagged']]
-        elif self.state['t'].current_date.day == 1 and self.state['t'].current_date.month == 1:
+            required_year = list(range(self.state['t'].start_date.year,self.state['t'].end_date.year+1))
+            required_month = list(range(1,13))
+        
+        if self.state['t'].current_date.month in required_month  and self.state['t'].current_date.year in required_year:
+        #######################################################################################        
+            if self.config['is_screening']:
+                self.candidate_flags = []
+                for i in self.crews:
+                    i.work_a_day(self.candidate_flags)
+                # Flag sites according to the flag ratio
+                if len(self.candidate_flags) > 0:
+                    self.flag_sites()
+            else:
+                for i in self.crews:
+                    i.work_a_day()
+    
+                # Update method-specific site variables each day
             for site in self.state['sites']:
-                site['{}_surveys_done_this_year'.format(self.name)] = 0
+                site['{}_t_since_last_LDAR'.format(self.name)] += 1
+                site['{}_attempted_today?'.format(self.name)] = False
+    
+            if self.config['is_follow_up']:
+                self.state['flags'] = [flag for flag in self.state['sites']
+                                       if flag['currently_flagged']]
+            elif self.state['t'].current_date.day == 1 and self.state['t'].current_date.month == 1:
+                for site in self.state['sites']:
+                    site['{}_surveys_done_this_year'.format(self.name)] = 0
+    
+            # Calculate proportion sites available
+            available_sites = 0
+            for site in self.state['sites']:
+                if self.deployment_days[site['lon_index'],
+                                        site['lat_index'],
+                                        self.state['t'].current_timestep]:
+                    available_sites += 1
+            prop_avail = available_sites / len(self.state['sites'])
+            self.timeseries['{}_prop_sites_avail'.format(self.name)].append(prop_avail)
+        else: 
+            self.timeseries['{}_prop_sites_avail'.format(self.name)].append(0)
 
-        # Calculate proportion sites available
-        available_sites = 0
-        for site in self.state['sites']:
-            if self.deployment_days[site['lon_index'],
-                                    site['lat_index'],
-                                    self.state['t'].current_timestep]:
-                available_sites += 1
-        prop_avail = available_sites / len(self.state['sites'])
-        self.timeseries['{}_prop_sites_avail'.format(self.name)].append(prop_avail)
 
         return
 
