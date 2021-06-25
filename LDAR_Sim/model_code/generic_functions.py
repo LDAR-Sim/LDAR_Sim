@@ -283,3 +283,44 @@ def quick_cal_daylight(date,lat,lon):
     sunset = ss
 
     return (sunrise,sunset)
+
+
+def find_homebase(x1,y1,HX,HY): 
+    XY = list(zip(HX,HY))
+    D = []
+    for xy in XY:
+        x2 = xy[0]
+        y2 = xy[1]
+        d = ((x1 - x2)**2 + (y1 - y2)**2)**0.5
+        D.append(d)
+    ind =D.index(min(D))
+    dist = min(D) * 110
+    return (XY[ind],dist)
+
+def get_distance (x1,y1,x2,y2,form): 
+    if form == "Euclidian": 
+        d = ((x1 - x2)**2 + (y1-y2)**2)**0.5
+        d = d * 110 # covert to km  
+    elif form == "route":
+        d = 100 
+    return d 
+
+def find_homebase_opt(x1,y1,x2,y2,HX,HY):
+    # x1 and y1 are lon&lat of next visiting facility 
+    # x2 and y2 are lon&lat of current homebase 
+    XY = list(zip(HX,HY))
+    xy2 = (x2,y2)
+    if xy2 in XY:
+        ind = XY.index(xy2)
+        XY.pop(ind)
+    D = []
+    for xy in XY:
+        x3 = xy[0]
+        y3 = xy[1]
+        d1 = ((x1 - x3)**2 + (y1 - y3)**2)**0.5
+        d2 = ((x1 - x2)**2 + (y1 - y2)**2)**0.5
+        d = d1 + d2 
+        D.append(d)
+    ind =D.index(min(D))
+    dist = min(D) * 110
+    return (XY[ind],dist)
