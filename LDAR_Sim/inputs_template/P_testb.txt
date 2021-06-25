@@ -18,12 +18,14 @@ P_testb = {
 			    'consider_daylight': False,
 			    'is_screening': True,
                             'is_follow_up': False,
-			    'scheduling':{'route_planning':False,
-		      			  'geography':False,
+			    'scheduling':{'route_planning':True,
+		      			  'geography':True,
 					  'home_bases':'Airport_AB_Coordinates.csv',
-					  'Speed_list':[200,210,220,230],
+					  'Speed_list':[200.0,210.0,220.0,230.0],
 			                  'LDAR_crew_init_location':[-114.062019,51.044270],
-					  'deployment_times':[True,[2018,2019],[1,2,3]] }                     
+					  'deployment_time_intervals':True,
+					  'deployment_yeares':[2017,2018,2019],
+					  'depolyment_months':[1,2,3], }                     
                             },
                    'test_OGI': {
                         'name': 'test_OGI',
@@ -38,7 +40,15 @@ P_testb = {
                         'MDL': [0.01275, 2.78e-6],
                         'consider_daylight': False,
                         'is_screening': False,
-                        'is_follow_up': True, 
+			'is_follow_up': True, 
+			'scheduling':{'route_planning':True,
+		      			  'geography':True,
+					  'home_bases':'Airport_AB_Coordinates.csv',
+					  'Speed_list':[200.0,210.0,220.0,230.0],
+			                  'LDAR_crew_init_location':[-114.062019,51.044270],
+					  'deployment_time_intervals':False,
+					  'deployment_yeares':[2018,2019],
+					  'depolyment_months':[1,2,3], }                       
                         }
         },
         'program_name': 'P_testb',
