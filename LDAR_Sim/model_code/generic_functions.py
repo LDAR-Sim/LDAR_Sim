@@ -234,9 +234,13 @@ def check_ERA5_file(wd, target_file):
         print("Weather data checked. Continuing simulation.")
 
     if not target_file_found:
-        print("Weather data not found. Downloading now from AWS you...")
-        access_key = os.getenv('AWS_KEY')
-        secret_key = os.getenv('AWS_SEC')
+        print("Weather data not found. Downloading from AWS now ...")
+        try:
+            access_key = os.getenv('AWS_KEY')
+            secret_key = os.getenv('AWS_SEC')
+        except Exception:
+            print("AWS_KEY and AWS_SEC environment variables have not been set, refer to model documentation for "
+                  "configuration instructions.")
 
         try:
             s3 = boto3.client('s3', aws_access_key_id=access_key, aws_secret_access_key=secret_key)
