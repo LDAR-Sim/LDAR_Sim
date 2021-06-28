@@ -24,7 +24,7 @@ P_testb = {
 					  'Speed_list':[200.0,210.0,220.0,230.0],
 			                  'LDAR_crew_init_location':[-114.062019,51.044270],
 					  'deployment_time_intervals':True,
-					  'deployment_yeares':[2017,2018,2019],
+					  'deployment_years':[2017,2018,2019],
 					  'depolyment_months':[1,2,3], }                     
                             },
                    'test_OGI': {
@@ -47,7 +47,7 @@ P_testb = {
 					  'Speed_list':[200.0,210.0,220.0,230.0],
 			                  'LDAR_crew_init_location':[-114.062019,51.044270],
 					  'deployment_time_intervals':False,
-					  'deployment_yeares':[2018,2019],
+					  'deployment_years':[2018,2019],
 					  'depolyment_months':[1,2,3], }                       
                         }
         },

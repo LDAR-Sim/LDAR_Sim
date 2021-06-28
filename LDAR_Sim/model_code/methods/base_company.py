@@ -129,12 +129,12 @@ class company:
         """
         # ----Scheduling----
         # scheduling['deployment_time_intervals'] defines whether to deploy tech at specific time
-        # scheduling['deployment_yeares'] defines specific years to deploy technology
+        # scheduling['deployment_years'] defines specific years to deploy technology
         # scheduling['depolyment_months'] defines specific month to deply technology
 
         self.scheduling = self.config['scheduling']
         if self.scheduling['route_planning'] and self.scheduling['deployment_time_intervals']:
-            required_year = self.scheduling['deployment_yeares']
+            required_year = self.scheduling['deployment_years']
             required_month = self.scheduling['depolyment_months']
         else:
             required_year = list(
