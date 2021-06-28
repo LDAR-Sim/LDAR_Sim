@@ -39,7 +39,7 @@ class crew(bcrew):
         super(crew, self).__init__(state, parameters, config, timeseries, deployment_days, id)
         # --------- Add custom functionality Here! ----------------
 
-    def visit_site(self, site):
+    def visit_site(self, site, travel_time=None):
         m_name = self.config['name']
         """
         Look for leaks at the chosen site.
