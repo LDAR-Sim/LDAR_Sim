@@ -30,7 +30,7 @@ from generic_functions import find_homebase, get_distance, find_homebase_opt
 class crew:
     """
     Base class crew function. Changes made here will affect any inheriting
-    classes. To us base class, import and use as argument arguement. ie.
+    classes. To use base class, import and use as argument arguement. ie.
 
     from methods.base_crew import base_crew
     class crew (base_crew):
