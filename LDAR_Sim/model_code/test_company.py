@@ -31,3 +31,5 @@ class crew(bcrew):
 
     def __init__(self, state, parameters, config, timeseries, deployment_days, id):
         super(crew, self).__init__(state, parameters, config, timeseries, deployment_days, id)
+
+    # --------- Add custom functionality Here! ----------------

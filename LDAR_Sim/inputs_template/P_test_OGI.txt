@@ -14,6 +14,8 @@ P_test_OGI = {
 		'consider_daylight': False,
                 'is_screening': False,
                 'is_follow_up': False,
+                'scheduling':{'route_planning':False,
+                        'geography':False}
             }
         },
         'program_name': 'P_test_OGI',

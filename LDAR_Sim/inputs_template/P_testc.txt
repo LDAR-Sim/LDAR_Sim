@@ -1,4 +1,4 @@
-P_test = {
+P_testc = {
         'methods': {
                 'test': {
                         'name': 'test',
@@ -18,9 +18,15 @@ P_test = {
                         'consider_daylight': False,
                         'is_screening': True,
                         'is_follow_up': False,
-                        'scheduling':{'route_planning':False,
-		      			'geography':False,}
-                        },
+                        'scheduling':{'route_planning':True,
+		      			  'geography':False,
+					  'home_bases':'Airport_AB_Coordinates.csv',
+					  'Speed_list':[200.0,210.0,220.0,230.0],
+			                  'LDAR_crew_init_location':[-114.062019,51.044270],
+					  'deployment_time_intervals':True,
+					  'deployment_yeares':[2017,2018,2019],
+					  'depolyment_months':[1,2,3], }                     
+                            },
                 'test_OGI': {
                         'name': 'test_OGI',
                         'n_crews': 1,
@@ -39,7 +45,7 @@ P_test = {
                                         'geography':False,}
                         }
         },
-        'program_name': 'P_test',
+        'program_name': 'P_testc',
         'n_simulations': 2, 	# Minimum of 2 simulations to get batch plots
         'timesteps': 1000,  	# Up to ~5600 for 16 year nc file
         'n_processes': None,
