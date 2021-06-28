@@ -21,6 +21,8 @@
 
 import math
 import numpy as np
+import pandas as pd
+from sklearn.cluster import KMeans
 
 from generic_functions import get_prop_rate
 
@@ -90,6 +92,28 @@ class company:
             site.update({'{}_surveys_done_this_year'.format(self.name): 0})
             site.update({'{}_missed_leaks'.format(self.name): 0})
 
+        # Use clustering analysis to assign facilities to each agent, if 2+ agents are aviable
+        if self.config['n_crews'] > 1:
+            Lats = []
+            Lons = []
+            ID = []
+            for site in self.state['sites']:
+                ID.append(site['facility_ID'])
+                Lats.append(site['lat'])
+                Lons.append(site['lon'])
+            sdf = pd.DataFrame({"ID": ID,
+                                'lon': Lons,
+                                'lat': Lats})
+            X = sdf[['lat', 'lon']].values
+            num = config['n_crews']
+            kmeans = KMeans(n_clusters=num, random_state=0).fit(X)
+            label = kmeans.labels_
+        else:
+            label = np.zeros(len(self.state['sites']))
+
+        for i in range(len(self.state['sites'])):
+            self.state['sites'][i]['label'] = label[i]
+
         # Initialize 2D matrices to store deployment day (DD) counts and MCBs
         self.DD_map = np.zeros(
             (len(self.state['weather'].longitude),
@@ -103,20 +127,22 @@ class company:
         """
         The company tells all the crews to get to work.
         """
-        ###############################----Scheduling----####################################
-        #### scheduling['deployment_time_intervals'] defines whether to deploy technology at specific time 
-        #### scheduling['deployment_yeares'] defines specific years to deploy technology 
-        #### scheduling['depolyment_months'] defines specific month to deply technology
-        self.scheduling  = self.parameters['methods'][self.name]['scheduling']
-        if self.scheduling['deployment_time_intervals']: 
+        # ----Scheduling----
+        # scheduling['deployment_time_intervals'] defines whether to deploy tech at specific time
+        # scheduling['deployment_yeares'] defines specific years to deploy technology
+        # scheduling['depolyment_months'] defines specific month to deply technology
+
+        self.scheduling = self.config['scheduling']
+        if self.scheduling['route_planning'] and self.scheduling['deployment_time_intervals']:
             required_year = self.scheduling['deployment_yeares']
             required_month = self.scheduling['depolyment_months']
         else:
-            required_year = list(range(self.state['t'].start_date.year,self.state['t'].end_date.year+1))
-            required_month = list(range(1,13))
-        
-        if self.state['t'].current_date.month in required_month  and self.state['t'].current_date.year in required_year:
-        #######################################################################################        
+            required_year = list(
+                range(self.state['t'].start_date.year, self.state['t'].end_date.year+1))
+            required_month = list(range(1, 13))
+
+        if self.state['t'].current_date.month in required_month \
+                and self.state['t'].current_date.year in required_year:
             if self.config['is_screening']:
                 self.candidate_flags = []
                 for i in self.crews:
@@ -127,19 +153,19 @@ class company:
             else:
                 for i in self.crews:
                     i.work_a_day()
-    
+
                 # Update method-specific site variables each day
             for site in self.state['sites']:
                 site['{}_t_since_last_LDAR'.format(self.name)] += 1
                 site['{}_attempted_today?'.format(self.name)] = False
-    
+
             if self.config['is_follow_up']:
                 self.state['flags'] = [flag for flag in self.state['sites']
                                        if flag['currently_flagged']]
             elif self.state['t'].current_date.day == 1 and self.state['t'].current_date.month == 1:
                 for site in self.state['sites']:
                     site['{}_surveys_done_this_year'.format(self.name)] = 0
-    
+
             # Calculate proportion sites available
             available_sites = 0
             for site in self.state['sites']:
@@ -149,9 +175,8 @@ class company:
                     available_sites += 1
             prop_avail = available_sites / len(self.state['sites'])
             self.timeseries['{}_prop_sites_avail'.format(self.name)].append(prop_avail)
-        else: 
+        else:
             self.timeseries['{}_prop_sites_avail'.format(self.name)].append(0)
-
 
         return
 
