@@ -46,7 +46,10 @@ def ldar_sim_run(simulation):
         simulation['output_directory'],
         parameters['program_name'])
     if not os.path.exists(parameters['output_directory']):
-        os.makedirs(parameters['output_directory'])
+        try:
+            os.makedirs(parameters['output_directory'])
+        except Exception:
+            pass
 
     logfile = open(os.path.join(parameters['output_directory'], 'logfile.txt'), 'w')
     if 'print_from_simulation' not in simulation or simulation['print_from_simulation']:
