@@ -59,7 +59,7 @@ class crew:
         self.scheduling = self.config['scheduling']
 
         # Check if scheduling
-        if self.config['scheduling']['route_planning']:
+        if self.config['scheduling']['route_planning'] or self.config['scheduling']['geography']:
             # Read in the homebases as a list of dictionaries
             homebases = parameters['working_directory'] + self.scheduling['home_bases']
             HB = pd.read_csv(homebases, sep=',')
@@ -68,7 +68,6 @@ class crew:
             self.HX = self.state['homebases']['lon']
             self.HY = self.state['homebases']['lat']
             # initiate the location of LDAR crew
-        if self.config['scheduling']['route_planning'] or self.config['scheduling']['geography']:
             self.state['current_x'] = self.scheduling['LDAR_crew_init_location'][0]
             self.state['current_y'] = self.scheduling['LDAR_crew_init_location'][1]
         return
