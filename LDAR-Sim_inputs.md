@@ -897,6 +897,105 @@ See Section 3.12.
 
 See Section 2.11.
 
+# Scheduling Inputs
+
+## route\_planning
+
+**Data type:** Boolean
+
+**Default input:** N/A
+
+**Description:** A binary True/False to activate the route planning. Route planning allows LDAR crew to choose the nearest facility and home bases to visit based on the shortest travelling cost. The travelling cost is travel time that is calculated using the Haversine distance metric and sampled maximum speed limit of travelling. This will be improved in the future, especially for OGI and trucks.  
+
+**Notes on acquisition:** It requires user to also define input for home_bases, Speed_list and, LDAR_crew_init_location. 
+
+**Notes of caution:** Only aircraft, truck, and OGI methods can use this functionality.
+
+## geography
+
+**Data type:** Boolean
+
+**Default input:** N/A
+
+**Description:** A binary True/False to activate the using real geography coordinates for home bases. The geography functionality allows LDAR crew to depart from the home base (town or city, or airport) at the start of each day and return to the home base at the end of each day.  
+
+**Notes on acquisition:** It requires user to also define input for home_bases, Speed_list and, LDAR_crew_init_location. 
+
+**Notes of caution:** Only aircraft, truck, and OGI methods can use this functionality.
+
+## home\_bases
+
+**Data type:** Character string that specifies the name of the csv file that contains all of the required data on the home bases that used for LDAR scheduling.
+
+**Default input:** N/A
+
+**Description:** At a bare minimum, the csv must contain the following columns: 'lat', 'lon’, where ‘lat’ and ‘lon’ are coordinates of each home base.   
+
+**Notes on acquisition:** It is only required if route_planning or geography is activated.   
+
+**Notes of caution:** Only aircraft, truck, and OGI methods can use this functionality.
+
+## Speed\_list
+
+**Data type:** list
+
+**Default input:** [60.0,70.0,80.0,90.0] for OGI and truck methods, [200.0,210.0,220.0,230.0] for aircraft method. 
+
+**Description:** A list of speed limits that define the maximum travelling speed of technologies. A random speed is sampled from this list when calculating the travel time between two facilities or between the facility and home base.   
+
+**Notes on acquisition:** It is only required if route_planning or geography is activated.   
+
+**Notes of caution:** Only aircraft, truck, and OGI methods can use this functionality.
+
+## LDAR\_crew\_init\_location
+
+**Data type:** list
+
+**Default input:** N/A
+
+**Description:** A list of coordinates [longitude, latitude] that define the initial location of the LDAR crew.    
+
+**Notes on acquisition:** It is only required if route_planning or geography is activated.   
+
+**Notes of caution:** Only aircraft, truck, and OGI methods can use this functionality.
+
+## deployment\_time\_intervals
+
+**Data type:** Boolean
+
+**Default input:** N/A
+
+**Description:** A binary True/False to activate the functionality of defining the specific survey time interval for methods. It allows users to select a particular month and year to start and end the survey rather than deploying the technology (e.g., aircraft) through the entire simulation.   
+
+**Notes on acquisition:** N/A 
+
+**Notes of caution:** Only aircraft, truck, and OGI methods can use this functionality.
+
+## deployment\_years
+
+**Data type:** list
+
+**Default input:** N/A
+
+**Description:** A list of years that define the years of deployment.   
+
+**Notes on acquisition:** It is only required if deployment_time_intervals is activated. 
+
+**Notes of caution:** Only aircraft, truck, and OGI methods can use this functionality.
+
+## deployment\_months
+
+**Data type:** list
+
+**Default input:** N/A
+
+**Description:** A list of years that define the months of deployment.  
+
+**Notes on acquisition:** It is only required if deployment_time_intervals is activated.
+
+**Notes of caution:** Only aircraft, truck, and OGI methods can use this functionality.
+
+
 # Data sources, modelling confidence and model sensitivity
 
 There are a broad range of inputs used in LDAR-Sim that must be derived from various sources. Each of these parameters should be carefully considered and understood before using LDAR-Sim to inform decision making. Like other models, the quality of simulation results will depend on the quality and representativeness of the inputs used.
