@@ -301,7 +301,7 @@ class crew:
                                                 self.state['t'].current_timestep]:
 
                             if self.scheduling['geography']:
-                                d = get_distance(x_LDAR, y_LDAR, x_site, y_site, "Euclidian")
+                                d = get_distance(x_LDAR, y_LDAR, x_site, y_site, "Haversine")
                                 wt = d/speed * 60
                                 Site_T.append(wt)
                                 if not self.scheduling['route_planning']:
