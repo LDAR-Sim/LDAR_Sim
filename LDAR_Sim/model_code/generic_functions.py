@@ -289,31 +289,78 @@ def quick_cal_daylight(date,lat,lon):
     return (sunrise,sunset)
 
 
-def find_homebase(x1,y1,HX,HY): 
-    XY = list(zip(HX,HY))
+def get_distance(x1, y1, x2, y2, form):
+    '''
+    A function that calculate different types of distance 
+
+    Parameters
+    ----------
+    x1 : longitude 1
+    y1 : latitude 1 
+    x2 : longitude 2 
+    y2 : latitude 2 
+    form : Types of distance metrics
+
+    Returns a distance in km 
+
+    '''
+    if form == "Euclidean":
+        d = ((x1 - x2)**2 + (y1-y2)**2)**0.5
+    elif form == "Haversine":
+        radius = 6371.0
+        dlat = np.radians(y2 - y1)
+        dlon = np.radians(x2 - x1)
+        a = (np.sin(dlat / 2.0) * np.sin(dlat / 2.0) +
+             np.cos(np.radians(y1)) * np.cos(np.radians(y2)) *
+             np.sin(dlon / 2.0) * np.sin(dlon / 2.0))
+        c = 2.0 * np.arctan2(np.sqrt(a), np.sqrt(1.0 - a))
+        d = radius * c
+    elif form == "route":
+        d = 100
+    return d
+
+def find_homebase(x1, y1, HX, HY):
+    '''
+    Find the nearest home base from home bases list 
+    Parameters
+    ----------
+    x1 and y1 are longitude and latitude of the current location of LDAR crew 
+    HX : A list that includes longitudes of all home bases  
+    HY : A list that includes latitudes of all home bases
+
+    Returns
+    -------
+    The latitude and longitude of nearest home base and the distance to that home base in km.
+    '''
+    XY = list(zip(HX, HY))
     D = []
     for xy in XY:
         x2 = xy[0]
         y2 = xy[1]
-        d = ((x1 - x2)**2 + (y1 - y2)**2)**0.5
+        d = get_distance(x1, y1, x2, y2, "Haversine")
         D.append(d)
-    ind =D.index(min(D))
-    dist = min(D) * 110
-    return (XY[ind],dist)
+    dist = min(D)
+    ind = D.index(dist)
+    return (XY[ind], dist)
 
-def get_distance (x1,y1,x2,y2,form): 
-    if form == "Euclidian": 
-        d = ((x1 - x2)**2 + (y1-y2)**2)**0.5
-        d = d * 110 # covert to km  
-    elif form == "route":
-        d = 100 
-    return d 
 
-def find_homebase_opt(x1,y1,x2,y2,HX,HY):
-    # x1 and y1 are lon&lat of next visiting facility 
-    # x2 and y2 are lon&lat of current homebase 
-    XY = list(zip(HX,HY))
-    xy2 = (x2,y2)
+def find_homebase_opt(x1, y1, x2, y2, HX, HY):
+    '''
+    Find the home base that nearest to both LDAR team and next visit facility.
+    Parameters
+    ----------
+    x1 and y1 are longitude and latitude of the current location of LDAR crew 
+    x2 and y2 are longitude and latitude of the next visit facility
+    HX : A list that includes longitudes of all home bases  
+    HY : A list that includes latitudes of all home bases
+
+    Returns
+    -------
+    The latitude and longitude of nearest home base and the distance to that home base in km.
+    '''
+
+    XY = list(zip(HX, HY))
+    xy2 = (x2, y2)
     if xy2 in XY:
         ind = XY.index(xy2)
         XY.pop(ind)
@@ -321,10 +368,10 @@ def find_homebase_opt(x1,y1,x2,y2,HX,HY):
     for xy in XY:
         x3 = xy[0]
         y3 = xy[1]
-        d1 = ((x1 - x3)**2 + (y1 - y3)**2)**0.5
-        d2 = ((x1 - x2)**2 + (y1 - y2)**2)**0.5
-        d = d1 + d2 
+        d1 = get_distance(x1, y1, x3, y3, "Haversine")
+        d2 = get_distance(x1, y1, x2, y2, "Haversine")
+        d = d1 + d2
         D.append(d)
-    ind =D.index(min(D))
-    dist = min(D) * 110
-    return (XY[ind],dist)
+    dist = min(D)
+    ind = D.index(dist)
+    return (XY[ind], dist)
