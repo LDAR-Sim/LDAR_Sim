@@ -1,7 +1,7 @@
-P_test_OGI = {
+P_dev_OGI = {
         'methods': {
-            'test_OGI': {
-                'name': 'test_OGI',
+            'dev_OGI': {
+                'name': 'dev_OGI',
                 'n_crews': 1,
                 'min_temp': -20,
                 'max_wind': 10,
@@ -18,7 +18,7 @@ P_test_OGI = {
                         'geography':False}
             }
         },
-        'program_name': 'P_test_OGI',
+        'program_name': 'P_dev_OGI',
         'n_simulations': 2, 	# Minimum of 2 simulations to get batch plots
         'timesteps': 1000,  	# Up to ~5600 for 16 year nc file
         'n_processes': None,
