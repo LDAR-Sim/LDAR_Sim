@@ -31,6 +31,7 @@ import boto3  # for downloading data from AWS
 from botocore.exceptions import ClientError
 import ephem
 
+
 def gap_calculator(condition_vector):
     """
     This function calculates max gaps between daily activites in a time series.
@@ -239,8 +240,9 @@ def check_ERA5_file(wd, target_file):
             access_key = os.getenv('AWS_KEY')
             secret_key = os.getenv('AWS_SEC')
         except Exception:
-            print("AWS_KEY and AWS_SEC environment variables have not been set, refer to model documentation for "
-                  "configuration instructions.")
+            print(
+                "AWS_KEY and AWS_SEC environment variables have not been set," +
+                "refer to model documentation for configuration instructions.")
 
         try:
             s3 = boto3.client('s3', aws_access_key_id=access_key, aws_secret_access_key=secret_key)
@@ -249,7 +251,8 @@ def check_ERA5_file(wd, target_file):
             print("Authentication Failed or Server Unavailable. Exiting")
             sys.exit()
         print("Weather data download complete")
-        
+
+
 def geo_idx(dd, dd_array):
     """
      - dd - the decimal degree (latitude or longitude)
@@ -260,8 +263,9 @@ def geo_idx(dd, dd_array):
    """
     geo_idx = (np.abs(dd_array - dd)).argmin()
     return geo_idx
-	
-def quick_cal_daylight(date,lat,lon):
+
+
+def quick_cal_daylight(date, lat, lon):
 
     # Create ephem object
     obs = ephem.Observer()
@@ -286,92 +290,4 @@ def quick_cal_daylight(date,lat,lon):
     sunrise = sr
     sunset = ss
 
-    return (sunrise,sunset)
-
-
-def get_distance(x1, y1, x2, y2, form):
-    '''
-    A function that calculate different types of distance 
-
-    Parameters
-    ----------
-    x1 : longitude 1
-    y1 : latitude 1 
-    x2 : longitude 2 
-    y2 : latitude 2 
-    form : Types of distance metrics
-
-    Returns a distance in km 
-
-    '''
-    if form == "Euclidean":
-        d = ((x1 - x2)**2 + (y1-y2)**2)**0.5
-    elif form == "Haversine":
-        radius = 6371.0
-        dlat = np.radians(y2 - y1)
-        dlon = np.radians(x2 - x1)
-        a = (np.sin(dlat / 2.0) * np.sin(dlat / 2.0) +
-             np.cos(np.radians(y1)) * np.cos(np.radians(y2)) *
-             np.sin(dlon / 2.0) * np.sin(dlon / 2.0))
-        c = 2.0 * np.arctan2(np.sqrt(a), np.sqrt(1.0 - a))
-        d = radius * c
-    elif form == "route":
-        d = 100
-    return d
-
-def find_homebase(x1, y1, HX, HY):
-    '''
-    Find the nearest home base from home bases list 
-    Parameters
-    ----------
-    x1 and y1 are longitude and latitude of the current location of LDAR crew 
-    HX : A list that includes longitudes of all home bases  
-    HY : A list that includes latitudes of all home bases
-
-    Returns
-    -------
-    The latitude and longitude of nearest home base and the distance to that home base in km.
-    '''
-    XY = list(zip(HX, HY))
-    D = []
-    for xy in XY:
-        x2 = xy[0]
-        y2 = xy[1]
-        d = get_distance(x1, y1, x2, y2, "Haversine")
-        D.append(d)
-    dist = min(D)
-    ind = D.index(dist)
-    return (XY[ind], dist)
-
-
-def find_homebase_opt(x1, y1, x2, y2, HX, HY):
-    '''
-    Find the home base that nearest to both LDAR team and next visit facility.
-    Parameters
-    ----------
-    x1 and y1 are longitude and latitude of the current location of LDAR crew 
-    x2 and y2 are longitude and latitude of the next visit facility
-    HX : A list that includes longitudes of all home bases  
-    HY : A list that includes latitudes of all home bases
-
-    Returns
-    -------
-    The latitude and longitude of nearest home base and the distance to that home base in km.
-    '''
-
-    XY = list(zip(HX, HY))
-    xy2 = (x2, y2)
-    if xy2 in XY:
-        ind = XY.index(xy2)
-        XY.pop(ind)
-    D = []
-    for xy in XY:
-        x3 = xy[0]
-        y3 = xy[1]
-        d1 = get_distance(x1, y1, x3, y3, "Haversine")
-        d2 = get_distance(x1, y1, x2, y2, "Haversine")
-        d = d1 + d2
-        D.append(d)
-    dist = min(D)
-    ind = D.index(dist)
-    return (XY[ind], dist)
+    return (sunrise, sunset)

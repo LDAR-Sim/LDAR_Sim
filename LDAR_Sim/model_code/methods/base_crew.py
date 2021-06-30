@@ -21,10 +21,10 @@
 
 from datetime import timedelta
 import numpy as np
-import pandas as pd
 from aggregator import aggregate
 from method_functions import measured_rate
-from generic_functions import find_homebase, get_distance, find_homebase_opt
+from geography.homebase import find_homebase, find_homebase_opt
+from geography.distance import get_distance
 
 
 class crew:
@@ -54,22 +54,6 @@ class crew:
         self.crewstate = {'id': id}  # Crewstate is unique to this agent
         self.crewstate['lat'] = 0.0
         self.crewstate['lon'] = 0.0
-        self.worked_today = False
-        self.rollover = []
-        self.scheduling = self.config['scheduling']
-
-        # Check if scheduling
-        if self.config['scheduling']['route_planning'] or self.config['scheduling']['geography']:
-            # Read in the homebases as a list of dictionaries
-            homebases = parameters['working_directory'] + self.scheduling['home_bases']
-            HB = pd.read_csv(homebases, sep=',')
-            self.state['homebases'] = HB
-            # get lat & lon of all homebases
-            self.HX = self.state['homebases']['lon']
-            self.HY = self.state['homebases']['lat']
-            # initiate the location of LDAR crew
-            self.state['current_x'] = self.scheduling['LDAR_crew_init_location'][0]
-            self.state['current_y'] = self.scheduling['LDAR_crew_init_location'][1]
         return
 
     def work_a_day(self, candidate_flags=None):
@@ -77,19 +61,18 @@ class crew:
         Go to work and find the leaks for a given day
         """
         m_name = self.config['name']
-        m_obj = self.parameters['methods'][m_name]
         self.worked_today = False
         self.candidate_flags = candidate_flags
         work_hours = None
-        max_work = m_obj['max_workday']
+        max_work = self.config['max_workday']
 
-        if m_obj['consider_daylight']:
+        if self.config['consider_daylight']:
             daylight_hours = self.state['daylight'].get_daylight(self.state['t'].current_timestep)
             if daylight_hours <= max_work:
                 work_hours = daylight_hours
             elif daylight_hours > max_work:
                 work_hours = max_work
-        elif not m_obj['consider_daylight']:
+        elif not self.config['consider_daylight']:
             work_hours = max_work
 
         if work_hours < 24 and work_hours != 0:
@@ -108,14 +91,13 @@ class crew:
         # agent-level scheduling for geography (real home bases locations)
         if self.scheduling['geography']:
             # start day with the current location of the LDAR team
-            x_LDAR = self.state['current_x']
-            y_LDAR = self.state['current_y']
-        # ----------------------------------------------------------
+            # HBD -- Is there supposed to be more code here?
+            crew_x = self.state['current_x']
+            crew_y = self.state['current_y']
         else:
-
             # Start day with random "t_bw_sites" required for driving to first site
             self.state['t'].current_date += timedelta(
-                minutes=int(np.random.choice(m_obj['t_bw_sites'])))
+                minutes=int(np.random.choice(self.config['t_bw_sites'])))
 
         # Check if there is a partially finished site from yesterday
         if len(self.rollover) > 0:
@@ -128,22 +110,20 @@ class crew:
             # agent-level scheduling for geography (real home bases locations)
             if self.scheduling['geography']:
                 # start day by reading the location of the LDAR team
-                x_LDAR = self.state['current_x']
-                y_LDAR = self.state['current_y']
                 # find nearest home base
-                Home, DIST = find_homebase(x_LDAR, y_LDAR, self.HX, self.HY)
-                x_LDAR = Home[0]
-                y_LDAR = Home[1]
-                self.state['current_x'] = x_LDAR
-                self.state['current_y'] = y_LDAR
+                home_loc, distance = find_homebase(crew_x, crew_y, self.HX, self.HY)
+                crew_x = home_loc[0]
+                crew_y = home_loc[1]
+                self.state['current_x'] = crew_x
+                self.state['current_y'] = crew_y
                 # read speed list
-                SP_list = self.parameters['methods'][m_name]['scheduling']['Speed_list']
+                speed_list = self.parameters['methods'][m_name]['scheduling']['speed_list']
                 # sample a speed
-                speed = np.random.choice(SP_list)
-                travel_home = timedelta(minutes=(DIST/speed)*60)
+                speed = np.random.choice(speed_list)
+                travel_home = timedelta(minutes=(distance/speed)*60)
             # ----------------------------------------------------------
             else:
-                travel_home = timedelta(minutes=int(np.random.choice(m_obj['t_bw_sites'])))
+                travel_home = timedelta(minutes=int(np.random.choice(self.config['t_bw_sites'])))
 
             if (projected_end_time + travel_home) > self.allowed_end_time:
                 # There's not enough time left for that site today -
@@ -165,16 +145,16 @@ class crew:
         # -agent-level scheduling for geography (real home bases locations)
         if self.scheduling['geography']:
             # start day by reading the location of the LDAR team
-            x_LDAR = self.state['current_x']
-            y_LDAR = self.state['current_y']
+            crew_x = self.state['current_x']
+            crew_y = self.state['current_y']
             while self.state['t'].current_date.hour < int(end_hour):
-                facility_ID, found_site, site, travel_time = self.choose_site(x_LDAR, y_LDAR)
+                facility_ID, found_site, site, travel_time = self.choose_site(crew_x, crew_y)
                 if not found_site:
-                    Home, DIST = find_homebase(x_LDAR, y_LDAR, self.HX, self.HY)
-                    x_LDAR = Home[0]
-                    y_LDAR = Home[1]
-                    self.state['current_x'] = x_LDAR
-                    self.state['current_y'] = y_LDAR
+                    home_loc, distance = find_homebase(crew_x, crew_y, self.HX, self.HY)
+                    crew_x = home_loc[0]
+                    crew_y = home_loc[1]
+                    self.state['current_x'] = crew_x
+                    self.state['current_y'] = crew_y
                     break  # Break out
 
                 if found_site:
@@ -188,10 +168,11 @@ class crew:
                     y_temp = np.float(site['lat'])
                     x_cut = self.state['current_x']
                     y_cut = self.state['current_y']
-                    Home, DIST = find_homebase_opt(x_temp, y_temp, x_cut, y_cut, self.HX, self.HY)
+                    home_loc, distance = find_homebase_opt(
+                        x_temp, y_temp, x_cut, y_cut, self.HX, self.HY)
 
-                    self.state['current_x'] = Home[0]
-                    self.state['current_y'] = Home[1]
+                    self.state['current_x'] = home_loc[0]
+                    self.state['current_y'] = home_loc[1]
                     minutes_remaining = (
                         projected_end_time - self.allowed_end_time).total_seconds()/60
                     self.rollover = []
@@ -200,14 +181,14 @@ class crew:
                     self.state['t'].current_date = self.allowed_end_time
                     break
                 else:
-                    x_LDAR = np.float(site['lon'])
-                    y_LDAR = np.float(site['lat'])
+                    crew_x = np.float(site['lon'])
+                    crew_y = np.float(site['lat'])
                     self.visit_site(site, travel_time)
                 self.worked_today = True
         # ----------------------------------------------------------
         else:
-            self.state['t'].current_date += timedelta(
-                minutes=int((np.random.choice(m_obj['t_bw_sites']))))
+            # self.state['t'].current_date += timedelta(
+            #     minutes=int((np.random.choice(self.config['t_bw_sites']))))
             while self.state['t'].current_date < self.allowed_end_time:
                 facility_ID, found_site, site, travel_time = self.choose_site(0, 0)
                 if not found_site:
@@ -218,7 +199,8 @@ class crew:
                 if found_site:
                     projected_end_time = self.state['t'].current_date + \
                         timedelta(minutes=int(site['{}_time'.format(m_name)]))
-                    travel_home = timedelta(minutes=int(np.random.choice(m_obj['t_bw_sites'])))
+                    travel_home = timedelta(minutes=int(
+                        np.random.choice(self.config['t_bw_sites'])))
                     if (projected_end_time + travel_home) > self.allowed_end_time:
                         # There's not enough time left for that site today
                         # - get started and figure out how much time remains
@@ -236,13 +218,13 @@ class crew:
 
         if self.worked_today:
             self.timeseries['{}_cost'.format(m_name)][self.state['t'].current_timestep] += \
-                m_obj['cost_per_day']
+                self.config['cost_per_day']
             self.timeseries['total_daily_cost'][self.state['t'].current_timestep] += \
-                m_obj['cost_per_day']
+                self.config['cost_per_day']
 
         return
 
-    def choose_site(self, x_LDAR, y_LDAR):
+    def choose_site(self, crew_x, crew_y):
         """
         Choose a site to survey.
 
@@ -263,29 +245,28 @@ class crew:
         travel_time = None
         Site_T = []
         s_list = []
-        if 'Speed_list' in self.config['scheduling']:
-            SP_list = self.config['scheduling']['Speed_list']
+        if 'speed_list' in self.config['scheduling']:
+            SP_list = self.config['scheduling']['speed_list']
             speed = np.random.choice(SP_list)
 
         # Then, starting with the most neglected site, check if conditions are suitable for LDAR
         for site in site_pool:
             s_list.append(site)
-            x_site = np.float(site['lon'])
-            y_site = np.float(site['lat'])
+            site_x = np.float(site['lon'])
+            site_y = np.float(site['lat'])
 
-            # if the site was assigned to this agent
+            # if the site was assigned to this agent or route planning not used (old method)
             if not self.config['scheduling']['route_planning'] \
                     or site['label'] + 1 == self.crewstate['id']:
-                # If the site hasn't been attempted yet today
                 if not site['{}_attempted_today?'.format(m_name)]:
                     if self.config['is_follow_up']:
-                        is_ready = (self.state['t'].current_date - site['date_flagged']).days >= \
-                            self.parameters['methods'][site['flagged_by']]['reporting_delay']
+                        is_ready = (self.state['t'].current_date - site['date_flagged']).days \
+                            >= self.parameters['methods'][site['flagged_by']]['reporting_delay']
                     else:
                         # If the site is 'unripened' (i.e. hasn't met the minimum interval set
                         # out in the LDAR regulations/policy), break out - no LDAR today
-                        if site['{}_t_since_last_LDAR'.format(m_name)] < int(
-                                site['{}_min_int'.format(m_name)]):
+                        if site['{}_t_since_last_LDAR'.format(m_name)]  \
+                                < int(site['{}_min_int'.format(m_name)]):
                             self.state['t'].current_date = self.state['t'].current_date.replace(
                                 hour=23)
                             break
@@ -294,22 +275,24 @@ class crew:
                             is_ready = True
                         else:
                             is_ready = False
+
+                    # if the site is ready for survey (scuedule, or picked through route planning)
                     if is_ready:
-                        # Check the weather for that site
+                        # If weather is suitable for crew to survey
                         if self.deployment_days[site['lon_index'],
                                                 site['lat_index'],
                                                 self.state['t'].current_timestep]:
 
                             if self.scheduling['geography']:
-                                d = get_distance(x_LDAR, y_LDAR, x_site, y_site, "Haversine")
+                                d = get_distance(crew_x, crew_y, site_x, site_y, "Haversine")
                                 wt = d/speed * 60
                                 Site_T.append(wt)
+                                # HBD - What happens if there is route planning and geography?
                                 if not self.scheduling['route_planning']:
                                     # The site passes all the tests! Choose it!
                                     travel_time = wt
                                     facility_ID = site['facility_ID']
                                     found_site = True
-
                                     # Update site
                                     site['{}_surveys_conducted'.format(m_name)] += 1
                                     site['{}_surveys_done_this_year'.format(m_name)] += 1
@@ -362,18 +345,44 @@ class crew:
         for rate in range(len(equipment_rates)):
             equipment_rates[rate] += venting/int(site['equipment_groups'])
 
-        # Test detection module
+        # Placeholder for is leaks detected?, could be used to split up reporting
+        # from detect function in the future
+
+        _ = self.detect_leaks(
+            site, leaks_present, equipment_rates, site_true_rate, venting)
+
+        # --- Update time ---
+        self.state['t'].current_date += timedelta(minutes=int(site['{}_time'.format(m_name)]))
+        # if travel time was not generated when choosing site
+        if not travel_time:
+            travel_time = np.random.choice(self.config['t_bw_sites'])
+        self.state['t'].current_date += timedelta(
+            minutes=int(travel_time))
+        self.timeseries['{}_sites_visited'.format(m_name)][self.state['t'].current_timestep] += 1
+
+        if self.config['is_follow_up']:
+            # Remove site from flag pool
+            site['currently_flagged'] = False
+        return
+
+    def detect_leaks(self, site, leaks_present, equipment_rates, site_true_rate, venting):
+        # init vars
+        m_name = self.config['name']
         site_measured_rate = 0
+        is_leak_detected = False
+
         if self.config["measurement_scale"] == "site":
             if site_true_rate > (self.config['MDL']):
                 # If source is above follow-up threshold, calculate measured rate using QE
                 site_measured_rate = measured_rate(site_true_rate, self.config['QE'])
+                is_leak_detected = True
 
         if self.config["measurement_scale"] == "equipment":
             for rate in equipment_rates:
                 if rate > (self.config['MDL']):
                     equip_measured_rate = measured_rate(rate, self.config['QE'])
                     site_measured_rate += equip_measured_rate
+                    is_leak_detected = True
 
         # If source is above follow-up threshold
         if site_measured_rate > self.config['follow_up_thresh']:
@@ -385,16 +394,9 @@ class crew:
                 'site_measured_rate': site_measured_rate,
                 'venting': venting
             }
-
             self.candidate_flags.append(site_dict)
 
         else:
             site['{}_missed_leaks'.format(m_name)] += len(leaks_present)
 
-        self.state['t'].current_date += timedelta(minutes=int(site['{}_time'.format(m_name)]))
-        if not travel_time:
-            travel_time = np.random.choice(self.config['t_bw_sites'])
-        self.state['t'].current_date += timedelta(
-            minutes=int(travel_time))
-        self.timeseries['{}_sites_visited'.format(m_name)][self.state['t'].current_timestep] += 1
-        return
+        return is_leak_detected
