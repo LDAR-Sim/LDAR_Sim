@@ -1,7 +1,7 @@
 # ------------------------------------------------------------------------------
 # Program:     The LDAR Simulator (LDAR-Sim)
-# File:        fixed crew
-# Purpose:     Initialize each fixed crew under fixed company
+# File:        fixed_crew
+# Purpose:     Initialize each crew under company
 #
 # Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
 #
@@ -21,31 +21,38 @@
 
 import numpy as np
 
+from methods.base_crew import crew as base_crew
 
-class fixed_crew:
+
+class fixed_crew(base_crew):
+    """
+    Base class crew function. Changes made here will affect any inheriting
+    classes. To use base class, import and use as argument arguement. ie.
+
+    from methods.base_crew import base_crew
+    class crew (base_crew):
+        def __init__(self, **kwargs):
+            super(crew, self).__init__(**kwargs)
+        ...s
+
+    overwrite methods by creating methods in the inheriting class
+    after the __init__ function.
+    """
+
     def __init__(self, state, parameters, config, timeseries, site, deployment_days, id):
-        """
-        Constructs an individual fixed crew based on defined configuration.
-        """
-        self.state = state
-        self.parameters = parameters
-        self.config = config
-        self.timeseries = timeseries
+        super(fixed_crew, self).__init__(state, parameters, config, timeseries, deployment_days, id)
+        # --- Travel specific Initalization ---
         self.site = site
-        self.deployment_days = deployment_days
-        self.crewstate = {'id': id}  # Crewstate is unique to this agent
-        self.crewstate['lat'] = 0.0
-        self.crewstate['lon'] = 0.0
         self.days_skipped = 0
-        # self.worked_today = False
         return
 
+    # Overwrite Work A day function
     def work_a_day(self, candidate_flags):
         """
         Go to work and find the leaks for a given day
         """
         self.candidate_flags = candidate_flags
-
+        m_name = self.config['name']
         # Sum all the emissions at the site
         leaks_present = []
         site_cum_rate = 0
@@ -88,17 +95,17 @@ class fixed_crew:
                 site_dict = {
                     'site': self.site,
                     'leaks_present': leaks_present,
-                    'site_cum_rate': site_cum_rate,
-                    'measured_rate': measured_rate,
+                    'site_true_rate': site_cum_rate,
+                    'site_measured_rate': measured_rate,
                     'venting': venting
                 }
 
                 self.candidate_flags.append(site_dict)
 
-        self.timeseries['fixed_cost'][self.state['t'].current_timestep] += \
-            self.parameters['methods']['fixed']['cost_per_day']
+        self.timeseries['{}_cost'.format(m_name)][self.state['t'].current_timestep] += \
+            self.config['cost_per_day']
 
         self.timeseries['total_daily_cost'][self.state['t'].current_timestep] += \
-            self.parameters['methods']['fixed']['cost_per_day']
+            self.config['cost_per_day']
 
         return

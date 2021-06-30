@@ -90,7 +90,8 @@ class fixed_company:
                                     self.state['t'].current_timestep]:
                 i.work_a_day(self.candidate_flags)
                 i.days_skipped = 0
-            else: i.days_skipped += 1
+            else:
+                i.days_skipped += 1
 
         # Flag sites according to the flag ratio
         if len(self.candidate_flags) > 0:
