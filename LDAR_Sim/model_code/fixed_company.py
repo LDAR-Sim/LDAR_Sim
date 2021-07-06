@@ -31,7 +31,7 @@ class fixed_company:
         Initialize a company to manage the fixed crews (e.g. a contracting company).
 
         """
-        self.name = 'fixed'
+        self.name = config['label']
         self.state = state
         self.parameters = parameters
         self.config = config
@@ -79,7 +79,7 @@ class fixed_company:
 
         return
 
-    def find_leaks(self):
+    def deploy_crews(self):
         """
         The fixed company tells all the crews to get to work.
         """
@@ -144,7 +144,7 @@ class fixed_company:
                 # Flag the site for follow up
                 site['currently_flagged'] = True
                 site['date_flagged'] = self.state['t'].current_date
-                site['flagged_by'] = self.config['name']
+                site['flagged_by'] = self.config['label']
                 self.timeseries['fixed_eff_flags'][self.state['t'].current_timestep] += 1
 
                 # Does the chosen site already have tagged leaks?

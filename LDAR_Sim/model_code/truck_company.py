@@ -31,7 +31,7 @@ class truck_company:
         Initialize a company to manage the truck crews (e.g. a contracting company).
 
         """
-        self.name = 'truck'
+        self.name = config['label']
         self.state = state
         self.parameters = parameters
         self.config = config
@@ -83,7 +83,7 @@ class truck_company:
 
         return
 
-    def find_leaks(self):
+    def deploy_crews(self):
         """
         The truck company tells all the crews to get to work.
         """
@@ -152,7 +152,7 @@ class truck_company:
                 # Flag the site for follow up
                 site['currently_flagged'] = True
                 site['date_flagged'] = self.state['t'].current_date
-                site['flagged_by'] = self.config['name']
+                site['flagged_by'] = self.config['label']
                 self.timeseries['truck_eff_flags'][self.state['t'].current_timestep] += 1
 
                 # Does the chosen site already have tagged leaks?

@@ -152,7 +152,8 @@ class LdarSim:
                             params['working_directory'] + m_obj['t_bw_sites']).iloc[:, 0])
                     else:
                         m_obj['t_bw_sites'] = np.array([m_obj['t_bw_sites']])
-                company_name = str(m_key) + '_company'
+
+                company_name = str(m_obj['module']) + '_company'
                 module = __import__(company_name)
                 func = getattr(module, company_name)
                 state['methods'].append(
@@ -252,7 +253,7 @@ class LdarSim:
 
         self.update_state()  # Update state of sites and leaks
         self.add_leaks()  # Add leaks to the leak pool
-        self.find_leaks()  # Find leaks
+        self.deploy_crews()  # Find leaks
         self.repair_leaks()  # Repair leaks
         self.report()  # Assemble any reporting about model state
         return
@@ -332,7 +333,7 @@ class LdarSim:
 
         return
 
-    def find_leaks(self):
+    def deploy_crews(self):
         """
         Loop over all your methods in the simulation and ask them to find some leaks.
         """
