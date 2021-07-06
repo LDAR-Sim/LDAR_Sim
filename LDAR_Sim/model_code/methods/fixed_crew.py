@@ -52,7 +52,7 @@ class FixedCrew(BaseCrew):
         Go to work and find the leaks for a given day
         """
         self.candidate_flags = candidate_flags
-        m_name = self.config['name']
+        m_name = self.config['label']
         # Sum all the emissions at the site
         leaks_present = []
         site_cum_rate = 0
