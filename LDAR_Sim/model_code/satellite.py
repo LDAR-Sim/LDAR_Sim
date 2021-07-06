@@ -18,17 +18,16 @@
 # You should have received a copy of the GNU Affero General Public License
 
 
+from generic_functions import quick_cal_daylight
+from generic_functions import geo_idx
+import random
+import math
 import numpy as np
 from datetime import timedelta
 import orbit_predictor.locations as orbitL
-<<<<<<< HEAD
-import random 
-import math
-=======
-import random
->>>>>>> 28ac29d (Fixed Case Sensitive Issue with Satellite name)
-from generic_functions import geo_idx
-from generic_functions import quick_cal_daylight
+<< << << < HEAD
+== == == =
+>>>>>> > 28ac29d(Fixed Case Sensitive Issue with Satellite name)
 
 
 class satellite:
@@ -43,17 +42,17 @@ class satellite:
         self.deployment_days = deployment_days
         self.satstate = {'id': id}  # Crewstate is unique to this agent
         self.worked_today = False
-<<<<<<< HEAD
-        
-        
+
+
+<< << << < HEAD
+
         Latitudes = state['weather'].latitude
         Longitudes = state['weather'].longitude
-        
-        
-        return 
-    
-    
-    
+
+        return
+
+
+
     def work_a_day(self):
         """
         Go to work and find the leaks for a given day.
@@ -206,7 +205,7 @@ class satellite:
             sat_screen = False
 <<<<<<< HEAD
         
-        #check daylight 
+        # check daylight 
         date = self.state['t'].current_date                              
         sr,ss = quick_cal_daylight(date,site_lat,site_lon)
         
@@ -215,7 +214,7 @@ class satellite:
         else: 
             sat_daylight = False
                                  
-        #check cloud cover 
+        # check cloud cover 
         # need to change  
         if self.cloudcover[ti,lat_idx,lon_idx] <0.5: 
             sat_cc = True 
@@ -432,7 +431,7 @@ class satellite:
                 # Flag the site for follow up
                 site['currently_flagged'] = True
                 site['date_flagged'] = self.state['t'].current_date
-                site['flagged_by'] = self.config['name']
+                site['flagged_by'] = self.config['label']
                 self.timeseries['satellite_eff_flags'][self.state['t'].current_timestep] += 1
 
                 # Does the chosen site already have tagged leaks?

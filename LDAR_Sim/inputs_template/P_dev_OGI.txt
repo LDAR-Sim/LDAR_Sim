@@ -1,20 +1,21 @@
 P_dev_OGI = {
     'methods': {
-        'dev_OGI': {
-            'name': 'dev_OGI',
+        'OGI': {
+            'label': 'OGI',
+            'module': 'dev_OGI',
+            'deployment_type': 'mobile',
+            'measurement_scale': "leak",
+            'is_follow_up': False,
             'n_crews': 1,
             'min_temp': -20,
             'max_wind': 10,
             'max_precip': 0.1,
             'max_workday': 8,
-            'measurement_scale': "leak",
             'cost_per_day': 2500,
             'reporting_delay': 2,
             't_bw_sites': 'time_offsite_ground.csv',
             'MDL': [0.01275, 2.78e-6],
             'consider_daylight': False,
-            'is_screening': False,
-            'is_follow_up': False,
             'scheduling': {
                 'route_planning': False,
                 'geography': False,

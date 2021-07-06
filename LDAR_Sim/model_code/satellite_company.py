@@ -31,7 +31,7 @@ class satellite_company:
         """
         Initialize a company to manage the satellite
         """
-        self.name = 'satellite'
+        self.name = config['label']
         self.state = state
         self.parameters = parameters
         self.config = config
@@ -57,7 +57,7 @@ class satellite_company:
         Dataset.close()
 
         # build a satellite orbit object
-        sat = self.parameters['methods']['Satellite']['name']
+        sat = self.parameters['methods']['Satellite']['label']
         tlefile = self.parameters['methods']['Satellite']['TLE_file']
         TLEs = []
         with open(tlefile) as f:
@@ -108,7 +108,7 @@ class satellite_company:
 
         return
 
-    def find_leaks(self):
+    def deploy_crews(self):
         """
         The satellite company tells all the crews to get to work.
         """
@@ -176,7 +176,7 @@ class satellite_company:
                 # Flag the site for follow up
                 site['currently_flagged'] = True
                 site['date_flagged'] = self.state['t'].current_date
-                site['flagged_by'] = self.config['name']
+                site['flagged_by'] = self.config['label']
                 self.timeseries['satellite_eff_flags'][self.state['t'].current_timestep] += 1
 
                 # Does the chosen site already have tagged leaks?

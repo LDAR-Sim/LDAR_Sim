@@ -13,7 +13,7 @@ class dev_continuous_company(FixedCompany):
         # -------------------
         # Initiate Crews - This is done outside of base class
         # Initialize the individual fixed crews (the agents) - each is a single fixed sensor
-        m_name = self.config['name']
+        m_name = self.config['label']
         for site in self.state['sites']:
             n_fixed = int(site['fixed_sensors'])
             for i in range(n_fixed):
