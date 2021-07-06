@@ -21,10 +21,10 @@
 
 import numpy as np
 
-from methods.base_crew import crew as base_crew
+from methods.base_crew import BaseCrew
 
 
-class fixed_crew(base_crew):
+class FixedCrew(BaseCrew):
     """
     Base class crew function. Changes made here will affect any inheriting
     classes. To use base class, import and use as argument arguement. ie.
@@ -40,7 +40,7 @@ class fixed_crew(base_crew):
     """
 
     def __init__(self, state, parameters, config, timeseries, site, deployment_days, id):
-        super(fixed_crew, self).__init__(state, parameters, config, timeseries, deployment_days, id)
+        super(FixedCrew, self).__init__(state, parameters, config, timeseries, deployment_days, id)
         # --- Travel specific Initalization ---
         self.site = site
         self.days_skipped = 0
@@ -56,15 +56,14 @@ class fixed_crew(base_crew):
         # Sum all the emissions at the site
         leaks_present = []
         site_cum_rate = 0
+
         for leak in self.state['leaks']:
             if leak['facility_ID'] == self.site['facility_ID']:
                 if leak['status'] == 'active':
-                    # HBD do we need the first condition?
                     if leak['days_active'] >= \
                             (self.config['time_to_detection'] + self.days_skipped):
-                        if leak['days_active'] >= self.config['time_to_detection']:
-                            leaks_present.append(leak)
-                            site_cum_rate += leak['rate']
+                        leaks_present.append(leak)
+                        site_cum_rate += leak['rate']
 
         # Add vented emissions
         venting = 0

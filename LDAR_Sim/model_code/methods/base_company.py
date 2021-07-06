@@ -25,10 +25,10 @@ import numpy as np
 from generic_functions import get_prop_rate
 
 
-class company:
+class BaseCompany:
     """
-    Base class company function. Changes made here will affect any Inheriting
-    classes. To us base class, import and use as argument arguement. ie.
+    Company base class. Changes made here will affect any inheriting
+    classes. To use base class, import and use as argument arguement. ie.
 
     from methods.base_company import company
     class aircraft (company):
@@ -45,17 +45,10 @@ class company:
         Initialize a company to manage the crews (e.g. a contracting company).
 
         """
-        self.name = config['name']
-        self.state = state
+        self.name, self.state, = config['name'], state
         self.parameters = parameters
         self.config = config
         self.timeseries = timeseries
-        # HBD -- This should be done somewhere else
-        if 'scheduling' in self.config:
-            self.scheduling = self.config['scheduling']
-        else:
-            self.scheduling = {}
-
         self.crews = []
         self.deployment_days = self.state['weather'].deployment_days(
             method_name=self.name,
@@ -64,7 +57,10 @@ class company:
             consider_weather=parameters['consider_weather'])
         self.timeseries['{}_prop_sites_avail'.format(self.name)] = []
         self.timeseries['{}_cost'.format(self.name)] = np.zeros(self.parameters['timesteps'])
-        if not config['is_screening']:
+        self.timeseries['{}_sites_visited'.format(self.name)] = np.zeros(
+            self.parameters['timesteps'])
+        if not self.config["measurement_scale"] in ['site', 'equipment']:
+            # If the technology is for flagging
             self.timeseries['{}_redund_tags'.format(self.name)] = np.zeros(
                 self.parameters['timesteps'])
         else:
@@ -86,20 +82,18 @@ class company:
             else:
                 print('Follow-up thresh type not recognized. Must be "absolute" or "proportion".')
 
+        self.scheduling = self.config['scheduling']
         # if user does not specify deployment interval, set to all months/years
-        if 'deployment_years' in self.scheduling and len(self.scheduling['deployment_years']) > 0:
+        if len(self.scheduling['deployment_years']) > 0:
             self.deployment_years = self.scheduling['deployment_years']
         else:
             self.deployment_years = list(
                 range(self.state['t'].start_date.year, self.state['t'].end_date.year+1))
 
-        if 'deployment_months' in self.scheduling and len(self.scheduling['deployment_months']) > 0:
+        if len(self.scheduling['deployment_months']) > 0:
             self.deployment_months = self.scheduling['deployment_months']
         else:
             self.deployment_months = list(range(1, 13))
-
-        self.timeseries['{}_sites_visited'.format(self.name)] = np.zeros(
-            self.parameters['timesteps'])
 
         # Initialize 2D matrices to store deployment day (DD) counts and MCBs
         self.DD_map = np.zeros(
@@ -108,16 +102,16 @@ class company:
         self.MCB_map = np.zeros(
             (len(self.state['weather'].longitude),
              len(self.state['weather'].latitude)))
-        return
 
-    def find_leaks(self):
+    def deploy_crews(self):
         """
         The company tells all the crews to get to work.
         """
         # ----Scheduling----
         if self.state['t'].current_date.month in self.deployment_months \
                 and self.state['t'].current_date.year in self.deployment_years:
-            if self.config['is_screening']:
+            # If the technology is for flagging
+            if self.config["measurement_scale"] in ['site', 'equipment']:
                 self.candidate_flags = []
                 for i in self.crews:
                     i.work_a_day(self.candidate_flags)
@@ -125,6 +119,7 @@ class company:
                 if len(self.candidate_flags) > 0:
                     self.flag_sites()
             else:
+                # If the technology is for tagging
                 for i in self.crews:
                     i.work_a_day()
 
