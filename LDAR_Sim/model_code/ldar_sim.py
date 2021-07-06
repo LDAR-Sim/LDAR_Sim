@@ -338,7 +338,7 @@ class LdarSim:
         """
 
         for m in self.state['methods']:
-            m.find_leaks()
+            m.deploy_crews()
 
         if self.parameters['consider_operator']:
             if self.state['t'].current_date.weekday() == 0:

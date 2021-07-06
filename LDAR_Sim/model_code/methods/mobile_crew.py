@@ -1,6 +1,6 @@
 # ------------------------------------------------------------------------------
 # Program:     The LDAR Simulator (LDAR-Sim)
-# File:        crew
+# File:        Mobile crew
 # Purpose:     Initialize each crew under company
 #
 # Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
@@ -20,17 +20,17 @@
 # ------------------------------------------------------------------------------
 import pandas as pd
 
-from methods.base_crew import crew as base_crew
+from methods.base_crew import BaseCrew
 
 
-class travel_crew(base_crew):
+class MobileCrew(BaseCrew):
     """
     """
 
     def __init__(self, state, parameters, config, timeseries, deployment_days, id):
-        super(travel_crew, self).__init__(state, parameters,
-                                          config, timeseries, deployment_days, id)
-        # --- Travel specific Initalization ---
+        super(MobileCrew, self).__init__(state, parameters,
+                                         config, timeseries, deployment_days, id)
+        # --- Mobile specific Initalization ---
         self.worked_today = False
         self.rollover = []
         self.scheduling = self.config['scheduling']
@@ -45,5 +45,5 @@ class travel_crew(base_crew):
             self.state['current_x'] = self.scheduling['LDAR_crew_init_location'][0]
             self.state['current_y'] = self.scheduling['LDAR_crew_init_location'][1]
         # -------------------------------------------
-    # --- Travel specific methods ---
-    # -------------------------------------
+    # --- Mobile specific methods ---
+    # -------------------------------

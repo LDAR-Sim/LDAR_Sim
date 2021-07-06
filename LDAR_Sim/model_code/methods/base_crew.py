@@ -27,7 +27,7 @@ from geography.homebase import find_homebase, find_homebase_opt
 from geography.distance import get_distance
 
 
-class crew:
+class BaseCrew:
     """
     Base class crew function. Changes made here will affect any inheriting
     classes. To use base class, import and use as argument arguement. ie.
@@ -51,7 +51,7 @@ class crew:
         self.config = config
         self.timeseries = timeseries
         self.deployment_days = deployment_days
-        self.crewstate = {'id': id}  # Crewstate is unique to this agent
+        self.crewstate = {'id': id}
         self.crewstate['lat'] = 0.0
         self.crewstate['lon'] = 0.0
         return
@@ -116,10 +116,7 @@ class crew:
                 crew_y = home_loc[1]
                 self.state['current_x'] = crew_x
                 self.state['current_y'] = crew_y
-                # read speed list
-                speed_list = self.parameters['methods'][m_name]['scheduling']['speed_list']
-                # sample a speed
-                speed = np.random.choice(speed_list)
+                speed = np.random.choice(self.config['scheduling']['speed_list'])
                 travel_home = timedelta(minutes=(distance/speed)*60)
             # ----------------------------------------------------------
             else:
@@ -245,9 +242,6 @@ class crew:
         travel_time = None
         Site_T = []
         s_list = []
-        if 'speed_list' in self.config['scheduling']:
-            SP_list = self.config['scheduling']['speed_list']
-            speed = np.random.choice(SP_list)
 
         # Then, starting with the most neglected site, check if conditions are suitable for LDAR
         for site in site_pool:
@@ -255,9 +249,11 @@ class crew:
             site_x = np.float(site['lon'])
             site_y = np.float(site['lat'])
 
-            # if the site was assigned to this agent or route planning not used (old method)
-            if not self.config['scheduling']['route_planning'] \
-                    or site['label'] + 1 == self.crewstate['id']:
+            # Check to see if the site can be surveyed.
+            # If route planning is used the site needs to be assigned to the crew
+            if (self.config['scheduling']['route_planning']
+                    and site['label'] + 1 == self.crewstate['id']
+                    or not self.config['scheduling']['route_planning']):
                 if not site['{}_attempted_today?'.format(m_name)]:
                     if self.config['is_follow_up']:
                         is_ready = (self.state['t'].current_date - site['date_flagged']).days \
@@ -276,7 +272,7 @@ class crew:
                         else:
                             is_ready = False
 
-                    # if the site is ready for survey (scuedule, or picked through route planning)
+                    # if the site is ready for survey (schedule, or picked through route planning)
                     if is_ready:
                         # If weather is suitable for crew to survey
                         if self.deployment_days[site['lon_index'],
@@ -285,6 +281,7 @@ class crew:
 
                             if self.scheduling['geography']:
                                 d = get_distance(crew_x, crew_y, site_x, site_y, "Haversine")
+                                speed = np.random.choice(self.config['scheduling']['speed_list'])
                                 wt = d/speed * 60
                                 Site_T.append(wt)
                                 # HBD - What happens if there is route planning and geography?
@@ -345,10 +342,7 @@ class crew:
         for rate in range(len(equipment_rates)):
             equipment_rates[rate] += venting/int(site['equipment_groups'])
 
-        # Placeholder for is leaks detected?, could be used to split up reporting
-        # from detect function in the future
-
-        _ = self.detect_leaks(
+        _ = self.detect_emissions(
             site, leaks_present, equipment_rates, site_true_rate, venting)
 
         # --- Update time ---
@@ -365,7 +359,7 @@ class crew:
             site['currently_flagged'] = False
         return
 
-    def detect_leaks(self, site, leaks_present, equipment_rates, site_true_rate, venting):
+    def detect_emissions(self, site, leaks_present, equipment_rates, site_true_rate, venting):
         # init vars
         m_name = self.config['name']
         site_measured_rate = 0
@@ -376,12 +370,17 @@ class crew:
                 # If source is above follow-up threshold, calculate measured rate using QE
                 site_measured_rate = measured_rate(site_true_rate, self.config['QE'])
                 is_leak_detected = True
-
-        if self.config["measurement_scale"] == "equipment":
+        elif self.config["measurement_scale"] == "equipment":
             for rate in equipment_rates:
                 if rate > (self.config['MDL']):
                     equip_measured_rate = measured_rate(rate, self.config['QE'])
                     site_measured_rate += equip_measured_rate
+                    is_leak_detected = True
+        elif self.config["measurement_scale"] == "leak":
+            for leak in leaks_present:
+                if leak > (self.config['MDL']):
+                    leak_measured_rate = measured_rate(leak, self.config['QE'])
+                    site_measured_rate += leak_measured_rate
                     is_leak_detected = True
 
         # If source is above follow-up threshold

@@ -1,5 +1,29 @@
-P_dev_OGI = {
+P_dev_continuous = {
     'methods': {
+        'dev_continuous': {
+            'name': 'dev_continuous',
+            'n_crews': 1,
+            'min_temp': -30,
+            'max_wind': 10,
+            'max_precip': 1,
+            'measurement_scale': "equipment",
+            'up_front_cost': 500,
+            'cost_per_day': 1,
+            'follow_up_thresh': [0, "absolute"],
+            'follow_up_prop': 1,
+            'time_to_detection': 7,
+            'reporting_delay': 2,
+            'MDL': 0.01,
+            'QE': 0,
+            'consider_daylight': False,
+            'is_screening': True,
+            'is_follow_up': False,
+            'scheduling': {
+                'deployment_time_intervals': False,
+                'deployment_years': [],
+                'deployment_months': [],
+            },
+        },
         'dev_OGI': {
             'name': 'dev_OGI',
             'n_crews': 1,
@@ -9,12 +33,12 @@ P_dev_OGI = {
             'max_workday': 8,
             'measurement_scale': "leak",
             'cost_per_day': 2500,
-            'reporting_delay': 2,
             't_bw_sites': 'time_offsite_ground.csv',
+            'reporting_delay': 2,
             'MDL': [0.01275, 2.78e-6],
             'consider_daylight': False,
             'is_screening': False,
-            'is_follow_up': False,
+            'is_follow_up': True,
             'scheduling': {
                 'route_planning': False,
                 'geography': False,
@@ -27,12 +51,13 @@ P_dev_OGI = {
             },
         }
     },
-    'program_name': 'P_dev_OGI',
+    'program_name': 'P_dev_continuous',
     'n_simulations': 2, 	# Minimum of 2 simulations to get batch plots
     'timesteps': 1000,  	# Up to ~5600 for 16 year nc file
     'n_processes': None,
     'start_year': 2017,
     'UTC_offset': -6,
+    'time_offsite': 'time_offsite_ground.csv',
     'weather_file': "ERA5_AB_1x1_hourly_2015_2019.nc",
     'weather_is_hourly': False,
     'infrastructure_file': 'facility_list_template.csv',

@@ -14,7 +14,6 @@ def find_homebase(x1, y1, HX, HY):
     -------
     The latitude and longitude of nearest home base and the distance to that home base in km.
     '''
-    # HBD - improve readability of this by using better variable names.
     XY = list(zip(HX, HY))
     D = []
     for xy in XY:
@@ -41,7 +40,6 @@ def find_homebase_opt(x1, y1, x2, y2, HX, HY):
     -------
     The latitude and longitude of nearest home base and the distance to that home base in km.
     '''
-    # HBD - improve readability of this by using better variable names.
     XY = list(zip(HX, HY))
     xy2 = (x2, y2)
     if xy2 in XY:

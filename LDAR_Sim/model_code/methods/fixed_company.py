@@ -20,13 +20,13 @@
 # ------------------------------------------------------------------------------
 
 
-from methods.base_company import company as base_company
+from methods.base_company import BaseCompany
 
 
-class fixed_company(base_company):
+class FixedCompany(BaseCompany):
 
     def __init__(self, state, parameters, config, timeseries):
-        super(fixed_company, self).__init__(state, parameters, config, timeseries)
+        super(FixedCompany, self).__init__(state, parameters, config, timeseries)
         # --- Fixed Sensor specific Initalization ---
         # -------------------------------------------
     # --- Fixed Sensor specific methods ---
