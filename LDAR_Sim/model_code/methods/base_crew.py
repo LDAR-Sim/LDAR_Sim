@@ -60,7 +60,7 @@ class BaseCrew:
         """
         Go to work and find the leaks for a given day
         """
-        m_name = self.config['name']
+        m_name = self.config['label']
         self.worked_today = False
         self.candidate_flags = candidate_flags
         work_hours = None
@@ -226,7 +226,7 @@ class BaseCrew:
         Choose a site to survey.
 
         """
-        m_name = self.config['name']
+        m_name = self.config['label']
         if self.config['is_follow_up']:
             site_pool = self.state['flags']
         else:
@@ -328,7 +328,7 @@ class BaseCrew:
         """
         Look for emissions at the chosen site.
         """
-        m_name = self.config['name']
+        m_name = self.config['label']
 
         # Aggregate true emissions to equipment and site level; get list of leaks present
         leaks_present, equipment_rates, site_true_rate = aggregate(site, self.state['leaks'])
@@ -361,7 +361,7 @@ class BaseCrew:
 
     def detect_emissions(self, site, leaks_present, equipment_rates, site_true_rate, venting):
         # init vars
-        m_name = self.config['name']
+        m_name = self.config['label']
         site_measured_rate = 0
         is_leak_detected = False
 
@@ -378,9 +378,8 @@ class BaseCrew:
                     is_leak_detected = True
         elif self.config["measurement_scale"] == "leak":
             for leak in leaks_present:
-                if leak > (self.config['MDL']):
-                    leak_measured_rate = measured_rate(leak, self.config['QE'])
-                    site_measured_rate += leak_measured_rate
+                if leak['rate'] > (self.config['MDL']):
+                    site_measured_rate += measured_rate(leak['rate'], self.config['QE'])
                     is_leak_detected = True
 
         # If source is above follow-up threshold

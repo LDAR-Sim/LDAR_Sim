@@ -45,7 +45,7 @@ class BaseCompany:
         Initialize a company to manage the crews (e.g. a contracting company).
 
         """
-        self.name, self.state, = config['name'], state
+        self.name, self.state, = config['label'], state
         self.parameters = parameters
         self.config = config
         self.timeseries = timeseries
@@ -172,7 +172,7 @@ class BaseCompany:
                 # Flag the site for follow up
                 site['currently_flagged'] = True
                 site['date_flagged'] = self.state['t'].current_date
-                site['flagged_by'] = self.config['name']
+                site['flagged_by'] = self.config['label']
                 self.timeseries['{}_eff_flags'.format(
                     self.name)][self.state['t'].current_timestep] += 1
 
