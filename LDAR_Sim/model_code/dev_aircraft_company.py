@@ -1,8 +1,8 @@
-from methods.mobile_company import MobileCompany
+from methods.base_company import BaseCompany
 from methods.mobile_crew import MobileCrew
 
 
-class dev_aircraft_company(MobileCompany):
+class dev_aircraft_company(BaseCompany):
     """ Test aircraft company module. Company managing fixed agents.
         Inherits base method base class company
     """

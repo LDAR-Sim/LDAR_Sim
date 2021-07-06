@@ -24,7 +24,7 @@ import numpy as np
 from methods.base_crew import BaseCrew
 
 
-class FixedCrew(BaseCrew):
+class StationaryCrew(BaseCrew):
     """
     Base class crew function. Changes made here will affect any inheriting
     classes. To use base class, import and use as argument arguement. ie.
@@ -40,7 +40,8 @@ class FixedCrew(BaseCrew):
     """
 
     def __init__(self, state, parameters, config, timeseries, site, deployment_days, id):
-        super(FixedCrew, self).__init__(state, parameters, config, timeseries, deployment_days, id)
+        super(StationaryCrew, self).__init__(
+            state, parameters, config, timeseries, deployment_days, id)
         # --- Travel specific Initalization ---
         self.site = site
         self.days_skipped = 0
