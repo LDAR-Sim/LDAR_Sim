@@ -3,7 +3,7 @@ import numpy as np
 
 def get_distance(x1, y1, x2, y2, calc_method):
     '''
-    A function that calculate different types of distance between to points
+    A function that calculate different types of distance between two points
 
     Parameters
     ----------
