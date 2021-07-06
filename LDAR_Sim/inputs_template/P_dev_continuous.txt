@@ -5,6 +5,7 @@ P_dev_continuous = {
             'module': 'dev_continuous',
             'deployment_type': 'stationary',
             'measurement_scale': "equipment",
+            'sensor': 'default',
             'is_follow_up': False,
             'n_crews': 1,
             'min_temp': -30,
@@ -25,11 +26,12 @@ P_dev_continuous = {
                 'deployment_months': [],
             },
         },
-        'OGI Company': {
-            'label': 'OGI Company',
+        'OGI_FU': {
+            'label': 'OGI_FU',
             'module': 'dev_OGI',
             'deployment_type': 'mobile',
             'measurement_scale': "leak",
+            'sensor': 'OGI_camera',
             'is_follow_up': True,
             'n_crews': 1,
             'min_temp': -20,
