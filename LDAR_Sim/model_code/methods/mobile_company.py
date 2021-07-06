@@ -24,16 +24,16 @@ import numpy as np
 import pandas as pd
 from sklearn.cluster import KMeans
 
-from methods.base_company import company as base_company
+from methods.base_company import BaseCompany
 
 
-class travel_company(base_company):
+class MobileCompany(BaseCompany):
     """
     """
 
     def __init__(self, state, parameters, config, timeseries):
-        super(travel_company, self).__init__(state, parameters, config, timeseries)
-        # --- Travel / Scheduling Specific Initializiation ---
+        super(MobileCompany, self).__init__(state, parameters, config, timeseries)
+        # --- Mobile Specific Initializiation ---
 
         for site in self.state['sites']:
             site.update({'{}_t_since_last_LDAR'.format(self.name): 0})
@@ -42,7 +42,7 @@ class travel_company(base_company):
             site.update({'{}_surveys_done_this_year'.format(self.name): 0})
             site.update({'{}_missed_leaks'.format(self.name): 0})
 
-        # Use clustering analysis to assign facilities to each agent, if 2+ agents are aviable
+        # Use clustering analysis to assign facilities to each agent, if 2+ agents are available
         if self.config['n_crews'] > 1:
             lats = []
             lons = []
@@ -65,11 +65,11 @@ class travel_company(base_company):
         for i in range(len(self.state['sites'])):
             self.state['sites'][i]['label'] = label[i]
 
-    # --- Travel / Scheduling Specific Methods ---
-    def find_leaks(self):
-        super(travel_company, self).find_leaks()
+    # --- Mobile / Scheduling Specific Methods ---
+    def deploy_crews(self):
+        super(MobileCompany, self).deploy_crews()
 
-        # Update travel specific variables
+        # Update mobile specific variables
         for site in self.state['sites']:
             site['{}_t_since_last_LDAR'.format(self.name)] += 1
             site['{}_attempted_today?'.format(self.name)] = False

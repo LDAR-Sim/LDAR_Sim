@@ -591,6 +591,42 @@ If using different weather files for different programs (e.g., when comparing di
 
 **Notes of caution:** To our knowledge, accounting for refraction has not been tested in LDAR-Sim. We recommend ignoring refraction unless there is a compelling reason to do otherwise.
 
+## consider\_weather
+
+**Data type:** Boolean
+
+**Default input:** True
+
+**Description:**  A binary True/False to indicate whether weather the method is affected by weather. If true surveys/screening occurs regardless of weather for scheduled visits.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** Locations with more extreme weather will be more effected if this is disabled.
+
+## is\_follow\_up
+
+**Data type:** Boolean
+
+**Default input:** False
+
+**Description:**  A binary True/False to indicate whether the method is used to survey sites previously flagged by screening technologies. If marked turned off this method will not visit sites on regular intervals.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** No data acquisition required.
+
+## is\_screening
+
+**Data type:** Boolean
+
+**Default input:** False
+
+**Description:**  A binary True/False to indicate whether the method is used to flag sites / equipment groups or to survey and tage leaks. If set true, a Follow-up method is required to tag leaks detected with this method.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** No data acquisition required.
+
 ## cost\_per\_day
 
 **Data type:** Integer
@@ -935,13 +971,13 @@ See Section 2.11.
 
 **Notes of caution:** Only aircraft, truck, and OGI methods can use this functionality.
 
-## Speed\_list
+## speed\_list
 
 **Data type:** list
 
 **Default input:** [60.0,70.0,80.0,90.0] for OGI and truck methods, [200.0,210.0,220.0,230.0] for aircraft method. 
 
-**Description:** A list of speed limits that define the maximum travelling speed of technologies. A random speed is sampled from this list when calculating the travel time between two facilities or between the facility and home base.   
+**Description:** A list of speed limits that define the maximum travelling speed of technologies. A random speed is sampled from this list when calculating the travel time between two facilities or between the facility and home base. Can also be a list with a single value.
 
 **Notes on acquisition:** It is only required if route_planning or geography is activated.   
 
@@ -953,9 +989,9 @@ See Section 2.11.
 
 **Default input:** N/A
 
-**Description:** A list of coordinates [longitude, latitude] that define the initial location of the LDAR crew.    
+**Description:** A list of coordinates [longitude, latitude] that define the initial location of the LDAR crew. It is only required if route_planning or geography is activated.      
 
-**Notes on acquisition:** It is only required if route_planning or geography is activated.   
+**Notes on acquisition:** Initialize with as homebase of method company. 
 
 **Notes of caution:** Only aircraft, truck, and OGI methods can use this functionality.
 
@@ -977,9 +1013,9 @@ See Section 2.11.
 
 **Default input:** N/A
 
-**Description:** A list of years that define the years of deployment.   
+**Description:** A list of years that define the years of deployment.
 
-**Notes on acquisition:** It is only required if deployment_time_intervals is activated. 
+**Notes on acquisition:** 
 
 **Notes of caution:** Only aircraft, truck, and OGI methods can use this functionality.
 
@@ -991,7 +1027,7 @@ See Section 2.11.
 
 **Description:** A list of years that define the months of deployment.  
 
-**Notes on acquisition:** It is only required if deployment_time_intervals is activated.
+**Notes on acquisition:**
 
 **Notes of caution:** Only aircraft, truck, and OGI methods can use this functionality.
 

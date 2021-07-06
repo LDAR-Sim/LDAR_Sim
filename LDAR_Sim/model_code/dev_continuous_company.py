@@ -1,14 +1,14 @@
-from methods.fixed_company import fixed_company
-from methods.fixed_crew import fixed_crew
+from methods.fixed_company import FixedCompany
+from methods.fixed_crew import FixedCrew
 
 
-class dev_fixed_company(fixed_company):
+class dev_continuous_company(FixedCompany):
     """ Dev Company module. Company managing fixed agents.
         Inherits base method base class company
     """
 
     def __init__(self, state, parameters, config, timeseries):
-        super(dev_fixed_company, self).__init__(state, parameters, config, timeseries)
+        super(dev_continuous_company, self).__init__(state, parameters, config, timeseries)
         # --- Custom Init ---
         # -------------------
         # Initiate Crews - This is done outside of base class
@@ -18,7 +18,7 @@ class dev_fixed_company(fixed_company):
             n_fixed = int(site['fixed_sensors'])
             for i in range(n_fixed):
                 self.crews.append(
-                    fixed_crew(
+                    Crew(
                         state, parameters, config, timeseries, site, self.deployment_days,
                         id=site['facility_ID'] + '-' + str(i + 1)))
                 self.timeseries['{}_cost'.format(m_name)][self.state['t'].current_timestep] += \
@@ -28,13 +28,13 @@ class dev_fixed_company(fixed_company):
     # ----------------------
 
 
-class crew(fixed_crew):
+class Crew(FixedCrew):
     """ Test Company module. Initialize each crew for company.
         Inherits base method base class company
     """
 
-    def __init__(self, state, parameters, config, timeseries, deployment_days, id):
-        super(crew, self).__init__(state, parameters, config, timeseries, deployment_days, id)
+    def __init__(self, state, parameters, config, timeseries, site,  deployment_days, id):
+        super(Crew, self).__init__(state, parameters, config, timeseries, site, deployment_days, id)
         # --- Custom Init ---
         # -------------------
 
