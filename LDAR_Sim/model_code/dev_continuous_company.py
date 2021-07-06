@@ -1,8 +1,8 @@
-from methods.fixed_company import FixedCompany
-from methods.fixed_crew import FixedCrew
+from methods.base_company import BaseCompany
+from methods.stationary_crew import StationaryCrew
 
 
-class dev_continuous_company(FixedCompany):
+class dev_continuous_company(BaseCompany):
     """ Dev Company module. Company managing fixed agents.
         Inherits base method base class company
     """
@@ -28,7 +28,7 @@ class dev_continuous_company(FixedCompany):
     # ----------------------
 
 
-class Crew(FixedCrew):
+class Crew(StationaryCrew):
     """ Test Company module. Initialize each crew for company.
         Inherits base method base class company
     """

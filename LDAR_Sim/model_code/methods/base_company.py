@@ -21,11 +21,14 @@
 
 import math
 import numpy as np
+import pandas as pd
 
+from sklearn.cluster import KMeans
+from methods.deployment.schedule import Schedule
 from generic_functions import get_prop_rate
 
 
-class BaseCompany:
+class BaseCompany(Schedule):
     """
     Company base class. Changes made here will affect any inheriting
     classes. To use base class, import and use as argument arguement. ie.
@@ -49,6 +52,7 @@ class BaseCompany:
         self.parameters = parameters
         self.config = config
         self.timeseries = timeseries
+        self.schedule = Schedule(config['scheduling'])
         self.crews = []
         self.deployment_days = self.state['weather'].deployment_days(
             method_name=self.name,
@@ -59,7 +63,7 @@ class BaseCompany:
         self.timeseries['{}_cost'.format(self.name)] = np.zeros(self.parameters['timesteps'])
         self.timeseries['{}_sites_visited'.format(self.name)] = np.zeros(
             self.parameters['timesteps'])
-        if not self.config["measurement_scale"] in ['site', 'equipment']:
+        if self.config["measurement_scale"] == 'leak':
             # If the technology is for flagging
             self.timeseries['{}_redund_tags'.format(self.name)] = np.zeros(
                 self.parameters['timesteps'])
@@ -82,18 +86,7 @@ class BaseCompany:
             else:
                 print('Follow-up thresh type not recognized. Must be "absolute" or "proportion".')
 
-        self.scheduling = self.config['scheduling']
-        # if user does not specify deployment interval, set to all months/years
-        if len(self.scheduling['deployment_years']) > 0:
-            self.deployment_years = self.scheduling['deployment_years']
-        else:
-            self.deployment_years = list(
-                range(self.state['t'].start_date.year, self.state['t'].end_date.year+1))
-
-        if len(self.scheduling['deployment_months']) > 0:
-            self.deployment_months = self.scheduling['deployment_months']
-        else:
-            self.deployment_months = list(range(1, 13))
+        self.schedule.get_deployment_dates(state['t'])
 
         # Initialize 2D matrices to store deployment day (DD) counts and MCBs
         self.DD_map = np.zeros(
@@ -102,26 +95,49 @@ class BaseCompany:
         self.MCB_map = np.zeros(
             (len(self.state['weather'].longitude),
              len(self.state['weather'].latitude)))
+        if self.config['deployment_type'] == 'mobile':
+            for site in self.state['sites']:
+                site.update({'{}_t_since_last_LDAR'.format(self.name): 0})
+                site.update({'{}_surveys_conducted'.format(self.name): 0})
+                site.update({'{}_attempted_today?'.format(self.name): False})
+                site.update({'{}_surveys_done_this_year'.format(self.name): 0})
+                site.update({'{}_missed_leaks'.format(self.name): 0})
+
+                # Use clustering analysis to assign facilities to each agent,
+                # if 2+ agents are available
+                if self.config['n_crews'] > 1:
+                    lats = []
+                    lons = []
+                    ID = []
+                    for site in self.state['sites']:
+                        ID.append(site['facility_ID'])
+                        lats.append(site['lat'])
+                        lons.append(site['lon'])
+                    # HBD - What is sdf?
+                    sdf = pd.DataFrame({"ID": ID,
+                                        'lon': lons,
+                                        'lat': lats})
+                    locs = sdf[['lat', 'lon']].values
+                    num = config['n_crews']
+                    kmeans = KMeans(n_clusters=num, random_state=0).fit(locs)
+                    label = kmeans.labels_
+                else:
+                    label = np.zeros(len(self.state['sites']))
+
+                for i in range(len(self.state['sites'])):
+                    self.state['sites'][i]['label'] = label[i]
 
     def deploy_crews(self):
         """
         The company tells all the crews to get to work.
         """
-        # ----Scheduling----
-        if self.state['t'].current_date.month in self.deployment_months \
-                and self.state['t'].current_date.year in self.deployment_years:
-            # If the technology is for flagging
-            if self.config["measurement_scale"] in ['site', 'equipment']:
-                self.candidate_flags = []
-                for i in self.crews:
-                    i.work_a_day(self.candidate_flags)
-                # Flag sites according to the flag ratio
-                if len(self.candidate_flags) > 0:
-                    self.flag_sites()
-            else:
-                # If the technology is for tagging
-                for i in self.crews:
-                    i.work_a_day()
+        if self.state['t'].current_date.month in self.schedule.deployment_months \
+                and self.state['t'].current_date.year in self.schedule.deployment_years:
+            self.candidate_flags = []
+            for i in self.crews:
+                i.work_a_day(self.candidate_flags)
+            if len(self.candidate_flags) > 0:
+                self.flag_sites()
 
             # Calculate proportion sites available
             available_sites = 0
@@ -134,6 +150,21 @@ class BaseCompany:
             self.timeseries['{}_prop_sites_avail'.format(self.name)].append(prop_avail)
         else:
             self.timeseries['{}_prop_sites_avail'.format(self.name)].append(0)
+
+        # Update mobile specific parameters
+        if self.config['deployment_type'] == 'mobile':
+            for site in self.state['sites']:
+                site['{}_t_since_last_LDAR'.format(self.name)] += 1
+                site['{}_attempted_today?'.format(self.name)] = False
+                if self.state['t'].current_date.day == 1 \
+                        and self.state['t'].current_date.month == 1:
+                    site['{}_surveys_done_this_year'.format(self.name)] = 0
+
+        # Update followup specific parameters
+        if self.config['is_follow_up']:
+            self.state['flags'] = [flag for flag in self.state['sites']
+                                   if flag['currently_flagged']]
+
         return
 
     def flag_sites(self):
