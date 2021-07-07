@@ -1,12 +1,12 @@
 from geography.distance import get_distance
 
 
-def find_homebase(x1, y1, HX, HY):
+def find_homebase(current_loc, HX, HY):
     '''
     Find the nearest home base from home bases list
     Parameters
     ----------
-    x1 and y1 are longitude and latitude of the current location of LDAR crew
+    Current_loc contains longitude and latitude of the current crew location
     HX : A list that includes longitudes of all home bases
     HY : A list that includes latitudes of all home bases
 
@@ -14,6 +14,7 @@ def find_homebase(x1, y1, HX, HY):
     -------
     The latitude and longitude of nearest home base and the distance to that home base in km.
     '''
+    y1, x1 = current_loc
     XY = list(zip(HX, HY))
     D = []
     for xy in XY:
