@@ -34,23 +34,10 @@ class MobileCrew(BaseCrew):
         super(MobileCrew, self).__init__(state, parameters,
                                          config, timeseries, deployment_days, id)
         # --- Mobile specific Initalization ---
-        self.worked_today = False
-        self.rollover = []
-        self.scheduling = self.config['scheduling']
-
-        # IF there is scheduling or routeplanning load home bases and init LDAR Crew locations
-        if self.config['scheduling']['route_planning'] or self.config['scheduling']['geography']:
-            hb_file = parameters['working_directory'] + self.scheduling['home_bases']
-            self.state['homebases'] = pd.read_csv(hb_file, sep=',')
-            self.HX = self.state['homebases']['lon']
-            self.HY = self.state['homebases']['lat']
-            # initiate the location of LDAR crew
-            self.state['current_x'] = self.scheduling['LDAR_crew_init_location'][0]
-            self.state['current_y'] = self.scheduling['LDAR_crew_init_location'][1]
         # -------------------------------------------
     # --- Mobile specific methods ---
 
-    def work_a_day(self, candidate_flags=None):
+    def work_a_day2(self, candidate_flags=None):
         """
         Go to work and find the leaks for a given day
         """
