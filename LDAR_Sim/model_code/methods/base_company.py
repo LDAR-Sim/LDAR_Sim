@@ -24,11 +24,11 @@ import numpy as np
 import pandas as pd
 
 from sklearn.cluster import KMeans
-from methods.deployment.schedule import Schedule
+from methods.deployment.company_schedule import Schedule
 from generic_functions import get_prop_rate
 
 
-class BaseCompany(Schedule):
+class BaseCompany:
     """
     Company base class. Changes made here will affect any inheriting
     classes. To use base class, import and use as argument arguement. ie.
