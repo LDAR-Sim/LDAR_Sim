@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def get_distance(x1, y1, x2, y2, calc_method):
+def get_distance(location1, location2, calc_method):
     '''
     A function that calculate different types of distance between two points
 
@@ -16,6 +16,8 @@ def get_distance(x1, y1, x2, y2, calc_method):
     Returns a distance in km
 
     '''
+    y1, x1 = location1
+    y2, x2 = location2
     if calc_method == "Euclidean":
         d = ((x1 - x2)**2 + (y1-y2)**2)**0.5
     elif calc_method == "Haversine":
