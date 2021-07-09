@@ -1,30 +1,27 @@
 from geography.distance import get_distance
 
 
-def find_homebase(current_loc, HX, HY):
+def find_homebase(cur_lat, cur_lon, homebase_locs):
     '''
     Find the nearest home base from home bases list
     Parameters
     ----------
-    Current_loc contains longitude and latitude of the current crew location
-    HX : A list that includes longitudes of all home bases
-    HY : A list that includes latitudes of all home bases
+    cur_lat, and cur_lon contains longitude and latitude of the current crew location
+    homebase_locs : A list that includes latitudes and longitudes of all home bases
 
     Returns
     -------
     The latitude and longitude of nearest home base and the distance to that home base in km.
     '''
-    y1, x1 = current_loc
-    XY = list(zip(HX, HY))
-    D = []
-    for xy in XY:
-        x2 = xy[0]
-        y2 = xy[1]
-        d = get_distance(x1, y1, x2, y2, "Haversine")
-        D.append(d)
-    dist = min(D)
-    ind = D.index(dist)
-    return (XY[ind], dist)
+    distances = []
+    for lonlat in homebase_locs:
+        hb_lon = lonlat[0]
+        hb_lat = lonlat[1]
+        d = get_distance(cur_lat, cur_lon, hb_lat, hb_lon, "Haversine")
+        distances.append(d)
+    dist = min(distances)
+    ind = distances.index(dist)
+    return (homebase_locs[ind], dist)
 
 
 def find_homebase_opt(x1, y1, x2, y2, HX, HY):
