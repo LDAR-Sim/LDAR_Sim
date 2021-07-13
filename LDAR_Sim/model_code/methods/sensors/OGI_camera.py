@@ -31,4 +31,4 @@ def detect_emissions(self, site, leaks_present, equipment_rates, site_true_rate,
         elif not detect:
             site[self.config['label'] + '_missed_leaks'] += 1
 
-    return
+    return None

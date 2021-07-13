@@ -1,4 +1,4 @@
-from methods.base_company import BaseCompany
+from methods.company import BaseCompany
 from methods.stationary_crew import StationaryCrew
 
 
