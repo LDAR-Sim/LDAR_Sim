@@ -74,7 +74,7 @@ class BaseCrew:
         return
 
     @timer
-    def work_a_day(self, candidate_flags=None):
+    def work_a_day(self, site_pool, candidate_flags=None):
         """
         Go to work and find the leaks for a given day
         """
@@ -83,13 +83,7 @@ class BaseCrew:
         self.candidate_flags = candidate_flags
         self.schedule.get_work_hours()
         self.days_skipped = 0
-        if self.config['is_follow_up']:
-            site_pool = self.state['flags']
-        else:
-            site_pool = self.state['sites']
-        # Start Day - gets sites that are available for survey
-        site_pool = self.schedule.start_day(site_pool)
-
+        self.schedule.start_day()
         # Perform work Day
         for site in site_pool:
             if self.state['t'].current_date.hour >= int(self.schedule.end_hour):
@@ -98,7 +92,7 @@ class BaseCrew:
             if site_plan and site_plan['go_to_site']:
                 if site_plan['remaining_mins'] == 0:
                     # Only record and fix leaks on the last day of work if theres rollover
-                    self.survey_site(site_plan['site'])
+                    self.visit_site(site_plan['site'])
                 # Update time
                 self.worked_today = True
                 # Mobile LDAR_mins also includes travel to site time
@@ -113,7 +107,7 @@ class BaseCrew:
                 self.config['cost_per_day']
 
     @timer
-    def survey_site(self, site):
+    def visit_site(self, site):
         """
         Look for emissions at the chosen site.
         """

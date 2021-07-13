@@ -23,29 +23,30 @@ class Schedule:
         self.last_site_travel_home_min = None
         self.rollover = {}
 
-    @timer
-    def get_due_sites(self, site_pool):
-        name = self.config['label']
-        days_since_LDAR = '{}_t_since_last_LDAR'.format(name)
-        survey_done_this_year = '{}_surveys_done_this_year'.format(name)
-        survey_min_interval = '{}_min_int'.format(name)
-        survey_frequency = '{}_RS'.format(name)
-        meth = self.parameters['methods']
+    # @timer
+    # def get_due_sites(self, site_pool):
+    #     name = self.config['label']
+    #     days_since_LDAR = '{}_t_since_last_LDAR'.format(name)
+    #     survey_done_this_year = '{}_surveys_done_this_year'.format(name)
+    #     survey_min_interval = '{}_min_int'.format(name)
+    #     survey_frequency = '{}_RS'.format(name)
+    #     meth = self.parameters['methods']
 
-        if self.config['is_follow_up']:
-            site_pool = filter(
-                lambda s, : (
-                    self.state['t'].current_date - s['date_flagged']).days
-                >= meth[s['flagged_by']]['reporting_delay'],
-                site_pool)
-        else:
-            days_since_LDAR = '{}_t_since_last_LDAR'.format(name)
-            site_pool = filter(
-                lambda s: s[survey_done_this_year] < int(s[survey_frequency]) and
-                s[days_since_LDAR] >= int(s[survey_min_interval]), site_pool)
-        site_pool = sorted(
-            list(site_pool), key=lambda x: x[days_since_LDAR], reverse=True)
-        return site_pool
+    #     if self.config['is_follow_up']:
+    #         site_pool = filter(
+    #             lambda s, : (
+    #                 self.state['t'].current_date - s['date_flagged']).days
+    #             >= meth[s['flagged_by']]['reporting_delay'],
+    #             site_pool)
+    #     else:
+    #         days_since_LDAR = '{}_t_since_last_LDAR'.format(name)
+    #         site_pool = filter(
+    #             lambda s: s[survey_done_this_year] < int(s[survey_frequency]) and
+    #             s[days_since_LDAR] >= int(s[survey_min_interval]), site_pool)
+
+    #     site_pool = sorted(
+    #         list(site_pool), key=lambda x: x[days_since_LDAR], reverse=True)
+    #     return site_pool
 
     @ timer
     def get_work_hours(self):
@@ -194,10 +195,10 @@ class Schedule:
             self.crew_lat, self.crew_lon = next_lat, next_lon
         self.state['t'].current_date += timedelta(minutes=int(work_mins))
 
-    def start_day(self, site_pool):
+    def start_day(self):
         self.state['t'].current_date = self.state['t'].current_date.replace(
             hour=int(self.start_hour))  # Set start of work
-        return self.get_due_sites(site_pool)
+        return
 
     @ timer
     def end_day(self):
