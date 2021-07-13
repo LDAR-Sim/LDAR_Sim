@@ -1,5 +1,5 @@
-from methods.base_company import BaseCompany
-from methods.mobile_crew import MobileCrew
+from methods.company import BaseCompany
+from methods.crew import BaseCrew
 
 
 class dev_aircraft_company(BaseCompany):
@@ -12,15 +12,12 @@ class dev_aircraft_company(BaseCompany):
         # --- Custom Init ---
         # -------------------
         # Initiate Crews - This is done outside of base class
-        for i in range(config['n_crews']):
-            self.crews.append(Crew(state, parameters, config,
-                                   timeseries, self.deployment_days, id=i + 1))
 
     # --- Custom Methods ---
     # ----------------------
 
 
-class Crew(MobileCrew):
+class Crew(BaseCrew):
     """ Test Company module. Initialize each crew for company.
         Inherits base method base class company
     """
