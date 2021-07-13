@@ -39,7 +39,7 @@ P_aircraft = {
     },
     'program_name': 'P_aircraft',
     'n_simulations': 2, 	# Minimum of 2 simulations to get batch plots
-    'timesteps': 1000,  	# Up to ~5600 for 16 year nc file
+    'timesteps': 2000,  	# Up to ~5600 for 16 year nc file
     'n_processes': None,
     'start_year': 2017,
     'UTC_offset': -6,

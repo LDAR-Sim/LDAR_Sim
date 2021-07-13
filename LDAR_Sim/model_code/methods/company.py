@@ -21,10 +21,8 @@
 
 import math
 import numpy as np
-import pandas as pd
-
-from sklearn.cluster import KMeans
-from methods.deployment.company_schedule import Schedule
+from importlib import import_module
+from methods.crew import BaseCrew
 from generic_functions import get_prop_rate
 
 
@@ -33,7 +31,7 @@ class BaseCompany:
     Company base class. Changes made here will affect any inheriting
     classes. To use base class, import and use as argument arguement. ie.
 
-    from methods.base_company import company
+    from methods.company import company
     class aircraft (company):
         def __init__(self, **kwargs):
             super(aircraft, self).__init__(**kwargs)
@@ -52,15 +50,20 @@ class BaseCompany:
         self.parameters = parameters
         self.config = config
         self.timeseries = timeseries
-        self.schedule = Schedule(config['scheduling'])
+        sched_mod = import_module('methods.deployment.{}_company'.format(
+            self.config['deployment_type'].lower()))
+        Schedule = getattr(sched_mod, 'Schedule')
+        self.schedule = Schedule(config, state)
         self.crews = []
         self.deployment_days = self.state['weather'].deployment_days(
             method_name=self.name,
             start_date=self.state['t'].start_date,
             start_work_hour=8,  # Start hour in day
             consider_weather=parameters['consider_weather'])
-        self.timeseries['{}_prop_sites_avail'.format(self.name)] = []
-        self.timeseries['{}_cost'.format(self.name)] = np.zeros(self.parameters['timesteps'])
+        self.timeseries['{}_prop_sites_avail'.format(
+            self.name)] = np.zeros(self.parameters['timesteps'])
+        self.timeseries['{}_cost'.format(self.name)] = np.zeros(
+            self.parameters['timesteps'])
         self.timeseries['{}_sites_visited'.format(self.name)] = np.zeros(
             self.parameters['timesteps'])
         if self.config["measurement_scale"] == 'leak':
@@ -84,9 +87,8 @@ class BaseCompany:
                     self.config['follow_up_thresh'][0],
                     self.state['empirical_leaks'])
             else:
-                print('Follow-up thresh type not recognized. Must be "absolute" or "proportion".')
-
-        self.schedule.get_deployment_dates(state['t'])
+                print(
+                    'Follow-up thresh type not recognized. Must be "absolute" or "proportion".')
 
         # Initialize 2D matrices to store deployment day (DD) counts and MCBs
         self.DD_map = np.zeros(
@@ -95,51 +97,38 @@ class BaseCompany:
         self.MCB_map = np.zeros(
             (len(self.state['weather'].longitude),
              len(self.state['weather'].latitude)))
-        if self.config['deployment_type'] == 'mobile':
-            for site in self.state['sites']:
-                site.update({'{}_t_since_last_LDAR'.format(self.name): 0})
-                site.update({'{}_surveys_conducted'.format(self.name): 0})
-                site.update({'{}_attempted_today?'.format(self.name): False})
-                site.update({'{}_surveys_done_this_year'.format(self.name): 0})
-                site.update({'{}_missed_leaks'.format(self.name): 0})
 
-                # Use clustering analysis to assign facilities to each agent,
-                # if 2+ agents are available
-                if self.config['n_crews'] > 1:
-                    lats = []
-                    lons = []
-                    ID = []
-                    for site in self.state['sites']:
-                        ID.append(site['facility_ID'])
-                        lats.append(site['lat'])
-                        lons.append(site['lon'])
-                    # HBD - What is sdf?
-                    sdf = pd.DataFrame({"ID": ID,
-                                        'lon': lons,
-                                        'lat': lats})
-                    locs = sdf[['lat', 'lon']].values
-                    num = config['n_crews']
-                    kmeans = KMeans(n_clusters=num, random_state=0).fit(locs)
-                    label = kmeans.labels_
-                else:
-                    label = np.zeros(len(self.state['sites']))
+        surveys_conducted = '{}_surveys_conducted'.format(self.name)
+        days_since_LDAR = '{}_t_since_last_LDAR'.format(self.name)
+        attempted_today = '{}_attempted_today?'.format(self.name)
+        sites_this_year = '{}_surveys_done_this_year'.format(self.name)
+        missed_leaks = '{}_missed_leaks'.format(self.name)
+        for site in self.state['sites']:
+            site.update({days_since_LDAR: 0})
+            site.update({surveys_conducted: 0})
+            site.update({attempted_today: False})
+            site.update({sites_this_year: 0})
+            site.update({missed_leaks: 0})
 
-                for i in range(len(self.state['sites'])):
-                    self.state['sites'][i]['label'] = label[i]
+        for i in range(config['n_crews']):
+            self.crews.append(BaseCrew(state, parameters, config,
+                                       timeseries, self.deployment_days, id=i + 1))
+
+        self.schedule.assign_agents()
+        self.schedule.get_deployment_dates()
 
     def deploy_crews(self):
         """
         The company tells all the crews to get to work.
         """
-        if self.state['t'].current_date.month in self.schedule.deployment_months \
-                and self.state['t'].current_date.year in self.schedule.deployment_years:
+        if self.schedule.can_deploy(self.state['t'].current_date):
             self.candidate_flags = []
             for i in self.crews:
                 i.work_a_day(self.candidate_flags)
             if len(self.candidate_flags) > 0:
                 self.flag_sites()
 
-            # Calculate proportion sites available
+            # Calculate proportion sites available based on weather of site
             available_sites = 0
             for site in self.state['sites']:
                 if self.deployment_days[site['lon_index'],
@@ -147,18 +136,24 @@ class BaseCompany:
                                         self.state['t'].current_timestep]:
                     available_sites += 1
             prop_avail = available_sites / len(self.state['sites'])
-            self.timeseries['{}_prop_sites_avail'.format(self.name)].append(prop_avail)
+            self.timeseries['{}_prop_sites_avail'.format(
+                self.name)][self.state['t'].current_timestep] = prop_avail
         else:
-            self.timeseries['{}_prop_sites_avail'.format(self.name)].append(0)
+            self.timeseries['{}_prop_sites_avail'.format(
+                self.name)][self.state['t'].current_timestep] = 0
 
-        # Update mobile specific parameters
-        if self.config['deployment_type'] == 'mobile':
-            for site in self.state['sites']:
-                site['{}_t_since_last_LDAR'.format(self.name)] += 1
-                site['{}_attempted_today?'.format(self.name)] = False
-                if self.state['t'].current_date.day == 1 \
-                        and self.state['t'].current_date.month == 1:
-                    site['{}_surveys_done_this_year'.format(self.name)] = 0
+        # Update time series stats
+
+        days_since_LDAR = '{}_t_since_last_LDAR'.format(self.name)
+        attempted_today = '{}_attempted_today?'.format(self.name)
+        sites_this_year = '{}_surveys_done_this_year'.format(self.name)
+        for site in self.state['sites']:
+
+            site[days_since_LDAR] += 1
+            site[attempted_today] = False
+            if self.state['t'].current_date.day == 1 \
+                    and self.state['t'].current_date.month == 1:
+                site[sites_this_year] = 0
 
         # Update followup specific parameters
         if self.config['is_follow_up']:
@@ -173,7 +168,8 @@ class BaseCompany:
 
         """
         # First, figure out how many sites you're going to choose
-        n_sites_to_flag = len(self.candidate_flags) * self.config['follow_up_prop']
+        n_sites_to_flag = len(self.candidate_flags) * \
+            self.config['follow_up_prop']
         n_sites_to_flag = int(math.ceil(n_sites_to_flag))
 
         sites_to_flag = []
@@ -232,6 +228,7 @@ class BaseCompany:
         for site in self.state['sites']:
             site['{}_prop_DDs'.format(
                 self.name)] = self.DD_map[site['lon_index'], site['lat_index']]
-            site['{}_MCB'.format(self.name)] = self.MCB_map[site['lon_index'], site['lat_index']]
+            site['{}_MCB'.format(
+                self.name)] = self.MCB_map[site['lon_index'], site['lat_index']]
 
         return
