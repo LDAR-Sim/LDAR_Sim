@@ -53,7 +53,7 @@ class BaseCompany:
         sched_mod = import_module('methods.deployment.{}_company'.format(
             self.config['deployment_type'].lower()))
         Schedule = getattr(sched_mod, 'Schedule')
-        self.schedule = Schedule(config, state)
+        self.schedule = Schedule(config, parameters, state)
         self.crews = []
         self.deployment_days = self.state['weather'].deployment_days(
             method_name=self.name,
@@ -123,8 +123,16 @@ class BaseCompany:
         """
         if self.schedule.can_deploy(self.state['t'].current_date):
             self.candidate_flags = []
-            for i in self.crews:
-                i.work_a_day(self.candidate_flags)
+            if self.config['is_follow_up']:
+                site_pool = self.state['flags']
+            else:
+                site_pool = self.state['sites']
+            # Start Day - gets sites that are available for survey
+            site_pool = self.schedule.get_due_sites(site_pool)
+
+            for idx, crew in enumerate(self.crews):
+                site_pool = self.schedule.select_crew_sites(site_pool, idx)
+                crew.work_a_day(site_pool, self.candidate_flags)
             if len(self.candidate_flags) > 0:
                 self.flag_sites()
 
