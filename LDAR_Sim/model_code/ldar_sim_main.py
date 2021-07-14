@@ -80,7 +80,7 @@ if __name__ == '__main__':
                   'opening_message': opening_message,
                   'print_from_simulation': print_from_simulations}])
 
-    # ldar_sim_run(simulations[0][0])
+    ldar_sim_run(simulations[1][0])
     # Perform simulations in parallel
     with mp.Pool(processes=n_processes) as p:
         res = p.starmap(ldar_sim_run, simulations)

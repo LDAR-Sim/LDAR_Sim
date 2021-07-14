@@ -121,18 +121,18 @@ class BaseCompany:
         """
         The company tells all the crews to get to work.
         """
-        if self.schedule.can_deploy(self.state['t'].current_date):
+        if self.schedule.can_deploy_today(self.state['t'].current_date):
             self.candidate_flags = []
             if self.config['is_follow_up']:
                 site_pool = self.state['flags']
             else:
                 site_pool = self.state['sites']
-            # Start Day - gets sites that are available for survey
             site_pool = self.schedule.get_due_sites(site_pool)
-
-            for idx, crew in enumerate(self.crews):
-                site_pool = self.schedule.select_crew_sites(site_pool, idx)
-                crew.work_a_day(site_pool, self.candidate_flags)
+            # Get number of crews working that day based on number of sites ready for visit
+            n_working_crews = self.schedule.get_working_crews(site_pool, self.config['n_crews'])
+            for idx in range(n_working_crews):
+                crew_site_list = self.schedule.get_crew_site_list(site_pool, idx, n_working_crews)
+                self.crews[idx].work_a_day(crew_site_list, self.candidate_flags)
             if len(self.candidate_flags) > 0:
                 self.flag_sites()
 
