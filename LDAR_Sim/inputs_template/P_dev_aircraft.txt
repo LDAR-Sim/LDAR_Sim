@@ -1,7 +1,7 @@
 P_dev_aircraft = {
     'methods': {
-        'aircraft': {
-            'label': 'aircraft',
+        'aircraft2': {
+            'label': 'aircraft2',
             'module': 'dev_aircraft',
             'deployment_type': 'mobile',
             'measurement_scale': "equipment",
@@ -30,8 +30,8 @@ P_dev_aircraft = {
                 'deployment_years': [],
                 'deployment_months': [], }
         },
-        'OGI_FU': {
-            'label': 'OGI_FU',
+        'OGI_FU2': {
+            'label': 'OGI_FU2',
             'module': 'dev_OGI',
             'deployment_type': 'mobile',
             'measurement_scale': "leak",
@@ -64,7 +64,6 @@ P_dev_aircraft = {
     'n_processes': None,
     'start_year': 2017,
     'UTC_offset': -6,
-    'time_offsite': 'time_offsite_ground.csv',
     'weather_file': "ERA5_AB_1x1_hourly_2015_2019.nc",
     'weather_is_hourly': False,
     'infrastructure_file': 'facility_list_template.csv',

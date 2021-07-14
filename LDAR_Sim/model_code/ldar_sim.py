@@ -69,6 +69,7 @@ class LdarSim:
         timeseries['verification_cost'] = np.zeros(params['timesteps'])
         timeseries['operator_redund_tags'] = np.zeros(self.parameters['timesteps'])
         timeseries['operator_tags'] = np.zeros(self.parameters['timesteps'])
+        timeseries['leak_cnt'] = np.zeros(self.parameters['timesteps'])
 
         # Configure sensitivity analysis, if requested (code block must remain here -
         # after site initialization and before method initialization)
@@ -315,12 +316,15 @@ class LdarSim:
         """
         # First, determine whether each site gets a new leak or not
         params = self.parameters
+        leak_cnt = 0
         for site in self.state['sites']:
             n_leaks = np.random.binomial(1, self.parameters['LPR'])
             if n_leaks == 0:
                 site.update({'n_new_leaks': 0})
             else:
                 site.update({'n_new_leaks': n_leaks})
+                leak_cnt += n_leaks
+        self.timeseries['leak_cnt'][self.state['t'].current_timestep] = leak_cnt
 
         # For each leak, create a dictionary and populate values for relevant keys
         for site in self.state['sites']:
