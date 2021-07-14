@@ -56,6 +56,7 @@ class BaseCrew:
         self.lon = 0
         sched_mod = import_module('methods.deployment.{}_crew'.format(
             self.config['deployment_type'].lower()))
+        # Get schedule based on deployment type
         Schedule = getattr(sched_mod, 'Schedule')
         self.schedule = Schedule(self.id, self.lat, self.lon, state,
                                  config, parameters,  deployment_days)
@@ -81,24 +82,26 @@ class BaseCrew:
         m_name = self.config['label']
         self.worked_today = False
         self.candidate_flags = candidate_flags
-        self.schedule.get_work_hours()
         self.days_skipped = 0
+        # Init Schedule method
         self.schedule.start_day()
+
         # Perform work Day
         for site in site_pool:
             if self.state['t'].current_date.hour >= int(self.schedule.end_hour):
                 break
-            site_plan = self.schedule.plan_site_trip(site)
+            site_plan = self.schedule.plan_visit(site)
             if site_plan and site_plan['go_to_site']:
                 if site_plan['remaining_mins'] == 0:
                     # Only record and fix leaks on the last day of work if theres rollover
                     self.visit_site(site_plan['site'])
+
                 # Update time
                 self.worked_today = True
                 # Mobile LDAR_mins also includes travel to site time
                 self.schedule.update_schedule(site_plan['LDAR_mins'])
 
-        # End day
+        # End day - Update Cost
         if self.worked_today:
             self.schedule.end_day()
             self.timeseries['{}_cost'.format(m_name)][self.state['t'].current_timestep] += \
