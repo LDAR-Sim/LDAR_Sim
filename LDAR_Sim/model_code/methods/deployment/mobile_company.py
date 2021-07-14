@@ -63,7 +63,7 @@ class Schedule:
             label = np.zeros(len(self.state['sites']))
 
         for i in range(len(self.state['sites'])):
-            self.state['sites'][i]['label'] = label[i]
+            self.state['sites'][i]['crew_id'] = label[i]
 
     def get_due_sites(self, site_pool):
         """ Retrieve a site list of sites due for screen / survey
@@ -74,10 +74,6 @@ class Schedule:
             If the method is not followup return sites that have passed
             the minimum survey interval, and that still require surveys
             in the current year.
-
-            # --Note-- this function persists the site list throughout,
-            so the input site_pool will always be modified regardless of
-            the variable assigned on return.
 
         Args:
             site_pool (dict): List of sites
@@ -92,20 +88,20 @@ class Schedule:
         meth = self.parameters['methods']
 
         if self.config['is_follow_up']:
-            site_pool = filter(
+            filt_sites = filter(
                 lambda s, : (
                     self.state['t'].current_date - s['date_flagged']).days
                 >= meth[s['flagged_by']]['reporting_delay'],
                 site_pool)
         else:
             days_since_LDAR = '{}_t_since_last_LDAR'.format(name)
-            site_pool = filter(
+            filt_sites = filter(
                 lambda s: s[survey_done_this_year] < int(s[survey_frequency]) and
                 s[days_since_LDAR] >= int(s[survey_min_interval]), site_pool)
 
-        site_pool = sorted(
-            list(site_pool), key=lambda x: x[days_since_LDAR], reverse=True)
-        return site_pool
+        sort_sites = sorted(
+            list(filt_sites), key=lambda x: x[days_since_LDAR], reverse=True)
+        return sort_sites
 
     def get_working_crews(self, site_pool, n_crews, sites_per_crew=3):
         """ Get number of working crews that day. Based on estimate
@@ -126,7 +122,7 @@ class Schedule:
             n_crews = self.config['n_crews']
         return n_crews
 
-    def get_crew_site_list(self, site_pool, crew_num, n_crews):
+    def get_crew_site_list(self, site_pool, crew_id, n_crews):
         """ This function divies the site pool among all crews. Ordering
             of sites is not changed by function.
         Args:
@@ -138,10 +134,11 @@ class Schedule:
             dict: Crew site list (subset of site_pool)
         """
         if self.config['scheduling']['geography']:
-            pass
+            # divies the site pool based on clustering analysis
+            crew_site_list = [site for site in site_pool if site[['crew_id'] == crew_id]]
         else:
             # This offsets by the crew number and increments by the
             # number of crews, n_crews= 3 ,  site_pool = [site[0], site[3], site[6]...]
             if len(site_pool) > 0:
-                crew_site_list = site_pool[crew_num::n_crews]
+                crew_site_list = site_pool[crew_id::n_crews]
         return crew_site_list

@@ -2,7 +2,7 @@ from datetime import timedelta
 import numpy as np
 
 
-from geography.homebase import find_homebase
+from geography.homebase import find_homebase, find_homebase_opt
 from geography.distance import get_distance
 from utils.performance import timer
 
@@ -22,31 +22,17 @@ class Schedule:
         self.allowed_end_time = None
         self.last_site_travel_home_min = None
         self.rollover = {}
+        self.scheduling = self.config['scheduling']
+        self.crew_lon = lon
+        self.crew_lat = lat
 
-    # @timer
-    # def get_due_sites(self, site_pool):
-    #     name = self.config['label']
-    #     days_since_LDAR = '{}_t_since_last_LDAR'.format(name)
-    #     survey_done_this_year = '{}_surveys_done_this_year'.format(name)
-    #     survey_min_interval = '{}_min_int'.format(name)
-    #     survey_frequency = '{}_RS'.format(name)
-    #     meth = self.parameters['methods']
-
-    #     if self.config['is_follow_up']:
-    #         site_pool = filter(
-    #             lambda s, : (
-    #                 self.state['t'].current_date - s['date_flagged']).days
-    #             >= meth[s['flagged_by']]['reporting_delay'],
-    #             site_pool)
-    #     else:
-    #         days_since_LDAR = '{}_t_since_last_LDAR'.format(name)
-    #         site_pool = filter(
-    #             lambda s: s[survey_done_this_year] < int(s[survey_frequency]) and
-    #             s[days_since_LDAR] >= int(s[survey_min_interval]), site_pool)
-
-    #     site_pool = sorted(
-    #         list(site_pool), key=lambda x: x[days_since_LDAR], reverse=True)
-    #     return site_pool
+        # read the coordiates of home bases from homebase dataframe
+        # HBD This aint right
+        if home_bases:
+            HB = home_bases
+            HB_lon = HB['lon']
+            HB_lat = HB['lat']
+            self.homebases = list(zip(HB_lon, HB_lat))
 
     @ timer
     def get_work_hours(self):
@@ -72,7 +58,7 @@ class Schedule:
             hour=int(self.end_hour), minute=0, second=0)
 
     @ timer
-    def plan_site_trip(self, site):
+    def plan_visit(self, site):
         name = self.config['label']
         site['{}_attempted_today?'.format(name)] = True
         if not self.deployment_days[site['lon_index'], site['lat_index'],
@@ -87,10 +73,9 @@ class Schedule:
         # Get travel time minutes, and check if there is enough time.
         travel_to_plan = self.get_travel_plan(next_loc=site)
         travel_home_plan = self.get_travel_plan()
-        survey_times = self.check_survey_time(
+        survey_times = self.check_visit_time(
             LDAR_mins, travel_to_plan['travel_time'],
             travel_home_plan['travel_time'])
-        # The site passes all the tests! Choose it!s
         return {
             'site': site,
             'go_to_site': survey_times['go_to_site'],
@@ -109,15 +94,15 @@ class Schedule:
             # start day by reading the location of the LDAR team
             # find nearest home base
             if homebase and next_loc:
-                next_loc, distance = find_homebase(
-                    self.crew_lat, self.crew_lon, self.homebases)
+                next_loc, distance = find_homebase_opt(
+                    self.crew_lon, self.crew_lat, next_loc['lon'], next_loc['lat'], self.homebases)
             if homebase and not next_loc:
                 next_loc, distance = find_homebase(
                     self.crew_lat, self.crew_lon, self.homebases)
             else:
                 distance = get_distance(
                     self.crew_lat, self.crew_lon,
-                    next_loc['lat'], next_loc['lon'], "Haversine")
+                    next_loc['lon'], next_loc['lat'], "Haversine")
             speed = np.random.choice(self.config['scheduling']['speed_list'])
             travel_time = (distance/speed)*60
         # ----------------------------------------------------------
@@ -130,7 +115,7 @@ class Schedule:
         return out_dict
 
     @ timer
-    def check_survey_time(self, survey_mins, travel_to_mins, travel_home_mins):
+    def check_visit_time(self, survey_mins, travel_to_mins, travel_home_mins):
         """Check the survey and travel times, determine if there is enough
            time to go to site.
 
@@ -196,6 +181,7 @@ class Schedule:
         self.state['t'].current_date += timedelta(minutes=int(work_mins))
 
     def start_day(self):
+        self.get_work_hours()
         self.state['t'].current_date = self.state['t'].current_date.replace(
             hour=int(self.start_hour))  # Set start of work
         return

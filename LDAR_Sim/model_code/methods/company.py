@@ -127,11 +127,14 @@ class BaseCompany:
                 site_pool = self.state['flags']
             else:
                 site_pool = self.state['sites']
+            # Get sites that are ready, in order of most to least neglected
             site_pool = self.schedule.get_due_sites(site_pool)
             # Get number of crews working that day based on number of sites ready for visit
             n_working_crews = self.schedule.get_working_crews(site_pool, self.config['n_crews'])
             for idx in range(n_working_crews):
+                # Triage sites to crew
                 crew_site_list = self.schedule.get_crew_site_list(site_pool, idx, n_working_crews)
+                # Send crew to site
                 self.crews[idx].work_a_day(crew_site_list, self.candidate_flags)
             if len(self.candidate_flags) > 0:
                 self.flag_sites()
@@ -167,7 +170,6 @@ class BaseCompany:
         if self.config['is_follow_up']:
             self.state['flags'] = [flag for flag in self.state['sites']
                                    if flag['currently_flagged']]
-
         return
 
     def flag_sites(self):
