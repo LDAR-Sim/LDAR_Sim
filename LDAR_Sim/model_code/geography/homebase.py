@@ -24,7 +24,7 @@ def find_homebase(cur_lat, cur_lon, homebase_locs):
     return (homebase_locs[ind], dist)
 
 
-def find_homebase_opt(x1, y1, x2, y2, HX, HY):
+def find_homebase_opt(x1, y1, x2, y2, XY):
     '''
     Find the home base that nearest to both LDAR team and next visit facility.
     Parameters
@@ -38,7 +38,6 @@ def find_homebase_opt(x1, y1, x2, y2, HX, HY):
     -------
     The latitude and longitude of nearest home base and the distance to that home base in km.
     '''
-    XY = list(zip(HX, HY))
     xy2 = (x2, y2)
     if xy2 in XY:
         ind = XY.index(xy2)

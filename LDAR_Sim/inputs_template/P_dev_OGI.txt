@@ -23,7 +23,6 @@ P_dev_OGI = {
                 'home_bases': '',
                 'speed_list': [],
                 'LDAR_crew_init_location': [],
-                'deployment_time_intervals': False,
                 'deployment_years': [],
                 'deployment_months': [],
             },
