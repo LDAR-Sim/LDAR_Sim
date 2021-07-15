@@ -1,7 +1,7 @@
 P_dev_aircraft = {
     'methods': {
-        'aircraft2': {
-            'label': 'aircraft2',
+        'aircraft': {
+            'label': 'aircraft',
             'module': 'dev_aircraft',
             'deployment_type': 'mobile',
             'measurement_scale': "equipment",
@@ -30,8 +30,8 @@ P_dev_aircraft = {
                 'deployment_years': [],
                 'deployment_months': [], }
         },
-        'OGI_FU2': {
-            'label': 'OGI_FU2',
+        'OGI_FU': {
+            'label': 'OGI_FU',
             'module': 'dev_OGI',
             'deployment_type': 'mobile',
             'measurement_scale': "leak",
