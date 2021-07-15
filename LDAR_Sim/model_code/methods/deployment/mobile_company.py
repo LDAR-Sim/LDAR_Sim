@@ -16,8 +16,17 @@ class Schedule(base_sched_company):
     # base.company ->  can_deploy_today()
 
     def assign_agents(self):
-        """[summary]
-                ---HBD MO!!!  Describe what happens hear ---
+        """Use k-means clustering to split site into N clusters
+            N equals to the number of crews.
+
+            The goal is to improve the coordiation of LDAR crews when there are 
+            more than one crew. The crews will only visit the site corresponding to their IDs. 
+            e.g., crew_id 0 will only visit site in cluter 0 
+
+            This functionality is only used when geography and route_planning are both enabled. 
+
+            Returns: 
+                create a crew_id related label for each site 
         """
         # Use clustering analysis to assign facilities to each agent,
         # if 2+ agents are available
@@ -29,12 +38,13 @@ class Schedule(base_sched_company):
                 ID.append(site['facility_ID'])
                 lats.append(site['lat'])
                 lons.append(site['lon'])
-            # HBD - What is sdf?
+            # a temporary dataframe creafed for storing ID, coordiates of sites
             sdf = pd.DataFrame({"ID": ID,
                                 'lon': lons,
                                 'lat': lats})
             locs = sdf[['lat', 'lon']].values
             num = self.config['n_crews']
+            #  run K-means clustering by using dataframe
             kmeans = KMeans(n_clusters=num, random_state=0).fit(locs)
             label = kmeans.labels_
         else:
