@@ -8,6 +8,8 @@ def timer(method):
         ts = time.time()
         result = method(self, *args, **kwargs)
         te = time.time()
+        if 'perform_test' not in self.state:
+            self.state['perform_test'] = {}
         try:
             self.state['perform_test'][method.__name__] += te - ts
         except KeyError:
