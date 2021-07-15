@@ -51,8 +51,12 @@ class BaseCrew:
         self.timeseries = timeseries
         self.deployment_days = deployment_days
         self.id = id
-        self.lat = 0
-        self.lon = 0
+        if len(config['scheduling']['LDAR_crew_init_location']) > 0:
+            self.lat = float(config['scheduling']['LDAR_crew_init_location'][1])
+            self.lon = float(config['scheduling']['LDAR_crew_init_location'][0])
+        else:
+            self.lat = 0
+            self.lon = 0
         sched_mod = import_module('methods.deployment.{}_crew'.format(
             self.config['deployment_type'].lower()))
         # Get schedule based on deployment type
@@ -69,8 +73,8 @@ class BaseCrew:
             if self.config['scheduling']['route_planning'] \
                     or self.config['scheduling']['geography']:
                 hb_file = parameters['working_directory'] + \
-                    self.scheduling['home_bases']
-                self.schedule.home_bases = pd.read_csv(hb_file, sep=',')
+                    self.config['scheduling']['home_bases']
+                self.schedule.homebases = pd.read_csv(hb_file, sep=',')
         return
 
     def work_a_day(self, site_pool, candidate_flags=None):
@@ -85,10 +89,13 @@ class BaseCrew:
         self.schedule.start_day()
 
         # Perform work Day
-        for site in site_pool:
+        for sidx, site in enumerate(site_pool):
             if self.state['t'].current_date.hour >= int(self.schedule.end_hour):
                 break
-            site_plan = self.schedule.plan_visit(site)
+            # If there is another site in the site pool list
+            if sidx < len(site_pool):
+                next_site = site_pool[sidx + 1]
+            site_plan = self.schedule.plan_visit(site, next_site)
             if site_plan and site_plan['go_to_site']:
                 if site_plan['remaining_mins'] == 0:
                     # Only record and fix leaks on the last day of work if theres rollover

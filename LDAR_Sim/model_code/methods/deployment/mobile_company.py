@@ -113,7 +113,7 @@ class Schedule(base_sched_company):
         """
         if self.config['scheduling']['geography']:
             # divies the site pool based on clustering analysis
-            crew_site_list = [site for site in site_pool if site[['crew_id'] == crew_id]]
+            crew_site_list = [site for site in site_pool if site['crew_id'] == crew_id]
         else:
             # This offsets by the crew number and increments by the
             # number of crews, n_crews= 3 ,  site_pool = [site[0], site[3], site[6]...]
