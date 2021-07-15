@@ -16,6 +16,11 @@ def get_distance(lat1, lon1,  lat2, lon2,  calc_method):
     Returns a distance in km
 
     '''
+    lat1 = float(lat1)
+    lon1 = float(lon1)
+    lat2 = float(lat2)
+    lon2 = float(lon2)
+
     if calc_method == "Euclidean":
         d = ((lon1 - lon2)**2 + (lat1-lat2)**2)**0.5
     elif calc_method == "Haversine":

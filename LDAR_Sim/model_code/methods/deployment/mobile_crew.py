@@ -23,21 +23,11 @@ class Schedule(base_sched_crew):
         self.last_site_travel_home_min = None
         self.rollover = {}
         self.scheduling = self.config['scheduling']
-        self.crew_lon = lon
-        self.crew_lat = lat
-
-        # read the coordiates of home bases from homebase dataframe
-        # HBD This aint right
-        if home_bases:
-            HB = home_bases
-            HB_lon = HB['lon']
-            HB_lat = HB['lat']
-            self.homebases = list(zip(HB_lon, HB_lat))
 
     # --- inherited ---
     # base.crew ->  get_work_hours()
 
-    def plan_visit(self, site):
+    def plan_visit(self, site, next_site=None):
         """ Check survey and travel times and see if there is enough time
             to go to site. If a site survey was started on a previous day
             the amount of minutes rolled over will be used for survey time.
@@ -69,7 +59,7 @@ class Schedule(base_sched_crew):
             LDAR_mins = int(site['{}_time'.format(name)])
         # Get travel time minutes, and check if there is enough time.
         travel_to_plan = self.get_travel_plan(next_loc=site)
-        travel_home_plan = self.get_travel_plan()
+        travel_home_plan = self.get_travel_plan(next_loc=next_site, homebase=True)
         survey_times = self.check_visit_time(
             LDAR_mins, travel_to_plan['travel_time'],
             travel_home_plan['travel_time'])
@@ -98,15 +88,17 @@ class Schedule(base_sched_crew):
                 'next_site': next location the crew will travel to.
             }
         """
+        # create list of lats and lons of homebases
+        XY = zip(self.homebases['lon'], self.homebases['lat'])
         if self.config['scheduling']['geography']:
             # start day by reading the location of the LDAR team
             # find nearest home base
             if homebase and next_loc:
                 next_loc, distance = find_homebase_opt(
-                    self.crew_lon, self.crew_lat, next_loc['lon'], next_loc['lat'], self.homebases)
+                    self.crew_lon, self.crew_lat, next_loc['lon'], next_loc['lat'], XY)
             if homebase and not next_loc:
                 next_loc, distance = find_homebase(
-                    self.crew_lat, self.crew_lon, self.homebases)
+                    self.crew_lat, self.crew_lon, XY)
             else:
                 distance = get_distance(
                     self.crew_lat, self.crew_lon,
