@@ -24,7 +24,6 @@ import pandas as pd
 
 from importlib import import_module
 from aggregator import aggregate
-from utils.performance import timer
 
 
 class BaseCrew:
@@ -74,7 +73,6 @@ class BaseCrew:
                 self.schedule.home_bases = pd.read_csv(hb_file, sep=',')
         return
 
-    @timer
     def work_a_day(self, site_pool, candidate_flags=None):
         """
         Go to work and find the leaks for a given day
@@ -109,7 +107,6 @@ class BaseCrew:
             self.timeseries['total_daily_cost'][self.state['t'].current_timestep] += \
                 self.config['cost_per_day']
 
-    @timer
     def visit_site(self, site):
         """
         Look for emissions at the chosen site.
@@ -133,9 +130,10 @@ class BaseCrew:
             site, leaks_present, equipment_rates, site_true_rate, venting)
 
         if self.config['measurement_scale'].lower() == 'leak':
-            # Remove site from flag pool
+            # Remove site from flag pool if leak level measurement
             site['currently_flagged'] = False
         elif site_detect_results:
+            # all other sites flag
             self.candidate_flags.append(site_detect_results)
 
             # Update site
@@ -145,8 +143,17 @@ class BaseCrew:
         site['{}_surveys_done_this_year'.format(m_name)] += 1
         site['{}_t_since_last_LDAR'.format(m_name)] = 0
 
-    @timer
     def detect_emissions(self, *args):
+        """ Run module to detect leaks and tag sites
+        Returns:
+            dict: {
+                'site': site,
+                'leaks_present': leaks_present,
+                'site_true_rate': site_true_rate,
+                'site_measured_rate': site_measured_rate,
+                'venting': venting
+            }
+        """
         # Get the type of sensor, and call the the detect emissions function for sensor
         sensor_mod = import_module(
             'methods.sensors.{}'.format(self.config['sensor']))

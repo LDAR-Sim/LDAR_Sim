@@ -26,31 +26,13 @@ import os
 import datetime
 import sys
 import random
+import time
 from sensitivity import Sensitivity
 from operator_agent import OperatorAgent
 from plotter import make_plots
 from daylight_calculator import DaylightCalculatorAve
 from generic_functions import make_maps
 from utils.distributions import leak_rvs, fit_dist
-
-# --- Performance Test ---
-import time
-from functools import wraps
-
-
-def timer(method):
-    @wraps(method)
-    def timed(self, *args, **kwargs):
-        ts = time.time()
-        result = method(self, *args, **kwargs)
-        te = time.time()
-        try:
-            self.state['perform_test'][method.__name__] += te - ts
-        except KeyError:
-            self.state['perform_test'].update({method.__name__: te - ts})
-        return result
-    return timed
-# --- Performance Test ---
 
 
 class LdarSim:
@@ -69,7 +51,6 @@ class LdarSim:
         timeseries['verification_cost'] = np.zeros(params['timesteps'])
         timeseries['operator_redund_tags'] = np.zeros(self.parameters['timesteps'])
         timeseries['operator_tags'] = np.zeros(self.parameters['timesteps'])
-        timeseries['leak_cnt'] = np.zeros(self.parameters['timesteps'])
 
         # Configure sensitivity analysis, if requested (code block must remain here -
         # after site initialization and before method initialization)
@@ -77,7 +58,6 @@ class LdarSim:
             self.sensitivity = Sensitivity(params, timeseries, state)
 
         #  --- state variables ---
-        state['perform_test'] = {}
         state['candidate_flags'] = {}
         # Read in data files
         state['empirical_counts'] = np.array(pd.read_csv(
@@ -264,7 +244,6 @@ class LdarSim:
 
             # Change negatives to zero
             state['empirical_vents'] = [0 if i < 0 else i for i in state['empirical_vents']]
-        state['perform_test']['init_time'] = time.time()
         return
 
     def update(self):
@@ -280,7 +259,6 @@ class LdarSim:
         self.report()  # Assemble any reporting about model state
         return
 
-    @timer
     def update_state(self):
         """
         update the state of active leaks
@@ -309,22 +287,18 @@ class LdarSim:
         self.timeseries['active_leaks'].append(len(self.active_leaks))
         self.timeseries['datetime'].append(self.state['t'].current_date)
 
-    @timer
     def add_leaks(self):
         """
         add new leaks to the leak pool
         """
         # First, determine whether each site gets a new leak or not
         params = self.parameters
-        leak_cnt = 0
         for site in self.state['sites']:
             n_leaks = np.random.binomial(1, self.parameters['LPR'])
             if n_leaks == 0:
                 site.update({'n_new_leaks': 0})
             else:
                 site.update({'n_new_leaks': n_leaks})
-                leak_cnt += n_leaks
-        self.timeseries['leak_cnt'][self.state['t'].current_timestep] = leak_cnt
 
         # For each leak, create a dictionary and populate values for relevant keys
         for site in self.state['sites']:
@@ -360,7 +334,6 @@ class LdarSim:
 
         return
 
-    @timer
     def deploy_crews(self):
         """
         Loop over all your methods in the simulation and ask them to find some leaks.
@@ -375,7 +348,6 @@ class LdarSim:
 
         return
 
-    @timer
     def repair_leaks(self):
         """
         Repair tagged leaks and remove from tag pool.
@@ -412,7 +384,6 @@ class LdarSim:
 
         return
 
-    @timer
     def report(self):
         """
         Daily reporting of leaks, repairs, and emissions.
@@ -433,7 +404,6 @@ class LdarSim:
 
         return
 
-    @timer
     def finalize(self):
         """
         Compile and write output files.
