@@ -21,12 +21,11 @@ P_dev_aircraft = {
             'QE': 0,
             'consider_daylight': False,
             'scheduling': {
-                'route_planning': False,
-                'geography': False,
-                'home_bases': '',
-                'speed_list': [],
-                'LDAR_crew_init_location': [],
-                'deployment_time_intervals': False,
+                'route_planning': True,
+                'geography': True,
+                'home_bases': 'Airport_AB_Coordinates.csv',
+                'speed_list': [200, 210, 220, 230],
+                'LDAR_crew_init_location': [-114.062019, 51.044270],
                 'deployment_years': [],
                 'deployment_months': [], }
         },
@@ -53,7 +52,6 @@ P_dev_aircraft = {
                 'home_bases': '',
                 'speed_list': [],
                 'LDAR_crew_init_location': [],
-                'deployment_time_intervals': False,
                 'deployment_years': [],
                 'deployment_months': [], }
         },
