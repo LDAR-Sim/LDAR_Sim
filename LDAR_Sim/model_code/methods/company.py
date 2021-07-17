@@ -90,10 +90,10 @@ class BaseCompany:
             site.update({'{}_surveys_done_this_year'.format(self.name): 0})
             site.update({'{}_missed_leaks'.format(self.name): 0})
 
-        # --- setup crews and crew schedules ---
-        for i in range(config['n_crews']):
-            self.crews.append(BaseCrew(state, parameters, config,
-                                       timeseries, self.deployment_days, id=i + 1))
+        make_crew_loc = import_module('methods.deployment.{}_company'.format(
+            self.config['deployment_type'].lower()))
+        make_crews = getattr(make_crew_loc, 'make_crews')
+        make_crews(self.crews, config, state, parameters, timeseries, self.deployment_days)
         self.schedule.assign_agents()
         self.schedule.get_deployment_dates()
 

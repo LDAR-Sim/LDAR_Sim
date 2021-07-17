@@ -24,6 +24,13 @@ from sklearn.cluster import KMeans
 import numpy as np
 import math
 from methods.deployment._base import SchedCompany as BaseSchedCompany
+from methods.crew import BaseCrew
+
+
+def make_crews(crews, config, state, parameters, timeseries, deployment_days):
+    for i in range(config['n_crews']):
+        crews.append(BaseCrew(state, parameters, config,
+                              timeseries, deployment_days, id=i + 1))
 
 
 class Schedule(BaseSchedCompany):
