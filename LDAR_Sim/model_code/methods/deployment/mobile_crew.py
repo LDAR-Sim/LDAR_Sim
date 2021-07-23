@@ -23,9 +23,8 @@ class Schedule(base_sched_crew):
         self.rollover = {}
         self.scheduling = self.config['scheduling']
         # define a list of home bases for crew and redefine the the initial location of crew  
-        #hb_file = parameters['working_directory'] + self.scheduling['home_bases']
         if self.scheduling['route_planning']:
-            hb_file = r"C:\Users\cookg\OneDrive\Documents\GitHub\LDAR_Sim\LDAR_Sim\inputs_template\Airport_AB_Coordinates.csv"
+            hb_file = self.parameters['working_directory'] + self.scheduling['home_bases_files']
             HB = pd.read_csv(hb_file, sep=',')
             self.crew_lon = self.scheduling['LDAR_crew_init_location'][0]
             self.crew_lat = self.scheduling['LDAR_crew_init_location'][1]
@@ -103,16 +102,18 @@ class Schedule(base_sched_crew):
             if homebase and next_loc:
                 next_loc, distance = find_homebase_opt(
                     self.crew_lon, self.crew_lat, next_loc['lon'], next_loc['lat'], self.home_bases)
+            # if only homebase is defined, find the nearest home base  
             elif homebase and not next_loc:
                 next_loc, distance = find_homebase(
                     self.crew_lon, self.crew_lat, self.home_bases)
-        
+            # if only next_loc (site) is defined, find the disatnce between current location and the next site
             else:
                 distance = get_distance(
                     self.crew_lon, self.crew_lat,
                     next_loc['lon'], next_loc['lat'], "Haversine")
-
+            # read speed list and sample a travel speed  
             speed = np.random.choice(self.config['scheduling']['speed_list'])
+            # calculate the travel time 
             travel_time = (distance/speed)*60
         # ----------------------------------------------------------
         else:
@@ -197,19 +198,28 @@ class Schedule(base_sched_crew):
         return out_dict
    #--------------------------------------------- 
     def choose_site(self,site_plan_list):
-        # list comprehension to remove all site_plan that 'go_to_site' is false
+        """Choose the next visit site based on travel time 
+
+        Args:
+            site_plan_list: a list of travel plan dictionary output from plan_visit()
+
+        Returns:
+            A dictionary (travel plan) of the selected site 
+        """
+        # list remove all site_plans that 'go_to_site' is false
         List = [] 
         for sp in site_plan_list: 
             if sp['go_to_site_state']: 
                 List.append(sp)
-        #site_plan_list = [site_plan for site_plan in site_plan_list if site_plan['go_to_site_state']] 
         # if there is no site_plan:
         if len(List) == 0: 
             return None
         else:
-            # if geography and route planning -> find the nearest site 
+            # route planning -> find the nearest site 
             if self.config['scheduling']['route_planning']:
+                # sort the list based on travel time 
                 sorted_site_plan_list  = sorted(List,key=lambda k: k['travel_to_mins'])
+                # first site plan in the sorted list has minimum travel time  
                 site_plan = sorted_site_plan_list[0]
             
             else:
@@ -219,6 +229,13 @@ class Schedule(base_sched_crew):
 
    #------------------------------------------------
     def choose_accommodation(self,site=None): 
+        """choose the home base for crew 
+
+        Args:
+            site: if site is defined, then choose the home base that close to both current location and next site
+        Returns:
+            
+        """
         if self.config['scheduling']['route_planning']:
             if site:
                 # today needs to travel all day
@@ -232,6 +249,7 @@ class Schedule(base_sched_crew):
             self.crew_lat = hb['next_loc'][1]
             self.last_site_travel_home_min = hb['travel_time']
         else:
+            # travel time is sampled if not active route_planning
             self.last_site_travel_home_min = np.random.choice(self.config['t_bw_sites'])
    #__________________________________________________
     def update_schedule(self, work_mins, next_lat=None, next_lon=None):
@@ -242,8 +260,6 @@ class Schedule(base_sched_crew):
             next_lat (float, optional): Next location to move crew. Defaults to None.
             next_lon (float, optional): Next location to move crew. Defaults to None.
         """
-        # if self.config['scheduling']['geography'] or self.config['scheduling']['route_planning']:
-        #     self.crew_lat, self.crew_lon = next_lat, next_lon
         self.state['t'].current_date += timedelta(minutes=int(work_mins))
 
     def start_day(self):
