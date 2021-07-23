@@ -19,18 +19,18 @@ P_ref = {
     },
     'program_name': 'P_ref',
     'n_simulations': 2, 	# Minimum of 2 simulations to get batch plots
-    'timesteps': 2000,  	# Up to ~5600 for 16 year nc file
-    'n_processes': None,
+    'timesteps': 1000,  	# Up to ~5600 for 16 year nc file
+    'n_processes': 4,
     'start_year': 2017,
     'UTC_offset': -6,
-    'weather_file': "ERA5_AB_1x1_hourly_2015_2019.nc",
+    'weather_file': "ERA5_AB_1x1_hourly_2015_2020.nc",
     'weather_is_hourly': False,
     'infrastructure_file': 'facility_list_template.csv',
     'leak_file': 'leak_rates.csv',
     'count_file': 'leak_counts.csv',
     'vent_file': 'site_rates.csv',
     'time_offsite': 'time_offsite_ground.csv',
-    'site_samples': [True, 500],
+    'site_samples': [True, 30],
     # If True, will overwrite global Leak Dist
     'subtype_distributions': [False, 'subtype_distributions.csv'],
     # If True, will overwrite site-specific times with subtype times

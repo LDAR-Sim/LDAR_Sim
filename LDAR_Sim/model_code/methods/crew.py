@@ -20,8 +20,6 @@
 # ------------------------------------------------------------------------------
 
 import numpy as np
-import pandas as pd
-
 from importlib import import_module
 from aggregator import aggregate
 
@@ -51,12 +49,8 @@ class BaseCrew:
         self.timeseries = timeseries
         self.deployment_days = deployment_days
         self.id = id
-        if len(config['scheduling']['LDAR_crew_init_location']) > 0:
-            self.lat = float(config['scheduling']['LDAR_crew_init_location'][1])
-            self.lon = float(config['scheduling']['LDAR_crew_init_location'][0])
-        else:
-            self.lat = 0
-            self.lon = 0
+        self.lat = 0
+        self.lon = 0
         sched_mod = import_module('methods.deployment.{}_crew'.format(
             self.config['deployment_type'].lower()))
         # Get schedule based on deployment type
@@ -66,15 +60,9 @@ class BaseCrew:
 
         if self.config['deployment_type'] == 'mobile':
             self.worked_today = False
-            self.rollover_site = None
+            self.rollover_sites = []
             self.scheduling = self.config['scheduling']
 
-            # IF there is scheduling or routeplanning load home bases and init LDAR Crew locations
-            if self.config['scheduling']['route_planning'] \
-                    or self.config['scheduling']['geography']:
-                hb_file = parameters['working_directory'] + \
-                    self.config['scheduling']['home_bases']
-                self.schedule.homebases = pd.read_csv(hb_file, sep=',')
         return
 
     def work_a_day(self, site_pool, candidate_flags=None):
@@ -87,24 +75,67 @@ class BaseCrew:
         self.days_skipped = 0
         # Init Schedule method
         self.schedule.start_day()
-
-        # Perform work Day
+        
         for sidx, site in enumerate(site_pool):
             if self.state['t'].current_date.hour >= int(self.schedule.end_hour):
                 break
-            # If there is another site in the site pool list
-            if sidx < len(site_pool):
-                next_site = site_pool[sidx + 1]
-            site_plan = self.schedule.plan_visit(site, next_site)
-            if site_plan and site_plan['go_to_site']:
-                if site_plan['remaining_mins'] == 0:
-                    # Only record and fix leaks on the last day of work if theres rollover
-                    self.visit_site(site_plan['site'])
-
-                # Update time
-                self.worked_today = True
-                # Mobile LDAR_mins also includes travel to site time
-                self.schedule.update_schedule(site_plan['LDAR_mins'])
+            # if there is a site_pool
+            if len(site_pool)>0:
+                # check the rollover
+                if len(self.rollover_sites)>0:
+                    # get rollover site 
+                    rollover_site = self.rollover_sites[0]
+                    # get travel plan to this site 
+                    site_plan = self.schedule.plan_visit(rollover_site)
+                    if site_plan:
+                        self.visit_site(rollover_site)
+                        # if this site is finished 
+                        if site_plan['remaining_mins'] == 0:
+                            # remove the rollover_site
+                            self.rollover_sites = []
+                        # Update work state
+                        self.worked_today = True
+                        # Mobile LDAR_mins also includes travel to site time
+                        self.schedule.update_schedule(site_plan['LDAR_total_mins'])
+                
+                # Perform work Day for site pool when time is permitted 
+                # a temporary list to store site_plan
+                site_plan_list = [] 
+                for site in site_pool:
+                    site_plan = self.schedule.plan_visit(site)
+                    if site_plan:
+                        # store site to site_pool_list 
+                        site_plan_list.append(site_plan)
+                    
+                # find next site to visit 
+                next_site_plan = self.schedule.choose_site(site_plan_list)
+                if next_site_plan:
+                    # visit site 
+                    self.visit_site(next_site_plan['site'])                    
+                    # Update time
+                    self.worked_today = True
+                    # Mobile LDAR_mins also includes travel to site time
+                    self.schedule.update_schedule(next_site_plan['LDAR_total_mins'])
+                    
+                    # if that site is rollover
+                    if next_site_plan['rollover_state']: 
+                        self.rollover_sites.append(next_site_plan['site'])
+                        self.schedule.choose_accommodation()
+                        break
+                    # none of site can be accessed today 
+                else:
+                    # crew need to travel all day to reach the next site  
+                    # sort plan list to find the nearest site 
+                    sorted_site_plan_list = sorted(site_plan_list,key=lambda k: k['LDAR_total_mins'])
+                    if len(sorted_site_plan_list) > 0: 
+                        target_site = sorted_site_plan_list[0]['site']
+                        # use schedule.choose_accommodation to find the home base 
+                        #that nearest to both current location and next site                       
+                        self.schedule.choose_accommodation(site=target_site)
+                    break
+                    
+            else:
+                self.worked_today = False
 
         # End day - Update Cost
         if self.worked_today:
@@ -149,7 +180,9 @@ class BaseCrew:
         site['{}_surveys_conducted'.format(m_name)] += 1
         site['{}_surveys_done_this_year'.format(m_name)] += 1
         site['{}_t_since_last_LDAR'.format(m_name)] = 0
-
+        # update locations of crews: 
+        self.crew_lon = site['lon']
+        self.crew_lat = site['lat']
     def detect_emissions(self, *args):
         """ Run module to detect leaks and tag sites
         Returns:
