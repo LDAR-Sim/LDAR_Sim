@@ -21,6 +21,7 @@ P_dev_continuous = {
             'QE': 0,
             'consider_daylight': False,
             'scheduling': {
+                'deployment_time_intervals': False,
                 'deployment_years': [],
                 'deployment_months': [],
             },
@@ -48,6 +49,7 @@ P_dev_continuous = {
                 'home_bases': '',
                 'speed_list': [],
                 'LDAR_crew_init_location': [],
+                'deployment_time_intervals': False,
                 'deployment_years': [],
                 'deployment_months': [],
             },

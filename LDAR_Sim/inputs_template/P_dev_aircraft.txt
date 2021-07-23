@@ -7,7 +7,7 @@ P_dev_aircraft = {
             'measurement_scale': "equipment",
             'sensor': 'default',
             'is_follow_up': False,
-            'n_crews': 1,
+            'n_crews': 4,
             'min_temp': -30,
             'max_wind': 10,
             'max_precip': 1,
@@ -21,13 +21,12 @@ P_dev_aircraft = {
             'QE': 0,
             'consider_daylight': False,
             'scheduling': {
-                'route_planning': True,
-                'geography': True,
+                'route_planning': True, 
                 'home_bases': 'Airport_AB_Coordinates.csv',
-                'speed_list': [200, 210, 220, 230],
-                'LDAR_crew_init_location': [-114.062019, 51.044270],
-                'deployment_years': [],
-                'deployment_months': [], }
+                'speed_list': [200,210,220],
+                'LDAR_crew_init_location': [-114.062019,51.044270],
+                'deployment_years': [2017],
+                'deployment_months': [9,10,11], }
         },
         'OGI_FU': {
             'label': 'OGI_FU',
@@ -36,7 +35,7 @@ P_dev_aircraft = {
             'measurement_scale': "leak",
             'sensor': 'OGI_camera',
             'is_follow_up': True,
-            'n_crews': 1,
+            'n_crews': 4,
             'min_temp': -20,
             'max_wind': 10,
             'max_precip': 0.1,
@@ -48,27 +47,26 @@ P_dev_aircraft = {
             'consider_daylight': False,
             'scheduling': {
                 'route_planning': False,
-                'geography': False,
-                'home_bases': '',
-                'speed_list': [],
-                'LDAR_crew_init_location': [],
+                'home_bases': 'homebases.csv',
+                'speed_list': [80,90,100],
+                'LDAR_crew_init_location': [-114.062019,51.044270],
                 'deployment_years': [],
                 'deployment_months': [], }
         },
     },
     'program_name': 'P_dev_aircraft',
     'n_simulations': 2, 	# Minimum of 2 simulations to get batch plots
-    'timesteps': 2000,  	# Up to ~5600 for 16 year nc file
-    'n_processes': None,
+    'timesteps': 1000,  	# Up to ~5600 for 16 year nc file
+    'n_processes': 4,
     'start_year': 2017,
     'UTC_offset': -6,
-    'weather_file': "ERA5_AB_1x1_hourly_2015_2019.nc",
+    'weather_file': "ERA5_AB_1x1_hourly_2015_2020.nc",
     'weather_is_hourly': False,
     'infrastructure_file': 'facility_list_template.csv',
     'leak_file': 'leak_rates.csv',
     'count_file': 'leak_counts.csv',
     'vent_file': 'site_rates.csv',
-    'site_samples': [True, 500],
+    'site_samples': [True, 30],
     # If True, will overwrite global Leak Dist
     'subtype_distributions': [False, 'subtype_distributions.csv'],
     # If True, will overwrite site-specific times with subtype times
