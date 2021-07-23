@@ -941,35 +941,24 @@ See Section 2.11.
 
 **Default input:** N/A
 
-**Description:** A binary True/False to activate the route planning. Route planning allows LDAR crew to choose the nearest facility and home bases to visit based on the shortest travelling cost. The travelling cost is travel time that is calculated using the Haversine distance metric and sampled maximum speed limit of travelling. This will be improved in the future, especially for OGI and trucks.  
+**Description:** A binary True/False to activate the route planning. Route planning allows LDAR crews to choose the nearest facility and home bases to visit based on the shortest travelling cost. The travelling cost is travel time that is calculated using the Haversine distance metric and maximum speed limit of travelling. The maximum speed limit is sampeld from speed list. It also allows LDAR crew to depart from the home base (town or city, or airport) at the start of each day and return to the home base at the end of each day.This will be improved in the future, especially for OGI, drone, and trucks.  
 
-**Notes on acquisition:** It requires user to also define input for home_bases, Speed_list and, LDAR_crew_init_location. 
+**Notes on acquisition:** It requires user to also define input for home_bases_files, speed_list and, LDAR_crew_init_location. 
 
-**Notes of caution:** Only aircraft, truck, and OGI methods can use this functionality.
+**Notes of caution:** Only mobile methods can use this functionality.
 
-## geography
 
-**Data type:** Boolean
-
-**Default input:** N/A
-
-**Description:** A binary True/False to activate the using real geography coordinates for home bases. The geography functionality allows LDAR crew to depart from the home base (town or city, or airport) at the start of each day and return to the home base at the end of each day.  
-
-**Notes on acquisition:** It requires user to also define input for home_bases, Speed_list and, LDAR_crew_init_location. 
-
-**Notes of caution:** Only aircraft, truck, and OGI methods can use this functionality.
-
-## home\_bases
+## home\_bases\_files
 
 **Data type:** Character string that specifies the name of the csv file that contains all of the required data on the home bases that used for LDAR scheduling.
 
 **Default input:** N/A
 
-**Description:** At a bare minimum, the csv must contain the following columns: 'lat', 'lon’, where ‘lat’ and ‘lon’ are coordinates of each home base.   
+**Description:** At a bare minimum, the csv must contain the following columns: 'name', 'lat', 'lon', where 'name' indicates the name of home bases (e.g., Calgary), and 'lat' and 'lon' are coordinates of each home base. The home bases for aircraft method should be airports, and the home bases for rest mobile methods should be towns and cities. 
 
-**Notes on acquisition:** It is only required if route_planning or geography is activated.   
+**Notes on acquisition:** It is only required if route_planning is activated.   
 
-**Notes of caution:** Only aircraft, truck, and OGI methods can use this functionality.
+**Notes of caution:** Only mobile methods can use this functionality.
 
 ## speed\_list
 
@@ -979,9 +968,9 @@ See Section 2.11.
 
 **Description:** A list of speed limits that define the maximum travelling speed of technologies. A random speed is sampled from this list when calculating the travel time between two facilities or between the facility and home base. Can also be a list with a single value.
 
-**Notes on acquisition:** It is only required if route_planning or geography is activated.   
+**Notes on acquisition:** It is only required if route_planning is activated.   
 
-**Notes of caution:** Only aircraft, truck, and OGI methods can use this functionality.
+**Notes of caution:** Only mobile methods can use this functionality.
 
 ## LDAR\_crew\_init\_location
 
@@ -993,19 +982,7 @@ See Section 2.11.
 
 **Notes on acquisition:** Initialize with as homebase of method company. 
 
-**Notes of caution:** Only aircraft, truck, and OGI methods can use this functionality.
-
-## deployment\_time\_intervals
-
-**Data type:** Boolean
-
-**Default input:** N/A
-
-**Description:** A binary True/False to activate the functionality of defining the specific survey time interval for methods. It allows users to select a particular month and year to start and end the survey rather than deploying the technology (e.g., aircraft) through the entire simulation.   
-
-**Notes on acquisition:** N/A 
-
-**Notes of caution:** Only aircraft, truck, and OGI methods can use this functionality.
+**Notes of caution:** Only mobile methods can use this functionality. It is only required if route_planning is activated.
 
 ## deployment\_years
 
@@ -1013,11 +990,11 @@ See Section 2.11.
 
 **Default input:** N/A
 
-**Description:** A list of years that define the years of deployment.
+**Description:** A list of years used for scheduling. Methods can only be deployed during these years. For example, [2017,2018] indictates methods can only be deployed in 2017 and 2018.  
 
 **Notes on acquisition:** 
 
-**Notes of caution:** Only aircraft, truck, and OGI methods can use this functionality.
+**Notes of caution:** Only mobile methods can use this functionality.
 
 ## deployment\_months
 
@@ -1025,11 +1002,11 @@ See Section 2.11.
 
 **Default input:** N/A
 
-**Description:** A list of years that define the months of deployment.  
+**Description:** A list of months used for scheduling. Methods can only be deployed during these months. For example, [8,9] indictates methods can only be deployed in August and Septamber.
 
 **Notes on acquisition:**
 
-**Notes of caution:** Only aircraft, truck, and OGI methods can use this functionality.
+**Notes of caution:** Only mobile methods can use this functionality.
 
 
 # Data sources, modelling confidence and model sensitivity
