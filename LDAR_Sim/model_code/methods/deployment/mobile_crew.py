@@ -1,6 +1,6 @@
 from datetime import timedelta
 import numpy as np
-
+import pandas as pd 
 
 from geography.homebase import find_homebase, find_homebase_opt
 from geography.distance import get_distance
@@ -8,14 +8,13 @@ from methods.deployment.base import sched_crew as base_sched_crew
 
 
 class Schedule(base_sched_crew):
-    def __init__(self, id, lat, lon, state, config, parameters, deployment_days, home_bases=None):
+    def __init__(self, id, init_x, init_y, state, config, parameters, deployment_days, home_bases=None):
         self.parameters = parameters
         self.config = config
         self.state = state
         self.deployment_days = deployment_days
-        self.crew_lat = lat
-        self.crew_lon = lon
-        self.home_bases = home_bases
+        self.crew_lat = init_y
+        self.crew_lon = init_x
         self.work_hours = None
         self.start_hour = None
         self.end_hour = None
@@ -23,11 +22,21 @@ class Schedule(base_sched_crew):
         self.last_site_travel_home_min = None
         self.rollover = {}
         self.scheduling = self.config['scheduling']
+        # define a list of home bases for crew and redefine the the initial location of crew  
+        #hb_file = parameters['working_directory'] + self.scheduling['home_bases']
+        if self.scheduling['route_planning']:
+            hb_file = r"C:\Users\cookg\OneDrive\Documents\GitHub\LDAR_Sim\LDAR_Sim\inputs_template\Airport_AB_Coordinates.csv"
+            HB = pd.read_csv(hb_file, sep=',')
+            self.crew_lon = self.scheduling['LDAR_crew_init_location'][0]
+            self.crew_lat = self.scheduling['LDAR_crew_init_location'][1]
+    
+            self.home_bases = list(zip(HB['lon'], HB['lat']))
+        
 
     # --- inherited ---
     # base.crew ->  get_work_hours()
 
-    def plan_visit(self, site, next_site=None):
+    def plan_visit(self, site):
         """ Check survey and travel times and see if there is enough time
             to go to site. If a site survey was started on a previous day
             the amount of minutes rolled over will be used for survey time.
@@ -39,39 +48,39 @@ class Schedule(base_sched_crew):
             {
                 'site': same as input
                 'go_to_site': whether there is enough time to go to site
+                'go_to_homebase': whether there is enough time to go back to homebase 
                 'travel_to_mins': travel time in minutes
                 'travel_home_mins': travel time in minutes
                 'LDAR_mins_onsite': minutes onsite
-                'LDAR_mins': travel to and survey time (excludes travel home time)
+                'LDAR_total_mins': travel to and survey time (excludes travel home time)
                 'remaining_mins': minutes left in survey
-        }
+                'rollover_state':whether this site is rollover site 
+                'next_home_locs':location of homebase, if decided to go there  
         """
         name = self.config['label']
         site['{}_attempted_today?'.format(name)] = True
         if not self.deployment_days[site['lon_index'], site['lat_index'],
                                     self.state['t'].current_timestep]:
             return None
-        if site['facility_ID'] in self.rollover:
-            # Remove facility from rollover list, and retrieve remaining survey minutes
-            LDAR_mins = self.rollover.pop(site['facility_ID'])
-        else:
-            # Get survey minutes
-            LDAR_mins = int(site['{}_time'.format(name)])
-        # Get travel time minutes, and check if there is enough time.
+        LDAR_mins = int(site['{}_time'.format(name)])
+   
+        # Get survey minutes
+        # Get travel time minutes, and check if there is enough time
         travel_to_plan = self.get_travel_plan(next_loc=site)
-        travel_home_plan = self.get_travel_plan(next_loc=next_site, homebase=True)
-        survey_times = self.check_visit_time(
-            LDAR_mins, travel_to_plan['travel_time'],
-            travel_home_plan['travel_time'])
+        travel_home_plan = self.get_travel_plan(homebase=True)
+        survey_times = self.check_visit_time(LDAR_mins, travel_to_plan['travel_time'],travel_home_plan['travel_time'])
+
         return {
             'site': site,
-            'go_to_site': survey_times['go_to_site'],
+            'go_to_site_state': survey_times['go_to_site'],
             'travel_to_mins': travel_to_plan['travel_time'],
             'travel_home_mins': travel_home_plan['travel_time'],
             'LDAR_mins_onsite': survey_times['LDAR_mins_onsite'],
             # mins is LDAR + Travel to time. Home time is called at end of day
-            'LDAR_mins': survey_times['LDAR_mins'],
+            'LDAR_total_mins': survey_times['LDAR_total_mins'],
             'remaining_mins': survey_times['remaining_mins'],
+            'rollover_state':survey_times['rollover_state'], 
+            'next_home_locs':travel_home_plan['next_loc']
         }
 
     def get_travel_plan(self, next_loc=None, homebase=False):
@@ -88,29 +97,30 @@ class Schedule(base_sched_crew):
                 'next_site': next location the crew will travel to.
             }
         """
-        # create list of lats and lons of homebases
-        XY = zip(self.homebases['lon'], self.homebases['lat'])
-        if self.config['scheduling']['geography']:
+        if self.config['scheduling']['route_planning']:
             # start day by reading the location of the LDAR team
             # find nearest home base
             if homebase and next_loc:
                 next_loc, distance = find_homebase_opt(
-                    self.crew_lon, self.crew_lat, next_loc['lon'], next_loc['lat'], XY)
-            if homebase and not next_loc:
+                    self.crew_lon, self.crew_lat, next_loc['lon'], next_loc['lat'], self.home_bases)
+            elif homebase and not next_loc:
                 next_loc, distance = find_homebase(
-                    self.crew_lat, self.crew_lon, XY)
+                    self.crew_lon, self.crew_lat, self.home_bases)
+        
             else:
                 distance = get_distance(
-                    self.crew_lat, self.crew_lon,
+                    self.crew_lon, self.crew_lat,
                     next_loc['lon'], next_loc['lat'], "Haversine")
+
             speed = np.random.choice(self.config['scheduling']['speed_list'])
             travel_time = (distance/speed)*60
         # ----------------------------------------------------------
         else:
             travel_time = np.random.choice(self.config['t_bw_sites'])
+        # returned dictionary 
         out_dict = {
             'travel_time': travel_time,
-            'next_site': next_loc,
+            'next_loc': next_loc,
         }
         return out_dict
 
@@ -136,50 +146,94 @@ class Schedule(base_sched_crew):
         if travel_to_mins >= mins_left_in_day:
             # Not enough time to travel to site
             go_to_site = False
+            go_to_homebase = True 
             LDAR_mins_onsite = 0
+            rollover_state = False 
         elif travel_to_mins + travel_home_mins >= mins_left_in_day:
             # Not enough time to travel to and from site
             # --HBD-- Should consider, splitting up travel, if site is too far to do in a day.
             go_to_site = False
+            go_to_homebase = True 
             LDAR_mins_onsite = 0
+            rollover_state = False
         elif travel_to_mins + travel_home_mins + survey_mins <= mins_left_in_day:
-            # Enough time to travel to site
+            # Enough time to travel to site and finish the suevey
             go_to_site = True
+            go_to_homebase = False
             LDAR_mins_onsite = survey_mins
-        elif travel_to_mins + survey_mins <= mins_left_in_day:
-            # Enough time to travel to and from site
-            # --HBD-- Right now, Max work day doesnt effect travel_home_mins
-            # code could could be added here to prevent overtime hours from
-            # travelling home (in some cases this would cause trip to run into
-            # the next day)
-            go_to_site = True
-            LDAR_mins_onsite = survey_mins
-        # --HBD-- temporarily removed travel home from rollover calcs.
-        # elif (travel_to_mins + travel_home_mins + survey_mins) > mins_left_in_day:
-        elif (travel_to_mins + survey_mins) > mins_left_in_day:
-            # Enough time to travel, but not enough time to work go, and rollover minutes.
-            go_to_site = True
-            # --HBD-- temporarily removed travel home from rollover calcs.
-            # LDAR_mins_onsite = mins_left_in_day - (travel_to_mins + travel_home_mins)
-            LDAR_mins_onsite = mins_left_in_day - travel_to_mins
+            rollover_state = False
+
         else:
-            # Enough time to travel and work
-            go_to_site = True
-            LDAR_mins_onsite = survey_mins
-        remaining_mins = survey_mins - LDAR_mins_onsite
-        LDAR_mins = travel_to_mins + LDAR_mins_onsite
+            # Enough time to travel, but not enough time to finish the work, and rollover minutes.
+            if (travel_to_mins + travel_home_mins)< mins_left_in_day: 
+                go_to_site = True 
+                go_to_homebase = True
+                rollover_state = True 
+                LDAR_mins_onsite = mins_left_in_day - (travel_to_mins + travel_home_mins)
+            else: 
+                go_to_site = False 
+                go_to_homebase = True 
+                LDAR_mins_onsite = survey_mins
+                rollover_state = False
+       
+        if rollover_state: 
+            remaining_mins = survey_mins - LDAR_mins_onsite
+        else: 
+            remaining_mins = 0 
+        LDAR_total_mins = travel_to_mins + LDAR_mins_onsite
+
         if go_to_site:
             self.last_site_travel_home_min = travel_home_mins
         out_dict = {
-            'LDAR_mins': LDAR_mins,
+            'LDAR_total_mins': LDAR_total_mins,
             'go_to_site': go_to_site,
+            'go_to_homebase': go_to_homebase,
             'LDAR_mins_onsite': LDAR_mins_onsite,
             'travel_to_mins': travel_to_mins,
             'travel_home_mins': travel_home_mins,
             'remaining_mins': remaining_mins,
+            'rollover_state':rollover_state,
         }
         return out_dict
+   #--------------------------------------------- 
+    def choose_site(self,site_plan_list):
+        # list comprehension to remove all site_plan that 'go_to_site' is false
+        List = [] 
+        for sp in site_plan_list: 
+            if sp['go_to_site_state']: 
+                List.append(sp)
+        #site_plan_list = [site_plan for site_plan in site_plan_list if site_plan['go_to_site_state']] 
+        # if there is no site_plan:
+        if len(List) == 0: 
+            return None
+        else:
+            # if geography and route planning -> find the nearest site 
+            if self.config['scheduling']['route_planning']:
+                sorted_site_plan_list  = sorted(List,key=lambda k: k['travel_to_mins'])
+                site_plan = sorted_site_plan_list[0]
+            
+            else:
+                # else just need 1st site to visit
+                site_plan = List[0]
+            return site_plan
 
+   #------------------------------------------------
+    def choose_accommodation(self,site=None): 
+        if self.config['scheduling']['route_planning']:
+            if site:
+                # today needs to travel all day
+                hb = self.get_travel_plan(next_loc=site, homebase=True)
+                
+            else:
+                # if not means crew need to travel all the way to reach the next site 
+                hb = self.get_travel_plan(homebase=True)
+                
+            self.crew_lon = hb['next_loc'][0]    
+            self.crew_lat = hb['next_loc'][1]
+            self.last_site_travel_home_min = hb['travel_time']
+        else:
+            self.last_site_travel_home_min = np.random.choice(self.config['t_bw_sites'])
+   #__________________________________________________
     def update_schedule(self, work_mins, next_lat=None, next_lon=None):
         """ Update current time and crew location
 
@@ -188,8 +242,8 @@ class Schedule(base_sched_crew):
             next_lat (float, optional): Next location to move crew. Defaults to None.
             next_lon (float, optional): Next location to move crew. Defaults to None.
         """
-        if self.config['scheduling']['geography']:
-            self.crew_lat, self.crew_lon = next_lat, next_lon
+        # if self.config['scheduling']['geography'] or self.config['scheduling']['route_planning']:
+        #     self.crew_lat, self.crew_lon = next_lat, next_lon
         self.state['t'].current_date += timedelta(minutes=int(work_mins))
 
     def start_day(self):
@@ -203,5 +257,11 @@ class Schedule(base_sched_crew):
     def end_day(self):
         """ Travel home; update time to travel to homebase
         """
-        self.update_schedule(self.last_site_travel_home_min)
-        self.last_site_travel_home_min = None
+        if self.config['scheduling']['route_planning']:
+            if self.last_site_travel_home_min:
+                self.update_schedule(self.last_site_travel_home_min)
+                self.last_site_travel_home_min = None
+
+        self.state['t'].current_date = self.state['t'].current_date.replace(hour = int(self.end_hour))
+       
+        
