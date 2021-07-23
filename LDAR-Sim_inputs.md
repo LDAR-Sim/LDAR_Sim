@@ -933,7 +933,7 @@ See Section 3.12.
 
 See Section 2.11.
 
-# Scheduling Inputs
+# Mobile methods Inputs
 
 ## route\_planning
 
@@ -980,9 +980,9 @@ See Section 2.11.
 
 **Description:** A list of coordinates [longitude, latitude] that define the initial location of the LDAR crew. It is only required if route_planning or geography is activated.      
 
-**Notes on acquisition:** Initialize with as homebase of method company. 
+**Notes on acquisition:** It is only required if route_planning is activated. 
 
-**Notes of caution:** Only mobile methods can use this functionality. It is only required if route_planning is activated.
+**Notes of caution:** Only mobile methods can use this functionality.
 
 ## deployment\_years
 
@@ -990,9 +990,9 @@ See Section 2.11.
 
 **Default input:** N/A
 
-**Description:** A list of years used for scheduling. Methods can only be deployed during these years. For example, [2017,2018] indictates methods can only be deployed in 2017 and 2018.  
+**Description:** A list of years used for scheduling. Methods can only be deployed during these years. For example, [2017,2018] indictates methods can only be deployed in 2017 and 2018. If not defined, LDARSim aussmes methods can be depolyed every year. 
 
-**Notes on acquisition:** 
+**Notes on acquisition:** N/A
 
 **Notes of caution:** Only mobile methods can use this functionality.
 
@@ -1002,9 +1002,10 @@ See Section 2.11.
 
 **Default input:** N/A
 
-**Description:** A list of months used for scheduling. Methods can only be deployed during these months. For example, [8,9] indictates methods can only be deployed in August and Septamber.
+**Description:** A list of months used for scheduling. Methods can only be deployed during these months. For example, [8,9] indictates methods can only be deployed in August and Septamber.If not defined, LDARSim aussmes methods can be depolyed every month. 
 
-**Notes on acquisition:**
+**Notes on acquisition:** N/A
+
 
 **Notes of caution:** Only mobile methods can use this functionality.
 
