@@ -22,7 +22,7 @@ P_dev_aircraft = {
             'consider_daylight': False,
             'scheduling': {
                 'route_planning': True, 
-                'home_bases': 'Airport_AB_Coordinates.csv',
+                'home_bases_files': 'Airport_AB_Coordinates.csv',
                 'speed_list': [200,210,220],
                 'LDAR_crew_init_location': [-114.062019,51.044270],
                 'deployment_years': [2017],
