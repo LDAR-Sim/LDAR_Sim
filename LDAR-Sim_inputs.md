@@ -589,7 +589,7 @@ If using different weather files for different programs (e.g., when comparing di
 
 **Notes on acquisition:** No data acquisition required.
 
-**Notes of caution:** To our knowledge, accounting for refraction has not been tested in LDAR-Sim. We recommend ignoring refraction unless there is a compelling reason to do otherwise.
+**Notes of caution:** N/A
 
 ## consider\_weather
 
@@ -601,7 +601,7 @@ If using different weather files for different programs (e.g., when comparing di
 
 **Notes on acquisition:** No data acquisition required.
 
-**Notes of caution:** Locations with more extreme weather will be more effected if this is disabled.
+**Notes of caution:** Locations with more extreme weather will be more affected if this is disabled.
 
 ## is\_follow\_up
 
