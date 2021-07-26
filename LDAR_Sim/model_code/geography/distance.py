@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def get_distance(lon1, lat1,  lon2, lat2,  calc_method):
+def get_distance(lat1, lon1,  lat2, lon2,  calc_method):
     '''
     A function that calculate different types of distance between two points
 
