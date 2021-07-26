@@ -112,7 +112,7 @@ class BaseCompany:
 
         for i in range(config['n_crews']):
             self.crews.append(BaseCrew(state, parameters, config,
-                                       timeseries, self.deployment_days, id=i))
+                                       timeseries, self.deployment_days, id=i + 1))
 
         self.schedule.assign_agents()
         self.schedule.get_deployment_dates()
