@@ -23,7 +23,7 @@ P_ref = {
     'n_processes': None,
     'start_year': 2017,
     'UTC_offset': -6,
-    'weather_file': "ERA5_AB_1x1_hourly_2015_2020.nc",
+    'weather_file': "ERA5_AB_1x1_hourly_2015_2019.nc",
     'weather_is_hourly': False,
     'infrastructure_file': 'facility_list_template.csv',
     'leak_file': 'leak_rates.csv',

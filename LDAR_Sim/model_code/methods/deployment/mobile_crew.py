@@ -1,6 +1,6 @@
 from datetime import timedelta
 import numpy as np
-import pandas as pd 
+import pandas as pd
 from geography.homebase import find_homebase, find_homebase_opt
 from geography.distance import get_distance
 from methods.deployment.base import sched_crew as base_sched_crew
@@ -64,7 +64,7 @@ class Schedule(base_sched_crew):
             if site['facility_ID'] == self.rollover['site']['facility_ID']:
                 # Remove facility from rollover list, and retrieve remaining survey minutes
                 LDAR_mins = self.rollover['site']['remaining_mins']
-            else: 
+            else:
                 LDAR_mins = int(site['{}_time'.format(name)])
         else:
             # Get survey minutes
@@ -110,7 +110,7 @@ class Schedule(base_sched_crew):
             elif homebase and not next_loc:
                 next_loc, distance = find_homebase(
                     self.crew_lon, self.crew_lat, self.home_bases)
-        
+
             else:
                 distance = get_distance(
                     self.crew_lon, self.crew_lat,
@@ -121,7 +121,7 @@ class Schedule(base_sched_crew):
         # ----------------------------------------------------------
         else:
             travel_time = np.random.choice(self.config['t_bw_sites'])
-        # returned dictionary 
+        # returned dictionary
         out_dict = {
             'travel_time': travel_time,
             'next_loc': next_loc,
@@ -196,13 +196,13 @@ class Schedule(base_sched_crew):
    # ---------------------------------------------
 
     def choose_site(self, site_plan_list):
-        """Choose the next visit site based on travel time 
+        """Choose the next visit site based on travel time
 
         Args:
             site_plan_list: a list of travel plan dictionary output from plan_visit()
 
         Returns:
-            A dictionary (travel plan) of the selected site 
+            A dictionary (travel plan) of the selected site
         """
         if self.rollover:
             site_plan = self.rollover
@@ -222,7 +222,7 @@ class Schedule(base_sched_crew):
 
    # ------------------------------------------------
     def choose_accommodation(self, site=None):
-        """choose the home base for crew 
+        """choose the home base for crew
 
         Args:
             site: if site is defined, then choose the home base that close to both current location and next site
@@ -260,51 +260,51 @@ class Schedule(base_sched_crew):
     def start_day(self, site_pool):
         """ Initiate work hours and move current time to the crew starting hour
         """
-		# obtain locs of crew 
+		# obtain locs of crew
         cur_lon = self.crew_lon
         cur_lat = self.crew_lat
         self.travel_all_day = False
-		# get work hour 
+		# get work hour
         self.get_work_hours()
         self.state['t'].current_date = self.state['t'].current_date.replace(
             hour=int(self.start_hour))  # Set start of work
-		# get a estimated remaining time 
+		# get a estimated remaining time
         est_mins_remaining = (self.end_hour - self.start_hour)*60
         Plan_list = []
-		# while crew still have time today 
+		# while crew still have time today
         while est_mins_remaining > 0 and len(site_pool) > 0:
-			# obtain all travel plans 
+			# obtain all travel plans
             site_plan_list = []
             for site in site_pool:
                 site_plan = self.plan_visit(site)
                 if site_plan and site_plan['go_to_site']:
                     site_plan_list.append(site_plan)
-			
-            # if crew at least have a site to go today 
-            if len(site_plan_list)>0: 
-				# choose a site to visit 
+
+            # if crew at least have a site to go today
+            if len(site_plan_list)>0:
+				# choose a site to visit
                 next_site_plan = self.choose_site(site_plan_list)
-				# add that site to the daily site plan 
+				# add that site to the daily site plan
                 Plan_list.append(next_site_plan)
-				# update the esitamed mins 
+				# update the esitamed mins
                 est_mins_remaining = - next_site_plan['LDAR_mins']
                 # pop that site from site list
                 site_idx = site_plan_list.index(next_site_plan)
-				# update site pool 
+				# update site pool
                 site_pool = site_pool.pop(site_idx)
-				# update locations of crew 
+				# update locations of crew
                 self.crew_lon = next_site_plan['site']['lon']
                 self.crew_lat = next_site_plan['site']['lat']
             else:
                 break
-            
+
         # add to rollover
-        if len(Plan_list)>0: 
+        if len(Plan_list)>0:
             if Plan_list[-1]['remaining_mins'] > 0:
                 self.rollover = Plan_list[-1]
-        else: 
+        else:
             self.travel_all_day = True
-		# reassign locs of crew 
+		# reassign locs of crew
         self.crew_lon = cur_lon
         self.crew_lat = cur_lat
 
@@ -313,7 +313,7 @@ class Schedule(base_sched_crew):
     def end_day(self,site_pool):
         """ Travel home; update time to travel to homebase
         """
-        if self.config['scheduling']['route_planning']: 
+        if self.config['scheduling']['route_planning']:
             if self.travel_all_day:
                 self.next_travel_all_day_site = site_pool[0]
                 self.choose_accommodation(site=self.next_travel_all_day_site)

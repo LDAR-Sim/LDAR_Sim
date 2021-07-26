@@ -50,7 +50,7 @@ The easiest way to prepare your python installation is to use [pipenv](https://p
 `pipenv install`
 
 
-To make things easier, we have included windows binaries for the specific versions of cftime, GDAL, netCDF4, and pyproj. In the Pipfile, basemap is downloaded directly from [here](https://download.lfd.uci.edu/pythonlibs/s2jqpv5t/basemap-1.2.1-cp37-cp37m-win_amd64.whl). If this link breaks or the package is no longer available, this is not a problem for base operations of LDAR-Sim as basemap is only used in the live plotter demonstration.
+To make things easier, we have included windows binaries for the specific versions of cftime, GDAL, netCDF4, and pyproj. In the Pipfile, basemap is downloaded directly from [here](https://download.lfd.uci.edu/pythonlibs/r4tycu3t/basemap-1.2.2-cp37-cp37m-win_amd64.whl). If this link breaks or the package is no longer available, this is not a problem for base operations of LDAR-Sim as basemap is only used in the live plotter demonstration.
 
 #### Step 2 Alternative: Using Requirements.txt
 An alternative approach to using the PIPfile and the prebuilt wheels is by using Conda (Conda-forge) and the requirements file included in the "install folder" Follow the directions included in the Setting Up LDAR Sim Dev Environment file. The requirements.txt file can also be used with PIP and pipenv, but Python and GDAL (versions listed in the requirements file) should be installed seperately.
