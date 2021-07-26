@@ -19,14 +19,14 @@ class Schedule(base_sched_company):
         """Use k-means clustering to split site into N clusters
             N equals to the number of crews.
 
-            The goal is to improve the coordiation of LDAR crews when there are 
-            more than one crew. The crews will only visit the site corresponding to their IDs. 
-            e.g., crew_id 0 will only visit site in cluter 0 
+            The goal is to improve the coordiation of LDAR crews when there are
+            more than one crew. The crews will only visit the site corresponding to their IDs.
+            e.g., crew_id 0 will only visit site in cluter 0
 
-            This functionality is only used when geography and route_planning are both enabled. 
+            This functionality is only used when geography and route_planning are both enabled.
 
-            Returns: 
-                create a crew_id related label for each site 
+            Returns:
+                create a crew_id related label for each site
         """
         # Use clustering analysis to assign facilities to each agent,
         # if 2+ agents are available

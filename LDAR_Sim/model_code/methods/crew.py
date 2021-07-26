@@ -81,9 +81,9 @@ class BaseCrew:
         self.candidate_flags = candidate_flags
         self.days_skipped = 0
         # Init Schedule methodol
-    
+
         if len(site_pool)>0:
-    
+
             self.daily_plan = self.schedule.start_day(site_pool)
             if len(self.daily_plan)>0:
                 # Perform work Day
@@ -93,12 +93,12 @@ class BaseCrew:
                         if site_plan['remaining_mins'] == 0:
                             # Only record and fix leaks on the last day of work if theres rollover
                             self.visit_site(site_plan['site'])
-        
+
                         # Update time
                         self.worked_today = True
                         # Mobile LDAR_mins also includes travel to site time
                         self.schedule.update_schedule(site_plan['LDAR_mins'])
-                        
+
             # this only happened if crew needs to travel all day
             else:
                 self.worked_today = True
