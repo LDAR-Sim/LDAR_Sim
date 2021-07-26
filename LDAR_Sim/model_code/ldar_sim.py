@@ -229,7 +229,7 @@ class LdarSim:
                 mc_leaks = []
                 for leak in range(n_mc_leaks):
                     if params['use_empirical_rates'] == 'sample':
-                        leaksize = random.choice(state['empirical_leaks']),
+                        leaksize = random.choice(state['empirical_leaks'])
                     else:
                         leaksize = leak_rvs(
                             site['leak_rate_dist'],
