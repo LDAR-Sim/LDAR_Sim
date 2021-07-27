@@ -434,6 +434,8 @@ By detailing the model inputs, this report creates the technical foundation for 
 
 **Notes of caution:** These data may be difficult to acquire and may lack representativeness. An alternative is to use geospatial road data and route planning with LDAR-Sim.
 
+__*Temporary__: Obsolete for V2 methods.
+
 ## timesteps
 
 **Data type:** Integer
@@ -609,7 +611,7 @@ If using different weather files for different programs (e.g., when comparing di
 
 **Default input:** False
 
-**Description:**  A binary True/False to indicate whether the method is used to survey sites previously flagged by screening technologies. If marked turned off this method will not visit sites on regular intervals.
+**Description:**  A binary True/False to indicate whether the method is used to survey sites previously flagged by screening technologies. If true this method will only visit sites flagged
 
 **Notes on acquisition:** No data acquisition required.
 
@@ -621,7 +623,7 @@ If using different weather files for different programs (e.g., when comparing di
 
 **Default input:** False
 
-**Description:**  A binary True/False to indicate whether the method is used to flag sites / equipment groups or to survey and tage leaks. If set true, a Follow-up method is required to tag leaks detected with this method.
+**Description:**  A binary True/False to indicate whether the method is used to flag sites / equipment groups or to survey and tag individual leaks. If set to True, a Follow-up method is required to inspect for leaks at sites taht are flagged by this method.
 
 **Notes on acquisition:** No data acquisition required.
 
@@ -739,17 +741,47 @@ where Q = the emission rate in grams of methane per hour and d is the distance o
 
 **Notes of caution:** Unless explicitly evaluating labour constraints, ensure that sufficient crews are available to perform LDAR according to the requirements set out in the infrastructure\_file. For example, if 2000 facilities require LDAR, and each takes an saverage of 300 minutes, ~10,000 work hours are required, or 3-4 crews working full time.
 
-## name
+## label
 
 **Data type:** Character string
 
 **Default input:**&quot;OGI&quot;
 
-**Description:** A character string denoting the name of the method.
+**Description:** A character string denoting the label of the method.
 
 **Notes on acquisition:** No data acquisition required.
 
 **Notes of caution:** Must match the company and crew python files that match the method. For example, if the method file is named OGI\_company, the name must be &quot;OGI&quot;.
+
+__*Temporary__: In moving from individual methods to base module with changable deployment/ sensors (V2 methods), new methods do not need to have an associated method file, but the label must be the same as the method key. 
+
+## deployment_type
+
+**Data type:** Character string
+
+**Default input:**&quot;mobile&quot;
+
+**Description:** Methods are comprised of both a deployment type and a sensor type. the deployment type is a character string denoting the deployment type used in the method. For instance, 'mobile', 'stationary', or 'orbit'.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** These methods must have accompanying deployment files, i.e. *{deployment_type}_crew* and *{deployment_type}_company* in the *module-code.methods.deployment* folder. See *template_company*, and *template_crew* for more details.
+
+__*Temporary__: In moving from individual methods to base module with changable deployment/ sensors (V2 methods), new methods do not use this variable.
+
+## sensor_type
+
+**Data type:** Character string
+
+**Default input:**&quot;OGI_camera&quot;
+
+**Description:** Methods are comprised of both a deployment type and a sensor type. the sensor type is a character string denoting the sensor used in the method. For instance, 'OGI_camera', or 'default'. The 'default' sensor uses the MDL as a threshold to detect leaks based on the measurement scale of the method.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** These methods must have accompanying sensor files, i.e. *{sensor_type}* in the *methods.sensors* folder.
+
+__*Temporary__: In moving from individual methods to base module with changable deployment/ sensors (V2 methods), new methods do not use this variable.
 
 ## reporting\_delay
 
@@ -765,7 +797,7 @@ where Q = the emission rate in grams of methane per hour and d is the distance o
 
 # Screening Inputs
 
-## name
+## label
 
 See Section 2.1.
 
@@ -847,6 +879,20 @@ See Section 2.8.
 
 **Notes of caution:** This input is only used for methods that travel between sites in the air (e.g., aircraft). Ground-based methods use t\_offsite\_file or road networks.
 
+__*Temporary__: This is obsolete with V2 method modules and is replaced with t_btw_sites.
+
+## t\_btw\_sites
+
+**Data type:** Integer, or Character string denoting csv file location.
+
+**Default input:** N/A
+
+**Description:** A single value or list of values stored in csv that estimates the travel time between facilities for all methods. Each time a site survey is complete, the day is advanced by this number of minutes before the subsequent site survey begins. At the end of the day, the time is again advanced by this number of minutes to simulate travel home. This value is not used if routeplanning is enabled.
+
+**Notes on acquisition:** Travel time between facilities
+
+**Notes of caution:** N/A
+
 ## QE
 
 **Data type:** Numeric
@@ -865,7 +911,7 @@ See Section 2.11.
 
 # Fixed Sensor Inputs
 
-## name
+## label
 
 See Section 2.1.
 

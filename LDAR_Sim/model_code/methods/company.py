@@ -1,7 +1,7 @@
 # ------------------------------------------------------------------------------
 # Program:     The LDAR Simulator (LDAR-Sim)
-# File:        Travel Base Company
-# Purpose:     Company managing crew agents agents
+# File:        methods.company
+# Purpose:     Initialize companies, generate crews, deploy crews and reporting
 #
 # Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
 #
@@ -27,18 +27,8 @@ from generic_functions import get_prop_rate
 
 
 class BaseCompany:
-    """
-    Company base class. Changes made here will affect any inheriting
-    classes. To use base class, import and use as argument arguement. ie.
-
-    from methods.company import company
-    class aircraft (company):
-        def __init__(self, **kwargs):
-            super(aircraft, self).__init__(**kwargs)
-        ...
-
-    overwrite methods by creating methods in the inheriting class
-    after the __init__ function.
+    """ Base companies are used by methods to generate crews, company-level scheduling,
+        deploy crews, flag sites and carry out reporting.
     """
 
     def __init__(self, state, parameters, config, timeseries, module_name):
@@ -50,35 +40,30 @@ class BaseCompany:
         self.parameters = parameters
         self.config = config
         self.timeseries = timeseries
+        self.crews = []
         sched_mod = import_module('methods.deployment.{}_company'.format(
             self.config['deployment_type'].lower()))
         Schedule = getattr(sched_mod, 'Schedule')
         self.schedule = Schedule(config, parameters, state)
-        self.crews = []
         self.deployment_days = self.state['weather'].deployment_days(
             method_name=self.name,
             start_date=self.state['t'].start_date,
             start_work_hour=8,  # Start hour in day
             consider_weather=parameters['consider_weather'])
-        self.timeseries['{}_prop_sites_avail'.format(
-            self.name)] = np.zeros(self.parameters['timesteps'])
-        self.timeseries['{}_cost'.format(self.name)] = np.zeros(
-            self.parameters['timesteps'])
-        self.timeseries['{}_sites_visited'.format(self.name)] = np.zeros(
-            self.parameters['timesteps'])
+
+        # --- init time series ---
+        n_ts = parameters['timesteps']
+        self.timeseries['{}_prop_sites_avail'.format(self.name)] = np.zeros(n_ts)
+        self.timeseries['{}_cost'.format(self.name)] = np.zeros(n_ts)
+        self.timeseries['{}_sites_visited'.format(self.name)] = np.zeros(n_ts)
         if self.config["measurement_scale"] == 'component':
             # If the technology is for flagging
-            self.timeseries['{}_redund_tags'.format(self.name)] = np.zeros(
-                self.parameters['timesteps'])
+            self.timeseries['{}_redund_tags'.format(self.name)] = np.zeros(n_ts)
         else:
-            self.timeseries['{}_eff_flags'.format(self.name)] = np.zeros(
-                self.parameters['timesteps'])
-            self.timeseries['{}_flags_redund1'.format(self.name)] = np.zeros(
-                self.parameters['timesteps'])
-            self.timeseries['{}_flags_redund2'.format(self.name)] = np.zeros(
-                self.parameters['timesteps'])
-            self.timeseries['{}_flags_redund3'.format(self.name)] = np.zeros(
-                self.parameters['timesteps'])
+            self.timeseries['{}_eff_flags'.format(self.name)] = np.zeros(n_ts)
+            self.timeseries['{}_flags_redund1'.format(self.name)] = np.zeros(n_ts)
+            self.timeseries['{}_flags_redund2'.format(self.name)] = np.zeros(n_ts)
+            self.timeseries['{}_flags_redund3'.format(self.name)] = np.zeros(n_ts)
             # Assign the correct follow-up threshold
             if self.config['follow_up_thresh'][1] == "absolute":
                 self.config['follow_up_thresh'] = self.config['follow_up_thresh'][0]
@@ -90,7 +75,7 @@ class BaseCompany:
                 print(
                     'Follow-up thresh type not recognized. Must be "absolute" or "proportion".')
 
-        # Initialize 2D matrices to store deployment day (DD) counts and MCBs
+        # ---Init 2D matrices to store deployment day (DD) counts and MCBs ---
         self.DD_map = np.zeros(
             (len(self.state['weather'].longitude),
              len(self.state['weather'].latitude)))
@@ -98,22 +83,18 @@ class BaseCompany:
             (len(self.state['weather'].longitude),
              len(self.state['weather'].latitude)))
 
-        surveys_conducted = '{}_surveys_conducted'.format(self.name)
-        days_since_LDAR = '{}_t_since_last_LDAR'.format(self.name)
-        attempted_today = '{}_attempted_today?'.format(self.name)
-        sites_this_year = '{}_surveys_done_this_year'.format(self.name)
-        missed_leaks = '{}_missed_leaks'.format(self.name)
+        # --- init site specific variables ---
         for site in self.state['sites']:
-            site.update({days_since_LDAR: 0})
-            site.update({surveys_conducted: 0})
-            site.update({attempted_today: False})
-            site.update({sites_this_year: 0})
-            site.update({missed_leaks: 0})
+            site.update({'{}_t_since_last_LDAR'.format(self.name): 0})
+            site.update({'{}_surveys_conducted'.format(self.name): 0})
+            site.update({'{}_attempted_today?'.format(self.name): False})
+            site.update({'{}_surveys_done_this_year'.format(self.name): 0})
+            site.update({'{}_missed_leaks'.format(self.name): 0})
 
+        # --- setup crews and crew schedules ---
         for i in range(config['n_crews']):
             self.crews.append(BaseCrew(state, parameters, config,
                                        timeseries, self.deployment_days, id=i + 1))
-
         self.schedule.assign_agents()
         self.schedule.get_deployment_dates()
 
@@ -121,7 +102,8 @@ class BaseCompany:
         """
         The company tells all the crews to get to work.
         """
-        if self.schedule.can_deploy_today(self.state['t'].current_date):
+        # NOTE: crew checks weather conditions at start of the day
+        if self.schedule.in_deployment_period(self.state['t'].current_date):
             self.candidate_flags = []
             if self.config['is_follow_up']:
                 site_pool = self.state['flags']
@@ -179,7 +161,7 @@ class BaseCompany:
         """
         # First, figure out how many sites you're going to choose
         n_sites_to_flag = len(self.candidate_flags) * \
-            self.config['follow_up_prop']
+            self.config['follow_up_ratio']
         n_sites_to_flag = int(math.ceil(n_sites_to_flag))
 
         sites_to_flag = []

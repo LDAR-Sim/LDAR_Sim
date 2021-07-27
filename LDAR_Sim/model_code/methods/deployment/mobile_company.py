@@ -1,22 +1,43 @@
+# ------------------------------------------------------------------------------
+# Program:     The LDAR Simulator (LDAR-Sim)
+# File:        methods.deployment.mobile_company
+# Purpose:     Mobile company specific deployment classes and methods (ie. Scheduling)
+#
+# Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the MIT License as published
+# by the Free Software Foundation, version 3.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MIT License for more details.
+
+# You should have received a copy of the MIT License
+# along with this program.  If not, see <https://opensource.org/licenses/MIT>.
+#
+# ------------------------------------------------------------------------------
+
 import pandas as pd
 from sklearn.cluster import KMeans
 import numpy as np
 import math
-from methods.deployment.base import sched_company as base_sched_company
+from methods.deployment._base import SchedCompany as BaseSchedCompany
 
 
-class Schedule(base_sched_company):
+class Schedule(BaseSchedCompany):
     def __init__(self, config, parameters, state):
         self.parameters = parameters
         self.config = config
         self.state = state
 
-    # --- inherited ---
+    # --- inherited methods ---
     # base.company ->  get_deployment_dates()
     # base.company ->  can_deploy_today()
 
     def assign_agents(self):
-        """Use k-means clustering to split site into N clusters
+        """ If route planning is enabled, use k-means clustering to split site into N clusters
             N equals to the number of crews.
 
             The goal is to improve the coordiation of LDAR crews when there are
@@ -28,30 +49,29 @@ class Schedule(base_sched_company):
             Returns:
                 create a crew_id related label for each site
         """
-        # Use clustering analysis to assign facilities to each agent,
-        # if 2+ agents are available
-        if self.config['n_crews'] > 1:
-            lats = []
-            lons = []
-            ID = []
-            for site in self.state['sites']:
-                ID.append(site['facility_ID'])
-                lats.append(site['lat'])
-                lons.append(site['lon'])
-            # a temporary dataframe creafed for storing ID, coordiates of sites
-            sdf = pd.DataFrame({"ID": ID,
-                                'lon': lons,
-                                'lat': lats})
-            locs = sdf[['lat', 'lon']].values
-            num = self.config['n_crews']
-            #  run K-means clustering by using dataframe
-            kmeans = KMeans(n_clusters=num, random_state=0).fit(locs)
-            label = kmeans.labels_
-        else:
-            label = np.zeros(len(self.state['sites']))
+        if self.config['scheduling']['route_planning']:
+            # Use clustering analysis to assign facilities to each agent,
+            # if 2+ agents are available
+            if self.config['n_crews'] > 1:
+                lats = []
+                lons = []
+                ID = []
+                for site in self.state['sites']:
+                    ID.append(site['facility_ID'])
+                    lats.append(site['lat'])
+                    lons.append(site['lon'])
+                # a temporary dataframe creafed for storing ID, coordiates of sites
+                sdf = pd.DataFrame({"ID": ID, 'lon': lons, 'lat': lats})
+                locs = sdf[['lat', 'lon']].values
+                num = self.config['n_crews']
+                #  run K-means clustering by using dataframe
+                kmeans = KMeans(n_clusters=num, random_state=0).fit(locs)
+                label = kmeans.labels_
+            else:
+                label = np.zeros(len(self.state['sites']))
 
-        for i in range(len(self.state['sites'])):
-            self.state['sites'][i]['crew_id'] = label[i]
+            for i in range(len(self.state['sites'])):
+                self.state['sites'][i]['crew_id'] = label[i]
 
     def get_due_sites(self, site_pool):
         """ Retrieve a site list of sites due for screen / survey
