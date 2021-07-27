@@ -24,7 +24,7 @@ import numpy as np
 
 
 class OGI_company:
-    def __init__(self, state, parameters, config, timeseries):
+    def __init__(self, state, parameters, config, timeseries, module_name):
         """
         Initialize a company to manage the OGI crews (e.g. a contracting company).
 

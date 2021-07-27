@@ -26,7 +26,7 @@ from generic_functions import get_prop_rate
 
 
 class aircraft_company:
-    def __init__(self, state, parameters, config, timeseries):
+    def __init__(self, state, parameters, config, timeseries, module_name):
         """
         Initialize a company to manage the aircraft crews (e.g. a contracting company).
 

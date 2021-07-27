@@ -23,7 +23,7 @@ P_truck = {
             'label': 'OGI_FU',
             'module': 'OGI_FU',
             'deployment_type': 'mobile',
-            'measurement_scale': "leak",
+            'measurement_scale': "component",
             'n_crews': 1,
             'min_temp': -20,
             'max_wind': 10,

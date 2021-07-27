@@ -146,7 +146,7 @@ class LdarSim:
             site['leak_rate_units'] = params['dists'][int(site['subtype_code'])]['units']
 
         # Initialize method(s) to be used; append to state
-        for m_key, m_obj in params['methods'].items():
+        for m_label, m_obj in params['methods'].items():
             try:
                 if 't_bw_sites' in m_obj:
                     if isinstance(m_obj['t_bw_sites'], str):
@@ -159,9 +159,9 @@ class LdarSim:
                 module = __import__(company_name)
                 func = getattr(module, company_name)
                 state['methods'].append(
-                    func(state, params, m_obj, timeseries))
+                    func(state, params, m_obj, timeseries, m_label))
             except AttributeError:
-                print('Cannot add this method: ' + m_key)
+                print('Cannot add this method: ' + m_label)
 
         # Generate initial leak count for each site
         for site in state['sites']:

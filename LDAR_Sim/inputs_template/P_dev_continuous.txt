@@ -2,7 +2,7 @@ P_dev_continuous = {
     'methods': {
         'Cont': {
             'label': 'Cont',
-            'module': 'dev_continuous',
+            'module': 'dummy',
             'deployment_type': 'stationary',
             'measurement_scale': "equipment",
             'sensor': 'default',
@@ -27,9 +27,9 @@ P_dev_continuous = {
         },
         'OGI_FU': {
             'label': 'OGI_FU',
-            'module': 'dev_OGI',
+            'module': 'dummy',
             'deployment_type': 'mobile',
-            'measurement_scale': "leak",
+            'measurement_scale': "component",
             'sensor': 'OGI_camera',
             'is_follow_up': True,
             'n_crews': 1,
@@ -59,7 +59,6 @@ P_dev_continuous = {
     'n_processes': None,
     'start_year': 2017,
     'UTC_offset': -6,
-    'time_offsite': 'time_offsite_ground.csv',
     'weather_file': "ERA5_AB_1x1_hourly_2015_2019.nc",
     'weather_is_hourly': False,
     'infrastructure_file': 'facility_list_template.csv',
