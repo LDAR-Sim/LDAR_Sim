@@ -31,6 +31,7 @@ import boto3  # for downloading data from AWS
 from botocore.exceptions import ClientError
 import ephem
 
+
 def gap_calculator(condition_vector):
     """
     This function calculates max gaps between daily activites in a time series.
@@ -239,8 +240,9 @@ def check_ERA5_file(wd, target_file):
             access_key = os.getenv('AWS_KEY')
             secret_key = os.getenv('AWS_SEC')
         except Exception:
-            print("AWS_KEY and AWS_SEC environment variables have not been set, refer to model documentation for "
-                  "configuration instructions.")
+            print(
+                "AWS_KEY and AWS_SEC environment variables have not been set," +
+                "refer to model documentation for configuration instructions.")
 
         try:
             s3 = boto3.client('s3', aws_access_key_id=access_key, aws_secret_access_key=secret_key)
@@ -249,7 +251,8 @@ def check_ERA5_file(wd, target_file):
             print("Authentication Failed or Server Unavailable. Exiting")
             sys.exit()
         print("Weather data download complete")
-        
+
+
 def geo_idx(dd, dd_array):
     """
      - dd - the decimal degree (latitude or longitude)
@@ -260,8 +263,9 @@ def geo_idx(dd, dd_array):
    """
     geo_idx = (np.abs(dd_array - dd)).argmin()
     return geo_idx
-	
-def quick_cal_daylight(date,lat,lon):
+
+
+def quick_cal_daylight(date, lat, lon):
 
     # Create ephem object
     obs = ephem.Observer()
@@ -286,4 +290,4 @@ def quick_cal_daylight(date,lat,lon):
     sunrise = sr
     sunset = ss
 
-    return (sunrise,sunset)
+    return (sunrise, sunset)

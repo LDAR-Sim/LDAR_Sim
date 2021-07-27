@@ -1,4 +1,3 @@
-
 # ------------------------------------------------------------------------------
 # Program:     The LDAR Simulator (LDAR-Sim)
 # File:        Satellite crew
@@ -18,17 +17,10 @@
 # You should have received a copy of the GNU Affero General Public License
 
 
-import numpy as np
-from datetime import timedelta
-import orbit_predictor.locations as orbitL
-<<<<<<< HEAD
-import random 
-import math
-=======
-import random
->>>>>>> 28ac29d (Fixed Case Sensitive Issue with Satellite name)
-from generic_functions import geo_idx
 from generic_functions import quick_cal_daylight
+import random
+import numpy as np
+import orbit_predictor.locations as orbitL
 
 
 class satellite:
@@ -43,37 +35,10 @@ class satellite:
         self.deployment_days = deployment_days
         self.satstate = {'id': id}  # Crewstate is unique to this agent
         self.worked_today = False
-<<<<<<< HEAD
-        
-        
-        Latitudes = state['weather'].latitude
-        Longitudes = state['weather'].longitude
-        
-        
-        return 
-    
-    
-    
-    def work_a_day(self):
-        """
-        Go to work and find the leaks for a given day.
-        """        
-        self.candidate_flags = []
-        work_hours = None
-        
-        # satellites work 24 days an hour, but need to check daylight every chosen site if daylight
-        # matters to the satellite.
-        self.state['t'].current_date = self.state['t'].current_date.replace(hour=0)  # Set start of work day
-        while self.state['t'].current_date.hour < 24:
-            
-            # set the new location based on the orbit model
-            self.satstate['lat'], self.satstate['lon'], self.satstate['altitude'] = \
-                self.orbit_model.locate (self.state['t'].current_date)
-            
-=======
 
-        ########################--------------This should move to the weather_lookup.py in the future--------------################
-        # load pre-defined orbit grids, this is unique for each satellite, a function should be created to automatically calculate
+        # This should move to the weather_lookup.py in the future
+        # load pre-defined orbit grids, this is unique for each satellite, a function
+        # should be created to automatically calculate
         # grid based on the TLE_file/ the name of satellites
         sg = self.parameters['methods']['satellite']['Satellite_grid']
         wd = self.parameters['working_directory']
@@ -104,7 +69,7 @@ class satellite:
 
         self.predictor = get_predictor_from_tle_lines(TLE_LINES)
 
- ###############################################################################################################################
+    # ------------------------
 
         return
 
@@ -126,7 +91,6 @@ class satellite:
             # self.satstate['lat'], self.satstate['lon'], self.satstate['altitude'] = \
             #     self.orbit_model.locate (self.state['t'].current_date)
 
->>>>>>> 28ac29d (Fixed Case Sensitive Issue with Satellite name)
             # find a site
             facility_ID, found_site, site = self.choose_site()
             if not found_site:
@@ -135,13 +99,8 @@ class satellite:
             self.worked_today = True
 
         # Flag sites according to the flag ratio
-<<<<<<< HEAD
-        if len(self.candidate_flags) > 0:
-            self.flag_sites(self.candidate_flags)
-=======
         # if len(self.candidate_flags) > 0:
         #   self.flag_sites(self.candidate_flags)
->>>>>>> 28ac29d (Fixed Case Sensitive Issue with Satellite name)
 
         if self.worked_today:
             self.timeseries['satellite_cost'][self.state['t'].current_timestep] += \
@@ -162,41 +121,26 @@ class satellite:
         info = self.predictor.get_position(self.state['t'].current_date)
         valid_site_indices = []
         for site in self.state['sites']:
-<<<<<<< HEAD
-            pos = orbitL.Location(site.facility_ID, latitude_deg=site['lat'], longitude_deg=site['lon'], elevation_m=975)
-            # need to be specified 
-=======
             fid = site['facility_ID']
             latt = np.float16(site['lat'])
             longg = np.float16(site['lon'])
             pos = orbitL.Location(fid, latitude_deg=latt, longitude_deg=longg, elevation_m=975)
             # need to be specified
->>>>>>> 28ac29d (Fixed Case Sensitive Issue with Satellite name)
             visible = pos.is_visible(info)
             valid_site_indices.append(visible)
         return (valid_site_indices)
 
-<<<<<<< HEAD
-    def assess_weather (self):
-=======
     def assess_weather(self, site):
->>>>>>> 28ac29d (Fixed Case Sensitive Issue with Satellite name)
         """
         Function to perform satellite specific checks of the weather for the purposes of visiting
         site: the site
         """
-<<<<<<< HEAD
-        self.site = site 
-        site_lat = self.site.lat 
-        site_lon = self.site.lon
-=======
 
         site_lat = np.float16(site['lat'])
         site_lon = np.float16(site['lon'])
->>>>>>> 28ac29d (Fixed Case Sensitive Issue with Satellite name)
 
-        lat_idx = geo_idx(site_lat, self.state['weather'].latitude)
-        lon_idx = geo_idx(site_lon, self.state['weather'].latitude)
+        # lat_idx = geo_idx(site_lat, self.state['weather'].latitude)
+        # lon_idx = geo_idx(site_lon, self.state['weather'].latitude)
 
         # check satellite
         ti = self.state['t'].current_timestep
@@ -204,27 +148,6 @@ class satellite:
             sat_screen = True
         else:
             sat_screen = False
-<<<<<<< HEAD
-        
-        #check daylight 
-        date = self.state['t'].current_date                              
-        sr,ss = quick_cal_daylight(date,site_lat,site_lon)
-        
-        if sr<=self.state['t'].current_date.hour<=ss: 
-            sat_daylight = True 
-        else: 
-            sat_daylight = False
-                                 
-        #check cloud cover 
-        # need to change  
-        if self.cloudcover[ti,lat_idx,lon_idx] <0.5: 
-            sat_cc = True 
-        else: 
-            sat_cc = False
-        
-        
-=======
-
         # check daylight
         date = self.state['t'].current_date
         sr, ss = quick_cal_daylight(date, site_lat, site_lon)
@@ -240,8 +163,6 @@ class satellite:
         # else:
         #    sat_cc = False
         sat_cc = True
-
->>>>>>> 28ac29d (Fixed Case Sensitive Issue with Satellite name)
         # do some checks and return true or false whether this site checks our weather checks
         return (sat_screen, sat_daylight, sat_cc)
 
@@ -250,17 +171,6 @@ class satellite:
         Function to check detection on the site scale
         site_cum_rate: the real cumulative emissions rate from the site
         """
-<<<<<<< HEAD
-        lon = self.site['lon']
-        lat = self.site['lat'] 
-        lat_idx = geo_idx(site_lat,self.state['weather'].latitude)
-        lon_idx = geo_idx(site_lon,self.state['weather'].latitude)
-        windspeed = self.state['weather'].winds
-                                       
-        ti = self.state['t'].current_timestep               
-        U = windspeed[ti,lat_idx,lon_idx]
-        Q_min = 5.79 * (1.39/U)
-=======
         # lon = self.site['lon']
         # lat = self.site['lat']
         # lat_idx = geo_idx(site_lat,self.state['weather'].latitude)
@@ -272,7 +182,6 @@ class satellite:
         # Q_min = 5.79 * (1.39/U)
         # set MDL to 0 #####
         Q_min = 0
->>>>>>> 28ac29d (Fixed Case Sensitive Issue with Satellite name)
 
         return (site_cum_rate > Q_min)
 
@@ -308,13 +217,16 @@ class satellite:
                 # If the site hasn't been attempted yet today
                 if not site['attempted_today_satellite?']:
 
-                    # If the site is 'unripened' (i.e. hasn't met the minimum interval set out in the LDAR regulations/policy), break out - no LDAR today
-                    if site['satellite_t_since_last_LDAR'] < self.parameters['methods']['satellite']['min_interval']:
+                    # If the site is 'unripened' (i.e. hasn't met the minimum interval set out in
+                    # the LDAR regulations/policy), break out - no LDAR today
+                    if site['satellite_t_since_last_LDAR'] \
+                            < self.parameters['methods']['satellite']['min_interval']:
                         self.state['t'].current_date = self.state['t'].current_date.replace(hour=23)
                         break
 
                     # Else if site-specific required visits have not been met for the year
-                    elif site['surveys_done_this_year_satellite'] < int(site['satellite_required_surveys']):
+                    elif site['surveys_done_this_year_satellite'] \
+                            < int(site['satellite_required_surveys']):
 
                         # Check the weather for that site
                         if self.assess_weather(site):
@@ -349,28 +261,18 @@ class satellite:
 
         # Add vented emissions
         venting = 0
-        if self.parameters['consider_venting'] == True:
+        if self.parameters['consider_venting']:
             venting = self.state['empirical_vents'][np.random.randint(
                 0, len(self.state['empirical_vents']))]
             site_cum_rate += venting
 
         # Check detection
-<<<<<<< HEAD
-        if self.check_detection (site_cum_rate):
-            
-            # Check flag rules
-            if self.config['flagging_rule'] == 'detection':
-                flag_site = site_cum_rate > self.config['follow_up_thresh']
-            elif self.config['flagging_rule'] == 'quantification':
-                flag_site = self.quantify (site, site_cum_rate) > self.config['follow_up_thresh']
-=======
         if self.check_detection(site_cum_rate):
 
             # quantify emissions
             QE = self.quantify(site, site_cum_rate)
             if QE > self.config['follow_up_thresh']:
                 flag_site = True
->>>>>>> 28ac29d (Fixed Case Sensitive Issue with Satellite name)
             else:
                 flag_site = False
 
@@ -389,72 +291,9 @@ class satellite:
         else:
             site['satellite_missed_leaks'] += len(leaks_present)
 
-<<<<<<< HEAD
-        self.state['t'].current_date += timedelta(minutes=int(site['satellite_time']))
-        self.state['t'].current_date += timedelta(minutes=int(self.config['t_lost_per_site']))
-        self.timeseries['satellite_sites_visited'][self.state['t'].current_timestep] += 1
-                                       
-                                       
-        return 
-                                       
-    def flag_sites(self, candidate_flags):
-        """
-        Flag the most important sites for follow-up.
-        """
-        # First, figure out how many sites you're going to choose
-        n_sites_to_flag = len(candidate_flags) * self.config['follow_up_ratio']
-        n_sites_to_flag = int(math.ceil(n_sites_to_flag))
-
-        sites_to_flag = []
-        site_cum_rates = []
-
-        for i in candidate_flags:
-            site_cum_rates.append(i['site_cum_rate'])
-        
-        site_cum_rates.sort(reverse=True)
-        target_rates = site_cum_rates[:n_sites_to_flag]
-
-        for i in candidate_flags:
-            if i['site_cum_rate'] in target_rates:
-                sites_to_flag.append(i)
-
-        for i in sites_to_flag:
-            site = i['site']
-            leaks_present = i['leaks_present']
-            site_cum_rate = i['site_cum_rate']
-            venting = i['venting']
-
-            # If the site is already flagged, your flag is redundant
-            if site['currently_flagged']:
-                self.timeseries['satellite_flags_redund1'][self.state['t'].current_timestep] += 1
-
-            elif not site['currently_flagged']:
-                # Flag the site for follow up
-                site['currently_flagged'] = True
-                site['date_flagged'] = self.state['t'].current_date
-                site['flagged_by'] = self.config['name']
-                self.timeseries['satellite_eff_flags'][self.state['t'].current_timestep] += 1
-
-                # Does the chosen site already have tagged leaks?
-                redund2 = False
-                for leak in leaks_present:
-                    if leak['date_tagged'] is not None:
-                        redund2 = True
-
-                if redund2:
-                    self.timeseries['satellite_flags_redund2'][self.state['t'].current_timestep] += 1
-
-                # Would the site have been chosen without venting?
-                if self.parameters['consider_venting']:
-                    if (site_cum_rate - venting) < self.config['follow_up_thresh']:
-                        self.timeseries['satellite_flags_redund3'][self.state['t'].current_timestep] += 1
-
-        return
-=======
         # Currently, we assume satellite surveys a facility instantaneously
         # self.state['t'].current_date += timedelta(minutes=int(site['satellite_time']))
         # self.state['t'].current_date += timedelta(minutes=int(self.config['t_lost_per_site']))
         self.timeseries['satellite_sites_visited'][self.state['t'].current_timestep] += 1
 
         return
->>>>>>> 28ac29d (Fixed Case Sensitive Issue with Satellite name)

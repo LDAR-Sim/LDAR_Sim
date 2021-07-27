@@ -18,6 +18,8 @@
 # along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 #
 # ------------------------------------------------------------------------------
+import operator
+
 
 def aggregate(site, leaks):
 
@@ -26,11 +28,8 @@ def aggregate(site, leaks):
     site_rate = 0
 
     # Make list of all leaks and add up all emissions at site
-    for leak in leaks:
-        if leak['facility_ID'] == site['facility_ID']:
-            if leak['status'] == 'active':
-                leaks_present.append(leak)
-                site_rate += leak['rate']
+    leaks_present = [leak for leak in leaks if leak['facility_ID'] == site['facility_ID']]
+    site_rate = sum(map(operator.itemgetter('rate'), leaks_present))
 
     # Sum emissions by equipment group
     for group in range(int(site['equipment_groups'])):

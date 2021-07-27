@@ -21,6 +21,7 @@
 
 import numpy as np
 
+
 def measured_rate(true_rate, QE):
     quant_error = np.random.normal(0, QE)
     measured_rate = None

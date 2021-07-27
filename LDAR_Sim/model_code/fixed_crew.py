@@ -52,6 +52,7 @@ class fixed_crew:
         for leak in self.state['leaks']:
             if leak['facility_ID'] == self.site['facility_ID']:
                 if leak['status'] == 'active':
+                    # HBD do we need the first condition?
                     if leak['days_active'] >= \
                             (self.config['time_to_detection'] + self.days_skipped):
                         if leak['days_active'] >= self.config['time_to_detection']:

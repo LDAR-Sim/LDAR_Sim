@@ -26,6 +26,7 @@ import os
 import datetime
 import sys
 import random
+import time
 from sensitivity import Sensitivity
 from operator_agent import OperatorAgent
 from plotter import make_plots
@@ -44,7 +45,20 @@ class LdarSim:
         self.parameters = params
         self.timeseries = timeseries
         self.active_leaks = []
+        #  --- timeseries variables ---
+        timeseries['total_daily_cost'] = np.zeros(params['timesteps'])
+        timeseries['repair_cost'] = np.zeros(params['timesteps'])
+        timeseries['verification_cost'] = np.zeros(params['timesteps'])
+        timeseries['operator_redund_tags'] = np.zeros(self.parameters['timesteps'])
+        timeseries['operator_tags'] = np.zeros(self.parameters['timesteps'])
 
+        # Configure sensitivity analysis, if requested (code block must remain here -
+        # after site initialization and before method initialization)
+        if params['sensitivity']['perform']:
+            self.sensitivity = Sensitivity(params, timeseries, state)
+
+        #  --- state variables ---
+        state['candidate_flags'] = {}
         # Read in data files
         state['empirical_counts'] = np.array(pd.read_csv(
             params['working_directory'] + params['count_file']).iloc[:, 0])
@@ -52,11 +66,12 @@ class LdarSim:
             params['working_directory'] + params['leak_file']).iloc[:, 0])
         state['empirical_sites'] = np.array(pd.read_csv(
             params['working_directory'] + params['vent_file']).iloc[:, 0])
-        if isinstance(params['time_offsite'], str):
-            state['offsite_times'] = np.array(pd.read_csv(
-                params['working_directory'] + params['time_offsite']).iloc[:, 0])
-        else:
-            state['offsite_times'] = np.array([params['time_offsite']])
+        if 'time_offsite' in params:
+            if isinstance(params['time_offsite'], str):
+                state['offsite_times'] = np.array(pd.read_csv(
+                    params['working_directory'] + params['time_offsite']).iloc[:, 0])
+            else:
+                state['offsite_times'] = np.array([params['time_offsite']])
         #  Empirical Leaks can be fit with the following
         if params['use_empirical_rates'] == 'fit':
             params['leak_distribution'] = fit_dist(
@@ -130,28 +145,23 @@ class LdarSim:
             site['leak_rate_dist'] = params['dists'][int(site['subtype_code'])]['dist']
             site['leak_rate_units'] = params['dists'][int(site['subtype_code'])]['units']
 
-        # Additional timeseries variables
-        timeseries['total_daily_cost'] = np.zeros(params['timesteps'])
-        timeseries['repair_cost'] = np.zeros(params['timesteps'])
-        timeseries['verification_cost'] = np.zeros(params['timesteps'])
-        timeseries['operator_redund_tags'] = np.zeros(self.parameters['timesteps'])
-        timeseries['operator_tags'] = np.zeros(self.parameters['timesteps'])
-
-        # Configure sensitivity analysis, if requested (code block must remain here -
-        # after site initialization and before method initialization)
-        if params['sensitivity']['perform']:
-            self.sensitivity = Sensitivity(params, timeseries, state)
-
         # Initialize method(s) to be used; append to state
-        for m in params['methods']:
+        for m_label, m_obj in params['methods'].items():
             try:
-                company_name = str(m) + '_company'
+                if 't_bw_sites' in m_obj:
+                    if isinstance(m_obj['t_bw_sites'], str):
+                        m_obj['t_bw_sites'] = np.array(pd.read_csv(
+                            params['working_directory'] + m_obj['t_bw_sites']).iloc[:, 0])
+                    else:
+                        m_obj['t_bw_sites'] = np.array([m_obj['t_bw_sites']])
+
+                company_name = str(m_obj['module']) + '_company'
                 module = __import__(company_name)
                 func = getattr(module, company_name)
                 state['methods'].append(
-                    func(state, params, params['methods'][m], timeseries))
+                    func(state, params, m_obj, timeseries, m_label))
             except AttributeError:
-                print('Cannot add this method: ' + m)
+                print('Cannot add this method: ' + m_label)
 
         # Generate initial leak count for each site
         for site in state['sites']:
@@ -176,7 +186,7 @@ class LdarSim:
                         'leak_ID': site['facility_ID'] + '_' + str(len(state['leaks']) + 1)
                         .zfill(10),
                         'facility_ID': site['facility_ID'],
-                        'equipment_group': random.randint(1,int(site['equipment_groups'])),
+                        'equipment_group': random.randint(1, int(site['equipment_groups'])),
                         'rate': leaksize,
                         'lat': float(site['lat']) + np.random.normal(0, 0.0001),
                         'lon': float(site['lon']) + np.random.normal(0, 0.0001),
@@ -234,7 +244,6 @@ class LdarSim:
 
             # Change negatives to zero
             state['empirical_vents'] = [0 if i < 0 else i for i in state['empirical_vents']]
-
         return
 
     def update(self):
@@ -245,7 +254,7 @@ class LdarSim:
 
         self.update_state()  # Update state of sites and leaks
         self.add_leaks()  # Add leaks to the leak pool
-        self.find_leaks()  # Find leaks
+        self.deploy_crews()  # Find leaks
         self.repair_leaks()  # Repair leaks
         self.report()  # Assemble any reporting about model state
         return
@@ -325,13 +334,13 @@ class LdarSim:
 
         return
 
-    def find_leaks(self):
+    def deploy_crews(self):
         """
         Loop over all your methods in the simulation and ask them to find some leaks.
         """
 
         for m in self.state['methods']:
-            m.find_leaks()
+            m.deploy_crews()
 
         if self.parameters['consider_operator']:
             if self.state['t'].current_date.weekday() == 0:
@@ -420,7 +429,40 @@ class LdarSim:
                 del site['n_new_leaks']
 
             leak_df = pd.DataFrame(self.state['leaks'])
+            # ----------------------------------
+            # fix the timeseries unequal issue with scheudling and OGI rollover
+            sd = self.state['t'].start_date.date()
+            ed = self.state['t'].end_date.date()
+            TotalTS = (ed - sd).days
+            date_list = [sd + datetime.timedelta(days=x) for x in range(TotalTS)]
+            if len(self.timeseries['datetime']) < params['timesteps']:
+                date_list = [sd + datetime.timedelta(days=x) for x in range(TotalTS)]
+                malfun_key = []
+                for k in self.timeseries.keys():
+                    A = len(self.timeseries[k])
+                    if A != TotalTS:
+                        malfun_key.append(k)
+                i = 0
+                mal_DT = [d.date() for d in self.timeseries['datetime']]
+                Real_datetime = []
+                for dt in date_list:
+                    if dt not in mal_DT:
+                        NDT = datetime.datetime(year=dt.year, month=dt.month,
+                                                day=dt.day, hour=8, minute=0, second=0)
+                        Real_datetime.append(NDT)
+
+                        # loop through the malfunction field to fillpout 0
+                        for key in malfun_key:
+                            self.timeseries[key].insert(i, self.timeseries[key][i-1])
+
+                    else:
+                        Real_datetime.append(self.timeseries['datetime'][i])
+                    i += 1
+
+                self.timeseries['datetime'] = Real_datetime
+
             time_df = pd.DataFrame(self.timeseries)
+            # -----------------------------------------------------------------------------
             site_df = pd.DataFrame(self.state['sites'])
 
             # Create some new variables for plotting
