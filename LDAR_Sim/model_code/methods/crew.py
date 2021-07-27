@@ -1,7 +1,7 @@
 # ------------------------------------------------------------------------------
 # Program:     The LDAR Simulator (LDAR-Sim)
-# File:        crew
-# Purpose:     Initialize each crew under company
+# File:        methods.crew
+# Purpose:     initialize crew, work_a_day, visit sites, and detect_emissions
 #
 # Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
 #
@@ -25,18 +25,10 @@ from aggregator import aggregate
 
 
 class BaseCrew:
-    """
-    Base class crew function. Changes made here will affect any inheriting
-    classes. To use base class, import and use as argument arguement. ie.
-
-    from methods.crew import crew
-    class crew (crew):
-        def __init__(self, **kwargs):
-            super(crew, self).__init__(**kwargs)
-        ...s
-
-    overwrite methods by creating methods in the inheriting class
-    after the __init__ function.
+    """ Base crws are used by methods to generate crew-level deployment and scheduling,
+        determine sites ready for survey, alocate sites to crews, and report on emissions.
+        Crew method consists of a deployment type and a sensor type which are set using 
+        the input parameter file.
     """
 
     def __init__(self, state, parameters, config, timeseries, deployment_days, id):
@@ -48,7 +40,7 @@ class BaseCrew:
         self.config = config
         self.timeseries = timeseries
         self.deployment_days = deployment_days
-        self.daily_plan = None
+        self.itinerary = None
         self.id = id
         if len(config['scheduling']['LDAR_crew_init_location']) > 0:
             self.lat = float(config['scheduling']
@@ -83,9 +75,9 @@ class BaseCrew:
 
         # If there are sites ready for survey
         if len(site_pool) > 0:
-            self.daily_plan = self.schedule.start_day(site_pool)
-            if len(self.daily_plan) > 0:
-                for site_plan in self.daily_plan:
+            itinerary = self.schedule.start_day(site_pool)
+            if len(itinerary) > 0:
+                for site_plan in itinerary:
                     if site_plan['remaining_mins'] == 0:
                         # Only record and fix leaks on the last day of work if theres rollover
                         self.visit_site(site_plan['site'])
@@ -98,7 +90,7 @@ class BaseCrew:
                 self.worked_today = True
 
         if self.worked_today:
-            self.schedule.end_day(site_pool)
+            self.schedule.end_day(site_pool, itinerary)
             self.timeseries['{}_cost'.format(m_name)][self.state['t'].current_timestep] += \
                 self.config['cost_per_day']
             self.timeseries['total_daily_cost'][self.state['t'].current_timestep] += \

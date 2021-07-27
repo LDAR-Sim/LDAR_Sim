@@ -101,7 +101,7 @@ class Sensitivity:
                     'truck_min_interval': np.random.uniform(0, 90),
                     'truck_MDL': np.random.uniform(1, 100),  # grams/hour
                     'truck_follow_up_thresh': np.random.uniform(0, 500),
-                    'truck_follow_up_prop': np.random.uniform(0.1, 1)
+                    'truck_follow_up_ratio': np.random.uniform(0.1, 1)
                 }
                 param_df = param_df.append(pd.DataFrame([row]))
             param_df.to_csv(output_file, index=False)
@@ -178,7 +178,7 @@ class Sensitivity:
             methods['truck']['reporting_delay'] = self.SA_params['truck_reporting_delay']
             methods['truck']['MDL'] = self.SA_params['truck_MDL']
             methods['truck']['follow_up_thresh'] = self.SA_params['truck_follow_up_thresh']
-            methods['truck']['follow_up_prop'] = self.SA_params['truck_follow_up_prop']
+            methods['truck']['follow_up_ratio'] = self.SA_params['truck_follow_up_ratio']
 
             for site in state['sites']:
                 site['OGI_time'] = self.SA_params['OGI_time']
@@ -297,7 +297,7 @@ class Sensitivity:
                 'truck_reporting_delay': self.SA_params['truck_reporting_delay'],
                 'truck_MDL': self.SA_params['truck_MDL'],
                 'truck_follow_up_thresh': self.SA_params['truck_follow_up_thresh'],
-                'truck_follow_up_prop': self.SA_params['truck_follow_up_prop'],
+                'truck_follow_up_ratio': self.SA_params['truck_follow_up_ratio'],
                 'truck_time': self.SA_params['truck_time'],
                 'truck_RS': self.SA_params['truck_RS'],
 

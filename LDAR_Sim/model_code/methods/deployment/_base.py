@@ -1,4 +1,38 @@
-class sched_crew:
+# ------------------------------------------------------------------------------
+# Program:     The LDAR Simulator (LDAR-Sim)
+# File:        methods.deployment._base
+# Purpose:     Commonly used schedule class methods for crew and companies
+#
+# Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the MIT License as published
+# by the Free Software Foundation, version 3.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MIT License for more details.
+
+# You should have received a copy of the MIT License
+# along with this program.  If not, see <https://opensource.org/licenses/MIT>.
+#
+# ------------------------------------------------------------------------------
+from datetime import timedelta
+
+
+class SchedCrew:
+    """ Crew schedule base class. Can be inherited by crew deployments
+    """
+
+    def update_schedule(self, work_mins):
+        """ Update current time and crew location
+
+        Args:
+            work_mins (float): time in minutes
+        """
+        self.state['t'].current_date += timedelta(minutes=int(work_mins))
+
     def get_work_hours(self):
         """ Get hours in day the crew is able to work
         """
@@ -24,7 +58,10 @@ class sched_crew:
             hour=int(self.end_hour), minute=0, second=0)
 
 
-class sched_company:
+class SchedCompany:
+    """ Company schedule base class. Can be inherited by company deployments
+    """
+
     def get_deployment_dates(self):
         """ Using input parameters get the range of years and months available
             for company/ crew deployment. If non are specified, set to the
@@ -42,10 +79,10 @@ class sched_company:
         else:
             self.deployment_months = list(range(1, 13))
 
-    def can_deploy_today(self, date):
+    def in_deployment_period(self, date):
         """ If the current day is within the deployment month and years window
         Args:
-            date (datetime): Current Date
+            date (datetime): Current date
 
         Returns:
             Boolean: If date passed is in deployment month and year

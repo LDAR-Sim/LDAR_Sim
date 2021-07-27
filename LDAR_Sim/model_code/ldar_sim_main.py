@@ -40,7 +40,7 @@ if __name__ == '__main__':
     output_directory = os.path.abspath(root_dir) + "/outputs/"
     # Programs to compare; Position one should be the reference program (P_ref)
     program_list = ['P_ref', 'P_dev_OGI', 'P_dev_aircraft', 'P_aircraft']
-    # program_list = ['P_ref', 'P_dev_aircraft']
+
 # -----------------------------Set up programs----------------------------------
     programs = []
 
@@ -80,7 +80,6 @@ if __name__ == '__main__':
                   'opening_message': opening_message,
                   'print_from_simulation': print_from_simulations}])
 
-    # ldar_sim_run(simulations[3][0])
     # Perform simulations in parallel
     with mp.Pool(processes=n_processes) as p:
         res = p.starmap(ldar_sim_run, simulations)
