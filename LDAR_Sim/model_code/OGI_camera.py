@@ -34,11 +34,7 @@ class OGI_camera:
         self.config = config
         self.timeseries = timeseries
         self.crewstate = crewstate
-
-        try:
-            self.MDL = parameters['methods']['OGI']['MDL']
-        except:
-            self.MDL = parameters['methods']['OGI_FU']['MDL']
+        self.MDL = config['MDL']
 
         return
 
@@ -57,17 +53,18 @@ class OGI_camera:
 
             if detect:
                 if leak['tagged']:
-                    self.timeseries[self.config['name'] + '_redund_tags'][self.state['t'].current_timestep] += 1
+                    self.timeseries[self.config['label'] +
+                                    '_redund_tags'][self.state['t'].current_timestep] += 1
 
                 # Add these leaks to the 'tag pool'
                 elif not leak['tagged']:
                     leak['tagged'] = True
                     leak['date_tagged'] = self.state['t'].current_date
-                    leak['tagged_by_company'] = self.config['name']
+                    leak['tagged_by_company'] = self.config['label']
                     leak['tagged_by_crew'] = self.crewstate['id']
                     self.state['tags'].append(leak)
 
             elif not detect:
-                site[self.config['name'] + '_missed_leaks'] += 1
+                site[self.config['label'] + '_missed_leaks'] += 1
 
         return

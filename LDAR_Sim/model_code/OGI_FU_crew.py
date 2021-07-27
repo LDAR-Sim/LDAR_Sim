@@ -21,7 +21,7 @@
 
 import numpy as np
 from datetime import timedelta
-import math
+
 from OGI_camera import OGI_camera
 
 

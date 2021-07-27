@@ -1,69 +1,77 @@
 P_truck = {
-        'methods': {
-                   'truck': {
-                            'name': 'truck',
-                            'n_crews': 1,
-                            'min_temp': -40,
-                            'max_wind': 20,
-                            'max_precip': 0.01,
-                            'max_workday': 8,
-			    'measurement_scale': "equipment",
-                            'cost_per_day': 2000,
-                            'follow_up_thresh': [0, "absolute"],
-                            'follow_up_prop': 1,
-                            'reporting_delay': 2,
-                            'MDL': 0.05,   
-			    'QE': 0,
-			    'consider_daylight': False 
-                            },
-                   'OGI_FU': {
-                            'name': 'OGI_FU',
-                            'n_crews': 1,
-             		    'min_temp': -20,
-                	    'max_wind': 10,
-                	    'max_precip': 0.1,
-                            'max_workday': 8,
-                            'cost_per_day': 2500,
-                            'reporting_delay': 2,
-                            'MDL': [0.01275, 2.78e-6],
-			    'consider_daylight': False  
-                            }
+    'methods': {
+        'truck': {
+            'label': 'truck',
+            'module': 'truck',
+            'deployment_type': 'mobile',
+            'measurement_scale': "equipment",
+            'n_crews': 1,
+            'min_temp': -40,
+            'max_wind': 20,
+            'max_precip': 0.01,
+            'max_workday': 8,
+            'measurement_scale': "equipment",
+            'cost_per_day': 2000,
+            'follow_up_thresh': [0, "absolute"],
+            'follow_up_ratio': 1,
+            'reporting_delay': 2,
+            'MDL': 0.05,
+            'QE': 0,
+            'consider_daylight': False
         },
-        'program_name': 'P_truck',
-        'n_simulations': 2, 	# Minimum of 2 simulations to get batch plots
-        'timesteps': 1000,  	# Up to ~5600 for 16 year nc file
-        'n_processes': None,
-	'start_year': 2017,
-        'UTC_offset': -6,
-	'weather_file': "ERA5_AB_1x1_hourly_2015_2019.nc",
-        'weather_is_hourly': False,
-        'infrastructure_file': 'facility_list_template.csv',
-        'leak_file': 'leak_rates.csv',
-        'count_file': 'leak_counts.csv',
-        'vent_file': 'site_rates.csv',
-        'time_offsite': 'time_offsite_ground.csv',
-        'site_samples': [True, 500],
-        'subtype_distributions': [False, 'subtype_distributions.csv'], # If True, will overwrite global Leak Dist
-        'subtype_times': [False, 'subtype_times.csv'], # If True, will overwrite site-specific times with subtype times
-        'consider_operator': False,
-        'consider_venting': False,
-        'consider_weather': True,
-        'repair_delay': 14,
-        'repair_cost': 200,
-        'use_empirical_rates': False, # 'sample', 'fit', or False
-        'leak_rate_dist': ['lognorm',-2.776, 1.462, "kilogram", "hour"],
-        'max_leak_rate': 100, # g/s
-        'LPR': 0.0065,
-	'NRd': 150,
-        'max_det_op': 0.00,
-        'spin_up': 0,
-        'write_data': True, # Must be TRUE to make plots and maps
-        'make_plots': True,
-        'make_maps': True,
-	'print_from_simulations': True,
-        'operator_strength': 0,
-	'verification_cost': 25,
-        'sensitivity': {'perform': False,
-                        'program': 'OGI',
-                        'batch': [True, 2]}
-    }
+        'OGI_FU': {
+            'label': 'OGI_FU',
+            'module': 'OGI_FU',
+            'deployment_type': 'mobile',
+            'measurement_scale': "component",
+            'n_crews': 1,
+            'min_temp': -20,
+            'max_wind': 10,
+            'max_precip': 0.1,
+            'max_workday': 8,
+            'cost_per_day': 2500,
+            'reporting_delay': 2,
+            'MDL': [0.01275, 2.78e-6],
+            'consider_daylight': False
+        }
+    },
+    'program_name': 'P_truck',
+    'n_simulations': 2, 	# Minimum of 2 simulations to get batch plots
+    'timesteps': 1000,  	# Up to ~5600 for 16 year nc file
+    'n_processes': None,
+    'start_year': 2017,
+    'UTC_offset': -6,
+    'weather_file': "ERA5_AB_1x1_hourly_2015_2019.nc",
+    'weather_is_hourly': False,
+    'infrastructure_file': 'facility_list_template.csv',
+    'leak_file': 'leak_rates.csv',
+    'count_file': 'leak_counts.csv',
+    'vent_file': 'site_rates.csv',
+    'time_offsite': 'time_offsite_ground.csv',
+    'site_samples': [True, 500],
+    # If True, will overwrite global Leak Dist
+    'subtype_distributions': [False, 'subtype_distributions.csv'],
+    # If True, will overwrite site-specific times with subtype times
+    'subtype_times': [False, 'subtype_times.csv'],
+    'consider_operator': False,
+    'consider_venting': False,
+    'consider_weather': True,
+    'repair_delay': 14,
+    'repair_cost': 200,
+    'use_empirical_rates': False,  # 'sample', 'fit', or False
+    'leak_rate_dist': ['lognorm', -2.776, 1.462, "kilogram", "hour"],
+    'max_leak_rate': 100,  # g/s
+    'LPR': 0.0065,
+    'NRd': 150,
+    'max_det_op': 0.00,
+    'spin_up': 0,
+    'write_data': True,  # Must be TRUE to make plots and maps
+    'make_plots': True,
+    'make_maps': True,
+    'print_from_simulations': True,
+    'operator_strength': 0,
+    'verification_cost': 25,
+    'sensitivity': {'perform': False,
+                    'program': 'OGI',
+                    'batch': [True, 2]}
+}

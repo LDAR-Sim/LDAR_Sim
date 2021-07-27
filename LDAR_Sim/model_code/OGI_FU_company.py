@@ -24,12 +24,12 @@ import numpy as np
 
 
 class OGI_FU_company:
-    def __init__(self, state, parameters, config, timeseries):
+    def __init__(self, state, parameters, config, timeseries, module_name):
         """
         Initialize a follow-up company to manage the OGI_FU crews (e.g. a contracting company).
 
         """
-        self.name = 'OGI_FU'
+        self.name = config['label']
         self.state = state
         self.parameters = parameters
         self.config = config
@@ -67,7 +67,7 @@ class OGI_FU_company:
 
         return
 
-    def find_leaks(self):
+    def deploy_crews(self):
         """
         The OGI_FU company tells all the crews to get to work.
         """

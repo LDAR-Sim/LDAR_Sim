@@ -1,14 +1,18 @@
 python==3.7.9
-numpy==1.20.0
+numpy==1.20.3
 matplotlib==3.3.4
 pandas==1.2.1
-pyproj
+pyproj==3.1.0
 basemap==1.2.2
 basemap-data-hires==1.2.2
 cftime==1.4.0
 netcdf4==1.5.5.1
 xlrd==2.0.1
 plotnine==0.7.1
-ephem
+ephem==4.0.0.2
 gdal==3.2.1
-boto3 == 1.16.63
+boto3==1.16.63
+scipy==1.6.3
+yaml==0.2.5
+scikit-learn==0.24.2
+flake8==3.9.2

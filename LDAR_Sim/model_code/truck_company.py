@@ -26,12 +26,12 @@ from generic_functions import get_prop_rate
 
 
 class truck_company:
-    def __init__(self, state, parameters, config, timeseries):
+    def __init__(self, state, parameters, config, timeseries, module_name):
         """
         Initialize a company to manage the truck crews (e.g. a contracting company).
 
         """
-        self.name = 'truck'
+        self.name = config['label']
         self.state = state
         self.parameters = parameters
         self.config = config
@@ -83,7 +83,7 @@ class truck_company:
 
         return
 
-    def find_leaks(self):
+    def deploy_crews(self):
         """
         The truck company tells all the crews to get to work.
         """
@@ -123,7 +123,7 @@ class truck_company:
 
         """
         # First, figure out how many sites you're going to choose
-        n_sites_to_flag = len(self.candidate_flags) * self.config['follow_up_prop']
+        n_sites_to_flag = len(self.candidate_flags) * self.config['follow_up_ratio']
         n_sites_to_flag = int(math.ceil(n_sites_to_flag))
 
         sites_to_flag = []
@@ -152,7 +152,7 @@ class truck_company:
                 # Flag the site for follow up
                 site['currently_flagged'] = True
                 site['date_flagged'] = self.state['t'].current_date
-                site['flagged_by'] = self.config['name']
+                site['flagged_by'] = self.config['label']
                 self.timeseries['truck_eff_flags'][self.state['t'].current_timestep] += 1
 
                 # Does the chosen site already have tagged leaks?
