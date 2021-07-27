@@ -39,7 +39,7 @@ P_aircraft = {
     },
     'program_name': 'P_aircraft',
     'n_simulations': 2, 	# Minimum of 2 simulations to get batch plots
-    'timesteps': 300,  	# Up to ~5600 for 16 year nc file
+    'timesteps': 1000,  	# Up to ~5600 for 16 year nc file
     'n_processes': None,
     'start_year': 2017,
     'UTC_offset': -6,
@@ -50,7 +50,7 @@ P_aircraft = {
     'leak_file': 'leak_rates.csv',
     'count_file': 'leak_counts.csv',
     'vent_file': 'site_rates.csv',
-    'site_samples': [True, 50],
+    'site_samples': [True, 500],
     # If True, will overwrite global Leak Dist
     'subtype_distributions': [False, 'subtype_distributions.csv'],
     # If True, will overwrite site-specific times with subtype times

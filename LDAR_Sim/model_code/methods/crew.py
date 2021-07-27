@@ -80,30 +80,23 @@ class BaseCrew:
         self.worked_today = False
         self.candidate_flags = candidate_flags
         self.days_skipped = 0
-        # Init Schedule methodol
 
-        if len(site_pool)>0:
-
+        # If there are sites ready for survey
+        if len(site_pool) > 0:
             self.daily_plan = self.schedule.start_day(site_pool)
-            if len(self.daily_plan)>0:
-                # Perform work Day
+            if len(self.daily_plan) > 0:
                 for site_plan in self.daily_plan:
-                    # If there is another site in the site pool list
-                    if site_plan and site_plan['go_to_site']:
-                        if site_plan['remaining_mins'] == 0:
-                            # Only record and fix leaks on the last day of work if theres rollover
-                            self.visit_site(site_plan['site'])
-
-                        # Update time
-                        self.worked_today = True
-                        # Mobile LDAR_mins also includes travel to site time
-                        self.schedule.update_schedule(site_plan['LDAR_mins'])
-
+                    if site_plan['remaining_mins'] == 0:
+                        # Only record and fix leaks on the last day of work if theres rollover
+                        self.visit_site(site_plan['site'])
+                    # Update time
+                    self.worked_today = True
+                    # Mobile LDAR_mins also includes travel to site time
+                    self.schedule.update_schedule(site_plan['LDAR_mins'])
             # this only happened if crew needs to travel all day
             else:
                 self.worked_today = True
 
-        # End day - Update Cost
         if self.worked_today:
             self.schedule.end_day(site_pool)
             self.timeseries['{}_cost'.format(m_name)][self.state['t'].current_timestep] += \
@@ -133,8 +126,8 @@ class BaseCrew:
         site_detect_results = self.detect_emissions(
             site, leaks_present, equipment_rates, site_true_rate, venting)
 
-        if self.config['measurement_scale'].lower() == 'leak':
-            # Remove site from flag pool if leak level measurement
+        if self.config['measurement_scale'].lower() == 'component':
+            # Remove site from flag pool if component level measurement
             site['currently_flagged'] = False
         elif site_detect_results:
             # all other sites flag

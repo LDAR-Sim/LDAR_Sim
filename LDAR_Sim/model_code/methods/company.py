@@ -41,7 +41,7 @@ class BaseCompany:
     after the __init__ function.
     """
 
-    def __init__(self, state, parameters, config, timeseries):
+    def __init__(self, state, parameters, config, timeseries, module_name):
         """
         Initialize a company to manage the crews (e.g. a contracting company).
 
@@ -66,7 +66,7 @@ class BaseCompany:
             self.parameters['timesteps'])
         self.timeseries['{}_sites_visited'.format(self.name)] = np.zeros(
             self.parameters['timesteps'])
-        if self.config["measurement_scale"] == 'leak':
+        if self.config["measurement_scale"] == 'component':
             # If the technology is for flagging
             self.timeseries['{}_redund_tags'.format(self.name)] = np.zeros(
                 self.parameters['timesteps'])
