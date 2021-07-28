@@ -30,7 +30,7 @@ class Schedule(BaseSchedCrew):
         # obtain TLE file path
         m_name = self.config['label']
         self.sat = self.parameters['methods'][m_name]['satellite_name']
-        self.tlefile = self.parameters['methods'][m_name]['TLE_file']
+        self.tlefile = self.parameters['methods'][m_name]['TLE_files']
 
         self.get_orbit_predictor()
         self.get_orbit_path()

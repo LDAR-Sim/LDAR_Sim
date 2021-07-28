@@ -21,7 +21,7 @@ P_dev_satellite = {
             'QE': 0,
             'consider_daylight': False,
 	    'satellite_name':'GHGSAT-D',
-	    'TLE_file': 'Sat_TLEs.txt', 
+	    'TLE_files': 'Sat_TLEs.txt', 
             'scheduling': {
                 'route_planning': False,
                 'home_bases_files': '',
