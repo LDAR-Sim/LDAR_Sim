@@ -132,7 +132,7 @@ class Schedule(BaseSchedCompany):
         """
         n_sites = len(site_pool)
         n_crews = math.ceil(n_sites/(n_crews*sites_per_crew))
-        # cap workuing crews at max number of crews
+        # cap working crews at max number of crews
         if n_crews > self.config['n_crews']:
             n_crews = self.config['n_crews']
         return n_crews
