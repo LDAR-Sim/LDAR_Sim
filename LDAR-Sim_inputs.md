@@ -983,7 +983,7 @@ See Section 2.11.
 # Satellite Inputs
 ## TLE\_files
 
-**Data type:** Character string that specifies the name of the text file that contains all encoding a list of orbital elements of satellites that supported by LDAR-Sim.  
+**Data type:** Character string that specifies the name of the text file that contains orbit information of satellites.  
 
 **Default input:** N/A
 
