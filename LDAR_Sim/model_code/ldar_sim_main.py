@@ -39,8 +39,7 @@ if __name__ == '__main__':
     wd = os.path.abspath(root_dir) + "/inputs_template/"
     output_directory = os.path.abspath(root_dir) + "/outputs/"
     # Programs to compare; Position one should be the reference program (P_ref)
-    #program_list = ['P_ref', 'P_dev_OGI', 'P_dev_aircraft', 'P_aircraft']
-    program_list = ['P_sat','P_dev_satellite']
+    program_list = ['P_ref', 'P_dev_continuous']
 
 # -----------------------------Set up programs----------------------------------
     programs = []
