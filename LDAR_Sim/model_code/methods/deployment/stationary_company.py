@@ -16,7 +16,6 @@ def make_crews(crews, config, state, parameters, timeseries, deployment_days):
                     parameters,
                     config,
                     timeseries,
-                    site,
                     deployment_days,
                     id=site['facility_ID'] + '-' + str(i + 1)))
             timeseries['fixed_cost'][state['t'].current_timestep] += \
