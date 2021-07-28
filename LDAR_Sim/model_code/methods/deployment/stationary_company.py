@@ -1,8 +1,5 @@
-import pandas as pd
-from sklearn.cluster import KMeans
-import numpy as np
 import math
-from methods.deployment.base import sched_company as base_sched_company
+from methods.deployment._base import SchedCompany as BaseSchedCompany
 from methods.crew import BaseCrew
 
 
@@ -26,7 +23,7 @@ def make_crews(crews, config, state, parameters, timeseries, deployment_days):
                 parameters['methods']['fixed']['up_front_cost']
 
 
-class Schedule(base_sched_company):
+class Schedule(BaseSchedCompany):
     def __init__(self, config, parameters, state):
         self.parameters = parameters
         self.config = config
