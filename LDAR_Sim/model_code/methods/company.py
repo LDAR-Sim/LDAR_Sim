@@ -23,7 +23,6 @@ import math
 import numpy as np
 from importlib import import_module
 from generic_functions import get_prop_rate
-from methods.deployment.stationary_company import make_crews
 
 
 class BaseCompany:
@@ -41,9 +40,9 @@ class BaseCompany:
         self.config = config
         self.timeseries = timeseries
         self.crews = []
-        sched_mod = import_module('methods.deployment.{}_company'.format(
+        deploy_mod = import_module('methods.deployment.{}_company'.format(
             self.config['deployment_type'].lower()))
-        Schedule = getattr(sched_mod, 'Schedule')
+        Schedule = getattr(deploy_mod, 'Schedule')
         self.schedule = Schedule(config, parameters, state)
         self.deployment_days = self.state['weather'].deployment_days(
             method_name=self.name,
