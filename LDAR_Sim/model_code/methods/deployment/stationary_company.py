@@ -4,6 +4,7 @@ from methods.crew import BaseCrew
 
 
 def make_crews(crews, config, state, parameters, timeseries, deployment_days):
+    m_name = config['label']
     for site in state['sites']:
         if config['measurement_scale'] == "equipment":  # This may change in the future
             n_fixed = int(site['fixed_sensors'])
@@ -18,8 +19,8 @@ def make_crews(crews, config, state, parameters, timeseries, deployment_days):
                     timeseries,
                     deployment_days,
                     id=site['facility_ID'] + '-' + str(i + 1)))
-            timeseries['fixed_cost'][state['t'].current_timestep] += \
-                parameters['methods']['fixed']['up_front_cost']
+            timeseries['{}_cost'.format(m_name)][state['t'].current_timestep] += \
+                config['up_front_cost']
 
 
 class Schedule(BaseSchedCompany):
