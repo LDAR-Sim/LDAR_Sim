@@ -18,7 +18,7 @@ P_sat = {
             't_lost_per_site': 0,
             'reporting_delay': 2,
             'consider_daylight': False,
-            'TLE_file': 'Sat_TLEs.txt',
+            'TLE_files': 'Sat_TLEs.txt',
             'satellite_name':'GHGSAT-D',
         },
     },

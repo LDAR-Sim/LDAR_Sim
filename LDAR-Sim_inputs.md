@@ -979,6 +979,34 @@ See Section 3.12.
 
 See Section 2.11.
 
+
+# Satellite Inputs
+## TLE\_files
+
+**Data type:** Character string that specifies the name of the text file that contains all encoding a list of orbital elements of satellites that supported by LDAR-Sim.  
+
+**Default input:** N/A
+
+**Description:** TLE stands for a two-line element set, which is a data format encoding a list of orbital elements of an Earth-orbiting object for a given point in time, the epoch. By using TLE of a satellite, LDAR-Sim can estimate the postion of satellite above earth at specific time. 
+
+**Notes on acquisition:** It is only required for satellite.   
+
+**Notes of caution:** Please be sure the satellite is inlcuded in the TLE file 
+
+## satellite\_name
+**Data type:** Character string that specifies the name of satellite
+
+**Default input:** N/A
+
+**Description:** The name of satellite  
+
+**Notes on acquisition:** It is only required for satellite.  
+
+**Notes of caution:** Please be sure the satellite is inlcuded in the TLE file 
+
+
+
+
 # Mobile methods Inputs
 
 ## route\_planning

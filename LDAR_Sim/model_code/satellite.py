@@ -51,7 +51,7 @@ class satellite:
 
         # build a satellite orbit object
         sat = self.parameters['methods']['satellite']['satellite_name']
-        tlefile = self.parameters['methods']['satellite']['TLE_file']
+        tlefile = self.parameters['methods']['satellite']['TLE_files']
         TLEs = []
         with open(wd+tlefile) as f:
             for line in f:
