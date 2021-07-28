@@ -112,7 +112,8 @@ class BaseCompany:
             site_pool = self.schedule.get_due_sites(site_pool)
             # Get number of crews working that day based on number of sites ready for visit
             if self.config['deployment_type'] == 'stationary':
-                n_working_crews = int(self.site['fixed_sensors'])
+                # Means that there is one crew per site.
+                n_working_crews, site_pool = self.schedule.get_working_crews(site_pool)
             else:
                 n_working_crews = self.schedule.get_working_crews(site_pool, self.config['n_crews'])
             for idx in range(n_working_crews):

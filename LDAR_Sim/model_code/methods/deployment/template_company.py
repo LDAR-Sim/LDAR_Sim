@@ -60,7 +60,7 @@ class Schedule(BaseSchedCompany):
         """
         return n_crews
 
-    def get_crew_site_list(self, site_pool, crew_id, n_crews):
+    def get_crew_site_list(self, site_pool, crew_ID, n_crews):
         """ This function divies the site pool among all crews. Ordering
             of sites is not changed by function.
         Args:

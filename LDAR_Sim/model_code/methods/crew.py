@@ -31,7 +31,7 @@ class BaseCrew:
         the input parameter file.
     """
 
-    def __init__(self, state, parameters, config, timeseries, deployment_days, id):
+    def __init__(self, state, parameters, config, timeseries, deployment_days, id, site=None):
         """
         Constructs an individual crew based on defined configuration.
         """
@@ -42,6 +42,7 @@ class BaseCrew:
         self.deployment_days = deployment_days
         self.itinerary = None
         self.id = id
+        self.site = site  # Used by stationary deployment methods
         if len(config['scheduling']['LDAR_crew_init_location']) > 0:
             self.lat = float(config['scheduling']
                              ['LDAR_crew_init_location'][1])
