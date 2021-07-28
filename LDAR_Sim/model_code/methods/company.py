@@ -23,6 +23,7 @@ import math
 import numpy as np
 from importlib import import_module
 from generic_functions import get_prop_rate
+from methods.deployment.stationary_company import make_crews
 
 
 class BaseCompany:

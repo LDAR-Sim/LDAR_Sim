@@ -1,10 +1,10 @@
 from datetime import timedelta
 import numpy as np
 
-from methods.deployment.base import sched_crew as base_sched_crew
+from methods.deployment._base import SchedCrew as BaseSchedCrew
 
 
-class Schedule(base_sched_crew):
+class Schedule(BaseSchedCrew):
     def __init__(self, id, lat, lon, state, config, parameters, deployment_days, home_bases=None):
         self.parameters = parameters
         self.config = config
