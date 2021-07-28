@@ -27,53 +27,34 @@ import math
 
 
 class satellite_company:
-    def __init__(self, state, parameters, config, timeseries, module_name):
+    def __init__(self, state, parameters, config, timeseries,module_name):
         """
         Initialize a company to manage the satellite
         """
-        self.name = config['label']
+        self.name = 'satellite'
         self.state = state
         self.parameters = parameters
         self.config = config
         self.timeseries = timeseries
         self.crews = []
-        self.deployment_days = self.state['weather'].deployment_days('satellite')
+        self.deployment_days = self.state['weather'].deployment_days(
+            method_name=self.name,
+            start_date=self.state['t'].start_date,
+            start_work_hour=24,  # Start hour in day
+            consider_weather=parameters['consider_weather'])
         self.timeseries['satellite_prop_sites_avail'] = []
-        self.timeseries['satellite_cost'] = np.zeros(self.parameters['timesteps'])
-        self.timeseries['satellite_eff_flags'] = np.zeros(self.parameters['timesteps'])
-        self.timeseries['satellite_flags_redund1'] = np.zeros(self.parameters['timesteps'])
-        self.timeseries['satellite_flags_redund2'] = np.zeros(self.parameters['timesteps'])
-        self.timeseries['satellite_flags_redund3'] = np.zeros(self.parameters['timesteps'])
-        self.timeseries['satellite_sites_visited'] = np.zeros(self.parameters['timesteps'])
-
-        # load pre-defined orbit grids
-        Dataset = nc.Dataset(self.parameters['methods']['Satellite']['Satellite_grid'], 'r')
-        self.satgrid = Dataset.variables['sat'][:]
-        Dataset.close()
-
-        # load cloud cover data
-        Dataset = nc.Dataset(self.parameters['methods']['Satellite']['CloudCover'], 'r')
-        self.cloudcover = Dataset.variables['tcc'][:]
-        Dataset.close()
-
-        # build a satellite orbit object
-        sat = self.parameters['methods']['Satellite']['label']
-        tlefile = self.parameters['methods']['Satellite']['TLE_file']
-        TLEs = []
-        with open(tlefile) as f:
-            for line in f:
-                TLEs.append(line.rstrip())
-
-        i = 0
-        for x in TLEs:
-            if x == sat:
-                break
-            i += 1
-        TLE_LINES = (TLEs[i+1], TLEs[i+2])
-
-        self.predictor = get_predictor_from_tle_lines(TLE_LINES)
-
-        return
+        self.timeseries['satellite_cost'] = np.zeros(
+            self.parameters['timesteps'])
+        self.timeseries['satellite_eff_flags'] = np.zeros(
+            self.parameters['timesteps'])
+        self.timeseries['satellite_flags_redund1'] = np.zeros(
+            self.parameters['timesteps'])
+        self.timeseries['satellite_flags_redund2'] = np.zeros(
+            self.parameters['timesteps'])
+        self.timeseries['satellite_flags_redund3'] = np.zeros(
+            self.parameters['timesteps'])
+        self.timeseries['satellite_sites_visited'] = np.zeros(
+            self.parameters['timesteps'])
 
         # Assign the correct follow-up threshold
         if self.config['follow_up_thresh'][1] == "absolute":
@@ -83,7 +64,8 @@ class satellite_company:
                 self.config['follow_up_thresh'][0],
                 self.state['empirical_leaks'])
         else:
-            print('Follow-up threshold type not recognized. Must be "absolute" or "proportion".')
+            print(
+                'Follow-up threshold type not recognized. Must be "absolute" or "proportion".')
 
         # Additional variable(s) for each site
         for site in self.state['sites']:
@@ -101,7 +83,7 @@ class satellite_company:
             (len(self.state['weather'].longitude),
              len(self.state['weather'].latitude)))
 
-        # Initialize the individual aircraft crews (the agents)
+        # Initialize the individual satellite (the agents)
         for i in range(config['n_crews']):
             self.crews.append(satellite(state, parameters, config,
                                         timeseries, self.deployment_days, id=i + 1))
@@ -110,7 +92,7 @@ class satellite_company:
 
     def deploy_crews(self):
         """
-        The satellite company tells all the crews to get to work.
+        The aircraft company tells all the crews to get to work.
         """
 
         self.candidate_flags = []
@@ -138,34 +120,36 @@ class satellite_company:
                                     self.state['t'].current_timestep]:
                 available_sites += 1
         prop_avail = available_sites / len(self.state['sites'])
-        self.timeseries['aircraft_prop_sites_avail'].append(prop_avail)
+        self.timeseries['satellite_prop_sites_avail'].append(prop_avail)
+
         return
 
     def flag_sites(self):
         """
         Flag the most important sites for follow-up.
+
         """
         # First, figure out how many sites you're going to choose
-        n_sites_to_flag = len(self.candidate_flags) * self.config['follow_up_ratio']
+        n_sites_to_flag = len(self.candidate_flags) * \
+            self.config['follow_up_ratio']
         n_sites_to_flag = int(math.ceil(n_sites_to_flag))
 
         sites_to_flag = []
-        site_cum_rates = []
+        measured_rates = []
 
         for i in self.candidate_flags:
-            site_cum_rates.append(i['site_cum_rate'])
-
-        site_cum_rates.sort(reverse=True)
-        target_rates = site_cum_rates[:n_sites_to_flag]
+            measured_rates.append(i['site_measured_rate'])
+        measured_rates.sort(reverse=True)
+        target_rates = measured_rates[:n_sites_to_flag]
 
         for i in self.candidate_flags:
-            if i['site_cum_rate'] in target_rates:
+            if i['site_measured_rate'] in target_rates:
                 sites_to_flag.append(i)
 
         for i in sites_to_flag:
             site = i['site']
             leaks_present = i['leaks_present']
-            site_cum_rate = i['site_cum_rate']
+            site_true_rate = i['site_true_rate']
             venting = i['venting']
 
             # If the site is already flagged, your flag is redundant
@@ -186,16 +170,13 @@ class satellite_company:
                         redund2 = True
 
                 if redund2:
-                    self.timeseries['satellite_flags_redund2'][
-                        self.state['t'].current_timestep] += 1
+                    self.timeseries['satellite_flags_redund2'][self.state['t'].current_timestep] += 1
 
                 # Would the site have been chosen without venting?
                 if self.parameters['consider_venting']:
-                    if (site_cum_rate - venting) < self.config['follow_up_thresh']:
+                    if (site_true_rate - venting) < self.config['follow_up_thresh']:
                         self.timeseries['satellite_flags_redund3'][
                             self.state['t'].current_timestep] += 1
-
-            return
 
     def site_reports(self):
         """
@@ -204,7 +185,8 @@ class satellite_company:
         """
 
         for site in self.state['sites']:
-            site['satellite_prop_DDs'] = self.DD_map[site['lon_index'], site['lat_index']]
+            site['satellite_prop_DDs'] = self.DD_map[site['lon_index'],
+                                                     site['lat_index']]
             site['satellite_MCB'] = self.MCB_map[site['lon_index'], site['lat_index']]
 
         return

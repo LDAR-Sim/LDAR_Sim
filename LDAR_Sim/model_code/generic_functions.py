@@ -30,6 +30,10 @@ import matplotlib.pyplot as plt
 import boto3  # for downloading data from AWS
 from botocore.exceptions import ClientError
 import ephem
+from math import atan, atan2, cos, degrees, sin, sqrt
+from shapely.geometry import Polygon
+import datetime
+
 
 
 def gap_calculator(condition_vector):
@@ -291,3 +295,70 @@ def quick_cal_daylight(date, lat, lon):
     sunset = ss
 
     return (sunrise, sunset)
+
+def ecef_to_llh(ecef_km):
+    """
+    covert ecef cooridnate system to latitude, longitude and altitude
+    """
+    a = 6378.1370
+    b = 6356.752314
+
+    p = sqrt(ecef_km[0] ** 2 + ecef_km[1] ** 2)
+    thet = atan(ecef_km[2] * a / (p * b))
+    esq = 1.0 - (b / a) ** 2
+    epsq = (a / b) ** 2 - 1.0
+
+    lat = atan((ecef_km[2] + epsq * b * sin(thet) ** 3) /
+               (p - esq * a * cos(thet) ** 3))
+    lon = atan2(ecef_km[1], ecef_km[0])
+    n = a * a / sqrt(a * a * cos(lat) ** 2 + b ** 2 * sin(lat) ** 2)
+    h = p / cos(lat) - n
+
+    lat = degrees(lat)
+    lon = degrees(lon)
+    return lat, lon, h
+
+
+def init_orbit_poly(predictor, T1, T2, interval):
+    """
+    Grab the esitamted positions of satellite  
+    predictor: orbit path predictor of satellit created by using orbit_predictor package 
+    T1: start datetime 
+    T2: end datetime 
+    interval: time interval of each time step in minutes   
+
+    return: Day: date time of the satellite 
+            Poly: coverage area polygon of the satellite 
+
+    """
+    Poly = []
+    Day = []
+    while T1 != T2:
+        # obtain the position info of the satellite
+        info1 = predictor.get_position(T1)
+        # get position in ecef coordinate system
+        ecef1 = info1.position_ecef
+        # covert ecef to lat, lon, and altitude
+        lat1, lon1, h1 = ecef_to_llh(ecef1)
+
+        # update time
+        st = T1 + datetime.timedelta(minutes=interval)
+        # obtain the position of the satellite
+        info2 = predictor.get_position(st)
+        ecef2 = info2.position_ecef
+        lat2, lon2, h2 = ecef_to_llh(ecef2)
+
+        # get the bounding box of the coverage of satellite between this two time step
+        pt1 = (lon1, lat1+0.1)
+        pt2 = (lon1+0.1, lat1)
+        pt3 = (lon2, lat2-0.1)
+        pt4 = (lon2-0.1, lat2)
+
+        # create that coverage area polygon
+        polygon3 = Polygon([pt1, pt2, pt3, pt4])
+        Poly.append(polygon3)
+        Day.append(T1)
+
+        T1 += datetime.timedelta(minutes=interval)
+
+    return Day, Poly
