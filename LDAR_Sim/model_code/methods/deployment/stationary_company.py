@@ -11,6 +11,10 @@ def make_crews(crews, config, state, parameters, timeseries, deployment_days):
         else:
             n_fixed = int(site['fixed_sensors'])
         for i in range(n_fixed):
+            crew_ID = site['facility_ID'] + '-' + str(i + 1)
+            # Will only accept the first crew assigned to site
+            if not site['crew_ID']:
+                site.update({'crew_ID': crew_ID})
             crews.append(
                 BaseCrew(
                     state,
@@ -18,7 +22,8 @@ def make_crews(crews, config, state, parameters, timeseries, deployment_days):
                     config,
                     timeseries,
                     deployment_days,
-                    id=site['facility_ID'] + '-' + str(i + 1)))
+                    id=crew_ID,
+                    site))
             timeseries['{}_cost'.format(m_name)][state['t'].current_timestep] += \
                 config['up_front_cost']
 
@@ -45,41 +50,24 @@ class Schedule(BaseSchedCompany):
         Returns:
             [type]: [description]
         """
-        site = [site for site in site_pool if site['facility_ID'] == self.site['facility_ID']]
-        return site
+        # site = [site for site in site_pool if site['facility_ID'] == self.site['facility_ID']]
+        return site_pool
 
-    def get_working_crews(self, site_pool, n_crews, sites_per_crew=3):
-        """ Get number of working crews that day. Based on estimate
-            that a crew can do 3 sites per day.
-        Args:
-            site_pool (dict): List of sites
-            n_crews (int): Number of crews
-            sites_per_crew (int, optional): Number of sites a crew can survey in a day.
-            Defaults to 3.
-
-        Returns:
-            int: Number of crews to deploy that day.
-        """
-        n_sites = len(site_pool)
-        n_crews = math.ceil(n_sites/(n_crews*sites_per_crew))
-        # cap workuing crews at max number of crews
-        if n_crews > self.config['n_crews']:
-            n_crews = self.config['n_crews']
-        return n_crews
+    def get_working_crews(self, site_pool,  self.crews):
+        # Passes sites with assigned crews (crew ID)
+        site_pool = [site for site in site_pool if site['crew_ID']]
+        n_working_crews = len(site_pool)
+        return n_working_crews, site_pool
 
     def get_crew_site_list(self, site_pool, crew_idx, n_crews):
         """[summary]
 
         Args:
             site_pool ([type]): [description]
-            crew_id ([type]): [description]
+            crew_ID ([type]): [description]
             n_crews ([type]): [description]
 
         Returns:
             [type]: [description]
         """
-        if crew_idx == 0:
-            return site_pool  # Right now only going to consider the first crew
-            # will fix this as an issue later. #giter'done
-        else:
-            return []
+        return site_pool[crew_idx]

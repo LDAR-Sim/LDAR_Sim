@@ -109,6 +109,7 @@ class LdarSim:
             site.update({'currently_flagged': False})
             site.update({'flagged_by': None})
             site.update({'date_flagged': None})
+            site.update({'crew_ID': None})
 
             site.update({'lat_index': min(
                 range(len(state['weather'].latitude)), key=lambda i: abs(

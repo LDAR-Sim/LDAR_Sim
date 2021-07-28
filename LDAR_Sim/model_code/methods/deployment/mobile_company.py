@@ -49,12 +49,12 @@ class Schedule(BaseSchedCompany):
 
             The goal is to improve the coordiation of LDAR crews when there are
             more than one crew. The crews will only visit the site corresponding to their IDs.
-            e.g., crew_id 0 will only visit site in cluter 0
+            e.g., crew_ID 0 will only visit site in cluter 0
 
             This functionality is only used when geography and route_planning are both enabled.
 
             Returns:
-                create a crew_id related label for each site
+                create a crew_ID related label for each site
         """
         if self.config['scheduling']['route_planning']:
             # Use clustering analysis to assign facilities to each agent,
@@ -78,7 +78,7 @@ class Schedule(BaseSchedCompany):
                 label = np.zeros(len(self.state['sites']))
 
             for i in range(len(self.state['sites'])):
-                self.state['sites'][i]['crew_id'] = label[i]
+                self.state['sites'][i]['crew_ID'] = label[i]
 
     def get_due_sites(self, site_pool):
         """ Retrieve a site list of sites due for screen / survey
@@ -137,7 +137,7 @@ class Schedule(BaseSchedCompany):
             n_crews = self.config['n_crews']
         return n_crews
 
-    def get_crew_site_list(self, site_pool, crew_id, n_crews):
+    def get_crew_site_list(self, site_pool, crew_ID, n_crews):
         """ This function divies the site pool among all crews. Ordering
             of sites is not changed by function.
         Args:
@@ -150,10 +150,10 @@ class Schedule(BaseSchedCompany):
         """
         if self.config['scheduling']['route_planning']:
             # divies the site pool based on clustering analysis
-            crew_site_list = [site for site in site_pool if site['crew_id'] == crew_id]
+            crew_site_list = [site for site in site_pool if site['crew_ID'] == crew_ID]
         else:
             # This offsets by the crew number and increments by the
             # number of crews, n_crews= 3 ,  site_pool = [site[0], site[3], site[6]...]
             if len(site_pool) > 0:
-                crew_site_list = site_pool[crew_id::n_crews]
+                crew_site_list = site_pool[crew_ID::n_crews]
         return crew_site_list
