@@ -1,3 +1,25 @@
+
+# ------------------------------------------------------------------------------
+# Program:     The LDAR Simulator (LDAR-Sim)
+# File:        methods.deployment.mobile_company
+# Purpose:     Mobile company specific deployment classes and methods (ie. Scheduling)
+#
+# Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the MIT License as published
+# by the Free Software Foundation, version 3.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MIT License for more details.
+
+# You should have received a copy of the MIT License
+# along with this program.  If not, see <https://opensource.org/licenses/MIT>.
+#
+# ------------------------------------------------------------------------------
+
 import numpy as np
 from shapely.geometry import Point
 from shapely import speedups
@@ -29,15 +51,17 @@ class Schedule(BaseSchedCrew):
         Dataset.close()
         # obtain TLE file path
         m_name = self.config['label']
-        self.sat = self.config['satellite_name']
-        self.tlefile = self.config['TLE_files']
+        self.sat = self.config[m_name]['satellite_name']
+        self.tlefile = self.config[m_name]['TLE_files']
 
         self.get_orbit_predictor()
         self.get_orbit_path()
 
     def start_day(self, site_pool):
-        '''
-        Find out the site in the site_pool that can be seen by satellite 
+        '''Start day method. Initialize time to accounty for work hours. The
+           site pool that are ready for survey are passed from the company to
+           the satellite to filter out sites that are not viewable, covered
+           by clound, and don't have daylight.
         '''
         # Set start of work, satellite can work 24 hours per day
         self.state['t'].current_date = self.state['t'].current_date.replace(
@@ -60,22 +84,35 @@ class Schedule(BaseSchedCrew):
         return daily_site_plans
 
     def plan_visit(self, site):
+        '''create a visit plan for satellite, the go_to_site
+           are always true if site passed from start_day.
+           We assume the survey time and travel time for Satellite is 0 mins
+           Args:
+               site: a site
+           Returns:
+               list: Daily itinerary:
+                   {'site':(dict),
+                    'go_to_site': (boolean),
+                    'LDAR_mins': (int) travel to and work-onsite mins,
+                    'remaining_mins':(int) minutes remaining in survey at site,
+                    }
+        '''
         return {
             'site': site,
             'go_to_site': True,
-            'LDAR_mins': 0,  # we assume the survey time and travel time for Satellite is 0 mins
+            'LDAR_mins': 0,
             'remaining_mins': 0,
         }
 
     def calc_viewable_sites(self, site_pool):
-        """
-        Subset possible sites that could be surveyed with a given satellite location.
-        Generic utility function to check whether a satellite can see a given patch of ground
-        satstate: dictionary containing satellite lon, lat, and altitude
-        lon: longitude of location to assess
-        lat: latitude of location to assess
-        975 m is the average elevation in Alberta 
-        Returns True to denote the satellite can see the location and False otherwise
+        """Generic utility function to check whether a satellite can see
+           a given patch of ground. Returns True to denote the satellite
+           can see the location and False otherwise.
+           Args:
+               site: a site
+
+           Returns:
+               valid_site: boolean
         """
         valid_site = []
         # ind = 0
@@ -95,9 +132,12 @@ class Schedule(BaseSchedCrew):
         return valid_site
 
     def assess_weather(self, site):
-        """
-        Function to perform satellite specific checks of the weather for the purposes of visiting
-        site: the site
+        """Check whether the site is covered by clound or have enough daylight
+            Args:
+             site: a site
+
+            Returns:
+                valid_site: boolean
         """
 
         site_lat = np.float16(site['lat'])
@@ -128,10 +168,12 @@ class Schedule(BaseSchedCrew):
         else:
             sat_cc = False
 
-        # do some checks and return true or false whether this site checks our weather checks
         return (sat_daylight, sat_cc)
 
     def get_orbit_predictor(self):
+        """ Get the orbit predictor of satellite based on
+            TLE file and satellite name specified in the input parameter.
+        """
         # build a satellite orbit object
         wd = self.parameters['working_directory']
         TLEs = []
@@ -148,8 +190,10 @@ class Schedule(BaseSchedCrew):
         return
 
     def get_orbit_path(self):
-
-        #### initiate the orbit path ####
+        '''Get the orbit path polygon for a time interval based on
+           orbit predictor of a satellite.
+        '''
+        # initiate the orbit path
         T1 = self.state['t'].start_date
         T2 = self.state['t'].end_date
         # calculate the orbit path polygon for satellite
@@ -163,9 +207,9 @@ class Schedule(BaseSchedCrew):
         return
 
     def update_schedule(self, work_mins):
+        '''Update the time
+        '''
         self.state['t'].current_date += timedelta(minutes=int(work_mins))
 
     def end_day(self, site_pool, itinerary):
-        """ Travel home; update time to travel to homebase
-        """
         return

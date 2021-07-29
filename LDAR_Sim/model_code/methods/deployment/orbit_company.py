@@ -1,3 +1,25 @@
+
+# ------------------------------------------------------------------------------
+# Program:     The LDAR Simulator (LDAR-Sim)
+# File:        methods.deployment.mobile_company
+# Purpose:     Mobile company specific deployment classes and methods (ie. Scheduling)
+#
+# Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the MIT License as published
+# by the Free Software Foundation, version 3.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MIT License for more details.
+
+# You should have received a copy of the MIT License
+# along with this program.  If not, see <https://opensource.org/licenses/MIT>.
+#
+# ------------------------------------------------------------------------------
+
 from methods.deployment._base import SchedCompany as BaseSchedCompany
 
 
@@ -21,7 +43,8 @@ class Schedule(BaseSchedCompany):
             self.deployment_years = self.config['scheduling']['deployment_years']
         else:
             self.deployment_years = list(
-                range(self.state['t'].start_date.year, self.state['t'].end_date.year+1))
+                range(self.state['t'].start_date.year,
+                      self.state['t'].end_date.year+1))
 
         if len(self.config['scheduling']['deployment_months']) > 0:
             self.deployment_months = self.config['scheduling']['deployment_months']
