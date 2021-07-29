@@ -298,22 +298,33 @@ def quick_cal_daylight(date, lat, lon):
 
 def ecef_to_llh(ecef_km):
     """
-    covert ecef cooridnate system to latitude, longitude and altitude
+    Converts the Earth-Centered Earth-Fixed (ECEF) coordinates (x, y, z) to 
+    (WGS-84) Geodetic point (lat, lon, h)
+    ecef_km contains three elements
+    ecef_km[0] is the x coordiante of satellite in ecef in km
+    ecef_km[1] is the y coordiante of satellite in ecef in km 
+    ecef_km[2] is the z coordiante of satellite in ecef in km 
     """
+    # WGS-84 Earth semimajor axis (km)
     a = 6378.1370
+    # Derived Earth semimajor axis (km)
     b = 6356.752314
-
+    # pythagoras to calculate two earth's minor axises
     p = sqrt(ecef_km[0] ** 2 + ecef_km[1] ** 2)
+    # Calculate the angle between orbit object and earth center
     thet = atan(ecef_km[2] * a / (p * b))
+    # Caluclate ellipsoid flatness and ellipsoid flatness factor
     esq = 1.0 - (b / a) ** 2
     epsq = (a / b) ** 2 - 1.0
-
+    # calculate latitude
     lat = atan((ecef_km[2] + epsq * b * sin(thet) ** 3) /
                (p - esq * a * cos(thet) ** 3))
+    # calculate longitude
     lon = atan2(ecef_km[1], ecef_km[0])
+    # Calculate prime vertical radius of curvature at latitude
     n = a * a / sqrt(a * a * cos(lat) ** 2 + b ** 2 * sin(lat) ** 2)
+    # Calculate altitude
     h = p / cos(lat) - n
-
     lat = degrees(lat)
     lon = degrees(lon)
     return lat, lon, h
@@ -327,12 +338,12 @@ def init_orbit_poly(predictor, T1, T2, interval):
     T2: end datetime 
     interval: time interval of each time step in minutes   
 
-    return: Day: date time of the satellite 
-            Poly: coverage area polygon of the satellite 
+    return: day_list: date time of the satellite 
+            polygon_list: coverage area polygon of the satellite 
 
     """
-    Poly = []
-    Day = []
+    polygon_list = []
+    day_list = []
     while T1 != T2:
         # obtain the position info of the satellite
         info1 = predictor.get_position(T1)
@@ -356,9 +367,10 @@ def init_orbit_poly(predictor, T1, T2, interval):
 
         # create that coverage area polygon
         polygon3 = Polygon([pt1, pt2, pt3, pt4])
-        Poly.append(polygon3)
-        Day.append(T1)
+        polygon_list.append(polygon3)
+        day_list.append(T1)
 
         T1 += datetime.timedelta(minutes=interval)
 
-    return Day, Poly
+    return day_list, polygon_list
+
