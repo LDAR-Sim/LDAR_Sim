@@ -50,8 +50,8 @@ class satellite:
         Dataset.close()
 
         # build a satellite orbit object
-        sat = self.parameters['methods']['satellite']['satellite_name']
-        tlefile = self.parameters['methods']['satellite']['TLE_files']
+        sat = self.config['satellite_name']
+        tlefile = self.config['TLE_files']
         TLEs = []
         with open(wd+tlefile) as f:
             for line in f:
@@ -102,7 +102,7 @@ class satellite:
 
         if self.worked_today:
             self.timeseries['satellite_cost'][self.state['t'].current_timestep] += \
-                self.parameters['methods']['satellite']['cost_per_day']
+                self.config['cost_per_day']
 
         return
 

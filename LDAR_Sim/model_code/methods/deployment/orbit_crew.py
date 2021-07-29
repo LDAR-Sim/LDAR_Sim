@@ -29,8 +29,8 @@ class Schedule(BaseSchedCrew):
         Dataset.close()
         # obtain TLE file path
         m_name = self.config['label']
-        self.sat = self.parameters['methods'][m_name]['satellite_name']
-        self.tlefile = self.parameters['methods'][m_name]['TLE_files']
+        self.sat = self.config[m_name]['satellite_name']
+        self.tlefile = self.config[m_name]['TLE_files']
 
         self.get_orbit_predictor()
         self.get_orbit_path()
@@ -165,7 +165,7 @@ class Schedule(BaseSchedCrew):
     def update_schedule(self, work_mins):
         self.state['t'].current_date += timedelta(minutes=int(work_mins))
 
-    def end_day(self, site_pool,itinerary):
+    def end_day(self, site_pool, itinerary):
         """ Travel home; update time to travel to homebase
         """
         return
