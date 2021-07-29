@@ -27,7 +27,7 @@ import math
 
 
 class satellite_company:
-    def __init__(self, state, parameters, config, timeseries,module_name):
+    def __init__(self, state, parameters, config, timeseries, module_name):
         """
         Initialize a company to manage the satellite
         """
@@ -92,7 +92,7 @@ class satellite_company:
 
     def deploy_crews(self):
         """
-        The aircraft company tells all the crews to get to work.
+        The stellite company tells all the crews to get to work.
         """
 
         self.candidate_flags = []
