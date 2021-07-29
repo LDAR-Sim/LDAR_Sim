@@ -19,11 +19,6 @@
 #
 # ------------------------------------------------------------------------------
 
-
-import numpy as np
-import pandas as pd
-from geography.homebase import find_homebase, find_homebase_opt
-from geography.distance import get_distance
 from methods.deployment._base import SchedCrew as BaseSchedCrew
 
 
@@ -48,50 +43,22 @@ class Schedule(BaseSchedCrew):
         # define a list of home bases for crew and redefine the the initial location of crew
 
     def start_day(self, site_pool):
-        """ Start day method. Initialize time to account for work hours, and set
-            the crews location.
+        """ Start day method. Get daily itinerary for crew. Can include other functions
+            i.e. initialize time to account for work hours, and set the crews location.
         Args:
             site_pool (list): List of sites ready for survey.
 
         Returns:
-            list: Daily itinerary:
+            list: daily itinerary:
                 {'site': (dict),
                 'go_to_site: (boolean),
                 'LDAR_mins': (int) work-onsite mins,
                 'remaining_mins':(int)  minutes remaining in survey at site
                 }
         """
-        return site_plans_today
+        return  # itinerary
 
     def end_day(self, site_pool):
         """ End day function
         """
         self.update_schedule(self.last_site_travel_home_min)
-
-    def plan_visit(self, site, next_site=None):
-        """ 
-        Args:
-            site (dict): single site
-            next_site (dict): single site used for estimating next
-
-        Returns:
-            {
-                'site': same as input
-                'go_to_site': whether there is enough time to go to site
-                'LDAR_mins': survey time 
-                'remaining_mins': minutes left in survey
-        }
-        """
-        name = self.config['label']
-        site['{}_attempted_today?'.format(name)] = True
-
-        # Check weather conditions
-        if not self.deployment_days[site['lon_index'], site['lat_index'],
-                                    self.state['t'].current_timestep]:
-            return None
-        return {
-            'site': site,
-            'go_to_site': None,
-            'LDAR_mins': None,
-            'remaining_mins': None,
-        }

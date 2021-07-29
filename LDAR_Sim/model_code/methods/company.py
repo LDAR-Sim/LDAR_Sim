@@ -108,17 +108,18 @@ class BaseCompany:
                 site_pool = self.state['flags']
             else:
                 site_pool = self.state['sites']
-            # Get sites that are ready, in order of most to least neglected
+            # Get sites that are ready for survey
             site_pool = self.schedule.get_due_sites(site_pool)
             # Get number of crews working that day based on number of sites ready for visit
             if self.config['deployment_type'] == 'stationary':
-                # Means that there is one crew per site.
-                n_working_crews, site_pool = self.schedule.get_working_crews(site_pool)
+                # assume all crews/sensors are working
+                n_working_crews = len(self.crews)
             else:
                 n_working_crews = self.schedule.get_working_crews(site_pool, self.config['n_crews'])
             for idx in range(n_working_crews):
                 # Triage sites to crew
-                crew_site_list = self.schedule.get_crew_site_list(site_pool, idx, n_working_crews)
+                crew_site_list = self.schedule.get_crew_site_list(site_pool, idx,
+                                                                  n_working_crews, self.crews)
                 # Send crew to site
                 if len(crew_site_list) > 0:
                     self.crews[idx].work_a_day(crew_site_list, self.candidate_flags)

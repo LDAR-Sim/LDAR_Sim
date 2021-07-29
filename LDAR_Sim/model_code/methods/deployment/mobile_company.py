@@ -28,6 +28,18 @@ from methods.crew import BaseCrew
 
 
 def make_crews(crews, config, state, parameters, timeseries, deployment_days):
+    """ Generate crews using BaseCrew class.
+
+    Args:
+        crews (list): List of crews
+        config (dict): Method parameters
+        state (dict): Current state of LDAR-Sim
+        parameters (dict): Program parameters
+        timeseries (dict): Timeseries
+        deployment_days (list): days method can be deployed based on weather
+
+    --- Required in module.company.BaseCompany ---
+    """
     for i in range(config['n_crews']):
         crews.append(BaseCrew(state, parameters, config,
                               timeseries, deployment_days, id=i + 1))
@@ -137,13 +149,15 @@ class Schedule(BaseSchedCompany):
             n_crews = self.config['n_crews']
         return n_crews
 
-    def get_crew_site_list(self, site_pool, crew_ID, n_crews):
+    def get_crew_site_list(self, site_pool, crew_ID, n_crews, crews=None):
         """ This function divies the site pool among all crews. Ordering
             of sites is not changed by function.
         Args:
             site_pool (dict): List of sites
             crew_num (int): Integer index of crew
             n_crews (int): Number of crews
+            crews (dict): List of crew instances- not used in mobile but
+                          required for other methods
 
         Returns:
             dict: Crew site list (subset of site_pool)
