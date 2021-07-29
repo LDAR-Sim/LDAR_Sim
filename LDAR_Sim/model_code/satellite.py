@@ -65,7 +65,7 @@ class satellite:
 
         self.predictor = get_predictor_from_tle_lines(TLE_LINES)
 
-        #### initiate the orbit path by using bulding satellite predictor ####
+        # initiate the orbit path by using bulding satellite predictor
         T1 = self.state['t'].start_date
         T2 = self.state['t'].end_date
 
@@ -86,10 +86,9 @@ class satellite:
         """
         self.worked_today = False
         self.candidate_flags = candidate_flags
-        # work_hours = None -> 24 hours
+        # satellites work 24 days an hour, but need to check daylight
+        # at the site every timestep if daylight matters to the satellite.
 
-        # satellites work 24 days an hour, but need to check daylight every chosen site if daylight
-        # matters to the satellite.
         self.state['t'].current_date = self.state['t'].current_date.replace(
             hour=1)  # Set the start of work day
         while self.state['t'].current_date.hour < 24:
@@ -107,14 +106,14 @@ class satellite:
         return
 
     def calc_viewable_sites(self):
-        """
-        Subset possible sites that could be surveyed with a given satellite location.
-        Generic utility function to check whether a satellite can see a given patch of ground
-        satstate: dictionary containing satellite lon, lat, and altitude
-        lon: longitude of location to assess
-        lat: latitude of location to assess
-        975 m is the average elevation in Alberta 
-        Returns True to denote the satellite can see the location and False otherwise
+        """Generic utility function to check whether a satellite can see
+           a given patch of ground. Returns True to denote the satellite
+           can see the location and False otherwise.
+           Args:
+               site: a site
+
+           Returns:
+               valid_site: boolean
         """
         valid_site_indices = []
         # ind = 0
@@ -139,9 +138,12 @@ class satellite:
         return (valid_site_indices)
 
     def assess_weather(self, site):
-        """
-        Function to perform satellite specific checks of the weather for the purposes of visiting
-        site: the site
+        """Check whether the site is covered by clound or have enough daylight
+            Args:
+             site: a site
+
+            Returns:
+                valid_site: boolean
         """
         # obtain the geo index of site
         site_lat = np.float16(site['lat'])
@@ -162,7 +164,8 @@ class satellite:
         # check cloud cover
         CC = self.cloudcover[ti, lat_idx, lon_idx] * 100
         CC = round(CC)
-        # cloud cover is a value that represent the proportion of a grid cell covered by cloud
+        # cloud cover is a value that represent the proportion of
+        # a grid cell covered by cloud
         arr = np.zeros(100)
         arr[:CC] = 1
         # based on the cloud cover, we do a binoary random sample (0 or 1)
@@ -173,7 +176,6 @@ class satellite:
         else:
             sat_cc = False
 
-        # do some checks and return true or false whether this site checks our weather checks
         return (sat_daylight, sat_cc)
 
     def check_detection(self, site, site_cum_rate):
@@ -191,8 +193,8 @@ class satellite:
         ti = self.state['t'].current_timestep
         U = windspeed[ti, lat_idx, lon_idx]
         Q_min = 5.79 * (1.39/U)
-        # set MDL to 0 for testing #####
-        #Q_min = 0
+        # set MDL to 0 for testing
+        # Q_min = 0
 
         return (site_cum_rate > Q_min)
 
@@ -220,7 +222,8 @@ class satellite:
         facility_ID = None  # The facility ID gets assigned if a site is found
         found_site = False  # The found site flag is updated if a site is found
 
-        # Then, starting with the most neglected site, check if conditions are suitable for LDAR
+        # Then, starting with the most neglected site,
+        # check if conditions are suitable for LDAR
         for i, site in enumerate(self.state['sites']):
 
             # Check if the site is viewable
@@ -229,13 +232,15 @@ class satellite:
                 # If the site hasn't been attempted yet today
                 if not site['attempted_today_satellite?']:
 
-                    # If the site is 'unripened' (i.e. hasn't met the minimum interval set out in the LDAR regulations/policy), break out - no LDAR today
-                    if site['satellite_t_since_last_LDAR'] < self.parameters['methods']['satellite']['min_interval']:
+                    # If the site hasn't met the minimum interval
+                    # break out - no LDAR today
+                    if site['satellite_t_since_last_LDAR'] < self.config['min_interval']:
                         self.state['t'].current_date = self.state['t'].current_date.replace(
                             hour=23)
                         break
 
-                    # Else if site-specific required visits have not been met for the year
+                    # Else if site-specific required visits haven't
+                    # been met for the year
                     elif site['surveys_done_this_year_satellite'] < int(site['satellite_RS']):
 
                         # Check the weather for that site
@@ -271,7 +276,7 @@ class satellite:
 
         # Add vented emissions
         venting = 0
-        if self.parameters['consider_venting'] == True:
+        if self.parameters['consider_venting']:
             venting = self.state['empirical_vents'][np.random.randint(
                 0, len(self.state['empirical_vents']))]
             site_cum_rate += venting
@@ -289,7 +294,7 @@ class satellite:
             # Flag the site if conditions for flagging are met
             if flag_site:
 
-                # Put all necessary information in a dictionary to be assessed at end of day
+                # Put all necessary information in a dictionary
                 site_dict = {
                     'site': site,
                     'leaks_present': leaks_present,
