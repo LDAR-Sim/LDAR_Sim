@@ -84,7 +84,7 @@ class satellite:
         """
         Go to work and find the leaks for a given day.
         """
-        self.worked_today = False
+        self.worked_today = True
         self.candidate_flags = candidate_flags
         # satellites work 24 days an hour, but need to check daylight
         # at the site every timestep if daylight matters to the satellite.
@@ -97,7 +97,6 @@ class satellite:
             if not found_site:
                 break  # Break out if no site can be found
             self.visit_site(facility_ID, site)
-            self.worked_today = True
 
         if self.worked_today:
             self.timeseries['satellite_cost'][self.state['t'].current_timestep] += \
@@ -285,7 +284,7 @@ class satellite:
         if self.check_detection(site, site_cum_rate):
 
             # quantify emissions
-            QE = self.quantify(site, site_cum_rate)
+            QE = self.quantify(site_cum_rate)
             if QE > self.config['follow_up_thresh']:
                 flag_site = True
             else:
