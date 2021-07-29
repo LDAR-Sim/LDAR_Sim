@@ -21,6 +21,25 @@
 
 
 from methods.deployment._base import SchedCompany as BaseSchedCompany
+from methods.crew import BaseCrew
+
+
+def make_crews(crews, config, state, parameters, timeseries, deployment_days):
+    """ Generate crews using BaseCrew class.
+
+    Args:
+        crews (list): List of crews
+        config (dict): Method parameters
+        state (dict): Current state of LDAR-Sim
+        parameters (dict): Program parameters
+        timeseries (dict): Timeseries
+        deployment_days (list): days method can be deployed based on weather
+
+    --- Required in module.company.BaseCompany ---
+    """
+    for i in range(config['n_crews']):
+        crews.append(BaseCrew(state, parameters, config,
+                              timeseries, deployment_days, id=i + 1))
 
 
 class Schedule(BaseSchedCompany):
@@ -34,7 +53,8 @@ class Schedule(BaseSchedCompany):
     # base.company ->  can_deploy_today()
 
     def assign_agents(self):
-        """ assign agents to sites
+        """ assign agents to sites.
+            --- Required in module.company.BaseCompany ---
         """
 
     def get_due_sites(self, site_pool):
@@ -61,7 +81,7 @@ class Schedule(BaseSchedCompany):
         return n_crews
 
     def get_crew_site_list(self, site_pool, crew_ID, n_crews):
-        """ This function divies the site pool among all crews. Ordering
+        """ Allocates site pool among all crews. Ordering
             of sites is not changed by function.
         Args:
             site_pool (dict): List of sites
@@ -71,4 +91,4 @@ class Schedule(BaseSchedCompany):
         Returns:
             dict: Crew site list (subset of site_pool)
         """
-        return crew_site_list
+        return  # crew_site_list

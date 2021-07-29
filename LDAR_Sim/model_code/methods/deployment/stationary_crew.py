@@ -1,5 +1,23 @@
-from datetime import timedelta
-import numpy as np
+# ------------------------------------------------------------------------------
+# Program:     The LDAR Simulator (LDAR-Sim)
+# File:        methods.deployment.stationary_crew
+# Purpose:     Stationary crew specific deployment classes and methods (ie. Scheduling)
+#
+# Copyright (C) 2018-2021  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the MIT License as published
+# by the Free Software Foundation, version 3.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MIT License for more details.
+
+# You should have received a copy of the MIT License
+# along with this program.  If not, see <https://opensource.org/licenses/MIT>.
+#
+# ------------------------------------------------------------------------------
 
 from methods.deployment._base import SchedCrew as BaseSchedCrew
 
@@ -10,56 +28,44 @@ class Schedule(BaseSchedCrew):
         self.config = config
         self.state = state
         self.deployment_days = deployment_days
-        self.crew_lat = lat
-        self.crew_lon = lon
-        self.work_hours = None
-        self.start_hour = None
-        self.end_hour = None
-        self.allowed_end_time = None
-        self.rollover = {}
         self.scheduling = self.config['scheduling']
 
-    # --- inherited ---
-    # base.crew ->  get_work_hours()
+    # --- inherited methods ---
+    # _base.crew ->  get_work_hours()
+    # _base.crew ->  update_schedule()
 
-    def plan_visit(self, site, next_site=None):
-        """ Check survey and travel times and see if there is enough time
-            to go to site. If a site survey was started on a previous day
-            the amount of minutes rolled over will be used for survey time.
+    def start_day(self, site_pool):
+        """ Start day method. Get daily itinerary for crew.
 
         Args:
-            site (dict): single site
+            site_pool (list): List of sites ready for survey.
 
         Returns:
-            {
-                'site': same as input
-                'go_to_site': whether there is enough time to go to site
-                'travel_to_mins': travel time in minutes
-                'travel_home_mins': travel time in minutes
-                'LDAR_mins_onsite': minutes onsite
-                'LDAR_mins': travel to and survey time (excludes travel home time)
-                'remaining_mins': minutes left in survey
-        }
+            list: daily itinerary:
+                {'site': (dict),
+                'go_to_site: (boolean),
+                'LDAR_mins': (int) Always zero for Stationary
+                'remaining_mins':(int)  Always zero for Stationary
+                }
         """
         name = self.config['label']
-        site['{}_attempted_today?'.format(name)] = True
-        # Cannot survey because of weather
-        if not self.deployment_days[site['lon_index'], site['lat_index'],
+        itinerary = []
+        for site in site_pool:
+            site['{}_attempted_today?'.format(name)] = True
+            # Check weather conditions
+            if self.deployment_days[site['lon_index'], site['lat_index'],
                                     self.state['t'].current_timestep]:
-            return None
-        return {
-            'site': site,
-            'go_to_site': True,
-            # Stationary has no set LDAR minutes
-            'LDAR_mins': 0,
-            'remaining_mins': 0,
-        }
+                site_plan = {
+                    'site': site,
+                    'go_to_site': True,
+                    # Stationary has no set LDAR minutes
+                    'LDAR_mins': 0,
+                    'remaining_mins': 0,
+                }
+                itinerary.append(site_plan)
+        return itinerary
 
-    def update_schedule(self, work_mins):
-        return
-
-    def start_day(self):
-        return
-
-    def end_day(self):
+    def end_day(self, site_pool, itinerary):
+        """ End day function
+        """
         return
