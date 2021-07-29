@@ -50,9 +50,8 @@ class Schedule(BaseSchedCrew):
         self.cloudcover = Dataset.variables['tcc'][:]
         Dataset.close()
         # obtain TLE file path
-        m_name = self.config['label']
-        self.sat = self.config[m_name]['satellite_name']
-        self.tlefile = self.config[m_name]['TLE_files']
+        self.sat = self.config['satellite_name']
+        self.tlefile = self.config['TLE_files']
 
         self.get_orbit_predictor()
         self.get_orbit_path()
