@@ -36,8 +36,8 @@ def detect_emissions(self, site, leaks_present, equipment_rates, site_true_rate,
     windspeed = self.state['weather'].winds[ti, lat_idx, lon_idx]
     # Calculate MDL
     Q_min = 5.79 * (1.39/windspeed)
-    # set MDL to 0 for testing #####
-    #Q_min = 0
+    # set MDL to 0 for testing
+    # Q_min = 0
 
     # check detection
     if site_true_rate > Q_min:
@@ -48,7 +48,8 @@ def detect_emissions(self, site, leaks_present, equipment_rates, site_true_rate,
 
         # If source is above follow-up threshold
         if site_measured_rate > self.config['follow_up_thresh']:
-            # Put all necessary information in a dictionary to be assessed at end of day
+            # Put all necessary information in a dictionary to
+            # be assessed at end of day
             site_dict = {
                 'site': site,
                 'leaks_present': leaks_present,
