@@ -17,10 +17,13 @@ xlrd = "==2.0.1"
 plotnine = "==0.7.1"
 ephem = "==4.0.0.2"
 gdal = {path = "../install/windows_python_wheels/GDAL-3.0.4-cp37-cp37m-win_amd64.whl"}
+boto3 = "==1.16.63"
+scipy = "==1.6.3"
+pyyaml = "==5.4.1"
+scikit-learn = "==0.24.2"
+flake8 = "==3.9.2"
 shapely = {path = "../install/windows_python_wheels/Shapely-1.7.1-cp37-cp37m-win_amd64.whl"}
 orbit_predictor = "==1.14.2"
-boto3 = "==1.16.63"
-pyyaml = "==5.4.1"
 
 [requires]
 python_version = "3.7"
