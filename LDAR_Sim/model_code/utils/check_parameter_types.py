@@ -33,7 +33,15 @@ def check_types(default, test, omit_keys = None, fatal = False):
     if omit_keys is None:
         omit_keys = []
 
+    # Perform type checking, allow integer inputs to be passed through as floats (but not reverse)
     if type(default) is type(test):
+        type_ok = True
+    elif type(default) is float and type(test) is int:
+        type_ok = True
+    else:
+        type_ok = False
+
+    if type_ok:
         # Proceed to test for dict or list types to recursively examine
         if isinstance(test, dict):
             for i in test:
