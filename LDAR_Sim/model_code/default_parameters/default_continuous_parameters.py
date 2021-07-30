@@ -1,7 +1,7 @@
 # ------------------------------------------------------------------------------
 # Program:     The LDAR Simulator (LDAR-Sim)
-# File:        default_aircraft_parameters
-# Purpose:     Default aircraft parameters
+# File:        default_continuous_parameters
+# Purpose:     Default continuous parameters
 #
 # Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
 #
@@ -19,10 +19,12 @@
 #
 # ------------------------------------------------------------------------------
 
-aircraft_parameters = {
-    'label': 'aircraft',
-    'module': 'dummy',  # TEMPORARY for backwards compatibility
-    'deployment_type': 'mobile',
+default_continuous_parameters = {
+    'version': '2.0',
+    'parameter_level': 'method',
+    'label': 'Cont',
+    'module': 'dummy',
+    'deployment_type': 'stationary',
     'measurement_scale': "equipment",
     'sensor': 'default',
     'is_follow_up': False,
@@ -30,20 +32,20 @@ aircraft_parameters = {
     'min_temp': -30,
     'max_wind': 10,
     'max_precip': 1,
-    'max_workday': 8,
-    'cost_per_day': 10000,
+    'up_front_cost': 500,
+    'cost_per_day': 1,
     'follow_up_thresh': [0, "absolute"],
     'follow_up_ratio': 1,
-    't_bw_sites': 10,
+    'time_to_detection': 7,
     'reporting_delay': 2,
     'MDL': 0.01,
     'QE': 0,
     'consider_daylight': False,
     'scheduling': {
         'route_planning': False,
-        'home_bases_files': 'Airport_AB_Coordinates.csv',
+        'home_bases_files': '',
         'speed_list': [],
-        'LDAR_crew_init_location': [-114.062019, 51.044270],
+        'LDAR_crew_init_location': [],
         'deployment_years': [],
         'deployment_months': [],
     }

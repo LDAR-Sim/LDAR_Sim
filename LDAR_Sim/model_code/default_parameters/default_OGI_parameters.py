@@ -1,7 +1,7 @@
 # ------------------------------------------------------------------------------
 # Program:     The LDAR Simulator (LDAR-Sim)
-# File:        default_truck_parameters
-# Purpose:     Default truck parameters
+# File:        default_OGI_parameters
+# Purpose:     Default OGI parameters
 #
 # Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
 #
@@ -19,22 +19,24 @@
 #
 # ------------------------------------------------------------------------------
 
-truck_parameters = {
-    'label': 'truck',
-    'module': 'truck',
+default_OGI_parameters = {
+    'version': '2.0',
+    'parameter_level': 'method',
+    'label': 'OGI',
+    'module': 'dummy',
     'deployment_type': 'mobile',
+    'measurement_scale': "component",
+    'sensor': 'OGI_camera',
+    'is_follow_up': False,
     'n_crews': 1,
-    'min_temp': -40,
-    'max_wind': 20,
-    'max_precip': 0.01,
+    'min_temp': -20,
+    'max_wind': 10,
+    'max_precip': 0.1,
     'max_workday': 8,
-    'measurement_scale': "equipment",
-    'cost_per_day': 2000,
-    'follow_up_thresh': [0, "absolute"],
-    'follow_up_ratio': 1,
+    'cost_per_day': 2500,
     'reporting_delay': 2,
-    'MDL': 0.05,
-    'QE': 0,
+    't_bw_sites': 'time_offsite_ground.csv',
+    'MDL': [0.01275, 2.78e-6],
     'consider_daylight': False,
     'scheduling': {
         'route_planning': False,
