@@ -26,6 +26,264 @@ To support wider use of LDAR-Sim, the University of Calgary and Highwood Emissio
 
 By detailing the model inputs, this report creates the technical foundation for adding new functionality and enabling wider use of the model. This document will be revised continuously as modules, inputs, and functionality are added to or removed from LDAR-Sim.
 
+# Running the Model
+
+To run the model, supply one or more input parameter files as arguments to the program. The main function is called `ldar_sim_main.py` and is the main entrypoint to the model.
+
+```buildoutcfg
+python ldar_sim_main.py parameter_file1.txt parameter_file2.txt
+```
+
+Alternatively, one can directly specify the parameters in `ldar_sim_main.py`; however, this is discouraged as it involves changing the model to run different programs.
+
+We recommend running the model with a working directory set to /LDAR_Sim/model_code to ensure the relative file references in default parameters work properly.
+
+## Parameter File Structure
+
+Parameter files are all key-value pairs (e.g., Python dictionary), with multiple levels of nesting. The model runs with 3 main levels in a hierarchy:
+
+- `global`: global parameters that are common across the simulation such as system parameters, etc.
+- `program`: program parameters that relate to a specific emissions reduction program, of which there could be multiple within a given simulation.
+- `method`: emissions reduction methods (e.g., specific LDAR technologies or LDAR companies) that are deployed within a program. Methods are specified in a given program for deployment.
+
+A typical simulation would involve at least two programs, a reference program and a test program. The reference program could deploy one reference method. The test program could deploy two new LDAR methods. Each program would be run on the asset base multiple times through time, to create a statistical representation of the emissions and cost data. Finally, the statistical distribution of the reference program can be compared with the statistical distribution of the test program. It is often the differences between the programs that represents the important information that is of interest to users of LDAR-Sim.
+
+Here is an example of the hierarchy:
+
+```buildoutcfg
+Global parameters
+Programs:
+    Reference program:
+        Reference LDAR method
+    Test program:
+        New LDAR method 1
+        New LDAR method 2
+```
+
+## Parameter file usage
+
+We recommend supplying LDAR-Sim with a full set of parameters, copied from the default parameters in the `inputs_template` folder and modified for your purposes. This will ensure you are familiar with the parameters you have chosen to run the model.
+
+However, it may be more convenient once you are familiar with how parameter files update each other to use multiple parameter files to create your simulations and rely upon the default parameters.
+
+All simulations using multiple parameter files are created the following way:
+1. default parameters in the `inputs_template` folder are read into the model.
+2. each parameter file is read on top of the respective parameter set, updating only the keys that are supplied. This occurs for every level in the hierarchy, for every program, and for every method used.
+
+Parameter files are read on top of each other, starting with the default set of parameters. How does this work? Here is an example `parameter_file1.txt`:
+
+```buildoutcfg
+parameters = {
+    'version': '2.0',
+    'n_simulations': 30,
+    'LPR': 0.0065,
+}
+```
+
+This will revise the `n_simulations` key to 30, from whatever was default, and the `LPR` key to 0.0065, from whatever was default. Next, `parameter_file2.txt` is read, which looks like this:
+
+```buildoutcfg
+parameters = {
+    'version': '2.0',
+    'n_simulations': 3,
+}
+```
+
+This will replace the `n_simulations` key with 3 (instead of 30), but leave the `LPR` key, and all other parameters in the model untouched. The model will now run with parameters that look like this:
+
+```buildoutcfg
+parameters = {
+    'version': '2.0',
+    'n_simulations': 3,
+    'LPR': 0.0065,
+    .... ALL OTHER PARAMETERS RUN WITH DEFAULT VALUES ....
+}
+```
+
+Keep in mind that only 2 parameters have been changed with these parameter files - all other parameters run with the default values. We have attempted to choose representative defaults, but be aware the default values may not be what is appropriate for your use case - it is your responsibility to verify the default parameters are appropriate.
+
+In this example, changing the `n_simulations` key to 3 makes the model run faster and provides a way to test the model without waiting for it to complete 30 simulations. A reasonable workflow with these parameters would be something like running the model in a test configuration with:
+
+```buildoutcfg
+python ldar_sim_main.py parameter_file1.txt parameter_file2.txt
+```
+
+Then, when comfortable understanding the outputs and ready to run the model for longer to get more statistically valid results, run:
+
+```buildoutcfg
+python ldar_sim_main.py parameter_file1.txt
+```
+
+The model will now run for the full 30 simulations because we did not load `parameter_file2.txt` and the `n_simulations` key did not get overwritten to 3. Essentially `parameter_file2.txt` is a run configuration for testing, it is something you could add onto any simulation you like to test out the configuration, then drop it when you are ready to get production results.
+
+To ensure reproducibility, the full set of parameters are written in the output directory so the model run can be reproduced or interrogated.
+
+Keep in mind that the **order matters** - if you change around the order that parameter files are read in, the parameters in the end will be different.
+
+The example above focused on a testing run configuration, but the functionality is designed to be used to enable modularization. For example, parameter files can be modularized into categories like:
+
+- specific asset bases and infrastructure types
+- specific program definitions
+- specific method definitions
+- specific run configurations (e.g., as example above)
+- specific scheduling configurations
+- specific computer systems
+
+For example, running an existing program with an existing collection of methods in a new jurisdiction is as simple as just revising the asset parameter file to the new set of sites, leaving the other parameter files untouched.
+
+While global parameters are straightforward to specify this way, and the above example shows how to do this - a few extra parameters are required to directly specify programs or methods, which are at different levels in the hierarchy.
+
+## LDAR-Sim Parameter Hierarchy
+
+LDAR-Sim uses a 3 level hierarchy of simulations, programs, and methods. To tell LDAR-Sim what level in the hierarchy your parameter file is destined for, you should specify a `parameter_level` parameter that will specify what level your parameter file is aimed at - otherwise LDAR-Sim will interpret it as global.
+
+The `parameter_level` parameter can be one of three values:
+
+- `global`: parameters are aimed at the global level.
+- `program`: parameters are used as a program definition.
+- `method`: parameters are used as a method definition.
+
+While this is relative intuitive, there are special considerations for methods:
+
+- First, methods have a `module` key, that relate to specific method modules. For example, an OGI method is simulated using the OGI module. Users can build custom types or extend existing types, but some `module` is necessary to ensure LDAR-Sim knows what code to run. The full list of available modules is provided in parameter documentation below.
+
+- Second, methods have labels. This is necessary as there can be many different methods that are quite different, but have the same `module`. A good example is different OGI companies. You can run a simulation with multiple OGI companies, each specified as a unique method with unique agents, but both of the same type `OGI`. This is helpful to represent different work practices, different collection of parameters, or different approaches with the same technology.
+
+- Third, because methods are often carefully designed and used in treatment / control experiments, it is helpful to allow reuse of specific methods by referring to methods by their `label`.
+
+Consider the following simulation:
+
+```buildoutcfg
+Global parameters
+Programs:
+    Reference program:
+        Reference LDAR method
+    Test program:
+        New LDAR method 1
+    Test program 2:
+        New LDAR method 1
+        New LDAR method 2
+```
+
+Here, there is a situation where `New LDAR method 1` is used in both `Test program` and `Test program 2`. The definition for `New LDAR method 1` can and should be specified only once and reused as it is common among two test programs.
+
+To specify this, we can refer to the program by name in the program definitions with the addition of the `method_labels` parameter to our program. Note, we leave the `methods` key empty as the specified `new_LDAR_method_1` will be injected in at runtime.
+
+```buildoutcfg
+test_program_1 = {
+    'version': '2.0',
+    'parameter_level': 'program',
+    'method_labels': ['new_LDAR_method_1'],
+    'methods': [],
+    .... OTHER PROGRAM PARAMETERS ....
+}
+```
+
+This `new_LDAR_method_1` has to be defined elsewhere in a separate parameter file to be called by name.
+
+```buildoutcfg
+new_LDAR_method_1 = {
+    'version': '2.0',
+    'parameter_level': 'method',
+    'label': 'new_LDAR_method_1',
+    'module': 'OGI',
+    .... OTHER OGI METHOD PARAMETERS ....
+}
+```
+
+When the simulation is put together, the program will be assembled to look like this:
+
+```buildoutcfg
+test_program = {
+    'version': '2.0',
+    'parameter_level': 'program',
+    'method_names': ['new_LDAR_method_1'],
+    'methods': [
+        'new_LDAR_method_1': {
+            'parameter_level': 'method',
+            'label': 'OGI',
+            .... OTHER OGI METHOD PARAMETERS ....
+        }
+    ],
+    .... OTHER PROGRAM PARAMETERS ....
+}
+```
+
+To review, the following parameters are necessary to enable this modularization and reproducibility within the parameter suites:
+
+`parameter_level`: `global`, `program`, or `method`, this defines the target level in the hierarchy. Without specification, LDAR-Sim interprets the parameters as global.
+
+`label`: in method definitions `type` provides a lookup for checking parameters and allows lookup of default parameters, which enables partial parameter specification and out of the box reverse compatibility.
+
+`method_labels`: shorthand method to specify methods by their labels, and include them in more than one simulation easily and reliably. Used only in programs.
+
+## Parameter File Formats
+
+LDAR-Sim includes a flexible input parameter mapper that accepts a variety of input parameter formats, choose the one that you like the best. Yaml[YAML](https://en.wikipedia.org/wiki/YAML) is the easiest to read for humans, allows inline comments, and is recommended. The following formats are accepted:
+
+- executable python files (extension = '.txt')
+- yaml files (extension = '.yaml' or '.yml')
+- json files (extension = '.json')
+
+Keep in mind the need for precision with input parameter types and review how each of these formats handle input data types. For example, `10` is inferred as an integer, where `10.0` is inferred as a floating point value - these are different data types and will fail validation.
+
+For example, here is a program definition in yaml:
+
+```buildoutcfg
+version: '2.0'
+parameter_level: program
+```
+
+Here is a method definition in yaml:
+
+```buildoutcfg
+version: '2.0'  
+parameter_level: method
+awesome_method:
+  label: awesome_method
+  module: awesome_technology
+```
+
+Note that programs are interpreted as a flat list of parameters that are incorporated into a list where methods have one parameter (the method name), and other method parameters nested below.
+
+## Versioning of Parameter Files
+
+All parameter files must specify a version to enable mapping and reverse compatiblity. This versioning is used to call code that modifies a different version of the code to run properly. In cases this is simple mapping of parameters, in other cases, this involves calculations.
+
+## Notes for Developers
+
+If you are developing for LDAR-Sim, please adhere to the following rules:
+
+1. All parameters must be documented, refer to the examples below on the precise format.
+
+2. All parameters must sit in a key-value hierarchy that semantically makes sense and can be understood by the diversity of users that use LDAR-Sim.
+
+3. All parameter files require `parameter_level` to define the position within the hierarchy.
+
+4. All parameter files must specify the version and appropriate entries to the input mappers must be completed. Changing a parameter name? It needs a hook to allow reverse compatibility. Changing parameter units? It needs a hook. Depreciating parameters or simplifying? It needs a hook. Etc.
+
+5. If adding new functionality - please set the default to be 'off' or otherwise reverse compatible with existing functionality - this allows test simulations to run properly. Keep in mind older parameter files will use this default without realizing it, and if the behaviour of LDAR-Sim changes, you must add appropriate mapping hooks to the input mapper such that upon detecting an older parameter file, parameters are set to run identical to the old model.
+
+6. Please do not modify parameters in the program during simulation - consider parameters as 'read only' throughout the simulation.
+
+7. If you are using the '.txt' format as a python dictionary of parameters that is executed, you must name the dictionary as a variable that is identical to the name of the file, minus the file extension.
+
+If your file name is `P_ref.txt` you must have a dictionary in the file that looks like this:
+
+```buildoutcfg
+P_ref = {
+    .... P_ref parameters ....
+}
+```
+
+Do not do this:
+
+```buildoutcfg
+some_other_name = {
+    .... P_ref parameters ....
+}
+```
+
 # General Inputs
 
 ## consider\_operator
@@ -224,7 +482,7 @@ By detailing the model inputs, this report creates the technical foundation for 
 
 **Default input:** True
 
-**Description:** Abinary True/False to control whether output maps are generated for each simulation. These maps can be used to understand where/when different technologies are effective and where/when deployment blackout periods occur. During runs with a very large number of simulations, setting make\_maps to False will reduce run time.
+**Description:** A binary True/False to control whether output maps are generated for each simulation. These maps can be used to understand where/when different technologies are effective and where/when deployment blackout periods occur. During runs with a very large number of simulations, setting make\_maps to False will reduce run time.
 
 **Notes on acquisition:** No data acquisition required.
 
