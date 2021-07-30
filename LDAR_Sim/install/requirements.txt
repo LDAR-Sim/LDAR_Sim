@@ -13,7 +13,7 @@ ephem==4.0.0.2
 gdal==3.2.1
 boto3==1.16.63
 scipy==1.6.3
-yaml==0.2.5
+pyyaml==5.4.1
 scikit-learn==0.24.2
 flake8==3.9.2
 shapely==1.7.1
