@@ -19,7 +19,7 @@
 #
 # ------------------------------------------------------------------------------
 
-program_parameters = {
+default_program_parameters = {
     'version': '2.0',
     'parameter_level': 'program',
     'methods': {},

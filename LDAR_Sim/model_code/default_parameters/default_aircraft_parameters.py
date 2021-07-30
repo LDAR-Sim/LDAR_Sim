@@ -1,7 +1,7 @@
 # ------------------------------------------------------------------------------
 # Program:     The LDAR Simulator (LDAR-Sim)
-# File:        default_OGI_parameters
-# Purpose:     Default OGI parameters
+# File:        default_aircraft_parameters
+# Purpose:     Default aircraft parameters
 #
 # Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
 #
@@ -19,29 +19,34 @@
 #
 # ------------------------------------------------------------------------------
 
-OGI_parameters = {
-    'label': 'OGI',
-    'module': 'dummy',
+default_aircraft_parameters = {
+    'version': '2.0',
+    'parameter_level': 'method',
+    'label': 'aircraft',
+    'module': 'dummy',  # TEMPORARY for backwards compatibility
     'deployment_type': 'mobile',
-    'measurement_scale': "component",
-    'sensor': 'OGI_camera',
+    'measurement_scale': "equipment",
+    'sensor': 'default',
     'is_follow_up': False,
     'n_crews': 1,
-    'min_temp': -20,
+    'min_temp': -30,
     'max_wind': 10,
-    'max_precip': 0.1,
+    'max_precip': 1,
     'max_workday': 8,
-    'cost_per_day': 2500,
+    'cost_per_day': 10000,
+    'follow_up_thresh': [0, "absolute"],
+    'follow_up_ratio': 1,
+    't_bw_sites': 10,
     'reporting_delay': 2,
-    't_bw_sites': 'time_offsite_ground.csv',
-    'MDL': [0.01275, 2.78e-6],
+    'MDL': 0.01,
+    'QE': 0,
     'consider_daylight': False,
     'scheduling': {
         'route_planning': False,
-        'home_bases': 'homebases.csv',
-        'speed_list': [80, 90, 100],
+        'home_bases_files': 'Airport_AB_Coordinates.csv',
+        'speed_list': [],
         'LDAR_crew_init_location': [-114.062019, 51.044270],
         'deployment_years': [],
         'deployment_months': [],
-    },
+    }
 }

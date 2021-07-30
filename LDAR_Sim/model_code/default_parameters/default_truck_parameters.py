@@ -1,7 +1,7 @@
 # ------------------------------------------------------------------------------
 # Program:     The LDAR Simulator (LDAR-Sim)
-# File:        default_global_parameters
-# Purpose:     Default global parameters
+# File:        default_truck_parameters
+# Purpose:     Default truck parameters
 #
 # Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
 #
@@ -19,21 +19,31 @@
 #
 # ------------------------------------------------------------------------------
 
-global_parameters = {
+default_truck_parameters = {
     'version': '2.0',
-    'parameter_level': 'global',
-    'wd': '..//inputs_template//',
-    'output_directory': '..//outputs//',
-    'n_processes':  None,
-    'print_from_simulations': True,
-    'n_simulations': 2,
-    'spin_up': 0,
-    'write_data':  True,
-    'programs': [],
-    'weather_file': "ERA5_AB_1x1_hourly_2015_2019.nc",
-    'timesteps': 1000,
-    'start_year': 2017,
-    'reference_program': 'P_ref',
+    'parameter_level': 'method',
+    'label': 'truck',
+    'module': 'truck',
+    'deployment_type': 'mobile',
+    'n_crews': 1,
+    'min_temp': -40,
+    'max_wind': 20,
+    'max_precip': 0.01,
+    'max_workday': 8,
+    'measurement_scale': "equipment",
+    'cost_per_day': 2000,
+    'follow_up_thresh': [0, "absolute"],
+    'follow_up_ratio': 1,
+    'reporting_delay': 2,
+    'MDL': 0.05,
+    'QE': 0,
+    'consider_daylight': False,
+    'scheduling': {
+        'route_planning': False,
+        'home_bases': 'homebases.csv',
+        'speed_list': [80, 90, 100],
+        'LDAR_crew_init_location': [-114.062019, 51.044270],
+        'deployment_years': [],
+        'deployment_months': [],
+    },
 }
-
-

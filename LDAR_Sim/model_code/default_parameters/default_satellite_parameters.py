@@ -19,7 +19,9 @@
 #
 # ------------------------------------------------------------------------------
 
-satellite_parameters = {
+default_satellite_parameters = {
+    'version': '2.0',
+    'parameter_level': 'method',
     'label': 'satellite',
     'module': 'dummy',
     'deployment_type': 'orbit',
