@@ -23,6 +23,7 @@ default_program_parameters = {
     'version': '2.0',
     'parameter_level': 'program',
     'methods': {},
+    'method_names': [],
     'program_name': 'default',
     'UTC_offset': -6,
     'time_offsite': 'time_offsite_ground.csv',
