@@ -22,7 +22,6 @@
 import math
 import numpy as np
 from importlib import import_module
-from methods.crew import BaseCrew
 from generic_functions import get_prop_rate
 
 
@@ -41,9 +40,9 @@ class BaseCompany:
         self.config = config
         self.timeseries = timeseries
         self.crews = []
-        sched_mod = import_module('methods.deployment.{}_company'.format(
+        deploy_mod = import_module('methods.deployment.{}_company'.format(
             self.config['deployment_type'].lower()))
-        Schedule = getattr(sched_mod, 'Schedule')
+        Schedule = getattr(deploy_mod, 'Schedule')
         self.schedule = Schedule(config, parameters, state)
         self.deployment_days = self.state['weather'].deployment_days(
             method_name=self.name,
@@ -91,10 +90,10 @@ class BaseCompany:
             site.update({'{}_surveys_done_this_year'.format(self.name): 0})
             site.update({'{}_missed_leaks'.format(self.name): 0})
 
-        # --- setup crews and crew schedules ---
-        for i in range(config['n_crews']):
-            self.crews.append(BaseCrew(state, parameters, config,
-                                       timeseries, self.deployment_days, id=i + 1))
+        make_crew_loc = import_module('methods.deployment.{}_company'.format(
+            self.config['deployment_type'].lower()))
+        make_crews = getattr(make_crew_loc, 'make_crews')
+        make_crews(self.crews, config, state, parameters, timeseries, self.deployment_days)
         self.schedule.assign_agents()
         self.schedule.get_deployment_dates()
 
@@ -109,15 +108,21 @@ class BaseCompany:
                 site_pool = self.state['flags']
             else:
                 site_pool = self.state['sites']
-            # Get sites that are ready, in order of most to least neglected
+            # Get sites that are ready for survey
             site_pool = self.schedule.get_due_sites(site_pool)
             # Get number of crews working that day based on number of sites ready for visit
-            n_working_crews = self.schedule.get_working_crews(site_pool, self.config['n_crews'])
+            if self.config['deployment_type'] == 'stationary':
+                # assume all crews/sensors are working
+                n_working_crews = len(self.crews)
+            else:
+                n_working_crews = self.schedule.get_working_crews(site_pool, self.config['n_crews'])
             for idx in range(n_working_crews):
                 # Triage sites to crew
-                crew_site_list = self.schedule.get_crew_site_list(site_pool, idx, n_working_crews)
+                crew_site_list = self.schedule.get_crew_site_list(site_pool, idx,
+                                                                  n_working_crews, self.crews)
                 # Send crew to site
-                self.crews[idx].work_a_day(crew_site_list, self.candidate_flags)
+                if len(crew_site_list) > 0:
+                    self.crews[idx].work_a_day(crew_site_list, self.candidate_flags)
             if len(self.candidate_flags) > 0:
                 self.flag_sites()
 
