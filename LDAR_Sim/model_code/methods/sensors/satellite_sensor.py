@@ -34,7 +34,8 @@ def detect_emissions(self, site, leaks_present, equipment_rates, site_true_rate,
     lon_idx = geo_idx(site_lon, self.state['weather'].longitude)
     ti = self.state['t'].current_timestep
     windspeed = self.state['weather'].winds[ti, lat_idx, lon_idx]
-    # Calculate MDL
+    # MDL is calculated based on wind speed and parameter 
+    # listed in Jacob et al., 2016
     Q_min = 5.79 * (1.39/windspeed)
     # set MDL to 0 for testing
     # Q_min = 0
