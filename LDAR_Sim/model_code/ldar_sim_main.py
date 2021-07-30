@@ -35,39 +35,77 @@ from input_manager import InputManager
 
 if __name__ == '__main__':
     # ------------------------------------------------------------------------------
-    # -----------------------------Global parameters--------------------------------
-    src_dir_path = Path(os.path.dirname(os.path.realpath(__file__)))
-    src_dir = str(src_dir_path)
-    root_dir = str(src_dir_path.parent)
-    wd = os.path.abspath(root_dir) + "/inputs_template/"
-    output_directory = os.path.abspath(root_dir) + "/outputs/"
-    # Programs to compare; Position one should be the reference program (P_ref)
-    program_list = ['P_ref', 'P_dev_continuous', 'P_cont']
+    # Look for parameter files supplied as arguments - if parameter files are supplied as
+    # arguments, proceed to parse and type check input parameter type with the input manager
+    parameter_filenames = sys.argv[1:]
 
-# -----------------------------Set up programs----------------------------------
-    programs = []
+    # FOR TESTING ONLY!
+    print('WARNING: USING HARD CODED INPUT FILES FOR TESTING ONLY - REMOVE ON LINE 43 OF ldar_sim_main.py')
+    parameter_filenames = [
+        '..//sample_simulations//simple_OGI.yaml',
+        '..//sample_simulations//P_ref.yaml',
+        '..//sample_simulations//OGI.yaml',
+    ]
 
-    warnings.filterwarnings('ignore')    # Temporarily mute warnings
+    if len(parameter_filenames) > 0:
+        print('LDAR-Sim using parameters supplied as arguments')
+        input_manager = InputManager()
+        simulation_parameters = input_manager.read_and_validate_parameters(parameter_filenames)
 
-    for p in range(len(program_list)):
-        file = wd + program_list[p] + '.txt'
-        exec(open(file).read())
-        programs.append(eval(program_list[p]))
+        # Assign appropriate local variables to match older way of inputting parameters
+        wd = simulation_parameters['wd']
+        output_directory = simulation_parameters['output_directory']
+        programs = simulation_parameters['programs']
+        n_processes = simulation_parameters['n_processes']
+        print_from_simulations = simulation_parameters['print_from_simulations']
+        n_simulations = simulation_parameters['n_simulations']
+        spin_up = simulation_parameters['spin_up']
+        ref_program = simulation_parameters['reference_program']
+        write_data = simulation_parameters['write_data']
+        weather_file = simulation_parameters['weather_file']
+        start_year = simulation_parameters['start_year']
 
-    n_processes = programs[0]['n_processes']
-    print_from_simulations = programs[0]['print_from_simulations']
-    n_simulations = programs[0]['n_simulations']
-    spin_up = programs[0]['spin_up']
-    ref_program = program_list[0]
-    write_data = programs[0]['write_data']
+    else:
+        print('LDAR-Sim using parameters coded into ldar_sim_main.py')
+        # ------------------------------------------------------------------------------
+        # -----------------------------Global parameters--------------------------------
+        src_dir_path = Path(os.path.dirname(os.path.realpath(__file__)))
+        src_dir = str(src_dir_path)
+        root_dir = str(src_dir_path.parent)
+        wd = os.path.abspath(root_dir) + "/inputs_template/"
+        output_directory = os.path.abspath(root_dir) + "/outputs/"
+        # Programs to compare; Position one should be the reference program (P_ref)
+        program_list = ['P_ref', 'P_dev_continuous', 'P_cont']
 
+        # -----------------------------Set up programs----------------------------------
+        programs = []
+
+        warnings.filterwarnings('ignore')    # Temporarily mute warnings
+
+        for p in range(len(program_list)):
+            file = wd + program_list[p] + '.txt'
+            exec(open(file).read())
+            programs.append(eval(program_list[p]))
+
+        n_processes = programs[0]['n_processes']
+        print_from_simulations = programs[0]['print_from_simulations']
+        n_simulations = programs[0]['n_simulations']
+        spin_up = programs[0]['spin_up']
+        ref_program = program_list[0]
+        write_data = programs[0]['write_data']
+        weather_file = programs[0]['weather_file']
+        start_year = programs[0]['start_year']
+
+    # -----------------------------Prepare model run----------------------------------
     # Check whether ERA5 data is already in the working directory and download data if not
-    check_ERA5_file(wd, programs[0]['weather_file'])
+    check_ERA5_file(wd, weather_file)
 
     if os.path.exists(output_directory):
         shutil.rmtree(output_directory)
 
     os.makedirs(output_directory)
+    if 'input_manager' in locals():
+        input_manager.write_parameters(os.path.join(output_directory, 'parameters.yaml'))
 
     # Set up simulation parameter files
     simulations = []
@@ -92,7 +130,7 @@ if __name__ == '__main__':
     if write_data:
         # Create a data object...
         reporting_data = BatchReporting(
-            output_directory, programs[0]['start_year'],
+            output_directory, start_year,
             spin_up, ref_program)
         if n_simulations > 1:
             reporting_data.program_report()
