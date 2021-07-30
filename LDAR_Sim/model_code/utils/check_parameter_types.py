@@ -55,7 +55,7 @@ def check_types(default, test, omit_keys = None, fatal = False):
                         check_types(default[i], test[i], omit_keys = omit_keys, fatal = fatal)
 
         elif isinstance(test, list):
-            if len(test) > 0:
+            if len(default) > 0 and len(test) > 0:
                 for i in range(len(test)):
                     check_types(default[0], test[i], omit_keys = omit_keys, fatal = fatal)
 

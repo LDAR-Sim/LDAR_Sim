@@ -221,7 +221,6 @@ To review, the following parameters are necessary to enable this modularization 
 
 LDAR-Sim includes a flexible input parameter mapper that accepts a variety of input parameter formats, choose the one that you like the best. Yaml[YAML](https://en.wikipedia.org/wiki/YAML) is the easiest to read for humans, allows inline comments, and is recommended. The following formats are accepted:
 
-- executable python files (extension = '.txt')
 - yaml files (extension = '.yaml' or '.yml')
 - json files (extension = '.json')
 
@@ -248,7 +247,7 @@ Note that programs are interpreted as a flat list of parameters that are incorpo
 
 ## Versioning of Parameter Files
 
-All parameter files must specify a version to enable mapping and reverse compatiblity. This versioning is used to call code that modifies a different version of the code to run properly. In cases this is simple mapping of parameters, in other cases, this involves calculations.
+All parameter files must specify a version to enable mapping and reverse compatiblity. This versioning is used to call code that modifies a different version of the code to run properly. In cases this is simple mapping of parameters, in other cases, this involves calculations. Refer to `input_mapper_v1.py` for a template file and discussion document on input parameter mapping.
 
 ## Notes for Developers
 

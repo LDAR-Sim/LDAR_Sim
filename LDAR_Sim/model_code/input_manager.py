@@ -23,7 +23,6 @@ import copy
 import os
 import yaml
 import json
-import glob
 import sys
 
 from utils.check_parameter_types import check_types
@@ -31,6 +30,7 @@ from default_parameters.default_global_parameters import default_global_paramete
 from default_parameters.default_program_parameters import default_program_parameters
 from default_parameters.default_aircraft_parameters import default_aircraft_parameters
 from default_parameters.default_OGI_parameters import default_OGI_parameters
+from default_parameters.default_OGI_FU_parameters import default_OGI_FU_parameters
 from default_parameters.default_satellite_parameters import default_satellite_parameters
 from default_parameters.default_truck_parameters import default_truck_parameters
 from default_parameters.default_continuous_parameters import default_continuous_parameters
@@ -38,60 +38,20 @@ from default_parameters.default_continuous_parameters import default_continuous_
 
 class InputManager:
     def __init__(self):
-        """ Constructor loads the input parameters in a format that is compliant with the internals of LDAR-Sim. These
-        parameters are subsequently modified by one or more input parameters.
-
-        First, this creates a default 'program' that contains all possible 'program' parameters. No input program can
-        contain parameters that do not exist in this default program.
-
-        Then, this creates a library of 'methods' that have unique parameter sets. For example, the aircraft method
-        can have different parameters than the truck method. But the P_aircraft and P_truck programs must have the
-        same parameters (with the exception of the methods, which can have non-unique parameters). When constructing a
-        new program, the methods must have appropriate tags to look up the default parameters for the methods involved.
-
-        The format of the default parameters is .txt, or .py, that gets read, and executed directly as
-        python code. This is to ensure reverse compatibility with the existing set of parameters and also to ensure
-        that the type are explicitly set with python code, where type setting is easier to understand and less subject
-        to possible issues with json or yaml parsers inferring types.
-
-        This sets three class variables to represent default parameters:
-        self.global_parameters = all global parameters as a dictionary.
-        self.program_parameters = all known program parameters as a dictionary.
-        self.method_parameters = a dictionary where the names are a lookup by type. This contains all known method types
-            with a full listing of possible parameters, this is possible to lookup via type. For example
-            self.method_parameters['OGI'] will return a full listing of all OGI parameters that is subsequently used
-            for type validation and provide the base of default parameters to build upon.
+        """ Constructor creates a lookup of method defaults to run validation against
         """
         # Simulation parameter are parameters that are set up for this simulation
-        self.simulation_parameters = {}
+        self.simulation_parameters = copy.deepcopy(default_global_parameters)
 
-        # Construct default methods lookup that links the module name to
+        # Construct a lookup of default method parameters
         self.method_defaults = {
-            'aircraft': copy.deepcopy(default_aircraft_parameters)
-            ''
-
-
+            'aircraft': copy.deepcopy(default_aircraft_parameters),
+            'OGI': copy.deepcopy(default_OGI_parameters),
+            'OGI_FU': copy.deepcopy(default_OGI_FU_parameters),
+            'satellite': copy.deepcopy(default_satellite_parameters),
+            'truck': copy.deepcopy(default_truck_parameters),
+            'continuous': copy.deepcopy(default_continuous_parameters),
         }
-
-        # 4) accumulate the method samples so there is a dictionary of possible method types, each with all
-        #    known parameters, in a default and completely defined format.
-        self.method_parameters = {}
-        for method_samples in temp_methods:
-            for i in method_samples:
-                # Address an issue where 'type' is not specified, allow reverse compatibility by using the name
-                if 'type' not in method_samples[i]:
-                    method_samples[i]['type'] = i
-
-                self.method_parameters.update({method_samples[i]['type']: method_samples[i]})
-
-
-
-
-
-
-        # 5) set default global parameters, programs and methods are dealt with separately
-
-        # 6) construct simulation parameters, which will be updated and returned
         return
 
     def read_and_validate_parameters(self, parameter_filenames):
@@ -105,7 +65,8 @@ class InputManager:
         # Coerce all paths to absolute paths prior to release, add extra guards for other parts of the code
         # that concatenate strings to construct file paths, and expect trailing slashes
         self.simulation_parameters['wd'] = os.path.abspath(self.simulation_parameters['wd']) + '//'
-        self.simulation_parameters['output_directory'] = os.path.abspath(self.simulation_parameters['output_directory']) + '//'
+        self.simulation_parameters['output_directory'] = \
+            os.path.abspath(self.simulation_parameters['output_directory']) + '//'
         return(copy.deepcopy(self.simulation_parameters))
 
     def write_parameters(self, filename):
@@ -170,33 +131,26 @@ class InputManager:
             print('Warning: interpreting parameters as version 2.0 because version key was missing')
             parameters['version'] = '2.0'
 
-        # address all parameter mapping
+        # address all parameter mapping, the input_mapper_v1 is available as a template
         mined_global_parameters = {}
-        if parameters['version'] == '1.0':
-            parameters, mined_global_parameters = input_mapper_v1(parameters)
-        # note: future parameter file mappers can be specified here, example commented out below
-        #elif parameters['version'] == '2.0':
-        #    parameters, _ = input_mapper_v2(parameters)
+        # if parameters['version'] == '1.0':
+        #     parameters, mined_global_parameters = input_mapper_v1(parameters)
 
         return(parameters, mined_global_parameters)
 
     def parse_parameters(self, new_parameters_list):
         """Method to parse and validate new parameters, perform type checking, and organize for simulation.
 
-        Programs are then addressed, consecutively adding them in, calling in any orphaned methods. Orphaned methods
-        can be used in multiple programs if desired.
+        Programs are then addressed, consecutively adding them in, calling in any methods available in the method
+        pool.
 
         :param new_parameters_list: a list of new parameter dictionaries
         """
-        # First, validate and install the global parameters, saving the programs and orphaned methods for the next step
-
-
-
-        self.simulation_parameters = {}
+        self.simulation_parameters = copy.deepcopy(default_global_parameters)
         programs = []
-        orphan_methods = {}
+        method_pool = {}
         for new_parameters in new_parameters_list:
-            # Address unsupplied parameter level
+            # Address unsupplied parameter level by defaulting it as global
             if 'parameter_level' not in new_parameters:
                 new_parameters['parameter_level'] = 'global'
                 print('Warning: parameter_level should be supplied to parameter files, LDAR-Sim interprets parameter'
@@ -204,8 +158,9 @@ class InputManager:
 
             if new_parameters['parameter_level'] == 'global':
                 # Extract programs supplied in global parameter files to build programs list
-                if len(new_parameters['programs']) > 0:
-                    programs = programs + new_parameters.pop('programs')
+                if 'programs' in new_parameters:
+                    if len(new_parameters['programs']) > 0:
+                        programs = programs + new_parameters.pop('programs')
 
                 check_types(default_global_parameters, new_parameters, omit_keys = ['programs'])
                 self.simulation_parameters.update(new_parameters)
@@ -219,11 +174,9 @@ class InputManager:
                 programs.append(new_program)
 
             elif new_parameters['parameter_level'] == 'method':
-                # Search for the methods in this definition, which will be defined as dictionaries, type checking
-                # and validation of the methods is performed when installed
-                for i in new_parameters:
-                    if isinstance(new_parameters[i], dict):
-                        orphan_methods.update({i: new_parameters[i]})
+                # Create method pool entry that is referenced by the label
+                method_label = new_parameters['label']
+                method_pool.update({method_label: new_parameters})
 
             else:
                 sys.exit('Parameter_level of ' + str(new_parameters['parameter_level']) + ' is not possible to parse')
@@ -231,26 +184,33 @@ class InputManager:
         # Second, install the programs, checking for specified children methods
         for program in programs:
             # Find any orphaned methods that can be installed in this program
-            if 'method_names' in program:
-                for method_name in program['method_names']:
+            if 'method_labels' in program:
+                for method_label in program['method_labels']:
                     method_found = False
-                    for i in orphan_methods:
-                        if method_name == i:
-                            program['methods'].update({i: copy.deepcopy(orphan_methods[i])})
+                    for i in method_pool:
+                        if method_label == i:
+                            program['methods'].update({i: copy.deepcopy(method_pool[i])})
                             method_found = True
 
                     if not method_found:
-                        print('Warning, the following method was specified by not supplied ' + method_name)
+                        print('Warning, the following method was specified by not supplied ' + method_label)
 
-            # Next, perform type checking and updating from default types, even for methods pre-specified
+            # Next, perform type checking and updating from default module parameters, even for methods pre-specified
             for i in program['methods']:
-                method_type = program['methods'][i]['type']
-                check_types(self.method_parameters[method_type], program['methods'][i])
-                new_method = copy.deepcopy(self.method_parameters[method_type])
+                module = program['methods'][i]['module']
 
-                # update from the default version, and re-assign
-                new_method.update(program['methods'][i])
-                program['methods'][i] = new_method
+                # Perform type checking from known default methods
+                if module in self.method_defaults:
+                    check_types(self.method_defaults[module], program['methods'][i])
+                    method = copy.deepcopy(self.method_defaults[module])
+                    method.update(program['methods'][i])
+                    program['methods'][i] = method
+                else:
+                    print('Warning: no default parameters supplied for supplied method module: ' + module)
 
-        # Third, append the parameters to the simulation parameters
+            # Finally, manually append some keys from globals that are required to be in the program parameters
+            program['start_year'] = self.simulation_parameters['start_year']
+            program['timesteps'] = self.simulation_parameters['timesteps']
+
+        # Third, install the programs into the simulation parameters
         self.simulation_parameters['programs'] = programs
