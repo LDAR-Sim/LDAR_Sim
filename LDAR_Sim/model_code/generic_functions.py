@@ -30,6 +30,10 @@ import matplotlib.pyplot as plt
 import boto3  # for downloading data from AWS
 from botocore.exceptions import ClientError
 import ephem
+from math import atan, atan2, cos, degrees, sin, sqrt
+from shapely.geometry import Polygon
+import datetime
+
 
 
 def gap_calculator(condition_vector):
@@ -291,3 +295,82 @@ def quick_cal_daylight(date, lat, lon):
     sunset = ss
 
     return (sunrise, sunset)
+
+def ecef_to_llh(ecef_km):
+    """
+    Converts the Earth-Centered Earth-Fixed (ECEF) coordinates (x, y, z) to 
+    (WGS-84) Geodetic point (lat, lon, h)
+    ecef_km contains three elements
+    ecef_km[0] is the x coordiante of satellite in ecef in km
+    ecef_km[1] is the y coordiante of satellite in ecef in km 
+    ecef_km[2] is the z coordiante of satellite in ecef in km 
+    """
+    # WGS-84 Earth semimajor axis (km)
+    a = 6378.1370
+    # Derived Earth semimajor axis (km)
+    b = 6356.752314
+    # pythagoras to calculate two earth's minor axises
+    p = sqrt(ecef_km[0] ** 2 + ecef_km[1] ** 2)
+    # Calculate the angle between orbit object and earth center
+    thet = atan(ecef_km[2] * a / (p * b))
+    # Caluclate ellipsoid flatness and ellipsoid flatness factor
+    esq = 1.0 - (b / a) ** 2
+    epsq = (a / b) ** 2 - 1.0
+    # calculate latitude
+    lat = atan((ecef_km[2] + epsq * b * sin(thet) ** 3) /
+               (p - esq * a * cos(thet) ** 3))
+    # calculate longitude
+    lon = atan2(ecef_km[1], ecef_km[0])
+    # Calculate prime vertical radius of curvature at latitude
+    n = a * a / sqrt(a * a * cos(lat) ** 2 + b ** 2 * sin(lat) ** 2)
+    # Calculate altitude
+    h = p / cos(lat) - n
+    lat = degrees(lat)
+    lon = degrees(lon)
+    return lat, lon, h
+
+
+def init_orbit_poly(predictor, T1, T2, interval):
+    """
+    Grab the esitamted positions of satellite  
+    predictor: orbit path predictor of satellit created by using orbit_predictor package 
+    T1: start datetime 
+    T2: end datetime 
+    interval: time interval of each time step in minutes   
+
+    return: day_list: date time of the satellite 
+            polygon_list: coverage area polygon of the satellite 
+
+    """
+    polygon_list = []
+    day_list = []
+    while T1 != T2:
+        # obtain the position info of the satellite
+        info1 = predictor.get_position(T1)
+        # get position in ecef coordinate system
+        ecef1 = info1.position_ecef
+        # covert ecef to lat, lon, and altitude
+        lat1, lon1, h1 = ecef_to_llh(ecef1)
+
+        # update time
+        st = T1 + datetime.timedelta(minutes=interval)
+        # obtain the position of the satellite
+        info2 = predictor.get_position(st)
+        ecef2 = info2.position_ecef
+        lat2, lon2, h2 = ecef_to_llh(ecef2)
+
+        # get the bounding box of the coverage of satellite between this two time step
+        pt1 = (lon1, lat1+0.1)
+        pt2 = (lon1+0.1, lat1)
+        pt3 = (lon2, lat2-0.1)
+        pt4 = (lon2-0.1, lat2)
+
+        # create that coverage area polygon
+        polygon3 = Polygon([pt1, pt2, pt3, pt4])
+        polygon_list.append(polygon3)
+        day_list.append(T1)
+
+        T1 += datetime.timedelta(minutes=interval)
+
+    return day_list, polygon_list
+
