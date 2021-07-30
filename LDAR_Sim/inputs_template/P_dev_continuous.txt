@@ -21,9 +21,12 @@ P_dev_continuous = {
             'QE': 0,
             'consider_daylight': False,
             'scheduling': {
+                'route_planning': False,
+                'home_bases_files': '',
+                'speed_list': [],
+                'LDAR_crew_init_location': [],
                 'deployment_years': [],
-                'deployment_months': [],
-            },
+                'deployment_months': [], }
         },
         'OGI_FU': {
             'label': 'OGI_FU',
