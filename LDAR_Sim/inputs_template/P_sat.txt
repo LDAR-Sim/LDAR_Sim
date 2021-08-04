@@ -5,7 +5,7 @@ P_sat = {
             'module': 'satellite',
             'deployment_type': 'orbit',
             'measurement_scale': "site",
-	    'sensor': 'Satellite_sensor',
+	    'sensor': 'GHGSat1',
             'n_crews': 1,
             'min_temp': -100,
             'max_wind': 100,

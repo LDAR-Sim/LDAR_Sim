@@ -5,7 +5,7 @@ P_dev_satellite = {
             'module': 'dummy',
             'deployment_type': 'orbit',
             'measurement_scale': "site",
-            'sensor': 'satellite_sensor',
+            'sensor': 'GHGSat1',
             'is_follow_up': False,
             'n_crews': 1,
             'min_temp': -100,
