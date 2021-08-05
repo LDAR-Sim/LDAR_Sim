@@ -129,7 +129,7 @@ The example above focused on a testing run configuration, but the functionality 
 - specific scheduling configurations
 - specific computer systems
 
-For example, running an existing program with an existing collection of methods in a new jurisdiction is as simple as just revising the asset parameter file to the new set of sites, leaving the other parameter files untouched.
+For example, running an existing program with an existing collection of methods in a new jurisdiction could be as simple as just revising the asset parameter file to the new set of sites, leaving the other parameter files untouched.
 
 While global parameters are straightforward to specify this way, and the above example shows how to do this - a few extra parameters are required to directly specify programs or methods, which are at different levels in the hierarchy.
 
@@ -141,13 +141,13 @@ The `parameter_level` parameter can be one of three values:
 
 - `global`: parameters are aimed at the global level.
 - `program`: parameters are used as a program definition.
-- `method`: parameters are used as a method definition.
+- `method`: parameters are used as a method definition and update a given method by name.
 
-While this is relative intuitive, there are special considerations for methods:
+While this is relatively intuitive, there are special considerations for methods:
 
 - First, methods have a `module` key, that relate to specific method modules. For example, an OGI method is simulated using the OGI module. Users can build custom types or extend existing types, but some `module` is necessary to ensure LDAR-Sim knows what code to run. The full list of available modules is provided in parameter documentation below.
 
-- Second, methods have labels. This is necessary as there can be many different methods that are quite different, but have the same `module`. A good example is different OGI companies. You can run a simulation with multiple OGI companies, each specified as a unique method with unique agents, but both of the same type `OGI`. This is helpful to represent different work practices, different collection of parameters, or different approaches with the same technology.
+- Second, methods have labels. This is necessary as there can be many different methods that are quite different, but have the same `module`. A good example is different OGI companies. You can run a simulation with multiple OGI companies, each specified as a unique method with unique agents, but both of the same type `OGI`. This is helpful to represent different work practices, different collection of parameters, or different approaches with the same technology. If you are modeling a hypothetical aircraft company, the module will need to be set to `aircraft` and the label can be set to the name that you specify.
 
 - Third, because methods are often carefully designed and used in treatment / control experiments, it is helpful to allow reuse of specific methods by referring to methods by their `label`.
 
@@ -213,7 +213,9 @@ To review, the following parameters are necessary to enable this modularization 
 
 `parameter_level`: `global`, `program`, or `method`, this defines the target level in the hierarchy. Without specification, LDAR-Sim interprets the parameters as global.
 
-`label`: in method definitions `type` provides a lookup for checking parameters and allows lookup of default parameters, which enables partial parameter specification and out of the box reverse compatibility.
+`label`: in method definitions `label` provides a unique name to refer to each method.
+
+`type`: in method definitions `type` provides a lookup for checking parameters and allows lookup of default parameters, which enables partial parameter specification and out of the box reverse compatibility.
 
 `method_labels`: shorthand method to specify methods by their labels, and include them in more than one simulation easily and reliably. Used only in programs.
 
@@ -247,7 +249,7 @@ Note that programs are interpreted as a flat list of parameters that are incorpo
 
 ## Versioning of Parameter Files
 
-All parameter files must specify a version to enable mapping and reverse compatiblity. This versioning is used to call code that modifies a different version of the code to run properly. In cases this is simple mapping of parameters, in other cases, this involves calculations. Refer to `input_mapper_v1.py` for a template file and discussion document on input parameter mapping.
+All parameter files must specify a version to enable mapping and reverse compatibility. This versioning is used to call code that modifies a different version of the code to run properly. In cases this is simple mapping of parameters, in other cases, this involves calculations. Refer to `input_mapper_v1.py` for a template file and discussion document on input parameter mapping. Reverse compatibility mapping only exists for v2 forwards.
 
 ## Notes for Developers
 
