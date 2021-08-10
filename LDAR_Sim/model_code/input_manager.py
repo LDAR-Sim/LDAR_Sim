@@ -62,8 +62,8 @@ class InputManager:
         raw_parameters = self.read_parameter_files(parameter_filenames)
         self.parse_parameters(raw_parameters)
 
-        # Coerce all paths to absolute paths prior to release, add extra guards for other parts of the code
-        # that concatenate strings to construct file paths, and expect trailing slashes
+        # Coerce all paths to absolute paths prior to release, add extra guards for other parts of
+        # the code that concatenate strings to construct file paths, and expect trailing slashes
         self.simulation_parameters['wd'] = os.path.abspath(self.simulation_parameters['wd']) + '//'
         self.simulation_parameters['output_directory'] = \
             os.path.abspath(self.simulation_parameters['output_directory']) + '//'
@@ -77,7 +77,8 @@ class InputManager:
             f.write(yaml.dump(self.simulation_parameters))
 
     def read_parameter_files(self, parameter_filenames):
-        """Method to read a collection of parameter files and perform any mapping prior to validation.
+        """Method to read a collection of parameter files and perform any mapping prior to
+        validation.
         :param parameter_filenames: a list of paths to parameter files
         :return returns a list of parameter dictionaries
         """
@@ -89,7 +90,8 @@ class InputManager:
         # Perform any mapping, optionally accumulating mined global parameters
         global_parameters = {}
         for i in range(len(new_parameters_list)):
-            new_parameters_list[i], mined_global_parameters = self.map_parameters(new_parameters_list[i])
+            new_parameters_list[i], mined_global_parameters = \
+                self.map_parameters(new_parameters_list[i])
             global_parameters.update(mined_global_parameters)
 
         # Append the mined global parameters for installation after all other parameter updates
@@ -100,8 +102,8 @@ class InputManager:
         return(new_parameters_list)
 
     def read_parameter_file(self, filename):
-        """Method to read a single parameter file from a filename. This method can be extended to address different
-        file formats or mappings.
+        """Method to read a single parameter file from a filename. This method can be extended to
+        address different file formats or mappings.
         :param filename: the path to the parameter file
         :return: dictionary of parameters read from the parameter file
         """
@@ -123,8 +125,8 @@ class InputManager:
         return(new_parameters)
 
     def map_parameters(self, parameters):
-        """Function to map parameters from older versions to the present version, all mappings are externally specified
-        in the relevant function.
+        """Function to map parameters from older versions to the present version, all mappings are
+        externally specified in the relevant function.
         :param parameters = the input parameter dictionary
         :return returns the compliant parameters dictionary, and optionally mined global parameters
         """
@@ -140,10 +142,11 @@ class InputManager:
         return(parameters, mined_global_parameters)
 
     def parse_parameters(self, new_parameters_list):
-        """Method to parse and validate new parameters, perform type checking, and organize for simulation.
+        """Method to parse and validate new parameters, perform type checking, and organize for
+        simulation.
 
-        Programs are then addressed, consecutively adding them in, calling in any methods available in the method
-        pool.
+        Programs are then addressed, consecutively adding them in, calling in any methods available
+        in the method pool.
 
         :param new_parameters_list: a list of new parameter dictionaries
         """
@@ -154,8 +157,8 @@ class InputManager:
             # Address unsupplied parameter level by defaulting it as global
             if 'parameter_level' not in new_parameters:
                 new_parameters['parameter_level'] = 'global'
-                print('Warning: parameter_level should be supplied to parameter files, LDAR-Sim interprets parameter'
-                      'files as global if unspecified')
+                print('Warning: parameter_level should be supplied to parameter files, LDAR-Sim '
+                      'interprets parameter files as global if unspecified')
 
             if new_parameters['parameter_level'] == 'global':
                 # Extract programs supplied in global parameter files to build programs list
@@ -180,7 +183,8 @@ class InputManager:
                 method_pool.update({method_label: new_parameters})
 
             else:
-                sys.exit('Parameter_level of ' + str(new_parameters['parameter_level']) + ' is not possible to parse')
+                sys.exit('Parameter_level of ' + str(new_parameters['parameter_level']) +
+                         ' is not possible to parse')
 
         # Second, install the programs, checking for specified children methods
         for program in programs:
@@ -194,9 +198,11 @@ class InputManager:
                             method_found = True
 
                     if not method_found:
-                        print('Warning, the following method was specified by not supplied ' + method_label)
+                        print('Warning, the following method was specified by not supplied ' +
+                              method_label)
 
-            # Next, perform type checking and updating from default module parameters, even for methods pre-specified
+            # Next, perform type checking and updating from default module parameters, even for
+            # methods pre-specified
             for i in program['methods']:
                 module = program['methods'][i]['module']
 
@@ -207,9 +213,11 @@ class InputManager:
                     method.update(program['methods'][i])
                     program['methods'][i] = method
                 else:
-                    print('Warning: no default parameters supplied for supplied method module: ' + module)
+                    print('Warning: no default parameters supplied for supplied method module: ' +
+                          module)
 
-            # Finally, manually append some keys from globals that are required to be in the program parameters
+            # Finally, manually append some keys from globals that are required to be in the program
+            # parameters
             program['start_year'] = self.simulation_parameters['start_year']
             program['timesteps'] = self.simulation_parameters['timesteps']
 
