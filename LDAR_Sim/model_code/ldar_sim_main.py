@@ -38,15 +38,6 @@ if __name__ == '__main__':
     # Look for parameter files supplied as arguments - if parameter files are supplied as
     # arguments, proceed to parse and type check input parameter type with the input manager
     parameter_filenames = sys.argv[1:]
-
-    # FOR TESTING ONLY!
-    print('WARNING: USING HARD CODED INPUT FILES FOR TESTING ONLY - REMOVE ON LINE 43 OF ldar_sim_main.py')
-    parameter_filenames = [
-        '..//sample_simulations//simple_OGI.yaml',
-        '..//sample_simulations//P_ref.yaml',
-        '..//sample_simulations//OGI.yaml',
-    ]
-
     if len(parameter_filenames) > 0:
         print('LDAR-Sim using parameters supplied as arguments')
         input_manager = InputManager()
