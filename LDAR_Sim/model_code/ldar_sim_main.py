@@ -58,6 +58,7 @@ if __name__ == '__main__':
 
     else:
         print('LDAR-Sim using parameters coded into ldar_sim_main.py')
+        print('Warning: this method of supplying parameters will be depreciated in the future')
         # ------------------------------------------------------------------------------
         # -----------------------------Global parameters--------------------------------
         src_dir_path = Path(os.path.dirname(os.path.realpath(__file__)))
