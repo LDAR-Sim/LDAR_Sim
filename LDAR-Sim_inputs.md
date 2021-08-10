@@ -28,15 +28,15 @@ By detailing the model inputs, this report creates the technical foundation for 
 
 # Running the Model
 
-To run the model, supply one or more input parameter files as arguments to the program. The main function is called `ldar_sim_main.py` and is the main entrypoint to the model.
+To run the model, supply one or more input parameter files as arguments to the program. The main function is called `ldar_sim_main.py` and is the main entrypoint to the model. File paths can be relative to your working directory (e.g., `./parameter_file1.txt`) or absolute (e.g., `D://parameter_files//parameter_file1.txt`).
 
 ```buildoutcfg
 python ldar_sim_main.py parameter_file1.txt parameter_file2.txt
 ```
 
-Alternatively, one can directly specify the parameters in `ldar_sim_main.py`; however, this is discouraged as it involves changing the model to run different programs.
+Alternatively, one can directly specify the parameters in `ldar_sim_main.py`; however, this is discouraged as it involves changing the model to run different programs and will be depreciated.
 
-We recommend running the model with a working directory set to /LDAR_Sim/model_code to ensure the relative file references in default parameters work properly.
+We recommend running the model with a working directory set to /LDAR_Sim/model_code.
 
 ## Parameter File Structure
 
@@ -62,13 +62,13 @@ Programs:
 
 ## Parameter file usage
 
-We recommend supplying LDAR-Sim with a full set of parameters, copied from the default parameters in the `inputs_template` folder and modified for your purposes. This will ensure you are familiar with the parameters you have chosen to run the model.
+We recommend supplying LDAR-Sim with a full set of parameters, copied from the default parameters in the `default_parameters` folder and modified for your purposes. This will ensure you are familiar with the parameters you have chosen to run the model.
 
 However, it may be more convenient once you are familiar with how parameter files update each other to use multiple parameter files to create your simulations and rely upon the default parameters.
 
 All simulations using multiple parameter files are created the following way:
 1. default parameters in the `inputs_template` folder are read into the model.
-2. each parameter file is read on top of the respective parameter set, updating only the keys that are supplied. This occurs for every level in the hierarchy, for every program, and for every method used.
+2. each parameter file is read on top of the respective parameter set, updating only the keys that are supplied. 
 
 Parameter files are read on top of each other, starting with the default set of parameters. How does this work? Here is an example `parameter_file1.txt`:
 
@@ -226,8 +226,6 @@ LDAR-Sim includes a flexible input parameter mapper that accepts a variety of in
 - yaml files (extension = '.yaml' or '.yml')
 - json files (extension = '.json')
 
-Keep in mind the need for precision with input parameter types and review how each of these formats handle input data types. For example, `10` is inferred as an integer, where `10.0` is inferred as a floating point value - these are different data types and will fail validation.
-
 For example, here is a program definition in yaml:
 
 ```buildoutcfg
@@ -261,29 +259,9 @@ If you are developing for LDAR-Sim, please adhere to the following rules:
 
 3. All parameter files require `parameter_level` to define the position within the hierarchy.
 
-4. All parameter files must specify the version and appropriate entries to the input mappers must be completed. Changing a parameter name? It needs a hook to allow reverse compatibility. Changing parameter units? It needs a hook. Depreciating parameters or simplifying? It needs a hook. Etc.
+4. If adding new functionality - please set the default to be 'off' or otherwise reverse compatible with existing functionality - this allows test simulations to run properly. Keep in mind older parameter files will use this default without realizing it, and if the behaviour of LDAR-Sim changes, you must add appropriate mapping hooks to the input mapper such that upon detecting an older parameter file, parameters are set to run identical to the old model.
 
-5. If adding new functionality - please set the default to be 'off' or otherwise reverse compatible with existing functionality - this allows test simulations to run properly. Keep in mind older parameter files will use this default without realizing it, and if the behaviour of LDAR-Sim changes, you must add appropriate mapping hooks to the input mapper such that upon detecting an older parameter file, parameters are set to run identical to the old model.
-
-6. Please do not modify parameters in the program during simulation - consider parameters as 'read only' throughout the simulation.
-
-7. If you are using the '.txt' format as a python dictionary of parameters that is executed, you must name the dictionary as a variable that is identical to the name of the file, minus the file extension.
-
-If your file name is `P_ref.txt` you must have a dictionary in the file that looks like this:
-
-```buildoutcfg
-P_ref = {
-    .... P_ref parameters ....
-}
-```
-
-Do not do this:
-
-```buildoutcfg
-some_other_name = {
-    .... P_ref parameters ....
-}
-```
+5. Please do not modify parameters in the program during simulation - consider parameters as 'read only' throughout the simulation.
 
 # General Inputs
 
