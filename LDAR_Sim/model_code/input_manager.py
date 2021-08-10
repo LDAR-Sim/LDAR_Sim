@@ -110,6 +110,7 @@ class InputManager:
         with open(filename, 'r') as f:
             print('Reading ' + filename)
             if extension == '.txt':
+                print('Warning: txt file inputs will be depreciated')
                 exec(f.read())
                 new_parameters.update(eval(parameter_set_name))
             elif extension == '.json':
