@@ -35,9 +35,7 @@ class Sensitivity:
         self.state = state
 
         # Make folder for sensitivity analysis outputs
-        self.output_directory = os.path.join(
-            params['input_directory'],
-            'sensitivity_analysis')
+        self.output_directory = params['input_directory'] / 'sensitivity_analysis'
         if not os.path.exists(self.output_directory):
             os.makedirs(self.output_directory)
 

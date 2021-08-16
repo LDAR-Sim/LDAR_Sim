@@ -48,7 +48,7 @@ class satellite:
         # read cloud cover data
         input_directory = self.parameters['input_directory']
         cloud = self.parameters['weather_file']
-        Dataset = nc.Dataset(input_directory + cloud, 'r')
+        Dataset = nc.Dataset(input_directory / cloud, 'r')
         self.cloudcover = Dataset.variables['tcc'][:]
         Dataset.close()
 
@@ -56,7 +56,7 @@ class satellite:
         sat = self.config['satellite_name']
         tlefile = self.config['TLE_files']
         TLEs = []
-        with open(input_directory+tlefile) as f:
+        with open(input_directory / tlefile) as f:
             for line in f:
                 TLEs.append(line.rstrip())
         i = 0

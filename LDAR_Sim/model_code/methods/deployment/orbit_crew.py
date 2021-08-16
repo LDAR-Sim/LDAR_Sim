@@ -46,7 +46,7 @@ class Schedule(BaseSchedCrew):
         # extract cloud cover data
         input_directory = self.parameters['input_directory']
         cloud = self.parameters['weather_file']
-        Dataset = nc.Dataset(input_directory + cloud, 'r')
+        Dataset = nc.Dataset(input_directory / cloud, 'r')
         self.cloudcover = Dataset.variables['tcc'][:]
         Dataset.close()
         # obtain TLE file path
@@ -176,7 +176,7 @@ class Schedule(BaseSchedCrew):
         # build a satellite orbit object
         input_directory = self.parameters['input_directory']
         TLEs = []
-        with open(input_directory+self.tlefile) as f:
+        with open(input_directory / self.tlefile) as f:
             for line in f:
                 TLEs.append(line.rstrip())
         i = 0
