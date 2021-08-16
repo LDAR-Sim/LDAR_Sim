@@ -35,7 +35,6 @@ from shapely.geometry import Polygon
 import datetime
 
 
-
 def gap_calculator(condition_vector):
     """
     This function calculates max gaps between daily activites in a time series.
@@ -223,11 +222,11 @@ def make_maps(company, sites):
     return
 
 
-def check_ERA5_file(wd, target_file):
+def check_ERA5_file(dir, target_file):
     ncfiles = []
     target_file_found = False
-    # search netCDF file in the working directory
-    for file in os.listdir(wd):
+    # search netCDF file in the input directory
+    for file in os.listdir(dir):
         if file.endswith(".nc"):
             ncfiles.append(file)
 
@@ -250,7 +249,7 @@ def check_ERA5_file(wd, target_file):
 
         try:
             s3 = boto3.client('s3', aws_access_key_id=access_key, aws_secret_access_key=secret_key)
-            s3.download_file('im3sweather', target_file, r'{}/{}'.format(wd, target_file))
+            s3.download_file('im3sweather', target_file, r'{}/{}'.format(dir, target_file))
         except ClientError:
             print("Authentication Failed or Server Unavailable. Exiting")
             sys.exit()
@@ -296,14 +295,15 @@ def quick_cal_daylight(date, lat, lon):
 
     return (sunrise, sunset)
 
+
 def ecef_to_llh(ecef_km):
     """
-    Converts the Earth-Centered Earth-Fixed (ECEF) coordinates (x, y, z) to 
+    Converts the Earth-Centered Earth-Fixed (ECEF) coordinates (x, y, z) to
     (WGS-84) Geodetic point (lat, lon, h)
     ecef_km contains three elements
     ecef_km[0] is the x coordiante of satellite in ecef in km
-    ecef_km[1] is the y coordiante of satellite in ecef in km 
-    ecef_km[2] is the z coordiante of satellite in ecef in km 
+    ecef_km[1] is the y coordiante of satellite in ecef in km
+    ecef_km[2] is the z coordiante of satellite in ecef in km
     """
     # WGS-84 Earth semimajor axis (km)
     a = 6378.1370
@@ -332,14 +332,14 @@ def ecef_to_llh(ecef_km):
 
 def init_orbit_poly(predictor, T1, T2, interval):
     """
-    Grab the esitamted positions of satellite  
-    predictor: orbit path predictor of satellit created by using orbit_predictor package 
-    T1: start datetime 
-    T2: end datetime 
-    interval: time interval of each time step in minutes   
+    Grab the esitamted positions of satellite
+    predictor: orbit path predictor of satellit created by using orbit_predictor package
+    T1: start datetime
+    T2: end datetime
+    interval: time interval of each time step in minutes
 
-    return: day_list: date time of the satellite 
-            polygon_list: coverage area polygon of the satellite 
+    return: day_list: date time of the satellite
+            polygon_list: coverage area polygon of the satellite
 
     """
     polygon_list = []
@@ -373,4 +373,3 @@ def init_orbit_poly(predictor, T1, T2, interval):
         T1 += datetime.timedelta(minutes=interval)
 
     return day_list, polygon_list
-

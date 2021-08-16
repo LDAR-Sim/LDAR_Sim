@@ -50,7 +50,7 @@ def make_plots(leak_df, time_df, site_df, sim_n, spin_up, output_directory):
             panel_grid_major_y=pn.element_line(colour='black', linewidth=1, alpha=0.5))
     )
 
-    plot_time_1.save(output_directory + '/plot_time_emissions_' + sim_n + '.png',
+    plot_time_1.save(output_directory / 'plot_time_emissions_{}.png'.format(sim_n),
                      width=10, height=3, dpi=300)
 
     plot_time_2 = (
@@ -65,7 +65,7 @@ def make_plots(leak_df, time_df, site_df, sim_n, spin_up, output_directory):
                  panel_grid_minor_y=pn.element_line(colour='black', linewidth=0.5, alpha=0.3),
                  panel_grid_major_y=pn.element_line(colour='black', linewidth=1, alpha=0.5)))
 
-    plot_time_2.save(output_directory + '/plot_time_active_' + sim_n + '.png',
+    plot_time_2.save(output_directory / 'plot_time_active_{}.png'.format(sim_n),
                      width=10, height=3, dpi=300)
 
     # Site-level plots
@@ -80,7 +80,7 @@ def make_plots(leak_df, time_df, site_df, sim_n, spin_up, output_directory):
         pn.ylab('Cumulative fraction of emissions') +
         pn.ggtitle('Empirical cumulative distribution of site-level emissions'))
 
-    plot_site_1.save(output_directory + '/site_cum_dist_' + sim_n + '.png',
+    plot_site_1.save(output_directory / 'site_cum_dist_{}.png'.format(sim_n),
                      width=5, height=4, dpi=300)
 
     # Leak plots
@@ -92,7 +92,7 @@ def make_plots(leak_df, time_df, site_df, sim_n, spin_up, output_directory):
                  panel_grid_major_y=pn.element_line(colour='black', linewidth=1, alpha=0.5)) +
         pn.ggtitle('Distribution of leak duration') +
         pn.xlab('Number of days the leak was active') + pn.ylab('Count'))
-    plot_leak_1.save(output_directory + '/leak_active_hist' + sim_n + '.png',
+    plot_leak_1.save(output_directory / 'leak_active_hist{}.png'.format(sim_n),
                      width=5, height=4, dpi=300)
 
     plot_leak_2 = (
@@ -107,7 +107,7 @@ def make_plots(leak_df, time_df, site_df, sim_n, spin_up, output_directory):
         pn.ylab('Cumulative leak rate fraction') +
         pn.ggtitle('Fractional cumulative distribution'))
 
-    plot_leak_2.save(output_directory + '/leak_cum_dist1_' + sim_n + '.png',
+    plot_leak_2.save(output_directory / 'leak_cum_dist1_{}.png'.format(sim_n),
                      width=4, height=4, dpi=300)
 
     plot_leak_3 = (
@@ -123,7 +123,7 @@ def make_plots(leak_df, time_df, site_df, sim_n, spin_up, output_directory):
         pn.ylab('Cumulative emissions (kg/day)') +
         pn.ggtitle('Absolute cumulative distribution'))
 
-    plot_leak_3.save(output_directory + '/leak_cum_dist2_' + sim_n + '.png',
+    plot_leak_3.save(output_directory / 'leak_cum_dist2_{}.png'.format(sim_n),
                      width=4, height=4, dpi=300)
 
     return

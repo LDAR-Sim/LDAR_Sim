@@ -27,7 +27,7 @@ from aggregator import aggregate
 class BaseCrew:
     """ Base crws are used by methods to generate crew-level deployment and scheduling,
         determine sites ready for survey, alocate sites to crews, and report on emissions.
-        Crew method consists of a deployment type and a sensor type which are set using 
+        Crew method consists of a deployment type and a sensor type which are set using
         the input parameter file.
     """
 

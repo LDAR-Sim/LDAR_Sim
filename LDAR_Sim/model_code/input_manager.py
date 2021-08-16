@@ -20,10 +20,10 @@
 # ------------------------------------------------------------------------------
 
 import copy
-import os
 import yaml
 import json
 import sys
+from pathlib import Path
 
 from utils.check_parameter_types import check_types
 from default_parameters.default_global_parameters import default_global_parameters
@@ -37,12 +37,12 @@ from default_parameters.default_continuous_parameters import default_continuous_
 
 
 class InputManager:
-    def __init__(self):
+    def __init__(self, root_dir):
         """ Constructor creates a lookup of method defaults to run validation against
         """
+        self.root_dir = root_dir
         # Simulation parameter are parameters that are set up for this simulation
         self.simulation_parameters = copy.deepcopy(default_global_parameters)
-
         # Construct a lookup of default method parameters
         self.method_defaults = {
             'aircraft': copy.deepcopy(default_aircraft_parameters),
@@ -64,9 +64,10 @@ class InputManager:
 
         # Coerce all paths to absolute paths prior to release, add extra guards for other parts of
         # the code that concatenate strings to construct file paths, and expect trailing slashes
-        self.simulation_parameters['wd'] = os.path.abspath(self.simulation_parameters['wd']) + '//'
-        self.simulation_parameters['output_directory'] = \
-            os.path.abspath(self.simulation_parameters['output_directory']) + '//'
+        self.simulation_parameters['input_directory'] = self.root_dir \
+            / self.simulation_parameters['input_directory']
+        self.simulation_parameters['output_directory'] = self.root_dir \
+            / self.simulation_parameters['output_directory']
         return(copy.deepcopy(self.simulation_parameters))
 
     def write_parameters(self, filename):
@@ -107,9 +108,25 @@ class InputManager:
         :param filename: the path to the parameter file
         :return: dictionary of parameters read from the parameter file
         """
-        parameter_set_name, extension = os.path.splitext(os.path.basename(filename))
+        # Get File location
+        file_path = Path(filename)
+        parameter_set_name, extension = file_path.stem, file_path.suffix
+        if filename[0] == ".":
+            # All relative need to be in reference to root folder
+            fn_abspart = filename.split("./")[-1]
+            temp_dir = self.root_dir
+            # if parent folder is required, move to parent directory number
+            # of times in relative path (.../ will backup 2 directories)
+            n_parents = filename.count("..")
+            for pcnt in range(n_parents):
+                temp_dir = temp_dir.parent
+            param_file = temp_dir / fn_abspart
+        else:
+            param_file = Path(filename)
+
         new_parameters = {}
-        with open(filename, 'r') as f:
+
+        with open(param_file, 'r') as f:
             print('Reading ' + filename)
             if extension == '.txt':
                 print('Warning: txt file inputs will be depreciated')
@@ -118,7 +135,7 @@ class InputManager:
             elif extension == '.json':
                 new_parameters = json.loads(f.read())
             elif extension == '.yaml' or extension == '.yml':
-                new_parameters = yaml.load(f.read(), Loader = yaml.FullLoader)
+                new_parameters = yaml.load(f.read(), Loader=yaml.FullLoader)
             else:
                 sys.exit('Invalid parameter file format: ' + filename)
 
@@ -166,11 +183,11 @@ class InputManager:
                     if len(new_parameters['programs']) > 0:
                         programs = programs + new_parameters.pop('programs')
 
-                check_types(default_global_parameters, new_parameters, omit_keys = ['programs'])
+                check_types(default_global_parameters, new_parameters, omit_keys=['programs'])
                 self.simulation_parameters.update(new_parameters)
 
             elif new_parameters['parameter_level'] == 'program':
-                check_types(default_program_parameters, new_parameters, omit_keys = ['methods'])
+                check_types(default_program_parameters, new_parameters, omit_keys=['methods'])
 
                 # Copy all default program parameters to build upon by calling update, then append
                 new_program = copy.deepcopy(default_program_parameters)
@@ -204,7 +221,7 @@ class InputManager:
             # Next, perform type checking and updating from default module parameters, even for
             # methods pre-specified
             for i in program['methods']:
-                module = program['methods'][i]['module']
+                module = program['methods'][i]['default_module']
 
                 # Perform type checking from known default methods
                 if module in self.method_defaults:
