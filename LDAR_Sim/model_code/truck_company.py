@@ -39,6 +39,7 @@ class truck_company:
         self.crews = []
         self.deployment_days = self.state['weather'].deployment_days(
             method_name=self.name,
+            config=config,
             start_date=self.state['t'].start_date,
             start_work_hour=8,  # Start hour in day
             consider_weather=parameters['consider_weather'])

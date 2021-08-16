@@ -39,6 +39,7 @@ class fixed_company:
         self.crews = []
         self.deployment_days = self.state['weather'].deployment_days(
             method_name=self.name,
+            config=config,
             start_date=self.state['t'].start_date,
             consider_weather=parameters['consider_weather'])
         self.timeseries['fixed_prop_sites_avail'] = []
@@ -75,7 +76,7 @@ class fixed_company:
                         state, parameters, config, timeseries, site, self.deployment_days,
                         id=site['facility_ID'] + '-' + str(i + 1)))
                 self.timeseries['fixed_cost'][self.state['t'].current_timestep] += \
-                    self.parameters['methods']['fixed']['up_front_cost']
+                    self.config['up_front_cost']
 
         return
 

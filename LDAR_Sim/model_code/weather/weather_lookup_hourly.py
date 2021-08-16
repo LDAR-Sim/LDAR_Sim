@@ -95,7 +95,6 @@ class WeatherLookup:
         Returns:
             boolean Matrix: See Summary for description
         """
-        method_params = self.parameters['methods'][method_name]
 
         # Initialize empty boolean arrays for threshold pass(1)/fail(0)
         bool_temp = np.zeros((len(self.longitude), len(
@@ -112,8 +111,8 @@ class WeatherLookup:
                           start_date.day,
                           start_work_hour, 0)
             nday_dt = start_dt + tdelt(days=day)
-            if 'max_workday' in self.parameters['methods'][method_name]:
-                max_day = self.parameters['methods'][method_name]['max_workday']
+            if 'max_workday' in self.config:
+                max_day = self.config['max_workday']
             else:
                 max_day = 23
                 # Count DDs for each criteria
@@ -125,15 +124,15 @@ class WeatherLookup:
                             ['winds', 'precip', 'temps'],
                             nday_dt, number_of_hours=max_day,
                             lat_idx=lat, lon_idx=lon)
-                        if np.average(hourly_weather['temps']) >= method_params['min_temp']:
+                        if np.average(hourly_weather['temps']) >= self.config['min_temp']:
                             # Count one instrument day (instrument can be used)
                             bool_temp[lon, lat, day] = 1
                         # If you are below the maximum wind...
-                        if np.average(hourly_weather['winds']) <= method_params['max_wind']:
+                        if np.average(hourly_weather['winds']) <= self.config['max_wind']:
                             # Count one instrument day (instrument can be used)
                             bool_wind[lon, lat, day] = 1
                         # If you are below the precipitation threshold...
-                        if np.average(hourly_weather['precip']) <= method_params['max_precip']:
+                        if np.average(hourly_weather['precip']) <= self.config['max_precip']:
                             # Count one instrument day (instrument can be used)
                             bool_precip[lon, lat, day] = 1
                     else:
