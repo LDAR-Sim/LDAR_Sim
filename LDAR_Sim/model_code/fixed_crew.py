@@ -96,9 +96,9 @@ class fixed_crew:
                 self.candidate_flags.append(site_dict)
 
         self.timeseries['fixed_cost'][self.state['t'].current_timestep] += \
-            self.parameters['methods']['fixed']['cost_per_day']
+            self.config['cost_per_day']
 
         self.timeseries['total_daily_cost'][self.state['t'].current_timestep] += \
-            self.parameters['methods']['fixed']['cost_per_day']
+            self.config['cost_per_day']
 
         return
