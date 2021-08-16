@@ -90,7 +90,7 @@ def input_mapper_v1(parameters):
     #     for i in parameters_to_make_global:
     #         mined_global_parameters[i] = parameters[i]
 
-        # Construct a programs key
+    # Construct a programs key
     #     mined_global_parameters['programs'] = []
 
     # ----------------------------------------------------------------------------------------------
@@ -108,4 +108,3 @@ def input_mapper_v1(parameters):
     pass
 
     return(parameters, mined_global_parameters)
-

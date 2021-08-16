@@ -50,8 +50,7 @@ class Schedule(BaseSchedCrew):
         self.scheduling = self.config['scheduling']
         # define a list of home bases for crew and redefine the the initial location of crew
         if self.scheduling['route_planning']:
-            hb_file = self.parameters['working_directory'] + \
-                self.scheduling['home_bases_files']
+            hb_file = self.parameters['input_directory'] / self.scheduling['home_bases_files']
             HB = pd.read_csv(hb_file, sep=',')
             self.crew_lon = self.scheduling['LDAR_crew_init_location'][0]
             self.crew_lat = self.scheduling['LDAR_crew_init_location'][1]
