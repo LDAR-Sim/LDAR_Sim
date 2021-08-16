@@ -48,9 +48,9 @@ class aircraft_crew:
         self.worked_today = False
         self.candidate_flags = candidate_flags
         work_hours = None
-        max_work = self.parameters['methods']['aircraft']['max_workday']
+        max_work = self.config['max_workday']
 
-        if self.parameters['methods']['aircraft']['consider_daylight']:
+        if self.config['consider_daylight']:
             daylight_hours = self.state['daylight'].get_daylight(self.state['t'].current_timestep)
             if daylight_hours <= max_work:
                 work_hours = daylight_hours
@@ -71,7 +71,7 @@ class aircraft_crew:
             hour=int(start_hour))  # Set start of work day
 
         # Start day with a time increment required for flying to first site
-        self.state['t'].current_date += timedelta(minutes=int(self.config['t_lost_per_site']))
+        self.state['t'].current_date += timedelta(minutes=int(self.config['t_bw_sites']))
 
         while self.state['t'].current_date.hour < int(end_hour):
             facility_ID, found_site, site = self.choose_site()
@@ -82,9 +82,9 @@ class aircraft_crew:
 
         if self.worked_today:
             self.timeseries['aircraft_cost'][self.state['t'].current_timestep] += \
-                self.parameters['methods']['aircraft']['cost_per_day']
+                self.config['cost_per_day']
             self.timeseries['total_daily_cost'][self.state['t'].current_timestep] += \
-                self.parameters['methods']['aircraft']['cost_per_day']
+                self.config['cost_per_day']
 
         return
 
@@ -185,7 +185,7 @@ class aircraft_crew:
             site['aircraft_missed_leaks'] += len(leaks_present)
 
         self.state['t'].current_date += timedelta(minutes=int(site['aircraft_time']))
-        self.state['t'].current_date += timedelta(minutes=int(self.config['t_lost_per_site']))
+        self.state['t'].current_date += timedelta(minutes=int(self.config['t_bw_sites']))
         self.timeseries['aircraft_sites_visited'][self.state['t'].current_timestep] += 1
 
         return

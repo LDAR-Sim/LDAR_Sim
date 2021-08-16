@@ -206,7 +206,7 @@ class InputManager:
         # Second, install the programs, checking for specified children methods
         for program in programs:
             # Find any orphaned methods that can be installed in this program
-            if 'method_labels' in program:
+            if 'method_labels' in program and program['method_labels'] is not None:
                 for method_label in program['method_labels']:
                     method_found = False
                     for i in method_pool:
