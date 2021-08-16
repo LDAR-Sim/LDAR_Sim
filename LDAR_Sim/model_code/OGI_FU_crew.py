@@ -49,15 +49,15 @@ class OGI_FU_crew:
         """
         self.worked_today = False
         work_hours = None
-        max_work = self.parameters['methods']['OGI_FU']['max_workday']
+        max_work = self.config['max_workday']
 
-        if self.parameters['methods']['OGI_FU']['consider_daylight']:
+        if self.config['consider_daylight']:
             daylight_hours = self.state['daylight'].get_daylight(self.state['t'].current_timestep)
             if daylight_hours <= max_work:
                 work_hours = daylight_hours
             elif daylight_hours > max_work:
                 work_hours = max_work
-        elif not self.parameters['methods']['OGI_FU']['consider_daylight']:
+        elif not self.config['consider_daylight']:
             work_hours = max_work
 
         if work_hours < 24 and work_hours != 0:
@@ -136,9 +136,9 @@ class OGI_FU_crew:
 
         if self.worked_today:
             self.timeseries['OGI_FU_cost'][self.state['t'].current_timestep] += \
-                self.parameters['methods']['OGI_FU']['cost_per_day']
+                self.config['cost_per_day']
             self.timeseries['total_daily_cost'][self.state['t'].current_timestep] += \
-                self.parameters['methods']['OGI_FU']['cost_per_day']
+                self.config['cost_per_day']
 
         return
 

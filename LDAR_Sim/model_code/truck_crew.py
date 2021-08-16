@@ -48,9 +48,9 @@ class truck_crew:
         self.worked_today = False
         self.candidate_flags = candidate_flags
         work_hours = None
-        max_work = self.parameters['methods']['truck']['max_workday']
+        max_work = self.config['max_workday']
 
-        if self.parameters['methods']['truck']['consider_daylight']:
+        if self.config['consider_daylight']:
             daylight_hours = self.state['daylight'].get_daylight(self.state['t'].current_timestep)
             if daylight_hours <= max_work:
                 work_hours = daylight_hours
@@ -85,9 +85,9 @@ class truck_crew:
 
         if self.worked_today:
             self.timeseries['truck_cost'][self.state['t'].current_timestep] += \
-                self.parameters['methods']['truck']['cost_per_day']
+                self.config['cost_per_day']
             self.timeseries['total_daily_cost'][self.state['t'].current_timestep] += \
-                self.parameters['methods']['truck']['cost_per_day']
+                self.config['cost_per_day']
 
         return
 
