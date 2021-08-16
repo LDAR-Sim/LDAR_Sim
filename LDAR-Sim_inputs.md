@@ -45,11 +45,11 @@ The **Root** folder includes all code, inputs, and outputs necessary to running 
 
 The **inputs_template** folder contains input files required to run LDAR-SIM. These include Airport files, empirical leak and vent data, facility lists, subtype distributions, and legacy program input parameter files (<V2.0). 
 
-The **outputs** folder stores all output data files produced by LDAR-SIM. The folder is removed and added at the beginning of each run of the program.
+The **outputs** folder stores all output data files produced by LDAR-SIM. The folder is cleaned, and added if required each time ldar_sim_main is run.
 
-The **module_code** folder stores the python source code. The main code of LDAR_SIM, LDAR_sim_main.py is stored inthe  base folder of module_code.
+The **module_code** folder stores the python source code. The main code of LDAR_SIM, LDAR_sim_main.py is stored in the base folder of module_code.
 
-The **sample_simulations** stores >V.2 input parameter files. -- This is currently in development --. 
+The **sample_simulations** stores >V2 input parameter files. -- This is currently in development and may be changed before V2 release--. 
 # Running the Model
 
 To run the model, supply one or more input parameter files as arguments to the program. The main function is called `ldar_sim_main.py` and is the main entrypoint to the model. File paths can be relative to the root directory (e.g., `./parameter_file1.txt`) or absolute (e.g., `D://parameter_files//parameter_file1.txt`). File paths are positional arguments and should be seperated by a single space.
@@ -178,8 +178,7 @@ While this is relatively intuitive, there are special considerations for methods
 - First, methods have a `module` key, that relate to specific method modules. For example, an OGI method is simulated using the OGI module. Users can build custom types or extend existing types, but some `module` is necessary to ensure LDAR-Sim knows what code to run. The full list of available modules is provided in parameter documentation below. 
 
     #### Temporary pre V2 release 
-    Because new methods are temporarily using a dummy class to maintain old functionality for testing, a second variable is required to access default parameters `default_module`. New Currently this can be one of:
-    - aircraft
+    Because new methods are temporarily using a dummy class to maintain old functionality for testing, a second variable is required to access default input parameters `default_module`. Default modules currently include and accept the following arguments:
     - continuous
     - OGI_FU
     - OGI
