@@ -26,7 +26,6 @@ import os
 import datetime
 import sys
 import random
-import time
 from sensitivity import Sensitivity
 from operator_agent import OperatorAgent
 from plotter import make_plots
@@ -61,15 +60,15 @@ class LdarSim:
         state['candidate_flags'] = {}
         # Read in data files
         state['empirical_counts'] = np.array(pd.read_csv(
-            params['working_directory'] + params['count_file']).iloc[:, 0])
+            params['input_directory'] / params['count_file']).iloc[:, 0])
         state['empirical_leaks'] = np.array(pd.read_csv(
-            params['working_directory'] + params['leak_file']).iloc[:, 0])
+            params['input_directory'] / params['leak_file']).iloc[:, 0])
         state['empirical_sites'] = np.array(pd.read_csv(
-            params['working_directory'] + params['vent_file']).iloc[:, 0])
+            params['input_directory'] / params['vent_file']).iloc[:, 0])
         if 'time_offsite' in params:
             if isinstance(params['time_offsite'], str):
                 state['offsite_times'] = np.array(pd.read_csv(
-                    params['working_directory'] + params['time_offsite']).iloc[:, 0])
+                    params['input_directory'] / params['time_offsite']).iloc[:, 0])
             else:
                 state['offsite_times'] = np.array([params['time_offsite']])
         #  Empirical Leaks can be fit with the following
@@ -80,7 +79,7 @@ class LdarSim:
             params['leak_rate_units'] = ['gram', 'second']
         state['max_leak_rate'] = params['max_leak_rate']
         # Read in the sites as a list of dictionaries
-        with open(params['working_directory'] + params['infrastructure_file']) as f:
+        with open(params['input_directory'] / params['infrastructure_file']) as f:
             state['sites'] = [{k: v for k, v in row.items()}
                               for row in csv.DictReader(f, skipinitialspace=True)]
 
@@ -91,7 +90,7 @@ class LdarSim:
                 params['site_samples'][1])
 
         if params['subtype_times'][0]:
-            subtype_times = pd.read_csv(params['working_directory'] + params['subtype_times'][1])
+            subtype_times = pd.read_csv(params['input_directory'] / params['subtype_times'][1])
             cols_to_add = subtype_times.columns[1:].tolist()
             for col in cols_to_add:
                 for site in state['sites']:
@@ -152,7 +151,7 @@ class LdarSim:
                 if 't_bw_sites' in m_obj:
                     if isinstance(m_obj['t_bw_sites'], str):
                         m_obj['t_bw_sites'] = np.array(pd.read_csv(
-                            params['working_directory'] + m_obj['t_bw_sites']).iloc[:, 0])
+                            params['input_directory'] / m_obj['t_bw_sites']).iloc[:, 0])
                     else:
                         m_obj['t_bw_sites'] = np.array([m_obj['t_bw_sites']])
 
@@ -492,17 +491,18 @@ class LdarSim:
 
             # Write csv files
             leak_df.to_csv(
-                params['output_directory'] + '/leaks_output_' + params
-                ['simulation'] + '.csv', index=False)
+                params['output_directory']
+                / 'leaks_output_{}.csv'.format(params['simulation']), index=False)
             time_df.to_csv(
-                params['output_directory'] + '/timeseries_output_' + params
-                ['simulation'] + '.csv', index=False)
+                params['output_directory']
+                / 'timeseries_output_{}.csv'.format(params['simulation']), index=False)
+
             site_df.to_csv(
-                params['output_directory'] + '/sites_output_' + params
-                ['simulation'] + '.csv', index=False)
+                params['output_directory']
+                / 'sites_output_{}.csv'.format(params['simulation']), index=False)
 
             # Write metadata
-            f_name = "{}/metadata_{}.txt".format(params['output_directory'], params['simulation'])
+            f_name = params['output_directory'] / "metadata_{}.txt".format(params['simulation'])
             metadata = open(f_name, 'w')
             metadata.write(str(params) + '\n' + str(datetime.datetime.now()))
             metadata.close()
@@ -531,8 +531,8 @@ class LdarSim:
         if params['sensitivity']['perform']:
             sim_summary['sensitivity'] = self.sensitivity.write_data()
 
-        # Return to original working directory
-        os.chdir(params['working_directory'])
+        # Return to original input directory
+        os.chdir(params['input_directory'])
         os.chdir('..')
 
         return(sim_summary)

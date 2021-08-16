@@ -22,7 +22,7 @@
 import sys
 
 
-def check_types(default, test, omit_keys = None, fatal = False):
+def check_types(default, test, omit_keys=None, fatal=False):
     """Helper function to recursively check the type of parameter dictionaries
     :param default: default element to test
     :param test: test element to test
@@ -47,17 +47,19 @@ def check_types(default, test, omit_keys = None, fatal = False):
             for i in test:
                 if i not in omit_keys:
                     if i not in default:
-                        print('Key ' + i + ' present in test parameters, but not in default parameters')
+                        print(
+                            'Key ' + i +
+                            ' present in test parameters, but not in default parameters')
                         if fatal:
                             sys.exit()
 
                     else:
-                        check_types(default[i], test[i], omit_keys = omit_keys, fatal = fatal)
+                        check_types(default[i], test[i], omit_keys=omit_keys, fatal=fatal)
 
         elif isinstance(test, list):
             if len(default) > 0 and len(test) > 0:
                 for i in range(len(test)):
-                    check_types(default[0], test[i], omit_keys = omit_keys, fatal = fatal)
+                    check_types(default[0], test[i], omit_keys=omit_keys, fatal=fatal)
 
     else:
         print('Parameter type mismatch')

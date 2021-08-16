@@ -22,8 +22,8 @@
 default_global_parameters = {
     'version': '2.0',
     'parameter_level': 'global',
-    'wd': '..//inputs_template//',
-    'output_directory': '..//outputs//',
+    'input_directory': './inputs_template',
+    'output_directory': './outputs',
     'n_processes':  None,
     'print_from_simulations': True,
     'n_simulations': 2,
@@ -35,5 +35,3 @@ default_global_parameters = {
     'start_year': 2017,
     'reference_program': 'P_ref',
 }
-
-

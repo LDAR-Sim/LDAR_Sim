@@ -34,7 +34,7 @@ def detect_emissions(self, site, leaks_present, equipment_rates, site_true_rate,
     lon_idx = geo_idx(site_lon, self.state['weather'].longitude)
     ti = self.state['t'].current_timestep
     windspeed = self.state['weather'].winds[ti, lat_idx, lon_idx]
-    # MDL is calculated based on wind speed and parameter 
+    # MDL is calculated based on wind speed and parameter
     # listed in Jacob et al., 2016
     # For point source, MDL is proportion to wind speed
     # when wind speed is 5km/h (1.39 m/s) MDL is 5.79 g/s
@@ -45,8 +45,8 @@ def detect_emissions(self, site, leaks_present, equipment_rates, site_true_rate,
     # check detection
     if site_true_rate > Q_min:
         # calculate the measured emission size
-	# Based on Table1 of Jacob et al.,2016, the precision of 
-	# GHGSat can be off by sigma (usually between 1% to 5%) 
+        # Based on Table1 of Jacob et al.,2016, the precision of
+        # GHGSat can be off by sigma (usually between 1% to 5%)
         # sample a sigma number
         sigma = random.choice([0.01, 0.02, 0.03, 0.04, 0.05])
         site_measured_rate = site_true_rate * (1 - sigma)

@@ -26,13 +26,43 @@ To support wider use of LDAR-Sim, the University of Calgary and Highwood Emissio
 
 By detailing the model inputs, this report creates the technical foundation for adding new functionality and enabling wider use of the model. This document will be revised continuously as modules, inputs, and functionality are added to or removed from LDAR-Sim.
 
+# File Structure
+
+The software is organized in the following structure:
+
+  * Root
+    * inputs_template
+    * install
+    * outputs
+    * module_code
+    * sample_simulations
+  
+  * LDAR-Sim_inputs.md
+  * LICENSE.txt
+  * README.md
+
+The **Root** folder includes all code, inputs, and outputs necessary to running LDAR-Sim. From a software perspective, the root folder is the parent to the module_code folder (folder containing LDAR_sim_main). This folder will be always be the root folder when making relative references in LDAR-Sim. For example, if input_directory is specified as *./inputs_template* from anywhere in the code, the targeted folder will be *{absolute_path_to} / Root / inputs_template*.
+
+The **inputs_template** folder contains input files required to run LDAR-SIM. These include Airport files, empirical leak and vent data, facility lists, subtype distributions, and legacy program input parameter files (<V2.0). 
+
+The **outputs** folder stores all output data files produced by LDAR-SIM. The folder is cleaned, and added if required each time ldar_sim_main is run.
+
+The **module_code** folder stores the python source code. The main code of LDAR_SIM, LDAR_sim_main.py is stored in the base folder of module_code.
+
+The **sample_simulations** stores >V2 input parameter files. -- This is currently in development and may be changed before V2 release--. 
 # Running the Model
 
-To run the model, supply one or more input parameter files as arguments to the program. The main function is called `ldar_sim_main.py` and is the main entrypoint to the model. File paths can be relative to your working directory (e.g., `./parameter_file1.txt`) or absolute (e.g., `D://parameter_files//parameter_file1.txt`).
+To run the model, supply one or more input parameter files as arguments to the program. The main function is called `ldar_sim_main.py` and is the main entrypoint to the model. File paths can be relative to the root directory (e.g., `./parameter_file1.txt`) or absolute (e.g., `D://parameter_files//parameter_file1.txt`). File paths are positional arguments and should be seperated by a single space.
 
 ```buildoutcfg
 python ldar_sim_main.py parameter_file1.txt parameter_file2.txt
 ```
+Alternatively, a single folder name (absolute or relative to root) can be passed by flagged argument *-P* or  *--in_dir*. All json or yaml files within that folder will be added as parameter_files. For example the following will use all parameter files within the sample simulation folder:
+
+```buildoutcfg
+python ldar_sim_main.py --in_dir ./sample_simulations
+```
+
 
 Alternatively, one can directly specify the parameters in `ldar_sim_main.py`; however, this is discouraged as it involves changing the model to run different programs and will be depreciated.
 
@@ -145,8 +175,16 @@ The `parameter_level` parameter can be one of three values:
 
 While this is relatively intuitive, there are special considerations for methods:
 
-- First, methods have a `module` key, that relate to specific method modules. For example, an OGI method is simulated using the OGI module. Users can build custom types or extend existing types, but some `module` is necessary to ensure LDAR-Sim knows what code to run. The full list of available modules is provided in parameter documentation below.
+- First, methods have a `module` key, that relate to specific method modules. For example, an OGI method is simulated using the OGI module. Users can build custom types or extend existing types, but some `module` is necessary to ensure LDAR-Sim knows what code to run. The full list of available modules is provided in parameter documentation below. 
 
+    #### Temporary pre V2 release 
+    Because new methods are temporarily using a dummy class to maintain old functionality for testing, a second variable is required to access default input parameters `default_module`. Default modules currently include and accept the following arguments:
+    - continuous
+    - OGI_FU
+    - OGI
+    - satellite
+    - truck
+&nbsp;
 - Second, methods have labels. This is necessary as there can be many different methods that are quite different, but have the same `module`. A good example is different OGI companies. You can run a simulation with multiple OGI companies, each specified as a unique method with unique agents, but both of the same type `OGI`. This is helpful to represent different work practices, different collection of parameters, or different approaches with the same technology. If you are modeling a hypothetical aircraft company, the module will need to be set to `aircraft` and the label can be set to the name that you specify.
 
 - Third, because methods are often carefully designed and used in treatment / control experiments, it is helpful to allow reuse of specific methods by referring to methods by their `label`.

@@ -24,6 +24,7 @@ from aggregator import aggregate
 from method_functions import measured_rate
 import numpy as np
 
+
 class truck_crew:
     def __init__(self, state, parameters, config, timeseries, deployment_days, id):
         """

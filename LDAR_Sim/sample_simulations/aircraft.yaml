@@ -1,5 +1,5 @@
 parameter_level: method
 version: '2.0'
-label: OGI
-default_module: OGI
+label: aircraft
+default_module: aircraft
 module: dummy
