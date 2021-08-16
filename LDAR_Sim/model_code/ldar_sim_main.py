@@ -100,7 +100,7 @@ if __name__ == '__main__':
         warnings.filterwarnings('ignore')    # Temporarily mute warnings
 
         for p in range(len(program_list)):
-            file = input_directory + program_list[p] + '.txt'
+            file = input_directory / '{}.txt'.format(program_list[p])
             exec(open(file).read())
             programs.append(eval(program_list[p]))
 
