@@ -41,17 +41,15 @@ def ldar_sim_run(simulation):
     # i = simulation['i']
     simulation = copy.deepcopy(simulation)
     parameters = simulation['program']
-    parameters['working_directory'] = simulation['wd']
-    parameters['output_directory'] = os.path.join(
-        simulation['output_directory'],
-        parameters['program_name'])
+    parameters['input_directory'] = simulation['input_directory']
+    parameters['output_directory'] = simulation['output_directory'] / parameters['program_name']
     if not os.path.exists(parameters['output_directory']):
         try:
             os.makedirs(parameters['output_directory'])
         except Exception:
             pass
 
-    logfile = open(os.path.join(parameters['output_directory'], 'logfile.txt'), 'w')
+    logfile = open(parameters['output_directory'] / 'logfile.txt', 'w')
     if 'print_from_simulation' not in simulation or simulation['print_from_simulation']:
         sys.stdout = stdout_redirect([sys.stdout, logfile])
     else:
@@ -67,7 +65,7 @@ def ldar_sim_run(simulation):
     # Use subtype_distribution file if true
     if parameters['subtype_distributions'][0]:
         subtype_dists = pd.read_csv(
-            parameters['working_directory'] + parameters['subtype_distributions'][1])
+            parameters['input_directory'] / parameters['subtype_distributions'][1])
         col_headers = subtype_dists.columns[1:].tolist()
         for row in subtype_dists.iterrows():
             subtype_dist = {}

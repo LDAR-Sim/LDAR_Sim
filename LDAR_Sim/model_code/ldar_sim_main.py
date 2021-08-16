@@ -18,33 +18,48 @@
 # along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 #
 # ------------------------------------------------------------------------------
-from pathlib import Path
-
-from batch_reporting import BatchReporting
-from ldar_sim_run import ldar_sim_run
-import pandas as pd
-import os
-import sys
-import shutil
-import datetime
-import warnings
-import multiprocessing as mp
-from generic_functions import check_ERA5_file
-
 from input_manager import InputManager
+from generic_functions import check_ERA5_file
+import multiprocessing as mp
+import warnings
+import datetime
+import shutil
+import os
+import pandas as pd
+from ldar_sim_run import ldar_sim_run
+from batch_reporting import BatchReporting
+from pathlib import Path
+import argparse
+
 
 if __name__ == '__main__':
+    # Get route directory , which is parent folder of ldar_sim_main file
+    # Set current working directory directory to root directory
+    root_dir = Path(os.path.dirname(os.path.realpath(__file__))).parent
     # ------------------------------------------------------------------------------
     # Look for parameter files supplied as arguments - if parameter files are supplied as
     # arguments, proceed to parse and type check input parameter type with the input manager
-    parameter_filenames = sys.argv[1:]
+    # will also accept flagged input directory , (-P or --in_dir)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('in_files', type=str, nargs='*', help='Input files')
+    parser.add_argument("-P", "--in_dir", help="Input Directory")
+    args = parser.parse_args()
+    if args.in_dir is not None:
+        # if an input directory is specified, get all files within that are in the directory
+        in_dir = root_dir / args.in_dir
+        # Get all yaml or json files in specified folder
+        parameter_filenames = [
+            "{}/{}".format(args.in_dir, f) for f in os.listdir(in_dir)
+            if ".yaml" in f or ".yml" in f or ".json" in f]
+    else:
+        parameter_filenames = args.in_files
+
     if len(parameter_filenames) > 0:
         print('LDAR-Sim using parameters supplied as arguments')
-        input_manager = InputManager()
+        input_manager = InputManager(root_dir)
         simulation_parameters = input_manager.read_and_validate_parameters(parameter_filenames)
-
         # Assign appropriate local variables to match older way of inputting parameters
-        wd = simulation_parameters['wd']
+        input_directory = simulation_parameters['input_directory']
         output_directory = simulation_parameters['output_directory']
         programs = simulation_parameters['programs']
         n_processes = simulation_parameters['n_processes']
@@ -61,11 +76,9 @@ if __name__ == '__main__':
         print('Warning: this method of supplying parameters will be depreciated in the future')
         # ------------------------------------------------------------------------------
         # -----------------------------Global parameters--------------------------------
-        src_dir_path = Path(os.path.dirname(os.path.realpath(__file__)))
-        src_dir = str(src_dir_path)
-        root_dir = str(src_dir_path.parent)
-        wd = os.path.abspath(root_dir) + "/inputs_template/"
-        output_directory = os.path.abspath(root_dir) + "/outputs/"
+
+        input_directory = root_dir / "inputs_template"
+        output_directory = root_dir / "outputs"
         # Programs to compare; Position one should be the reference program (P_ref)
         program_list = ['P_ref', 'P_base']
 
@@ -75,7 +88,7 @@ if __name__ == '__main__':
         warnings.filterwarnings('ignore')    # Temporarily mute warnings
 
         for p in range(len(program_list)):
-            file = wd + program_list[p] + '.txt'
+            file = input_directory + program_list[p] + '.txt'
             exec(open(file).read())
             programs.append(eval(program_list[p]))
 
@@ -89,15 +102,15 @@ if __name__ == '__main__':
         start_year = programs[0]['start_year']
 
     # -----------------------------Prepare model run----------------------------------
-    # Check whether ERA5 data is already in the working directory and download data if not
-    check_ERA5_file(wd, weather_file)
+    # Check whether ERA5 data is already in the input directory and download data if not
+    check_ERA5_file(input_directory, weather_file)
 
     if os.path.exists(output_directory):
         shutil.rmtree(output_directory)
 
     os.makedirs(output_directory)
     if 'input_manager' in locals():
-        input_manager.write_parameters(os.path.join(output_directory, 'parameters.yaml'))
+        input_manager.write_parameters(output_directory / 'parameters.yaml')
 
     # Set up simulation parameter files
     simulations = []
@@ -108,12 +121,12 @@ if __name__ == '__main__':
             )
             simulations.append(
                 [{'i': i, 'program': programs[j],
-                  'wd': wd,
+                  'input_directory': input_directory,
                   'output_directory':output_directory,
                   'opening_message': opening_message,
                   'print_from_simulation': print_from_simulations}])
 
-    # ldar_sim_run(simulations[1][0])
+    # ldar_sim_run(simulations[2][0])
     # Perform simulations in parallel
     with mp.Pool(processes=n_processes) as p:
         res = p.starmap(ldar_sim_run, simulations)
@@ -131,7 +144,7 @@ if __name__ == '__main__':
                 reporting_data.batch_plots()
 
     # Write metadata
-    metadata = open(output_directory + '/_metadata.txt', 'w')
+    metadata = open(output_directory / '_metadata.txt', 'w')
     metadata.write(str(programs) + '\n' +
                    str(datetime.datetime.now()))
 
@@ -142,6 +155,6 @@ if __name__ == '__main__':
     if 'program' in sa_df.columns:
         for program in sa_df['program'].unique():
             sa_out = sa_df.loc[sa_df['program'] == program, :]
-            sa_outfile_name = os.path.join(wd, 'sensitivity_analysis',
+            sa_outfile_name = os.path.join(input_directory, 'sensitivity_analysis',
                                            'sensitivity_' + program + '.csv')
             sa_out.to_csv(sa_outfile_name, index=False)
