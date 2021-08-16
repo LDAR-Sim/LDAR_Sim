@@ -18,19 +18,21 @@
 # along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 #
 # ------------------------------------------------------------------------------
-from input_manager import InputManager
-from generic_functions import check_ERA5_file
+
 import multiprocessing as mp
 import warnings
 import datetime
 import shutil
 import os
 import pandas as pd
+import argparse
+from argparse import RawTextHelpFormatter
+
 from ldar_sim_run import ldar_sim_run
 from batch_reporting import BatchReporting
 from pathlib import Path
-import argparse
-
+from input_manager import InputManager
+from generic_functions import check_ERA5_file
 
 if __name__ == '__main__':
     # Get route directory , which is parent folder of ldar_sim_main file
@@ -40,10 +42,20 @@ if __name__ == '__main__':
     # Look for parameter files supplied as arguments - if parameter files are supplied as
     # arguments, proceed to parse and type check input parameter type with the input manager
     # will also accept flagged input directory , (-P or --in_dir)
-    parser = argparse.ArgumentParser()
-    parser.add_argument('in_files', type=str, nargs='*', help='Input files')
-    parser.add_argument("-P", "--in_dir", help="Input Directory")
+    parser = argparse.ArgumentParser(formatter_class=RawTextHelpFormatter)
+    # ---Declare input arguments---
+    parser.add_argument(
+        'in_files', type=str, nargs='*',
+        help='Input files, seperate with space, can be absolute path or relative to' +
+        'root directory (LDAR_Sim). All files should have yaml, yml, or json extensions \n' +
+        'ie. python ldar_sim_main.py ./file1.json c:/path/to/file/file2.json')
+    parser.add_argument(
+        "-P", "--in_dir",
+        help='Input Directory, folder containing input files, will input all files within' +
+        'folder that have yaml, yml or json extensions \n' +
+        'ie. python ldar_sim_main.py --in_dir ./folder_with_infiles')
     args = parser.parse_args()
+
     if args.in_dir is not None:
         # if an input directory is specified, get all files within that are in the directory
         in_dir = root_dir / args.in_dir
