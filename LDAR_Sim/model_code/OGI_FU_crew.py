@@ -75,9 +75,7 @@ class OGI_FU_crew:
 
         # Start day with random "offsite time" required for driving to first site
         self.state['t'].current_date += timedelta(
-            minutes=int(
-                self.state['offsite_times']
-                [np.random.randint(0, len(self.state['offsite_times']))]))
+            minutes=int(np.random.choice(self.config['t_bw_sites'])))
 
         # Check if there is a partially finished site from yesterday
         if len(self.rollover) > 0:
@@ -86,10 +84,7 @@ class OGI_FU_crew:
             # would time to drive back to the home base
             projected_end_time = self.state['t'].current_date + \
                 timedelta(minutes=int(self.rollover[1]))
-            drive_home = timedelta(
-                minutes=int(
-                    self.state['offsite_times']
-                    [np.random.randint(0, len(self.state['offsite_times']))]))
+            drive_home = timedelta(minutes=int(np.random.choice(self.config['t_bw_sites'])))
             if (projected_end_time + drive_home) > self.allowed_end_time:
                 # There's not enough time left for that site today -
                 #  get started and figure out how much time remains
@@ -115,10 +110,7 @@ class OGI_FU_crew:
             if found_site:
                 projected_end_time = self.state['t'].current_date + \
                     timedelta(minutes=int(site['OGI_FU_time']))
-                drive_home = timedelta(
-                    minutes=int(
-                        self.state['offsite_times']
-                        [np.random.randint(0, len(self.state['offsite_times']))]))
+                drive_home = timedelta(minutes=int(np.random.choice(self.config['t_bw_sites'])))
                 if (projected_end_time + drive_home) > self.allowed_end_time:
                     # There's not enough time left for that site today -
                     #  get started and figure out how much time remains
@@ -206,9 +198,7 @@ class OGI_FU_crew:
 
         self.state['t'].current_date += timedelta(minutes=int(site['OGI_FU_time']))
         self.state['t'].current_date += timedelta(
-            minutes=int(
-                self.state['offsite_times']
-                [np.random.randint(0, len(self.state['offsite_times']))]))
+            minutes=int(np.random.choice(self.config['t_bw_sites'])))
         self.timeseries['OGI_FU_sites_visited'][self.state['t'].current_timestep] += 1
 
         # Remove site from flag pool

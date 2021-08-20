@@ -55,7 +55,6 @@ P_sat = {
     'n_processes': None,
     'start_year': 2017,
     'UTC_offset': -6,
-    'offsite_times': 'time_offsite_ground.csv',
     'weather_file': "ERA5_AB_1x1_hourly_2015_2020.nc",
     'weather_is_hourly': False,
     'infrastructure_file': 'facility_list_template.csv',
