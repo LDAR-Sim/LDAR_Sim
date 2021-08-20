@@ -128,9 +128,9 @@ class OGI_FU_crew:
 
         if self.worked_today:
             self.timeseries['OGI_FU_cost'][self.state['t'].current_timestep] += \
-                self.config['cost_per_day']
+                self.config['cost']['per_day']
             self.timeseries['total_daily_cost'][self.state['t'].current_timestep] += \
-                self.config['cost_per_day']
+                self.config['cost']['per_day']
 
         return
 

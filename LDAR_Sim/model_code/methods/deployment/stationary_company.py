@@ -59,7 +59,7 @@ def make_crews(crews, config, state, parameters, timeseries, deployment_days):
                     id=crew_ID,
                 ))
             timeseries['{}_cost'.format(m_name)][state['t'].current_timestep] += \
-                config['up_front_cost']
+                config['cost']['upfront']
 
 
 class Schedule(BaseSchedCompany):

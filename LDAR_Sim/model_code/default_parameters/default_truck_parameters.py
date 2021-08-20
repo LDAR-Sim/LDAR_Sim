@@ -31,7 +31,12 @@ default_truck_parameters = {
     'max_precip': 0.01,
     'max_workday': 8,
     'measurement_scale': "equipment",
-    'cost_per_day': 2000,
+    'cost': {
+        'upfront_cost': 0,
+        'per_day': 2500,
+        'per_hour': 0,
+        'per_site': 0,
+    },
     'follow_up_thresh': [0, "absolute"],
     'follow_up_ratio': 1,
     'reporting_delay': 2,

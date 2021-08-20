@@ -33,7 +33,7 @@ from default_parameters.default_OGI_parameters import default_OGI_parameters
 from default_parameters.default_OGI_FU_parameters import default_OGI_FU_parameters
 from default_parameters.default_satellite_parameters import default_satellite_parameters
 from default_parameters.default_truck_parameters import default_truck_parameters
-from default_parameters.default_continuous_parameters import default_continuous_parameters
+from default_parameters.default_stationary_parameters import default_stationary_parameters
 
 
 class InputManager:
@@ -50,7 +50,7 @@ class InputManager:
             'OGI_FU': copy.deepcopy(default_OGI_FU_parameters),
             'satellite': copy.deepcopy(default_satellite_parameters),
             'truck': copy.deepcopy(default_truck_parameters),
-            'continuous': copy.deepcopy(default_continuous_parameters),
+            'stationary': copy.deepcopy(default_stationary_parameters),
         }
         return
 
