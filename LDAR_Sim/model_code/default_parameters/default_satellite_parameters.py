@@ -36,7 +36,6 @@ default_satellite_parameters = {
     'cost_per_day': 10000,
     'follow_up_thresh': [0, "absolute"],
     'follow_up_ratio': 1,
-    'offsite_times': 10,
     'reporting_delay': 2,
     'MDL': 0.01,
     'QE': 0,

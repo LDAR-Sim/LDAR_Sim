@@ -71,10 +71,7 @@ class truck_crew:
             hour=int(start_hour))  # Set start of work day
 
         # Start day with random "offsite time" required for driving to first site
-        self.state['t'].current_date += timedelta(
-            minutes=int(
-                self.state['offsite_times']
-                [np.random.randint(0, len(self.state['offsite_times']))]))
+        self.state['t'].current_date += timedelta(minutes=int(np.random.choice(self.config['t_bw_sites']))
 
         while self.state['t'].current_date.hour < int(end_hour):
             facility_ID, found_site, site = self.choose_site()
@@ -188,10 +185,7 @@ class truck_crew:
             site['truck_missed_leaks'] += len(leaks_present)
 
         self.state['t'].current_date += timedelta(minutes=int(site['truck_time']))
-        self.state['t'].current_date += timedelta(
-            minutes=int(
-                self.state['offsite_times']
-                [np.random.randint(0, len(self.state['offsite_times']))]))
+        self.state['t'].current_date += timedelta(minutes=int(np.random.choice(self.config['t_bw_sites']))
         self.timeseries['truck_sites_visited'][self.state['t'].current_timestep] += 1
 
         return

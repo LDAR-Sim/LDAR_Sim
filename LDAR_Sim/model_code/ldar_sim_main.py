@@ -24,7 +24,6 @@ import warnings
 import datetime
 import shutil
 import os
-import pandas as pd
 import argparse
 from argparse import RawTextHelpFormatter
 
@@ -161,4 +160,3 @@ if __name__ == '__main__':
                    str(datetime.datetime.now()))
 
     metadata.close()
-

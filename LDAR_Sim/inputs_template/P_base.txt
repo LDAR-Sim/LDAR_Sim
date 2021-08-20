@@ -13,7 +13,6 @@ P_base = {
     'leak_file': 'leak_rates.csv',
     'count_file': 'leak_counts.csv',
     'vent_file': 'site_rates.csv',
-    'time_offsite': 'time_offsite_ground.csv',
     'site_samples': [True, 500],
     # If True, will overwrite global Leak Dist
     'subtype_distributions': [False, 'subtype_distributions.csv'],

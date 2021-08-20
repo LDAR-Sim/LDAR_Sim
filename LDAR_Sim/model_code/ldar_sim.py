@@ -43,14 +43,13 @@ class LdarSim:
         self.parameters = params
         self.timeseries = timeseries
         self.active_leaks = []
-        
+
         #  --- timeseries variables ---
         timeseries['total_daily_cost'] = np.zeros(params['timesteps'])
         timeseries['repair_cost'] = np.zeros(params['timesteps'])
         timeseries['verification_cost'] = np.zeros(params['timesteps'])
         timeseries['operator_redund_tags'] = np.zeros(self.parameters['timesteps'])
         timeseries['operator_tags'] = np.zeros(self.parameters['timesteps'])
-
 
         #  --- state variables ---
         state['candidate_flags'] = {}
@@ -61,12 +60,6 @@ class LdarSim:
             params['input_directory'] / params['leak_file']).iloc[:, 0])
         state['empirical_sites'] = np.array(pd.read_csv(
             params['input_directory'] / params['vent_file']).iloc[:, 0])
-        if 'time_offsite' in params:
-            if isinstance(params['time_offsite'], str):
-                state['offsite_times'] = np.array(pd.read_csv(
-                    params['input_directory'] / params['time_offsite']).iloc[:, 0])
-            else:
-                state['offsite_times'] = np.array([params['time_offsite']])
         #  Empirical Leaks can be fit with the following
         if params['use_empirical_rates'] == 'fit':
             params['leak_distribution'] = fit_dist(
@@ -520,7 +513,6 @@ class LdarSim:
             'timeseries': time_df,
             'sites': site_df,
         }
-
 
         # Return to original input directory
         os.chdir(params['input_directory'])
