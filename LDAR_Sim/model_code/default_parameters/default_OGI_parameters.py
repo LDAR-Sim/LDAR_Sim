@@ -33,7 +33,12 @@ default_OGI_parameters = {
     'max_wind': 10,
     'max_precip': 0.1,
     'max_workday': 8,
-    'cost_per_day': 2500,
+    'cost': {
+        'upfront_cost': 0,
+        'per_day': 2500,
+        'per_hour': 0,
+        'per_site': 0,
+    },
     'reporting_delay': 2,
     't_bw_sites': 'time_offsite_ground.csv',
     'MDL': [0.01275, 2.78e-6],

@@ -22,7 +22,7 @@
 import numpy as np
 
 
-class fixed_crew:
+class stationary_crew:
     def __init__(self, state, parameters, config, timeseries, site, deployment_days, id):
         """
         Constructs an individual fixed crew based on defined configuration.
@@ -96,9 +96,9 @@ class fixed_crew:
                 self.candidate_flags.append(site_dict)
 
         self.timeseries['fixed_cost'][self.state['t'].current_timestep] += \
-            self.config['cost_per_day']
+            self.config['cost']['per_day']
 
         self.timeseries['total_daily_cost'][self.state['t'].current_timestep] += \
-            self.config['cost_per_day']
+            self.config['cost']['per_day']
 
         return

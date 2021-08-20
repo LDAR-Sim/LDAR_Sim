@@ -103,7 +103,7 @@ class satellite:
 
         if self.worked_today:
             self.timeseries['satellite_cost'][self.state['t'].current_timestep] += \
-                self.config['cost_per_day']
+                self.config['cost']['per_day']
 
         return
 

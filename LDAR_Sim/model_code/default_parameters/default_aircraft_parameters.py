@@ -33,7 +33,12 @@ default_aircraft_parameters = {
     'max_wind': 10,
     'max_precip': 1,
     'max_workday': 8,
-    'cost_per_day': 10000,
+    'cost': {
+        'upfront_cost': 0,
+        'per_day': 10000,
+        'per_hour': 0,
+        'per_site': 0,
+    },
     'follow_up_thresh': [0, "absolute"],
     'follow_up_ratio': 1,
     't_bw_sites': 10,

@@ -33,7 +33,12 @@ default_satellite_parameters = {
     'max_wind': 100,
     'max_precip': 100,
     'max_workday': 24,
-    'cost_per_day': 10000,
+    'cost': {
+        'upfront_cost': 0,
+        'per_day': 10000,
+        'per_hour': 0,
+        'per_site': 0,
+    },
     'follow_up_thresh': [0, "absolute"],
     'follow_up_ratio': 1,
     'reporting_delay': 2,
