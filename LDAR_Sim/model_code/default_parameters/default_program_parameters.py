@@ -54,8 +54,4 @@ default_program_parameters = {
     'print_from_simulations': True,
     'operator_strength': 0,
     'verification_cost': 25,
-    'sensitivity': {'perform': False,
-                    'program': 'OGI',
-                    'batch': [True, 2],
-                    }
 }
