@@ -625,17 +625,6 @@ If you are developing for LDAR-Sim, please adhere to the following rules:
 
 **Notes of caution:** Do not confuse with method-specific reporting delays. Reporting delays define the time between surveys and transfer of information to the next responsible party. For example, an OGI company may have a reporting delay of 2 days and the duty holder might have a repair delay of 14 days. In this case, the amount a leak would continue to emit for 16 days following detection.
 
-## sensitivity
-
-**Data type:** Dictionary
-
-**Default input:** {&#39;perform&#39;: True, &#39;program&#39;: &#39;OGI&#39;, &#39;order&#39;: &#39;1&#39;, &#39;write\_results\_postsim&#39;: False}
-
-**Description:** Adictionary of inputs that triggers and parameterizes a sensitivity analysis (SA). The first entry is a Boolean True/False that indicates whether a SA should be performed. The second entry indicates the method. The order indicates the position of the entry in &#39;program\_list&#39; (it should be &#39;1&#39; for the reference program). Finally, write\_results\_postsim exports the SA results to a csv file.
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** Sensitivity analyses should be run separately from the main simulation. When an SA is run, all input parameters are rewritten, so many of the inputs in the program files are inconsequential. As currently written, the sensitivity analysis is method-specific and is not generalizable across program types. The SA should be rebuilt to be generalizable to any program.
 
 ## site\_samples
 
