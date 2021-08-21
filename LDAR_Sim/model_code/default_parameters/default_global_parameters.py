@@ -30,8 +30,9 @@ default_global_parameters = {
     'spin_up': 0,
     'write_data':  True,
     'programs': [],
-    'weather_file': "ERA5_AB_1x1_hourly_2015_2019.nc",
-    'timesteps': 1000,
-    'start_year': 2017,
+    'weather_file': "ERA5_AB_lowres_2015_2020.nc",
+    # 'timesteps': 1000,
+    'start_date': [2017, 1, 1],
+    'end_date': [2020, 12, 31],
     'reference_program': 'P_ref',
 }

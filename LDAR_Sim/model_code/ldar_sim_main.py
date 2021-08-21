@@ -80,7 +80,7 @@ if __name__ == '__main__':
         ref_program = simulation_parameters['reference_program']
         write_data = simulation_parameters['write_data']
         weather_file = simulation_parameters['weather_file']
-        start_year = simulation_parameters['start_year']
+        start_date = simulation_parameters['start_date']
 
     else:
         print('LDAR-Sim using parameters coded into ldar_sim_main.py')
@@ -110,7 +110,7 @@ if __name__ == '__main__':
         ref_program = program_list[0]
         write_data = programs[0]['write_data']
         weather_file = programs[0]['weather_file']
-        start_year = programs[0]['start_year']
+        start_date = programs[0]['start_date']
 
     # -----------------------------Prepare model run----------------------------------
     # Check whether ERA5 data is already in the input directory and download data if not
@@ -137,7 +137,7 @@ if __name__ == '__main__':
                   'opening_message': opening_message,
                   'print_from_simulation': print_from_simulations}])
 
-    # ldar_sim_run(simulations[4][0])
+    # ldar_sim_run(simulations[2][0])
     # Perform simulations in parallel
     with mp.Pool(processes=n_processes) as p:
         res = p.starmap(ldar_sim_run, simulations)
@@ -146,7 +146,7 @@ if __name__ == '__main__':
     if write_data:
         # Create a data object...
         reporting_data = BatchReporting(
-            output_directory, start_year,
+            output_directory, start_date,
             spin_up, ref_program)
         if n_simulations > 1:
             reporting_data.program_report()

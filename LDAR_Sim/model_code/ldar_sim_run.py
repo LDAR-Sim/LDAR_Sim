@@ -139,6 +139,7 @@ def ldar_sim_run(simulation):
     else:
         state['weather'] = WL(state, parameters)
     state['t'] = TimeCounter(parameters)
+    parameters.update({'timesteps': state['t'].timesteps})
     sim = LdarSim(state, parameters, timeseries)
 
     # Loop through timeseries

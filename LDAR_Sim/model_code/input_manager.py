@@ -235,8 +235,8 @@ class InputManager:
 
             # Finally, manually append some keys from globals that are required to be in the program
             # parameters
-            program['start_year'] = self.simulation_parameters['start_year']
-            program['timesteps'] = self.simulation_parameters['timesteps']
+            program['start_date'] = self.simulation_parameters['start_date']
+            program['end_date'] = self.simulation_parameters['end_date']
 
         # Third, install the programs into the simulation parameters
         self.simulation_parameters['programs'] = programs
