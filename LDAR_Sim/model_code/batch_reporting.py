@@ -31,16 +31,16 @@ import plotnine as pn
 
 class BatchReporting:
 
-    def __init__(self, output_directory, start_year, spin_up, ref_program):
+    def __init__(self, output_directory, start_date, spin_up, ref_program):
         """
         Prepare output csv files to glean summary statistics and plotting data.
         """
         self.output_directory = output_directory
-        self.start_year = start_year
+        self.start_date = start_date
         self.spin_up = spin_up
         self.ref_program = ref_program
 
-        start_date = datetime(self.start_year, 1, 1) + timedelta(days=self.spin_up)
+        start_date = datetime(*start_date) + timedelta(days=self.spin_up)
         start_date = start_date.strftime("%m-%d-%Y")
 
         # Go to directory with program folders

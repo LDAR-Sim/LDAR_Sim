@@ -30,10 +30,11 @@ class TimeCounter:
 
         """
         self.parameters = parameters
-        self.start_date = datetime(parameters['start_year'], 1, 1)
+        self.start_date = datetime(*parameters['start_date'])
+        self.end_date = datetime(*parameters['end_date'])
+        self.timesteps = (self.end_date - self.start_date).days
         self.current_date = self.start_date
         self.current_timestep = 0
-        self.end_date = self.start_date + timedelta(days=parameters['timesteps'])
         self.UTC_offset = parameters['UTC_offset']
         return
 

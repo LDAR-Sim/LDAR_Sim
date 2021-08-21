@@ -587,7 +587,7 @@ If you are developing for LDAR-Sim, please adhere to the following rules:
 
 **Notes on acquisition:** No data acquisition required.
 
-**Notes of caution:** It is recommended that for each program in the list, the same number of simulations, the same number of timesteps, and the same start\_year be used. It is critically important to double check that other variables are only different between when programs when intended. For example, in almost all cases LPR should be the same for all programs, unless the modelers is specifically evaluating the impact of using different LPR values. We do not recommend using more than 5-6 different programs simultaneously because the batch plots become quite crowded. When making new program files, a method library is available in the inputs template folder to help define the methods to be used. Always ensure that the program name is specified in three places: (i) as the text file name, (ii) as the dictionary name on line 1 of the text file, and (iii) as the program\_name in the text file, directly below the section that specifies which method dictionaries are to be used.
+**Notes of caution:** It is recommended that for each program in the list, the same number of simulations, the same start\_date and end\_date be used. It is critically important to double check that other variables are only different between when programs when intended. For example, in almost all cases LPR should be the same for all programs, unless the modelers is specifically evaluating the impact of using different LPR values. We do not recommend using more than 5-6 different programs simultaneously because the batch plots become quite crowded. When making new program files, a method library is available in the inputs template folder to help define the methods to be used. Always ensure that the program name is specified in three places: (i) as the text file name, (ii) as the dictionary name on line 1 of the text file, and (iii) as the program\_name in the text file, directly below the section that specifies which method dictionaries are to be used.
 
 ## program\_name
 
@@ -650,17 +650,29 @@ If you are developing for LDAR-Sim, please adhere to the following rules:
 
 **Notes of caution:** Indicating a spin\_up value only affects plotting and does not affect the underlying data outputs. If you want to compare emissions of two programs using output datasets and want to exclude the influence of the initial step change in emissions, a spin up must be added manually.
 
-## start\_year
+## start\_date
 
-**Data type:** Integer
+**Data type:** List of Integers [year, month, day]
 
-**Default input:** 2003
+**Default input:** [2017,1,1]
 
-**Description:** The year at which the simulation will begin.
+**Description:** The date in which the simulations began.
 
 **Notes on acquisition:** No data acquisition required.
 
-**Notes of caution:** The NetCDF file must encompass the start year plus the number of timesteps. For example, if the start date is 2015 and 1460 timesteps are used, the NetCDF file must extend from at least 2015 to 2019.
+**Notes of caution:** The NetCDF file must encompass the start date and end date.
+
+## end\_date
+
+**Data type:** List of Integers [year, month, day]
+
+**Default input:** [2020,12,31]
+
+**Description:** The date in which the simulations ends.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** The NetCDF file must encompass the start date and end date.
 
 ## subtype\_distributions
 
@@ -700,17 +712,6 @@ If you are developing for LDAR-Sim, please adhere to the following rules:
 
 __*Temporary__: Obsolete for V2 methods.
 
-## timesteps
-
-**Data type:** Integer
-
-**Default input:** N/A
-
-**Description:** The number of daily timesteps to use for each simulation run of the program.
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** We recommend running the simulation for several years due to the stochastic nature of LDAR systems and the periods of time over which leaks arise and are repaired. Using 1000 timesteps is a good place to start. Keep in mind that if a spin\_up is used, the number of timesteps must be greater. Also note that the simulation will run until start\_date + timesteps, so keep in mind that the end date cannot extend beyond the available ERA5 weather data, if used.
 
 ## use_empirical_rates
 **Data type:** Boolean or string
