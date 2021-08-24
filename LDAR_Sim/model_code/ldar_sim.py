@@ -19,13 +19,15 @@
 #
 # ------------------------------------------------------------------------------
 
-import pandas as pd
-import numpy as np
 import csv
 import os
 import datetime
 import sys
 import random
+
+import pandas as pd
+import numpy as np
+
 from operator_agent import OperatorAgent
 from plotter import make_plots
 from daylight_calculator import DaylightCalculatorAve
@@ -71,6 +73,8 @@ class LdarSim:
         with open(params['input_directory'] / params['infrastructure_file']) as f:
             state['sites'] = [{k: v for k, v in row.items()}
                               for row in csv.DictReader(f, skipinitialspace=True)]
+
+        state['t'].set_UTC_offset(state['sites'])
 
         # Sample sites
         if params['site_samples'][0]:

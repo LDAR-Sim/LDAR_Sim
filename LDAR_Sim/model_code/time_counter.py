@@ -19,8 +19,10 @@
 #
 # ------------------------------------------------------------------------------
 
-from datetime import datetime
-from datetime import timedelta
+from datetime import datetime, timedelta
+from statistics import mean
+from tzwhere import tzwhere
+import pytz
 
 
 class TimeCounter:
@@ -35,7 +37,6 @@ class TimeCounter:
         self.timesteps = (self.end_date - self.start_date).days
         self.current_date = self.start_date
         self.current_timestep = 0
-        self.UTC_offset = parameters['UTC_offset']
         return
 
     def next_day(self):
@@ -46,3 +47,16 @@ class TimeCounter:
         self.current_date += timedelta(days=1)
         self.current_timestep += 1
         return
+
+    def set_UTC_offset(self, sites):
+        '''
+        set UTC offset based on average site lat longs
+
+        Uses current (now()) offset
+        '''
+        avg_lat = mean([float(site['lat']) for site in sites])
+        avg_lon = mean([float(site['lon']) for site in sites])
+        timezone_str = tzwhere.tzwhere().tzNameAt(avg_lat, avg_lon)
+        # This uses the current daylight time . Need to fix
+        tz_now = datetime.now(pytz.timezone(timezone_str))
+        self.UTC_offset = tz_now.utcoffset().total_seconds()/60/60

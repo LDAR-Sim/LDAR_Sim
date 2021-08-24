@@ -79,7 +79,6 @@ if __name__ == '__main__':
         spin_up = simulation_parameters['spin_up']
         ref_program = simulation_parameters['reference_program']
         write_data = simulation_parameters['write_data']
-        weather_file = simulation_parameters['weather_file']
         start_date = simulation_parameters['start_date']
 
     else:
@@ -109,12 +108,12 @@ if __name__ == '__main__':
         spin_up = programs[0]['spin_up']
         ref_program = program_list[0]
         write_data = programs[0]['write_data']
-        weather_file = programs[0]['weather_file']
         start_date = programs[0]['start_date']
 
     # -----------------------------Prepare model run----------------------------------
     # Check whether ERA5 data is already in the input directory and download data if not
-    check_ERA5_file(input_directory, weather_file)
+    for p in programs:
+        check_ERA5_file(input_directory, p['weather_file'])
 
     if os.path.exists(output_directory):
         shutil.rmtree(output_directory)
@@ -137,7 +136,6 @@ if __name__ == '__main__':
                   'opening_message': opening_message,
                   'print_from_simulation': print_from_simulations}])
 
-    # ldar_sim_run(simulations[2][0])
     # Perform simulations in parallel
     with mp.Pool(processes=n_processes) as p:
         res = p.starmap(ldar_sim_run, simulations)
