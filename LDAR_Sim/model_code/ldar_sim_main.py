@@ -3,7 +3,7 @@
 # File:        LDAR-Sim main
 # Purpose:     Interface for parameterizing and running LDAR-Sim.
 #
-# Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
+# Copyright (C) 2018-2021  Intelligent Methane Monitoring and Management System (IM3S) Group
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the MIT License as published
@@ -24,7 +24,6 @@ import warnings
 import datetime
 import shutil
 import os
-import pandas as pd
 import argparse
 from argparse import RawTextHelpFormatter
 
@@ -80,8 +79,7 @@ if __name__ == '__main__':
         spin_up = simulation_parameters['spin_up']
         ref_program = simulation_parameters['reference_program']
         write_data = simulation_parameters['write_data']
-        weather_file = simulation_parameters['weather_file']
-        start_year = simulation_parameters['start_year']
+        start_date = simulation_parameters['start_date']
 
     else:
         print('LDAR-Sim using parameters coded into ldar_sim_main.py')
@@ -110,12 +108,12 @@ if __name__ == '__main__':
         spin_up = programs[0]['spin_up']
         ref_program = program_list[0]
         write_data = programs[0]['write_data']
-        weather_file = programs[0]['weather_file']
-        start_year = programs[0]['start_year']
+        start_date = programs[0]['start_date']
 
     # -----------------------------Prepare model run----------------------------------
     # Check whether ERA5 data is already in the input directory and download data if not
-    check_ERA5_file(input_directory, weather_file)
+    for p in programs:
+        check_ERA5_file(input_directory, p['weather_file'])
 
     if os.path.exists(output_directory):
         shutil.rmtree(output_directory)
@@ -138,7 +136,6 @@ if __name__ == '__main__':
                   'opening_message': opening_message,
                   'print_from_simulation': print_from_simulations}])
 
-    # ldar_sim_run(simulations[4][0])
     # Perform simulations in parallel
     with mp.Pool(processes=n_processes) as p:
         res = p.starmap(ldar_sim_run, simulations)
@@ -147,7 +144,7 @@ if __name__ == '__main__':
     if write_data:
         # Create a data object...
         reporting_data = BatchReporting(
-            output_directory, start_year,
+            output_directory, start_date,
             spin_up, ref_program)
         if n_simulations > 1:
             reporting_data.program_report()
@@ -161,12 +158,3 @@ if __name__ == '__main__':
                    str(datetime.datetime.now()))
 
     metadata.close()
-
-    # Write sensitivity analysis data on a program by program basis
-    sa_df = pd.DataFrame(res)
-    if 'program' in sa_df.columns:
-        for program in sa_df['program'].unique():
-            sa_out = sa_df.loc[sa_df['program'] == program, :]
-            sa_outfile_name = os.path.join(input_directory, 'sensitivity_analysis',
-                                           'sensitivity_' + program + '.csv')
-            sa_out.to_csv(sa_outfile_name, index=False)

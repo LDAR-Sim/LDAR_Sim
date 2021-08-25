@@ -3,7 +3,7 @@
 # File:        default_satellite_parameters
 # Purpose:     Default satellite parameters
 #
-# Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
+# Copyright (C) 2018-2021  Intelligent Methane Monitoring and Management System (IM3S) Group
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the MIT License as published
@@ -33,10 +33,14 @@ default_satellite_parameters = {
     'max_wind': 100,
     'max_precip': 100,
     'max_workday': 24,
-    'cost_per_day': 10000,
+    'cost': {
+        'upfront': 0,
+        'per_day': 10000,
+        'per_hour': 0,
+        'per_site': 0,
+    },
     'follow_up_thresh': [0, "absolute"],
     'follow_up_ratio': 1,
-    'offsite_times': 10,
     'reporting_delay': 2,
     'MDL': 0.01,
     'QE': 0,

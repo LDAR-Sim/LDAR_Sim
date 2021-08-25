@@ -3,7 +3,7 @@
 # File:        default_global_parameters
 # Purpose:     Default global parameters
 #
-# Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
+# Copyright (C) 2018-2021  Intelligent Methane Monitoring and Management System (IM3S) Group
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the MIT License as published
@@ -25,13 +25,12 @@ default_global_parameters = {
     'input_directory': './inputs_template',
     'output_directory': './outputs',
     'n_processes':  None,
-    'print_from_simulations': True,
     'n_simulations': 2,
+    'print_from_simulations': True,
     'spin_up': 0,
     'write_data':  True,
     'programs': [],
-    'weather_file': "ERA5_AB_1x1_hourly_2015_2019.nc",
-    'timesteps': 1000,
-    'start_year': 2017,
+    'start_date': [2017, 1, 1],
+    'end_date': [2020, 12, 31],
     'reference_program': 'P_ref',
 }

@@ -3,7 +3,7 @@
 # File:        ERA5 downloader
 # Purpose:     Downloads ERA5 data
 #
-# Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
+# Copyright (C) 2018-2021  Intelligent Methane Monitoring and Management System (IM3S) Group
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the MIT License as published
@@ -20,51 +20,67 @@
 # ------------------------------------------------------------------------------
 
 import cdsapi
-# more detail about how to use cdsapi can be found in
-# https://confluence.ecmwf.int/display/COPSRV/CDS+web+API+%28cdsapi%29+training
-# downloads ERA5 total precipitation, 10 meter wind u component, 10 meter wind v
-# component, and 2 meter air temperature
+import os
+from math import floor, ceil
+import pandas as pd
+from pathlib import Path
+
+'''
+NOTE - This can take a very long time to download data from the copernicus server,
+expect to be in the cueue for 1-3 hours regardless of file size be patient.
+
+This script will download ERA reyanalysis weather data. In order to run you have to:
+
+1) Setup a Copernicus account. Account setup instructions can be found at:
+https://cds.climate.copernicus.eu/#!/home
+
+2) Get UID and API key from account and put them in a .cdapirc file. See:
+https://cds.climate.copernicus.eu/api-how-to
+
+3) Enter facility template csv location, which must hava a lat and lon column.
+    File must be relative to the root folder.
+
+4) Fill in start year, end year, a region name (for output file tag), output resolution
+   in degrees, and variable names to retrieve. Variable names  can be found at:
+https://confluence.ecmwf.int/display/CKB/ERA5%3A+data+documentation
+
+This code is based on:
+https://confluence.ecmwf.int/display/COPSRV/CDS+web+API+%28cdsapi%29+training
+'''
+
+# Input
+facil_file = "./inputs_template/facility_list_template.csv"
+root_dir = Path(os.path.dirname(os.path.realpath(__file__))).parent.parent
+facilities = pd.read_csv(root_dir/facil_file)
+
+# Inputs
+start_year = 2019
+end_year = 2020
+region_name = 'AB'
+res = [1, 1]  # Resolution in degrees
+vars = [
+    'total_precipitation', '10m_u_component_of_wind',
+    '10m_v_component_of_wind', '2m_temperature', 'total_cloud_cover',
+]  # define the weather variables you want to download
+
+# Bounding box (N,W,S,E)
+bb = [str(ceil(facilities['lat'].max())), str(floor(facilities['lon'].min())),
+      str(floor(facilities['lat'].min())), str(ceil(facilities['lon'].max()))]
+yrs = [str(x) for x in range(start_year, end_year+1)]
+
 c = cdsapi.Client()
 # download hourly data for Alberta from 2017-01-01 to 2019-12-31
-yrs = ['2017', '2018', '2019']  # specify the years you want to download
-mns = ['01', '02', '03',
-       '04', '05', '06',
-       '07', '08', '09',
-       '10', '11', '12', ]  # specify the months you want to download
 c.retrieve(
     'reanalysis-era5-single-levels',
     {
         'product_type': 'reanalysis',
-        'variable': [
-            'total_precipitation', '10m_u_component_of_wind',
-            '10m_v_component_of_wind', '2m_temperature',
-        ],  # define the weather variables you want to download
-        'year': ['2017', '2018', '2019'],  # define the years you want to download
-        'month': ['01', '02', '03',
-                  '04', '05', '06',
-                  '07', '08', '09',
-                  '10', '11', '12', ],  # define the months you want to download in each year
-        'day': [
-            '01', '02', '03',
-            '04', '05', '06',
-            '07', '08', '09',
-            '10', '11', '12',
-            '13', '14', '15',
-            '16', '17', '18',
-            '19', '20', '21',
-            '22', '23', '24',
-            '25', '26', '27',
-            '28', '29', '30',
-            '31',
-        ],  # define the days you want to download in each month
-        'time': ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00',
-                 '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00',
-                 '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00',
-                 ],  # define hours you want to download in each day (temporal resolusion)
-
-        # define the study area bounding box [north west south east]
-        'area': [60, -120, 49, -110, ],
-        'grid': [1, 1],  # define the size of weather grid in degrees (spatial resolution)
+        'variable': vars,
+        'year': yrs,
+        'month': ['{:02d}'.format(x) for x in range(1, 13)],
+        'day': ['{:02d}'.format(x) for x in range(1, 32)],
+        'time': ['{:02d}:00'.format(x) for x in range(0, 24)],
+        'area': bb,
+        'grid': res,  # define the size of weather grid in degrees (spatial resolution)
         'format': 'netcdf',
     },
-    r'ERA5_2017_2019_AB.nc')  # define the name of file
+    r'ERA5_{}_{}_{}.nc'.format(start_year, end_year, region_name))  # define the name of file

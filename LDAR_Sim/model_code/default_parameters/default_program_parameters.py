@@ -3,7 +3,7 @@
 # File:        default_program_parameters
 # Purpose:     Default program parameters
 #
-# Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
+# Copyright (C) 2018-2021  Intelligent Methane Monitoring and Management System (IM3S) Group
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the MIT License as published
@@ -25,10 +25,8 @@ default_program_parameters = {
     'methods': {},
     'method_labels': [],
     'program_name': 'default',
-    'UTC_offset': -6,
-    'time_offsite': 'time_offsite_ground.csv',
-    'weather_file': "ERA5_AB_1x1_hourly_2015_2019.nc",
-    'weather_is_hourly': False,
+    'weather_file': "ERA5_2017_2020_AB.nc",
+    'weather_is_hourly': True,
     'infrastructure_file': 'facility_list_template.csv',
     'leak_file': 'leak_rates.csv',
     'count_file': 'leak_counts.csv',
@@ -54,8 +52,4 @@ default_program_parameters = {
     'print_from_simulations': True,
     'operator_strength': 0,
     'verification_cost': 25,
-    'sensitivity': {'perform': False,
-                    'program': 'OGI',
-                    'batch': [True, 2],
-                    }
 }

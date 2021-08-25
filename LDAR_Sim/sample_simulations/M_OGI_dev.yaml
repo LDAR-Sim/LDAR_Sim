@@ -1,0 +1,5 @@
+parameter_level: method
+version: '2.0'
+label: OGI_dev
+default_module: OGI
+module: dummy

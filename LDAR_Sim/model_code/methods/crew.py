@@ -3,7 +3,7 @@
 # File:        methods.crew
 # Purpose:     initialize crew, work_a_day, visit sites, and detect_emissions
 #
-# Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
+# Copyright (C) 2018-2021  Intelligent Methane Monitoring and Management System (IM3S) Group
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the MIT License as published
@@ -73,6 +73,7 @@ class BaseCrew:
         self.worked_today = False
         self.candidate_flags = candidate_flags
         self.days_skipped = 0
+        self.daily_cost = 0
 
         # If there are sites ready for survey
         if len(site_pool) > 0:
@@ -86,16 +87,19 @@ class BaseCrew:
                     self.worked_today = True
                     # Mobile LDAR_mins also includes travel to site time
                     self.schedule.update_schedule(site_plan['LDAR_mins'])
+                    self.daily_cost += self.config['cost']['per_site']
             # this only happened if crew needs to travel all day
             else:
                 self.worked_today = True
 
         if self.worked_today:
             self.schedule.end_day(site_pool, itinerary)
+            self.daily_cost = self.config['cost']['per_day']
+
             self.timeseries['{}_cost'.format(m_name)][self.state['t'].current_timestep] += \
-                self.config['cost_per_day']
+                self.daily_cost
             self.timeseries['total_daily_cost'][self.state['t'].current_timestep] += \
-                self.config['cost_per_day']
+                self.daily_cost
 
     def visit_site(self, site):
         """

@@ -3,7 +3,7 @@
 # File:        methods.company
 # Purpose:     Initialize companies, generate crews, deploy crews and reporting
 #
-# Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
+# Copyright (C) 2018-2021  Intelligent Methane Monitoring and Management System (IM3S) Group
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the MIT License as published
@@ -95,6 +95,10 @@ class BaseCompany:
             self.config['deployment_type'].lower()))
         make_crews = getattr(make_crew_loc, 'make_crews')
         make_crews(self.crews, config, state, parameters, timeseries, self.deployment_days)
+        for idx, cnt in enumerate(self.crews):
+            self.timeseries['{}_cost'.format(self.name)][self.state['t'].current_timestep] += \
+                self.config['cost']['upfront']
+
         self.schedule.assign_agents()
         self.schedule.get_deployment_dates()
 

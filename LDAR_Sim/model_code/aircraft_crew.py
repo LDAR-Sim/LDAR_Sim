@@ -3,7 +3,7 @@
 # File:        Aircraft crew
 # Purpose:     Initialize each aircraft crew under aircraft company
 #
-# Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
+# Copyright (C) 2018-2021  Intelligent Methane Monitoring and Management System (IM3S) Group
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the MIT License as published
@@ -82,9 +82,9 @@ class aircraft_crew:
 
         if self.worked_today:
             self.timeseries['aircraft_cost'][self.state['t'].current_timestep] += \
-                self.config['cost_per_day']
+                self.config['cost']['per_day']
             self.timeseries['total_daily_cost'][self.state['t'].current_timestep] += \
-                self.config['cost_per_day']
+                self.config['cost']['per_day']
 
         return
 

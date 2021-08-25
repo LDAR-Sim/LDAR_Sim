@@ -3,7 +3,7 @@
 # File:        LDAR-Sim run
 # Purpose:     Main simulation sequence
 #
-# Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
+# Copyright (C) 2018-2021  Intelligent Methane Monitoring and Management System (IM3S) Group
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the MIT License as published
@@ -139,6 +139,7 @@ def ldar_sim_run(simulation):
     else:
         state['weather'] = WL(state, parameters)
     state['t'] = TimeCounter(parameters)
+    parameters.update({'timesteps': state['t'].timesteps})
     sim = LdarSim(state, parameters, timeseries)
 
     # Loop through timeseries
