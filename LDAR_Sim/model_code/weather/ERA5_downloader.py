@@ -26,6 +26,9 @@ import pandas as pd
 from pathlib import Path
 
 '''
+NOTE - This can take a very long time to download data from the copernicus server,
+expect to be in the cueue for 1-3 hours regardless of file size be patient.
+
 This script will download ERA reyanalysis weather data. In order to run you have to:
 
 1) Setup a Copernicus account. Account setup instructions can be found at:

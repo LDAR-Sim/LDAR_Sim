@@ -34,7 +34,7 @@ default_aircraft_parameters = {
     'max_precip': 1,
     'max_workday': 8,
     'cost': {
-        'upfront_cost': 0,
+        'upfront': 0,
         'per_day': 10000,
         'per_hour': 0,
         'per_site': 0,

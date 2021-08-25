@@ -9,7 +9,7 @@ P_cont = {
             'max_wind': 10,
             'max_precip': 1,
             'cost': {
-                'upfront_cost': 500,
+                'upfront': 500,
                 'per_day': 1,
                 'per_hour': 0,
                 'per_site': 0,
@@ -33,7 +33,7 @@ P_cont = {
             'max_precip': 1,
             'max_workday': 8,
             'cost': {
-                'upfront_cost': 0,
+                'upfront': 0,
                 'per_day': 2500,
                 'per_hour': 0,
                 'per_site': 0,
