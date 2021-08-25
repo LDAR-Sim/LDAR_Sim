@@ -311,7 +311,6 @@ class satellite:
 
         # Currently, we assume satellite surveys a facility instantaneously
         # self.state['t'].current_date += timedelta(minutes=int(site['satellite_time']))
-        # self.state['t'].current_date += timedelta(minutes=int(self.config['t_lost_per_site']))
         self.timeseries['satellite_sites_visited'][self.state['t'].current_timestep] += 1
 
         return

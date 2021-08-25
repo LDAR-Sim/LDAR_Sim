@@ -32,7 +32,7 @@ default_truck_parameters = {
     'max_workday': 8,
     'measurement_scale': "equipment",
     'cost': {
-        'upfront_cost': 0,
+        'upfront': 0,
         'per_day': 2500,
         'per_hour': 0,
         'per_site': 0,

@@ -25,7 +25,6 @@ default_program_parameters = {
     'methods': {},
     'method_labels': [],
     'program_name': 'default',
-    'time_offsite': 'time_offsite_ground.csv',
     'weather_file': "ERA5_2017_2020_AB.nc",
     'weather_is_hourly': True,
     'infrastructure_file': 'facility_list_template.csv',

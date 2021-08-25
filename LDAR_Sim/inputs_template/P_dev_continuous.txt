@@ -12,7 +12,7 @@ P_dev_continuous = {
             'max_wind': 10,
             'max_precip': 1,
             'cost': {
-                'upfront_cost': 1,
+                'upfront': 1,
                 'per_day': 500,
                 'per_hour': 0,
                 'per_site': 0,
@@ -45,7 +45,7 @@ P_dev_continuous = {
             'max_precip': 0.1,
             'max_workday': 8,
             'cost': {
-                'upfront_cost': 0,
+                'upfront': 0,
                 'per_day': 2500,
                 'per_hour': 0,
                 'per_site': 0,
