@@ -101,7 +101,7 @@ class Schedule(BaseSchedCrew):
         while est_mins_remaining > 0 and len(site_pool) > 0:
             site_plans_tmp = []
             for sidx, site in enumerate(site_pool):
-                site_plan = self.plan_visit(site)
+                site_plan = self.plan_visit(site, est_mins_remaining=est_mins_remaining)
                 # site plans are dicts that include  site, LDAR_minsand go_to_site keys.
                 # Site plan can be empty if weather does not permit travel
                 if site_plan and site_plan['go_to_site']:
@@ -164,7 +164,7 @@ class Schedule(BaseSchedCrew):
         elif len(itinerary) > 0:
             self.update_schedule(itinerary[-1]['travel_home_mins'])
 
-    def plan_visit(self, site, next_site=None):
+    def plan_visit(self, site, next_site=None, est_mins_remaining=None):
         """ Check survey and travel times and see if there is enough time
             to go to site. If a site survey was started on a previous day
             the amount of minutes rolled over will be used for survey time.
@@ -194,7 +194,7 @@ class Schedule(BaseSchedCrew):
         if self.rollover:
             if site['facility_ID'] == self.rollover['site']['facility_ID']:
                 # Remove facility from rollover list, and retrieve remaining survey minutes
-                LDAR_mins = self.rollover['site']['remaining_mins']
+                LDAR_mins = self.rollover['remaining_mins']
             else:
                 LDAR_mins = int(site['{}_time'.format(name)])
         else:
@@ -206,7 +206,8 @@ class Schedule(BaseSchedCrew):
         survey_times = self.check_visit_time(
             LDAR_mins,
             travel_to_plan['travel_time'],
-            travel_home_plan['travel_time'])
+            travel_home_plan['travel_time'],
+            est_mins_remaining)
         return {
             'site': site,
             'go_to_site': survey_times['go_to_site'],
@@ -259,7 +260,8 @@ class Schedule(BaseSchedCrew):
         }
         return out_dict
 
-    def check_visit_time(self, survey_mins, travel_to_mins, travel_home_mins):
+    def check_visit_time(self, survey_mins, travel_to_mins,
+                         travel_home_mins, mins_left_in_day=None):
         """Check the survey and travel times, determine if there is enough
            time to go to site.
 
@@ -276,8 +278,6 @@ class Schedule(BaseSchedCrew):
                     'remaining_mins' (minutes): minutes left in survey that can be rolled over
                      to another day,
         """
-        mins_left_in_day = (self.allowed_end_time - self.state['t'].current_date) \
-            .total_seconds()/60
         if travel_to_mins >= mins_left_in_day:
             # Not enough time to travel to site
             go_to_site = False

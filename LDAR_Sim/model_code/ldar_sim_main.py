@@ -25,13 +25,15 @@ import datetime
 import shutil
 import os
 import argparse
+import pickle
 from argparse import RawTextHelpFormatter
-
+from copy import deepcopy
 from ldar_sim_run import ldar_sim_run
 from batch_reporting import BatchReporting
 from pathlib import Path
 from input_manager import InputManager
 from generic_functions import check_ERA5_file
+from initialization.sites import generate_sites, regenerate_sites
 
 if __name__ == '__main__':
     # Get route directory , which is parent folder of ldar_sim_main file
@@ -80,6 +82,7 @@ if __name__ == '__main__':
         ref_program = simulation_parameters['reference_program']
         write_data = simulation_parameters['write_data']
         start_date = simulation_parameters['start_date']
+        pregen_leaks = simulation_parameters['pregenerate_leaks']
 
     else:
         print('LDAR-Sim using parameters coded into ldar_sim_main.py')
@@ -125,17 +128,49 @@ if __name__ == '__main__':
     # Set up simulation parameter files
     simulations = []
     for i in range(n_simulations):
+        if pregen_leaks:
+            file_loc = input_directory/"./generator/pregen_{}_{}.p".format(i, 0)
+            if not os.path.isfile(file_loc):
+                sites, leak_timeseries, initial_leaks = generate_sites(programs[0], input_directory)
+        else:
+            sites, leak_timeseries, initial_leaks = [], [], []
         for j in range(len(programs)):
+            if pregen_leaks:
+                # Different programs can have different site level parameters ie survey
+                # frequency,so re-evaluate selected sites with new parameters
+                file_loc = input_directory/"./generator/pregen_{}_{}.p".format(i, j)
+                if os.path.isfile(file_loc):
+                    generated_data = pickle.load(open(file_loc, "rb"))
+                    sites = generated_data['sites']
+                    leak_timeseries = generated_data['leak_timeseries']
+                    initial_leaks = generated_data['initial_leaks']
+                else:
+                    # Different programs can have different site level parameters ie survey
+                    # frequency,so re-evaluate selected sites with new parameters
+                    sites = regenerate_sites(programs[j], sites, input_directory)
+                    pickle.dump({
+                        'sites': sites, 'leak_timeseries': leak_timeseries,
+                        'initial_leaks': initial_leaks},
+                        open(file_loc, "wb"))
+            else:
+                sites = []
+
             opening_message = "Simulating program {} of {} ; simulation {} of {}".format(
                 j + 1, len(programs), i + 1, n_simulations
             )
             simulations.append(
-                [{'i': i, 'program': programs[j],
+                [{'i': i, 'program': deepcopy(programs[j]),
                   'input_directory': input_directory,
                   'output_directory':output_directory,
                   'opening_message': opening_message,
-                  'print_from_simulation': print_from_simulations}])
+                  'pregenerate_leaks': pregen_leaks,
+                  'print_from_simulation': print_from_simulations,
+                  'sites': sites,
+                  'leak_timeseries': leak_timeseries,
+                  'initial_leaks': initial_leaks,
+                  }])
 
+    # ldar_sim_run(simulations[3][0])
     # Perform simulations in parallel
     with mp.Pool(processes=n_processes) as p:
         res = p.starmap(ldar_sim_run, simulations)

@@ -22,15 +22,13 @@ import os
 import sys
 import gc
 import copy
-import numpy as np
-import pandas as pd
 
 from weather.weather_lookup import WeatherLookup as WL
 from weather.weather_lookup_hourly import WeatherLookup as WL_h
 from ldar_sim import LdarSim
 from time_counter import TimeCounter
 from stdout_redirect import stdout_redirect
-from utils.distributions import fit_dist
+from utils.distributions import unpackage_dist as unpack_leak_dist
 
 
 def ldar_sim_run(simulation):
@@ -43,6 +41,11 @@ def ldar_sim_run(simulation):
     parameters = simulation['program']
     parameters['input_directory'] = simulation['input_directory']
     parameters['output_directory'] = simulation['output_directory'] / parameters['program_name']
+    parameters['pregenerate_leaks'] = simulation['pregenerate_leaks']
+    parameters['leak_timeseries'] = simulation['leak_timeseries']
+    parameters['initial_leaks'] = simulation['initial_leaks']
+    parameters['sites'] = simulation['sites']
+
     if not os.path.exists(parameters['output_directory']):
         try:
             os.makedirs(parameters['output_directory'])
@@ -60,46 +63,8 @@ def ldar_sim_run(simulation):
     parameters['simulation'] = str(simulation['i'])
 
     # --------- Leak distributions -------------
-    parameters['dists'] = {}
-    _temp_dists = {}
-    # Use subtype_distribution file if true
-    if parameters['subtype_distributions'][0]:
-        subtype_dists = pd.read_csv(
-            parameters['input_directory'] / parameters['subtype_distributions'][1])
-        col_headers = subtype_dists.columns[1:].tolist()
-        for row in subtype_dists.iterrows():
-            subtype_dist = {}
-            # Generate A temp Distribution dict of dists in file
-            for col in col_headers:
-                subtype_dist[col] = row[1][col]
-            _temp_dists[row[1][0]] = subtype_dist
-
-    if len(_temp_dists) > 1:  # If there are sub_type dists
-        for key, dist in _temp_dists.items():
-            if dist['dist_type'] == 'lognorm':
-                scale = np.exp(dist['dist_mu'])
-            else:
-                scale = dist['dist_mu']
-            parameters['dists'][key] = {
-                'dist': fit_dist(dist_type=dist['dist_type'],
-                                 shape=dist['dist_sigma'],
-                                 scale=scale),
-                'units': [dist['dist_metric'], dist['dist_increment']]}
-    elif "leak_rate_dist" in parameters:
-        parameters['dist_type'] = parameters['leak_rate_dist'][0]
-        parameters['dist_scale'] = parameters['leak_rate_dist'][1]
-        parameters['dist_shape'] = parameters['leak_rate_dist'][2:-2]
-        parameters['leak_rate_units'] = parameters['leak_rate_dist'][-2:]
-        # lognorm is a common special case. used often for leaks. Mu is is commonly
-        # provided to discribe leak which is ln(dist_scale). For this type the model
-        # accepts mu in place of scale.
-        if parameters['dist_type'] == 'lognorm':
-            parameters['dist_scale'] = np.exp(parameters['dist_scale'])
-        parameters['dists'][0] = {
-            'dist': fit_dist(dist_type=parameters['dist_type'],
-                             shape=parameters['dist_shape'],
-                             scale=parameters['dist_scale']),
-            'units': parameters['leak_rate_units']}
+    if len(parameters['leak_timeseries']) < 1:
+        unpack_leak_dist(parameters, parameters['input_directory'])
 
         # ------------------------------------------------------------------------------
         # -----------------------Initialize dynamic model state-------------------------
@@ -108,7 +73,7 @@ def ldar_sim_run(simulation):
         't': None,
         'operator': None,  # operator gets assigned during initialization
         'methods': [],  # list of methods in action
-        'sites': [],  # sites in the simulation
+        'sites': parameters['sites'],   # sites in the simulation
         'flags': [],  # list of sites flagged for follow-up
         'leaks': [],  # list of all current leaks
         'tags': [],  # leaks that have been tagged for repair
