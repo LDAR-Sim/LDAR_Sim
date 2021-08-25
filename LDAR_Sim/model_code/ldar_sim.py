@@ -3,7 +3,7 @@
 # File:        LDAR-Sim
 # Purpose:     Primary module of LDAR-Sim
 #
-# Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
+# Copyright (C) 2018-2021  Intelligent Methane Monitoring and Management System (IM3S) Group
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the MIT License as published
@@ -19,14 +19,15 @@
 #
 # ------------------------------------------------------------------------------
 
-import pandas as pd
-import numpy as np
 import csv
 import os
 import datetime
 import sys
 import random
-from sensitivity import Sensitivity
+
+import pandas as pd
+import numpy as np
+
 from operator_agent import OperatorAgent
 from plotter import make_plots
 from daylight_calculator import DaylightCalculatorAve
@@ -44,17 +45,13 @@ class LdarSim:
         self.parameters = params
         self.timeseries = timeseries
         self.active_leaks = []
+
         #  --- timeseries variables ---
         timeseries['total_daily_cost'] = np.zeros(params['timesteps'])
         timeseries['repair_cost'] = np.zeros(params['timesteps'])
         timeseries['verification_cost'] = np.zeros(params['timesteps'])
         timeseries['operator_redund_tags'] = np.zeros(self.parameters['timesteps'])
         timeseries['operator_tags'] = np.zeros(self.parameters['timesteps'])
-
-        # Configure sensitivity analysis, if requested (code block must remain here -
-        # after site initialization and before method initialization)
-        if params['sensitivity']['perform']:
-            self.sensitivity = Sensitivity(params, timeseries, state)
 
         #  --- state variables ---
         state['candidate_flags'] = {}
@@ -65,12 +62,6 @@ class LdarSim:
             params['input_directory'] / params['leak_file']).iloc[:, 0])
         state['empirical_sites'] = np.array(pd.read_csv(
             params['input_directory'] / params['vent_file']).iloc[:, 0])
-        if 'time_offsite' in params:
-            if isinstance(params['time_offsite'], str):
-                state['offsite_times'] = np.array(pd.read_csv(
-                    params['input_directory'] / params['time_offsite']).iloc[:, 0])
-            else:
-                state['offsite_times'] = np.array([params['time_offsite']])
         #  Empirical Leaks can be fit with the following
         if params['use_empirical_rates'] == 'fit':
             params['leak_distribution'] = fit_dist(
@@ -82,6 +73,8 @@ class LdarSim:
         with open(params['input_directory'] / params['infrastructure_file']) as f:
             state['sites'] = [{k: v for k, v in row.items()}
                               for row in csv.DictReader(f, skipinitialspace=True)]
+
+        state['t'].set_UTC_offset(state['sites'])
 
         # Sample sites
         if params['site_samples'][0]:
@@ -166,8 +159,6 @@ class LdarSim:
         # Generate initial leak count for each site
         for site in state['sites']:
             n_leaks = random.choice(state['empirical_counts'])
-            if n_leaks < 0:  # This can happen occasionally during sensitivity analysis
-                n_leaks = 0
             site.update({'initial_leaks': n_leaks})
             state['init_leaks'].append(site['initial_leaks'])
 
@@ -526,10 +517,6 @@ class LdarSim:
             'timeseries': time_df,
             'sites': site_df,
         }
-
-        # Write sensitivity analysis data, if requested
-        if params['sensitivity']['perform']:
-            sim_summary['sensitivity'] = self.sensitivity.write_data()
 
         # Return to original input directory
         os.chdir(params['input_directory'])

@@ -3,7 +3,7 @@
 # File:        Time counter
 # Purpose:     Initialize time object and keeps track of simulation time
 #
-# Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
+# Copyright (C) 2018-2021  Intelligent Methane Monitoring and Management System (IM3S) Group
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the MIT License as published
@@ -19,8 +19,10 @@
 #
 # ------------------------------------------------------------------------------
 
-from datetime import datetime
-from datetime import timedelta
+from datetime import datetime, timedelta
+from statistics import mean
+from tzwhere import tzwhere
+import pytz
 
 
 class TimeCounter:
@@ -30,11 +32,11 @@ class TimeCounter:
 
         """
         self.parameters = parameters
-        self.start_date = datetime(parameters['start_year'], 1, 1)
+        self.start_date = datetime(*parameters['start_date'])
+        self.end_date = datetime(*parameters['end_date'])
+        self.timesteps = (self.end_date - self.start_date).days
         self.current_date = self.start_date
         self.current_timestep = 0
-        self.end_date = self.start_date + timedelta(days=parameters['timesteps'])
-        self.UTC_offset = parameters['UTC_offset']
         return
 
     def next_day(self):
@@ -45,3 +47,16 @@ class TimeCounter:
         self.current_date += timedelta(days=1)
         self.current_timestep += 1
         return
+
+    def set_UTC_offset(self, sites):
+        '''
+        set UTC offset based on average site lat longs
+
+        Uses current (now()) offset
+        '''
+        avg_lat = mean([float(site['lat']) for site in sites])
+        avg_lon = mean([float(site['lon']) for site in sites])
+        timezone_str = tzwhere.tzwhere().tzNameAt(avg_lat, avg_lon)
+        # This uses the current daylight time . Need to fix
+        tz_now = datetime.now(pytz.timezone(timezone_str))
+        self.UTC_offset = tz_now.utcoffset().total_seconds()/60/60

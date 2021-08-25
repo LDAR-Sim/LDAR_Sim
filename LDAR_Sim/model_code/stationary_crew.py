@@ -3,7 +3,7 @@
 # File:        fixed crew
 # Purpose:     Initialize each fixed crew under fixed company
 #
-# Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
+# Copyright (C) 2018-2021  Intelligent Methane Monitoring and Management System (IM3S) Group
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the MIT License as published
@@ -22,7 +22,7 @@
 import numpy as np
 
 
-class fixed_crew:
+class stationary_crew:
     def __init__(self, state, parameters, config, timeseries, site, deployment_days, id):
         """
         Constructs an individual fixed crew based on defined configuration.
@@ -96,9 +96,9 @@ class fixed_crew:
                 self.candidate_flags.append(site_dict)
 
         self.timeseries['fixed_cost'][self.state['t'].current_timestep] += \
-            self.config['cost_per_day']
+            self.config['cost']['per_day']
 
         self.timeseries['total_daily_cost'][self.state['t'].current_timestep] += \
-            self.config['cost_per_day']
+            self.config['cost']['per_day']
 
         return

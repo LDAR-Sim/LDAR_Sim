@@ -3,7 +3,7 @@
 # File:        fixed company
 # Purpose:     Company managing fixed agents
 #
-# Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
+# Copyright (C) 2018-2021  Intelligent Methane Monitoring and Management System (IM3S) Group
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the MIT License as published
@@ -19,13 +19,13 @@
 #
 # ------------------------------------------------------------------------------
 
-from fixed_crew import fixed_crew
+from stationary_crew import stationary_crew
 import numpy as np
 import math
 from generic_functions import get_prop_rate
 
 
-class fixed_company:
+class stationary_company:
     def __init__(self, state, parameters, config, timeseries, module_name):
         """
         Initialize a company to manage the fixed crews (e.g. a contracting company).
@@ -72,11 +72,11 @@ class fixed_company:
             n_fixed = int(site['fixed_sensors'])
             for i in range(n_fixed):
                 self.crews.append(
-                    fixed_crew(
+                    stationary_crew(
                         state, parameters, config, timeseries, site, self.deployment_days,
                         id=site['facility_ID'] + '-' + str(i + 1)))
                 self.timeseries['fixed_cost'][self.state['t'].current_timestep] += \
-                    self.config['up_front_cost']
+                    self.config['cost']['upfront']
 
         return
 

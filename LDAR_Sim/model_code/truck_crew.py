@@ -3,7 +3,7 @@
 # File:        Truck crew
 # Purpose:     Initialize each truck crew under truck company
 #
-# Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
+# Copyright (C) 2018-2021  Intelligent Methane Monitoring and Management System (IM3S) Group
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the MIT License as published
@@ -72,9 +72,7 @@ class truck_crew:
 
         # Start day with random "offsite time" required for driving to first site
         self.state['t'].current_date += timedelta(
-            minutes=int(
-                self.state['offsite_times']
-                [np.random.randint(0, len(self.state['offsite_times']))]))
+            minutes=int(np.random.choice(self.config['t_bw_sites'])))
 
         while self.state['t'].current_date.hour < int(end_hour):
             facility_ID, found_site, site = self.choose_site()
@@ -85,9 +83,9 @@ class truck_crew:
 
         if self.worked_today:
             self.timeseries['truck_cost'][self.state['t'].current_timestep] += \
-                self.config['cost_per_day']
+                self.config['cost']['per_day']
             self.timeseries['total_daily_cost'][self.state['t'].current_timestep] += \
-                self.config['cost_per_day']
+                self.config['cost']['per_day']
 
         return
 
@@ -189,9 +187,7 @@ class truck_crew:
 
         self.state['t'].current_date += timedelta(minutes=int(site['truck_time']))
         self.state['t'].current_date += timedelta(
-            minutes=int(
-                self.state['offsite_times']
-                [np.random.randint(0, len(self.state['offsite_times']))]))
+            minutes=int(np.random.choice(self.config['t_bw_sites'])))
         self.timeseries['truck_sites_visited'][self.state['t'].current_timestep] += 1
 
         return

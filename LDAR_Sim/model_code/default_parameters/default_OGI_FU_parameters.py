@@ -3,7 +3,7 @@
 # File:        default_OGI_FU_parameters
 # Purpose:     Default OGI FU parameters
 #
-# Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
+# Copyright (C) 2018-2021  Intelligent Methane Monitoring and Management System (IM3S) Group
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the MIT License as published
@@ -33,7 +33,12 @@ default_OGI_FU_parameters = {
     'max_wind': 10,
     'max_precip': 0.1,
     'max_workday': 8,
-    'cost_per_day': 2500,
+    'cost': {
+        'upfront': 0,
+        'per_day': 2500,
+        'per_hour': 0,
+        'per_site': 0,
+    },
     't_bw_sites': 'time_offsite_ground.csv',
     'reporting_delay': 2,
     'MDL': [0.01275, 2.78e-6],

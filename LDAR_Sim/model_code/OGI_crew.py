@@ -3,7 +3,7 @@
 # File:        OGI crew
 # Purpose:     Initialize each OGI crew under OGI company
 #
-# Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
+# Copyright (C) 2018-2021   Intelligent Methane Monitoring and Management System (IM3S) Group
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the MIT License as published
@@ -74,9 +74,7 @@ class OGI_crew:
 
         # Start day with random "offsite time" required for driving to first site
         self.state['t'].current_date += timedelta(
-            minutes=int(
-                self.state['offsite_times']
-                [np.random.randint(0, len(self.state['offsite_times']))]))
+            minutes=int(np.random.choice(self.config['t_bw_sites'])))
 
         # Check if there is a partially finished site from yesterday
         if len(self.rollover) > 0:
@@ -85,10 +83,7 @@ class OGI_crew:
             #  time to drive back to the home base
             projected_end_time = self.state['t'].current_date + \
                 timedelta(minutes=int(self.rollover[1]))
-            drive_home = timedelta(
-                minutes=int(
-                    self.state['offsite_times']
-                    [np.random.randint(0, len(self.state['offsite_times']))]))
+            drive_home = timedelta(minutes=int(np.random.choice(self.config['t_bw_sites'])))
             if (projected_end_time + drive_home) > self.allowed_end_time:
                 # There's not enough time left for that site today -
                 #  get started and figure out how much time remains
@@ -114,10 +109,7 @@ class OGI_crew:
             if found_site:
                 projected_end_time = self.state['t'].current_date + \
                     timedelta(minutes=int(site['OGI_time']))
-                drive_home = timedelta(
-                    minutes=int(
-                        self.state['offsite_times']
-                        [np.random.randint(0, len(self.state['offsite_times']))]))
+                drive_home = timedelta(minutes=int(np.random.choice(self.config['t_bw_sites'])))
                 if (projected_end_time + drive_home) > self.allowed_end_time:
                     # There's not enough time left for that site today
                     # - get started and figure out how much time remains
@@ -135,9 +127,9 @@ class OGI_crew:
 
         if self.worked_today:
             self.timeseries['OGI_cost'][self.state['t'].current_timestep] += \
-                self.config['cost_per_day']
+                self.config['cost']['per_day']
             self.timeseries['total_daily_cost'][self.state['t'].current_timestep] += \
-                self.config['cost_per_day']
+                self.config['cost']['per_day']
 
         return
 
@@ -208,9 +200,7 @@ class OGI_crew:
 
         self.state['t'].current_date += timedelta(minutes=int(site['OGI_time']))
         self.state['t'].current_date += timedelta(
-            minutes=int(
-                self.state['offsite_times']
-                [np.random.randint(0, len(self.state['offsite_times']))]))
+            minutes=int(np.random.choice(self.config['t_bw_sites'])))
         self.timeseries['OGI_sites_visited'][self.state['t'].current_timestep] += 1
 
         return

@@ -3,7 +3,7 @@
 # File:        default_continuous_parameters
 # Purpose:     Default continuous parameters
 #
-# Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
+# Copyright (C) 2018-2021  Intelligent Methane Monitoring and Management System (IM3S) Group
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the MIT License as published
@@ -19,7 +19,7 @@
 #
 # ------------------------------------------------------------------------------
 
-default_continuous_parameters = {
+default_stationary_parameters = {
     'version': '2.0',
     'parameter_level': 'method',
     'label': 'Cont',
@@ -32,8 +32,13 @@ default_continuous_parameters = {
     'min_temp': -30,
     'max_wind': 10,
     'max_precip': 1,
-    'up_front_cost': 500,
-    'cost_per_day': 1,
+    'cost': {
+        'upfront': 500,
+        'per_day': 1,
+        'per_hour': 0,
+        'per_site': 0,
+
+    },
     'follow_up_thresh': [0, "absolute"],
     'follow_up_ratio': 1,
     'time_to_detection': 7,

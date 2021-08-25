@@ -3,7 +3,7 @@
 # File:        LDAR-Sim input manager
 # Purpose:     Interface for managing, validating, and otherwise dealing with parameters
 #
-# Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
+# Copyright (C) 2018-2021  Intelligent Methane Monitoring and Management System (IM3S) Group
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the MIT License as published
@@ -33,7 +33,7 @@ from default_parameters.default_OGI_parameters import default_OGI_parameters
 from default_parameters.default_OGI_FU_parameters import default_OGI_FU_parameters
 from default_parameters.default_satellite_parameters import default_satellite_parameters
 from default_parameters.default_truck_parameters import default_truck_parameters
-from default_parameters.default_continuous_parameters import default_continuous_parameters
+from default_parameters.default_stationary_parameters import default_stationary_parameters
 
 
 class InputManager:
@@ -50,7 +50,7 @@ class InputManager:
             'OGI_FU': copy.deepcopy(default_OGI_FU_parameters),
             'satellite': copy.deepcopy(default_satellite_parameters),
             'truck': copy.deepcopy(default_truck_parameters),
-            'continuous': copy.deepcopy(default_continuous_parameters),
+            'stationary': copy.deepcopy(default_stationary_parameters),
         }
         return
 
@@ -235,8 +235,8 @@ class InputManager:
 
             # Finally, manually append some keys from globals that are required to be in the program
             # parameters
-            program['start_year'] = self.simulation_parameters['start_year']
-            program['timesteps'] = self.simulation_parameters['timesteps']
+            program['start_date'] = self.simulation_parameters['start_date']
+            program['end_date'] = self.simulation_parameters['end_date']
 
         # Third, install the programs into the simulation parameters
         self.simulation_parameters['programs'] = programs

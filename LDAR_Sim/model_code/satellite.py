@@ -3,7 +3,7 @@
 # File:        Satellite crew
 # Purpose:     Initialize each satellite under the satellite company
 #
-# Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
+# Copyright (C) 2018-2021  Intelligent Methane Monitoring and Management System (IM3S) Group
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the MIT License as published
@@ -103,7 +103,7 @@ class satellite:
 
         if self.worked_today:
             self.timeseries['satellite_cost'][self.state['t'].current_timestep] += \
-                self.config['cost_per_day']
+                self.config['cost']['per_day']
 
         return
 
@@ -311,7 +311,6 @@ class satellite:
 
         # Currently, we assume satellite surveys a facility instantaneously
         # self.state['t'].current_date += timedelta(minutes=int(site['satellite_time']))
-        # self.state['t'].current_date += timedelta(minutes=int(self.config['t_lost_per_site']))
         self.timeseries['satellite_sites_visited'][self.state['t'].current_timestep] += 1
 
         return
