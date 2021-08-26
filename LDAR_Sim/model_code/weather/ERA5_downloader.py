@@ -27,9 +27,9 @@ from pathlib import Path
 
 '''
 NOTE - This can take a very long time to download data from the copernicus server,
-expect to be in the cueue for 1-3 hours regardless of file size be patient.
+expect to be in the queue for 1-3 hours regardless of file size be patient.
 
-This script will download ERA reyanalysis weather data. In order to run you have to:
+This script will download ERA reanalysis weather data. In order to run you have to:
 
 1) Setup a Copernicus account. Account setup instructions can be found at:
 https://cds.climate.copernicus.eu/#!/home
@@ -37,7 +37,7 @@ https://cds.climate.copernicus.eu/#!/home
 2) Get UID and API key from account and put them in a .cdapirc file. See:
 https://cds.climate.copernicus.eu/api-how-to
 
-3) Enter facility template csv location, which must hava a lat and lon column.
+3) Enter facility template csv location, which must have a lat and lon column.
     File must be relative to the root folder.
 
 4) Fill in start year, end year, a region name (for output file tag), output resolution
