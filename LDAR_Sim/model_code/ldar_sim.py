@@ -235,6 +235,7 @@ class LdarSim:
         # First, determine whether each site gets a new leak or not
         params = self.parameters
         for site in self.state['sites']:
+            new_leak = None
             if params['pregenerate_leaks']:
                 new_leak = params['leak_timeseries'][
                     site['facility_ID']][self.state['t'].current_timestep]
