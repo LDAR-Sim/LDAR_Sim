@@ -129,7 +129,10 @@ if __name__ == '__main__':
     simulations = []
     for i in range(n_simulations):
         if pregen_leaks:
-            file_loc = input_directory/"./generator/pregen_{}_{}.p".format(i, 0)
+            generator_folder = input_directory / "./generator"
+            if not os.path.exists(generator_folder):
+                os.mkdir(generator_folder)
+            file_loc = generator_folder / "pregen_{}_{}.p".format(i, 0)
             if not os.path.isfile(file_loc):
                 sites, leak_timeseries, initial_leaks = generate_sites(programs[0], input_directory)
         else:
@@ -138,7 +141,7 @@ if __name__ == '__main__':
             if pregen_leaks:
                 # Different programs can have different site level parameters ie survey
                 # frequency,so re-evaluate selected sites with new parameters
-                file_loc = input_directory/"./generator/pregen_{}_{}.p".format(i, j)
+                file_loc = generator_folder / "pregen_{}_{}.p".format(i, j)
                 if os.path.isfile(file_loc):
                     generated_data = pickle.load(open(file_loc, "rb"))
                     sites = generated_data['sites']
@@ -170,7 +173,7 @@ if __name__ == '__main__':
                   'initial_leaks': initial_leaks,
                   }])
 
-    # ldar_sim_run(simulations[3][0])
+    ldar_sim_run(simulations[3][0])
     # Perform simulations in parallel
     with mp.Pool(processes=n_processes) as p:
         res = p.starmap(ldar_sim_run, simulations)
