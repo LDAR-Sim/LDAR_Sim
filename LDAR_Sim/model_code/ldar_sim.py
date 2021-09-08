@@ -23,7 +23,7 @@
 import datetime
 import sys
 import random
-
+import warnings
 import pandas as pd
 import numpy as np
 
@@ -36,6 +36,8 @@ from geography.vector import grid_contains_point
 from initialization.sites import generate_sites
 from initialization.leaks import (generate_leak,
                                   generate_initial_leaks)
+
+warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning)
 
 
 class LdarSim:

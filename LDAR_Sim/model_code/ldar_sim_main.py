@@ -19,21 +19,23 @@
 #
 # ------------------------------------------------------------------------------
 
-import multiprocessing as mp
-import warnings
-import datetime
-import shutil
-import os
-import argparse
+import fnmatch
 import pickle
-from argparse import RawTextHelpFormatter
-from copy import deepcopy
-from ldar_sim_run import ldar_sim_run
-from batch_reporting import BatchReporting
-from pathlib import Path
-from input_manager import InputManager
-from generic_functions import check_ERA5_file
+import argparse
+import os
+import shutil
+import datetime
+import multiprocessing as mp
+
 from initialization.sites import generate_sites, regenerate_sites
+from generic_functions import check_ERA5_file
+from input_manager import InputManager
+from pathlib import Path
+from batch_reporting import BatchReporting
+from ldar_sim_run import ldar_sim_run
+from copy import deepcopy
+from argparse import RawTextHelpFormatter
+
 
 if __name__ == '__main__':
     # Get route directory , which is parent folder of ldar_sim_main file
@@ -98,8 +100,6 @@ if __name__ == '__main__':
         # -----------------------------Set up programs----------------------------------
         programs = []
 
-        warnings.filterwarnings('ignore')    # Temporarily mute warnings
-
         for p in range(len(program_list)):
             file = input_directory / '{}.txt'.format(program_list[p])
             exec(open(file).read())
@@ -125,24 +125,35 @@ if __name__ == '__main__':
     if 'input_manager' in locals():
         input_manager.write_parameters(output_directory / 'parameters.yaml')
 
-    # Set up simulation parameter files
+    # If leak generator is used and there are generated files, user is prompted
+    # to use files, If they say no, the files will be removed
+    if pregen_leaks:
+        generator_folder = input_directory / "./generator"
+        if not os.path.exists(generator_folder):
+            os.mkdir(generator_folder)
+        gen_files = fnmatch.filter(os.listdir(generator_folder), '*.p')
+        if len(gen_files) > 0:
+            print('\n --- \n pregenerated data exists, do you want to use (y/n)?' +
+                  ' "n" will remove contents of generated data folder.')
+            gen_prompt = input()
+            if gen_prompt.lower() == 'n':
+                for file in gen_files:
+                    os.remove(generator_folder / file)
     simulations = []
+
     for i in range(n_simulations):
         if pregen_leaks:
-            generator_folder = input_directory / "./generator"
-            if not os.path.exists(generator_folder):
-                os.mkdir(generator_folder)
             file_loc = generator_folder / "pregen_{}_{}.p".format(i, 0)
+            # If there is no pregenerated file for the program
             if not os.path.isfile(file_loc):
                 sites, leak_timeseries, initial_leaks = generate_sites(programs[0], input_directory)
         else:
             sites, leak_timeseries, initial_leaks = [], [], []
         for j in range(len(programs)):
             if pregen_leaks:
-                # Different programs can have different site level parameters ie survey
-                # frequency,so re-evaluate selected sites with new parameters
                 file_loc = generator_folder / "pregen_{}_{}.p".format(i, j)
                 if os.path.isfile(file_loc):
+                    # If there is a  pregenerated file for the program
                     generated_data = pickle.load(open(file_loc, "rb"))
                     sites = generated_data['sites']
                     leak_timeseries = generated_data['leak_timeseries']
