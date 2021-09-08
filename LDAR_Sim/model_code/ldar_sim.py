@@ -20,7 +20,6 @@
 # ------------------------------------------------------------------------------
 
 
-import os
 import datetime
 import sys
 import random
@@ -40,12 +39,13 @@ from initialization.leaks import (generate_leak,
 
 
 class LdarSim:
-    def __init__(self, state, params, timeseries):
+    def __init__(self, global_params, state, params, timeseries):
         """
         Construct the simulation.
         """
 
         self.state = state
+        self.global_params = global_params
         self.parameters = params
         self.timeseries = timeseries
         self.active_leaks = []
@@ -55,10 +55,10 @@ class LdarSim:
         # Read in data files
         state['empirical_counts'] = np.array(pd.read_csv(
             params['input_directory'] / params['emissions']['leak_count_file']).iloc[:, 0])
-        if params['emissions']['leak_file'] is not None:
+        if params['emissions']['leak_file'] != '':
             state['empirical_leaks'] = np.array(pd.read_csv(
                 params['input_directory'] / params['emissions']['leak_file']).iloc[:, 0])
-        if params['emissions']['vent_file'] is not None:
+        if params['emissions']['vent_file'] != '':
             state['empirical_sites'] = np.array(pd.read_csv(
                 params['input_directory'] / params['emissions']['vent_file']).iloc[:, 0])
         # Read in the sites as a list of dictionaries
@@ -326,7 +326,7 @@ class LdarSim:
         """
         params = self.parameters
 
-        if params['write_data']:
+        if self.global_params['write_data']:
             # Attribute individual leak emissions to site totals
             for leak in self.state['leaks']:
                 # convert g/s to kg/day
@@ -424,17 +424,17 @@ class LdarSim:
             metadata.close()
 
         # Make maps and append site-level DD and MCB data
-        if params['make_maps']:
+        if self.global_params['make_maps']:
             if params['simulation'] == '0':
                 for m in self.state['methods']:
                     make_maps(m, site_df)
                     m.site_reports()
 
         # Make plots
-        if params['make_plots']:
+        if self.global_params['make_plots']:
             make_plots(
                 leak_df, time_df, site_df, params['simulation'],
-                params['spin_up'],
+                self.global_params['spin_up'],
                 params['output_directory'])
 
         sim_summary = {
@@ -442,9 +442,5 @@ class LdarSim:
             'timeseries': time_df,
             'sites': site_df,
         }
-
-        # Return to original input directory
-        os.chdir(params['input_directory'])
-        os.chdir('..')
 
         return(sim_summary)

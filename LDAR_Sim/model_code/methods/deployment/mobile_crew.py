@@ -282,35 +282,13 @@ class Schedule(BaseSchedCrew):
             # Not enough time to travel to site
             go_to_site = False
             LDAR_mins_onsite = 0
-        elif travel_to_mins + travel_home_mins >= mins_left_in_day:
-            # Not enough time to travel to and from site
-            # --HBD-- Should consider, splitting up travel, if site is too far to do in a day.
-            go_to_site = False
-            LDAR_mins_onsite = 0
-        elif travel_to_mins + travel_home_mins + survey_mins <= mins_left_in_day:
-            # Enough time to travel to site
-            go_to_site = True
-            LDAR_mins_onsite = survey_mins
-        elif travel_to_mins + survey_mins <= mins_left_in_day:
-            # Enough time to travel to and from site
-            # --HBD-- Right now, Max work day doesnt effect travel_home_mins
-            # code could could be added here to prevent overtime hours from
-            # travelling home (in some cases this would cause trip to run into
-            # the next day)
-            go_to_site = True
-            LDAR_mins_onsite = survey_mins
-        # --HBD-- temporarily removed travel home from rollover calcs.
-        # elif (travel_to_mins + travel_home_mins + survey_mins) > mins_left_in_day:
-        elif (travel_to_mins + survey_mins) > mins_left_in_day:
-            # Enough time to travel, but not enough time to work go, and rollover minutes.
-            go_to_site = True
-            # --HBD-- temporarily removed travel home from rollover calcs.
-            # LDAR_mins_onsite = mins_left_in_day - (travel_to_mins + travel_home_mins)
-            LDAR_mins_onsite = mins_left_in_day - travel_to_mins
         else:
-            # Enough time to travel and work
             go_to_site = True
-            LDAR_mins_onsite = survey_mins
+            if (travel_to_mins + survey_mins) > mins_left_in_day:
+                LDAR_mins_onsite = mins_left_in_day - travel_to_mins
+            else:
+                LDAR_mins_onsite = survey_mins
+
         remaining_mins = survey_mins - LDAR_mins_onsite
         LDAR_mins = travel_to_mins + LDAR_mins_onsite
         if go_to_site:

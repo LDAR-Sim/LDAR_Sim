@@ -41,10 +41,11 @@ def generate_sites(program, in_dir):
         if program['emissions']['subtype_leak_dist_file'] is None:
             # If subtypes are not used, set subtype code to 0
             site['subtype_code'] = 0
-        site['leak_rate_dist'] = program['emissions']['leak_dists'][int(
-            site['subtype_code'])]['dist']
-        site['leak_rate_units'] = program['emissions']['leak_dists'][int(
-            site['subtype_code'])]['units']
+        if len(program['emissions']['leak_dists']) > 0:
+            site['leak_rate_dist'] = program['emissions']['leak_dists'][int(
+                site['subtype_code'])]['dist']
+            site['leak_rate_units'] = program['emissions']['leak_dists'][int(
+                site['subtype_code'])]['units']
 
         n_leaks = random.choice(empirical_counts)
         if n_leaks < 0:  # This can happen occasionally during sensitivity analysis

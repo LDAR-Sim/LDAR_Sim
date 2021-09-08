@@ -38,7 +38,7 @@ default_program_parameters = {
     'emissions': {
         'leak_count_file': 'leak_counts.csv',
         'vent_file': 'site_rates.csv',
-        'leak_file': None,  # 'leak_rates.csv',
+        'leak_file': "",  # 'leak_rates.csv',
         'leak_file_use': 'sample',  # 'sample', 'fit'
         'leak_dist_type': 'lognorm',
         'leak_dist_params': [-2.776, 1.462],
@@ -50,11 +50,6 @@ default_program_parameters = {
     'LPR': 0.0065,
     'NRd': 150,
     'max_det_op': 0.00,
-    'spin_up': 0,
-    'write_data': True,
-    'make_plots': True,
-    'make_maps': True,
-    'print_from_simulations': True,
     'operator_strength': 0,
     'verification_cost': 25,
 }

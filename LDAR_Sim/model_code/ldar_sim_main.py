@@ -74,7 +74,7 @@ if __name__ == '__main__':
         # Assign appropriate local variables to match older way of inputting parameters
         input_directory = simulation_parameters['input_directory']
         output_directory = simulation_parameters['output_directory']
-        programs = simulation_parameters['programs']
+        programs = simulation_parameters.pop('programs')
         n_processes = simulation_parameters['n_processes']
         print_from_simulations = simulation_parameters['print_from_simulations']
         n_simulations = simulation_parameters['n_simulations']
@@ -163,6 +163,7 @@ if __name__ == '__main__':
             )
             simulations.append(
                 [{'i': i, 'program': deepcopy(programs[j]),
+                  'globals':simulation_parameters,
                   'input_directory': input_directory,
                   'output_directory':output_directory,
                   'opening_message': opening_message,
@@ -173,7 +174,9 @@ if __name__ == '__main__':
                   'initial_leaks': initial_leaks,
                   }])
 
-    ldar_sim_run(simulations[3][0])
+    # The following can be used for debugging outside of the starmap
+    # ldar_sim_run(simulations[0][0])
+
     # Perform simulations in parallel
     with mp.Pool(processes=n_processes) as p:
         res = p.starmap(ldar_sim_run, simulations)
