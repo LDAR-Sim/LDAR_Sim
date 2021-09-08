@@ -46,7 +46,9 @@ def generate_sites(program, in_dir):
                 site['subtype_code'])]['dist']
             site['leak_rate_units'] = program['emissions']['leak_dists'][int(
                 site['subtype_code'])]['units']
-
+        else:
+            site['leak_rate_dist'] = None
+            site['leak_rate_units'] = None
         n_leaks = random.choice(empirical_counts)
         if n_leaks < 0:  # This can happen occasionally during sensitivity analysis
             n_leaks = 0

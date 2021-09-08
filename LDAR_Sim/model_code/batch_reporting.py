@@ -19,14 +19,17 @@
 #
 # ------------------------------------------------------------------------------
 
-import numpy as np
-import pandas as pd
-import math
-import os
-from datetime import datetime
-from datetime import timedelta
-from mizani.formatters import date_format
+import warnings
 import plotnine as pn
+from mizani.formatters import date_format
+from datetime import timedelta
+from datetime import datetime
+import os
+import math
+import pandas as pd
+import numpy as np
+
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 
 class BatchReporting:
@@ -325,7 +328,8 @@ class BatchReporting:
                           panel_grid_major_y=pn.element_line(
                               colour='black', linewidth=1, alpha=0.5))
                  )
-        plot1.save(self.output_directory / 'emissions_timeseries.png', width=7, height=3, dpi=900)
+        plot1.save(self.output_directory / 'emissions_timeseries.png', width=7,
+                   height=3, dpi=900, verbose=False)
 
         boxplot = (pn.ggplot(None) + pn.aes('program', 'mean') +
                    pn.geom_boxplot(df_p1, pn.aes('program', 'mean', fill='program')) +
@@ -340,7 +344,7 @@ class BatchReporting:
             panel_grid_major_y=pn.element_line(
                        colour='black', linewidth=1, alpha=0.5))
                    )
-        boxplot.save(self.output_directory / 'emissions_boxplot.png', dpi=900)
+        boxplot.save(self.output_directory / 'emissions_boxplot.png', dpi=900, verbose=False)
 
         # Build relative mitigation plots
         dfs_p2 = dfs.copy()
@@ -406,7 +410,8 @@ class BatchReporting:
                           panel_grid_major_y=pn.element_line(
                               colour='black', linewidth=1, alpha=0.5))
                  )
-        plot2.save(self.output_directory / 'emissions_difference.png', width=7, height=3, dpi=900)
+        plot2.save(self.output_directory / 'emissions_difference.png',
+                   width=7, height=3, dpi=900, verbose=False)
 
         # Make plot 3
         plot3 = (pn.ggplot(None) + pn.aes('datetime', 'mean_ratio', group='program') +
@@ -426,7 +431,8 @@ class BatchReporting:
                           panel_grid_major_y=pn.element_line(
                               colour='black', linewidth=1, alpha=0.5))
                  )
-        plot3.save(self.output_directory / 'emissions_ratio.png', width=7, height=3, dpi=900)
+        plot3.save(self.output_directory / 'emissions_ratio.png',
+                   width=7, height=3, dpi=900, verbose=False)
 
         # ---------------------------------------
         # ------ Figure to compare costs  ------
@@ -478,7 +484,8 @@ class BatchReporting:
                           panel_grid_major_y=pn.element_line(
                               colour='black', linewidth=1, alpha=0.5))
                  )
-        plot1.save(self.output_directory / 'cost_estimate_temporal.png', width=7, height=3, dpi=900)
+        plot1.save(self.output_directory / 'cost_estimate_temporal.png',
+                   width=7, height=3, dpi=900, verbose=False)
 
         ########################################
         # Cost breakdown by program and method
@@ -530,6 +537,7 @@ class BatchReporting:
                     colour='black', linewidth=0.5, alpha=0.3),
                 panel_grid_major_y=pn.element_line(
                     colour='black', linewidth=1, alpha=0.5)))
-        plot.save(self.output_directory / 'cost_comparison.png', width=7, height=3, dpi=900)
+        plot.save(self.output_directory / 'cost_comparison.png',
+                  width=7, height=3, dpi=900, verbose=False)
 
         return
