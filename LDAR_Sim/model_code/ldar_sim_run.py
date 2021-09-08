@@ -45,6 +45,7 @@ def ldar_sim_run(simulation):
     parameters['leak_timeseries'] = simulation['leak_timeseries']
     parameters['initial_leaks'] = simulation['initial_leaks']
     parameters['sites'] = simulation['sites']
+    global_params = simulation['globals']
 
     if not os.path.exists(parameters['output_directory']):
         try:
@@ -105,7 +106,7 @@ def ldar_sim_run(simulation):
         state['weather'] = WL(state, parameters)
     state['t'] = TimeCounter(parameters)
     parameters.update({'timesteps': state['t'].timesteps})
-    sim = LdarSim(state, parameters, timeseries)
+    sim = LdarSim(global_params, state, parameters, timeseries)
 
     # Loop through timeseries
     while state['t'].current_date <= state['t'].end_date:

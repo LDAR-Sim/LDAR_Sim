@@ -191,7 +191,8 @@ class InputManager:
 
                 # Copy all default program parameters to build upon by calling update, then append
                 new_program = copy.deepcopy(default_program_parameters)
-                new_program.update(new_parameters)
+                # HBD - Should be able to change single item in a dict and not he entire dict
+                self.prog_update(new_program, new_parameters)
                 programs.append(new_program)
 
             elif new_parameters['parameter_level'] == 'method':
@@ -240,3 +241,11 @@ class InputManager:
 
         # Third, install the programs into the simulation parameters
         self.simulation_parameters['programs'] = programs
+
+    def prog_update(self, program, new_parameters):
+        for idx, param in new_parameters.items():
+            if isinstance(param, dict):
+                self.prog_update(program[idx], param)
+            else:
+                program.update({idx: param})
+        return
