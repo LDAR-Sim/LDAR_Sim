@@ -80,7 +80,6 @@ if __name__ == '__main__':
         n_processes = simulation_parameters['n_processes']
         print_from_simulations = simulation_parameters['print_from_simulations']
         n_simulations = simulation_parameters['n_simulations']
-        spin_up = simulation_parameters['spin_up']
         ref_program = simulation_parameters['reference_program']
         write_data = simulation_parameters['write_data']
         start_date = simulation_parameters['start_date']
@@ -108,7 +107,6 @@ if __name__ == '__main__':
         n_processes = programs[0]['n_processes']
         print_from_simulations = programs[0]['print_from_simulations']
         n_simulations = programs[0]['n_simulations']
-        spin_up = programs[0]['spin_up']
         ref_program = program_list[0]
         write_data = programs[0]['write_data']
         start_date = programs[0]['start_date']
@@ -196,8 +194,7 @@ if __name__ == '__main__':
     if write_data:
         # Create a data object...
         reporting_data = BatchReporting(
-            output_directory, start_date,
-            spin_up, ref_program)
+            output_directory, start_date, ref_program)
         if n_simulations > 1:
             reporting_data.program_report()
             if len(programs) > 1:

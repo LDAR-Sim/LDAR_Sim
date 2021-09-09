@@ -23,7 +23,7 @@ import plotnine as pn
 from mizani.formatters import date_format
 
 
-def make_plots(leak_df, time_df, site_df, sim_n, spin_up, output_directory):
+def make_plots(leak_df, time_df, site_df, sim_n, output_directory):
     """
     This function makes a set of standard plots to output at end of simulation.
     """
@@ -31,12 +31,9 @@ def make_plots(leak_df, time_df, site_df, sim_n, spin_up, output_directory):
     warnings.filterwarnings('ignore')
     pn.theme_set(pn.theme_linedraw())
 
-    # Chop off spin-up year (only for plots, still exists in raw output)
-    time_df_adj = time_df.iloc[spin_up:, ]
-
     # Timeseries plots
     plot_time_1 = (
-        pn.ggplot(time_df_adj, pn.aes('datetime', 'daily_emissions_kg')) +
+        pn.ggplot(time_df, pn.aes('datetime', 'daily_emissions_kg')) +
         pn.geom_line(size=2) +
         pn.ggtitle('Daily emissions from all sites (kg)') +
         pn.ylab('') +
@@ -54,7 +51,7 @@ def make_plots(leak_df, time_df, site_df, sim_n, spin_up, output_directory):
                      width=10, height=3, dpi=300, verbose=False)
 
     plot_time_2 = (
-        pn.ggplot(time_df_adj, pn.aes('datetime', 'active_leaks')) +
+        pn.ggplot(time_df, pn.aes('datetime', 'active_leaks')) +
         pn.geom_line(size=2) +
         pn.ggtitle('Number of active leaks at all sites') +
         pn.ylab('') +

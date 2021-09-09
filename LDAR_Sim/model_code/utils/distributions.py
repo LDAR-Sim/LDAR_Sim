@@ -67,7 +67,7 @@ def leak_rvs(distribution, max_size=None, gpsec_conversion=None):
         max_size (int, optional): Maximum Leak Size
         gpsec_conversion (array, optional):  Conversion Units [input_metric, input_increment]
     Returns:
-        [type]: [description]
+        float: leak size in units provided
     """
 
     while True:
@@ -83,6 +83,12 @@ def leak_rvs(distribution, max_size=None, gpsec_conversion=None):
 
 
 def unpackage_dist(program, in_dir=None):
+    """ Create scipy like leak distributions based on input dists or leak files
+
+    Args:
+        program (dict): Program parameter dictionary
+        in_dir (pathlib type): input directory of file. Defaults to None.
+    """
     # --------- Leak distributions -------------
     program['emissions']['leak_dists'] = {}
     _temp_dists = {}

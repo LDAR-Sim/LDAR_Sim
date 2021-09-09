@@ -55,8 +55,6 @@ class LdarSim:
         #  --- state variables ---
         state['candidate_flags'] = {}
         # Read in data files
-        state['empirical_counts'] = np.array(pd.read_csv(
-            params['input_directory'] / params['emissions']['leak_count_file']).iloc[:, 0])
         if params['emissions']['leak_file'] != '':
             state['empirical_leaks'] = np.array(pd.read_csv(
                 params['input_directory'] / params['emissions']['leak_file']).iloc[:, 0])
@@ -436,7 +434,6 @@ class LdarSim:
         if self.global_params['make_plots']:
             make_plots(
                 leak_df, time_df, site_df, params['simulation'],
-                self.global_params['spin_up'],
                 params['output_directory'])
 
         sim_summary = {
