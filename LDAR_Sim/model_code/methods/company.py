@@ -56,6 +56,8 @@ class BaseCompany:
         self.timeseries['{}_prop_sites_avail'.format(self.name)] = np.zeros(n_ts)
         self.timeseries['{}_cost'.format(self.name)] = np.zeros(n_ts)
         self.timeseries['{}_sites_visited'.format(self.name)] = np.zeros(n_ts)
+        self.timeseries['{}_travel_time'.format(self.name)] = np.zeros(n_ts)
+        self.timeseries['{}_survey_time'.format(self.name)] = np.zeros(n_ts)
         if self.config["measurement_scale"] == 'component':
             # If the technology is for flagging
             self.timeseries['{}_redund_tags'.format(self.name)] = np.zeros(n_ts)

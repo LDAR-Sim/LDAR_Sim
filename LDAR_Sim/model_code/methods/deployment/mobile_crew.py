@@ -101,7 +101,7 @@ class Schedule(BaseSchedCrew):
         while est_mins_remaining > 0 and len(site_pool) > 0:
             site_plans_tmp = []
             for sidx, site in enumerate(site_pool):
-                site_plan = self.plan_visit(site)
+                site_plan = self.plan_visit(site, est_mins_remaining=est_mins_remaining)
                 # site plans are dicts that include  site, LDAR_minsand go_to_site keys.
                 # Site plan can be empty if weather does not permit travel
                 if site_plan and site_plan['go_to_site']:
@@ -164,7 +164,7 @@ class Schedule(BaseSchedCrew):
         elif len(itinerary) > 0:
             self.update_schedule(itinerary[-1]['travel_home_mins'])
 
-    def plan_visit(self, site, next_site=None):
+    def plan_visit(self, site, next_site=None, est_mins_remaining=None):
         """ Check survey and travel times and see if there is enough time
             to go to site. If a site survey was started on a previous day
             the amount of minutes rolled over will be used for survey time.
@@ -194,7 +194,7 @@ class Schedule(BaseSchedCrew):
         if self.rollover:
             if site['facility_ID'] == self.rollover['site']['facility_ID']:
                 # Remove facility from rollover list, and retrieve remaining survey minutes
-                LDAR_mins = self.rollover['site']['remaining_mins']
+                LDAR_mins = self.rollover['remaining_mins']
             else:
                 LDAR_mins = int(site['{}_time'.format(name)])
         else:
@@ -206,7 +206,8 @@ class Schedule(BaseSchedCrew):
         survey_times = self.check_visit_time(
             LDAR_mins,
             travel_to_plan['travel_time'],
-            travel_home_plan['travel_time'])
+            travel_home_plan['travel_time'],
+            est_mins_remaining)
         return {
             'site': site,
             'go_to_site': survey_times['go_to_site'],
@@ -259,7 +260,8 @@ class Schedule(BaseSchedCrew):
         }
         return out_dict
 
-    def check_visit_time(self, survey_mins, travel_to_mins, travel_home_mins):
+    def check_visit_time(self, survey_mins, travel_to_mins,
+                         travel_home_mins, mins_left_in_day=None):
         """Check the survey and travel times, determine if there is enough
            time to go to site.
 
@@ -276,41 +278,17 @@ class Schedule(BaseSchedCrew):
                     'remaining_mins' (minutes): minutes left in survey that can be rolled over
                      to another day,
         """
-        mins_left_in_day = (self.allowed_end_time - self.state['t'].current_date) \
-            .total_seconds()/60
         if travel_to_mins >= mins_left_in_day:
             # Not enough time to travel to site
             go_to_site = False
             LDAR_mins_onsite = 0
-        elif travel_to_mins + travel_home_mins >= mins_left_in_day:
-            # Not enough time to travel to and from site
-            # --HBD-- Should consider, splitting up travel, if site is too far to do in a day.
-            go_to_site = False
-            LDAR_mins_onsite = 0
-        elif travel_to_mins + travel_home_mins + survey_mins <= mins_left_in_day:
-            # Enough time to travel to site
-            go_to_site = True
-            LDAR_mins_onsite = survey_mins
-        elif travel_to_mins + survey_mins <= mins_left_in_day:
-            # Enough time to travel to and from site
-            # --HBD-- Right now, Max work day doesnt effect travel_home_mins
-            # code could could be added here to prevent overtime hours from
-            # travelling home (in some cases this would cause trip to run into
-            # the next day)
-            go_to_site = True
-            LDAR_mins_onsite = survey_mins
-        # --HBD-- temporarily removed travel home from rollover calcs.
-        # elif (travel_to_mins + travel_home_mins + survey_mins) > mins_left_in_day:
-        elif (travel_to_mins + survey_mins) > mins_left_in_day:
-            # Enough time to travel, but not enough time to work go, and rollover minutes.
-            go_to_site = True
-            # --HBD-- temporarily removed travel home from rollover calcs.
-            # LDAR_mins_onsite = mins_left_in_day - (travel_to_mins + travel_home_mins)
-            LDAR_mins_onsite = mins_left_in_day - travel_to_mins
         else:
-            # Enough time to travel and work
             go_to_site = True
-            LDAR_mins_onsite = survey_mins
+            if (travel_to_mins + survey_mins) > mins_left_in_day:
+                LDAR_mins_onsite = mins_left_in_day - travel_to_mins
+            else:
+                LDAR_mins_onsite = survey_mins
+
         remaining_mins = survey_mins - LDAR_mins_onsite
         LDAR_mins = travel_to_mins + LDAR_mins_onsite
         if go_to_site:

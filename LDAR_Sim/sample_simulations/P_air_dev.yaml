@@ -4,3 +4,5 @@ version: '2.0'
 method_labels:
 - aircraft_dev
 - OGI_FU_dev
+# emissions:
+#   leak_file: 'leak_rates.csv'

@@ -1,4 +1,23 @@
 from geography.distance import get_distance
+# ------------------------------------------------------------------------------
+# Program:     The LDAR Simulator (LDAR-Sim)
+# File:        geography.homebase
+# Purpose:     Find nearest homebase
+#
+# Copyright (C) 2018-2021  Intelligent Methane Monitoring and Management System (IM3S) Group
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the MIT License as published
+# by the Free Software Foundation, version 3.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MIT License for more details.
+
+# You should have received a copy of the MIT License
+# along with this program.  If not, see <https://opensource.org/licenses/MIT>.
+#
 
 
 def find_homebase(lon, lat, homebase_locs):
