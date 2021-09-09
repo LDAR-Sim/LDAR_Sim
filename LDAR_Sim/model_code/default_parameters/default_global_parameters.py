@@ -27,7 +27,6 @@ default_global_parameters = {
     'n_processes':  None,
     'print_from_simulations': True,
     'n_simulations': 2,
-    'spin_up': 0,
     'write_data': True,
     'make_plots': True,
     'make_maps': True,

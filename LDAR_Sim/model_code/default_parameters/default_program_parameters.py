@@ -36,7 +36,6 @@ default_program_parameters = {
     'repair_delay': 14,
     'repair_cost': 200,
     'emissions': {
-        'leak_count_file': 'leak_counts.csv',
         'vent_file': 'site_rates.csv',
         'leak_file': "",  # 'leak_rates.csv',
         'leak_file_use': 'sample',  # 'sample', 'fit'

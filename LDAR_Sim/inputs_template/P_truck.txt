@@ -55,7 +55,6 @@ P_truck = {
     'weather_is_hourly': False,
     'infrastructure_file': 'facility_list_template.csv',
     'leak_file': 'leak_rates.csv',
-    'count_file': 'leak_counts.csv',
     'vent_file': 'site_rates.csv',
     'time_offsite': 'time_offsite_ground.csv',
     'site_samples': [True, 500],
@@ -74,7 +73,6 @@ P_truck = {
     'LPR': 0.0065,
     'NRd': 150,
     'max_det_op': 0.00,
-    'spin_up': 0,
     'write_data': True,  # Must be TRUE to make plots and maps
     'make_plots': True,
     'make_maps': True,
