@@ -68,7 +68,6 @@ P_sat = {
     'weather_is_hourly': False,
     'infrastructure_file': 'facility_list_template.csv',
     'leak_file': 'leak_rates.csv',
-    'count_file': 'leak_counts.csv',
     'vent_file': 'site_rates.csv',
     'site_samples': [True, 50],
     # If True, will overwrite global Leak Dist
@@ -86,7 +85,6 @@ P_sat = {
     'LPR': 0.0065,
     'NRd': 150,
     'max_det_op': 0.00,
-    'spin_up': 0,
     'write_data': True,  # Must be TRUE to make plots and maps
     'make_plots': True,
     'make_maps': True,

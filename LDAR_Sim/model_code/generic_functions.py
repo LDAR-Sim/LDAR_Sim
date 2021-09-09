@@ -19,20 +19,20 @@
 #
 # ------------------------------------------------------------------------------
 
-import numpy as np
-import pandas as pd
-import os
 import sys
-from osgeo import gdal
-from osgeo import osr
-from mpl_toolkits.basemap import Basemap
-import matplotlib.pyplot as plt
-import boto3  # for downloading data from AWS
-from botocore.exceptions import ClientError
-import ephem
-from math import atan, atan2, cos, degrees, sin, sqrt
-from shapely.geometry import Polygon
+import os
+import pandas as pd
+import numpy as np
 import datetime
+from shapely.geometry import Polygon
+from math import atan, atan2, cos, degrees, sin, sqrt
+import ephem
+from botocore.exceptions import ClientError
+import boto3  # for downloading data from AWS
+import matplotlib.pyplot as plt
+from mpl_toolkits.basemap import Basemap
+from osgeo import osr
+from osgeo import gdal
 
 
 def gap_calculator(condition_vector):
@@ -189,7 +189,7 @@ def make_maps(company, sites):
     cbar.set_alpha(1)
     cbar.draw_all()
     cbar.set_label('Proportion of days suitable for deployment', fontsize=12)
-    plt.savefig('DD_' + company.name + '_map' + '.png', dpi=300)
+    plt.savefig('DD_' + company.name + '_map' + '.png', dpi=300, verbose=False)
     plt.clf()
 
     map2 = Basemap(epsg=3401, llcrnrlon=xmin - 1, llcrnrlat=ymin - 1, urcrnrlon=xmax + 3,
@@ -216,7 +216,7 @@ def make_maps(company, sites):
     cbar.set_alpha(1)
     cbar.draw_all()
     cbar.set_label('Maximum blackout period (days)', fontsize=12)
-    plt.savefig('MCB_' + company.name + '_map' + '.png', dpi=300)
+    plt.savefig('MCB_' + company.name + '_map' + '.png', dpi=300, verbose=False)
     plt.clf()
 
     return

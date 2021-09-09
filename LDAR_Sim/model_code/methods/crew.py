@@ -74,7 +74,8 @@ class BaseCrew:
         self.candidate_flags = candidate_flags
         self.days_skipped = 0
         self.daily_cost = 0
-
+        daily_LDAR_time = 0
+        daily_travel_time = 0
         # If there are sites ready for survey
         if len(site_pool) > 0:
             itinerary = self.schedule.start_day(site_pool)
@@ -88,18 +89,23 @@ class BaseCrew:
                     # Mobile LDAR_mins also includes travel to site time
                     self.schedule.update_schedule(site_plan['LDAR_mins'])
                     self.daily_cost += self.config['cost']['per_site']
-            # this only happened if crew needs to travel all day
-            else:
-                self.worked_today = True
+                    if self.config['deployment_type'] == 'mobile':
+                        daily_LDAR_time += site_plan['LDAR_mins_onsite']
+                        daily_travel_time += site_plan['travel_to_mins']
+
+            # else: # this only happened if crew needs to travel all day
+            #     self.worked_today = True
 
         if self.worked_today:
+            cur_timestep = self.state['t'].current_timestep
             self.schedule.end_day(site_pool, itinerary)
-            self.daily_cost = self.config['cost']['per_day']
-
-            self.timeseries['{}_cost'.format(m_name)][self.state['t'].current_timestep] += \
-                self.daily_cost
-            self.timeseries['total_daily_cost'][self.state['t'].current_timestep] += \
-                self.daily_cost
+            self.daily_cost += self.config['cost']['per_day']
+            self.timeseries['{}_cost'.format(m_name)][cur_timestep] += self.daily_cost
+            self.timeseries['total_daily_cost'][cur_timestep] += self.daily_cost
+            self.timeseries['{}_survey_time'.format(m_name)][cur_timestep] += daily_LDAR_time
+            if self.config['deployment_type'] == 'mobile':
+                self.timeseries['{}_travel_time'.format(m_name)][cur_timestep] += \
+                    daily_travel_time + itinerary[-1]['travel_home_mins']
 
     def visit_site(self, site):
         """
