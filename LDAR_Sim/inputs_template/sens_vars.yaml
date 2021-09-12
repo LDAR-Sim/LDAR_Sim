@@ -1,13 +1,13 @@
-work_prac_var:
+sens_z_var:
   paths:
-    - 'P_air.methods.aircraft.reporting_delay'
-    - 'P_air_dev.methods.aircraft_dev.reporting_delay'
-  vals: [0, 15, 30]
+    - 'P_air.methods.aircraft.cost.per_day'
+    - 'P_air_dev.methods.aircraft_dev.cost.per_day'
+  vals: [1000, 10000]
       
-virt_world_vars:
+sens_x_vars:
   - paths:
       - '__all.LPR'
-    vals: [0.001, 0.005, 0.0065]
+    vals: [0.001, 0.005]
   - paths:
       - '__all.NRd'
-    vals: [100, 200, 300]
+    vals: [100, 200]

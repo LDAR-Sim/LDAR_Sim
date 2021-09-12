@@ -437,6 +437,7 @@ class LdarSim:
                 params['output_directory'])
 
         sim_summary = {
+            'meta': params,
             'leaks': leak_df,
             'timeseries': time_df,
             'sites': site_df,
