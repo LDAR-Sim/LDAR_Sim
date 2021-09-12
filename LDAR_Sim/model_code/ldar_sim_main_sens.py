@@ -21,53 +21,82 @@
 from pathlib import Path
 
 from ldar_sim_run import ldar_sim_run
-# from copy import deepcopy
-# import pandas as pd
 import os
 import copy
 import datetime
 import multiprocessing as mp
-from argparse import ArgumentParser, RawTextHelpFormatter
+
 from input_manager import InputManager
-from utils.result_processing import get_emis_ratios
+from utils.result_processing import get_referenced_dataframe
 from generic_functions import check_ERA5_file
 from initialization.sites import generate_sites, regenerate_sites
-from utils.sensitivity import yaml_to_dict, set_from_keylist
+from initialization.args import files_from_args
+from utils.sensitivity import (yaml_to_dict,
+                               generate_sens_prog_set,
+                               set_from_keylist)
 
+
+def run_programs(programs, n_simulations, output_directory):
+    """ Setup and run simulations
+
+    Args:
+        programs (list): list of program objects
+        n_simulations (int): number of simulations for each program
+        output_directory (pathlib object): Output directory
+
+    Returns:
+        list: Output results from Simulations. Each simulation will include
+            timeseries, sites, leaks, and meta (data) dictionaries.
+    """
+    simulations = []
+    for i in range(n_simulations):
+        if pregen_leaks:
+            sites, leak_timeseries, initial_leaks = generate_sites(
+                programs[0], input_directory)
+        else:
+            sites = [], leak_timeseries = [], initial_leaks = []
+        for j in range(len(programs)):
+            if pregen_leaks:
+                # Because changing the parameters, can change leak sizes, and counts,
+                # the leaks are regenerated at the initial generated sites, for each
+                # program
+                sites = regenerate_sites(programs[j], sites, input_directory)
+            opening_message = "Simulating program {} of {} ; simulation {} of {}".format(
+                j + 1, len(programs), i + 1, n_simulations
+            )
+            simulations.append(
+                [{'i': i, 'program': copy.deepcopy(programs[j]),
+                    'globals':simulation_parameters,
+                    'input_directory': input_directory,
+                    'output_directory':output_directory,
+                    'opening_message': opening_message,
+                    'pregenerate_leaks': pregen_leaks,
+                    'print_from_simulation': print_from_simulations,
+                    'sites': sites,
+                    'leak_timeseries': leak_timeseries,
+                    'initial_leaks': initial_leaks,
+                  }])
+
+    # Perform simulations in parallel
+    with mp.Pool(processes=n_processes) as p:
+        res = p.starmap(ldar_sim_run, simulations)
+
+    # Write metadata to file
+    metadata = open(output_directory / 'metadata.txt', 'w')
+    metadata.write(str(programs) + '\n' + str(datetime.datetime.now()))
+    metadata.close()
+    return res
+
+
+# ------- Run Program --------
 if __name__ == '__main__':
+    # Initialize programs and variables
     root_dir = Path(os.path.dirname(os.path.realpath(__file__))).parent
-    # ------------------------------------------------------------------------------
-    # Look for parameter files supplied as arguments - if parameter files are supplied as
-    # arguments, proceed to parse and type check input parameter type with the input manager
-    # will also accept flagged input directory , (-P or --in_dir)
-    parser = ArgumentParser(formatter_class=RawTextHelpFormatter)
-    # ---Declare input arguments---
-    parser.add_argument(
-        'in_files', type=str, nargs='*',
-        help='Input files, seperate with space, can be absolute path or relative to' +
-        'root directory (LDAR_Sim). All files should have yaml, yml, or json extensions \n' +
-        'ie. python ldar_sim_main.py ./file1.json c:/path/to/file/file2.json')
-    parser.add_argument(
-        "-P", "--in_dir",
-        help='Input Directory, folder containing input files, will input all files within' +
-        'folder that have yaml, yml or json extensions \n' +
-        'ie. python ldar_sim_main.py --in_dir ./folder_with_infiles')
-    args = parser.parse_args()
-
-    if args.in_dir is not None:
-        # if an input directory is specified, get all files within that are in the directory
-        in_dir = root_dir / args.in_dir
-        # Get all yaml or json files in specified folder
-        parameter_filenames = [
-            "{}/{}".format(args.in_dir, f) for f in os.listdir(in_dir)
-            if ".yaml" in f or ".yml" in f or ".json" in f]
-    else:
-        parameter_filenames = args.in_files
-
+    parameter_filenames = files_from_args(root_dir)
     print('LDAR-Sim using parameters supplied as arguments')
     input_manager = InputManager(root_dir)
     simulation_parameters = input_manager.read_and_validate_parameters(parameter_filenames)
-    # Assign appropriate local variables to match older way of inputting parameters
+
     input_directory = simulation_parameters['input_directory']
     output_directory = simulation_parameters['output_directory']
     programs = simulation_parameters.pop('programs')
@@ -79,103 +108,61 @@ if __name__ == '__main__':
     start_date = simulation_parameters['start_date']
     pregen_leaks = simulation_parameters['pregenerate_leaks']
 
-    data = yaml_to_dict(input_directory / 'sens_vars.yaml')
-
-    work_prac_var = data['work_prac_var']
-    virt_world_vars = data['virt_world_vars']
-    new_progs = []
-    prev_progs_names = set()
-
-    if len(work_prac_var) > 0:
-        # Go through ensitivity progs
-        var_paths = [path.split(".") for path in work_prac_var['paths']]
-        # Get program names and the their associated index in programs object
-        for val in work_prac_var['vals']:
-            for path in var_paths:
-                for (pidx, p) in enumerate(programs):
-                    if p["program_name"] == path[0] or path[0].lower() == '__all':
-                        prev_progs_names.add(path[0])
-                        tmp_prog = copy.deepcopy(programs[pidx])
-                        set_from_keylist(tmp_prog, path[1:], val)
-                new_progs.append(tmp_prog)
-        if pregen_leaks:
-            sites, leak_timeseries, initial_leaks = generate_sites(programs[0], input_directory)
-        for prog in list(prev_progs_names):
-            prog_idx = next((idx for (idx, p) in enumerate(
-                programs) if p["program_name"] == prog), None)
-            programs.pop(prog_idx)
-        programs += new_progs
     # Check whether ERA5 data is already in the working directory and download data if not
     for p in programs:
         check_ERA5_file(input_directory, p['weather_file'])
+    # Initialize Sensitivity Parameters
+    sens_parameters = yaml_to_dict(input_directory / 'sens_vars.yaml')
+    # Z vars add new sets of programs to each group of programs
+    # X vars will run new sets of programs
+    sens_z_var = sens_parameters['sens_z_var']
+    programs = generate_sens_prog_set(sens_z_var, programs)
+    sens_x_vars = sens_parameters['sens_x_vars']
 
     if not os.path.exists(output_directory):
         os.makedirs(output_directory)
 
-    def run_programs(programs, n_simulations, output_directory,
-                     sites=[], leak_timeseries=[], initial_leaks=[]):
-        # Set up simulation parameter files
-        simulations = []
-        for i in range(n_simulations):
-            if pregen_leaks:
-                sites, leak_timeseries, initial_leaks = generate_sites(
-                    programs[0], input_directory)
-            for j in range(len(programs)):
-                if pregen_leaks:
-                    sites = regenerate_sites(programs[j], sites, input_directory)
-                opening_message = "Simulating program {} of {} ; simulation {} of {}".format(
-                    j + 1, len(programs), i + 1, n_simulations
-                )
-                simulations.append(
-                    [{'i': i, 'program': copy.deepcopy(programs[j]),
-                      'globals':simulation_parameters,
-                      'input_directory': input_directory,
-                      'output_directory':output_directory,
-                      'opening_message': opening_message,
-                      'pregenerate_leaks': pregen_leaks,
-                      'print_from_simulation': print_from_simulations,
-                      'sites': sites,
-                      'leak_timeseries': leak_timeseries,
-                      'initial_leaks': initial_leaks,
-                      }])
-
-        # Perform simulations in parallel
-        with mp.Pool(processes=n_processes) as p:
-            res = p.starmap(ldar_sim_run, simulations)
-        metadata = open(output_directory / 'metadata.txt', 'w')
-        metadata.write(str(programs) + '\n' + str(datetime.datetime.now()))
-        metadata.close()
-        return res
-
     #  ----------Run Program Routine-------------
     all_progs = []
-    if len(virt_world_vars) == 0:
+    if len(sens_x_vars) == 0:
         # If prog_var_manip is unused run program with parameters in Program Files
         programs, n_simulations, output_directory,
         sites = [], leak_timeseries = [], initial_leaks = []
-
         all_progs['base'] = run_programs(
             programs, ref_program, n_simulations, write_data, output_directory)
     else:
-        for virt_world_var in virt_world_vars:
+        #
+        for x_var in sens_x_vars:
             sim_progs = []
-            var_paths = [path.split(".") for path in virt_world_var['paths']]
+            var_paths = [path.split(".") for path in x_var['paths']]
             # Get program names and the their associated index in programs object
-            key = path[0][-1]
-            for val in virt_world_var['vals']:
+            key = var_paths[0][-1]
+            # Run the program sets with each value of sens_x_var
+            for val in x_var['vals']:
                 munip_progs = copy.deepcopy(programs)
                 for path in var_paths:
                     for (idx, p) in enumerate(munip_progs):
-                        if p["program_name"] == path[0] or path[0].lower() == '__all':
+                        # Update the x_var value for each program __all can also be used to
+                        # refer to all programs.
+                        if p["orig_program_name"] == path[0] or path[0].lower() == '__all':
                             set_from_keylist(munip_progs[idx], path[1:], val)
-                print('------ running {} : {} --------'.format(path, val))
+
+                # Generate output folder if it doesnt exist
                 prog_outdir = output_directory / '{}/{}/'.format(key, val)
                 if not os.path.exists(prog_outdir):
                     os.makedirs(prog_outdir)
-                prog_results = run_programs(munip_progs, n_simulations, prog_outdir,
-                                            sites, leak_timeseries, initial_leaks)
+
+                # Run Program
+                print('------ running {} : {} --------'.format(path, val))
+                prog_results = run_programs(munip_progs, n_simulations, prog_outdir)
                 for prog in prog_results:
-                    prog.update({'key': key, 'value': val})
+                    prog.update({'key_x': key, 'value_x': val})
                 sim_progs += prog_results
-            alt_ts = get_emis_ratios(sim_progs, ['daily_emissions_kg'])
-            xxx = 10
+            alt_ts = get_referenced_dataframe(
+                sim_progs,
+                [['daily_emissions_kg', 'emis_rat', 'rat'],
+                 ['total_daily_cost', 'cost_diff', 'diff']],
+                ref_program)
+            pgroup = alt_ts.groupby(
+                ['program_name', 'key_x', 'value_x', 'n_sim']).mean().reset_index()
+            pgroup.to_csv(output_directory/'sens_results_{}.csv'.format(key), index=False)
