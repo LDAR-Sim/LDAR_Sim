@@ -39,6 +39,17 @@ default_aircraft_parameters = {
         'per_hour': 0,
         'per_site': 0,
     },
+    'follow_up': {
+        'threshold': 0,
+        'threshold_type': 'absolute',   	# 'absolute' or 'relative'
+        'proportion': 1,
+        'interaction_priority': 'threshold',  # 'threshold' or 'proportion'
+        'redundancy_filter': 'recent',			# 'recent' or 'average' or 'max'
+        'delay': 0,  # min. age of oldest candidate flag before flagging
+        'instant_threshold': None,
+        'instant_threshold_type': 'absolute', 	# 'absolute' or 'relative'
+    },
+
     'follow_up_thresh': [0, "absolute"],
     'follow_up_ratio': 1,
     't_bw_sites': 10,

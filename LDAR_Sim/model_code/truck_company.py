@@ -46,17 +46,17 @@ class truck_company:
         self.timeseries['truck_prop_sites_avail'] = []
         self.timeseries['truck_cost'] = np.zeros(self.parameters['timesteps'])
         self.timeseries['truck_eff_flags'] = np.zeros(self.parameters['timesteps'])
-        self.timeseries['truck_flags_redund1'] = np.zeros(self.parameters['timesteps'])
+        self.timeseries['truck_flag_redund1'] = np.zeros(self.parameters['timesteps'])
         self.timeseries['truck_flags_redund2'] = np.zeros(self.parameters['timesteps'])
-        self.timeseries['truck_flags_redund3'] = np.zeros(self.parameters['timesteps'])
+        self.timeseries['truck_flag_wo_vent'] = np.zeros(self.parameters['timesteps'])
         self.timeseries['truck_sites_visited'] = np.zeros(self.parameters['timesteps'])
 
         # Assign the correct follow-up threshold
-        if self.config['follow_up_thresh'][1] == "absolute":
-            self.config['follow_up_thresh'] = self.config['follow_up_thresh'][0]
-        elif self.config['follow_up_thresh'][1] == "proportion":
+        if self.config['follow_up']['threshold_type'] == "absolute":
+            self.config['follow_up_thresh'] = self.config['follow_up']['threshold']
+        elif self.config['follow_up']['threshold_type'] == "proportion":
             self.config['follow_up_thresh'] = get_prop_rate(
-                self.config['follow_up_thresh'][0],
+                self.config['follow_up']['proportion'],
                 self.state['empirical_leaks'])
         else:
             print('Follow-up threshold type not recognized. Must be "absolute" or "proportion".')
@@ -147,7 +147,7 @@ class truck_company:
 
             # If the site is already flagged, your flag is redundant
             if site['currently_flagged']:
-                self.timeseries['truck_flags_redund1'][self.state['t'].current_timestep] += 1
+                self.timeseries['truck_flag_redund1'][self.state['t'].current_timestep] += 1
 
             elif not site['currently_flagged']:
                 # Flag the site for follow up
@@ -168,7 +168,7 @@ class truck_company:
                 # Would the site have been chosen without venting?
                 if self.parameters['consider_venting']:
                     if (site_true_rate - venting) < self.config['follow_up_thresh']:
-                        self.timeseries['truck_flags_redund3'][
+                        self.timeseries['truck_flag_wo_vent'][
                             self.state['t'].current_timestep] += 1
 
     def site_reports(self):
