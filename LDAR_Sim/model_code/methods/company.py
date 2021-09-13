@@ -39,6 +39,7 @@ class BaseCompany:
         self.parameters = parameters
         self.config = config
         self.timeseries = timeseries
+        self.site_watchlist = {}
         self.crews = []
         deploy_mod = import_module('methods.deployment.{}_company'.format(
             self.config['deployment_type'].lower()))
@@ -63,19 +64,20 @@ class BaseCompany:
             self.timeseries['{}_redund_tags'.format(self.name)] = np.zeros(n_ts)
         else:
             self.timeseries['{}_eff_flags'.format(self.name)] = np.zeros(n_ts)
-            self.timeseries['{}_flags_redund1'.format(self.name)] = np.zeros(n_ts)
+            self.timeseries['{}_flag_redund1'.format(self.name)] = np.zeros(n_ts)
             self.timeseries['{}_flags_redund2'.format(self.name)] = np.zeros(n_ts)
-            self.timeseries['{}_flags_redund3'.format(self.name)] = np.zeros(n_ts)
+            self.timeseries['{}_flag_wo_vent'.format(self.name)] = np.zeros(n_ts)
+
             # Assign the correct follow-up threshold
-            if self.config['follow_up_thresh'][1] == "absolute":
-                self.config['follow_up_thresh'] = self.config['follow_up_thresh'][0]
-            elif self.config['follow_up_thresh'][1] == "proportion":
+
+            if self.config['follow_up']['threshold_type'] == "absolute":
+                self.config['follow_up_thresh'] = self.config['follow_up']['threshold']
+            elif self.config['follow_up']['threshold_type'] == "proportion":
                 self.config['follow_up_thresh'] = get_prop_rate(
-                    self.config['follow_up_thresh'][0],
+                    self.config['follow_up']['proportion'],
                     self.state['empirical_leaks'])
             else:
-                print(
-                    'Follow-up thresh type not recognized. Must be "absolute" or "proportion".')
+                print('Follow-up thresh type not recognized. Must be "absolute" or "proportion".')
 
         # ---Init 2D matrices to store deployment day (DD) counts and MCBs ---
         self.DD_map = np.zeros(
@@ -171,35 +173,62 @@ class BaseCompany:
         Flag the most important sites for follow-up.
 
         """
-        # First, figure out how many sites you're going to choose
-        n_sites_to_flag = len(self.candidate_flags) * \
+
+        for site in self.candidate_flags:
+            facility_ID = site['site']['facility_ID']
+            if (self.config['follow_up']['interaction_priority'] == 'threshold'
+                    and site['site_measured_rate'] > self.config['follow_up']['threshold']) \
+                    or self.config['follow_up']['interaction_priority'] != 'threshold':
+                if facility_ID not in self.site_watchlist:
+                    self.site_watchlist.update(
+                        {facility_ID: {
+                            'dates': [self.state['t'].current_date],
+                            'site_measured_rates': [site['site_measured_rate']],
+                            'effective_site_rate': site['site_measured_rate']
+                        }})
+                else:
+                    self.site_watchlist[facility_ID]['dates'].append(self.state['t'].current_date)
+                    self.site_watchlist[facility_ID]['site_measured_rates'].append(
+                        site['site_measured_rate'])
+                    if self.config['follow_up']['redundancy_filter'] == 'recent':
+                        self.site_watchlist[facility_ID]['effective_site_rate '] = \
+                            self.site_watchlist[facility_ID]['site_measured_rates'][-1]
+                    elif self.config['follow_up']['redundancy_filter'] == 'max':
+                        self.site_watchlist[facility_ID]['effective_site_rate '] = \
+                            max(self.site_watchlist[facility_ID]['site_measured_rates'])
+                    elif self.config['follow_up']['redundancy_filter'] == 'mean':
+                        self.site_watchlist[facility_ID]['effective_site_rate '] = \
+                            np.average(self.site_watchlist[facility_ID]['site_measured_rates'][-1])
+
+        n_sites_to_flag = len(self.site_watchlist) * \
             self.config['follow_up_ratio']
         n_sites_to_flag = int(math.ceil(n_sites_to_flag))
 
-        sites_to_flag = []
-        measured_rates = []
+        # First, figure out how many sites you're going to choose
+        self.site_watchlist = {k: v for k, v in sorted(
+            self.site_watchlist.items(),
+            key=lambda x: x[1]['effective_site_rate'],
+            reverse=True)}
 
-        for i in self.candidate_flags:
-            measured_rates.append(i['site_measured_rate'])
-        measured_rates.sort(reverse=True)
-        target_rates = measured_rates[: n_sites_to_flag]
+        if self.config['follow_up']['interaction_priority'] == 'proportional':
+            target_sites = [site for site in self.site_watchlist
+                            if site['site_measured_rate']
+                            > self.config['follow_up']['threshold']]
+        else:
+            target_sites = self.site_watchlist
 
-        for i in self.candidate_flags:
-            if i['site_measured_rate'] in target_rates:
-                sites_to_flag.append(i)
-
-        for i in sites_to_flag:
+        for i in target_sites:
             site = i['site']
             leaks_present = i['leaks_present']
             site_true_rate = i['site_true_rate']
             venting = i['venting']
 
             # If the site is already flagged, your flag is redundant
+            # HBD, check to see if rate has changed
             if site['currently_flagged']:
-                self.timeseries['{}_flags_redund1'.format(
+                self.timeseries['{}_flag_redund1'.format(
                     self.name)][self.state['t'].current_timestep] += 1
-
-            elif not site['currently_flagged']:
+            else:
                 # Flag the site for follow up
                 site['currently_flagged'] = True
                 site['date_flagged'] = self.state['t'].current_date
@@ -220,7 +249,7 @@ class BaseCompany:
                 # Would the site have been chosen without venting?
                 if self.parameters['consider_venting']:
                     if (site_true_rate - venting) < self.config['follow_up_thresh']:
-                        self.timeseries['{}_flags_redund3'.format(self.name)][
+                        self.timeseries['{}_flag_wo_vent'.format(self.name)][
                             self.state['t'].current_timestep] += 1
 
     def site_reports(self):

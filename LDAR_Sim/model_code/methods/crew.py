@@ -131,8 +131,8 @@ class BaseCrew:
 
         if self.config['measurement_scale'].lower() == 'component':
             # Remove site from flag pool if component level measurement
-            site['currently_flagged'] = False
-        elif site_detect_results:
+            site.update({'currently_flagged': False})
+        elif site_detect_results['found_leak']:
             # all other sites flag
             self.candidate_flags.append(site_detect_results)
 

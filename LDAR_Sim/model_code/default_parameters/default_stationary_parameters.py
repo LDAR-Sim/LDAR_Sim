@@ -39,8 +39,16 @@ default_stationary_parameters = {
         'per_site': 0,
 
     },
-    'follow_up_thresh': [0, "absolute"],
-    'follow_up_ratio': 1,
+    'follow_up': {
+        'threshold': 0,
+        'threshold_type': 'absolute',   	# 'absolute' or 'relative'
+        'proportion': 1,
+        'interaction_priority': 'threshold',  # 'threshold' or 'proportion'
+        'redundancy_filter': 'recent',			# 'recent' or 'average' or 'max'
+        'delay': 0,  # min. age of oldest candidate flag before flagging
+        'instant_threshold': None,
+        'instant_threshold_type': 'absolute', 	# 'absolute' or 'relative'
+    },
     'time_to_detection': 7,
     'reporting_delay': 2,
     'MDL': 0.01,

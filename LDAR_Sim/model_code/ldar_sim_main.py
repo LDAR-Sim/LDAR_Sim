@@ -184,7 +184,7 @@ if __name__ == '__main__':
                   }])
 
     # The following can be used for debugging outside of the starmap
-    # ldar_sim_run(simulations[0][0])
+    ldar_sim_run(simulations[1][0])
 
     # Perform simulations in parallel
     with mp.Pool(processes=n_processes) as p:

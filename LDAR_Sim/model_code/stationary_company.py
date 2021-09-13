@@ -45,16 +45,16 @@ class stationary_company:
         self.timeseries['fixed_prop_sites_avail'] = []
         self.timeseries['fixed_cost'] = np.zeros(self.parameters['timesteps'])
         self.timeseries['fixed_eff_flags'] = np.zeros(self.parameters['timesteps'])
-        self.timeseries['fixed_flags_redund1'] = np.zeros(self.parameters['timesteps'])
+        self.timeseries['fixed_flag_redund1'] = np.zeros(self.parameters['timesteps'])
         self.timeseries['fixed_flags_redund2'] = np.zeros(self.parameters['timesteps'])
-        self.timeseries['fixed_flags_redund3'] = np.zeros(self.parameters['timesteps'])
+        self.timeseries['fixed_flag_wo_vent'] = np.zeros(self.parameters['timesteps'])
 
         # Assign the correct follow-up threshold
-        if self.config['follow_up_thresh'][1] == "absolute":
-            self.config['follow_up_thresh'] = self.config['follow_up_thresh'][0]
-        elif self.config['follow_up_thresh'][1] == "proportion":
+        if self.config['follow_up']['threshold_type'] == "absolute":
+            self.config['follow_up_thresh'] = self.config['follow_up']['threshold']
+        elif self.config['follow_up']['threshold_type'] == "proportion":
             self.config['follow_up_thresh'] = get_prop_rate(
-                self.config['follow_up_thresh'][0],
+                self.config['follow_up']['proportion'],
                 self.state['empirical_leaks'])
         else:
             print('Follow-up threshold type not recognized. Must be "absolute" or "proportion".')
@@ -139,7 +139,7 @@ class stationary_company:
 
             # If the site is already flagged, your flag is redundant
             if site['currently_flagged']:
-                self.timeseries['fixed_flags_redund1'][self.state['t'].current_timestep] += 1
+                self.timeseries['fixed_flag_redund1'][self.state['t'].current_timestep] += 1
 
             elif not site['currently_flagged']:
                 # Flag the site for follow up
@@ -160,7 +160,7 @@ class stationary_company:
                 # Would the site have been chosen without venting?
                 if self.parameters['consider_venting']:
                     if (site_cum_rate - venting) < self.config['follow_up_thresh']:
-                        self.timeseries['fixed_flags_redund3'][
+                        self.timeseries['fixed_flag_wo_vent'][
                             self.state['t'].current_timestep] += 1
 
     def site_reports(self):
