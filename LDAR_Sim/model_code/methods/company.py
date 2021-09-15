@@ -71,9 +71,9 @@ class BaseCompany:
             # Assign the correct follow-up threshold
 
             if self.config['follow_up']['threshold_type'] == "absolute":
-                self.config['follow_up_thresh'] = self.config['follow_up']['threshold']
+                self.config['follow_up']['thresh'] = self.config['follow_up']['threshold']
             elif self.config['follow_up']['threshold_type'] == "proportion":
-                self.config['follow_up_thresh'] = get_prop_rate(
+                self.config['follow_up']['thresh'] = get_prop_rate(
                     self.config['follow_up']['proportion'],
                     self.state['empirical_leaks'])
             else:
@@ -173,84 +173,113 @@ class BaseCompany:
         Flag the most important sites for follow-up.
 
         """
-
+        site_wl = self.site_watchlist
+        # Go through Each Candidate site, and add it to the watchlist
         for site in self.candidate_flags:
             facility_ID = site['site']['facility_ID']
-            if (self.config['follow_up']['interaction_priority'] == 'threshold'
-                    and site['site_measured_rate'] > self.config['follow_up']['threshold']) \
-                    or self.config['follow_up']['interaction_priority'] != 'threshold':
-                if facility_ID not in self.site_watchlist:
-                    self.site_watchlist.update(
-                        {facility_ID: {
-                            'dates': [self.state['t'].current_date],
-                            'site_measured_rates': [site['site_measured_rate']],
-                            'effective_site_rate': site['site_measured_rate']
-                        }})
-                else:
-                    self.site_watchlist[facility_ID]['dates'].append(self.state['t'].current_date)
-                    self.site_watchlist[facility_ID]['site_measured_rates'].append(
-                        site['site_measured_rate'])
-                    if self.config['follow_up']['redundancy_filter'] == 'recent':
-                        self.site_watchlist[facility_ID]['effective_site_rate '] = \
-                            self.site_watchlist[facility_ID]['site_measured_rates'][-1]
-                    elif self.config['follow_up']['redundancy_filter'] == 'max':
-                        self.site_watchlist[facility_ID]['effective_site_rate '] = \
-                            max(self.site_watchlist[facility_ID]['site_measured_rates'])
-                    elif self.config['follow_up']['redundancy_filter'] == 'mean':
-                        self.site_watchlist[facility_ID]['effective_site_rate '] = \
-                            np.average(self.site_watchlist[facility_ID]['site_measured_rates'][-1])
+            if facility_ID not in site_wl:
+                site_wl.update(
+                    {facility_ID: {
+                        'site': site['site'],
+                        'dates': [self.state['t'].current_date],
+                        'measured_emis_rates': [site['site_measured_rate']],
+                        'measured_vent_rates': [site['venting']],
+                        'effective_emis_rate': site['site_measured_rate'],
+                        'effective_vent_rate': site['venting']
+                    }})
+            else:
+                site_wl[facility_ID]['dates'].append(self.state['t'].current_date)
+                site_wl[facility_ID]['measured_emis_rates'].append(site['site_measured_rate'])
+                site_wl[facility_ID]['measured_vent_rates'].append(site['venting'])
+                # Calculate effective emissions and vent rates
+                site_wl[facility_ID]['effective_leak_rate'] = self.get_effective_rate(
+                    site_wl[facility_ID]['measured_emis_rates'],
+                    self.config['follow_up']['redundancy_filter']
+                )
+                site_wl[facility_ID]['effective_vent_rate'] = self.get_effective_rate(
+                    site_wl[facility_ID]['measured_vent_rates'],
+                    self.config['follow_up']['redundancy_filter']
+                )
 
-        n_sites_to_flag = len(self.site_watchlist) * \
-            self.config['follow_up_ratio']
-        n_sites_to_flag = int(math.ceil(n_sites_to_flag))
+        # Sort Watch list
+        site_wl = {k: v for k, v in sorted(
+            site_wl.items(),
+            key=lambda x: x[1]['effective_emis_rate'],
+            reverse=True)
+        }
 
-        # First, figure out how many sites you're going to choose
-        self.site_watchlist = {k: v for k, v in sorted(
-            self.site_watchlist.items(),
-            key=lambda x: x[1]['effective_site_rate'],
-            reverse=True)}
+        # Get instant follow-up sites and initialize target follow-up sites based on follow_up
+        # duration
+        IFU_sites = []
+        if self.config['follow_up']['instant_threshold']:
+            target_sites = []
+            for sdx, site in site_wl.items():
+                if site['effective_emis_rate'] > self.config['follow_up']['instant_threshold']:
+                    IFU_sites.append(site)
+                elif len(site['measured_emis_rates']) > self.config['follow_up']['delay']:
+                    target_sites.append(site)
+        else:
+            target_sites = [site for sdx, site in site_wl.items()
+                            if len(site['measured_emis_rates'])
+                            > self.config['follow_up']['delay']]
 
-        if self.config['follow_up']['interaction_priority'] == 'proportional':
-            target_sites = [site for site in self.site_watchlist
-                            if site['site_measured_rate']
+        # --- Get portion of sites and threshold filtered sited ---
+        if self.config['follow_up']['interaction_priority'] == 'proportion':
+            n_sites_to_flag = len(target_sites) * self.config['follow_up']['proportion']
+            n_sites_to_flag = int(math.ceil(n_sites_to_flag))
+            target_sites = [site for site in target_sites[:n_sites_to_flag]
+                            if site['effective_emis_rate']
                             > self.config['follow_up']['threshold']]
         else:
-            target_sites = self.site_watchlist
+            target_sites = [site for site in target_sites
+                            if site['effective_emis_rate'] > self.config['follow_up']['threshold']]
+            n_sites_to_flag = len(target_sites) * self.config['follow_up']['proportion']
+            n_sites_to_flag = int(math.ceil(n_sites_to_flag))
+            target_sites = target_sites[:n_sites_to_flag]
 
-        for i in target_sites:
-            site = i['site']
-            leaks_present = i['leaks_present']
-            site_true_rate = i['site_true_rate']
-            venting = i['venting']
+        # Move IFU Sites to front of queue
+        target_sites = IFU_sites + target_sites
+        for targ_site in target_sites:
+            site_obj = targ_site['site']
+            site_true_rate = targ_site['effective_emis_rate']
+            venting = targ_site['effective_vent_rate']
+            site_wl.pop(site_obj['facility_ID'])
 
             # If the site is already flagged, your flag is redundant
-            # HBD, check to see if rate has changed
-            if site['currently_flagged']:
+            if site_obj['currently_flagged']:
                 self.timeseries['{}_flag_redund1'.format(
                     self.name)][self.state['t'].current_timestep] += 1
             else:
                 # Flag the site for follow up
-                site['currently_flagged'] = True
-                site['date_flagged'] = self.state['t'].current_date
-                site['flagged_by'] = self.config['label']
+                site_obj['currently_flagged'] = True
+                site_obj['date_flagged'] = self.state['t'].current_date
+                site_obj['flagged_by'] = self.config['label']
                 self.timeseries['{}_eff_flags'.format(
                     self.name)][self.state['t'].current_timestep] += 1
 
-                # Does the chosen site already have tagged leaks?
-                redund2 = False
-                for leak in leaks_present:
-                    if leak['date_tagged'] is not None:
-                        redund2 = True
+                # # Does the chosen site already have tagged leaks?
+                # redund2 = False
+                # for leak in site_obj['leaks_present']:
+                #     if leak['date_tagged'] is not None:
+                #         redund2 = True
 
-                if redund2:
-                    self.timeseries['{}_flags_redund2'.format(
-                        self.name)][self.state['t'].current_timestep] += 1
+                # if redund2:
+                #     self.timeseries['{}_flags_redund2'.format(
+                #         self.name)][self.state['t'].current_timestep] += 1
 
                 # Would the site have been chosen without venting?
                 if self.parameters['consider_venting']:
-                    if (site_true_rate - venting) < self.config['follow_up_thresh']:
+                    if (site_true_rate - venting) < self.config['follow_up']['thresh']:
                         self.timeseries['{}_flag_wo_vent'.format(self.name)][
                             self.state['t'].current_timestep] += 1
+
+    def get_effective_rate(self, list, filter):
+        if filter == 'recent':
+            return list[-1]
+        elif filter == 'max':
+            return max(list)
+        elif filter == 'mean':
+            return np.average(list)
 
     def site_reports(self):
         """

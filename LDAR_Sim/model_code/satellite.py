@@ -288,7 +288,7 @@ class satellite:
 
             # quantify emissions
             QE = self.quantify(site_cum_rate)
-            if QE > self.config['follow_up_thresh']:
+            if QE > self.config['follow_up']['thresh']:
                 flag_site = True
             else:
                 flag_site = False

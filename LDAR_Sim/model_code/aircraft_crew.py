@@ -169,7 +169,7 @@ class aircraft_crew:
                     site_measured_rate += equip_measured_rate
 
         # If source is above follow-up threshold
-        if site_measured_rate > self.config['follow_up_thresh']:
+        if site_measured_rate > self.config['follow_up']['thresh']:
             # Put all necessary information in a dictionary to be assessed at end of day
             site_dict = {
                 'site': site,

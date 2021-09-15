@@ -51,9 +51,9 @@ class stationary_company:
 
         # Assign the correct follow-up threshold
         if self.config['follow_up']['threshold_type'] == "absolute":
-            self.config['follow_up_thresh'] = self.config['follow_up']['threshold']
+            self.config['follow_up']['thresh'] = self.config['follow_up']['threshold']
         elif self.config['follow_up']['threshold_type'] == "proportion":
-            self.config['follow_up_thresh'] = get_prop_rate(
+            self.config['follow_up']['thresh'] = get_prop_rate(
                 self.config['follow_up']['proportion'],
                 self.state['empirical_leaks'])
         else:
@@ -116,7 +116,7 @@ class stationary_company:
 
         """
         # First, figure out how many sites you're going to choose
-        n_sites_to_flag = len(self.candidate_flags) * self.config['follow_up_ratio']
+        n_sites_to_flag = len(self.candidate_flags) * self.config['follow_up']['proportion']
         n_sites_to_flag = int(math.ceil(n_sites_to_flag))
 
         sites_to_flag = []
@@ -159,7 +159,7 @@ class stationary_company:
 
                 # Would the site have been chosen without venting?
                 if self.parameters['consider_venting']:
-                    if (site_cum_rate - venting) < self.config['follow_up_thresh']:
+                    if (site_cum_rate - venting) < self.config['follow_up']['thresh']:
                         self.timeseries['fixed_flag_wo_vent'][
                             self.state['t'].current_timestep] += 1
 
