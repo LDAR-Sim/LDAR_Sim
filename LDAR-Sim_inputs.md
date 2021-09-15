@@ -38,25 +38,25 @@ By detailing the model inputs, this report creates the technical foundation for 
 The software is organized in the following structure:
 
   * Root
-    * inputs_template
+    * inputs
     * install
     * outputs
     * module_code
-    * sample_simulations
+    * simulations
   
   * LDAR-Sim_inputs.md
   * LICENSE.txt
   * README.md
 
-The **Root** folder includes all code, inputs, and outputs necessary to running LDAR-Sim. From a software perspective, the root folder is the parent to the module_code folder (folder containing LDAR_sim_main). This folder will be always be the root folder when making relative references in LDAR-Sim. For example, if input_directory is specified as *./inputs_template* from anywhere in the code, the targeted folder will be *{absolute_path_to} / Root / inputs_template*.
+The **Root** folder includes all code, inputs, and outputs necessary to running LDAR-Sim. From a software perspective, the root folder is the parent to the module_code folder (folder containing LDAR_sim_main). This folder will be always be the root folder when making relative references in LDAR-Sim. For example, if input_directory is specified as *./inputs* from anywhere in the code, the targeted folder will be *{absolute_path_to} / Root / inputs*.
 
-The **inputs_template** folder contains input files required to run LDAR-SIM. These include Airport files, empirical leak and vent data, facility lists, subtype distributions, and legacy program input parameter files (<V2.0). 
+The **inputs** folder contains input files required to run LDAR-SIM. These include Airport files, empirical leak and vent data, facility lists, subtype distributions, and legacy program input parameter files (<V2.0). 
 
 The **outputs** folder stores all output data files produced by LDAR-SIM. The folder is cleaned, and added if required each time ldar_sim_main is run.
 
 The **module_code** folder stores the python source code. The main code of LDAR_SIM, LDAR_sim_main.py is stored in the base folder of module_code.
 
-The **sample_simulations** stores >V2 input parameter files. -- This is currently in development and may be changed before V2 release--. 
+The **simulations** stores >V2 input parameter files. -- This is currently in development and may be changed before V2 release--. 
 
 ---
 
@@ -70,13 +70,13 @@ python ldar_sim_main.py parameter_file1.txt parameter_file2.txt
 Alternatively, a single folder name (absolute or relative to root) can be passed by flagged argument *-P* or  *--in_dir*. All json or yaml files within that folder will be added as parameter_files. For example the following will use all parameter files within the sample simulation folder:
 
 ```buildoutcfg
-python ldar_sim_main.py --in_dir ./sample_simulations
+python ldar_sim_main.py --in_dir ./simulations
 ```
 
 
 Alternatively, one can directly specify the parameters in `ldar_sim_main.py`; however, this is discouraged as it involves changing the model to run different programs and will be depreciated.
 
-We recommend running the model with a working directory set to /LDAR_Sim/model_code.
+We recommend running the model with a working directory set to /LDAR_Sim/src.
 
 ## Parameter File Structure
 
@@ -107,7 +107,7 @@ We recommend supplying LDAR-Sim with a full set of parameters, copied from the d
 However, it may be more convenient once you are familiar with how parameter files update each other to use multiple parameter files to create your simulations and rely upon the default parameters.
 
 All simulations using multiple parameter files are created the following way:
-1. default parameters in the `inputs_template` folder are read into the model.
+1. default parameters in the `inputs` folder are read into the model.
 2. each parameter file is read on top of the respective parameter set, updating only the keys that are supplied. 
 
 Parameter files are read on top of each other, starting with the default set of parameters. How does this work? Here is an example `parameter_file1.txt`:
@@ -331,7 +331,7 @@ If you are developing for LDAR-Sim, please adhere to the following rules:
 
 **Data type:** String
 
-**Default input:** "./inputs_template"
+**Default input:** "./inputs"
 
 **Description:** Specify location containing input files, ie infrastructure and weather. Can be an absolute path, or relative path to the root folder.
 

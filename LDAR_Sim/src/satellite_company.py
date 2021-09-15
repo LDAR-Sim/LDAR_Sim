@@ -48,7 +48,7 @@ class satellite_company:
             self.parameters['timesteps'])
         self.timeseries['satellite_eff_flags'] = np.zeros(
             self.parameters['timesteps'])
-        self.timeseries['satellite_flag_redund1'] = np.zeros(
+        self.timeseries['satellite_flags_redund1'] = np.zeros(
             self.parameters['timesteps'])
         self.timeseries['satellite_flags_redund2'] = np.zeros(
             self.parameters['timesteps'])
@@ -154,7 +154,7 @@ class satellite_company:
 
             # If the site is already flagged, your flag is redundant
             if site['currently_flagged']:
-                self.timeseries['satellite_flag_redund1'][self.state['t'].current_timestep] += 1
+                self.timeseries['satellite_flags_redund1'][self.state['t'].current_timestep] += 1
 
             elif not site['currently_flagged']:
                 # Flag the site for follow up

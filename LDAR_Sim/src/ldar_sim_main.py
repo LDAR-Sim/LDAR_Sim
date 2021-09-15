@@ -91,7 +91,7 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------
         # -----------------------------Global parameters--------------------------------
 
-        input_directory = root_dir / "inputs_template"
+        input_directory = root_dir / "inputs"
         output_directory = root_dir / "outputs"
         # Programs to compare; Position one should be the reference program (P_ref)
         program_list = ['P_ref', 'P_base']

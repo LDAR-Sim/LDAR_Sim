@@ -1,7 +1,7 @@
 # ------------------------------------------------------------------------------
-# Program:     ERA_concat (standalone)
-# File:        ERA_concat.py
-# Purpose:     Concatenate timeseries from ERA5 netcdf files
+# Program:     The LDAR Simulator (LDAR-Sim)
+# File:        default_global_parameters
+# Purpose:     Default global parameters
 #
 # Copyright (C) 2018-2021  Intelligent Methane Monitoring and Management System (IM3S) Group
 #
@@ -19,23 +19,21 @@
 #
 # ------------------------------------------------------------------------------
 
-
-import os
-import xarray
-from pathlib import Path
-
-'''
-Concatenate two weather netcdf files on the time column. Keep Lat Long coordinates the same
-'''
-
-# Inputs
-folder = 'inputs_template'
-f1 = "ERA5_2017_2018_AB.nc"
-f2 = "ERA5_2019_2020_AB.nc"
-output = "ERA5_2017_2020_AB.nc"
-
-
-root_dir = Path(os.path.dirname(os.path.realpath(__file__))).parent.parent
-os.chdir(root_dir/folder)
-ds = xarray.open_mfdataset([f1, f2], combine='by_coords', concat_dim="time", decode_times=False)
-ds.to_netcdf(output)
+default_global_parameters = {
+    'version': '2.0',
+    'parameter_level': 'global',
+    'input_directory': './inputs',
+    'output_directory': './outputs',
+    'n_processes':  None,
+    'print_from_simulations': True,
+    'n_simulations': 2,
+    'write_data': True,
+    'make_plots': True,
+    'make_maps': True,
+    'print_from_simulations': True,
+    'programs': [],
+    'start_date': [2017, 1, 1],
+    'end_date': [2019, 12, 31],
+    'reference_program': 'P_ref',
+    'pregenerate_leaks': False,
+}
