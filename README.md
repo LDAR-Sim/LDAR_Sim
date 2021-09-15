@@ -45,7 +45,7 @@ Read [Fox et al 2020](https://www.sciencedirect.com/science/article/pii/S0959652
 
 #### Step 2: Libraries and data
 Install python 3.x. and ensure all required python modules/packages/libraries are available, as listed in the Pipfile.
-The easiest way to prepare your python installation is to use [pipenv](https://pipenv.pypa.io/en/latest/) to manage a virtual environment that has the required packages. Navigate to the model_code directory and type: 
+The easiest way to prepare your python installation is to use [pipenv](https://pipenv.pypa.io/en/latest/) to manage a virtual environment that has the required packages. Navigate to the src directory and type: 
 
 `pipenv install`
 
@@ -58,7 +58,7 @@ An alternative approach to using the PIPfile and the prebuilt wheels is by using
 #### Step 3: Reproduce OGI simulations
 The ldar_sim_main file is currently configured for the OGI comparison case study presented in Fox et al 2020. Four different OGI-based LDAR programs are parameterized, which differ only according to weather and labour constraints.
 
-Run ldar_sim_main.py and include reference to all input files (see LDAR-SIm_inputs.md for more details). Note that relative references can be used (ie ./inputs/file.txt), and are relative to the root directory, which is the parent to the folder containing ldar_sim_map.py i.e. root/module_code/ldar_sim_main.py - If you are running LDAR-Sim for the first time, the weather data needs to be downloaded from our cloud data storage. Downloading the weather data requires credentials, and if you are planning to run the LDAR-Sim, please contact us for the required credentials. Also, you need to create **TWO** user variables in your system Environment Variables. For the first variable, please write **AWS_KEY** as the variable name and the provided ACCESS-Password as the variable value. For the second variable, please write **AWS_SEC** as the variable name and your provided SECRET-Password as the variable value. If all input files and program files are in inputs_template, or folder specified as input parameter, no other changes should be required to run the OGI scenarios from the case study. 
+Run ldar_sim_main.py and include reference to all input files (see LDAR-SIm_inputs.md for more details). Note that relative references can be used (ie ./inputs/file.txt), and are relative to the root directory, which is the parent to the folder containing ldar_sim_map.py i.e. root/module_code/ldar_sim_main.py - If you are running LDAR-Sim for the first time, the weather data needs to be downloaded from our cloud data storage. Downloading the weather data requires credentials, and if you are planning to run the LDAR-Sim, please contact us for the required credentials. Also, you need to create **TWO** user variables in your system Environment Variables. For the first variable, please write **AWS_KEY** as the variable name and the provided ACCESS-Password as the variable value. For the second variable, please write **AWS_SEC** as the variable name and your provided SECRET-Password as the variable value. If all input files and program files are in inputs, or folder specified as input parameter, no other changes should be required to run the OGI scenarios from the case study. 
 
 Alternatively, ERA5 data can be downloaded directly from copernicus using the /module_code/weather/ERA5_downloader.py module (see file for instructions). Note the output data is in hourly format, therefore the flag weather_is_hourly should be set to True. Multiple ERA nc files can be concatinated with ERA5_concat.py. 
 

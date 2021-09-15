@@ -64,7 +64,7 @@ class BaseCompany:
             self.timeseries['{}_redund_tags'.format(self.name)] = np.zeros(n_ts)
         else:
             self.timeseries['{}_eff_flags'.format(self.name)] = np.zeros(n_ts)
-            self.timeseries['{}_flag_redund1'.format(self.name)] = np.zeros(n_ts)
+            self.timeseries['{}_flags_redund1'.format(self.name)] = np.zeros(n_ts)
             self.timeseries['{}_flags_redund2'.format(self.name)] = np.zeros(n_ts)
             self.timeseries['{}_flag_wo_vent'.format(self.name)] = np.zeros(n_ts)
 
@@ -175,6 +175,7 @@ class BaseCompany:
         """
         site_wl = self.site_watchlist
         # Go through Each Candidate site, and add it to the watchlist
+        # A watchlist keeps track of sites with leaks that have not yet been flagged
         for site in self.candidate_flags:
             facility_ID = site['site']['facility_ID']
             if facility_ID not in site_wl:
@@ -192,24 +193,23 @@ class BaseCompany:
                 site_wl[facility_ID]['measured_emis_rates'].append(site['site_measured_rate'])
                 site_wl[facility_ID]['measured_vent_rates'].append(site['venting'])
                 # Calculate effective emissions and vent rates
-                site_wl[facility_ID]['effective_leak_rate'] = self.get_effective_rate(
+                site_wl[facility_ID]['effective_leak_rate'] = self.aggregate_by(
                     site_wl[facility_ID]['measured_emis_rates'],
                     self.config['follow_up']['redundancy_filter']
                 )
-                site_wl[facility_ID]['effective_vent_rate'] = self.get_effective_rate(
+                site_wl[facility_ID]['effective_vent_rate'] = self.aggregate_by(
                     site_wl[facility_ID]['measured_vent_rates'],
                     self.config['follow_up']['redundancy_filter']
                 )
 
-        # Sort Watch list
+        # Sort Watchlist by emissions rate
         site_wl = {k: v for k, v in sorted(
             site_wl.items(),
             key=lambda x: x[1]['effective_emis_rate'],
             reverse=True)
         }
 
-        # Get instant follow-up sites and initialize target follow-up sites based on follow_up
-        # duration
+        # Get instant follow-up sites and init follow-up sites based on follow_up delay
         IFU_sites = []
         if self.config['follow_up']['instant_threshold']:
             target_sites = []
@@ -223,7 +223,7 @@ class BaseCompany:
                             if len(site['measured_emis_rates'])
                             > self.config['follow_up']['delay']]
 
-        # --- Get portion of sites and threshold filtered sited ---
+        # Get portion of sites and threshold filtered sited
         if self.config['follow_up']['interaction_priority'] == 'proportion':
             n_sites_to_flag = len(target_sites) * self.config['follow_up']['proportion']
             n_sites_to_flag = int(math.ceil(n_sites_to_flag))
@@ -239,6 +239,8 @@ class BaseCompany:
 
         # Move IFU Sites to front of queue
         target_sites = IFU_sites + target_sites
+
+        # Go through all targeted sites and flag them or add them to redundant lists
         for targ_site in target_sites:
             site_obj = targ_site['site']
             site_true_rate = targ_site['effective_emis_rate']
@@ -247,7 +249,7 @@ class BaseCompany:
 
             # If the site is already flagged, your flag is redundant
             if site_obj['currently_flagged']:
-                self.timeseries['{}_flag_redund1'.format(
+                self.timeseries['{}_flags_redund1'.format(
                     self.name)][self.state['t'].current_timestep] += 1
             else:
                 # Flag the site for follow up
@@ -257,12 +259,14 @@ class BaseCompany:
                 self.timeseries['{}_eff_flags'.format(
                     self.name)][self.state['t'].current_timestep] += 1
 
+                # Redand2 is hard to keep track of with multiple sets of serveys
+                # Disable for now
+
                 # # Does the chosen site already have tagged leaks?
                 # redund2 = False
                 # for leak in site_obj['leaks_present']:
                 #     if leak['date_tagged'] is not None:
                 #         redund2 = True
-
                 # if redund2:
                 #     self.timeseries['{}_flags_redund2'.format(
                 #         self.name)][self.state['t'].current_timestep] += 1
@@ -273,7 +277,12 @@ class BaseCompany:
                         self.timeseries['{}_flag_wo_vent'.format(self.name)][
                             self.state['t'].current_timestep] += 1
 
-    def get_effective_rate(self, list, filter):
+    def aggregate_by(self, list, filter):
+        '''
+        Gets the affective aggregated value from a list based on an input filter
+        Values of the filter can be 'recent', 'max', or 'mean'
+
+        '''
         if filter == 'recent':
             return list[-1]
         elif filter == 'max':

@@ -45,7 +45,7 @@ class stationary_company:
         self.timeseries['fixed_prop_sites_avail'] = []
         self.timeseries['fixed_cost'] = np.zeros(self.parameters['timesteps'])
         self.timeseries['fixed_eff_flags'] = np.zeros(self.parameters['timesteps'])
-        self.timeseries['fixed_flag_redund1'] = np.zeros(self.parameters['timesteps'])
+        self.timeseries['fixed_flags_redund1'] = np.zeros(self.parameters['timesteps'])
         self.timeseries['fixed_flags_redund2'] = np.zeros(self.parameters['timesteps'])
         self.timeseries['fixed_flag_wo_vent'] = np.zeros(self.parameters['timesteps'])
 
@@ -139,7 +139,7 @@ class stationary_company:
 
             # If the site is already flagged, your flag is redundant
             if site['currently_flagged']:
-                self.timeseries['fixed_flag_redund1'][self.state['t'].current_timestep] += 1
+                self.timeseries['fixed_flags_redund1'][self.state['t'].current_timestep] += 1
 
             elif not site['currently_flagged']:
                 # Flag the site for follow up

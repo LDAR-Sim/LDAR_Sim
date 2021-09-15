@@ -49,7 +49,7 @@ https://confluence.ecmwf.int/display/COPSRV/CDS+web+API+%28cdsapi%29+training
 '''
 
 # Input
-facil_file = "./inputs_template/facility_list_template.csv"
+facil_file = "./inputs/facility_list_template.csv"
 root_dir = Path(os.path.dirname(os.path.realpath(__file__))).parent.parent
 facilities = pd.read_csv(root_dir/facil_file)
 
