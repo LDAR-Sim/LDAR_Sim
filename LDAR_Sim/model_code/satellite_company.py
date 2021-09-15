@@ -59,9 +59,9 @@ class satellite_company:
 
         # Assign the correct follow-up threshold
         if self.config['follow_up']['threshold_type'] == "absolute":
-            self.config['follow_up_thresh'] = self.config['follow_up']['threshold']
+            self.config['follow_up']['thresh'] = self.config['follow_up']['threshold']
         elif self.config['follow_up']['threshold_type'] == "proportion":
-            self.config['follow_up_thresh'] = get_prop_rate(
+            self.config['follow_up']['thresh'] = get_prop_rate(
                 self.config['follow_up']['proportion'],
                 self.state['empirical_leaks'])
         else:
@@ -175,7 +175,7 @@ class satellite_company:
 
                 # Would the site have been chosen without venting?
                 if self.parameters['consider_venting']:
-                    if (site_true_rate - venting) < self.config['follow_up_thresh']:
+                    if (site_true_rate - venting) < self.config['follow_up']['thresh']:
                         self.timeseries['satellite_flag_wo_vent'][
                             self.state['t'].current_timestep] += 1
 

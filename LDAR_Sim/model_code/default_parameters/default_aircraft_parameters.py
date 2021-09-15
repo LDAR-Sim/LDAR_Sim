@@ -45,13 +45,10 @@ default_aircraft_parameters = {
         'proportion': 1,
         'interaction_priority': 'threshold',  # 'threshold' or 'proportion'
         'redundancy_filter': 'recent',			# 'recent' or 'average' or 'max'
-        'delay': 0,  # min. age of oldest candidate flag before flagging
-        'instant_threshold': None,
+        'delay': 2,  # min. age of oldest candidate flag before flagging
+        'instant_threshold': 0.5,
         'instant_threshold_type': 'absolute', 	# 'absolute' or 'relative'
     },
-
-    'follow_up_thresh': [0, "absolute"],
-    'follow_up_ratio': 1,
     't_bw_sites': 10,
     'reporting_delay': 2,
     'MDL': 0.01,

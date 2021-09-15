@@ -52,7 +52,7 @@ def detect_emissions(self, site, leaks_present, equipment_rates, site_true_rate,
         site_measured_rate = site_true_rate * (1 - sigma)
 
         # If source is above follow-up threshold
-        if site_measured_rate > self.config['follow_up_thresh']:
+        if site_measured_rate > self.config['follow_up']['thresh']:
             # Put all necessary information in a dictionary to
             # be assessed at end of day
             site_dict = {

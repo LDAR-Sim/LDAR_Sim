@@ -83,7 +83,7 @@ class stationary_crew:
                 measured_rate = site_cum_rate/denom
 
             # If source is above follow-up threshold
-            if measured_rate > self.config['follow_up_thresh']:
+            if measured_rate > self.config['follow_up']['thresh']:
                 # Put all necessary information in a dictionary to be assessed at end of day
                 site_dict = {
                     'site': self.site,
