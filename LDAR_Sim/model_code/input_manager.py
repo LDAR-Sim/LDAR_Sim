@@ -29,6 +29,7 @@ from utils.check_parameter_types import check_types
 from default_parameters.default_global_parameters import default_global_parameters
 from default_parameters.default_program_parameters import default_program_parameters
 from default_parameters.default_aircraft_parameters import default_aircraft_parameters
+from default_parameters.default_operator_parameters import default_operator_parameters
 from default_parameters.default_OGI_parameters import default_OGI_parameters
 from default_parameters.default_OGI_FU_parameters import default_OGI_FU_parameters
 from default_parameters.default_satellite_parameters import default_satellite_parameters
@@ -48,6 +49,7 @@ class InputManager:
             'aircraft': copy.deepcopy(default_aircraft_parameters),
             'OGI': copy.deepcopy(default_OGI_parameters),
             'OGI_FU': copy.deepcopy(default_OGI_FU_parameters),
+            'operator': copy.deepcopy(default_operator_parameters),
             'satellite': copy.deepcopy(default_satellite_parameters),
             'truck': copy.deepcopy(default_truck_parameters),
             'stationary': copy.deepcopy(default_stationary_parameters),

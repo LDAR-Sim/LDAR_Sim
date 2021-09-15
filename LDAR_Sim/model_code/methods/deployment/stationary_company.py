@@ -40,9 +40,13 @@ def make_crews(crews, config, state, parameters, timeseries, deployment_days):
     m_name = config['label']
     for site in state['sites']:
         if config['measurement_scale'] == "equipment":  # This may change in the future
-            n_fixed = int(site['fixed_sensors'])
+            # n_fixed = int(site['fixed_sensors'])
+            pass
         else:
-            n_fixed = int(site['fixed_sensors'])
+            pass
+            # n_fixed = int(site['fixed_sensors'])
+        # HBD right now this can only handle one crew per site
+        n_fixed = 1
         for i in range(n_fixed):
             crew_ID = site['facility_ID'] + '-' + str(i + 1)
             # Will only accept the first crew assigned to site
@@ -57,6 +61,7 @@ def make_crews(crews, config, state, parameters, timeseries, deployment_days):
                     timeseries,
                     deployment_days,
                     id=crew_ID,
+                    site=site
                 ))
             timeseries['{}_cost'.format(m_name)][state['t'].current_timestep] += \
                 config['cost']['upfront']
@@ -106,4 +111,4 @@ class Schedule(BaseSchedCompany):
 
         --- Required in module.company.BaseCompany ---
         """
-        return [s for s in site_pool if s['crew_ID'] == crews[crew_idx].id]
+        return [crews[crew_idx].site]
