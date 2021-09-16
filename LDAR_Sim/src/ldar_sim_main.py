@@ -28,6 +28,7 @@ import datetime
 import multiprocessing as mp
 
 from initialization.sites import generate_sites, regenerate_sites
+from initialization.preseed import generate_preseeds
 from generic_functions import check_ERA5_file
 from input_manager import InputManager
 from pathlib import Path
@@ -84,6 +85,7 @@ if __name__ == '__main__':
         write_data = simulation_parameters['write_data']
         start_date = simulation_parameters['start_date']
         pregen_leaks = simulation_parameters['pregenerate_leaks']
+        preseed_random = simulation_parameters['preseed_random']
 
     else:
         print('LDAR-Sim using parameters coded into ldar_sim_main.py')
@@ -147,6 +149,11 @@ if __name__ == '__main__':
                 sites, leak_timeseries, initial_leaks = generate_sites(programs[0], input_directory)
         else:
             sites, leak_timeseries, initial_leaks = [], [], []
+        if preseed_random:
+            seed_timeseries = generate_preseeds(simulation_parameters)
+        else:
+            seed_timeseries = None
+
         for j in range(len(programs)):
             if pregen_leaks:
                 file_loc = generator_folder / "pregen_{}_{}.p".format(i, j)
@@ -156,13 +163,14 @@ if __name__ == '__main__':
                     sites = generated_data['sites']
                     leak_timeseries = generated_data['leak_timeseries']
                     initial_leaks = generated_data['initial_leaks']
+                    seed_timeseries = generated_data['seed_timeseries']
                 else:
                     # Different programs can have different site level parameters ie survey
                     # frequency,so re-evaluate selected sites with new parameters
                     sites = regenerate_sites(programs[j], sites, input_directory)
                     pickle.dump({
                         'sites': sites, 'leak_timeseries': leak_timeseries,
-                        'initial_leaks': initial_leaks},
+                        'initial_leaks': initial_leaks, 'seed_timeseries': seed_timeseries},
                         open(file_loc, "wb"))
             else:
                 sites = []
@@ -181,11 +189,14 @@ if __name__ == '__main__':
                   'sites': sites,
                   'leak_timeseries': leak_timeseries,
                   'initial_leaks': initial_leaks,
+                  'seed_timeseries': seed_timeseries,
                   }])
 
     # The following can be used for debugging outside of the starmap
     # ldar_sim_run(simulations[1][0])
-
+    trg_sim_idx = next((index for (index, d) in enumerate(simulations)
+                       if d[0]['program']['program_name'] == "P_air"), None)
+    # ldar_sim_run(simulations[trg_sim_idx][0])
     # Perform simulations in parallel
     with mp.Pool(processes=n_processes) as p:
         res = p.starmap(ldar_sim_run, simulations)
