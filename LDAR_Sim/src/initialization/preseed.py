@@ -1,7 +1,7 @@
 # ------------------------------------------------------------------------------
 # Program:     The LDAR Simulator (LDAR-Sim)
-# File:        default_global_parameters
-# Purpose:     Default global parameters
+# File:        LDAR-Sim initialization.leaks
+# Purpose:     Generate Leaks, Generate initial leaks and leak timeseries
 #
 # Copyright (C) 2018-2021  Intelligent Methane Monitoring and Management System (IM3S) Group
 #
@@ -19,22 +19,12 @@
 #
 # ------------------------------------------------------------------------------
 
-default_global_parameters = {
-    'version': '2.0',
-    'parameter_level': 'global',
-    'input_directory': './inputs',
-    'output_directory': './outputs',
-    'n_processes':  None,
-    'print_from_simulations': True,
-    'n_simulations': 2,
-    'write_data': True,
-    'make_plots': True,
-    'make_maps': True,
-    'print_from_simulations': True,
-    'programs': [],
-    'start_date': [2017, 1, 1],
-    'end_date': [2019, 12, 31],
-    'reference_program': 'P_ref',
-    'pregenerate_leaks': False,
-    'preseed_random': True,
-}
+import random
+from datetime import datetime, timedelta
+from utils.distributions import leak_rvs
+
+
+def generate_preseeds(params):
+    start_date = datetime(*params['start_date'])
+    n_timesteps = (datetime(*params['end_date'])-start_date).days
+    return [random.randrange(1, 50, 1) for i in range(n_timesteps)]

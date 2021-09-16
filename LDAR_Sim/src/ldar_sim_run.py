@@ -23,6 +23,8 @@ import sys
 import gc
 import copy
 
+from numpy import random as np_rand
+import random as rand
 from weather.weather_lookup import WeatherLookup as WL
 from weather.weather_lookup_hourly import WeatherLookup as WL_h
 from ldar_sim import LdarSim
@@ -44,6 +46,7 @@ def ldar_sim_run(simulation):
     parameters['pregenerate_leaks'] = simulation['pregenerate_leaks']
     parameters['leak_timeseries'] = simulation['leak_timeseries']
     parameters['initial_leaks'] = simulation['initial_leaks']
+    parameters['seed_timeseries'] = simulation['seed_timeseries']
     parameters['sites'] = simulation['sites']
     global_params = simulation['globals']
 
@@ -110,6 +113,8 @@ def ldar_sim_run(simulation):
 
     # Loop through timeseries
     while state['t'].current_date <= state['t'].end_date:
+        np_rand.seed(parameters['seed_timeseries'][state['t'].current_timestep])
+        rand.seed(parameters['seed_timeseries'][state['t'].current_timestep])
         sim.update()
         state['t'].next_day()
 
