@@ -113,8 +113,9 @@ def ldar_sim_run(simulation):
 
     # Loop through timeseries
     while state['t'].current_date <= state['t'].end_date:
-        np_rand.seed(parameters['seed_timeseries'][state['t'].current_timestep])
-        rand.seed(parameters['seed_timeseries'][state['t'].current_timestep])
+        if parameters['seed_timeseries']:
+            np_rand.seed(parameters['seed_timeseries'][state['t'].current_timestep])
+            rand.seed(parameters['seed_timeseries'][state['t'].current_timestep])
         sim.update()
         state['t'].next_day()
 

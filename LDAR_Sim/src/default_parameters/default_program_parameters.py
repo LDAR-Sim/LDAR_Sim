@@ -32,7 +32,7 @@ default_program_parameters = {
     'subtype_times': [False, 'subtype_times.csv'],
     'consider_operator': False,
     'consider_venting': False,
-    'consider_weather': False,
+    'consider_weather': True,
     'repair_delay': 14,
     'repair_cost': 200,
     'emissions': {
