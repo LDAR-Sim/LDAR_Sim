@@ -41,20 +41,20 @@ The software is organized in the following structure:
     * inputs
     * install
     * outputs
-    * module_code
+    * src
     * simulations
   
   * LDAR-Sim_inputs.md
   * LICENSE.txt
   * README.md
 
-The **Root** folder includes all code, inputs, and outputs necessary to running LDAR-Sim. From a software perspective, the root folder is the parent to the module_code folder (folder containing LDAR_sim_main). This folder will be always be the root folder when making relative references in LDAR-Sim. For example, if input_directory is specified as *./inputs* from anywhere in the code, the targeted folder will be *{absolute_path_to} / Root / inputs*.
+The **Root** folder includes all code, inputs, and outputs necessary to running LDAR-Sim. From a software perspective, the root folder is the parent to the src folder (folder containing LDAR_sim_main). This folder will be always be the root folder when making relative references in LDAR-Sim. For example, if input_directory is specified as *./inputs* from anywhere in the code, the targeted folder will be *{absolute_path_to} / Root / inputs*.
 
 The **inputs** folder contains input files required to run LDAR-SIM. These include Airport files, empirical leak and vent data, facility lists, subtype distributions, and legacy program input parameter files (<V2.0). 
 
 The **outputs** folder stores all output data files produced by LDAR-SIM. The folder is cleaned, and added if required each time ldar_sim_main is run.
 
-The **module_code** folder stores the python source code. The main code of LDAR_SIM, LDAR_sim_main.py is stored in the base folder of module_code.
+The **src** folder stores the python source code. The main code of LDAR_SIM, LDAR_sim_main.py is stored in the base folder of src.
 
 The **simulations** stores >V2 input parameter files. -- This is currently in development and may be changed before V2 release--. 
 
@@ -192,6 +192,7 @@ While this is relatively intuitive, there are special considerations for methods
     - continuous
     - OGI_FU
     - OGI
+    - operator
     - satellite
     - truck
 &nbsp;
@@ -434,6 +435,33 @@ If you are developing for LDAR-Sim, please adhere to the following rules:
 **Notes on acquisition:** N/A
 
 **Notes of caution:** N/A
+
+
+## pregen\_leaks
+
+**Data type:** Boolean
+
+**Default input:** False
+
+**Description:** If set to true, leaks will be generated prior to running the simulations. This can be used to test a set of program simulations with the same leaks and the same sites. This can reduce modelling uncertainty when comparing two programs with a limited number of simulations, especially from leaks considered super emitters.
+
+If enabled, The leaks will be stored locally in /inputs/generation after running. On subsequent simulations the user will be prompted to use the stored data , or to regenerate. At this time input parameters are not checked, therefore the user should generate new leaks after changing input parameters.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** N/A
+
+## preseed\_random
+
+**Data type:** Boolean
+
+**Default input:** False
+
+**Description:** If set to true, a timeseries of daily random integers will be created, and passed into each program, where each program within a simulation set receives the same timeseries. Then within each day of the simulation, the numpy and random seeds are set using the daily integer. This ensures that the output values will be the same in identical programs regardless of the stocastic nature of the software. 
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:**  This should only be used for testing purposes and will likely be removed in future versions.
 
 ---
 
@@ -1067,38 +1095,113 @@ __*Temporary__: In moving from individual methods to base module with changable 
 
 **Notes of caution:** N/A
 
-## follow\_up\_thresh
+## follow\_up
 
-**Data type:** List
+### threshold
 
-**Default input:** [1.0, &quot;proportion&quot;] or [0, &quot;absolute&quot;]
+**Data type:** Float
 
-**Description:** Alist of two parameters that define the follow-up threshold. Measured site-level emissions must be above the follow-up threshold before a site becomes a candidate for flagging. The character string in the second position of the list must read &quot;proportion&quot; or &quot;absolute&quot;. If absolute, the numeric value in the first position indicates the follow-up threshold in grams per second. If &quot;proportion&quot;, the numeric value in the first position is passed to a function that calculates emission rate that corresponds to a desired proportion of total emissions for a given leak size distribution. The function estimates the MDL needed to find the top X percent of sources for a given leak size distribution. For example, given a proportion of 0.01 and a leak-size distribution, this function will return an estimate of the follow-up threshold that will ensure that all leaks in the top 1% of leak sizes are found.
+**Default input:** 0.0
+
+**Description:**  The follow-up threshold in grams per second. Measured site-level emissions must be above the follow-up threshold before a site becomes a candidate for flagging. If *follow_up.threshold_type*  is &quot;absolute&quot;, the numeric value indicates the follow-up threshold in grams per second. If &quot;relative&quot;, the numeric value is passed to a function that calculates emission rate that corresponds to a desired proportion of total emissions for a given leak size distribution. The function estimates the MDL needed to find the top X percent of sources for a given leak size distribution. For example, given a proportion of 0.01 and a leak-size distribution, this function will return an estimate of the follow-up threshold that will ensure that all leaks in the top 1% of leak sizes are found.
+
+the follow-up delay parameter can be set to require multiple measurements for a site be above threshold before a site is flagged.
 
 **Notes on acquisition:** No data acquisition required.
 
 **Notes of caution:** Follow-up thresholds are explored in detail in Fox et al., 2021. Choosing follow-up rules is complex and work practices should be developed following extensive analysis of different scenarios. It is important to understand how follow-up thresholds and follow-up ratios interact, especially if both are to be used in the same program. Note that follow-up thresholds are similar to minimum detection limits but that the former is checked against to the measured emission rate (which is a function of quantification error) while the latter is checked against the true emission rate.
 
-## follow\_up\_ratio
+### threshold\_type
+
+**Data type:** Character String
+
+**Default input:** "absolute"
+
+**Description:**  Can be "absolute" or "relative". See *follow_up.threshold* for more information.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:**  See *follow_up.threshold* for more information.
+
+### proportion
 
 **Data type:** Numeric
 
 **Default input:** 1.0
 
-**Description:** Asingle value that defines the proportion of candidate flags to receive follow-up. For example, if the follow-up ratio is 0.5, the top 50% of candidate flags (ranked by measured emission rate) will receive follow-up. Candidate flags have already been checked against the minimum detection limit and the follow-up threshold. See Section 3.9 for more information.
+**Description:** A single value that defines the proportion of candidate flags to receive follow-up. For example, if the follow-up ratio is 0.5, the top 50% of candidate flags (ranked by measured emission rate) will receive follow-up. Candidate flags have already been checked against the minimum detection limit and the follow-up threshold. See Section 3.9 for more information.
 
 **Notes on acquisition:** No data acquisition required.
 
+**Notes of caution:** The follow-up proportion ranks sites based on their measured emission rate, which may differ from the true emission rate if quantification error is used. The effect of follow\_up.proportion will depend on the temporal interval over which sites accumulate in the candidate flags pool. Currently, LDAR-Sim is only configured to do this on a daily basis. For example, all candidate flags detected by all crews will be considered at the end of the day, and flags will be assigned according to the follow-up proportion. In the future, new functionality will enable variable time periods over which candidate flags can be accumulated and compared.
 
-**Notes of caution:** The follow-up ratio ranks sites based on their measured emission rate, which may differ from the true emission rate if quantification error is used. The effect of follow\_up\_ratio will depend on the temporal interval over which sites accumulate in the candidate flags pool. Currently, LDAR-Sim is only configured to do this on a daily basis. For example, all candidate flags detected by all crews will be considered at the end of the day, and flags will be assigned according to the follow-up ratio. In the future, new functionality will enable variable time periods over which candidate flags can be accumulated and compared.
+For fixed systems, the follow-up proportion is slightly different in that it considers all candidate flags from all fixed systems, each day. Given that measurements are continuous, the follow-up ratio should be much smaller than it would be for a screening method, as facilities are flagged each day, rather than (for example) three times per year.
 
-For fixed systems, the follow-up ratio is slightly different in that it considers all candidate flags from all fixed systems, each day. Given that measurements are continuous, the follow-up ratio should be much smaller than it would be for a screening method, as facilities are flagged each day, rather than (for example) three times per year.
+### interaction_priority
+
+**Data type:** Character String
+
+**Default input:** "threshold"
+
+**Description:**  Specifies which algorithm to run first on candidate sites. If the value is *threshold* the proportion of sites to follow up with will be taken from all sites over the threshold. If the value is *proportion* the proportion of sites will be taken from the candidate sites, then from those sites followup will occur at sites above the threshold. 
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** N/A
+
+### redundancy_filter
+
+**Data type:** Character String
+
+**Default input:** "recent"
+
+**Description:**  Specifies which measured emissions rate to use to identify which  candidate sites to follow up at if they have multiple measurements. If the *follow_up.delay* is not zero, crews can survey the site several times before flagging the site. If this value is set to *recent*, the most recent site measurement will be used to check followup threshold and proportion. If the value is set to *max*, the highest emissions rate wil be used. If the value is set to *average* the average emissions from all surveys will be used. This can be model work practices which may require multiple surveys, such as stationary sensors.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** N/A
+
+### delay
+
+**Data type:** Integer
+
+**Default input:** 0
+
+**Description:**  The number of additional surveys required before a candidate site can be flagged. The company will hold all measurements in a site_watchlist and flag sites until the there are enough survys collected. The emissons rate used to triage flagging based on followup threshold and proportion are specified with follow_up.redundancy
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** N/A
+
+### instant_threshold
+
+**Data type:** Float
+
+**Default input:** 0.0
+
+**Description:**  The follow-up instant threshold in grams per second. Measured site-level emissions must be above the follow-up threshold before a candidate site becomes immediately available for flagging. If *follow_up.instant_threshold_type*  is &quot;absolute&quot;, the numeric value indicates the follow-up threshold in grams per second. If &quot;relative&quot;, the numeric value is passed to a function that calculates emission rate that corresponds to a desired proportion of total emissions for a given leak size distribution. The function estimates the MDL needed to find the top X percent of sources for a given leak size distribution. For example, given a proportion of 0.01 and a leak-size distribution, this function will return an estimate of the follow-up threshold that will ensure that all leaks in the top 1% of leak sizes are found.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** Follow-up thresholds are explored in detail in Fox et al., 2021. Choosing follow-up rules is complex and work practices should be developed following extensive analysis of different scenarios. It is important to understand how follow-up thresholds and follow-up ratios interact, especially if both are to be used in the same program. Note that follow-up thresholds are similar to minimum detection limits but that the former is checked against to the measured emission rate (which is a function of quantification error) while the latter is checked against the true emission rate.
+
+### instant\_threshold\_type
+
+**Data type:** Character String
+
+**Default input:** "absolute"
+
+**Description:**  Can be "absolute" or "relative". See *follow_up.instant_threshold* for more information.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:**  See *follow_up.threshold* for more information.
 
 ## t\_btw\_sites
 
 **Data type:** Integer, or Character string denoting csv file location.
 
-**Default input:** N/A
+**Default input:** Dependent on method
 
 **Description:** A single value or a character string that specifies the csv file containing a distribution of times spent offsite. Each time a site survey is complete, the day is advanced by this number of minutes before the subsequent site survey begins. At the end of the day, the time is again advanced by this number of minutes to simulate travel home. This value is not used if routeplanning is enabled.
 
@@ -1277,7 +1380,9 @@ where Q = the emission rate in grams of methane per hour and d is the distance o
 
 **Default input:** N/A
 
-**Description:** The number of days between leak onset and detection by the fixed system.
+***Temporary*** Obsolete in V2. Use follow-up delay instead.
+
+**Description:** The number of days between leak onset and detection by the fixed system. 
 
 **Notes on acquisition:** We recommend extensive controlled release testing under a range of representative release rates, distances, and conditions to establish time to detection.
 
@@ -1306,6 +1411,19 @@ where Q = the emission rate in grams of methane per hour and d is the distance o
 **Notes on acquisition:** It is only required for satellite.  
 
 **Notes of caution:** Please be sure the satellite is inlcuded in the TLE file 
+
+---
+
+## percent_detectable (operator only)
+**Data type:** Numeric
+
+**Default input:** 0.1
+
+**Description:** Probability (0-1) that an operator will find a leak above the AVO MDL during a AVO survey.  
+
+**Notes on acquisition:** N/A 
+
+**Notes of caution:** Future research is required!
 
 ---
 

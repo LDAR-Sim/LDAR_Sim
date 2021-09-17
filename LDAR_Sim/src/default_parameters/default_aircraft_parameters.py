@@ -29,9 +29,9 @@ default_aircraft_parameters = {
     'sensor': 'default',
     'is_follow_up': False,
     'n_crews': 1,
-    'min_temp': -30,
+    'min_temp': -10,
     'max_wind': 10,
-    'max_precip': 1,
+    'max_precip': 0.5,
     'max_workday': 8,
     'cost': {
         'upfront': 0,
@@ -51,7 +51,7 @@ default_aircraft_parameters = {
     },
     't_bw_sites': 10,
     'reporting_delay': 2,
-    'MDL': 0.01,
+    'MDL': 0.5,
     'QE': 0,
     'consider_daylight': False,
     'scheduling': {
