@@ -2,5 +2,6 @@ program_name: P_base
 parameter_level: program
 version: '2.0'
 method_labels:
+site_samples: [True, 200]
 # emissions:
 #   leak_file: 'leak_rates.csv'
