@@ -29,11 +29,14 @@ import multiprocessing as mp
 from input_manager import InputManager
 from utils.result_processing import get_referenced_dataframe
 from generic_functions import check_ERA5_file
+from initialization.preseed import generate_preseeds
 from initialization.sites import generate_sites, regenerate_sites
 from initialization.args import files_from_args
 from utils.sensitivity import (yaml_to_dict,
                                generate_sens_prog_set,
-                               set_from_keylist)
+                               set_from_keylist,
+                               generate_violin,
+                               group_timeseries)
 
 
 def run_programs(programs, n_simulations, output_directory):
@@ -55,6 +58,10 @@ def run_programs(programs, n_simulations, output_directory):
                 programs[0], input_directory)
         else:
             sites = [], leak_timeseries = [], initial_leaks = []
+        if preseed_random:
+            seed_timeseries = generate_preseeds(simulation_parameters)
+        else:
+            seed_timeseries = None
         for j in range(len(programs)):
             if pregen_leaks:
                 # Because changing the parameters, can change leak sizes, and counts,
@@ -75,6 +82,7 @@ def run_programs(programs, n_simulations, output_directory):
                     'sites': sites,
                     'leak_timeseries': leak_timeseries,
                     'initial_leaks': initial_leaks,
+                    'seed_timeseries': seed_timeseries,
                   }])
 
     # Perform simulations in parallel
@@ -107,6 +115,7 @@ if __name__ == '__main__':
     write_data = simulation_parameters['write_data']
     start_date = simulation_parameters['start_date']
     pregen_leaks = simulation_parameters['pregenerate_leaks']
+    preseed_random = simulation_parameters['preseed_random']
 
     # Check whether ERA5 data is already in the working directory and download data if not
     for p in programs:
@@ -124,7 +133,7 @@ if __name__ == '__main__':
 
     #  ----------Run Program Routine-------------
     all_progs = []
-    if len(sens_x_vars) == 0:
+    if not sens_x_vars:
         # If prog_var_manip is unused run program with parameters in Program Files
         programs, n_simulations, output_directory,
         sites = [], leak_timeseries = [], initial_leaks = []
@@ -163,6 +172,9 @@ if __name__ == '__main__':
                 [['daily_emissions_kg', 'emis_rat', 'rat'],
                  ['total_daily_cost', 'cost_diff', 'diff']],
                 ref_program)
+            grouped_ts = group_timeseries(alt_ts)
+            generate_violin(grouped_ts)
+
             pgroup = alt_ts.groupby(
-                ['program_name', 'key_x', 'value_x', 'n_sim']).mean().reset_index()
+                ['program_name', 'key_x', 'value_x']).mean().reset_index()
             pgroup.to_csv(output_directory/'sens_results_{}.csv'.format(key), index=False)

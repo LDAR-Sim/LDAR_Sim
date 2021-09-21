@@ -21,6 +21,7 @@
 
 import yaml
 import copy
+import matplotlib.pyplot as plt
 
 
 def yaml_to_dict(y_file):
@@ -55,7 +56,7 @@ def generate_sens_prog_set(sens_z_var, programs):
     """
     new_progs = []
     prev_progs_names = set()
-    if len(sens_z_var) > 0:
+    if sens_z_var:
         # Go through ensitivity progs
         var_paths = [path.split(".") for path in sens_z_var['paths']]
         # Get program names and the their associated index in programs object
@@ -80,7 +81,8 @@ def generate_sens_prog_set(sens_z_var, programs):
     for prog in programs:
         if 'orig_program_name' not in prog:
             prog['orig_program_name'] = prog['program_name']
-        prog['value_z'], prog['key_z'] = val,  key
+        if sens_z_var:
+            prog['value_z'], prog['key_z'] = val,  key
     return programs
 
 
@@ -105,3 +107,33 @@ def set_from_keylist(dic, keys, value):
     for key in keys[:-1]:
         dic = dic.setdefault(key, {})
     dic[keys[-1]] = value
+
+
+def group_timeseries(time_series):
+    groups = {}
+    for pname in list(time_series.program_name.unique()):
+        for value_x in list(time_series.value_x.unique()):
+            groups.update({
+                "{}_{}".format(pname, value_x): time_series[(time_series.program_name == pname)
+                                                            & (time_series.value_x == value_x)]
+            })
+    return groups
+
+
+def generate_violin(grouped_ts):
+    outdata = [list(prog['emis_rat']) for pdix, prog in grouped_ts.items()]
+    textstr = '\n'.join([pdix for pdix in grouped_ts])
+    fig, ax = plt.subplots()
+    ax.set_xlabel('x-axis')
+    ax.violinplot(outdata,  widths=0.7,
+                  showmeans=True, showextrema=True, showmedians=True)
+    ax.set_xticks([i+1 for i in range(len(grouped_ts))])
+    props = dict(boxstyle='round', facecolor='wheat', alpha=0.3)
+    ax.text(0.95, 0.95, textstr, transform=ax.transAxes, fontsize=10,
+            verticalalignment='top', horizontalalignment='right', bbox=props)
+    fig.tight_layout()
+    plt.show()
+
+    # pgroup = time_series.groupby(
+    #     ['program_name', 'key_x', 'value_x', 'n_sim']).median().reset_index()
+    # pgroup.to_csv(output_directory/'sens_results_{}.csv'.format(key), index=False)
