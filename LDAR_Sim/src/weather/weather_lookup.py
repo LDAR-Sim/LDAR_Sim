@@ -83,17 +83,15 @@ class WeatherLookup:
             # Count DDs for each criteria
             for lat in range(self.lat_length):
                 for lon in range(self.lon_length):
-                    # If you exceed minimum temperature...
-                    if self.temps[day, lat, lon] >= config['min_temp']:
-                        # Count one instrument day (instrument can be used)
+                    # Check daily weather variables are within method range
+                    if config['weather_envs']['temp'][0] <= self.temps[day, lat, lon] \
+                            <= config['weather_envs']['temp'][1]:
                         bool_temp[lon, lat, day] = 1
-                    # If you are below the maximum wind...
-                    if self.winds[day, lat, lon] <= config['max_wind']:
-                        # Count one instrument day (instrument can be used)
+                    if config['weather_envs']['wind'][0] <= self.winds[day, lat, lon] \
+                            <= config['weather_envs']['wind'][1]:
                         bool_wind[lon, lat, day] = 1
-                    # If you are below the precipitation threshold...
-                    if self.precip[day, lat, lon] <= config['max_precip']:
-                        # Count one instrument day (instrument can be used)
+                    if config['weather_envs']['precip'][0] <= self.precip[day, lat, lon] \
+                            <= config['weather_envs']['precip'][1]:
                         bool_precip[lon, lat, day] = 1
 
         # Check to see if all criteria (temp, wind, and precip) were met...

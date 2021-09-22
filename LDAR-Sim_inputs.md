@@ -997,35 +997,39 @@ __*Temporary__: In moving from individual methods to base module with changable 
 
 **Notes of caution:** Unless explicitly evaluating labour constraints, ensure that sufficient crews are available to perform LDAR according to the requirements set out in the infrastructure\_file. For example, if 2000 facilities require LDAR, and each takes an saverage of 300 minutes, ~10,000 work hours are required, or 3-4 crews working full time.
 
-## min_temp
+## weather_envs
 
-**Data type:** Numeric
+**Weather Envelops**
 
-**Default input:** -100
+### temp
 
-**Description:** The minimum average hourly temperature (°C) at which crews will work.
+**Data type:** List of Integers
+
+**Default input:**  [-40, 40]
+
+**Description:** The range of average hourly temperature (°C) at which crews will work.
 
 **Notes on acquisition:** No data acquisition required.
 
 **Notes of caution:** Note that units are in degrees Celsius, not Fahrenheit.
 
-## max_precip
+### precip
 
-**Data type:** Numeric
+**Data type:** List of Integers
 
-**Default input:** 100
+**Default input:**  [0, 1]
 
-**Description:** The maximum precipitation accumulation allowed (mm) over one hour.
+**Description:** The range of precipitation accumulation allowed (mm) over one hour.
 
 **Notes on acquisition:** No data acquisition required.
 
 **Notes of caution:** N/A
 
-## max_wind
+### wind
 
-**Data type:** Numeric
+**Data type:** List of Integers
 
-**Default input:** 100
+**Default input:** [0, 10]
 
 **Description:** The maximum average hourly wind speed (m/s at 10m) at which crews will work.
 
@@ -1167,7 +1171,7 @@ For fixed systems, the follow-up proportion is slightly different in that it con
 
 **Default input:** 0
 
-**Description:**  The number of additional surveys required before a candidate site can be flagged. The company will hold all measurements in a site_watchlist and flag sites until the there are enough survys collected. The emissons rate used to triage flagging based on followup threshold and proportion are specified with follow_up.redundancy
+**Description:**  The number of days required to have passed since the first site added to the site watchlist before a site can be flagged. The company will hold all measurements in a site_watchlist. The emissons rate used to triage flagging based on followup threshold and proportion are specified with follow_up.redundancy
 
 **Notes on acquisition:** No data acquisition required.
 

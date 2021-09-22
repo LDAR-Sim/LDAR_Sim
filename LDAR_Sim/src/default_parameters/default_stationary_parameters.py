@@ -29,9 +29,11 @@ default_stationary_parameters = {
     'sensor': 'default',
     'is_follow_up': False,
     'n_crews': 1,
-    'min_temp': -30,
-    'max_wind': 10,
-    'max_precip': 1,
+    'weather_envs': {
+        'temp': [-40, 40],
+        'wind': [0, 10],
+        'precip': [0, 1],
+    },
     'cost': {
         'upfront': 500,
         'per_day': 1,

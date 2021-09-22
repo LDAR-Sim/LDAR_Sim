@@ -29,9 +29,11 @@ default_OGI_parameters = {
     'sensor': 'OGI_camera',
     'is_follow_up': False,
     'n_crews': 1,
-    'min_temp': -20,
-    'max_wind': 10,
-    'max_precip': 0.1,
+    'weather_envs': {
+        'temp': [-20, 40],
+        'wind': [0, 10],
+        'precip': [0, 0.1],
+    },
     'max_workday': 8,
     'cost': {
         'upfront': 0,

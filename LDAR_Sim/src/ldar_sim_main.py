@@ -28,7 +28,7 @@ import datetime
 import multiprocessing as mp
 
 from initialization.sites import generate_sites, regenerate_sites
-from initialization.preseed import generate_preseeds
+from initialization.preseed import gen_seed_timeseries
 from generic_functions import check_ERA5_file
 from input_manager import InputManager
 from pathlib import Path
@@ -150,7 +150,7 @@ if __name__ == '__main__':
         else:
             sites, leak_timeseries, initial_leaks = [], [], []
         if preseed_random:
-            seed_timeseries = generate_preseeds(simulation_parameters)
+            seed_timeseries = gen_seed_timeseries(simulation_parameters)
         else:
             seed_timeseries = None
 
@@ -193,9 +193,9 @@ if __name__ == '__main__':
                   }])
 
     # The following can be used for debugging outside of the starmap
-    # ldar_sim_run(simulations[1][0])
+    # ldar_sim_run(simulations[0][0])
     trg_sim_idx = next((index for (index, d) in enumerate(simulations)
-                       if d[0]['program']['program_name'] == "P_air"), None)
+                       if d[0]['program']['program_name'] == "P_air_dev"), None)
 
     # ldar_sim_run(simulations[trg_sim_idx][0])
     # Perform simulations in parallel

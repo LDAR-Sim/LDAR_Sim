@@ -121,19 +121,22 @@ class WeatherLookup:
                 for lon in range(len(self.longitude)):
                     # If you exceed minimum temperature...
                     if consider_weather:
-                        hourly_weather = self.get_hourly_weather(
+                        hr_weather = self.get_hourly_weather(
                             ['winds', 'precip', 'temps'],
                             nday_dt, number_of_hours=max_day,
                             lat_idx=lat, lon_idx=lon)
-                        if np.average(hourly_weather['temps']) >= config['min_temp']:
+                        if config['weather_envs']['temp'][0] <= np.average(hr_weather['temps']) \
+                                <= config['weather_envs']['temp'][1]:
                             # Count one instrument day (instrument can be used)
                             bool_temp[lon, lat, day] = 1
                         # If you are below the maximum wind...
-                        if np.average(hourly_weather['winds']) <= config['max_wind']:
+                        if config['weather_envs']['wind'][0] <= np.average(hr_weather['winds']) \
+                                <= config['weather_envs']['wind'][1]:
                             # Count one instrument day (instrument can be used)
                             bool_wind[lon, lat, day] = 1
                         # If you are below the precipitation threshold...
-                        if np.average(hourly_weather['precip']) <= config['max_precip']:
+                        if config['weather_envs']['precip'][0] <= np.average(hr_weather['precip']) \
+                                <= config['weather_envs']['precip'][1]:
                             # Count one instrument day (instrument can be used)
                             bool_precip[lon, lat, day] = 1
                     else:
@@ -177,17 +180,24 @@ class WeatherLookup:
             lat_idx = find_nearest(lat, self.latitude)
             lon_idx = find_nearest(lon, self.longitude)
 
+        # Weather data is in timesteps since Jan 1 , 1900 UTC, the following
+        # gets the current date in timesteps since Jan 1, 1900 UTC.
         date_UTC = start_datetime - tdelt(hours=self.state['t'].UTC_offset)
         dtime_s1900_UTC = date_UTC - dt(1900, 1, 1, 0, 0)
         hrs_s1900_UTC = int(dtime_s1900_UTC.days*24 +
                             np.floor(dtime_s1900_UTC.seconds/3600))
         start_hr_s1900_UTC = self.weather_time_meta[0]['start_hr']
+        # Get the index (of the weather data array) for the start hour and endhour
+        # (start hour + workhours) for the day
         cur_day_srt_idx = int(hrs_s1900_UTC - start_hr_s1900_UTC)
-        # This code would work but is less efficient.
-        # cur_day_srt_idx = np.where(self.time_total == hrs_s1900_UTC)[0][0]
         cur_day_stp_idx = int(cur_day_srt_idx + number_of_hours)
-        # HBD , does not account for Leap year
-        # self.weather_time_meta has leap year info and could be used
+
+        # could be used The following will "rollover" the weather data so the start and stop
+        # Hours happen at the same time on the same julian date (potentially on a different year).
+        # For example if the weather data goes from 2017-2020, and the current day is January 1st
+        # 2021, the weather for Jan 1st 2017 will be used.
+
+        # HBD , does not account for Leap year self.weather_time_meta has leap year info and
         while cur_day_srt_idx < 0:
             cur_day_srt_idx += len(self.winds)
         while cur_day_stp_idx < 0:
@@ -197,12 +207,20 @@ class WeatherLookup:
         while cur_day_stp_idx > len(self.winds):
             cur_day_stp_idx -= len(self.winds)
         out_weather = {}
+
+        # For
         for weather_var in weather_vars:
             data_set = self.__getattribute__(weather_var)
             if cur_day_stp_idx > cur_day_srt_idx:
                 hrly_weather_day = data_set[cur_day_srt_idx:cur_day_stp_idx,
                                             lat_idx, lon_idx]
             else:
+                # Due to rollover the start index can occur later than
+                # than the end index. For example if the weather data goes from
+                # 2017-2020, the start time is December 31st 2020 20:00 UTC, and the
+                # end of day time is Jan 1st 2021 1:00 UTC, then the Start index will
+                # be larger than the end index, because the the end index will be pointing
+                # at Jan 1st 2017 1:00 UTC.
                 hrly_weather_day_1 = data_set[cur_day_srt_idx:,
                                               lat_idx, lon_idx]
                 hrly_weather_day_2 = data_set[: cur_day_stp_idx,

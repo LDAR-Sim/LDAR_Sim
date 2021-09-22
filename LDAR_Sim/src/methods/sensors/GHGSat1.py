@@ -60,7 +60,7 @@ def detect_emissions(self, site, leaks_present, equipment_rates, site_true_rate,
                 'leaks_present': leaks_present,
                 'site_true_rate': site_true_rate,
                 'site_measured_rate': site_measured_rate,
-                'venting': venting
+                'vent_rate': venting
             }
 
     else:

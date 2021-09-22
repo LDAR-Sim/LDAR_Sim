@@ -21,6 +21,7 @@
 
 import math
 import numpy as np
+from datetime import timedelta
 from importlib import import_module
 from generic_functions import get_prop_rate
 
@@ -133,15 +134,12 @@ class BaseCompany:
                 if len(crew_site_list) > 0:
                     self.crews[idx].work_a_day(crew_site_list, self.candidate_flags)
             if len(self.candidate_flags) > 0:
-                self.flag_sites()
+                self.candidates_to_watchlist()
 
             # Calculate proportion sites available based on weather of site
-            available_sites = 0
-            for site in self.state['sites']:
-                if self.deployment_days[site['lon_index'],
-                                        site['lat_index'],
-                                        self.state['t'].current_timestep]:
-                    available_sites += 1
+            available_sites = sum([1 for site in self.state['sites']
+                                   if self.deployment_days[site['lon_index'], site['lat_index'],
+                                                           self.state['t'].current_timestep]])
             prop_avail = available_sites / len(self.state['sites'])
             self.timeseries['{}_prop_sites_avail'.format(
                 self.name)][self.state['t'].current_timestep] = prop_avail
@@ -155,12 +153,14 @@ class BaseCompany:
         attempted_today = '{}_attempted_today?'.format(self.name)
         sites_this_year = '{}_surveys_done_this_year'.format(self.name)
         for site in self.state['sites']:
-
             site[days_since_LDAR] += 1
             site[attempted_today] = False
             if self.state['t'].current_date.day == 1 \
                     and self.state['t'].current_date.month == 1:
                 site[sites_this_year] = 0
+
+        if len(self.site_watchlist) > 0:
+            self.flag_sites()
 
         # Update followup specific parameters
         if self.config['is_follow_up']:
@@ -168,36 +168,50 @@ class BaseCompany:
                                    if flag['currently_flagged']]
         return
 
-    def flag_sites(self):
+    def candidates_to_watchlist(self):
         """
-        Flag the most important sites for follow-up.
+        Add candidate sites to watchlist, and calculate a site emission rate if there are
+        multiple emissions measurements.The watchlist allows companies to keep track of
+        canditate site surveys. This is utilized by a company when a follow_up_delay
+        is greater than zero, as multiple surveys can be done for each site before a site
+        is flagged.
+
+        If an instant repair threshold is utilized and a sites  emissions rate is greater than
+        the instant followup threshold, the site will be  immediately flagged.
 
         """
         site_wl = self.site_watchlist
+
         # Go through Each Candidate site, and add it to the watchlist
         # A watchlist keeps track of sites with leaks that have not yet been flagged
         for site in self.candidate_flags:
             facility_ID = site['site']['facility_ID']
-            if facility_ID not in site_wl:
+            # Get instant follow-up sites and init follow-up sites based on follow_up delay
+            if self.config['follow_up']['instant_threshold'] \
+                    and site['site_measured_rate'] > self.config['follow_up']['instant_threshold']:
+                self.flag_site(site)
+                if facility_ID in site_wl:
+                    site_wl.pop(facility_ID)
+            elif facility_ID not in site_wl:
                 site_wl.update(
                     {facility_ID: {
                         'site': site['site'],
                         'dates': [self.state['t'].current_date],
                         'measured_emis_rates': [site['site_measured_rate']],
-                        'measured_vent_rates': [site['venting']],
-                        'effective_emis_rate': site['site_measured_rate'],
-                        'effective_vent_rate': site['venting']
+                        'measured_vent_rates': [site['vent_rate']],
+                        'site_measured_rate': site['site_measured_rate'],
+                        'vent_rate': site['vent_rate']
                     }})
             else:
                 site_wl[facility_ID]['dates'].append(self.state['t'].current_date)
                 site_wl[facility_ID]['measured_emis_rates'].append(site['site_measured_rate'])
-                site_wl[facility_ID]['measured_vent_rates'].append(site['venting'])
+                site_wl[facility_ID]['measured_vent_rates'].append(site['vent_rate'])
                 # Calculate effective emissions and vent rates
-                site_wl[facility_ID]['effective_leak_rate'] = self.aggregate_by(
+                site_wl[facility_ID]['site_measured_rate'] = self.aggregate_by(
                     site_wl[facility_ID]['measured_emis_rates'],
                     self.config['follow_up']['redundancy_filter']
                 )
-                site_wl[facility_ID]['effective_vent_rate'] = self.aggregate_by(
+                site_wl[facility_ID]['vent_rate'] = self.aggregate_by(
                     site_wl[facility_ID]['measured_vent_rates'],
                     self.config['follow_up']['redundancy_filter']
                 )
@@ -205,77 +219,74 @@ class BaseCompany:
         # Sort Watchlist by emissions rate
         site_wl = {k: v for k, v in sorted(
             site_wl.items(),
-            key=lambda x: x[1]['effective_emis_rate'],
+            key=lambda x: x[1]['site_measured_rate'],
             reverse=True)
         }
 
-        # Get instant follow-up sites and init follow-up sites based on follow_up delay
-        IFU_sites = []
-        if self.config['follow_up']['instant_threshold']:
+    def flag_site(self, site):
+        site_obj = site['site']
+        site_true_rate = site['site_measured_rate']
+        venting = site['vent_rate']
+        self.site_watchlist.pop(site_obj['facility_ID'], None)
+        # If the site is already flagged, your flag is redundant
+        if site_obj['currently_flagged']:
+            self.timeseries['{}_flags_redund1'.format(
+                self.name)][self.state['t'].current_timestep] += 1
+        else:
+            # Flag the site for follow up
+            site_obj['currently_flagged'] = True
+            site_obj['date_flagged'] = self.state['t'].current_date
+            site_obj['flagged_by'] = self.config['label']
+            self.timeseries['{}_eff_flags'.format(
+                self.name)][self.state['t'].current_timestep] += 1
+
+            # Redand2 is hard to keep track of with multiple sets of serveys
+            # Disable for now
+            # # Does the chosen site already have tagged leaks?
+            # redund2 = False
+            # for leak in site_obj['leaks_present']:
+            #     if leak['date_tagged'] is not None:
+            #         redund2 = True
+            # if redund2:
+            #     self.timeseries['{}_flags_redund2'.format(
+            #         self.name)][self.state['t'].current_timestep] += 1
+
+            # Would the site have been chosen without venting?
+            if self.parameters['consider_venting']:
+                if (site_true_rate - venting) < self.config['follow_up']['thresh']:
+                    self.timeseries['{}_flag_wo_vent'.format(self.name)][
+                        self.state['t'].current_timestep] += 1
+
+    def flag_sites(self):
+        """
+        Flag the most important sites for follow-up.
+
+        """
+        site_wl = self.site_watchlist
+        first_survey_time = min(site['dates'][0] for sidx, site in site_wl.items())
+        can_flag_date = first_survey_time + timedelta(days=self.config['follow_up']['delay'])
+        # If the delay / grace period has passed start surveys. Date is used to ignore the hour
+        # Leak was detected and focus on the day instead.
+        if self.state['t'].current_date.date() >= can_flag_date.date():
             target_sites = []
-            for sdx, site in site_wl.items():
-                if site['effective_emis_rate'] > self.config['follow_up']['instant_threshold']:
-                    IFU_sites.append(site)
-                elif len(site['measured_emis_rates']) > self.config['follow_up']['delay']:
-                    target_sites.append(site)
-        else:
-            target_sites = [site for sdx, site in site_wl.items()
-                            if len(site['measured_emis_rates'])
-                            > self.config['follow_up']['delay']]
-
-        # Get portion of sites and threshold filtered sited
-        if self.config['follow_up']['interaction_priority'] == 'proportion':
-            n_sites_to_flag = len(target_sites) * self.config['follow_up']['proportion']
-            n_sites_to_flag = int(math.ceil(n_sites_to_flag))
-            target_sites = [site for site in target_sites[:n_sites_to_flag]
-                            if site['effective_emis_rate']
-                            > self.config['follow_up']['threshold']]
-        else:
-            target_sites = [site for site in target_sites
-                            if site['effective_emis_rate'] > self.config['follow_up']['threshold']]
-            n_sites_to_flag = len(target_sites) * self.config['follow_up']['proportion']
-            n_sites_to_flag = int(math.ceil(n_sites_to_flag))
-            target_sites = target_sites[:n_sites_to_flag]
-
-        # Move IFU Sites to front of queue
-        target_sites = IFU_sites + target_sites
-
-        # Go through all targeted sites and flag them or add them to redundant lists
-        for targ_site in target_sites:
-            site_obj = targ_site['site']
-            site_true_rate = targ_site['effective_emis_rate']
-            venting = targ_site['effective_vent_rate']
-            site_wl.pop(site_obj['facility_ID'])
-
-            # If the site is already flagged, your flag is redundant
-            if site_obj['currently_flagged']:
-                self.timeseries['{}_flags_redund1'.format(
-                    self.name)][self.state['t'].current_timestep] += 1
+            # Get portion of sites and threshold filtered sited
+            if self.config['follow_up']['interaction_priority'] == 'proportion':
+                n_sites_to_flag = len(site_wl) * self.config['follow_up']['proportion']
+                n_sites_to_flag = int(math.ceil(n_sites_to_flag))
+                # site_wl is an ordered by leak size.
+                target_sites = [site for sdx, site in site_wl.items()[:n_sites_to_flag]
+                                if site['site_measured_rate']
+                                > self.config['follow_up']['threshold']]
             else:
-                # Flag the site for follow up
-                site_obj['currently_flagged'] = True
-                site_obj['date_flagged'] = self.state['t'].current_date
-                site_obj['flagged_by'] = self.config['label']
-                self.timeseries['{}_eff_flags'.format(
-                    self.name)][self.state['t'].current_timestep] += 1
-
-                # Redand2 is hard to keep track of with multiple sets of serveys
-                # Disable for now
-
-                # # Does the chosen site already have tagged leaks?
-                # redund2 = False
-                # for leak in site_obj['leaks_present']:
-                #     if leak['date_tagged'] is not None:
-                #         redund2 = True
-                # if redund2:
-                #     self.timeseries['{}_flags_redund2'.format(
-                #         self.name)][self.state['t'].current_timestep] += 1
-
-                # Would the site have been chosen without venting?
-                if self.parameters['consider_venting']:
-                    if (site_true_rate - venting) < self.config['follow_up']['thresh']:
-                        self.timeseries['{}_flag_wo_vent'.format(self.name)][
-                            self.state['t'].current_timestep] += 1
+                target_sites = [site for sdx, site in site_wl.items()
+                                if site['site_measured_rate']
+                                > self.config['follow_up']['threshold']]
+                n_sites_to_flag = len(target_sites) * self.config['follow_up']['proportion']
+                n_sites_to_flag = int(math.ceil(n_sites_to_flag))
+                target_sites = target_sites[:n_sites_to_flag]
+            # Go through all targeted sites and flag them or add them to redundant lists
+            for targ_site in target_sites:
+                self.flag_site(targ_site)
 
     def aggregate_by(self, list, filter):
         '''
