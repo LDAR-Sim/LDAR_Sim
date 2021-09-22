@@ -26,8 +26,8 @@ from argparse import ArgumentParser, RawTextHelpFormatter
 def files_from_args(root_dir):
     '''
     Look for parameter files supplied as arguments - if parameter files are supplied as
-    arguments, proceed to parse and type check input parameter type with the input manager
-    will also accept flagged input directory , (-P or --in_dir)
+    arguments, proceed to parse and type check input parameter type with the input manager.
+    The program will will also accept flagged input directory , (-P or --in_dir)
     '''
     parser = ArgumentParser(formatter_class=RawTextHelpFormatter)
     # ---Declare input arguments---

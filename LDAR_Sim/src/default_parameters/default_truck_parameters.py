@@ -26,9 +26,11 @@ default_truck_parameters = {
     'module': 'truck',
     'deployment_type': 'mobile',
     'n_crews': 1,
-    'min_temp': -40,
-    'max_wind': 20,
-    'max_precip': 0.01,
+    'weather_envs': {
+        'temp': [-40, 40],
+        'wind': [0, 10],
+        'precip': [0, 1],
+    },
     'max_workday': 8,
     'measurement_scale': "equipment",
     'cost': {

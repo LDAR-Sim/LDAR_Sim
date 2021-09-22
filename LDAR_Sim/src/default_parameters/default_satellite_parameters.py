@@ -29,9 +29,11 @@ default_satellite_parameters = {
     'sensor': 'satellite_sensor',
     'is_follow_up': False,
     'n_crews': 1,
-    'min_temp': -100,
-    'max_wind': 100,
-    'max_precip': 100,
+    'weather_envs': {
+        'temp': [-100, 100],
+        'wind': [0, 20],
+        'precip': [0, 0.1],
+    },
     'max_workday': 24,
     'cost': {
         'upfront': 0,

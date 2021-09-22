@@ -1,9 +1,9 @@
 # ------------------------------------------------------------------------------
 # Program:     The LDAR Simulator (LDAR-Sim)
-# File:        LDAR-Sim main
-# Purpose:     Interface for parameterizing and running LDAR-Sim.
+# File:        LDAR_sim_sens
+# Purpose:     Sensitivity analysis wrapper
 #
-# Copyright (C) 2018-2020  Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz
+# Copyright (C) 2018-2021  Intelligent Methane Monitoring and Management System (IM3S) Group
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the MIT License as published
@@ -29,7 +29,7 @@ import multiprocessing as mp
 from input_manager import InputManager
 from utils.result_processing import get_referenced_dataframe
 from generic_functions import check_ERA5_file
-from initialization.preseed import generate_preseeds
+from initialization.preseed import gen_seed_timeseries
 from initialization.sites import generate_sites, regenerate_sites
 from initialization.args import files_from_args
 from utils.sensitivity import (yaml_to_dict,
@@ -59,7 +59,7 @@ def run_programs(programs, n_simulations, output_directory):
         else:
             sites = [], leak_timeseries = [], initial_leaks = []
         if preseed_random:
-            seed_timeseries = generate_preseeds(simulation_parameters)
+            seed_timeseries = gen_seed_timeseries(simulation_parameters)
         else:
             seed_timeseries = None
         for j in range(len(programs)):

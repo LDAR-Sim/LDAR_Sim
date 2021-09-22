@@ -151,7 +151,7 @@ class BaseCrew:
                 'leaks_present': leaks_present,
                 'site_true_rate': site_true_rate,
                 'site_measured_rate': site_measured_rate,
-                'venting': venting
+                'vent_rate': venting
             }
         """
         # Get the type of sensor, and call the the detect emissions function for sensor

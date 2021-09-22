@@ -1,7 +1,7 @@
 # ------------------------------------------------------------------------------
 # Program:     The LDAR Simulator (LDAR-Sim)
-# File:        LDAR-Sim initialization.leaks
-# Purpose:     Generate Leaks, Generate initial leaks and leak timeseries
+# File:        LDAR-Sim initialization.preseed
+# Purpose:     Generate a timeseries of integers for preseeding random functions
 #
 # Copyright (C) 2018-2021  Intelligent Methane Monitoring and Management System (IM3S) Group
 #
@@ -20,11 +20,10 @@
 # ------------------------------------------------------------------------------
 
 import random
-from datetime import datetime, timedelta
-from utils.distributions import leak_rvs
+from datetime import datetime
 
 
-def generate_preseeds(params):
+def gen_seed_timeseries(params):
     start_date = datetime(*params['start_date'])
     n_timesteps = (datetime(*params['end_date'])-start_date).days
     return [random.randrange(1, 50, 1) for i in range(n_timesteps)]
