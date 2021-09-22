@@ -159,6 +159,7 @@ class BaseCompany:
                     and self.state['t'].current_date.month == 1:
                 site[sites_this_year] = 0
 
+        # Daily check of watchlist
         if len(self.site_watchlist) > 0:
             self.flag_sites()
 
@@ -190,6 +191,7 @@ class BaseCompany:
             if self.config['follow_up']['instant_threshold'] \
                     and site['site_measured_rate'] > self.config['follow_up']['instant_threshold']:
                 self.flag_site(site)
+                # Remove the site from the watchlist if it needs an instant followup
                 if facility_ID in site_wl:
                     site_wl.pop(facility_ID)
             elif facility_ID not in site_wl:
@@ -217,6 +219,9 @@ class BaseCompany:
                 )
 
         # Sort Watchlist by emissions rate
+        # This ensures that the leakest sites are at the top of the dictionary
+        # so proportional site followup can be performed without resorting everyday
+        # within the flag_sites function.
         site_wl = {k: v for k, v in sorted(
             site_wl.items(),
             key=lambda x: x[1]['site_measured_rate'],
@@ -224,6 +229,13 @@ class BaseCompany:
         }
 
     def flag_site(self, site):
+        """ Flag a single site and check for leak redundancy
+
+        Args:
+            site (dict): a dictionary which must have a site style dict,
+                         (state['sites']) a site_measured_rate, and a site
+                         vent rate
+        """
         site_obj = site['site']
         site_true_rate = site['site_measured_rate']
         venting = site['vent_rate']
@@ -233,23 +245,20 @@ class BaseCompany:
             self.timeseries['{}_flags_redund1'.format(
                 self.name)][self.state['t'].current_timestep] += 1
         else:
-            # Flag the site for follow up
+            # Flag the site for follow-up
             site_obj['currently_flagged'] = True
             site_obj['date_flagged'] = self.state['t'].current_date
             site_obj['flagged_by'] = self.config['label']
             self.timeseries['{}_eff_flags'.format(
                 self.name)][self.state['t'].current_timestep] += 1
 
-            # Redand2 is hard to keep track of with multiple sets of serveys
-            # Disable for now
-            # # Does the chosen site already have tagged leaks?
-            # redund2 = False
-            # for leak in site_obj['leaks_present']:
-            #     if leak['date_tagged'] is not None:
-            #         redund2 = True
-            # if redund2:
-            #     self.timeseries['{}_flags_redund2'.format(
-            #         self.name)][self.state['t'].current_timestep] += 1
+            # Check to see if the site has any leaks that are active and tagged
+            site_leaks = [lk for lk in self.state['leaks']
+                          if lk['status'] == 'active' and lk['tagged']
+                          and lk['facility_ID'] == site_obj['facility_ID']]
+            if len(site_leaks) > 0:
+                self.timeseries['{}_flags_redund2'.format(
+                    self.name)][self.state['t'].current_timestep] += 1
 
             # Would the site have been chosen without venting?
             if self.parameters['consider_venting']:
@@ -259,34 +268,38 @@ class BaseCompany:
 
     def flag_sites(self):
         """
-        Flag the most important sites for follow-up.
+        Performs followup proportion and threshold checks on all sites for watchlist sites
+        past follow-up delay / grace period.
 
         """
         site_wl = self.site_watchlist
         first_survey_time = min(site['dates'][0] for sidx, site in site_wl.items())
         can_flag_date = first_survey_time + timedelta(days=self.config['follow_up']['delay'])
-        # If the delay / grace period has passed start surveys. Date is used to ignore the hour
-        # Leak was detected and focus on the day instead.
+        # If the delay / grace period has passed since the first leak reported in the watchlist
+        # start surveys. Date is used to ignore the hour Leak was detected and focus on the day
+        # instead.
         if self.state['t'].current_date.date() >= can_flag_date.date():
-            target_sites = []
             # Get portion of sites and threshold filtered sited
             if self.config['follow_up']['interaction_priority'] == 'proportion':
-                n_sites_to_flag = len(site_wl) * self.config['follow_up']['proportion']
-                n_sites_to_flag = int(math.ceil(n_sites_to_flag))
+                prop_to_flag = int(math.ceil(
+                    len(site_wl) * self.config['follow_up']['proportion']))
                 # site_wl is an ordered by leak size.
-                target_sites = [site for sdx, site in site_wl.items()[:n_sites_to_flag]
+                site_wl_subset = site_wl.items()[:prop_to_flag]
+                target_sites = [site for sdx, site in site_wl_subset
                                 if site['site_measured_rate']
                                 > self.config['follow_up']['threshold']]
-            else:
-                target_sites = [site for sdx, site in site_wl.items()
-                                if site['site_measured_rate']
-                                > self.config['follow_up']['threshold']]
-                n_sites_to_flag = len(target_sites) * self.config['follow_up']['proportion']
-                n_sites_to_flag = int(math.ceil(n_sites_to_flag))
-                target_sites = target_sites[:n_sites_to_flag]
+            if self.config['follow_up']['interaction_priority'] == 'threshold':
+                sites_above_thresh = [site for sdx, site in site_wl.items()
+                                      if site['site_measured_rate']
+                                      > self.config['follow_up']['threshold']]
+                prop_to_flag = int(math.ceil(
+                    len(sites_above_thresh) * self.config['follow_up']['proportion']))
+                target_sites = sites_above_thresh[:prop_to_flag]
             # Go through all targeted sites and flag them or add them to redundant lists
             for targ_site in target_sites:
                 self.flag_site(targ_site)
+            # Reset watchlist
+            self.site_watchlist = {}
 
     def aggregate_by(self, list, filter):
         '''
