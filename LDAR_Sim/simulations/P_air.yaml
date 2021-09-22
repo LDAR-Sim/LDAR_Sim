@@ -4,6 +4,3 @@ version: '2.0'
 method_labels:
 - aircraft
 - OGI_FU
-site_samples: [True, 200]
-# emissions:
-#   leak_file: 'leak_rates.csv'

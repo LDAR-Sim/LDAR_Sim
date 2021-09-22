@@ -4,5 +4,3 @@ version: '2.0'
 method_labels:
 - aircraft_dev
 - OGI_FU_dev
-site_samples: [True, 200]
-# - operator

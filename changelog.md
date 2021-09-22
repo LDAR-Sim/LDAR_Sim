@@ -17,7 +17,7 @@ Change Log Version 2.0 (21/09):
 16.	**Added ability to use hourly weather**
 17.	**Added a function to convert weather data to local time zone.**
 18.	**Improved ERA5 download program and support (in file) documentation**
-19.**	Added a seed timeseries generator –** Useful for testing as each day will have the same seed for all programs in a simulation set. 
+19. **Added a seed timeseries generator –** Useful for testing as each day will have the same seed for all programs in a simulation set. 
 20.	**Added a sensitivity analysis program called ldar_sim_sens.py -** This runs LDAR sim from a rapper that will generate either a series of programs based on a single range of variables or a series of simulations sets based on a single range of variables.
 21.	**Added a number of crews and minimum survey interval estimator -**  This is performed before simulations are ran and is used to estimate when a survey should be performed based on the RS and how many of crews are required to perform all surveys within the RS time period.
 22.	**Added Operator agent -** Uses stationary method and new AVO sensor
