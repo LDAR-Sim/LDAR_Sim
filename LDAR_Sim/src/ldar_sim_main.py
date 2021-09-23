@@ -36,6 +36,7 @@ from batch_reporting import BatchReporting
 from ldar_sim_run import ldar_sim_run
 from copy import deepcopy
 from argparse import RawTextHelpFormatter
+from economics.cost_mitigation import cost_mitigation
 
 
 if __name__ == '__main__':
@@ -205,6 +206,7 @@ if __name__ == '__main__':
     # Do batch reporting
     if write_data:
         # Create a data object...
+        cost_mitigation = cost_mitigation(res, ref_program, output_directory)
         reporting_data = BatchReporting(
             output_directory, start_date, ref_program)
         if n_simulations > 1:
