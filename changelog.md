@@ -23,3 +23,4 @@ Change Log Version 2.0 (21/09):
 22.	**Added Operator agent -** Uses stationary method and new AVO sensor
 23.	**Added follow-up delay grace period -**  Allows company to wait a set amount of time before deciding which sites to follow up with.  Site redundancy can be handled using the redundancy filter where max, average, or recent emission rates can be used.
 23.	**Added instant follow-up -**  Allows company to flag sites immediately if the emission rate from the site is greater than a user defined threshold.
+24. **Improved and added new economics functionality with cost_mitigation.py -** Calculates the value of natural gas mitigated with LDAR programs below baseline emissions. This value is used, along with total costs, to derive a cost mitigation ratio for each LDAR program input into the model. 
