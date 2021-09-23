@@ -51,14 +51,12 @@ def get_referenced_dataframe(sim_results, columns, ref_prog='P_ref'):
         p_ts['value_x'] = sim['value_x']
         if sim['meta']['program_name'] == ref_prog:
             ref.append(p_ts)
-        else:
-            p_ts['program_name'] = sim['meta']['program_name']
-            try:
-                p_ts['key_z'] = sim['meta']['key_z']
-                p_ts['value_z'] = sim['meta']['value_z']
-            except KeyError:
-                pass
-            alt.append(p_ts)
+        try:
+            p_ts['key_z'] = sim['meta']['key_z']
+            p_ts['value_z'] = sim['meta']['value_z']
+        except KeyError:
+            pass
+        alt.append(p_ts)
     all_ref = concat(ref).reset_index().rename({'program_name': 'ref_prog'}, axis=1)
     all_ref = all_ref.rename({col[0]: "ref_{}".format(col[0]) for col in columns}, axis=1)
     all_alt = concat(alt).reset_index()
