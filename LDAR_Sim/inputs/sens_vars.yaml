@@ -8,3 +8,14 @@ sens_x_vars:
   - paths:
       - '__all.LPR'
     vals: [0.001, 0.005]
+
+stat_columns:
+  - column: 'emis_rat'
+    description: 'Daily total cost difference($)'
+  - column: 'cost_diff'
+    description: 'Daily emissions ratio'
+  - column: 'daily_emissions_kg'
+    description: 'Daily emissions (kg/day)'
+  - column: 'total_daily_cost'
+    description: 'Daily total cost ($)'
+

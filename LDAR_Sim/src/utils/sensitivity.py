@@ -109,31 +109,32 @@ def set_from_keylist(dic, keys, value):
     dic[keys[-1]] = value
 
 
-def group_timeseries(time_series):
+def group_timeseries(time_series, group_col):
     groups = {}
     for pname in list(time_series.program_name.unique()):
-        for value_x in list(time_series.value_x.unique()):
+        for val in list(time_series[group_col].unique()):
             groups.update({
-                "{}_{}".format(pname, value_x): time_series[(time_series.program_name == pname)
-                                                            & (time_series.value_x == value_x)]
+                "{}_{}".format(pname, val): time_series[(time_series.program_name == pname)
+                                                        & (time_series[group_col] == val)]
             })
     return groups
 
 
-def generate_violin(grouped_ts):
-    outdata = [list(prog['emis_rat']) for pdix, prog in grouped_ts.items()]
-    textstr = '\n'.join([pdix for pdix in grouped_ts])
+def generate_violin(grouped_ts, val_col, y_label, output_dir):
+    outdata = [list(prog[val_col]) for pdix, prog in grouped_ts.items()]
+    textstr = '\n'.join(['{}. {}'.format(pidx + 1, pname)
+                         for pidx, pname in enumerate(grouped_ts)])
     fig, ax = plt.subplots()
-    ax.set_xlabel('x-axis')
+    ax.set_xlabel('program')
+    ax.set_ylabel(y_label)
     ax.violinplot(outdata,  widths=0.7,
                   showmeans=True, showextrema=True, showmedians=True)
     ax.set_xticks([i+1 for i in range(len(grouped_ts))])
-    props = dict(boxstyle='round', facecolor='wheat', alpha=0.3)
-    ax.text(0.95, 0.95, textstr, transform=ax.transAxes, fontsize=10,
-            verticalalignment='top', horizontalalignment='right', bbox=props)
+    ax.text(0.05, 0.95, textstr, transform=ax.transAxes,
+            fontsize=10, verticalalignment='top',
+            bbox={'boxstyle': 'round',
+                  'alpha': 0.3,
+                  'color': 'orangered'
+                  })
     fig.tight_layout()
-    plt.show()
-
-    # pgroup = time_series.groupby(
-    #     ['program_name', 'key_x', 'value_x', 'n_sim']).median().reset_index()
-    # pgroup.to_csv(output_directory/'sens_results_{}.csv'.format(key), index=False)
+    fig.savefig(output_dir/"violin_{}".format(val_col), dpi=fig.dpi)

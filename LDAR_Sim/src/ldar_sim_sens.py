@@ -25,6 +25,9 @@ import os
 import copy
 import datetime
 import multiprocessing as mp
+from scipy.stats import ks_2samp
+import shutil
+import pandas as pd
 
 from input_manager import InputManager
 from utils.result_processing import get_referenced_dataframe
@@ -127,6 +130,7 @@ if __name__ == '__main__':
     sens_z_var = sens_parameters['sens_z_var']
     programs = generate_sens_prog_set(sens_z_var, programs)
     sens_x_vars = sens_parameters['sens_x_vars']
+    stat_columns = sens_parameters['stat_columns']
 
     if not os.path.exists(output_directory):
         os.makedirs(output_directory)
@@ -167,14 +171,42 @@ if __name__ == '__main__':
                 for prog in prog_results:
                     prog.update({'key_x': key, 'value_x': val})
                 sim_progs += prog_results
+
+            # This will calculate the emissions ratio and the cost difference and
+            # and generate pandas data frams that include those added columns
             alt_ts = get_referenced_dataframe(
                 sim_progs,
                 [['daily_emissions_kg', 'emis_rat', 'rat'],
                  ['total_daily_cost', 'cost_diff', 'diff']],
                 ref_program)
-            grouped_ts = group_timeseries(alt_ts)
-            generate_violin(grouped_ts)
 
-            pgroup = alt_ts.groupby(
-                ['program_name', 'key_x', 'value_x']).mean().reset_index()
-            pgroup.to_csv(output_directory/'sens_results_{}.csv'.format(key), index=False)
+            # Create output folder for the sensitivity variable
+            pset_output_dir = output_directory/'sens'/'{}'.format(key)
+            if pset_output_dir.exists() and pset_output_dir.is_dir():
+                shutil.rmtree(pset_output_dir)
+            os.makedirs(pset_output_dir)
+
+            # Split up dataframe into multiple frames, by the sensitivity variable
+            # this is required for plotting and estimating the KS p_vals
+            group_ts = group_timeseries(alt_ts, 'value_x')
+            # Group the time series
+            group_prog = alt_ts.groupby(['program_name', 'key_x', 'value_x'])
+            for col in stat_columns:
+                generate_violin(group_ts, col['column'], col['description'], pset_output_dir)
+                # Generate descriptive statistics on each input column and save to file
+                pgroup_desc_stats = group_prog[col['column']].describe().reset_index()
+                pgroup_desc_stats = pgroup_desc_stats.merge(
+                    group_prog[col['column']].quantile(0.95).reset_index().rename(
+                        columns={col['column']: "95%"}))
+                pgroup_desc_stats.to_csv(
+                    pset_output_dir / 'desc_{}.csv'.format(col['column']), index=False)
+                # Run a Kolmogorov–Smirnov test between each distribution
+                ks_mat = {
+                    k_x: {
+                        k_y: ks_2samp(
+                            group_ts[k_x][col['column']],
+                            group_ts[k_y][col['column']]).pvalue
+                        for k_y, _ in group_ts.items()}
+                    for k_x, _ in group_ts.items()}
+                ks_df = pd.DataFrame(ks_mat)
+                ks_df.to_csv(pset_output_dir/'ks_pval_mat_{}.csv'.format(col['column']))
