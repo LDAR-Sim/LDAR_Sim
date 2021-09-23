@@ -1,4 +1,0 @@
-parameter_level: global
-version: '2.0'
-pregenerate_leaks: True
-make_maps: False
