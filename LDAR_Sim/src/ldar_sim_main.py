@@ -29,8 +29,8 @@ import multiprocessing as mp
 
 from initialization.sites import generate_sites, regenerate_sites
 from initialization.preseed import gen_seed_timeseries
+from initialization.input_manager import InputManager
 from generic_functions import check_ERA5_file
-from input_manager import InputManager
 from pathlib import Path
 from batch_reporting import BatchReporting
 from ldar_sim_run import ldar_sim_run
