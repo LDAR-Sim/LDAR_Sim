@@ -27,7 +27,7 @@ To reduce fugitive methane emissions from the oil and gas (O&amp;G) industry, co
 
 LDAR-Sim is a computer model that simulates an asset base of oil and gas facilities, the emissions they produce, and the work crews that use different technologies and methods to find and repair leaks. LDAR-Sim replicates the complex reality of LDAR in a virtual world and allows users to test how changes to facilities or the applications of different technologies and methods might affect emissions reductions and LDAR program costs.
 
-To support wider use of LDAR-Sim, the University of Calgary and Highwood Emissions Management have partnered to expand the model&#39;s capabilities and stakeholder accessibility through the IM3S Project. This document details the model&#39;s input data definitions, requirements, and formats. For each input parameter, the data type, defaults, and a detailed description are provided, as well as additional information about data acquisition and limitations. The parameter list comprises general inputs such as weather, leak rates, and facility coordinates, as well as those specific to individual close-range and screening methods like cost-per-day and follow-up thresholds. All inputs, whether empirical distributions or Boolean logic, are customizable. Recommended defaults are described.
+To support wider use of LDAR-Sim, the University of Calgary and Highwood Emissions Management have partnered to expand the model&#39;s capabilities and stakeholder accessibility through the IM3S Project. This document details the model&#39;s input data definitions, requirements, and formats. For each input parameter, the data type, defaults, and a detailed description are provided, as well as additional information about data acquisition and limitations. The parameter list comprises general inputs such as weather, leak counts and rates, and facility coordinates, as well as those specific to individual close-range and screening methods like cost-per-day and follow-up thresholds. All inputs, whether empirical distributions or Boolean logic, are customizable. Recommended defaults are described.
 
 By detailing the model inputs, this report creates the technical foundation for adding new functionality and enabling wider use of the model. This document will be revised continuously as modules, inputs, and functionality are added to or removed from LDAR-Sim.
 
@@ -38,25 +38,25 @@ By detailing the model inputs, this report creates the technical foundation for 
 The software is organized in the following structure:
 
   * Root
-    * inputs
+    * inputs_template
     * install
     * outputs
-    * src
-    * simulations
+    * module_code
+    * sample_simulations
   
   * LDAR-Sim_inputs.md
   * LICENSE.txt
   * README.md
 
-The **Root** folder includes all code, inputs, and outputs necessary to running LDAR-Sim. From a software perspective, the root folder is the parent to the src folder (folder containing LDAR_sim_main). This folder will be always be the root folder when making relative references in LDAR-Sim. For example, if input_directory is specified as *./inputs* from anywhere in the code, the targeted folder will be *{absolute_path_to} / Root / inputs*.
+The **Root** folder includes all code, inputs, and outputs necessary to running LDAR-Sim. From a software perspective, the root folder is the parent to the module_code folder (folder containing LDAR_sim_main). This folder will be always be the root folder when making relative references in LDAR-Sim. For example, if input_directory is specified as *./inputs_template* from anywhere in the code, the targeted folder will be *{absolute_path_to} / Root / inputs_template*.
 
-The **inputs** folder contains input files required to run LDAR-SIM. These include Airport files, empirical leak and vent data, facility lists, subtype distributions, and legacy program input parameter files (<V2.0). 
+The **inputs_template** folder contains input files required to run LDAR-SIM. These include Airport files, empirical leak and vent data, facility lists, subtype distributions, and legacy program input parameter files (<V2.0). 
 
 The **outputs** folder stores all output data files produced by LDAR-SIM. The folder is cleaned, and added if required each time ldar_sim_main is run.
 
-The **src** folder stores the python source code. The main code of LDAR_SIM, LDAR_sim_main.py is stored in the base folder of src.
+The **module_code** folder stores the python source code. The main code of LDAR_SIM, LDAR_sim_main.py is stored in the base folder of module_code.
 
-The **simulations** stores >V2 input parameter files. -- This is currently in development and may be changed before V2 release--. 
+The **sample_simulations** stores >V2 input parameter files. -- This is currently in development and may be changed before V2 release--. 
 
 ---
 
@@ -70,13 +70,13 @@ python ldar_sim_main.py parameter_file1.txt parameter_file2.txt
 Alternatively, a single folder name (absolute or relative to root) can be passed by flagged argument *-P* or  *--in_dir*. All json or yaml files within that folder will be added as parameter_files. For example the following will use all parameter files within the sample simulation folder:
 
 ```buildoutcfg
-python ldar_sim_main.py --in_dir ./simulations
+python ldar_sim_main.py --in_dir ./sample_simulations
 ```
 
 
 Alternatively, one can directly specify the parameters in `ldar_sim_main.py`; however, this is discouraged as it involves changing the model to run different programs and will be depreciated.
 
-We recommend running the model with a working directory set to /LDAR_Sim/src.
+We recommend running the model with a working directory set to /LDAR_Sim/model_code.
 
 ## Parameter File Structure
 
@@ -107,7 +107,7 @@ We recommend supplying LDAR-Sim with a full set of parameters, copied from the d
 However, it may be more convenient once you are familiar with how parameter files update each other to use multiple parameter files to create your simulations and rely upon the default parameters.
 
 All simulations using multiple parameter files are created the following way:
-1. default parameters in the `inputs` folder are read into the model.
+1. default parameters in the `inputs_template` folder are read into the model.
 2. each parameter file is read on top of the respective parameter set, updating only the keys that are supplied. 
 
 Parameter files are read on top of each other, starting with the default set of parameters. How does this work? Here is an example `parameter_file1.txt`:
@@ -192,7 +192,6 @@ While this is relatively intuitive, there are special considerations for methods
     - continuous
     - OGI_FU
     - OGI
-    - operator
     - satellite
     - truck
 &nbsp;
@@ -332,7 +331,7 @@ If you are developing for LDAR-Sim, please adhere to the following rules:
 
 **Data type:** String
 
-**Default input:** "./inputs"
+**Default input:** "./inputs_template"
 
 **Description:** Specify location containing input files, i.e., infrastructure and weather. Can be an absolute path, or relative path to the root folder.
 
@@ -436,33 +435,6 @@ If you are developing for LDAR-Sim, please adhere to the following rules:
 
 **Notes of caution:** N/A
 
-
-## pregen\_leaks
-
-**Data type:** Boolean
-
-**Default input:** False
-
-**Description:** If set to true, leaks will be generated prior to running the simulations. This can be used to test a set of program simulations with the same leaks and the same sites. This can reduce modelling uncertainty when comparing two programs with a limited number of simulations, especially from leaks considered super emitters.
-
-If enabled, The leaks will be stored locally in /inputs/generation after running. On subsequent simulations the user will be prompted to use the stored data , or to regenerate. At this time input parameters are not checked, therefore the user should generate new leaks after changing input parameters.
-
-**Notes on acquisition:** N/A
-
-**Notes of caution:** N/A
-
-## preseed\_random
-
-**Data type:** Boolean
-
-**Default input:** False
-
-**Description:** If set to true, a timeseries of daily random integers will be created, and passed into each program, where each program within a simulation set receives the same timeseries. Then within each day of the simulation, the numpy and random seeds are set using the daily integer. This ensures that the output values will be the same in identical programs regardless of the stocastic nature of the software. 
-
-**Notes on acquisition:** N/A
-
-**Notes of caution:**  This should only be used for testing purposes and will likely be removed in future versions.
-
 ---
 
 # Program Inputs
@@ -555,7 +527,7 @@ If using different weather files for different programs (e.g., when comparing di
 
 **Notes on acquisition:** See subsections.
 
-**Notes of caution:** Although facility-specific inputs provide flexibility, in most cases the appropriate data will not be available, and the same survey time or survey frequency may be used for all facilities. Similarly, in most cases the orange text in Table 2 will not be required, and should only be used if the available input distributions are comprehensive. In general, LDAR-Sim does not hard-code methods, facility types, production types, and so on. These are provided by the user as categorical variables and can be anything. However, categorical variables must be consistent among different input files or errors will occur.
+**Notes of caution:** Although facility-specific inputs provide flexibility, in most cases the appropriate data will not be available, and the same survey time or survey frequency may be used for all facilities. Similarly, in most cases the orange text in Table 2 will not be required, and should only be used if the available input distributions are comprehensive (see count\_file section for futher context). In general, LDAR-Sim does not hard-code methods, facility types, production types, and so on. These are provided by the user as categorical variables and can be anything. However, categorical variables must be consistent among different input files or errors will occur.
 
 ### facility\_ID
 
@@ -653,7 +625,7 @@ If using different weather files for different programs (e.g., when comparing di
 
 **Notes on acquisition:** Specific to the category chosen and up to the user to define.
 
-**Notes of caution:** Categories used here must correspond with any categories used elsewhere in the model. In particular, when sampling from the leak\_file, LDAR-Sim will match the additional categories specified in all files to refine the sampling process and generate emissions information that is representative of the facility for which sampling is being performed. Note that the number of leak rates required for the custom empirical distribution should increase exponentially for each new additional category used, because sampling will become increasingly specific. Categories must also be sufficiently exhaustive to be representative.
+**Notes of caution:** Categories used here must correspond with any categories used elsewhere in the model. In particular, when sampling from the count\_file and the leak\_file, LDAR-Sim will match the additional categories specified in all files to refine the sampling process and generate emissions information that is representative of the facility for which sampling is being performed. Note that the number of leak counts and leak rates required for the custom empirical distribution should increase exponentially for each new additional category used, because sampling will become increasingly specific. Categories must also be sufficiently exhaustive to be representative. See the count\_file section for an example of why additional categories must be included deliberately and with prudence.
 
 ## leak\_file
 
@@ -661,12 +633,23 @@ If using different weather files for different programs (e.g., when comparing di
 
 **Default input:**&quot;leaks\_rates.csv&quot;
 
-**Description:** The leak\_file specifies the leak rates and relevant characteristics of empirical leaks, forming the basis of the leak-rate distribution that is sampled once for each new leak that is generated. At the bare minimum, the csv contains a single column with the heading name _gpersec_. Each cell contains a numeric value representing the emission rate of a real, previously detected, and quantified leak, in grams per second. For many applications, this single column may be sufficient. Additional columns can be included if &#39;intelligent&#39; sampling of leak rates is to be used. These fields must have matching fields in the infrastructure\_file. Examples include facility type, production type, company, and so on. Beyond column A, any column headings can be used, and all data contents are treated as character strings (category labels). See Table 3 for an example.
+**Description:** The leak\_file specifies the leak rates and relevant characteristics of empirical leaks, forming the basis of the leak-rate distribution that is sampled once for each new leak that is generated. At the bare minimum, the csv contains a single column with the heading name _gpersec_. Each cell contains a numeric value representing the emission rate of a real, previously detected, and quantified leak, in grams per second. For many applications, this single column may be sufficient. Additional columns can be included if &#39;intelligent&#39; sampling of leak counts is to be used. These fields must have matching fields in the infrastructure\_file. Examples include facility type, production type, company, and so on. Beyond column A (_counts_), any column headings can be used, and all data contents are treated as character strings (category labels). See Table 3 for an example.
 
-**Notes on acquisition:** It is important that leak rate data are collected using the same instrument that is used to estimate the leak production rate (i.e., both collected using M21 or both collected using OGI). Ideally, LPR and leak data would be collected at the same time and for the same sites.
+**Notes on acquisition:** It is important that leak rate data are collected using the same instrument that is used to collect leak count data (i.e., both collected using M21 or both collected using OGI). Ideally, count and leak data would be collected at the same time and for the same sites.
 
-**Notes of caution:** For non-mandatory columns (columns B and onward), the number of leaks required for the distribution should increase exponentially for each new column, because leak rate sampling will become increasingly specific. Categories must also be sufficiently exhaustive to be representative.
+**Notes of caution:** For non-mandatory columns (columns B and onward), the number of leaks required for the distribution should increase exponentially for each new column, because leak rate sampling will become increasingly specific. Categories must also be sufficiently exhaustive to be representative. See count\_file for an example.
 
+## count\_file
+
+**Data type:** Character string that specifies the name of the csv count file.
+
+**Default input:**&quot;leak\_counts.csv&quot;
+
+**Description:** The count\_file specifies the number of leaks expected to be found at a facility. It is a distribution of leak counts that is sampled once for each facility during initialization. At the bare minimum, the csv contains a single column with the heading name _counts_. Each cell contains an integer representing the number of leaks found during a single LDAR survey. For many applications, this single column may be sufficient. Additional columns can be included if &#39;intelligent&#39; sampling of leak counts is to be used. These fields must have matching fields in the infrastructure\_file. Examples include facility type, production type, company, and so on. Beyond column A (_counts_), any column headings can be used, and all data contents are treated as character strings (category labels).
+
+**Notes on acquisition:** It is important that count data are collected using the same instrument that is used to collect leak rate data (i.e., both collected using M21 or both collected using OGI). Ideally, count and leak data would be collected at the same time and for the same sites (see leak\_file below).
+
+**Notes of caution:** The count distribution should include a zero for each leak-free facility that was visited during the collection of empirical data. For &#39;supplemental&#39; columns (columns B and onward), the number of leaks required for the distribution should increase exponentially for each new column, because count sampling will become increasingly specific. Categories must also be sufficiently exhaustive to be representative. For example, in the table below, each time a natural gas facility with type 361 is sampled, only a single option exists, so the leak count sampled for the new facility will be 1. If the facility type is 311, then the number of leaks sampled could be 6 or 8. If a facility is input to the infrastructure\_file that is subtype 341 and gas, or subtype 401, an error will be returned, as a matching input distribution cannot be generated.
 
 ## vent\_file
 
@@ -1007,41 +990,37 @@ __*Temporary__: In moving from individual methods to base module with changable 
 
 **Notes on acquisition:** No data acquisition required.
 
-**Notes of caution:** Unless explicitly evaluating labour constraints, ensure that sufficient crews are available to perform LDAR according to the requirements set out in the infrastructure\_file. For example, if 2000 facilities require LDAR, and each takes an saverage of 300 minutes, ~10,000 work hours are required, or 3-4 crews working full time.
+**Notes of caution:** Unless explicitly evaluating labour constraints, ensure that sufficient crews are available to perform LDAR according to the requirements set out in the infrastructure\_file. For example, if 2000 facilities require LDAR, and each takes an average of 300 minutes, ~10,000 work hours are required, or 3-4 crews working full time.
 
-## weather_envs
+## min_temp
 
-**Weather Envelops**
+**Data type:** Numeric
 
-### temp
+**Default input:** -100
 
-**Data type:** List of Integers
-
-**Default input:**  [-40, 40]
-
-**Description:** The range of average hourly temperature (°C) at which crews will work.
+**Description:** The minimum average hourly temperature (°C) at which crews will work.
 
 **Notes on acquisition:** No data acquisition required.
 
 **Notes of caution:** Note that units are in degrees Celsius, not Fahrenheit.
 
-### precip
+## max_precip
 
-**Data type:** List of Integers
+**Data type:** Numeric
 
-**Default input:**  [0, 1]
+**Default input:** 100
 
-**Description:** The range of precipitation accumulation allowed (mm) over one hour.
+**Description:** The maximum precipitation accumulation allowed (mm) over one hour.
 
 **Notes on acquisition:** No data acquisition required.
 
 **Notes of caution:** N/A
 
-### wind
+## max_wind
 
-**Data type:** List of Integers
+**Data type:** Numeric
 
-**Default input:** [0, 10]
+**Default input:** 100
 
 **Description:** The maximum average hourly wind speed (m/s at 10m) at which crews will work.
 
@@ -1111,35 +1090,19 @@ __*Temporary__: In moving from individual methods to base module with changable 
 
 **Notes of caution:** N/A
 
-## follow\_up
+## follow\_up\_thresh
 
-### threshold
+**Data type:** List
 
-**Data type:** Float
+**Default input:** [1.0, &quot;proportion&quot;] or [0, &quot;absolute&quot;]
 
-**Default input:** 0.0
-
-**Description:**  The follow-up threshold in grams per second. Measured site-level emissions must be above the follow-up threshold before a site becomes a candidate for flagging. If *follow_up.threshold_type*  is &quot;absolute&quot;, the numeric value indicates the follow-up threshold in grams per second. If &quot;relative&quot;, the numeric value is passed to a function that calculates an emission rate that corresponds to a desired proportion of total emissions for a given leak size distribution. The function estimates the MDL needed to find the top X percent of sources for a given leak size distribution. For example, given a proportion of 0.01 and a leak-size distribution, this function will return an estimate of the follow-up threshold that will ensure that all leaks in the top 1% of leak sizes are found.
-
-The follow-up delay parameter can be set to require multiple measurements for a site above threshold before a site is flagged.
+**Description:** A list of two parameters that define the follow-up threshold. Measured site-level emissions must be above the follow-up threshold before a site becomes a candidate for flagging. The character string in the second position of the list must read &quot;proportion&quot; or &quot;absolute&quot;. If absolute, the numeric value in the first position indicates the follow-up threshold in grams per second. If &quot;proportion&quot;, the numeric value in the first position is passed to a function that calculates emission rate that corresponds to a desired proportion of total emissions for a given leak size distribution. The function estimates the MDL needed to find the top X percent of sources for a given leak size distribution. For example, given a proportion of 0.01 and a leak-size distribution, this function will return an estimate of the follow-up threshold that will ensure that all leaks in the top 1% of leak sizes are found.
 
 **Notes on acquisition:** No data acquisition required.
 
-**Notes of caution:** Follow-up thresholds are explored in detail in Fox et al. 2021. Choosing follow-up rules is complex and work practices should be developed following extensive analysis of different scenarios. It is important to understand how follow-up thresholds and follow-up ratios interact, especially if both are to be used in the same program. Note that follow-up thresholds are similar to minimum detection limits but that the former is checked against to the measured emission rate (which is a function of quantification error) while the latter is checked against the true emission rate.
+**Notes of caution:** Follow-up thresholds are explored in detail in Fox et al. 2021. Choosing follow-up rules is complex and work practices should be developed following extensive analysis of different scenarios. It is important to understand how follow-up thresholds and follow-up ratios interact, especially if both are to be used in the same program. Note that follow-up thresholds are similar to minimum detection limits but that the former is checked against the measured emission rate (which is a function of quantification error) while the latter is checked against the true emission rate.
 
-### threshold\_type
-
-**Data type:** Character String
-
-**Default input:** "absolute"
-
-**Description:**  Can be "absolute" or "relative". See *follow_up.threshold* for more information.
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:**  See *follow_up.threshold* for more information.
-
-### proportion
+## follow\_up\_ratio
 
 **Data type:** Numeric
 
@@ -1149,75 +1112,16 @@ The follow-up delay parameter can be set to require multiple measurements for a 
 
 **Notes on acquisition:** No data acquisition required.
 
-**Notes of caution:** The follow-up proportion ranks sites based on their measured emission rate, which may differ from the true emission rate if quantification error is used. The effect of follow\_up.proportion will depend on the temporal interval over which sites accumulate in the candidate flags pool. Currently, LDAR-Sim is only configured to do this on a daily basis. For example, all candidate flags detected by all crews will be considered at the end of the day, and flags will be assigned according to the follow-up proportion. In the future, new functionality will enable variable time periods over which candidate flags can be accumulated and compared.
 
-For fixed systems, the follow-up proportion is slightly different in that it considers all candidate flags from all fixed systems, each day. Given that measurements are continuous, the follow-up ratio should be much smaller than it would be for a screening method, as facilities are flagged each day, rather than (for example) three times per year.
+**Notes of caution:** The follow-up ratio ranks sites based on their measured emission rate, which may differ from the true emission rate if quantification error is used. The effect of follow\_up\_ratio will depend on the temporal interval over which sites accumulate in the candidate flags pool. Currently, LDAR-Sim is only configured to do this on a daily basis. For example, all candidate flags detected by all crews will be considered at the end of the day, and flags will be assigned according to the follow-up ratio. In the future, new functionality will enable variable time periods over which candidate flags can be accumulated and compared.
 
-### interaction_priority
-
-**Data type:** Character String
-
-**Default input:** "threshold"
-
-**Description:**  Specifies which algorithm to run first on candidate sites. If the value is *threshold* the proportion of sites to follow up with will be taken from all sites over the threshold. If the value is *proportion* the proportion of sites will be taken from the candidate sites, then from those sites followup will occur at sites above the threshold. 
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** N/A
-
-### redundancy_filter
-
-**Data type:** Character String
-
-**Default input:** "recent"
-
-**Description:**  Specifies which measured emissions rate to use to identify which  candidate sites to follow up at if they have multiple measurements. If the *follow_up.delay* is not zero, crews can survey the site several times before flagging the site. If this value is set to *recent*, the most recent site measurement will be used to check followup threshold and proportion. If the value is set to *max*, the highest emissions rate wil be used. If the value is set to *average* the average emissions from all surveys will be used. This can be model work practices which may require multiple surveys, such as stationary sensors.
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** N/A
-
-### delay
-
-**Data type:** Integer
-
-**Default input:** 0
-
-**Description:**  The number of days required to have passed since the first site added to the site watchlist before a site can be flagged. The company will hold all measurements in a site_watchlist. The emissons rate used to triage flagging based on followup threshold and proportion are specified with follow_up.redundancy
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** N/A
-
-### instant_threshold
-
-**Data type:** Float
-
-**Default input:** 0.0
-
-**Description:**  The follow-up instant threshold in grams per second. Measured site-level emissions must be above the follow-up threshold before a candidate site becomes immediately available for flagging. If *follow_up.instant_threshold_type*  is &quot;absolute&quot;, the numeric value indicates the follow-up threshold in grams per second. If &quot;relative&quot;, the numeric value is passed to a function that calculates emission rate that corresponds to a desired proportion of total emissions for a given leak size distribution. The function estimates the MDL needed to find the top X percent of sources for a given leak size distribution. For example, given a proportion of 0.01 and a leak-size distribution, this function will return an estimate of the follow-up threshold that will ensure that all leaks in the top 1% of leak sizes are found.
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** Follow-up thresholds are explored in detail in Fox et al. 2021. Choosing follow-up rules is complex and work practices should be developed following extensive analysis of different scenarios. It is important to understand how follow-up thresholds and follow-up ratios interact, especially if both are to be used in the same program. Note that follow-up thresholds are similar to minimum detection limits but that the former is checked against to the measured emission rate (which is a function of quantification error) while the latter is checked against the true emission rate.
-
-### instant\_threshold\_type
-
-**Data type:** Character String
-
-**Default input:** "absolute"
-
-**Description:**  Can be "absolute" or "relative". See *follow_up.instant_threshold* for more information.
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:**  See *follow_up.threshold* for more information.
+For fixed systems, the follow-up ratio is slightly different in that it considers all candidate flags from all fixed systems, each day. Given that measurements are continuous, the follow-up ratio should be much smaller than it would be for a screening method, as facilities are flagged each day, rather than (for example) three times per year.
 
 ## t\_btw\_sites
 
 **Data type:** Integer, or Character string denoting csv file location.
 
-**Default input:** Dependent on method
+**Default input:** N/A
 
 **Description:** A single value or a character string that specifies the csv file containing a distribution of times spent offsite. Each time a site survey is complete, the day is advanced by this number of minutes before the subsequent site survey begins. At the end of the day, the time is again advanced by this number of minutes to simulate travel home. This value is not used if routeplanning is enabled.
 
@@ -1396,9 +1300,7 @@ where Q = the emission rate in grams of methane per hour and d is the distance o
 
 **Default input:** N/A
 
-***Temporary*** Obsolete in V2. Use follow-up delay instead.
-
-**Description:** The number of days between leak onset and detection by the fixed system. 
+**Description:** The number of days between leak onset and detection by the fixed system.
 
 **Notes on acquisition:** We recommend extensive controlled release testing under a range of representative release rates, distances, and conditions to establish time to detection.
 
@@ -1422,24 +1324,11 @@ where Q = the emission rate in grams of methane per hour and d is the distance o
 
 **Default input:** N/A
 
-**Description:** The name of satellite.  
+**Description:** The name of satellite.
 
 **Notes on acquisition:** It is only required for satellite.  
 
 **Notes of caution:** Please be sure the satellite is inlcuded in the TLE file 
-
----
-
-## percent_detectable (operator only)
-**Data type:** Numeric
-
-**Default input:** 0.1
-
-**Description:** Probability (0-1) that an operator will find a leak above the AVO MDL during a AVO survey.  
-
-**Notes on acquisition:** N/A 
-
-**Notes of caution:** Future research is required!
 
 ---
 
@@ -1455,6 +1344,7 @@ In terms of data source, inputs can come from oil and gas companies, technology 
 
 Duty Holder / Operator (historical LDAR data)
 
+- count\_file\*
 - leak\_file\*
 - LPR\*
 - vent\_file\*
@@ -1470,7 +1360,7 @@ Duty Holder / Operator (organizational data)
 Technology / Solution Provider / Operator (if self-performing LDAR)
 
 - OGI – n\_crews, min\_temp\*, max\_wind\*, max\_precip\*, min\_interval, max\_workday, cost\_per\_day\*, reporting\_delay, MDL\* , consider\_daylight
-- Screening Methods – n\_crews, [various weather and operational envelopes]\*, min\_interval, max\_workday, cost\_per\_day\*, reporting\_delay, MDL\*, consider\_daylight, follow\_up\_thresh, follow\_up\_ratio, t\_lost\_per\_site, QE\*
+- Screening Methods – n\_crews, [various weather and operational envelopes]\*, min\_interval, max\_workday, cost\_per\_day\*, reporting\_delay, MDL\*, consider\_daylight, follow\_up\_thresh,  follow\_up\_ratio, t\_lost\_per\_site, QE\*
 - Fixed sensor – same as screening methods &amp; up\_front\_cost , time to detection
 
 Modeling Expert
