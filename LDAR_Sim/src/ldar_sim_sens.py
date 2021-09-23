@@ -29,12 +29,12 @@ from scipy.stats import ks_2samp
 import shutil
 import pandas as pd
 
-from input_manager import InputManager
 from utils.result_processing import get_referenced_dataframe
 from generic_functions import check_ERA5_file
 from initialization.preseed import gen_seed_timeseries
 from initialization.sites import generate_sites, regenerate_sites
 from initialization.args import files_from_args
+from initialization.input_manager import InputManager
 from utils.sensitivity import (yaml_to_dict,
                                generate_sens_prog_set,
                                set_from_keylist,
