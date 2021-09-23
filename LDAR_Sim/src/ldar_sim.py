@@ -441,6 +441,8 @@ class LdarSim:
             'leaks': leak_df,
             'timeseries': time_df,
             'sites': site_df,
+            'program_name': params['program_name'],
+            'p_params': params
         }
 
         return(sim_summary)
