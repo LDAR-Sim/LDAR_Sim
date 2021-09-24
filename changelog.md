@@ -1,26 +1,29 @@
 Change Log Version 2.0 (21/09):
-1.	**Added external leak generator -** for creating a single leak timeseries and initial leaks for each simulation-set.
-2.	**Removed Leak Count and Spin up -** Replaced with leaks generated within the NRd time period.
-3.	**Changed to YAML inputs -**  Switched from text to YAML with default program parameters hardcoded in python. 
-4.	**Added Satellite sensor, and deployment type**
-5.	**Create a Base Class Module system -** Modules are now comprised of a deployment method, a sensor type, the scale of measurement (equipment vs component vs site), and whether they are follow-up. Old method modules are now redundant. 
-6.	**Added an in-repo Input document**
-7.	**Added an input mapper function -** Will check types and inputs prior to running programs.
-8.  **Updated Python packages, requirements file and pip.loc**
-9.	**Added company, and crew scheduling modules -**  Allows route-planning, allowable dates/months for surveys, and includes route optimization based on site location and airport locations.
-10.	**Rollover applied to all new methods**
-11. **Switched to MIT license for LDAR-Sim**
-12.	**Restructured software folder -** to be more modular and follow current practices.
-13.	**Removed unused or obsolete code –** old sensitivity analysis
-14.	**Updated Input data structure -** to object orientated structure.
-15.	**Updated time to have a start and end date -** instead of start year and timesteps.
-16.	**Added ability to use hourly weather**
-17.	**Added a function to convert weather data to local time zone.**
-18.	**Improved ERA5 download program and support (in file) documentation**
-19. **Added a seed timeseries generator –** Useful for testing as each day will have the same seed for all programs in a simulation set. 
-20.	**Added a sensitivity analysis program called ldar_sim_sens.py -** This runs LDAR sim from a rapper that will generate either a series of programs based on a single range of variables or a series of simulations sets based on a single range of variables.
-21.	**Added a number of crews and minimum survey interval estimator -**  This is performed before simulations are ran and is used to estimate when a survey should be performed based on the RS and how many of crews are required to perform all surveys within the RS time period.
-22.	**Added Operator agent -** Uses stationary method and new AVO sensor
-23.	**Added follow-up delay grace period -**  Allows company to wait a set amount of time before deciding which sites to follow up with.  Site redundancy can be handled using the redundancy filter where max, average, or recent emission rates can be used.
-23.	**Added instant follow-up -**  Allows company to flag sites immediately if the emission rate from the site is greater than a user defined threshold.
-24. **Improved and added new economics functionality with cost_mitigation.py -** Calculates the value of natural gas mitigated with LDAR programs below baseline emissions. This value is used, along with total costs, to derive a cost mitigation ratio for each LDAR program input into the model. 
+1.	**External leak generator -** Optionally creates a single set of leaks that can be used across multiple simulations to enable "apples to apples" comparisons of different programs. Leak lists can also be saved and shared to improve reproducibility.
+2.	**Modularized methods -** Methods (e.g., aircraft) are now comprised of a deployment style, a sensor type, the scale of measurement (equipment vs component vs site), and whether or not they perform follow-up inspections. Old method modules are now defunct.
+3.	**User manual -** Added comprehensive documentation for all input parameters, including descriptions and warnings. Also includes a developer guide for those who want to contribute to the public code base.
+4.	**Added satellite -** Satellite module now available, including satellite sensors, deployment strategies, and scheduling.
+5.	**Crew scheduling -** Allows route-planning, specifying survey dates and date ranges, and includes route optimization based on site, home base, and airport locations. 
+6.	**Company scheduling -** Companies can deploy crews strategically to spatial clusters of sites. Useful when assets are distributed across large geographical areas.
+7.	**Switched to MIT license** MIT licensing will be used from version 2 onwards.
+8.  **Start and end dates -** Instead of start year and a number of timesteps, specific start and end dates must be provided.
+9.	**Hourly weather -** Optional ability now exists to query weather on an hourly basis rather than only a daily average.
+10.	**New sensitivity analysis -** Added a sensitivity analysis program called ldar_sim_sens.py that runs LDAR-Sim from a wrapper that will generate either a series of programs based on a single range of variables or a series of simulation sets based on multiple ranges of variables.
+11. **Operator agent -** A new operator agent that can be assigned to a site and can use any sensor (default is AVO - auditory, visual, olfactory)
+12.	**Instant follow-up -** Allows company to flag sites immediately and prioritize them for follow up if the emission rate from the site is greater than a user-defined threshold.
+13.	**Follow-up delay -** Allows a company to wait a set amount of time (i.e., accumulate multiple screening measurements, even of the same site) before triaging sites for follow-up. Site redundancy can be handled using a new redundancy filter where max, average, or recent emission rates can be used to rank sites by severity.
+14.	**Input mapper -** Maps user-defined inputs to relevant internal defaults and checks input types for issues before running simulations.
+15.	**Local weather -** Added a function to convert weather data to local time zone when large regions are modeled.
+16.	**Accessible weather -** Improved custom ERA5 downloader and in-file support documentation.
+17. **Internal defaults -** Internal default parameters for all methods to mitigate mistakes due to previously complex parameter tracking.
+18. **Rollover -** All methods now use a rollover, meaning that if a site cannot be completed before the end of the day, crews return to a home base and come back the next day to finish that site. If a site requires multiple days to inspect, crews will continue to return to that site until it is completed.
+19.	**Labor calibration -** Option to automatically estimate the number of required crews for a given program and set minimum intervals to ensure that surveys are approximately evening distributed across each compliance period. This is performed before simulations are run and is used to estimate when a survey should be performed based on the required survey frequency and how many of crews are required to perform all surveys within the set time interval.
+20. **Improved economics -** New economics functionality with cost_mitigation.py that calculates the value of natural gas mitigated with LDAR programs below baseline emissions. This value is used, along with total costs, to derive a cost mitigation ratio for each LDAR program input into the model. Automatically outputs new figures.
+21. **Removed leak count and spin up -** These two inputs were redundant and prone to error. Initial virtual world emissions are now estimated using leak generation and removal assumptions.
+22. **Seed timeseries generator –** Useful for testing as each day will have the same seed for all programs in a simulation set. 
+23.	**Code cleanup –** Removed unused or obsolete code, especially the old and defunct sensitivity analysis.
+24. **Changed to YAML inputs -**  Switched from text file inputs to YAML to improve readability.
+25.	**Restructured software folder -** Improved folder structure for entire software to be more modular and follow current practices.
+26.	**Updated input data structure -** An object-orientated input data structure is now used.
+27. **Package upgrades -** Updated Python packages, requirements file and pip.loc.
+28. **Improved parameter organization -** Input parameter lists are now much longer but are better organized. New rules are also implemented to ensure that consistent data types are used for lists and that nested dictionaries are appropriately managed.
