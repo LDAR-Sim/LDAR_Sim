@@ -7,7 +7,13 @@ sens_z_var:
 sens_x_vars:
   - paths:
       - '__all.LPR'
-    vals: [0.001, 0.005]
+    vals: [0.00065, 0.0065]
+  - paths:
+      - '__all.NRd'
+    vals: [50, 150, 365]
+  - paths:
+      - '__all.leak_file'
+    vals: ["", 'leak_rates.csv']
 
 stat_columns:
   - column: 'emis_rat'

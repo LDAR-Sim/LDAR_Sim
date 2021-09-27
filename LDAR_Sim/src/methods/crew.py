@@ -114,17 +114,16 @@ class BaseCrew:
         m_name = self.config['label']
 
         # Aggregate true emissions to equipment and site level; get list of leaks present
-        leaks_present, equipment_rates, site_true_rate = aggregate(
-            site, self.state['leaks'])
+        leaks_present, equipment_rates, site_true_rate = aggregate(site)
 
         # Add vented emissions
         venting = 0
         if self.parameters['consider_venting']:
             venting = self.state['empirical_vents'][
                 np.random.randint(0, len(self.state['empirical_vents']))]
-        site_true_rate += venting
-        for rate in range(len(equipment_rates)):
-            equipment_rates[rate] += venting/int(site['equipment_groups'])
+            site_true_rate += venting
+            for rate in range(len(equipment_rates)):
+                equipment_rates[rate] += venting/int(site['equipment_groups'])
 
         site_detect_results = self.detect_emissions(
             site, leaks_present, equipment_rates, site_true_rate, venting)

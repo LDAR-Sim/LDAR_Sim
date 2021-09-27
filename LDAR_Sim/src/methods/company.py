@@ -89,7 +89,7 @@ class BaseCompany:
              len(self.state['weather'].latitude)))
 
         # --- init site specific variables ---
-        for site in self.state['sites']:
+        for sidx, site in self.state['sites'].items():
             site.update({'{}_t_since_last_LDAR'.format(self.name): 0})
             site.update({'{}_surveys_conducted'.format(self.name): 0})
             site.update({'{}_attempted_today?'.format(self.name): False})
@@ -137,7 +137,7 @@ class BaseCompany:
                 self.candidates_to_watchlist()
 
             # Calculate proportion sites available based on weather of site
-            available_sites = sum([1 for site in self.state['sites']
+            available_sites = sum([1 for _, site in self.state['sites'].items()
                                    if self.deployment_days[site['lon_index'], site['lat_index'],
                                                            self.state['t'].current_timestep]])
             prop_avail = available_sites / len(self.state['sites'])
@@ -152,7 +152,7 @@ class BaseCompany:
         days_since_LDAR = '{}_t_since_last_LDAR'.format(self.name)
         attempted_today = '{}_attempted_today?'.format(self.name)
         sites_this_year = '{}_surveys_done_this_year'.format(self.name)
-        for site in self.state['sites']:
+        for _, site in self.state['sites'].items():
             site[days_since_LDAR] += 1
             site[attempted_today] = False
             if self.state['t'].current_date.day == 1 \
@@ -165,8 +165,8 @@ class BaseCompany:
 
         # Update followup specific parameters
         if self.config['is_follow_up']:
-            self.state['flags'] = [flag for flag in self.state['sites']
-                                   if flag['currently_flagged']]
+            self.state['flags'] = [sidx for sidx, site in self.state['sites'].items()
+                                   if site['currently_flagged']]
         return
 
     def candidates_to_watchlist(self):
@@ -253,10 +253,9 @@ class BaseCompany:
                 self.name)][self.state['t'].current_timestep] += 1
 
             # Check to see if the site has any leaks that are active and tagged
-            site_leaks = [lk for lk in self.state['leaks']
-                          if lk['status'] == 'active' and lk['tagged']
-                          and lk['facility_ID'] == site_obj['facility_ID']]
-            if len(site_leaks) > 0:
+            site_leaks = sum([lk for lk in site_obj['active_leaks'] if lk['status'] == 'tagged'])
+
+            if site_leaks > 0:
                 self.timeseries['{}_flags_redund2'.format(
                     self.name)][self.state['t'].current_timestep] += 1
 

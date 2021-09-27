@@ -36,7 +36,7 @@ default_stationary_parameters = {
     },
     'cost': {
         'upfront': 500,
-        'per_day': 1,
+        'per_day': 0,
         'per_hour': 0,
         'per_site': 0,
 
@@ -52,6 +52,7 @@ default_stationary_parameters = {
         'instant_threshold_type': 'absolute', 	# 'absolute' or 'relative'
     },
     'time_to_detection': 7,
+    't_bw_sites': 0,
     'reporting_delay': 2,
     'MDL': 0.01,
     'QE': 0,

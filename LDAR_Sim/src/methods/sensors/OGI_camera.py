@@ -16,17 +16,16 @@ def detect_emissions(self, site, leaks_present, equipment_rates, site_true_rate,
         detect = np.random.binomial(1, prob_detect)
 
         if detect:
-            if leak['tagged']:
+            if leak['status'] == 'tagged':
                 self.timeseries[self.config['label'] +
                                 '_redund_tags'][self.state['t'].current_timestep] += 1
 
             # Add these leaks to the 'tag pool'
-            elif not leak['tagged']:
-                leak['tagged'] = True
+            elif leak['status'] == 'untagged':
+                leak['status'] == 'tagged'
                 leak['date_tagged'] = self.state['t'].current_date
                 leak['tagged_by_company'] = self.config['label']
                 leak['tagged_by_crew'] = self.id
-                self.state['tags'].append(leak)
 
         elif not detect:
             site[self.config['label'] + '_missed_leaks'] += 1
