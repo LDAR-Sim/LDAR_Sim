@@ -38,7 +38,7 @@ def make_crews(crews, config, state, parameters, timeseries, deployment_days):
     --- Required in module.company.BaseCompany ---
     """
     m_name = config['label']
-    for site in state['sites']:
+    for sidx, site in state['sites'].items():
         if config['measurement_scale'] == "equipment":  # This may change in the future
             # n_fixed = int(site['fixed_sensors'])
             pass
@@ -48,7 +48,7 @@ def make_crews(crews, config, state, parameters, timeseries, deployment_days):
         # HBD right now this can only handle one crew per site
         n_fixed = 1
         for i in range(n_fixed):
-            crew_ID = site['facility_ID'] + '-' + str(i + 1)
+            crew_ID = sidx + '-' + str(i + 1)
             # Will only accept the first crew assigned to site
             if not site['crew_ID']:
                 # assign agents

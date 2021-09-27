@@ -74,7 +74,6 @@ class OperatorAgent:
                             leak['date_tagged'] = self.state['t'].current_date
                             leak['tagged_by_company'] = 'operator'
                             leak['tagged_by_crew'] = 1
-                            self.state['tags'].append(leak)
                             self.timeseries['operator_tags'][self.state['t'].current_timestep] += 1
 
         return

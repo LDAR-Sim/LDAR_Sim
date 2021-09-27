@@ -52,7 +52,7 @@ def generate_leak(program, site, start_date, leak_count, days_active=0):
         'rate': leak_rate,
         'lat': float(site['lat']),
         'lon': float(site['lon']),
-        'status': 'active',
+        'status': 'untagged',
         'days_active': days_active,
         'tagged': False,
         'component': 'unknown',

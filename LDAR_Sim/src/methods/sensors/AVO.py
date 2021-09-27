@@ -39,7 +39,6 @@ def detect_emissions(self, site, leaks_present, equipment_rates, site_true_rate,
                     leak['date_tagged'] = self.state['t'].current_date
                     leak['tagged_by_company'] = self.config['label']
                     leak['tagged_by_crew'] = self.id
-                    self.state['tags'].append(leak)
             else:
                 site[self.config['label'] + '_missed_leaks'] += 1
         else:

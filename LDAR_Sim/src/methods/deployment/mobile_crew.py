@@ -98,9 +98,11 @@ class Schedule(BaseSchedCrew):
         #      return the days site plan. The While loop is
 
         exit_flag = True
+        site_cnt = 0
         while est_mins_remaining > 0 and len(site_pool) > 0:
             site_plans_tmp = []
-            for sidx, site in enumerate(site_pool):
+            for sidx, site in site_pool.items():
+                site_cnt += 1
                 site_plan = self.plan_visit(site, est_mins_remaining=est_mins_remaining)
                 # site plans are dicts that include  site, LDAR_minsand go_to_site keys.
                 # Site plan can be empty if weather does not permit travel
@@ -120,8 +122,10 @@ class Schedule(BaseSchedCrew):
 
             # If there is no route planning and the day has been filled with surveys
             # or all of the sites have been checked, exit the while loop
+
+            # Key diff between old and new!
             if not self.config['scheduling']['route_planning'] \
-                    and (exit_flag or sidx == len(site_pool) - 1):
+                    and (exit_flag or site_cnt == len(site_pool)):
                 break
 
             # if crew have sites they can go to then choose site from list

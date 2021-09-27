@@ -23,16 +23,18 @@ default_truck_parameters = {
     'version': '2.0',
     'parameter_level': 'method',
     'label': 'truck',
-    'module': 'truck',
+    'module': 'dummy',  # TEMPORARY for backwards compatibility
     'deployment_type': 'mobile',
+    'measurement_scale': "equipment",
+    'sensor': 'default',
+    'is_follow_up': False,
     'n_crews': 1,
     'weather_envs': {
-        'temp': [-40, 40],
+        'temp': [-30, 40],
         'wind': [0, 10],
-        'precip': [0, 1],
+        'precip': [0, 0.5],
     },
     'max_workday': 8,
-    'measurement_scale': "equipment",
     'cost': {
         'upfront': 0,
         'per_day': 2500,
@@ -49,16 +51,17 @@ default_truck_parameters = {
         'instant_threshold': None,
         'instant_threshold_type': 'absolute', 	# 'absolute' or 'relative'
     },
+    't_bw_sites': 30,
     'reporting_delay': 2,
     'MDL': 0.05,
     'QE': 0,
     'consider_daylight': False,
     'scheduling': {
         'route_planning': False,
-        'home_bases': 'homebases.csv',
-        'speed_list': [80, 90, 100],
+        'home_bases_files': 'Airport_AB_Coordinates.csv',
+        'speed_list': [90, 100, 110],
         'LDAR_crew_init_location': [-114.062019, 51.044270],
         'deployment_years': [],
         'deployment_months': [],
-    },
+    }
 }
