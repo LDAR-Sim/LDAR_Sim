@@ -17,7 +17,7 @@ Email: thomas@highwoodemissions.com
 Please note the following before reading, using, or modifying this document:
 
 - The purpose of this document is to introduce LDAR-Sim, provide guidance for use, and catalogue input parameters, files, data, and arguments required to run the LDAR-Sim model.
-- The document you are now reading will _always_ be associated with a specific version or branch of LDAR-Sim. Multiple versions of this document therefore exist, as multiple versions and subversions of LDAR-Sim exist.
+- The document you are now reading will _always_ be associated with a specific version or branch of LDAR-Sim. Multiple versions of this document therefore exist, as multiple versions and sub-versions of LDAR-Sim exist.
 - **If you are submitting a pull request to the public LDAR-Sim repo**, please update this documentation alongside modifications to code. Your pull request will not be approved without updating this document with relevant changes to inputs, how they work, and their implications for outputs.
 - Within each category, please maintain alphabetic ordering on contents.
 - For more information on LDAR-Sim, including code, instructions, and additional resources, please visit the Github page by [clicking this link](https://github.com/tarcadius/LDAR_Sim).
@@ -67,10 +67,10 @@ The **simulations** stores >V2 input parameter files. -- This is currently in de
 
 ## 4. Running the Model
 
-To run the model, supply one or more input parameter files as arguments to the program. The main function is called `ldar_sim_main.py` and is the main entrypoint to the model. File paths can be relative to the root directory (e.g., `./parameter_file1.txt`) or absolute (e.g., `D://parameter_files//parameter_file1.txt`). File paths are positional arguments and should be seperated by a single space.
+To run the model, supply one or more input parameter files as arguments to the program. The main function is called `ldar_sim_main.py` and is the main entrypoint to the model. File paths can be relative to the root directory (e.g., `./parameter_file1.yaml`) or absolute (e.g., `D://parameter_files//parameter_file1.yaml`). File paths are positional arguments and should be seperated by a single space.
 
 ```buildoutcfg
-python ldar_sim_main.py parameter_file1.txt parameter_file2.txt
+python ldar_sim_main.py parameter_file1.yaml parameter_file2.yaml
 ```
 
 Alternatively, a single folder name (absolute or relative to root) can be passed by flagged argument _-P_ or _--in_dir_. All json or yaml files within that folder will be added as parameter_files. For example the following will use all parameter files within the sample simulation folder:
@@ -188,7 +188,7 @@ While global parameters are straightforward to specify this way (and the above e
 
 ### LDAR-Sim Parameter Hierarchy
 
-LDAR-Sim uses a 3 level hierarchy of simulations, programs, and methods. To tell LDAR-Sim what level in the hierarchy your parameter file is destined for, you must specify a `parameter_level` parameter that will specify what level your parameter file is aimed at - otherwise LDAR-Sim will interpret it as global.
+As noted above, LDAR-Sim uses a 3 level hierarchy of simulations, programs, and methods. To tell LDAR-Sim what level in the hierarchy your parameter file is destined for, you must specify a `parameter_level` parameter that will specify what level your parameter file is aimed at - otherwise LDAR-Sim will interpret it as global.
 
 The `parameter_level` parameter can be one of three values:
 
@@ -196,7 +196,7 @@ The `parameter_level` parameter can be one of three values:
 - `program`: parameters are used to define a program.
 - `method`: parameters are used to define a method and update a given method by name.
 
-While this is relatively intuitive, there are special considerations for methods:
+There are special considerations for methods:
 
 - First, methods have a `module` key, that relate to specific method modules. For example, an OGI method is simulated using the OGI module. Users can build custom types or extend existing types, but some `module` is necessary to ensure LDAR-Sim knows what code to run. The full list of available modules is provided in parameter documentation below.
     &nbsp;
