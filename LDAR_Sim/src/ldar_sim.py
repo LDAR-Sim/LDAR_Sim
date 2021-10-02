@@ -55,12 +55,12 @@ class LdarSim:
         #  --- state variables ---
         state['candidate_flags'] = {}
         # Read in data files
-        if params['emissions']['leak_file'] != '':
+        if params['emissions']['leak_file'] is not None:
             state['empirical_leaks'] = np.array(pd.read_csv(
-                params['input_directory'] / params['emissions']['leak_file']).iloc[:, 0])
-        if params['emissions']['vent_file'] != '':
+                params['input_directory'] / params['emissions']['leak_file']))
+        if params['emissions']['vent_file'] is not None:
             state['empirical_sites'] = np.array(pd.read_csv(
-                params['input_directory'] / params['emissions']['vent_file']).iloc[:, 0])
+                params['input_directory'] / params['emissions']['vent_file']))
         # Read in the sites as a list of dictionaries
         if len(state['sites']) < 1:
             state['sites'], _, _ = generate_sites(params, params['input_directory'])
@@ -70,22 +70,23 @@ class LdarSim:
 
         # Sample sites
         if not params['pregenerate_leaks']:
-            if params['site_samples'][0]:
+            if params['site_samples'] is not None:
                 state['sites'] = random.sample(
                     state['sites'],
                     params['site_samples'][1])
-            if params['subtype_times'][0]:
-                subtype_times = pd.read_csv(params['input_directory'] / params['subtype_times'][1])
-                cols_to_add = subtype_times.columns[1:].tolist()
+            if params['subtype_times_file'] is not None:
+                subtype_times_file = pd.read_csv(
+                    params['input_directory'] / params['subtype_times_file'])
+                cols_to_add = subtype_times_file.columns[1:].tolist()
                 for col in cols_to_add:
                     for site in state['sites']:
-                        site[col] = subtype_times.loc[subtype_times['subtype_code'] ==
-                                                      int(site['subtype_code']), col].iloc[0]
+                        site[col] = subtype_times_file.loc[subtype_times_file['subtype_code'] ==
+                                                           int(site['subtype_code']), col].iloc[0]
             # Shuffle all the entries to randomize order for identical 't_Since_last_LDAR' values
             random.shuffle(state['sites'])
 
         # Additional variable(s) for each site
-        for sidx, site in state['sites'].items():
+        for site in state['sites']:
             if params['pregenerate_leaks']:
                 initial_leaks = params['initial_leaks'][site['facility_ID']]
                 n_leaks = len(params['initial_leaks'][site['facility_ID']])
@@ -131,11 +132,10 @@ class LdarSim:
         calculate_daylight = False
         for m_label, m_obj in params['methods'].items():
             try:
-                if isinstance(m_obj['t_bw_sites'], str):
-                    m_obj['t_bw_sites'] = np.array(pd.read_csv(
-                        params['input_directory'] / m_obj['t_bw_sites']).iloc[:, 0])
-                else:
-                    m_obj['t_bw_sites'] = np.array([m_obj['t_bw_sites']])
+                if m_obj['t_bw_sites']['file'] is not None:
+                    m_obj['t_bw_sites']['vals'] = np.array(pd.read_csv(
+                        params['input_directory'] / m_obj['t_bw_sites']['file']).iloc[:, 0])
+
                 if m_obj['consider_daylight']:
                     calculate_daylight = True
 
@@ -204,7 +204,7 @@ class LdarSim:
         update the state of active leaks
         """
         self.active_leaks = []
-        for sidx, site in self.state['sites'].items():
+        for site in self.state['sites']:
             for leak in site['active_leaks']:
                 leak['days_active'] += 1
                 self.active_leaks.append(leak)
@@ -232,8 +232,9 @@ class LdarSim:
         """
         # First, determine whether each site gets a new leak or not
         params = self.parameters
-        for sidx, site in self.state['sites'].items():
+        for site in self.state['sites']:
             new_leak = None
+            sidx = site['facility_ID']
             if params['pregenerate_leaks']:
                 new_leak = params['leak_timeseries'][sidx][self.state['t'].current_timestep]
             elif np.random.binomial(1, self.parameters['LPR']):
@@ -269,7 +270,7 @@ class LdarSim:
         params = self.parameters
         timeseries = self.timeseries
         state = self.state
-        for sidx, site in state['sites'].items():
+        for site in state['sites']:
             has_repairs = False
             for lidx, lk in enumerate(site['active_leaks']):
                 repair = False
@@ -315,16 +316,18 @@ class LdarSim:
         cum_repaired_leaks = 0
         daily_emissions_kg = 0
         # Update timeseries
-        for _, site in state['sites'].items():
+        for site in state['sites']:
             new_leaks += site['n_new_leaks']
             cum_repaired_leaks += len(site['repaired_leaks'])
             # n_tags += site['n_new_leaks']
             # convert g/s to kg/day
             daily_emissions_kg += sum([lk['rate'] for lk in site['active_leaks']]) * 86.4
-
-        timeseries['new_leaks'][state['t'].current_timestep] = new_leaks
-        timeseries['cum_repaired_leaks'][state['t'].current_timestep] = cum_repaired_leaks
-        timeseries['daily_emissions_kg'][state['t'].current_timestep] = daily_emissions_kg
+        cur_ts = [state['t'].current_timestep]
+        timeseries['new_leaks'][cur_ts] = new_leaks
+        timeseries['cum_repaired_leaks'][cur_ts] = cum_repaired_leaks
+        timeseries['daily_emissions_kg'][cur_ts] = daily_emissions_kg
+        timeseries['rolling_cost_estimate'][cur_ts] = sum(timeseries['total_daily_cost']) \
+            / (len(timeseries['rolling_cost_estimate']) + 1) * 365 / 200
         # timeseries['n_tags'][state['t'].current_timestep] = len(state['tags'])
         return
 
@@ -336,7 +339,7 @@ class LdarSim:
         leaks = []
         if self.global_params['write_data']:
             # Attribute individual leak emissions to site totals
-            for _, site in self.state['sites'].items():
+            for site in self.state['sites']:
                 site['active_leak_cnt'] = len(site['active_leaks'])
                 site['repaired_leak_cnt'] = len(site['repaired_leaks'])
                 site['active_leak_emis'] = sum([lk['days_active'] * lk['rate'] * 86.4
@@ -349,7 +352,7 @@ class LdarSim:
 
             leak_df = pd.DataFrame(leaks)
             time_df = pd.DataFrame(self.timeseries)
-            site_df = pd.DataFrame.from_dict(self.state['sites'], orient='index').reset_index()
+            site_df = pd.DataFrame(self.state['sites'])
 
             # Create some new variables for plotting
             site_df['cum_frac_sites'] = list(site_df.index)

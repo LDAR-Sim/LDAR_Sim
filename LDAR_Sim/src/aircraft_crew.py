@@ -71,7 +71,8 @@ class aircraft_crew:
             hour=int(start_hour))  # Set start of work day
 
         # Start day with a time increment required for flying to first site
-        self.state['t'].current_date += timedelta(minutes=int(self.config['t_bw_sites']))
+        self.state['t'].current_date += timedelta(
+            minutes=int(np.random.choice(self.config['t_bw_sites']['vals'])))
 
         while self.state['t'].current_date.hour < int(end_hour):
             facility_ID, found_site, site = self.choose_site()
@@ -144,7 +145,7 @@ class aircraft_crew:
         """
 
         # Aggregate true emissions to equipment and site level; get list of leaks present
-        leaks_present, equipment_rates, site_true_rate = aggregate(site, self.state['leaks'])
+        leaks_present, equipment_rates, site_true_rate = aggregate(site)
 
         # Add vented emissions
         venting = 0
@@ -158,13 +159,13 @@ class aircraft_crew:
         # Test detection module
         site_measured_rate = 0
         if self.config["measurement_scale"] == "site":
-            if site_true_rate > (self.config['MDL']):
+            if site_true_rate > (self.config['MDL'][0]):
                 # If source is above follow-up threshold, calculate measured rate using QE
                 site_measured_rate = measured_rate(site_true_rate, self.config['QE'])
 
         if self.config["measurement_scale"] == "equipment":
             for rate in equipment_rates:
-                if rate > (self.config['MDL']):
+                if rate > (self.config['MDL'][0]):
                     equip_measured_rate = measured_rate(rate, self.config['QE'])
                     site_measured_rate += equip_measured_rate
 
@@ -185,7 +186,8 @@ class aircraft_crew:
             site['aircraft_missed_leaks'] += len(leaks_present)
 
         self.state['t'].current_date += timedelta(minutes=int(site['aircraft_time']))
-        self.state['t'].current_date += timedelta(minutes=int(self.config['t_bw_sites']))
+        self.state['t'].current_date += timedelta(
+            minutes=int(np.random.choice(self.config['t_bw_sites']['vals'])))
         self.timeseries['aircraft_sites_visited'][self.state['t'].current_timestep] += 1
 
         return

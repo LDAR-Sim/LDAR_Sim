@@ -75,7 +75,7 @@ class OGI_FU_crew:
 
         # Start day with random "offsite time" required for driving to first site
         self.state['t'].current_date += timedelta(
-            minutes=int(np.random.choice(self.config['t_bw_sites'])))
+            minutes=int(np.random.choice(self.config['t_bw_sites']['vals'])))
 
         # Check if there is a partially finished site from yesterday
         if len(self.rollover) > 0:
@@ -84,7 +84,8 @@ class OGI_FU_crew:
             # would time to drive back to the home base
             projected_end_time = self.state['t'].current_date + \
                 timedelta(minutes=int(self.rollover[1]))
-            drive_home = timedelta(minutes=int(np.random.choice(self.config['t_bw_sites'])))
+            drive_home = timedelta(
+                minutes=int(np.random.choice(self.config['t_bw_sites']['vals'])))
             if (projected_end_time + drive_home) > self.allowed_end_time:
                 # There's not enough time left for that site today -
                 #  get started and figure out how much time remains
@@ -110,7 +111,8 @@ class OGI_FU_crew:
             if found_site:
                 projected_end_time = self.state['t'].current_date + \
                     timedelta(minutes=int(site['OGI_FU_time']))
-                drive_home = timedelta(minutes=int(np.random.choice(self.config['t_bw_sites'])))
+                drive_home = timedelta(
+                    minutes=int(np.random.choice(self.config['t_bw_sites']['vals'])))
                 if (projected_end_time + drive_home) > self.allowed_end_time:
                     # There's not enough time left for that site today -
                     #  get started and figure out how much time remains
@@ -186,19 +188,12 @@ class OGI_FU_crew:
         Look for leaks at the chosen site.
         """
 
-        # Identify all the leaks at a site
-        leaks_present = []
-        for leak in self.state['leaks']:
-            if leak['facility_ID'] == site['facility_ID']:
-                if leak['status'] == 'active':
-                    leaks_present.append(leak)
-
         # Use an OGI camera to detect leaks
-        self.OGI_camera.detect_leaks(site, leaks_present)
+        self.OGI_camera.detect_leaks(site, site['active_leaks'])
 
         self.state['t'].current_date += timedelta(minutes=int(site['OGI_FU_time']))
         self.state['t'].current_date += timedelta(
-            minutes=int(np.random.choice(self.config['t_bw_sites'])))
+            minutes=int(np.random.choice(self.config['t_bw_sites']['vals'])))
         self.timeseries['OGI_FU_sites_visited'][self.state['t'].current_timestep] += 1
 
         # Remove site from flag pool

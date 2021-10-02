@@ -1,5 +1,7 @@
 parameter_level: method
 version: '2.0'
 label: aircraft
-default_module: aircraft
 module: aircraft
+MDL: [0.01]
+cost:
+  per_day: 10000

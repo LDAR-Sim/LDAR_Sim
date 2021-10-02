@@ -89,7 +89,7 @@ class BaseCompany:
              len(self.state['weather'].latitude)))
 
         # --- init site specific variables ---
-        for sidx, site in self.state['sites'].items():
+        for site in self.state['sites']:
             site.update({'{}_t_since_last_LDAR'.format(self.name): 0})
             site.update({'{}_surveys_conducted'.format(self.name): 0})
             site.update({'{}_attempted_today?'.format(self.name): False})
@@ -137,7 +137,7 @@ class BaseCompany:
                 self.candidates_to_watchlist()
 
             # Calculate proportion sites available based on weather of site
-            available_sites = sum([1 for _, site in self.state['sites'].items()
+            available_sites = sum([1 for site in self.state['sites']
                                    if self.deployment_days[site['lon_index'], site['lat_index'],
                                                            self.state['t'].current_timestep]])
             prop_avail = available_sites / len(self.state['sites'])
@@ -152,7 +152,7 @@ class BaseCompany:
         days_since_LDAR = '{}_t_since_last_LDAR'.format(self.name)
         attempted_today = '{}_attempted_today?'.format(self.name)
         sites_this_year = '{}_surveys_done_this_year'.format(self.name)
-        for _, site in self.state['sites'].items():
+        for site in self.state['sites']:
             site[days_since_LDAR] += 1
             site[attempted_today] = False
             if self.state['t'].current_date.day == 1 \
@@ -165,7 +165,7 @@ class BaseCompany:
 
         # Update followup specific parameters
         if self.config['is_follow_up']:
-            self.state['flags'] = [sidx for sidx, site in self.state['sites'].items()
+            self.state['flags'] = [site['facility_ID'] for site in self.state['sites']
                                    if site['currently_flagged']]
         return
 

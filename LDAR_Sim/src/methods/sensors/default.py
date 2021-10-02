@@ -18,7 +18,7 @@
 # along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 #
 # ------------------------------------------------------------------------------
-
+import numpy as np
 from method_functions import measured_rate
 
 
@@ -26,28 +26,32 @@ def detect_emissions(self, site, leaks_present, equipment_rates, site_true_rate,
     equip_measured_rates = []
     site_measured_rate = 0
     found_leak = False
+
     if self.config["measurement_scale"] == "site":
-        if site_true_rate > (self.config['MDL']):
+        detect_temporal_coverage = np.random.binomial(1, self.config['temporal_coverage'])
+        if (site_true_rate > self.config['MDL'][0]) & bool(detect_temporal_coverage):
             found_leak = True
-            # If source is above follow-up threshold, calculate measured rate using QE
             site_measured_rate = measured_rate(site_true_rate, self.config['QE'])
         else:
             site[self.config['label'] + '_missed_leaks'] += 1
     elif self.config["measurement_scale"] == "equipment":
+        # HBD - there is no way to currently track temporal coverage of equipment groups
+        detect_temporal_coverage = np.random.binomial(1, self.config['temporal_coverage'])
         for rate in equipment_rates:
             m_rate = measured_rate(rate, self.config['QE'])
-            if m_rate < self.config['MDL']:
+            if (m_rate > self.config['MDL'][0]) & bool(detect_temporal_coverage):
+                found_leak = True
+            else:
                 site[self.config['label'] + '_missed_leaks'] += 1
                 m_rate = 0
-            else:
-                found_leak = True
             equip_measured_rates.append(m_rate)
             site_measured_rate += m_rate
 
     elif self.config["measurement_scale"] == "leak":
         # If measurement scale is a leak, all leaks will be tagged
         for leak in leaks_present:
-            if leak['rate'] > (self.config['MDL']):
+            detect_temporal_coverage = np.random.binomial(1, self.config['temporal_coverage'])
+            if (leak['rate'] > self.config['MDL'][0]) & bool(detect_temporal_coverage):
                 found_leak = True
                 if leak['tagged']:
                     self.timeseries[self.config['label'] +

@@ -13,9 +13,10 @@ def detect_emissions(self, site, leaks_present, equipment_rates, site_true_rate,
         else:
             x = math.log10(leak['rate'] * 3600)  # Convert from g/s to g/h
             prob_detect = 1 / (1 + math.exp(-k * (x - x0)))
-        detect = np.random.binomial(1, prob_detect)
+        detect_MDL = np.random.binomial(1, prob_detect)
+        detect_temporal_coverage = np.random.binomial(1, self.config['temporal_coverage'])
 
-        if detect:
+        if detect_MDL & bool(detect_temporal_coverage):
             if leak['status'] == 'tagged':
                 self.timeseries[self.config['label'] +
                                 '_redund_tags'][self.state['t'].current_timestep] += 1
@@ -27,7 +28,7 @@ def detect_emissions(self, site, leaks_present, equipment_rates, site_true_rate,
                 leak['tagged_by_company'] = self.config['label']
                 leak['tagged_by_crew'] = self.id
 
-        elif not detect:
+        else:
             site[self.config['label'] + '_missed_leaks'] += 1
 
     return None

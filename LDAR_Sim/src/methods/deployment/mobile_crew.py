@@ -95,13 +95,14 @@ class Schedule(BaseSchedCrew):
         #      Remove choosen site from site pool, then get new travel
         #      times and repeat (using while loop).
         # 2) No Route Planning - Fill the day with sites visits and
-        #      return the days site plan. The While loop is
+        #      return the days site plan.
 
         exit_flag = True
         site_cnt = 0
+        # While loop is only needed for
         while est_mins_remaining > 0 and len(site_pool) > 0:
             site_plans_tmp = []
-            for sidx, site in site_pool.items():
+            for sidx, site in enumerate(site_pool):
                 site_cnt += 1
                 site_plan = self.plan_visit(site, est_mins_remaining=est_mins_remaining)
                 # site plans are dicts that include  site, LDAR_minsand go_to_site keys.
@@ -113,22 +114,25 @@ class Schedule(BaseSchedCrew):
                         # The site order will not change if route_planning is not used
                         site_plans_today.append(site_plan)
                         est_mins_remaining -= site_plan['LDAR_mins']
-                        if est_mins_remaining <= 0:
-                            # if the day has been filled with surveys exit for and while
-                            # loop
-                            exit_flag = True
-                            break
+                        # if est_mins_remaining <= 0:
+                        #     # if the day has been filled with surveys exit for and while
+                        #     # loop
+                        #     exit_flag = True
+                        #     break
                         exit_flag = False
+                else:
+                    exit_flag = True
+                    break
 
             # If there is no route planning and the day has been filled with surveys
             # or all of the sites have been checked, exit the while loop
 
             # Key diff between old and new!
             if not self.config['scheduling']['route_planning'] \
-                    and (exit_flag or site_cnt == len(site_pool)):
+                    and (exit_flag or sidx == len(site_pool) - 1):
                 break
 
-            # if crew have sites they can go to then choose site from list
+            # if  acrew has sites they can go to then choose site from list
             if self.config['scheduling']['route_planning']:
                 if len(site_plans_tmp) > 0:
                     # choose a site to visit (rollover site, route planning site
@@ -256,7 +260,7 @@ class Schedule(BaseSchedCrew):
             travel_time = (distance/speed)*60
         # ----------------------------------------------------------
         else:
-            travel_time = np.random.choice(self.config['t_bw_sites'])
+            travel_time = np.random.choice(self.config['t_bw_sites']['vals'])
         # returned dictionary
         out_dict = {
             'travel_time': travel_time,
@@ -358,4 +362,4 @@ class Schedule(BaseSchedCrew):
         else:
             # travel time is sampled if not active route_planning
             self.last_site_travel_home_min = np.random.choice(
-                self.config['t_bw_sites'])
+                self.config['t_bw_sites']['vals'])

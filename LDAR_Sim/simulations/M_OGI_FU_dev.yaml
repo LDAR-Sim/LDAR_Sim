@@ -1,5 +1,12 @@
 parameter_level: method
 version: '2.0'
 label: OGI_FU_dev
-default_module: OGI_FU
 module: dummy
+measurement_scale: component
+is_follow_up: True
+sensor: OGI_camera
+MDL: [0.01275, 2.78e-6]
+cost:
+  per_day: 2500
+t_bw_sites:
+  file: 'time_offsite_ground.csv'

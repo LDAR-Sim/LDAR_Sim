@@ -1,5 +1,4 @@
 parameter_level: method
 version: '2.0'
 label: stationary
-default_module: stationary
 module: stationary
