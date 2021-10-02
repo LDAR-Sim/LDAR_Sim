@@ -23,25 +23,27 @@ import numpy as np
 
 
 def detect_emissions(self, site, leaks_present, equipment_rates, site_true_rate, venting):
-    for leak in leaks_present:
-        # Only check if the leak is detectable once. if it is then check it , if not ignore it until
-        # it is resolved through the LDAR program or through NRD.
-        if leak['is_op_detectable'] is None \
-                and (np.random.random() > (1 - self.config['percent_detectable'])):
-            if leak['rate'] > self.config['MDL']:
-                if leak['tagged']:
-                    self.timeseries[self.config['label'] +
-                                    '_redund_tags'][self.state['t'].current_timestep] += 1
+    is_sp_detectable = '{}_sp_detectable'.format(self.config['name'])
 
-                # Add these leaks to the 'tag pool'
-                elif not leak['tagged']:
-                    leak['tagged'] = True
-                    leak['date_tagged'] = self.state['t'].current_date
-                    leak['tagged_by_company'] = self.config['label']
-                    leak['tagged_by_crew'] = self.id
-            else:
-                site[self.config['label'] + '_missed_leaks'] += 1
+    for leak in leaks_present:
+        # Check if leak is spatially detectable. Keep track of initial test
+        if leak[is_sp_detectable] is None:
+            leak[is_sp_detectable] = np.random.binomial(1, self.config['spatial_coverage'])
+        # Check if leak is temporally detectable
+        is_temporal_detect = np.random.binomial(1, self.config['temporal_coverage'])
+        if (leak['rate'] > self.config['MDL'][0]) \
+                & bool(leak[is_sp_detectable]) & bool(is_temporal_detect):
+            if leak['tagged']:
+                self.timeseries[self.config['label'] +
+                                '_redund_tags'][self.state['t'].current_timestep] += 1
+
+            # Add these leaks to the 'tag pool'
+            elif not leak['tagged']:
+                leak['tagged'] = True
+                leak['date_tagged'] = self.state['t'].current_date
+                leak['tagged_by_company'] = self.config['label']
+                leak['tagged_by_crew'] = self.id
         else:
-            leak['is_op_detectable'] = False
             site[self.config['label'] + '_missed_leaks'] += 1
+
     return None

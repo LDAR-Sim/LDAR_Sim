@@ -19,9 +19,7 @@
 #
 # ------------------------------------------------------------------------------
 
-import time
 import random
-import csv
 import copy
 import pandas as pd
 import numpy as np
@@ -65,43 +63,33 @@ def generate_sites(program, in_dir):
         [type]: [description]
     """
     # Read in the sites as a list of dictionaries
-    sites_in = pd.read_csv(in_dir / program['infrastructure_file'], index_col='facility_ID')
-    # Add facility ID back into object
-    sites_in['facility_ID'] = sites_in.index
-    sites = sites_in.to_dict('index')
+    sites_in = pd.read_csv(in_dir / program['infrastructure_file'])
+    sites = sites_in.to_dict('records')
 
-    # Sample sites
-    if program['site_samples'][0]:
-        keys = random.sample(sites.keys(), program['site_samples'][1])
-        sites = {k: sites[k] for k in keys}
+    # Sample sites and shuffle
+    n_samples = program.get('site_samples', len(sites))
+    sites = random.sample(sites, n_samples)
 
-    if program['subtype_times'][0]:
+    # Get subtype Times
+    if program['subtype_times_file'] is not None:
         subtypes_times_f = pd.read_csv(
-            in_dir / program['subtype_times'][1],
+            in_dir / program['subtype_times_file'],
             index_col='subtype_code')
         subtypes_times = subtypes_times_f.to_dict('index')
-
-        for sidx, site in sites.items():
+        for site in sites:
             subtypes_times = subtypes_times[site['subtype_code']]
             site.update(subtypes_times)
 
-    if program['emissions']['leak_file'] != "":
+    if program['emissions']['leak_file'] is not None:
         program['empirical_leaks'] = np.array(
             pd.read_csv(in_dir / program['leak_file']).iloc[:, 0])
 
     get_subtype_dist(program, in_dir)
 
-    # Shuffle all the entries to randomize order for identical 't_Since_last_LDAR' values
-    site_l = list(sites.items())
-
-    random.shuffle(site_l)
-    sites = dict(site_l)
-
     leak_timeseries = {}
     initial_leaks = {}
     # Additional variable(s) for each site
-    for sidx, site in sites.items():
-        site.update({'facility_ID': sidx})
+    for site in sites:
         # Add a distribution and unit for each leak
         if len(program['subtypes']) > 1:
             # Get all keys from subtypes
@@ -128,12 +116,13 @@ def regenerate_sites(program, prog_0_sites, in_dir):
     # Add facility ID back into object
     sites_in['facility_ID'] = sites_in.index
     sites = sites_in.to_dict('index')
-    out_sites = {}
-    for s_idx, site_or in prog_0_sites.items():
+    out_sites = []
+    for site_or in prog_0_sites:
+        s_idx = site_or['facility_ID']
         new_site = copy.deepcopy(sites[s_idx])
         new_site.update({'cum_leaks': site_or['cum_leaks'],
                          'initial_leaks': site_or['initial_leaks'],
                          'leak_rate_dist': site_or['leak_rate_dist'],
                          'leak_rate_units': site_or['leak_rate_units']})
-        out_sites.update({s_idx: new_site})
+        out_sites.append(new_site)
     return out_sites

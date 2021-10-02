@@ -1,8 +1,9 @@
 parameter_level: method
 version: '2.0'
-label: OGI_dev
-module: dummy
+label: OGI_FU
+module: OGI_FU
 measurement_scale: component
+is_follow_up: True
 sensor: OGI_camera
 MDL: [0.01275, 2.78e-6]
 cost:

@@ -1,0 +1,29 @@
+version: '2.0'
+parameter_level: 'program'
+methods: {}
+method_labels: []
+program_name: 'default'
+weather_file: 'ERA5_2017_2020_AB.nc'
+weather_is_hourly: True
+infrastructure_file: 'facility_list_template.csv'
+site_samples: 50
+subtype_times_file: "_placeholder_str_"
+consider_operator: False
+consider_venting: False
+consider_weather: False
+repair_delay: 14
+repair_cost: 200
+emissions:
+    vent_file: 'site_rates.csv'
+    leak_file: "_placeholder_str_"
+    leak_file_use: 'sample'
+    leak_dist_type: 'lognorm'
+    leak_dist_params: [-2.776, 1.462]
+    units: ['kilogram', 'hour']
+    subtype_leak_dist_file: "_placeholder_str_"
+    max_leak_rate: 100.0
+LPR: 0.0065
+NRd: 150
+max_det_op: 0.00
+operator_strength: 0.0
+verification_cost: 25

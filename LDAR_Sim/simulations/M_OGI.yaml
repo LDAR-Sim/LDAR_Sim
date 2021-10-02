@@ -1,7 +1,7 @@
 parameter_level: method
 version: '2.0'
-label: OGI_dev
-module: dummy
+label: OGI
+module: OGI
 measurement_scale: component
 sensor: OGI_camera
 MDL: [0.01275, 2.78e-6]

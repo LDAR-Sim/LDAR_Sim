@@ -54,8 +54,8 @@ class TimeCounter:
 
         Uses current (now()) offset
         '''
-        avg_lat = mean([float(site['lat']) for sidx, site in sites.items()])
-        avg_lon = mean([float(site['lon']) for sidx, site in sites.items()])
+        avg_lat = mean([float(site['lat']) for site in sites])
+        avg_lon = mean([float(site['lon']) for site in sites])
         timezone_str = tzwhere.tzwhere().tzNameAt(avg_lat, avg_lon)
         # This uses the current daylight time . Need to fix
         tz_now = datetime.now(pytz.timezone(timezone_str))

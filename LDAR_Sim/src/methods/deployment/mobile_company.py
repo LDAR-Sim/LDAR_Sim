@@ -116,20 +116,20 @@ class Schedule(BaseSchedCompany):
 
         if self.config['is_follow_up']:
             # filter then sort
-            out_sites = dict(
-                sorted(((k, s) for k, s in self.state['sites'].items()
-                        if k in site_pool
+            out_sites = list(
+                sorted((s for s in self.state['sites']
+                        if s['facility_ID'] in site_pool
                         and ((self.state['t'].current_date - s['date_flagged']).days
                         >= meth[s['flagged_by']]['reporting_delay'])),
-                       key=lambda x: x[1][days_since_LDAR], reverse=True))
+                       key=lambda x: x[days_since_LDAR], reverse=True))
         else:
             days_since_LDAR = '{}_t_since_last_LDAR'.format(name)
             # filter then sort
-            out_sites = dict(
-                sorted(((k, s) for k, s in site_pool.items()
+            out_sites = list(
+                sorted((s for s in site_pool
                         if s[survey_done_this_year] < int(s[survey_frequency])
                         and s[days_since_LDAR] >= int(s[survey_min_interval])),
-                       key=lambda x: x[1][days_since_LDAR], reverse=True))
+                       key=lambda x: x[days_since_LDAR], reverse=True))
         return out_sites
 
     def get_working_crews(self, site_pool, n_crews, sites_per_crew=3):
@@ -171,5 +171,5 @@ class Schedule(BaseSchedCompany):
             # This offsets by the crew number and increments by the
             # number of crews, n_crews= 3 ,  site_pool = [site[0], site[3], site[6]...]
             if len(site_pool) > 0:
-                crew_site_list = dict(list(site_pool.items())[crew_ID::n_crews])
+                crew_site_list = site_pool[crew_ID::n_crews]
         return crew_site_list

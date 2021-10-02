@@ -1,0 +1,19 @@
+
+version: '2.0'
+parameter_level: 'global'
+input_directory: './inputs'
+output_directory: './outputs'
+n_processes:  '_placeholder_int_'
+print_from_simulations: True
+n_simulations: 2
+write_data: True
+make_plots: True
+make_maps: True
+print_from_simulations: True
+programs: []
+start_date: [2017, 1, 1]
+end_date: [2021, 12, 31]
+reference_program: 'P_OGI'
+pregenerate_leaks: False
+preseed_random: False
+

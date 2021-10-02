@@ -49,15 +49,11 @@ class stationary_crew:
         # Sum all the emissions at the site
         leaks_present = []
         site_cum_rate = 0
-        for leak in self.state['leaks']:
-            if leak['facility_ID'] == self.site['facility_ID']:
-                if leak['status'] == 'active':
-                    # HBD do we need the first condition?
-                    if leak['days_active'] >= \
-                            (self.config['time_to_detection'] + self.days_skipped):
-                        if leak['days_active'] >= self.config['time_to_detection']:
-                            leaks_present.append(leak)
-                            site_cum_rate += leak['rate']
+        for leak in self.site['active_leaks']:
+            if leak['days_active'] >= \
+                    (self.config['time_to_detection'] + self.days_skipped):
+                leaks_present.append(leak)
+                site_cum_rate += leak['rate']
 
         # Add vented emissions
         venting = 0
@@ -68,7 +64,7 @@ class stationary_crew:
 
         # Simple detection module based on strict minimum detection limit
         detect = False
-        if site_cum_rate > (self.config['MDL']):
+        if site_cum_rate > (self.config['MDL'][0]):
             detect = True
 
         if detect:

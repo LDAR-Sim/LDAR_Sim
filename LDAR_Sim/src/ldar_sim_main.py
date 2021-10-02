@@ -38,7 +38,6 @@ from copy import deepcopy
 from argparse import RawTextHelpFormatter
 from economics.cost_mitigation import cost_mitigation
 
-
 if __name__ == '__main__':
     # Get route directory , which is parent folder of ldar_sim_main file
     # Set current working directory directory to root directory
@@ -196,11 +195,16 @@ if __name__ == '__main__':
                   }])
 
     # The following can be used for debugging outside of the starmap
-    # ldar_sim_run(simulations[0][0])
     trg_sim_idx = next((index for (index, d) in enumerate(simulations)
                        if d[0]['program']['program_name'] == "P_stationary_dev"), None)
 
-    # ldar_sim_run(simulations[trg_sim_idx][0])
+    ldar_sim_run(simulations[0][0])
+    ldar_sim_run(simulations[1][0])
+    ldar_sim_run(simulations[2][0])
+    ldar_sim_run(simulations[3][0])
+    ldar_sim_run(simulations[4][0])
+
+    ldar_sim_run(simulations[trg_sim_idx][0])
     # Perform simulations in parallel
     with mp.Pool(processes=n_processes) as p:
         res = p.starmap(ldar_sim_run, simulations)

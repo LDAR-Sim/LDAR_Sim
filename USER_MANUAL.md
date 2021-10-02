@@ -711,17 +711,17 @@ If using different weather files for different programs (e.g., when comparing di
 
 **Notes of caution:** If True, will overwrite global leak distribution.
 
-### subtype_times
+### subtype_times_file
 
 **Data type:** List
 
-**Default input:** [False, 'subtype_times.csv']
+**Default input:** [False, 'subtype_times_file.csv']
 
 **Description:** Imports a lookup table that allows the modeler to set the survey time per facility according to facility type. This functionality can be used when survey times are not known for each individual site, but can be approximately estimated by facility subtype. Each row represents a facility type and each column represents a method. Times are the number of minutes that pass between arrival at a facility and completion of the inspection at that facility (exclusive of time between workdays and travel time if a site is too large to finish in any given day).
 
 **Notes on acquisition:** Ideally, empirical data for similar facilities are used to inform the lookup table and that each value represents a representative average based on a reasonable number of surveys
 
-**Notes of caution:** Facility types must match those used in infrastructure_file. When used, subtype_times overwrites any facility-specific times present in infrastructure_file.
+**Notes of caution:** Facility types must match those used in infrastructure_file. When used, subtype_times_file overwrites any facility-specific times present in infrastructure_file.
 
 ### consider_operator
 
@@ -1263,9 +1263,9 @@ where Q = the emission rate in grams of methane per hour and d is the distance o
 
 ### MDL (General)
 
-**Data type:** Numeric
+**Data type:** List
 
-**Default input:** N/A
+**Default input:** [0.01]
 
 **Description:** Minimum detection limit of the screening method in grams per second. Probability curves or surfaces as a function of emission rate, wind speed, distance, etc. must be hard coded.
 

@@ -1,0 +1,44 @@
+version: '2.0'
+parameter_level: 'method'
+label: 'mobile'
+module: 'dummy'
+deployment_type: 'mobile'
+measurement_scale: 'equipment'
+sensor: 'default'
+is_follow_up: False
+n_crews: 1
+weather_envs:
+  temp: [-30.0, 40.0]
+  wind: [0.0, 10.0]
+  precip: [0.0, 0.5]
+max_workday: 8
+cost:
+  upfront: 0
+  per_day: 2000
+  per_hour: 0
+  per_site: 0
+follow_up:
+  threshold: 0.0
+  threshold_type: 'absolute'
+  proportion: 1.0
+  interaction_priority: 'threshold'
+  redundancy_filter: 'recent'
+  delay: 0
+  instant_threshold: '_placeholder_float_'
+  instant_threshold_type: 'absolute'
+t_bw_sites:
+  vals: [10]
+  file: '_placeholder_str_'
+reporting_delay: 2
+MDL: [0.01]
+QE: 0.0
+spatial_coverage: 1.0
+temporal_coverage: 1.0
+consider_daylight: False
+scheduling:
+  route_planning: False
+  home_bases_files: 'Airport_AB_Coordinates.csv'
+  speed_list: ['_placeholder_int_']
+  LDAR_crew_init_location: [-114.062, 51.044]
+  deployment_years: ['_placeholder_int_']
+  deployment_months: ['_placeholder_int_']

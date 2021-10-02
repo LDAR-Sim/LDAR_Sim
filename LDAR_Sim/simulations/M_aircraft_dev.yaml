@@ -1,5 +1,7 @@
 parameter_level: method
 version: '2.0'
 label: aircraft_dev
-default_module: aircraft
 module: dummy
+MDL: [0.01]
+cost:
+  per_day: 10000
