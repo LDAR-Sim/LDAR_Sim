@@ -8,7 +8,6 @@ weather_is_hourly: True
 infrastructure_file: 'facility_list_template.csv'
 site_samples: 50
 subtype_times_file: "_placeholder_str_"
-consider_operator: False
 consider_venting: False
 consider_weather: False
 repair_delay: 14
