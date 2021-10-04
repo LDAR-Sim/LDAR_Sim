@@ -2,6 +2,10 @@ parameter_level: method
 version: '2.0'
 label: aircraft
 module: aircraft
+deployment_type: mobile
+measurement_scale: equipment
+sensor: default
+is_follow_up: False
 MDL: [0.01]
 cost:
   per_day: 10000

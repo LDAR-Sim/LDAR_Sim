@@ -2,11 +2,12 @@ parameter_level: method
 version: '2.0'
 label: OGI_FU
 module: OGI_FU
+deployment_type: mobile
 measurement_scale: component
-is_follow_up: True
 sensor: OGI_camera
+is_follow_up: True
 MDL: [0.01275, 2.78e-6]
 cost:
   per_day: 2500
 t_bw_sites:
-  file: 'time_offsite_ground.csv'
+  file: time_offsite_ground.csv

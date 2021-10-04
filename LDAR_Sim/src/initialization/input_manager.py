@@ -249,8 +249,10 @@ class InputManager:
         for idx, param in iterator:
             if param in placeholders:
                 obj[idx] = None
-            elif isinstance(param, list) and len(param) == 1 and (param in placeholders):
-                obj[idx] = None
+            # special case, empty list
+            elif isinstance(param, (list, tuple)) \
+                    and len(param) == 1 and (param[0] in placeholders):
+                obj[idx] = []
             elif isinstance(param, (dict, list)):
                 self.remove_type_placeholders(obj[idx])
         return
