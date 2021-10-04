@@ -27,7 +27,6 @@ import warnings
 import pandas as pd
 import numpy as np
 
-from operator_agent import OperatorAgent
 from plotter import make_plots
 from daylight_calculator import DaylightCalculatorAve
 from generic_functions import make_maps
@@ -36,6 +35,7 @@ from geography.vector import grid_contains_point
 from initialization.sites import generate_sites
 from initialization.leaks import (generate_leak,
                                   generate_initial_leaks)
+from initialization.crew_days_estimator import est_crews_min_days
 
 warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning)
 
@@ -151,10 +151,6 @@ class LdarSim:
         if calculate_daylight:
             state['daylight'] = DaylightCalculatorAve(state, params)
 
-        # Initialize operator
-        if params['consider_operator']:
-            state['operator'] = OperatorAgent(timeseries, params, state)
-
         # If working without methods (operator only), need to get the first day going
         if not bool(params['methods']):
             state['t'].current_date = state['t'].current_date.replace(hour=1)
@@ -255,10 +251,6 @@ class LdarSim:
 
         for m in self.state['methods']:
             m.deploy_crews()
-
-        if self.parameters['consider_operator']:
-            if self.state['t'].current_date.weekday() == 0:
-                self.state['operator'].work_a_day()
 
         return
 
