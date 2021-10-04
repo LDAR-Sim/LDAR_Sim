@@ -34,7 +34,8 @@ default_global_parameters = {
     'programs': [],
     'start_date': [2017, 1, 1],
     'end_date': [2019, 12, 31],
-    'reference_program': 'P_ref',
+    'reference_program': 'P_OGI',
+    'baseline_program': 'P_none',
     'pregenerate_leaks': False,
     'preseed_random': False,
 }
