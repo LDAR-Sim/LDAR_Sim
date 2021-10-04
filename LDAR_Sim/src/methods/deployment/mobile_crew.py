@@ -22,16 +22,13 @@
 
 import numpy as np
 import pandas as pd
+from datetime import timedelta
 from geography.homebase import find_homebase, find_homebase_opt
 from geography.distance import get_distance
-from methods.deployment._base import SchedCrew as BaseSchedCrew
+from methods.deployment.generic_funcs import get_work_hours
 
 
-class Schedule(BaseSchedCrew):
-
-    # --- inherited methods ---
-    # _base.crew ->  get_work_hours()
-    # _base.crew ->  update_schedule()
+class Schedule():
 
     def __init__(self, id, lat, lon, state, config, parameters, deployment_days, home_bases=None):
         self.parameters = parameters
@@ -84,7 +81,7 @@ class Schedule(BaseSchedCrew):
         start_lon, start_lat = self.crew_lon, self.crew_lat
         site_plans_today = []
         self.travel_all_day = False
-        self.get_work_hours()
+        self.work_hours, self.start_hour, self.end_hour = get_work_hours(self.config, self.state)
         self.state['t'].current_date = self.state['t'].current_date.replace(
             hour=int(self.start_hour))  # Set start of work
         est_mins_remaining = (self.end_hour - self.start_hour)*60
@@ -114,6 +111,9 @@ class Schedule(BaseSchedCrew):
                         # The site order will not change if route_planning is not used
                         site_plans_today.append(site_plan)
                         est_mins_remaining -= site_plan['LDAR_mins']
+                        # # The following will allow the program to keep trying sites
+                        # # even after one has failed, in case there is another site
+                        # # that mets the criterea
                         # if est_mins_remaining <= 0:
                         #     # if the day has been filled with surveys exit for and while
                         #     # loop
@@ -126,13 +126,11 @@ class Schedule(BaseSchedCrew):
 
             # If there is no route planning and the day has been filled with surveys
             # or all of the sites have been checked, exit the while loop
-
-            # Key diff between old and new!
             if not self.config['scheduling']['route_planning'] \
                     and (exit_flag or sidx == len(site_pool) - 1):
                 break
 
-            # if  acrew has sites they can go to then choose site from list
+            # if a crew has sites they can go to then choose site from list
             if self.config['scheduling']['route_planning']:
                 if len(site_plans_tmp) > 0:
                     # choose a site to visit (rollover site, route planning site
@@ -170,7 +168,8 @@ class Schedule(BaseSchedCrew):
             else:
                 self.choose_accommodation()
         elif len(itinerary) > 0:
-            self.update_schedule(itinerary[-1]['travel_home_mins'])
+            self.state['t'].current_date += timedelta(
+                minutes=int(itinerary[-1]['travel_home_mins']))
 
     def plan_visit(self, site, next_site=None, est_mins_remaining=None):
         """ Check survey and travel times and see if there is enough time

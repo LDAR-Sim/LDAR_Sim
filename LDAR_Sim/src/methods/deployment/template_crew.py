@@ -19,14 +19,8 @@
 #
 # ------------------------------------------------------------------------------
 
-from methods.deployment._base import SchedCrew as BaseSchedCrew
 
-
-class Schedule(BaseSchedCrew):
-
-    # --- inherited methods ---
-    # _base.crew ->  get_work_hours()
-    # _base.crew ->  update_schedule()
+class Schedule():
 
     def __init__(self, id, lat, lon, state, config, parameters, deployment_days, home_bases=None):
         self.parameters = parameters

@@ -6,9 +6,8 @@ deployment_type: stationary
 measurement_scale: equipment
 sensor: default
 is_follow_up: False
-MDL: [0.01]
-temporal_coverage: 0.12
-time_to_detection: 30 # Temporary!!!!
+MDL: [0.5]
+time_to_detection: 7
 cost:
   upfront: 500
   per_day: 1

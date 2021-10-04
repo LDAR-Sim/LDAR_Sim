@@ -6,7 +6,7 @@ deployment_type: 'mobile'
 measurement_scale: 'equipment'
 sensor: 'default'
 is_follow_up: False
-n_crews: 1
+n_crews: '_placeholder_int_'
 weather_envs:
   temp: [-30.0, 40.0]
   wind: [0.0, 10.0]
@@ -32,8 +32,9 @@ t_bw_sites:
 reporting_delay: 2
 MDL: [0.01]
 QE: 0.0
-spatial_coverage: 1.0
-temporal_coverage: 1.0
+coverage:
+  spatial: 1.0
+  temporal: 1.0
 consider_daylight: False
 scheduling:
   route_planning: False
