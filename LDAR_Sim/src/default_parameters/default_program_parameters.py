@@ -51,4 +51,10 @@ default_program_parameters = {
     'max_det_op': 0.00,
     'operator_strength': 0,
     'verification_cost': 25,
+    'economics': {'sale_price_natgas': 3,  # $/mcf
+                  'carbon_price_tonnesCO2e': 40,
+                  'social_cost_CH4_tonnes': 1406,
+                  'cost_CCUS': 20,  # $/tonneCO2e
+                  'cost_low_bleed_pneu_tCO2e': 875,  # $/tonneCO2e
+                  'GWP_CH4': 28}  # 100-year
 }
