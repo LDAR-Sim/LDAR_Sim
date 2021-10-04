@@ -35,7 +35,7 @@ from geography.vector import grid_contains_point
 from initialization.sites import generate_sites
 from initialization.leaks import (generate_leak,
                                   generate_initial_leaks)
-from initialization.update_methods import est_n_crews
+from initialization.update_methods import est_n_crews, est_site_p_day
 
 warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning)
 
@@ -76,7 +76,7 @@ class LdarSim:
             if params['site_samples'] is not None:
                 state['sites'] = random.sample(
                     state['sites'],
-                    params['site_samples'][1])
+                    params['site_samples'])
             if params['subtype_times_file'] is not None:
                 subtype_times_file = pd.read_csv(
                     params['input_directory'] / params['subtype_times_file'])
@@ -150,6 +150,7 @@ class LdarSim:
             # Update method parameters
             if m_obj['n_crews'] is None:
                 params['methods'][m_label]['n_crews'] = est_n_crews(m_obj, state['sites'])
+            params['methods'][m_label]['est_site_p_day'] = est_site_p_day(m_obj, state['sites'])
             if m_obj['t_bw_sites']['file'] is not None:
                 params['methods'][m_label]['t_bw_sites']['vals'] = np.array(pd.read_csv(
                     params['input_directory'] / m_obj['t_bw_sites']['file']).iloc[:, 0])

@@ -20,7 +20,6 @@
 # ------------------------------------------------------------------------------
 import scipy
 import json
-import pandas as pd
 import numpy as np
 from utils.unit_converter import gas_convert
 

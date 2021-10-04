@@ -27,7 +27,7 @@ follow_up:
   instant_threshold: '_placeholder_float_'
   instant_threshold_type: 'absolute'
 t_bw_sites:
-  vals: [10]
+  vals: [30]
   file: '_placeholder_str_'
 reporting_delay: 2
 MDL: [0.01]

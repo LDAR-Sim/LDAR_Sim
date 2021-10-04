@@ -30,7 +30,7 @@ from weather.weather_lookup_hourly import WeatherLookup as WL_h
 from ldar_sim import LdarSim
 from time_counter import TimeCounter
 from stdout_redirect import stdout_redirect
-from utils.distributions import unpackage_dist as unpack_leak_dist
+from initialization.sites import get_subtype_dist
 
 
 def ldar_sim_run(simulation):
@@ -68,7 +68,7 @@ def ldar_sim_run(simulation):
 
     # --------- Leak distributions -------------
     if len(parameters['leak_timeseries']) < 1:
-        unpack_leak_dist(parameters, parameters['input_directory'])
+        get_subtype_dist(parameters, parameters['input_directory'])
 
         # ------------------------------------------------------------------------------
         # -----------------------Initialize dynamic model state-------------------------

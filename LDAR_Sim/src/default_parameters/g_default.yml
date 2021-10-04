@@ -13,7 +13,8 @@ print_from_simulations: True
 programs: []
 start_date: [2017, 1, 1]
 end_date: [2021, 12, 31]
-reference_program: 'P_OGI'
+reference_program: P_OGI
+baseline_program: P_none
 pregenerate_leaks: False
 preseed_random: False
 

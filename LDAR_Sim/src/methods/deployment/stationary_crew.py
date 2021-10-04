@@ -65,4 +65,6 @@ class Schedule():
     def end_day(self, site_pool, itinerary):
         """ End day function
         """
+        self.state['t'].current_date = self.state['t'].current_date.replace(
+            hour=int(self.end_hour))
         return

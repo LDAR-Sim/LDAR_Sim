@@ -96,7 +96,8 @@ class BaseCrew:
             cur_timestep = self.state['t'].current_timestep
             self.schedule.end_day(site_pool, itinerary)
             # n_hours =
-            self.daily_cost += self.config['cost']['per_hour']
+            self.daily_cost += self.config['cost']['per_hour'] * \
+                (self.state['t'].current_date.hour-self.schedule.start_hour)
             self.daily_cost += self.config['cost']['per_day']
             self.timeseries['{}_cost'.format(m_name)][cur_timestep] += self.daily_cost
             self.timeseries['total_daily_cost'][cur_timestep] += self.daily_cost

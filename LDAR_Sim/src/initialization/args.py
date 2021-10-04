@@ -53,4 +53,7 @@ def files_from_args(root_dir):
     else:
         parameter_filenames = args.in_files
 
+    if len(parameter_filenames) < 1:
+        print('Please provide at least one input argument')
+        exit
     return parameter_filenames
