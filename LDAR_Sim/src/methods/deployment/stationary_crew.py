@@ -19,20 +19,17 @@
 #
 # ------------------------------------------------------------------------------
 
-from methods.deployment._base import SchedCrew as BaseSchedCrew
 
-
-class Schedule(BaseSchedCrew):
+class Schedule():
     def __init__(self, id, lat, lon, state, config, parameters, deployment_days, home_bases=None):
         self.parameters = parameters
         self.config = config
         self.state = state
         self.deployment_days = deployment_days
+        self.work_hours = 24
+        self.start_hour = 0
+        self.end_hour = 23
         self.scheduling = self.config['scheduling']
-
-    # --- inherited methods ---
-    # _base.crew ->  get_work_hours()
-    # _base.crew ->  update_schedule()
 
     def start_day(self, site_pool):
         """ Start day method. Get daily itinerary for crew.

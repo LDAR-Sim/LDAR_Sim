@@ -24,6 +24,7 @@ import numpy as np
 from datetime import timedelta
 from importlib import import_module
 from generic_functions import get_prop_rate
+from methods.deployment.generic_funcs import get_deployment_dates
 
 
 class BaseCompany:
@@ -46,6 +47,7 @@ class BaseCompany:
             self.config['deployment_type'].lower()))
         Schedule = getattr(deploy_mod, 'Schedule')
         self.schedule = Schedule(config, parameters, state)
+        self.deployment_years, self.deployment_months = get_deployment_dates(config, state)
         self.deployment_days = self.state['weather'].deployment_days(
             method_name=self.name,
             config=config,
@@ -105,14 +107,14 @@ class BaseCompany:
                 self.config['cost']['upfront']
 
         self.schedule.assign_agents()
-        self.schedule.get_deployment_dates()
 
     def deploy_crews(self):
         """
         The company tells all the crews to get to work.
         """
         # NOTE: crew checks weather conditions at start of the day
-        if self.schedule.in_deployment_period(self.state['t'].current_date):
+        c_date = self.state['t'].current_date
+        if c_date.month in self.deployment_months and c_date.year in self.deployment_years:
             self.candidate_flags = []
             if self.config['is_follow_up']:
                 site_pool = self.state['flags']

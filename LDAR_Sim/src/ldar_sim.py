@@ -35,7 +35,7 @@ from geography.vector import grid_contains_point
 from initialization.sites import generate_sites
 from initialization.leaks import (generate_leak,
                                   generate_initial_leaks)
-from initialization.crew_days_estimator import est_crews_min_days
+from initialization.update_methods import est_n_crews
 
 warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning)
 
@@ -61,7 +61,10 @@ class LdarSim:
         if params['emissions']['vent_file'] is not None:
             state['empirical_sites'] = np.array(pd.read_csv(
                 params['input_directory'] / params['emissions']['vent_file']))
-        # Read in the sites as a list of dictionaries
+        if params['repair_costs']['file'] is not None:
+            params['repair_costs']['vals'] = np.array(pd.read_csv(
+                params['input_directory'] / params['repair_costs']['file']))
+            # Read in the sites as a list of dictionaries
         if len(state['sites']) < 1:
             state['sites'], _, _ = generate_sites(params, params['input_directory'])
         state['max_leak_rate'] = params['emissions']['max_leak_rate']
@@ -87,6 +90,19 @@ class LdarSim:
 
         # Additional variable(s) for each site
         for site in state['sites']:
+            for m_label, m_obj in params['methods'].items():
+                # Site parameter overwrite
+                m_RS = '{}_RS'.format(m_label)
+                if m_RS in m_obj:
+                    site[m_RS] = m_obj[m_RS]
+                # Get min interval based on RS. a 90% ajustment is used to add a grace period
+                # prior to the next campaign period were surveys can start earlier
+                # Calculate the site minimum interval
+                if m_RS in site:
+                    site['{}_min_int'.format(m_label)] = 365/site[m_RS]*0.9
+                # Automatically assign 1 crew to followup if left unspecified
+                elif m_obj['n_crews'] is None:
+                    m_obj['n_crews'] = 1
             if params['pregenerate_leaks']:
                 initial_leaks = params['initial_leaks'][site['facility_ID']]
                 n_leaks = len(params['initial_leaks'][site['facility_ID']])
@@ -131,14 +147,15 @@ class LdarSim:
         # Initialize method(s) to be used; append to state
         calculate_daylight = False
         for m_label, m_obj in params['methods'].items():
+            # Update method parameters
+            if m_obj['n_crews'] is None:
+                params['methods'][m_label]['n_crews'] = est_n_crews(m_obj, state['sites'])
+            if m_obj['t_bw_sites']['file'] is not None:
+                params['methods'][m_label]['t_bw_sites']['vals'] = np.array(pd.read_csv(
+                    params['input_directory'] / m_obj['t_bw_sites']['file']).iloc[:, 0])
+            if m_obj['consider_daylight']:
+                calculate_daylight = True
             try:
-                if m_obj['t_bw_sites']['file'] is not None:
-                    m_obj['t_bw_sites']['vals'] = np.array(pd.read_csv(
-                        params['input_directory'] / m_obj['t_bw_sites']['file']).iloc[:, 0])
-
-                if m_obj['consider_daylight']:
-                    calculate_daylight = True
-
                 company_name = str(m_obj['module']) + '_company'
                 module = __import__(company_name)
                 func = getattr(module, company_name)
@@ -161,7 +178,7 @@ class LdarSim:
 
             # Run Monte Carlo simulations to get distribution of vented emissions
             for i in range(1000):
-                n_mc_leaks = random.choice(state['empirical_counts'])
+                n_mc_leaks = random.choice(range(20))
                 mc_leaks = []
                 for leak in range(n_mc_leaks):
                     if params['use_empirical_rates'] == 'sample':
@@ -282,13 +299,12 @@ class LdarSim:
                     lk['status'] = 'repaired'
                     lk['date_repaired'] = state['t'].current_date
                     lk['repair_delay'] = (lk['date_repaired'] - lk['date_tagged']).days
-                    timeseries['repair_cost'][state['t'].current_timestep] \
-                        += params['repair_cost']
-                    timeseries['total_daily_cost'][state['t'].current_timestep] \
-                        += params['repair_cost'] + params['verification_cost']
+                    repair_cost = int(np.random.choice(params['repair_costs']['vals']))
+                    timeseries['repair_cost'][state['t'].current_timestep] += repair_cost
                     timeseries['verification_cost'][
                         state['t'].current_timestep] += params['verification_cost']
-
+                    timeseries['total_daily_cost'][state['t'].current_timestep] \
+                        += repair_cost + params['verification_cost']
             # Update site leaks
             if has_repairs:
                 site['repaired_leaks'] += [lk for lk in site['active_leaks']

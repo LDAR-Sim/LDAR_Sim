@@ -20,18 +20,12 @@
 #
 # ------------------------------------------------------------------------------
 
-from methods.deployment._base import SchedCompany as BaseSchedCompany
 
-
-class Schedule(BaseSchedCompany):
+class Schedule():
     def __init__(self, config, parameters, state):
         self.parameters = parameters
         self.config = config
         self.state = state
-
-        # --- inherited ---
-        # base.company ->  get_deployment_dates()
-        # base.company ->  can_deploy_today()
 
     def get_due_sites(self, site_pool):
         return site_pool

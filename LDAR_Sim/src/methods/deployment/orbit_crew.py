@@ -23,7 +23,6 @@
 import numpy as np
 from shapely.geometry import Point
 from shapely import speedups
-from methods.deployment._base import SchedCrew as BaseSchedCrew
 from generic_functions import quick_cal_daylight, geo_idx
 from datetime import timedelta
 import netCDF4 as nc
@@ -33,7 +32,7 @@ from generic_functions import init_orbit_poly
 speedups.disable()
 
 
-class Schedule(BaseSchedCrew):
+class Schedule():
     def __init__(self, id, lat, lon, state, config, parameters, deployment_days, home_bases=None):
         self.parameters = parameters
         self.config = config
@@ -41,6 +40,9 @@ class Schedule(BaseSchedCrew):
         self.deployment_days = deployment_days
         self.crew_lat = lat
         self.crew_lon = lon
+        self.work_hours = 24
+        self.start_hour = 0
+        self.end_hour = 23
         self.allowed_end_time = None
 
         # extract cloud cover data

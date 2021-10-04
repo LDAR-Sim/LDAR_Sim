@@ -9,9 +9,11 @@ infrastructure_file: 'facility_list_template.csv'
 site_samples: 50
 subtype_times_file: "_placeholder_str_"
 consider_venting: False
-consider_weather: False
+consider_weather: True
 repair_delay: 14
-repair_cost: 200
+repair_costs:
+  vals: [200]
+  file: "_placeholder_str_"
 emissions:
     vent_file: 'site_rates.csv'
     leak_file: "_placeholder_str_"
@@ -23,6 +25,4 @@ emissions:
     max_leak_rate: 100.0
 LPR: 0.0065
 NRd: 150
-max_det_op: 0.00
-operator_strength: 0.0
 verification_cost: 25
