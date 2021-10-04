@@ -2,3 +2,19 @@ parameter_level: method
 version: '2.0'
 label: stationary
 module: stationary
+deployment_type: stationary
+measurement_scale: equipment
+sensor: default
+is_follow_up: False
+MDL: [0.01]
+temporal_coverage: 0.12
+time_to_detection: 30 # Temporary!!!!
+cost:
+  upfront: 500
+  per_day: 1
+  per_hour: 0
+  per_site: 0
+follow_up:
+  proportion: 0.5
+  delay: 30
+  instant_threshold: 1.0

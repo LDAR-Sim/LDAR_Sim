@@ -22,7 +22,7 @@ import os
 import sys
 import gc
 import copy
-
+from datetime import datetime, timedelta
 from numpy import random as np_rand
 import random as rand
 from weather.weather_lookup import WeatherLookup as WL
@@ -110,14 +110,15 @@ def ldar_sim_run(simulation):
     state['t'] = TimeCounter(parameters)
     parameters.update({'timesteps': state['t'].timesteps})
     sim = LdarSim(global_params, state, parameters, timeseries)
-
+    start_date = datetime(*parameters['start_date'])
     # Loop through timeseries
-    while state['t'].current_date <= state['t'].end_date:
+    for ts in range(state['t'].timesteps):
+        state['t'].current_timestep = ts
+        state['t'].current_date = start_date + timedelta(days=ts)
         if parameters['seed_timeseries']:
             np_rand.seed(parameters['seed_timeseries'][state['t'].current_timestep])
             rand.seed(parameters['seed_timeseries'][state['t'].current_timestep])
         sim.update()
-        state['t'].next_day()
 
     # Clean up and write files
     sim_summary = sim.finalize()
