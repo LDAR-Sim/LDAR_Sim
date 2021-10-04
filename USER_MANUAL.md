@@ -1,12 +1,12 @@
 ﻿# LDAR-Sim Documentation for Input Parameters and Data
 
-Github Repository: IM3S 
+Github Repository: IM3S
 
-Version: 2.0 
+Version: 2.0
 
-Branch: Master 
+Branch: Master
 
-Document Custodian: Thomas Fox 
+Document Custodian: Thomas Fox
 
 Email: thomas@highwoodemissions.com
 
@@ -61,7 +61,7 @@ The **outputs** folder stores all output data files produced by LDAR-Sim. The fo
 
 The **src** folder stores the python source code. The main code of LDAR-Sim, LDAR_sim_main.py is stored in the base folder of src.
 
-The **simulations** stores >V2 input parameter files. -- This is currently in development and may be changed before V2 release--.
+The **simulations** stores >V2 input parameter files.
 
 --------------------------------------------------------------------------------
 
@@ -95,8 +95,7 @@ Although a single program can be evaluated on its own, a typical simulation woul
 - `reference program`: The program against which test programs are compared (e.g., to establish equivalency). The reference program is often defined by regulations that require the use of OGI (commonly denoted 'P_OGI').
 - `test program`: A custom alternative program that the user wants to evaluate. Commonly denoted using 'P_' + program name (e.g., 'P_aircraft', 'P_GasCompanyX', 'P_drone', etc.).
 
-
-A simulation can consist of any number of programs and each program can consist of any number of methods. For example, the reference program could deploy one method (OGI). The test program could deploy two new LDAR methods (magical helicopter and unmagical binoculars). 
+A simulation can consist of any number of programs and each program can consist of any number of methods. For example, the reference program could deploy one method (OGI). The test program could deploy two new LDAR methods (magical helicopter and unmagical binoculars).
 Each program would be run on the asset base multiple times through time to create a statistical representation of the emissions and cost data. Finally, the statistical emissions and cost distributions of the reference program can be compared to those of the test program. It is often the differences between the programs that represents the important information that is of interest to users of LDAR-Sim.
 
 In this example, the hierarchy looks like:
@@ -188,7 +187,7 @@ While global parameters are straightforward to specify this way (and the above e
 
 ### LDAR-Sim Parameter Hierarchy
 
-As noted above, LDAR-Sim uses a 3 level hierarchy of simulations, programs, and methods. To tell LDAR-Sim what level in the hierarchy your parameter file is destined for, you must specify a `parameter_level` parameter that will specify what level your parameter file is aimed at - otherwise LDAR-Sim will interpret it as global.
+As noted above, LDAR-Sim uses a 3 level hierarchy of simulations, programs, and methods. To tell LDAR-Sim what level in the hierarchy your parameter file is destined for, you must specify a `parameter\_level` parameter that will specify what level your parameter file is aimed at - otherwise LDAR-Sim will interpret it as global.
 
 The `parameter_level` parameter can be one of three values:
 
@@ -198,19 +197,19 @@ The `parameter_level` parameter can be one of three values:
 
 There are special considerations for methods:
 
-- First, methods have a `module` key, that relate to specific method modules. For example, an OGI method is simulated using the OGI module. Users can build custom types or extend existing types, but some `module` is necessary to ensure LDAR-Sim knows what code to run. The full list of available modules is provided in parameter documentation below.
-    &nbsp;
-    ***--- Temporary pre V2 release ---***
-    Because new methods are temporarily using a dummy class to maintain old functionality for testing, a second variable is required to access default input parameters `default_module`. Default modules currently include and accept the following arguments:
-  - continuous
-  - OGI_FU
-  - OGI
-  - operator
-  - satellite
-  - truck
-    &nbsp;
-- Second, methods have a `label`. This is necessary as there can be many different methods that are quite different, but have the same `module`. A good example is different OGI companies. You can run a simulation with multiple OGI companies, each specified as a unique method with unique agents, but both of the same type `OGI`. This is helpful to represent different work practices, different collection of parameters, or different approaches with the same technology. If you are modeling a hypothetical aircraft company, the module will need to be set to `aircraft` and the label can be set to the name that you specify.
-
+- All methods require a unique `label`. This is use internally as a unique id, and is required to utilize `_RS` and `_time` variables from the facility file.
+- All methods require a `deployment_type`. This can be custom coded following the `template_crew` and `template_company` modules or one of the prebuilt methods can be used:
+  - `mobile`: Agent moves between sites. Surveys occur when a site is "ready" for a survey and a crew is available to survey.
+  - `stationary`: Each site has one or more _fixed_ sensors. Surveys are carried out daily.
+  - `orbit`: Agent 'orbits' site and performs surveys at regular intervals.
+- All methods require a `measurement_scale`. This can be one of:
+  - `site`: Sensor measures the aggregate of all leaks at site.
+  - `equipment`: Sensor measures the aggregate of all leaks at within a single equipment group.
+  - `component`: Sensor measures each individual leak.
+- All methods require a `sensor` This can can either be custom built or one of the following can be used:
+  - `default`: Uses a simple threashold where the leak rate is based on the measurement scale, for example if `measurement_scale = site` then the site's total emissions will  be considered measured if greater than the sensors MDL.
+  -`OGI_camera`: Uses detection curve based on Ravikumar, 2018.Requires measurement_scale = 'component'.
+- Follow up technologies need to be set explicitly. `is_follow_up = True`. The default value is false
 - Third, because methods are often carefully designed and used in treatment / control experiments, it is helpful to allow reuse of specific methods by referring to methods by their `label`.
 
 Consider the following simulation:
@@ -248,7 +247,6 @@ new_LDAR_method_1 = {
     'version': '2.0',
     'parameter_level': 'method',
     'label': 'new_LDAR_method_1',
-    'module': 'OGI',
     .... OTHER OGI METHOD PARAMETERS ....
 }
 ```
@@ -302,7 +300,6 @@ version: '2.0'
 parameter_level: method
 awesome_method:
   label: awesome_method
-  module: awesome_technology
 ```
 
 Note that programs are interpreted as a flat list of parameters that are incorporated into a list where methods have one parameter (the method name), and other method parameters nested below.
@@ -441,9 +438,21 @@ If you are developing in LDAR-Sim, please adhere to the following rules:
 
 **Data type:** String
 
-**Default input:** 'P_ref'
+**Default input:** 'P_OGI'
 
 **Description:** The program against which alternative or test programs are compared, which is used to create relative emissions and cost output graphs. Often this is regulatory OGI.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** N/A
+
+### baseline_program
+
+**Data type:** String
+
+**Default input:** 'P_none'
+
+**Description:** A program that represents a scenario where there is no formal LDAR, or that has no LDAR methods. This is currently used for economic functions.
 
 **Notes on acquisition:** N/A
 
@@ -473,7 +482,7 @@ If enabled, the leaks will be stored locally in /inputs/generation after running
 
 **Notes on acquisition:** N/A
 
-**Notes of caution:** This should only be used for testing purposes and will likely be removed in future versions.
+**Notes of caution:** This should only be used for QC and testing.
 
 --------------------------------------------------------------------------------
 
@@ -627,18 +636,6 @@ If using different weather files for different programs (e.g., when comparing di
 
 **Notes of caution:** This variable is an empirical estimate of how much time is required for a given mobile method to complete a survey at a given facility. This includes anything that happens onsite (e.g., calibrations, interfacing with the operator, etc.) but _does not include_ driving time between facilities or any other account of time spent offsite. This variable is simply the amount of time that passes from the start of a facility survey to the end. If a facility takes longer than there is time left in a day, then the agent/crew returns the following day to continue work, and so on and so forth, until the facility is completed. This variable is not required for continuous measurement methods.
 
-#### ***_min_interval
-
-**Data type:** Integer
-
-**Default input:** N/A
-
-**Description:** The minimum number of days that must pass between surveys at a facility.
-
-**Notes on acquisition:** Often established by the regulator.
-
-**Notes of caution:** As the number of required surveys becomes more evenly spaced through the year, emissions get lower. As surveys become more clustered, emission rise (because leaks go longer without repair). In general, the minimum interval should attempt to evenly space surveys through the year, but should still be representative of what crews are likely to do. The minimum interval can approximate the number of days in a year divided by the survey frequency (so for two surveys, an interval of ~180 days should evenly space the surveys). However, keep in mind that the crews may take several days or weeks to complete surveys, so if not enough time remains in the year, facilities may be missed and end up out of compliance.
-
 #### fixed_sensors
 
 **Data type:** Integer
@@ -689,11 +686,11 @@ If using different weather files for different programs (e.g., when comparing di
 
 ### site_samples
 
-**Data type:** List
+**Data type:** Integer
 
-**Default input:** [False, 0]
+**Default input:** 500
 
-**Description:** A list of inputs to sample from infrastructure_file, if desired. This functionality would generally be used to run a series of rapid simulations when a large number of sites are included in the program. The first element in the list is a Boolean True/False to trigger whether or not to take samples. The second element indicates the number of samples to acquire.
+**Description:** The user can randomly subset/bootstrap all of the sites for a smaller or larger sample of sites. Teis variable is a integer indicating the number of sites to subset.
 
 **Notes on acquisition:** No data acquisition required.
 
@@ -723,38 +720,6 @@ If using different weather files for different programs (e.g., when comparing di
 
 **Notes of caution:** Facility types must match those used in infrastructure_file. When used, subtype_times_file overwrites any facility-specific times present in infrastructure_file.
 
-### consider_operator
-
-**Data type:** Boolean
-
-**Default input:** False
-
-**Description:** A binary True/False to activate the operator module (also called the 'natural repair rate'). The operator is intended to represent natural leak detection and repair processes that occur at a facility that are independent of a formal LDAR program. If set to False, only the LDAR programs can find and repair leaks. If True, an operator visits each facility at a regular interval (typically, every Monday) and periodically finds leaks and tags them for repair (they then enter repair queue in the same manner as for any leak detected by LDAR). The operator probability of detection is a function of several variables, is calculated automatically, and is explained in Fox et al. (2020).
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** Ultimately, leak production rate (LPR) and natural repair rate (NRR) processes remain poorly understood but can greatly impact modeling results. No clear set of rules or guidance exists for how to navigate LPR and NRR. We recommend that the operator module be used with care and that a range of results be simulated under different assumptions to understand the impact of any assumptions surrounding LPR and NRR. For a nuanced discussion of this topic, see Fox et al. (2020).
-
-#### max_det_op
-
-**Data type:** Numeric
-
-**Default input:** 0
-
-**Description:** A numerical scalar ranging from 0 to 1 that increases the relative probability that operators will detect large leaks. Although it makes intuitive sense that an operator would be more likely to hear/smell/see a large leak and would be more likely to care about it for safety and economic reasons, there exists no empirical data to guide the operator detection curve.
-
-**Notes on acquisition:** As of January 2021 (time of writing), no data exists to help parameterize how likely operators are to find large vs. small leaks. Ultimately, controlled release testing should be performed to understand typical probability of detection ranges for the human senses (AVO).
-
-**Notes of caution:** This is currently a made-up technique that is not grounded in empirical data. Another problem is that it simply adds to the probability of high leaks being detected, but does not lower the probability for small leaks.
-
-#### operator_strength
-
-**Data type:** Numeric
-
-**Default input:** 1
-
-**Description:** A numerical scalar that adjusts the probability of detection of the operator. At zero, the probability of detection becomes zero, while at 1, it is maximized. Values above 1 are probably unnecessary and are not advisable in most circumstances. The purpose of this parameter is to linearly and easily adjust the impact of the operator to test a range of operator strengths (e.g., test from 0 to 1 at increments of 0.1).
-
 #### consider_venting
 
 **Data type:** Boolean
@@ -766,18 +731,6 @@ If using different weather files for different programs (e.g., when comparing di
 **Notes on acquisition:** No data acquisition required.
 
 **Notes of caution:** Screening technology performance will typically suffer if only fugitive emissions are being targeted due to the confounding presence of design (e.g., vented) emissions. Results from simulations of screening technologies that do not consider venting are therefore optimistic and unlikely to be representative of true reductions. When vented emissions are considered, it will change what facilities are selected for follow-up by screening technologies.
-
-### consider_weather
-
-**Data type:** Boolean
-
-**Default input:** True
-
-**Description:** A binary True/False to indicate whether the method is affected by weather. If true, surveys occur regardless of weather for scheduled visits. Can be used to isolate for the impact of other variables but should be considered for simulations that inform decision making.
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** Locations with more extreme weather will be more affected if this is disabled.
 
 ### repair_delay
 
@@ -849,7 +802,7 @@ If using different weather files for different programs (e.g., when comparing di
 
 **Notes on acquisition:** No data acquisition required.
 
-**Notes of caution:** Using None will require almost all of your computer's total processor utilization across all cores. If background tasks require CPU (e.g., OneDrive, internet browser) your computer may crash.
+**Notes of caution:**  N/A
 
 ### NRD
 
@@ -901,15 +854,81 @@ If using different weather files for different programs (e.g., when comparing di
 
 ### economics
 
-**Data type:** All six parameters within the economics dictionary are integers.
+#### sale_price_natgas
 
-**Default input:** Sale price of natural gas is $3/mcf, carbon price in $40/tonne CO2e, the social cost of CH4 ($27/mcf) is converted to $1406/tonne CH4 but is unused (for now), the cost of pure stream CCUS is $20/tonne CO2e, the cost of converting high bleed devices to low bleed devices ($6/mcf) is converted to $875/tonnes CO2e but is also unused (for now), and the GWP of CH4 is 28 times that of the equivalent amount of CO2 over 100 years.
+**Data type:** Numeric
 
-**Description:** In the economics dictionary there are six different parameters that users can customize. The first is the sale price of natural gas which is used to calculate the potential value of gas sold when captured as part of an LDAR program. LDAR-Sim takes the difference in emissions from a baseline scenario and multiplies this by the price of natural gas. The current federal price on carbon in Canada of $40/tonne CO2e is input as a default metric to compare the cost to mitigation ratios of LDAR programs to. The social cost of methane is input but unused (for now) because the conversion to tonnes/CO2e places this value out of range on the output plots. The cost of pure stream CCUS was taken from the International Energy Agency's (IEA) report here: <https://www.iea.org/commentaries/is-carbon-capture-too-expensive>. It offers another metric to compare the cost/mitigation ratios of LDAR programs to. The cost of converting high bleed devices to low bleed devices ($6/mcf) was taken from a Resources for the Future (RFF) report by Munnings and Krupnick (2017) and converted to $/tonne CO2e before input. Similar to the carbon price and cost of CCUS, the cost of low bleed retrofits can be compared to LDAR program cost/mitigation ratios for context. However, it is unused in the model right now. Last, a GWP of 28 over a 100-year time period was chosen as a default input. The model uses this value to convert between CH4 and CO2e when required. This value can be changed to 84-86 over 20 years to explore the impact that GWP has on mitigation costs.
+**Default input:** 3.0
 
-**Notes on acquisition:** The default values for these parameters represent generic costs of mitigation options and a conservative price for natural gas. Firms may have unique costs for carbon taxes based on the regulatory jurisdiction where their operations are located, CCUS, or low bleed retrofits that they want to input into the model. If not, default parameters can be used, or information from the IEA and RFF report from Munnings and Krupnick (2017) can be used to derive alternative values. Provinicial/State or Federal government websites should have carbon pricing scenarios available online.
+**Description:** The sale price of natural gas which is used to calculate the potential value of gas sold when captured as part of an LDAR program. LDAR-Sim takes the difference in emissions from a baseline scenario and multiplies this by the price of natural gas.
 
-**Notes of caution:** The value used for the cost of low bleed retrofits from Munnings and Krupnick (2017) is based on a national marginal abatement cost curve for methane abatement technologies in the U.S. O&G sector. As a result, this cost may not be truly representative of the costs for low bleed retrofits at sites in the O&G sector under LDAR regulations.
+**Notes on acquisition:** See economic section below.
+
+**Notes of caution:** See economic section below.
+
+#### carbon_price_tonnesCO2e
+
+**Data type:** Numeric
+
+**Default input:** 40.0
+
+**Description:** The current federal price on carbon in Canada of $40/tonne CO2e is input as a default metric to compare the cost to mitigation ratios of LDAR programs to.
+
+**Notes on acquisition:** See economic section below.
+
+**Notes of caution:** See economic section below.
+
+#### social_cost_CH4_tonnes
+
+**Data type:** Numeric
+
+**Default input:** 1406.0
+
+**Description:** Currently Unused
+
+**Notes on acquisition:** See economic section below.
+
+**Notes of caution:** See economic section below.
+
+#### cost_CCUS
+
+**Data type:** Numeric
+
+**Default input:** 20
+
+**Description:** The cost of pure stream CCUS was taken from the International Energy Agency's (IEA) report here: <https://www.iea.org/commentaries/is-carbon-capture-too-expensive>. It offers another metric to compare the cost/mitigation ratios of LDAR programs to.
+
+**Notes on acquisition:** See economic section below.
+
+**Notes of caution:** See economic section below.
+
+#### cost_low_bleed_pneu_tCO2e
+
+**Data type:** Numeric
+
+**Default input:** 875.0
+
+**Description:** Similar to the carbon price and cost of CCUS, the cost of low bleed retrofits can be compared to LDAR program cost/mitigation ratios for context.
+
+**Notes on acquisition:** See economic section below.
+
+**Notes of caution:** See economic section below.
+
+#### GWP_CH4
+
+**Data type:** Numeric
+
+**Default input:** 28.0
+
+**Description:** GWP of 28 over a 100-year time period was chosen as a default input. The model uses this value to convert between CH4 and CO2e when required. This value can be changed to 84-86 over 20 years to explore the impact that GWP has on mitigation costs.
+
+**Notes on acquisition:** See economic section below.
+
+**Notes of caution:** See economic section below.
+
+**Notes on acquisition (economics):** The default values for these parameters represent generic costs of mitigation options and a conservative price for natural gas. Firms may have unique costs for carbon taxes based on the regulatory jurisdiction where their operations are located, CCUS, or low bleed retrofits that they want to input into the model. If not, default parameters can be used, or information from the IEA and RFF report from Munnings and Krupnick (2017) can be used to derive alternative values. Provinicial/State or Federal government websites should have carbon pricing scenarios available online.
+
+**Notes of caution (economics):** The value used for the cost of low bleed retrofits from Munnings and Krupnick (2017) is based on a national marginal abatement cost curve for methane abatement technologies in the U.S. O&G sector. As a result, this cost may not be truly representative of the costs for low bleed retrofits at sites in the O&G sector under LDAR regulations.
 
 --------------------------------------------------------------------------------
 
@@ -935,49 +954,29 @@ _see Global Inputs - parameter_level_
 
 **Notes of caution:** Must match the label name specified in the program input parameter file, and any supplimentary files, such as the infrastructure file.
 
-***Temporary**: In moving from individual methods to base module with changeable deployment/ sensors (V2 methods), new methods do not need to have an associated method file.
-
-### module _[temporary]_
-
-**Data type:** String
-
-**Default input:**"dummy"
-
-**Description:** A character string denoting the V1 crew and company module to use in simulation.
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** For V1 modules you must match the company and crew python files that match the method. For example, if the method file is named OGI_company, the name must be "OGI". If using V2 methods use the default variable 'dummy'
-
-***Temporary**: In moving from individual methods to base module with changable deployment/ sensors (V2 methods), new methods do not need to have an associated method company and crew files.
-
 ### deployment_type
 
 **Data type:** String
 
 **Default input:** "mobile"
 
-**Description:** Methods are comprised of both a deployment type and a sensor type. The deployment type is a character string denoting the deployment type used in the method. For instance, 'mobile', 'stationary', or 'orbit'.
+**Description:** Methods are comprised of both a deployment type and a sensor type. The deployment type is a character string denoting the deployment type used in the method. For instance, 'mobile', 'stationary', or 'orbit'. Custom deployment types can be added and referenced here.
 
 **Notes on acquisition:** No data acquisition required.
 
-**Notes of caution:** These methods must have accompanying deployment files, i.e., *{deployment_type}\_crew* and *{deployment_type}\_company* in the _module-code.methods.deployment_ folder. See *template\_company* , and _template_crew_ for more details.
-
-***Temporary**: In moving from individual methods to base module with changable deployment/ sensors (V2 methods), new methods do not use this variable.
+**Notes of caution:** N/A
 
 ### sensor_type
 
 **Data type:** String
 
-**Default input:** "OGI_camera"
+**Default input:** "default"
 
-**Description:** Methods are comprised of both a deployment type and a sensor type. the sensor type is a character string denoting the sensor used in the method. For instance, 'OGI_camera', or 'default'. The 'default' sensor uses the MDL as a threshold to detect leaks based on the measurement scale of the method.
+**Description:** Methods are comprised of both a deployment type and a sensor type. the sensor type is a character string denoting the sensor used in the method. For instance, 'OGI_camera', or 'default'. The 'default' sensor uses the MDL as a threshold to detect leaks based on the measurement scale of the method. Custom sensors can be added and referenced here.
 
 **Notes on acquisition:** No data acquisition required.
 
-**Notes of caution:** These methods must have accompanying sensor files, i.e., _{sensor\_type}_ in the _methods.sensors_ folder.
-
-***Temporary**: In moving from individual methods to base module with changable deployment/ sensors (V2 methods), new methods do not use this variable.
+**Notes of caution:** N/A
 
 ### measurement_scale
 
@@ -1221,13 +1220,21 @@ The follow-up delay parameter can be set to require multiple measurements for a 
 
 ### t_btw_sites
 
-**Data type:** Integer, or Character string denoting csv file location.
+#### vals
 
-**Default input:** Depends on method
+**Data type:** List of Integers
 
-**Description:** A single value or a character string that specifies the csv file containing a distribution of times spent offsite. Each time a site survey is complete, the day is advanced by this number of minutes before the subsequent site survey begins. At the end of the day, the time is again advanced by this number of minutes to simulate travel home. This value is not used if routeplanning is enabled.
+**Default input:** [30]
 
-In the case that a csv is used, the csv must contain one column where the column heading must be "mins_offsite_per_site" and each cell contains an integer representing an empirical estimate of the amount of time (in minutes) spent offsite between two facilities or between a home base (i.e., town where hotel is) and a facility.
+**Description:** Time between sites. denotes the time in minutes required to plan, travel, setup, take down, required in between surveys. A value is selected at random from the list
+
+#### file
+
+**Data type:** Character String
+
+**Default input:** None
+
+**Description:** A string denoting the filename of a csv file containing travel times. The file should include one row, with a headcolumn in row 1 of `time_btw_sites`
 
 **Notes on acquisition:** Each value should represent not only driving time, but all time spent not conducting surveys (driving, breaks, meals, break downs, trains, etc.) This data should be scraped from historical GPS data associated with LDAR survey crews, ideally for the facilities under evaluation.
 
@@ -1327,7 +1334,7 @@ where Q = the emission rate in grams of methane per hour and d is the distance o
 
 **Data type:** Boolean
 
-**Default input:** N/A
+**Default input:** False
 
 **Description:** A binary True/False to activate the route planning. Route planning allows LDAR crews to choose the nearest facility and home bases to visit based on the shortest travelling cost. The travelling cost is travel time that is calculated using the Haversine distance metric and maximum speed limit of travelling. The maximum speed limit is sampled from speed_list. It also allows LDAR crews to depart from the home base (town, city, or airport) at the start of each day and return to the home base at the end of each day. This will be improved in the future, especially for OGI, drone, and trucks.
 
@@ -1366,7 +1373,7 @@ At a bare minimum, the csv must contain the following columns: 'name', 'lat', an
 
 **Default input:** N/A
 
-**Description:** A list of coordinates [longitude, latitude] that define the initial location of the LDAR crew. It is only required if route_planning or geography is activated.
+**Description:** A list of coordinates [longitude, latitude] that define the initial location of the LDAR crew. It is only required if route_planning is activated.
 
 **Notes on acquisition:** N/A
 
@@ -1396,20 +1403,6 @@ At a bare minimum, the csv must contain the following columns: 'name', 'lat', an
 
 **Notes of caution:** Only mobile methods can use this functionality.
 
-### time_to_detection (stationary only)
-
-**Data type:** Integer
-
-**Default input:** N/A
-
-**_Temporary_** Obsolete in V2\. Use follow-up delay instead.
-
-**Description:** The number of days between leak onset and detection by the fixed system.
-
-**Notes on acquisition:** We recommend extensive controlled release testing under a range of representative release rates, distances, and conditions to establish time to detection.
-
-**Notes of caution:** Does not include reporting_delay. In reality, this should be a function of distance and emission rate, so this functionality should be added.
-
 ### TLE_files (satellite only)
 
 **Data type:** String
@@ -1437,13 +1430,31 @@ TLE stands for a two-line element set, which is a data format encoding a list of
 
 --------------------------------------------------------------------------------
 
-### percent_detectable (operator only)
+### Coverage
+
+#### spatial
 
 **Data type:** Numeric
 
-**Default input:** 0.1
+**Default input:** 1.0
 
-**Description:** Probability (0-1) that an operator will find a leak above the AVO MDL during a AVO survey.
+**Description:** Probability (0-1) that an agent can locate a leak. Internally, each leak will be randomly assigned a True or False based on this probability indicating whether or not they are covered on the first pass. The leak will be checked if the value is true for the first and all subsequent surveys.
+
+`eg. coverage.spatial = 0.25`. The leak has a 25% chance of being detected regardless of the number of surveys.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** Future research is required!
+
+#### temporal
+
+**Data type:** Numeric
+
+**Default input:** 1.0
+
+**Description:** Probability (0-1) that an agent can locate a leak during a survey. Internally, each leak will be randomly assigned a True or False based on this probability increasing survey will improve the chances of the leak being detected.
+
+`eg. coverage.temporal = 0.25`. The leak has a 25% chance of being detected **every time** it is surveyed.
 
 **Notes on acquisition:** N/A
 
@@ -1488,8 +1499,6 @@ In the absence of operator-specific data, published estimates can be used.
 
 - weather_file
 - consider_venting
-
-
 
 --------------------------------------------------------------------------------
 

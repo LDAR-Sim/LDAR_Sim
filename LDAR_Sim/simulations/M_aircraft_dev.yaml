@@ -9,3 +9,5 @@ is_follow_up: False
 MDL: [0.01]
 cost:
   per_day: 10000
+t_bw_sites:
+  vals: [10]

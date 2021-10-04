@@ -6,7 +6,7 @@ program_name: 'default'
 weather_file: 'ERA5_2017_2020_AB.nc'
 weather_is_hourly: True
 infrastructure_file: 'facility_list_template.csv'
-site_samples: 50
+site_samples: 500
 subtype_times_file: "_placeholder_str_"
 consider_venting: False
 consider_weather: True
@@ -26,3 +26,10 @@ emissions:
 LPR: 0.0065
 NRd: 150
 verification_cost: 25
+economics:
+  sale_price_natgas: 3.0
+  carbon_price_tonnesCO2e: 40.0
+  social_cost_CH4_tonnes: 1406.0
+  cost_CCUS: 20.0
+  cost_low_bleed_pneu_tCO2e: 875.0
+  GWP_CH4: 28.0
