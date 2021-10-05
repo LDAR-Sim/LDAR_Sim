@@ -35,7 +35,7 @@ from geography.vector import grid_contains_point
 from initialization.sites import generate_sites
 from initialization.leaks import (generate_leak,
                                   generate_initial_leaks)
-from initialization.update_methods import est_n_crews, est_site_p_day
+from initialization.update_methods import est_n_crews, est_site_p_day, est_t_bw_sites
 
 warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning)
 
@@ -148,11 +148,14 @@ class LdarSim:
         calculate_daylight = False
         for m_label, m_obj in params['methods'].items():
             # Update method parameters
+            m_obj_wr = params['methods'][m_label]
+            if m_obj['scheduling']['route_planning']:
+                m_obj_wr['t_bw_sites']['vals'] = est_t_bw_sites(m_obj, state['sites'])
             if m_obj['n_crews'] is None:
-                params['methods'][m_label]['n_crews'] = est_n_crews(m_obj, state['sites'])
-            params['methods'][m_label]['est_site_p_day'] = est_site_p_day(m_obj, state['sites'])
+                m_obj_wr['n_crews'] = est_n_crews(m_obj, state['sites'])
+            m_obj_wr['est_site_p_day'] = est_site_p_day(m_obj, state['sites'])
             if m_obj['t_bw_sites']['file'] is not None:
-                params['methods'][m_label]['t_bw_sites']['vals'] = np.array(pd.read_csv(
+                m_obj_wr['t_bw_sites']['vals'] = np.array(pd.read_csv(
                     params['input_directory'] / m_obj['t_bw_sites']['file']).iloc[:, 0])
             if m_obj['consider_daylight']:
                 calculate_daylight = True

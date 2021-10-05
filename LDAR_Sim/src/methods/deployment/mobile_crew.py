@@ -255,7 +255,7 @@ class Schedule():
                     self.crew_lon, self.crew_lat,
                     next_loc['lon'], next_loc['lat'], "Haversine")
 
-            speed = np.random.choice(self.config['scheduling']['speed_list'])
+            speed = np.random.choice(self.config['scheduling']['travel_speeds'])
             travel_time = (distance/speed)*60
         # ----------------------------------------------------------
         else:
@@ -349,11 +349,11 @@ class Schedule():
         if self.config['scheduling']['route_planning']:
             if site:
                 # today needs to travel all day
-                hb = self.upd_travel_time_loc(next_loc=site, homebase=True)
+                hb = self.upd_travel_time_loc(next_loc=site, is_homebase=True)
 
             else:
                 # if not means crew need to travel all the way to reach the next site
-                hb = self.upd_travel_time_loc(homebase=True)
+                hb = self.upd_travel_time_loc(is_homebase=True)
 
             self.crew_lon = hb['next_loc'][0]
             self.crew_lat = hb['next_loc'][1]

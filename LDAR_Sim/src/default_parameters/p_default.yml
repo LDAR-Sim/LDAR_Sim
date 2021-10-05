@@ -6,7 +6,7 @@ program_name: 'default'
 weather_file: 'ERA5_2017_2020_AB.nc'
 weather_is_hourly: True
 infrastructure_file: 'facility_list_template.csv'
-site_samples: 500
+site_samples: 20
 subtype_times_file: "_placeholder_str_"
 consider_weather: True
 repair_delay: 14

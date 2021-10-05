@@ -1344,13 +1344,13 @@ _see Global Inputs - parameter_level_
 
 **Default input:** False
 
-**Description:** A binary True/False to activate the route planning. Route planning allows LDAR crews to choose the nearest facility and home bases to visit based on the shortest travelling cost. The travelling cost is travel time that is calculated using the Haversine distance metric and maximum speed limit of travelling. The maximum speed limit is sampled from speed_list. It also allows LDAR crews to depart from the home base (town, city, or airport) at the start of each day and return to the home base at the end of each day. This will be improved in the future, especially for OGI, drone, and trucks.
+**Description:** A binary True/False to activate the route planning. Route planning allows LDAR crews to choose the nearest facility and home bases to visit based on the shortest travelling cost. The travelling cost is travel time that is calculated using the Haversine distance metric and maximum speed limit of travelling. The maximum speed limit is sampled from travel_speeds. It also allows LDAR crews to depart from the home base (town, city, or airport) at the start of each day and return to the home base at the end of each day. This will be improved in the future, especially for OGI, drone, and trucks.
 
-**Notes on acquisition:** It requires the user to also define an input for home_bases_files, speed_list, and LDAR_crew_init_location.
+**Notes on acquisition:** It requires the user to also define an input for home_bases_files, travel_speeds, and LDAR_crew_init_location.
 
 **Notes of caution:** Only mobile methods can use this functionality.
 
-#### speed_list (mobile only)
+#### travel_speeds (mobile only)
 
 **Data type:** List of floats
 
