@@ -158,7 +158,7 @@ class stationary_company:
                     self.timeseries['fixed_flags_redund2'][self.state['t'].current_timestep] += 1
 
                 # Would the site have been chosen without venting?
-                if self.parameters['consider_venting']:
+                if self.parameters['emissions']['consider_venting']:
                     if (site_cum_rate - venting) < self.config['follow_up']['thresh']:
                         self.timeseries['fixed_flag_wo_vent'][
                             self.state['t'].current_timestep] += 1

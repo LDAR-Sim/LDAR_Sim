@@ -54,7 +54,7 @@ def cost_mitigation(simulation_dfs, ref_program, no_program, output_directory):
         'cost_low_bleed_pneu_tCO2e':
         df['p_params']['economics']['cost_low_bleed_pneu_tCO2e'],
         'total_program_cost': df['timeseries']['total_daily_cost'].sum()
-        } for df in simulation_dfs]
+    } for df in simulation_dfs]
 
     economics_outputs_df = pd.DataFrame(economics_outputs)
 

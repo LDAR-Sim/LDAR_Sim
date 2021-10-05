@@ -1,6 +1,6 @@
 # ------------------------------------------------------------------------------
 # Program:     The LDAR Simulator (LDAR-Sim)
-# File:        methods.deployment._base
+# File:        methods.deployment.generic_funcs
 # Purpose:     Commonly used schedule class methods for crew and companies
 #
 # Copyright (C) 2018-2021  Intelligent Methane Monitoring and Management System (IM3S) Group
@@ -56,14 +56,3 @@ def get_deployment_dates(config, state):
     else:
         deployment_months = list(range(1, 13))
     return deployment_years, deployment_months
-
-
-def in_deployment_period(config, state, date):
-    """ If the current day is within the deployment month and years window
-    Args:
-        date (datetime): Current date
-
-    Returns:
-        Boolean: If date passed is in deployment month and year
-    """
-    return

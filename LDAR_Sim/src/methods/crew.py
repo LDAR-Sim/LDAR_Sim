@@ -162,7 +162,7 @@ class BaseCrew:
 
         # Add vented emissions
         venting = 0
-        if self.parameters['consider_venting']:
+        if self.parameters['emissions']['consider_venting']:
             venting = self.state['empirical_vents'][
                 np.random.randint(0, len(self.state['empirical_vents']))]
             covered_true_site_rate += venting

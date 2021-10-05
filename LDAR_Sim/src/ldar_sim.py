@@ -26,7 +26,7 @@ import random
 import warnings
 import pandas as pd
 import numpy as np
-
+from numpy.random import choice, binomial
 from plotter import make_plots
 from daylight_calculator import DaylightCalculatorAve
 from generic_functions import make_maps
@@ -61,9 +61,9 @@ class LdarSim:
         if params['emissions']['vent_file'] is not None:
             state['empirical_sites'] = np.array(pd.read_csv(
                 params['input_directory'] / params['emissions']['vent_file']))
-        if params['repair_costs']['file'] is not None:
-            params['repair_costs']['vals'] = np.array(pd.read_csv(
-                params['input_directory'] / params['repair_costs']['file']))
+        if params['economics']['repair_costs']['file'] is not None:
+            params['economics']['repair_costs']['vals'] = np.array(pd.read_csv(
+                params['input_directory'] / params['economics']['repair_costs']['file']))
             # Read in the sites as a list of dictionaries
         if len(state['sites']) < 1:
             state['sites'], _, _ = generate_sites(params, params['input_directory'])
@@ -174,7 +174,7 @@ class LdarSim:
             state['t'].current_date = state['t'].current_date.replace(hour=1)
 
         # Initialize empirical distribution of vented emissions
-        if params['consider_venting']:
+        if params['emissions']['consider_venting']:
             state['empirical_vents'] = []
 
             # Run Monte Carlo simulations to get distribution of vented emissions
@@ -251,7 +251,7 @@ class LdarSim:
             sidx = site['facility_ID']
             if params['pregenerate_leaks']:
                 new_leak = params['leak_timeseries'][sidx][self.state['t'].current_timestep]
-            elif np.random.binomial(1, self.parameters['LPR']):
+            elif binomial(1, self.parameters['emissions']['LPR']):
                 new_leak = generate_leak(
                     params, site, self.state['t'].current_date, site['cum_leaks'])
             if new_leak is not None:
@@ -300,12 +300,12 @@ class LdarSim:
                     lk['status'] = 'repaired'
                     lk['date_repaired'] = state['t'].current_date
                     lk['repair_delay'] = (lk['date_repaired'] - lk['date_tagged']).days
-                    repair_cost = int(np.random.choice(params['repair_costs']['vals']))
+                    repair_cost = int(choice(params['economics']['repair_costs']['vals']))
                     timeseries['repair_cost'][state['t'].current_timestep] += repair_cost
                     timeseries['verification_cost'][
-                        state['t'].current_timestep] += params['verification_cost']
+                        state['t'].current_timestep] += params['economics']['verification_cost']
                     timeseries['total_daily_cost'][state['t'].current_timestep] \
-                        += repair_cost + params['verification_cost']
+                        += repair_cost + params['economics']['verification_cost']
             # Update site leaks
             if has_repairs:
                 site['repaired_leaks'] += [lk for lk in site['active_leaks']
