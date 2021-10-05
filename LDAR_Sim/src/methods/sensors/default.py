@@ -21,17 +21,17 @@
 from method_functions import measured_rate
 
 
-def detect_emissions(self, site, covered_leaks, covered_equipment_rates, site_rate,
-                     covered_true_site_rate, venting, equipment_rates):
+def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered_site_rate,
+                     site_rate, venting, equipment_rates):
 
     equip_measured_rates = []
     site_measured_rate = 0
     found_leak = False
 
     if self.config["measurement_scale"] == "site":
-        if (covered_true_site_rate > self.config['MDL'][0]):
+        if (covered_site_rate > self.config['MDL'][0]):
             found_leak = True
-            site_measured_rate = measured_rate(covered_true_site_rate, self.config['QE'])
+            site_measured_rate = measured_rate(covered_site_rate, self.config['QE'])
         else:
             site[self.config['label'] + '_missed_leaks'] += 1
     elif self.config["measurement_scale"] == "equipment":

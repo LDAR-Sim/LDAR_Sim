@@ -24,7 +24,11 @@ import random
 from generic_functions import geo_idx
 
 
-def detect_emissions(self, site, leaks_present, equipment_rates, site_true_rate, venting):
+def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered_site_rate,
+                     site_rate, venting, equipment_rates):
+    equip_measured_rates = []
+    site_measured_rate = 0
+    found_leak = False
     m_name = self.config['label']
     # extract the wind speed on site based on site's geo indices
     site_lat = np.float16(site['lat'])
@@ -37,33 +41,30 @@ def detect_emissions(self, site, leaks_present, equipment_rates, site_true_rate,
     # listed in Jacob et al., 2016
     # For point source, MDL is proportion to wind speed
     # when wind speed is 5km/h (1.39 m/s) MDL is 5.79 g/s
-    Q_min = 5.79 * (1.39/windspeed)
-    # set MDL to 0 for testing
-    Q_min = 0
+    Q_min = self.config['MDL'][0] * (self.config['MDL'][1]/windspeed)
 
     # check detection
-    if site_true_rate > Q_min:
+    if covered_site_rate > Q_min:
         # calculate the measured emission size
         # Based on Table1 of Jacob et al.,2016, the precision of
         # GHGSat can be off by sigma (usually between 1% to 5%)
         # sample a sigma number
         sigma = random.choice([0.01, 0.02, 0.03, 0.04, 0.05])
-        site_measured_rate = site_true_rate * (1 - sigma)
-
-        # If source is above follow-up threshold
-        if site_measured_rate > self.config['follow_up']['thresh']:
-            # Put all necessary information in a dictionary to
-            # be assessed at end of day
-            site_dict = {
-                'site': site,
-                'leaks_present': leaks_present,
-                'site_true_rate': site_true_rate,
-                'site_measured_rate': site_measured_rate,
-                'vent_rate': venting
-            }
+        site_measured_rate = covered_site_rate * (1 - sigma)
+        found_leak = True
 
     else:
         site_dict = None
-        site['{}_missed_leaks'.format(m_name)] += len(leaks_present)
+        site['{}_missed_leaks'.format(m_name)] += len(covered_leaks)
+
+    site_dict = {
+        'site': site,
+        'leaks_present': covered_leaks,
+        'site_true_rate': site_rate,
+        'site_measured_rate': site_measured_rate,
+        'equip_measured_rates': equip_measured_rates,
+        'vent_rate': venting,
+        'found_leak': found_leak,
+    }
 
     return site_dict

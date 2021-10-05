@@ -23,8 +23,9 @@ import numpy as np
 import math
 
 
-def detect_emissions(self, site, covered_leaks, covered_equipment_rates, site_rate,
-                     covered_true_site_rate, venting, equipment_rates):
+def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered_site_rate,
+                     site_rate, venting, equipment_rates):
+
     for leak in covered_leaks:
         k = np.random.normal(4.9, 0.3)
         x0 = np.random.normal(self.config['MDL'][0], self.config['MDL'][1])

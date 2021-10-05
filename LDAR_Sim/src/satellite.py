@@ -53,8 +53,8 @@ class satellite:
         Dataset.close()
 
         # build a satellite orbit object
-        sat = self.config['satellite_name']
-        tlefile = self.config['TLE_files']
+        sat = self.config['TLE_label']
+        tlefile = self.config['TLE_file']
         TLEs = []
         with open(input_directory / tlefile) as f:
             for line in f:
@@ -75,9 +75,7 @@ class satellite:
         # calculate the orbit path polygon for satellite
         self.sat_datetime, self.orbit_path = init_orbit_poly(
             self.predictor, T1, T2, 15)
-
         self.sat_date = [d.date() for d in self.sat_datetime]
-
         self.sat_date = np.array(self.sat_date)
         self.orbit_path = np.array(self.orbit_path)
 

@@ -1436,7 +1436,7 @@ Method weather envelopes
 
 **Notes of caution:** N/A
 
-### TLE_files (satellite only)
+### TLE_file (satellite only)
 
 **Data type:** String
 
@@ -1448,13 +1448,18 @@ Method weather envelopes
 
 **Notes of caution:** Please be sure the satellite is inlcuded in the TLE file
 
-### satellite_name (satellite only)
+### TLE_label (satellite only)
 
-**Data type:** Character string that specifies the name of satellite.
+**Data type:** Character string that specifies the TLE file tag.
 
 **Default input:** N/A
 
-**Description:** The name of satellite.
+**Description:** The name of satellite. The following are accepted:
+  
+- GHGSAT-D
+- GOSAT (IBUKI)
+- SENTINEL-5(TROPOMI)
+- TANSAT(CarbonSat)
 
 **Notes on acquisition:** It is only required for satellite.
 
