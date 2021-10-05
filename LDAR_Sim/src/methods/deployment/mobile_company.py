@@ -127,20 +127,18 @@ class Schedule():
                        key=lambda x: x[days_since_LDAR], reverse=True))
         return out_sites
 
-    def get_working_crews(self, site_pool, n_crews, sites_per_crew=3):
+    def get_working_crews(self, site_pool, n_crews):
         """ Get number of working crews that day. Based on estimate
             that a crew can do 3 sites per day.
         Args:
             site_pool (dict): List of sites
             n_crews (int): Number of crews
-            sites_per_crew (int, optional): Number of sites a crew can survey in a day.
-            Defaults to 3.
 
         Returns:
             int: Number of crews to deploy that day.
         """
         n_sites = len(site_pool)
-        n_crews = math.ceil(n_sites/(n_crews*sites_per_crew))
+        n_crews = math.ceil(n_sites/(n_crews * self.config['est_site_p_day']))
         # cap working crews at max number of crews
         if n_crews > self.config['n_crews']:
             n_crews = self.config['n_crews']

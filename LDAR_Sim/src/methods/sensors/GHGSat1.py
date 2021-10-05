@@ -39,7 +39,7 @@ def detect_emissions(self, site, leaks_present, equipment_rates, site_true_rate,
     # when wind speed is 5km/h (1.39 m/s) MDL is 5.79 g/s
     Q_min = 5.79 * (1.39/windspeed)
     # set MDL to 0 for testing
-    # Q_min = 0
+    Q_min = 0
 
     # check detection
     if site_true_rate > Q_min:

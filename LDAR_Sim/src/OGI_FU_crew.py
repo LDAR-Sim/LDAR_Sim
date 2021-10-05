@@ -164,9 +164,9 @@ class OGI_FU_crew:
                     if not site['attempted_today_OGI_FU?']:
 
                         # Check the weather for that site
-                        if self.deployment_days[site['lon_index'],
-                                                site['lat_index'],
-                                                self.state['t'].current_timestep]:
+                        if not self.parameters['consider_weather'] \
+                            or self.deployment_days[site['lon_index'], site['lat_index'],
+                                                    self.state['t'].current_timestep]:
 
                             # The site passes all the tests! Choose it!
                             facility_ID = site['facility_ID']

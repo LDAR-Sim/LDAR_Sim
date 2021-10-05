@@ -195,8 +195,9 @@ class Schedule():
         site['{}_attempted_today?'.format(name)] = True
 
         # Check weather conditions
-        if not self.deployment_days[site['lon_index'], site['lat_index'],
-                                    self.state['t'].current_timestep]:
+        if self.parameters['consider_weather'] \
+            and not self.deployment_days[site['lon_index'], site['lat_index'],
+                                         self.state['t'].current_timestep]:
             return None
         if self.rollover:
             if site['facility_ID'] == self.rollover['site']['facility_ID']:

@@ -166,9 +166,9 @@ class OGI_crew:
                 elif site['surveys_done_this_year_OGI'] < int(site['OGI_RS']):
 
                     # Check the weather for that site
-                    if self.deployment_days[site['lon_index'],
-                                            site['lat_index'],
-                                            self.state['t'].current_timestep]:
+                    if not self.parameters['consider_weather'] \
+                        or self.deployment_days[site['lon_index'], site['lat_index'],
+                                                self.state['t'].current_timestep]:
 
                         # The site passes all the tests! Choose it!
                         facility_ID = site['facility_ID']

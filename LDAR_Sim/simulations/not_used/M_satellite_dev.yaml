@@ -1,0 +1,13 @@
+parameter_level: method
+version: '2.0'
+label: satellite_dev
+module: dummy
+deployment_type: orbit
+measurement_scale: site
+sensor: GHGSat1
+is_follow_up: False
+MDL: [0.01]
+cost:
+  per_day: 10000
+satellite_name: GHGSAT-D
+TLE_files: Sat_TLEs.txt
