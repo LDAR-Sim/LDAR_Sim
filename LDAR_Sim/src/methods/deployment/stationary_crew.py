@@ -50,8 +50,9 @@ class Schedule():
         for site in site_pool:
             site['{}_attempted_today?'.format(name)] = True
             # Check weather conditions
-            if self.deployment_days[site['lon_index'], site['lat_index'],
-                                    self.state['t'].current_timestep]:
+            if not self.parameters['consider_weather'] \
+                or self.deployment_days[site['lon_index'], site['lat_index'],
+                                        self.state['t'].current_timestep]:
                 site_plan = {
                     'site': site,
                     'go_to_site': True,

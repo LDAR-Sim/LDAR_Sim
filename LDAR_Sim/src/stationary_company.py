@@ -86,9 +86,10 @@ class stationary_company:
         """
         self.candidate_flags = []
         for i in self.crews:
-            if self.deployment_days[i.site['lon_index'],
-                                    i.site['lat_index'],
-                                    self.state['t'].current_timestep]:
+            # Check the weather for that site
+            if not self.parameters['consider_weather'] \
+                or self.deployment_days[i.site['lon_index'], i.site['lat_index'],
+                                        self.state['t'].current_timestep]:
                 i.work_a_day(self.candidate_flags)
                 i.days_skipped = 0
             else:

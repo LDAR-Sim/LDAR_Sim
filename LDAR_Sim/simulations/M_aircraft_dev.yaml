@@ -9,8 +9,5 @@ is_follow_up: False
 MDL: [0.01]
 cost:
   per_day: 10000
-scheduling:
-  LDAR_crew_init_location: [-114.062, 51.044]
-  home_bases_files: 'Airport_AB_Coordinates.csv'
-  route_planning: True
-  travel_speeds: [300]
+t_bw_sites:
+  vals: [10]

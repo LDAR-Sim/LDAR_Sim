@@ -244,14 +244,11 @@ class satellite:
                     # Else if site-specific required visits haven't
                     # been met for the year
                     elif site['surveys_done_this_year_satellite'] < int(site['satellite_RS']):
-
                         # Check the weather for that site
-                        if self.assess_weather(site):
-
+                        if not self.parameters['consider_weather'] or self.assess_weather(site):
                             # The site passes all the tests! Choose it!
                             facility_ID = site['facility_ID']
                             found_site = True
-
                             # Update site
                             site['satellite_surveys_conducted'] += 1
                             site['surveys_done_this_year_satellite'] += 1
