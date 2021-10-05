@@ -4,10 +4,10 @@ label: satellite_dev
 module: dummy
 deployment_type: orbit
 measurement_scale: site
-sensor: GHGSat1
+sensor: default
 is_follow_up: False
-MDL: [0.01]
+MDL: [278]
 cost:
-  per_day: 10000
-satellite_name: GHGSAT-D
-TLE_files: Sat_TLEs.txt
+  per_day: 100
+TLE_label: GHGSAT-D
+TLE_file: Sat_TLEs.txt

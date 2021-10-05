@@ -52,8 +52,8 @@ class Schedule():
         self.cloudcover = Dataset.variables['tcc'][:]
         Dataset.close()
         # obtain TLE file path
-        self.sat = self.config['satellite_name']
-        self.tlefile = self.config['TLE_files']
+        self.sat = self.config['TLE_label']
+        self.tlefile = self.config['TLE_file']
 
         self.get_orbit_predictor()
         self.get_orbit_path()
@@ -78,7 +78,7 @@ class Schedule():
             daily_site_plans = []
             for site in viewable_sites:
                 sat_dl, sat_cc = self.assess_weather(site)
-                if sat_dl and sat_cc:
+                if (sat_dl and sat_cc) or not self.parameters['consider_weather']:
                     plan = self.plan_visit(site)
                     daily_site_plans.append(plan)
 

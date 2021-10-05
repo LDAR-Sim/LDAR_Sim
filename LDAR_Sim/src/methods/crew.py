@@ -139,7 +139,6 @@ class BaseCrew:
         m_name = self.config['label']
         covered_leaks = []
         is_sp_covered = True
-        covered_true_site_rate = 0
         covered_site_rate = 0
         site_rate = 0
         covered_equipment_rates = [0] * int(site['equipment_groups'])
@@ -165,7 +164,7 @@ class BaseCrew:
         if self.parameters['emissions']['consider_venting']:
             venting = self.state['empirical_vents'][
                 np.random.randint(0, len(self.state['empirical_vents']))]
-            covered_true_site_rate += venting
+            covered_site_rate += venting
             site_rate += venting
             for rate in range(len(covered_equipment_rates)):
                 covered_equipment_rates[rate] += venting/int(site['equipment_groups'])
@@ -174,5 +173,5 @@ class BaseCrew:
         sensor_mod = import_module(
             'methods.sensors.{}'.format(self.config['sensor']))
         detect_emis_sensor = getattr(sensor_mod, 'detect_emissions')
-        return detect_emis_sensor(self, site, covered_leaks, covered_equipment_rates, site_rate,
-                                  covered_true_site_rate, venting, equipment_rates)
+        return detect_emis_sensor(self, site, covered_leaks, covered_equipment_rates,
+                                  covered_site_rate, site_rate, venting, equipment_rates)
