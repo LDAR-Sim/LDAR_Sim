@@ -8,28 +8,28 @@ weather_is_hourly: True
 infrastructure_file: 'facility_list_template.csv'
 site_samples: 500
 subtype_times_file: "_placeholder_str_"
-consider_venting: False
 consider_weather: True
 repair_delay: 14
-repair_costs:
-  vals: [200]
-  file: "_placeholder_str_"
 emissions:
-    vent_file: 'site_rates.csv'
-    leak_file: "_placeholder_str_"
-    leak_file_use: 'sample'
-    leak_dist_type: 'lognorm'
-    leak_dist_params: [-2.776, 1.462]
-    units: ['kilogram', 'hour']
-    subtype_leak_dist_file: "_placeholder_str_"
-    max_leak_rate: 100.0
-LPR: 0.0065
+  consider_venting: False
+  leak_dist_params: [-2.776, 1.462]
+  leak_dist_type: 'lognorm'
+  leak_file: "_placeholder_str_"
+  leak_file_use: 'sample'
+  LPR: 0.0065
+  max_leak_rate: 1000.0
+  subtype_leak_dist_file: "_placeholder_str_"
+  units: ['kilogram', 'hour']
+  vent_file: 'site_rates.csv'
 NRd: 150
-verification_cost: 25
 economics:
-  sale_price_natgas: 3.0
   carbon_price_tonnesCO2e: 40.0
-  social_cost_CH4_tonnes: 1406.0
   cost_CCUS: 20.0
   cost_low_bleed_pneu_tCO2e: 875.0
   GWP_CH4: 28.0
+  sale_price_natgas: 3.0
+  social_cost_CH4_tonnes: 1406.0
+  repair_costs:
+    vals: [200]
+    file: "_placeholder_str_"
+  verification_cost: 25

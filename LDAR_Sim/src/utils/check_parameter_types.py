@@ -1,6 +1,6 @@
 # ------------------------------------------------------------------------------
 # Program:     The LDAR Simulator (LDAR-Sim)
-# File:        check_parameter_types
+# File:        utils.check_parameter_types
 # Purpose:     Check input parameter types
 #
 # Copyright (C) 2018-2021  Intelligent Methane Monitoring and Management System (IM3S) Group

@@ -166,7 +166,7 @@ class aircraft_company:
                     self.timeseries['aircraft_flags_redund2'][self.state['t'].current_timestep] += 1
 
                 # Would the site have been chosen without venting?
-                if self.parameters['consider_venting']:
+                if self.parameters['emissions']['consider_venting']:
                     if (site_true_rate - venting) < self.config['follow_up']['thresh']:
                         self.timeseries['aircraft_flag_wo_vent'][
                             self.state['t'].current_timestep] += 1

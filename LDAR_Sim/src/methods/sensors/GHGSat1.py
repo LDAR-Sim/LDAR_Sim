@@ -1,8 +1,7 @@
-
 # ------------------------------------------------------------------------------
 # Program:     The LDAR Simulator (LDAR-Sim)
-# File:        methods.deployment.mobile_company
-# Purpose:     Mobile company specific deployment classes and methods (ie. Scheduling)
+# File:        methods.deployment.GHGSat1
+# Purpose:     GHGSat1 company specific deployment classes and methods
 #
 # Copyright (C) 2018-2021  Intelligent Methane Monitoring and Management System (IM3S) Group
 #

@@ -262,7 +262,7 @@ class BaseCompany:
                     self.name)][self.state['t'].current_timestep] += 1
 
             # Would the site have been chosen without venting?
-            if self.parameters['consider_venting']:
+            if self.parameters['emissions']['consider_venting']:
                 if (site_true_rate - venting) < self.config['follow_up']['thresh']:
                     self.timeseries['{}_flag_wo_vent'.format(self.name)][
                         self.state['t'].current_timestep] += 1

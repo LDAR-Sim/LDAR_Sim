@@ -1,8 +1,8 @@
 
 # ------------------------------------------------------------------------------
 # Program:     The LDAR Simulator (LDAR-Sim)
-# File:        methods.deployment.mobile_company
-# Purpose:     Mobile company specific deployment classes and methods (ie. Scheduling)
+# File:        methods.deployment.orbit_company
+# Purpose:     Orbit company specific deployment classes and methods (ie. Scheduling)
 #
 # Copyright (C) 2018-2021  Intelligent Methane Monitoring and Management System (IM3S) Group
 #
