@@ -25,10 +25,8 @@ NRd: 150
 economics:
   carbon_price_tonnesCO2e: 40.0
   cost_CCUS: 20.0
-  cost_low_bleed_pneu_tCO2e: 875.0
   GWP_CH4: 28.0
   sale_price_natgas: 3.0
-  social_cost_CH4_tonnes: 1406.0
   repair_costs:
     vals: [200]
     file: "_placeholder_str_"

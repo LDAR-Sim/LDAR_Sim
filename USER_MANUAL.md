@@ -493,9 +493,9 @@ If enabled, the leaks will be stored locally in /inputs/generation after running
 
 **Description:** The current federal price on carbon in Canada of $40/tonne CO2e is input as a default metric to compare the cost to mitigation ratios of LDAR programs to.
 
-**Notes on acquisition:** See economic section below.
+**Notes on acquisition:** The fuel charge rates for Canada can be found here: <https://www.canada.ca/en/revenue-agency/services/forms-publications/publications/fcrates/fuel-charge-rates.html>.
 
-**Notes of caution:** See economic section below.
+**Notes of caution:** This rate rises by $10/tonne CO2e annaually and should be updated in the model to reflect changes in the price. 
 
 #### cost_CCUS
 
@@ -503,23 +503,11 @@ If enabled, the leaks will be stored locally in /inputs/generation after running
 
 **Default input:** 20
 
-**Description:** The cost of pure stream CCUS was taken from the International Energy Agency's (IEA) report here: <https://www.iea.org/commentaries/is-carbon-capture-too-expensive>. It offers another metric to compare the cost/mitigation ratios of LDAR programs to.
+**Description:** The cost of pure stream CCUS at natural gas processing sites that are producing concentrated CO2 streams. This value offers another metric to compare the cost/mitigation ratios of LDAR programs to.
 
-**Notes on acquisition:** See economic section below.
+**Notes on acquisition:** See the International Energy Agency's (IEA's) report here for a more detailed breakdown on the potential costs of CCUS: <https://www.iea.org/commentaries/is-carbon-capture-too-expensive>.
 
-**Notes of caution:** See economic section below.
-
-#### cost_low_bleed_pneu_tCO2e
-
-**Data type:** Numeric
-
-**Default input:** 875.0
-
-**Description:** Similar to the carbon price and cost of CCUS, the cost of low bleed retrofits can be compared to LDAR program cost/mitigation ratios for context.
-
-**Notes on acquisition:** See economic section below.
-
-**Notes of caution:** See economic section below.
+**Notes of caution:** This value may not be representative of the costs of CCUS for produced CO2 at oil and gas production sites and firm specific estimates should be used if available.
 
 #### GWP_CH4
 
@@ -529,9 +517,9 @@ If enabled, the leaks will be stored locally in /inputs/generation after running
 
 **Description:** GWP of 28 over a 100-year time period was chosen as a default input. The model uses this value to convert between CH4 and CO2e when required. This value can be changed to 84-86 over 20 years to explore the impact that GWP has on mitigation costs.
 
-**Notes on acquisition:** See economic section below.
+**Notes on acquisition:** This value is from Chapter 8 in the IPCC's Assessment Report 5 from Working Group 1 page 714: <https://www.ipcc.ch/site/assets/uploads/2018/02/WG1AR5_Chapter08_FINAL.pdf>
 
-**Notes of caution:** See economic section below.
+**Notes of caution:** Using a GWP of CH4 for a 20-year time period may dramatically change results but all options should be explored.
 
 #### repair_cost
 
@@ -551,23 +539,11 @@ If enabled, the leaks will be stored locally in /inputs/generation after running
 
 **Default input:** 3.0
 
-**Description:** The sale price of natural gas which is used to calculate the potential value of gas sold when captured as part of an LDAR program. LDAR-Sim takes the difference in emissions from a baseline scenario and multiplies this by the price of natural gas.
+**Description:** The sale price of natural gas per thousand cubic foot (mcf) which is used to calculate the potential value of gas sold when captured as part of an LDAR program. LDAR-Sim takes the difference in emissions from a baseline scenario and multiplies this by the price of natural gas.
 
-**Notes on acquisition:** See economic section below.
+**Notes on acquisition:** This value can be taken from local distribution companies or natural gas trading hubs. The U.S. Energy Information Administration is a good source for this information but units need to be converted to mcf before input into the model. 
 
-**Notes of caution:** See economic section below.
-
-#### social_cost_CH4_tonnes
-
-**Data type:** Numeric
-
-**Default input:** 1406.0
-
-**Description:** Currently Unused
-
-**Notes on acquisition:** See economic section below.
-
-**Notes of caution:** See economic section below.
+**Notes of caution:** The default value of $3/mcf is a conservative estimate and users of LDAR-Sim will see different cost/benefit and cost/mitigation results if the price of natural gas is changed. 
 
 #### verification_cost
 
