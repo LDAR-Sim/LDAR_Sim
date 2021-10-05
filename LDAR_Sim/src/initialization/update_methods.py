@@ -20,7 +20,10 @@
 
 from math import ceil, floor
 from numpy.random import choice
-from numpy import average
+from numpy import average, nanmean, nan, diag_indices_from, array as np_arr
+from sklearn.metrics.pairwise import haversine_distances
+# from scipy.stats import nanmean
+from math import radians
 
 
 def est_n_crews(m, sites):
@@ -67,3 +70,24 @@ def est_site_p_day(m, sites):
     except KeyError:
         est_val = 1
     return est_val
+
+
+def est_t_bw_sites(m, sites):
+    """ Estimate t_bw_sites for mobile deployments with routeplanning enabled
+        in minutes.
+    Args:
+        m (dict): method parameters
+        sites (dict): site dictionary
+
+    Returns:
+        list(ints): travel time between sites in minutes
+    """
+    site_rads = [[radians(site['lat']), radians(site['lon'])] for site in sites]
+    # Calc distance matrix between all points and convert to KM
+    dist_mat = np_arr(haversine_distances(site_rads)*6371000/1000)
+    # Diagonals are the distance between a point and itself. Exclude from avg
+    dist_mat[diag_indices_from(dist_mat)] = nan
+    avg_dist_bw_sites = nanmean(dist_mat)
+    avg_speed = average(m['scheduling']['travel_speeds'])
+    # Convert to minutes, returns as a list to conform with t_bw_sites var
+    return [int(ceil((avg_speed/avg_dist_bw_sites)*60))]
