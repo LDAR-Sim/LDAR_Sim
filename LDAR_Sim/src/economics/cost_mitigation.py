@@ -48,11 +48,7 @@ def cost_mitigation(simulation_dfs, ref_program, no_program, output_directory):
         'GWP_CH4': df['p_params']['economics']['GWP_CH4'],
         'carbon_price_tonnesCO2e':
         df['p_params']['economics']['carbon_price_tonnesCO2e'],
-        'social_cost_CH4_tonnes':
-        df['p_params']['economics']['social_cost_CH4_tonnes'],
         'cost_CCUS': df['p_params']['economics']['cost_CCUS'],
-        'cost_low_bleed_pneu_tCO2e':
-        df['p_params']['economics']['cost_low_bleed_pneu_tCO2e'],
         'total_program_cost': df['timeseries']['total_daily_cost'].sum()
     } for df in simulation_dfs]
 
