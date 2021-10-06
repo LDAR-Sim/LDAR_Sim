@@ -1,4 +1,7 @@
-# The LDAR Simulator
+# The LDAR Simulator V2.0
+
+See changelog [here](changelog.md)
+
 ## About LDAR-Sim
 The Leak Detection and Repair Simulator (LDAR-Sim) is an open-source modeling framework for exploring the effectiveness of methane leak detection programs. The purpose of LDAR-Sim is to enable transparent, collaborative, flexible, and intuitive investigation of emerging LDAR technologies, methods, work practices, regulations, and deployment strategies.
 
@@ -9,8 +12,9 @@ LDAR-Sim has many potential uses, including:
   4) Inform the development and niche of technologies and work practices
 
 To learn more about LDAR-Sim, you can:
-  1) Read our [story map](https://arcg.is/1rXeX10) (less technical introduction).
-  2) Read [Fox et al., 2020](https://www.sciencedirect.com/science/article/pii/S0959652620352811).
+  1) User manual [manual](USER_MANUAL.md)
+  2) Read our [story map](https://arcg.is/1rXeX10) (less technical introduction).
+  3) Read [Fox et al., 2020](https://www.sciencedirect.com/science/article/pii/S0959652620352811).
 
 For first time users, we recommend attempting to reproduce the case study results in Fox et al. 2020 (see below).
 
@@ -30,17 +34,18 @@ LDAR-Sim is free software: you can redistribute it and/or modify it under the te
 NOTE: This applies to all versions following Commit 69c27ec, Made on March 1st, 2021, Previous versions of LDAR-Sim were licensed under the GNU Affero General Public License. All redistributions or modifications made on LDAR-Sim versions created before Commit 69c27ec (March 1st, 2021) are required to be in compliance with version 3 of the GNU Affero General Public License.
 
 ## [Fox_etal_2020 Release](https://github.com/tarcadius/LDAR_Sim/tree/Fox_etal_2020)
-You are currently in the master branch, which is evolving dynamically and is not a stable release. The Fox et al. 2020 release is immortalized in a separate branch that can be found by [clicking here](https://github.com/tarcadius/LDAR_Sim/tree/Fox_etal_2020).
+The Fox et al. 2020 release is immortalized in a separate branch that can be found by [clicking here](https://github.com/tarcadius/LDAR_Sim/tree/Fox_etal_2020).
 
 The Fox et al., 2020 release contains the exact code and inputs used in [our LDAR-Sim synthesis paper](https://www.sciencedirect.com/science/article/pii/S0959652620352811). We recommend using this release, especially for first time users.
 
 Citation for this release: Fox, Thomas A., Mozhou Gao, Thomas E. Barchyn, Yorwearth L. Jamin, and Chris H. Hugenholtz. "An agent-based model for estimating emissions reduction equivalence among leak detection and repair programs." Journal of Cleaner Production (2020): 125237.
 
 ### Getting started
-This guide is intended to help interested parties reproduce the results from Fox et al 2020, which introduces LDAR-Sim and presents a case study demonstrating various hypothetical LDAR programs in Alberta, Canada.
+This guide is intended to get a user running with LDAR-Sim, **note** that even though we have supplied default variables, these should be used with caution, as many are not fully understood, are dependent on specific company workpractices, and very by geographical region.
 
 #### Step 1: Before you begin
 Read and understand the LDAR-Sim LICENSE (MIT License).
+Read the user manual [manual](USER_MANUAL.md)
 Read [Fox et al 2020](https://www.sciencedirect.com/science/article/pii/S0959652620352811) to familiarize yourself with LDAR-Sim fundamentals.
 
 #### Step 2: Libraries and data
@@ -49,31 +54,27 @@ The easiest way to prepare your python installation is to use [pipenv](https://p
 
 `pipenv install`
 
-
 To make things easier, we have included windows binaries for the specific versions of cftime, GDAL, netCDF4, and pyproj. In the Pipfile, basemap is downloaded directly from [here](https://download.lfd.uci.edu/pythonlibs/r4tycu3t/basemap-1.2.2-cp37-cp37m-win_amd64.whl). If this link breaks or the package is no longer available, this is not a problem for base operations of LDAR-Sim as basemap is only used in the live plotter demonstration.
 
 #### Step 2 Alternative: Using Requirements.txt
 An alternative approach to using the PIPfile and the prebuilt wheels is by using Conda (Conda-forge) and the requirements file included in the "install folder" Follow the directions included in the Setting Up LDAR Sim Dev Environment file. The requirements.txt file can also be used with PIP and pipenv, but Python and GDAL (versions listed in the requirements file) should be installed seperately.
 
-#### Step 3: Reproduce OGI simulations
-The ldar_sim_main file is currently configured for the OGI comparison case study presented in Fox et al 2020. Four different OGI-based LDAR programs are parameterized, which differ only according to weather and labour constraints.
+#### Step 3: Get Weather and Facilitity Data
 
-Run ldar_sim_main.py and include reference to all input files (see LDAR-SIm_inputs.md for more details). Note that relative references can be used (ie ./inputs/file.txt), and are relative to the root directory, which is the parent to the folder containing ldar_sim_map.py i.e. root/module_code/ldar_sim_main.py - If you are running LDAR-Sim for the first time, the weather data needs to be downloaded from our cloud data storage. Downloading the weather data requires credentials, and if you are planning to run the LDAR-Sim, please contact us for the required credentials. Also, you need to create **TWO** user variables in your system Environment Variables. For the first variable, please write **AWS_KEY** as the variable name and the provided ACCESS-Password as the variable value. For the second variable, please write **AWS_SEC** as the variable name and your provided SECRET-Password as the variable value. If all input files and program files are in inputs, or folder specified as input parameter, no other changes should be required to run the OGI scenarios from the case study. 
+The application requires both facility and weather data to run. We have included sample facilities and weather data for Alberta as an example. Checkout the [user manual](USER_MANUAL.md) for more information on formating of facility data. Weather data can either be downloaded directly or through IM3S's s3 database. ERA5 data can be downloaded directly from copernicus using the /module_code/weather/ERA5_downloader.py module (see file for instructions). Note the output data is in hourly format, therefore the flag weather_is_hourly should be set to True. Multiple ERA nc files can be concatinated with ERA5_concat.py. 
 
-Alternatively, ERA5 data can be downloaded directly from copernicus using the /module_code/weather/ERA5_downloader.py module (see file for instructions). Note the output data is in hourly format, therefore the flag weather_is_hourly should be set to True. Multiple ERA nc files can be concatinated with ERA5_concat.py. 
+#### Step 4: Populate the simulation folder with Programs and associated methods
 
+Checkout the [user manual](USER_MANUAL.md) for more info.
 
-The only difference between these simulations and those in the Fox et al. 2020 study is that only 3 repeat simulations are run for each program in this demonstration, whereas in the paper, 25 simulations are run for each program to constrain uncertainty. Running 3 sets of simulations for each program over multiple years, rather than 25, will take much less time. Results should resemble Figures 2C and 2D in Fox et al 2020 but will not be exactly the same as the model is stochastic.
+#### Step 5: Run the program
 
-LDAR-Sim will automatically output a set of figures and spreadsheets comparing among programs and a folder for each program. The program-specific folders will each contain exhaustive data on leaks, facilities, inspection crews, and so on for each simulation that is run.
-
-#### Step 4: Reproduce alt-LDAR simulations
-To run the alternative programs from the case study, change the program list on line 34 of ldar_sim_main to read ['P_ref', 'P_1', 'P_2']. This will change to the appropriate input files, which are already in your working directory.
-
-The main differences among programs are presented in Table 1 of Fox et al 2020. Both aircraft and MGL (truck) programs require a second method called OGI follow-up (OGI_FU) to diagnose individual leaks and perform repairs. The reference program will be the same as Step 3 above.
-
-#### Step 5: Explore
-Once familiar with the case study, users can explore different input configurations. Just as each simulation can compare multiple LDAR programs, so can each LDAR program consist of multiple different LDAR methods. We provide generic OGI, aircraft, and truck methods, but others can be devised using generic methods as templates. Users should explore different facility inputs, methods combinations and parameterizations, empirical emissions data, and so on.
+The main program is a python script called LDAR_Sim_main.py. Within the virtual environent (or where all py packages are installed) run:<br>
+ ```Python LDAR_Sim_main.py {G_XXX} {P_XXX} {M_XXX} {M_YYY}``` <br> where each arguement is a path too a global, program, or method input parameter file. for example:<br>
+ ```Python LDAR_Sim_main.py ./simulations/G_.yaml ./simulations/P_air.yaml ./simulations/M_aircraft.yaml ./simulations/M_OGI_FU.yaml```<br>alternatively, an entire directory can be passed using the "-P", "--in_dir" flags where all files within the directory are added to the program. for example:<br>
+ ```Python LDAR_Sim_main.py --in_dir ./simulations.py``` <br> will load all files in the simulations folder into the program. <br><br>
+ Output files, including maps, charts and csv files will be generated and placed in the output folder. <br><br>
+ **Note**: that you can use absolute references or relative, where the the root folder is this folder.
 
 ## Other versions
 Several LDAR-Sim advances are not publicly available at this time, including more advanced equivalence scenario modeling, specific method modules, and cost-effectiveness comparisons.
