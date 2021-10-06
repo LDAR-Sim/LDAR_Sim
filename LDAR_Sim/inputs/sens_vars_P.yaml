@@ -1,7 +1,6 @@
 sens_z_var:
   # paths:
   #   - 'P_air.methods.aircraft.cost.per_day'
-  #   - 'P_air_dev.methods.aircraft_dev.cost.per_day'
   # vals: [1000, 10000]
       
 sens_x_vars:

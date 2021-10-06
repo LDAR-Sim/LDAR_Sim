@@ -23,7 +23,7 @@ import math
 import numpy as np
 from datetime import timedelta
 from importlib import import_module
-from generic_functions import get_prop_rate
+from utils.generic_functions import get_prop_rate
 from methods.deployment.generic_funcs import get_deployment_dates
 
 

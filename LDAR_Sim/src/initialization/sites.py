@@ -36,6 +36,8 @@ def get_subtype_dist(program, wd):
             wd / program['emissions']['subtype_leak_dist_file'],
             index_col='subtype_code')
         program['subtypes'] = subtypes.to_dict('index')
+        for st in program['subtypes']:
+            program['subtypes'][st]['leak_rate_units'] = program['emissions']['units']
         unpackage_dist(program)
     elif program['emissions']['leak_file_use'] == 'fit':
         program['subtypes'] = {0: {
@@ -77,8 +79,8 @@ def generate_sites(program, in_dir):
             index_col='subtype_code')
         subtypes_times = subtypes_times_f.to_dict('index')
         for site in sites:
-            subtypes_times = subtypes_times[site['subtype_code']]
-            site.update(subtypes_times)
+            subtype_time = subtypes_times[site['subtype_code']]
+            site.update(subtype_time)
 
     if program['emissions']['leak_file'] is not None:
         program['empirical_leaks'] = np.array(
