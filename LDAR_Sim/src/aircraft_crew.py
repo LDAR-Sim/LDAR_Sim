@@ -159,14 +159,14 @@ class aircraft_crew:
         # Test detection module
         site_measured_rate = 0
         if self.config["measurement_scale"] == "site":
-            if site_true_rate > (self.config['MDL'][0]):
+            if site_true_rate > (self.config['sensor']['MDL'][0]):
                 # If source is above follow-up threshold, calculate measured rate using QE
-                site_measured_rate = measured_rate(site_true_rate, self.config['QE'])
+                site_measured_rate = measured_rate(site_true_rate, self.config['sensor']['QE'])
 
         if self.config["measurement_scale"] == "equipment":
             for rate in equipment_rates:
-                if rate > (self.config['MDL'][0]):
-                    equip_measured_rate = measured_rate(rate, self.config['QE'])
+                if rate > (self.config['sensor']['MDL'][0]):
+                    equip_measured_rate = measured_rate(rate, self.config['sensor']['QE'])
                     site_measured_rate += equip_measured_rate
 
         # If source is above follow-up threshold

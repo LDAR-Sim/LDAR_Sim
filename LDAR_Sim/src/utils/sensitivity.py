@@ -46,7 +46,7 @@ def generate_sens_prog_set(sens_z_var, programs):
 
     Args:
         sens_z_var (dict): Must include two key-list sets:
-             path - List of paths to variable. eg.  P_Air.methods.Air.MDL
+             path - List of paths to variable. eg.  P_Air.methods.air.sensor.MDL
              vals - List of values associated with the param. eg [0, 1, 2, 3]
 
         programs (dict): program object

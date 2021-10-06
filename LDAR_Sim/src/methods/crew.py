@@ -171,7 +171,7 @@ class BaseCrew:
                 equipment_rates[rate] += venting/int(site['equipment_groups'])
 
         sensor_mod = import_module(
-            'methods.sensors.{}'.format(self.config['sensor']))
+            'methods.sensors.{}'.format(self.config['sensor']['type']))
         detect_emis_sensor = getattr(sensor_mod, 'detect_emissions')
         return detect_emis_sensor(self, site, covered_leaks, covered_equipment_rates,
                                   covered_site_rate, site_rate, venting, equipment_rates)

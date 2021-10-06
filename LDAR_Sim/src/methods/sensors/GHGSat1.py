@@ -41,7 +41,7 @@ def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered
     # listed in Jacob et al., 2016
     # For point source, MDL is proportion to wind speed
     # when wind speed is 5km/h (1.39 m/s) MDL is 5.79 g/s
-    Q_min = self.config['MDL'][0] * (self.config['MDL'][1]/windspeed)
+    Q_min = self.config['sensor']['MDL'][0] * (self.config['sensor']['MDL'][1]/windspeed)
 
     # check detection
     if covered_site_rate > Q_min:

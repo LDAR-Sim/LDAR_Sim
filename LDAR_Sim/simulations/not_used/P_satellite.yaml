@@ -1,6 +1,6 @@
-program_name: P_air_dev
+program_name: P_satellite
 parameter_level: program
 version: '2.0'
 method_labels:
-- aircraft_dev
-- OGI_FU_dev
+- satellite
+- OGI_FU

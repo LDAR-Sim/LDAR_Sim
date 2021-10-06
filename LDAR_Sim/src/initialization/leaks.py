@@ -39,7 +39,7 @@ def generate_leak(program, site, start_date, leak_count, days_active=0):
     """
     if program['emissions']['leak_file'] \
             and program['emissions']['leak_file_use'] == 'sample':
-        leak_rate = random.choice(program['emissions']['empirical_leaks'])
+        leak_rate = random.choice(program['empirical_leaks'])
     else:
         leak_rate = leak_rvs(
             site['leak_rate_dist'],
@@ -52,7 +52,7 @@ def generate_leak(program, site, start_date, leak_count, days_active=0):
         'rate': leak_rate,
         'lat': float(site['lat']),
         'lon': float(site['lon']),
-        'status': 'untagged',
+        'status': 'active',
         'days_active': days_active,
         'tagged': False,
         'component': 'unknown',

@@ -139,7 +139,7 @@ if __name__ == '__main__':
 
     # The following can be used for debugging outside of the starmap
     trg_sim_idx = next((index for (index, d) in enumerate(simulations)
-                       if d[0]['program']['program_name'] == "P_satellite_dev"), None)
+                       if d[0]['program']['program_name'] == "P_air"), None)
 
     # ldar_sim_run(simulations[trg_sim_idx][0])
     # Perform simulations in parallel

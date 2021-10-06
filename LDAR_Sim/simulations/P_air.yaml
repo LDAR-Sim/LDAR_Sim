@@ -4,3 +4,4 @@ version: '2.0'
 method_labels:
 - aircraft
 - OGI_FU
+- operator

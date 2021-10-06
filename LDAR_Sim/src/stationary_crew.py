@@ -64,13 +64,13 @@ class stationary_crew:
 
         # Simple detection module based on strict minimum detection limit
         detect = False
-        if site_cum_rate > (self.config['MDL'][0]):
+        if site_cum_rate > (self.config['sensor']['MDL'][0]):
             detect = True
 
         if detect:
             # If source is above follow-up threshold, calculate measured rate using
             # quantification error
-            quant_error = np.random.normal(0, self.config['QE'])
+            quant_error = np.random.normal(0, self.config['sensor']['QE'])
             measured_rate = None
             if quant_error >= 0:
                 measured_rate = site_cum_rate + site_cum_rate*quant_error

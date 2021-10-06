@@ -19,13 +19,11 @@ follow_up:
   threshold_type: 'absolute'
 is_follow_up: False
 label: 'mobile'
-MDL: [0.01]
 max_workday: 8
 measurement_scale: 'equipment'
 module: 'dummy'
 n_crews: '_placeholder_int_'
 parameter_level: 'method'
-QE: 0.0
 reporting_delay: 2
 scheduling:
   deployment_months: ['_placeholder_int_']
@@ -34,7 +32,10 @@ scheduling:
   home_bases_files: 'Airport_AB_Coordinates.csv'
   route_planning: False
   travel_speeds: ['_placeholder_int_']
-sensor: 'default'
+sensor:
+  type: default
+  QE: 0.0
+  MDL: [0.01]
 t_bw_sites:
   file: '_placeholder_str_'
   vals: [30]

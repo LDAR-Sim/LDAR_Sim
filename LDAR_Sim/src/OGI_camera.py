@@ -34,7 +34,7 @@ class OGI_camera:
         self.config = config
         self.timeseries = timeseries
         self.crewstate = crewstate
-        self.MDL = config['MDL']
+        self.MDL = config['sensor']['MDL']
 
         return
 

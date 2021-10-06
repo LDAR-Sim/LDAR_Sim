@@ -185,12 +185,12 @@ class LdarSim:
                 n_mc_leaks = random.choice(range(20))
                 mc_leaks = []
                 for leak in range(n_mc_leaks):
-                    if params['use_empirical_rates'] == 'sample':
+                    if params['emissions']['leak_file'] is not None:
                         leaksize = random.choice(state['empirical_leaks'])
                     else:
                         leaksize = leak_rvs(
                             site['leak_rate_dist'],
-                            params['max_leak_rate'],
+                            params['emissions']['max_leak_rate'],
                             site['leak_rate_units'])
                     mc_leaks.append(leaksize)
 
