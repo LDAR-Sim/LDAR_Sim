@@ -495,7 +495,7 @@ If enabled, the leaks will be stored locally in /inputs/generation after running
 
 **Notes on acquisition:** The fuel charge rates for Canada can be found here: <https://www.canada.ca/en/revenue-agency/services/forms-publications/publications/fcrates/fuel-charge-rates.html>.
 
-**Notes of caution:** This rate rises by $10/tonne CO2e annaually and should be updated in the model to reflect changes in the price. 
+**Notes of caution:** This rate rises by $10/tonne CO2e annaually and should be updated in the model to reflect changes in the price.
 
 #### cost_CCUS
 
@@ -541,9 +541,9 @@ If enabled, the leaks will be stored locally in /inputs/generation after running
 
 **Description:** The sale price of natural gas per thousand cubic foot (mcf) which is used to calculate the potential value of gas sold when captured as part of an LDAR program. LDAR-Sim takes the difference in emissions from a baseline scenario and multiplies this by the price of natural gas.
 
-**Notes on acquisition:** This value can be taken from local distribution companies or natural gas trading hubs. The U.S. Energy Information Administration is a good source for this information but units need to be converted to mcf before input into the model. 
+**Notes on acquisition:** This value can be taken from local distribution companies or natural gas trading hubs. The U.S. Energy Information Administration is a good source for this information but units need to be converted to mcf before input into the model.
 
-**Notes of caution:** The default value of $3/mcf is a conservative estimate and users of LDAR-Sim will see different cost/benefit and cost/mitigation results if the price of natural gas is changed. 
+**Notes of caution:** The default value of $3/mcf is a conservative estimate and users of LDAR-Sim will see different cost/benefit and cost/mitigation results if the price of natural gas is changed.
 
 #### verification_cost
 
@@ -1210,18 +1210,6 @@ The follow-up delay parameter can be set to require multiple measurements for a 
 
 _see Global Inputs - parameter_level_
 
-### QE
-
-**Data type:** Numeric
-
-**Default input:** 0
-
-**Description:** The standard deviation of a normal distribution with a mean of zero from which a quantification error multiplier is drawn each time an emission rate is estimated. For example, for a value of 2.2, ~35\% of measured emission rates will fall within a factor of two of the true emission rate. For a value of 7.5, ~82\% of measurements will fall within an order of magnitude of the true emission rate. When QE = 0, the measured emission rate equals the true emission rate. As QE increases, so does the average absolute difference between measured and true emission rates. See Fox et al. (2021) for more information and Ravikumar et al. (2019) for empirical quantification error estimates.
-
-**Notes on acquisition:** We recommend extensive controlled release testing under a range of representative release rates, distances, and conditions to establish quantification error. Given the amount of work required to collect this information, we recommend using historical estimates.
-
-**Notes of caution:** As facility-scale quantification error remains poorly constrained for LDAR screening methods, and likely depends on work practice, dispersion modeling, and environment, screening programs should be evaluated using a range of possible quantification errors. We recommend understanding exactly how quantification error works before making use of this functionality. Alternatively, we suggest using literature values of 2.2 and 7.5.
-
 ### reporting_delay
 
 **Data type:** Integer
@@ -1310,7 +1298,7 @@ _see Global Inputs - parameter_level_
 
 ### sensor
 
-### MDL (default)
+#### MDL (default)
 
 **Data type:** List
 
@@ -1322,7 +1310,7 @@ _see Global Inputs - parameter_level_
 
 **Notes of caution:** A single value for MDL is used here, although a parameter list could be used that defines a sigmoidal probability of detection curve. These are examples and with more experimental data, probability of detection surfaces can be generated that can estimate detection probabilities as a function of numerous relevant variables (e.g., distance, wind speed, emission rate, etc.)
 
-### MDL (OGI)
+#### MDL (OGI)
 
 **Data type:** List of floats
 
@@ -1340,13 +1328,41 @@ where f = is the fraction of leaks detected, _x_ is the emission rate in grams o
 
 **Notes of caution:** Detection probabilities for OGI cameras have been shown to vary with operator experience, wind speed, scene background, and other variables. Estimates from Ravikumar et al. (2018) are experimentally derived but are likely low because (i) the OGI inspector knew where to look, (ii) measurements were performed over only 1 week of good conditions, (iii) OGI cameras were tripod mounted, and (iv) videos were analyzed by experts after data collection. Estimates from Zimmerle et al. (2020) are an order of magnitude higher, and likely closer to reality. However, this estimate applies only to experienced inspectors with over 700 site inspections under their belts, so the true median detection across all inspectors may be lower. Furthermore, the Zimmerle study for experienced inspectors could still represent an underestimate as (i) weather conditions were relatively good, (ii) OGI inspectors were participating in a formal study and were likely very focused, and (iii) many of the leaks were odorized. These results would therefore not include laziness, neglect, or missing of leaks from difficult to access areas. See Section 3.8 for more information on detection limits, including the use of single values or probability surfaces.
 
+#### MDL (GHGSAT1)
+
+**Data type:** List of floats
+
+**Default input:** [5.79, 1.39]
+
+**Description:** A list of parameters [x_0, wspd] that define the minimum detection limit of GHGSat1 sensor. The two parameters define a function of MDL of GHGSat1/D with the wind speed described in Table 2 of Jacob et al., 2016, where x__0 is the emission rate (in grams per second) at which leaks are detected and wspd is the wind speed (in meters per second) for x__0. Jacob et al., 2016 presented the detectability scales (MDL) of GHGSat are 0.25 ton/hour for a wind speed of 5 km/hour. They also indicated the MDL should be a proportional function of given MDL (0.25 ton/hour) and given wind speed (5 km/hour). In other words, the ratio between given MDL and wind speed is proportional to another ratio of different MDL and wind speed. Therefore, in the LDAR-Sim, we assume the MDL of satellite for any given site equals the ratio between the given MDL and wind speed times the wind speed from weather data at the location of sites.
+
+**Notes on acquisition:** We recommend extensive controlled release testing under a range of representative release rates, distances, and conditions to establish detection limits. Given the amount of work required to collect this information, we recommend using historical estimates.  
+
+**Notes of caution:** This group of values are only applicable for GHGSat1. Other values or metrics should be used if other satellites are used.
+
+#### QE
+
+**Data type:** Numeric
+
+**Default input:** 0
+
+**Description:** The standard deviation of a normal distribution with a mean of zero from which a quantification error multiplier is drawn each time an emission rate is estimated. For example, for a value of 2.2, ~35\% of measured emission rates will fall within a factor of two of the true emission rate. For a value of 7.5, ~82\% of measurements will fall within an order of magnitude of the true emission rate. When QE = 0, the measured emission rate equals the true emission rate. As QE increases, so does the average absolute difference between measured and true emission rates. See Fox et al. (2021) for more information and Ravikumar et al. (2019) for empirical quantification error estimates.
+
+**Notes on acquisition:** We recommend extensive controlled release testing under a range of representative release rates, distances, and conditions to establish quantification error. Given the amount of work required to collect this information, we recommend using historical estimates.
+
+**Notes of caution:** As facility-scale quantification error remains poorly constrained for LDAR screening methods, and likely depends on work practice, dispersion modeling, and environment, screening programs should be evaluated using a range of possible quantification errors. We recommend understanding exactly how quantification error works before making use of this functionality. Alternatively, we suggest using literature values of 2.2 and 7.5.
+
 #### type
 
 **Data type:** String
 
 **Default input:** "default"
 
-**Description:** Methods are comprised of both a deployment type and a sensor type. the sensor type is a character string denoting the sensor used in the method. For instance, 'OGI_camera', or 'default'. The 'default' sensor uses the MDL as a threshold to detect leaks based on the measurement scale of the method. Custom sensors can be added and referenced here.
+**Description:** Methods are comprised of both a deployment type and a sensor type. the sensor type is a character string denoting the sensor used in the method. For instance, 'OGI_camera', or 'default'. The 'default' sensor uses the MDL as a threshold to detect leaks based on the measurement scale of the method. Custom sensors can be added and referenced here. Built in sensors are:
+
+- `default`: Uses a simple threashold where the leak rate is based on the measurement scale, for example if `measurement_scale = site` then the site's total emissions will be considered measured if greater than the sensors MDL.
+- `OGI_camera`: Uses detection curve based on Ravikumar, 2018.Requires measurement_scale = 'component'.
+- `GHGSAT1` Uses a windspeed based method of detection from Jacob et al., 2016.
 
 **Notes on acquisition:** No data acquisition required.
 
@@ -1442,18 +1458,6 @@ Method weather envelopes
 **Notes on acquisition:** It is only required for satellite.
 
 **Notes of caution:** Please be sure the satellite is included in the TLE file
-
-### MDL (satellite only)
-
-**Data type:** List of floats
-
-**Default input:** [5.79, 1.39]
-
-**Description:** A list of parameters [x_0, wspd] that define the minimum detection limit of GHGSat1 sensor. The two parameters define a function of MDL of GHGSat1/D with the wind speed described in Table 2 of Jacob et al., 2016, where x__0 is the emission rate (in grams per second) at which leaks are detected and wspd is the wind speed (in meters per second) for x__0. Jacob et al., 2016 presented the detectability scales (MDL) of GHGSat are 0.25 ton/hour for a wind speed of 5 km/hour. They also indicated the MDL should be a proportional function of given MDL (0.25 ton/hour) and given wind speed (5 km/hour). In other words, the ratio between given MDL and wind speed is proportional to another ratio of different MDL and wind speed. Therefore, in the LDAR-Sim, we assume the MDL of satellite for any given site equals the ratio between the given MDL and wind speed times the wind speed from weather data at the location of sites. 
-
-**Notes on acquisition:** We recommend extensive controlled release testing under a range of representative release rates, distances, and conditions to establish detection limits. Given the amount of work required to collect this information, we recommend using historical estimates.  
-
-**Notes of caution:** This group of values are only applicable for GHGSat1. Other values or metrics should be used if other satellites are used.
 
 ### version (method level)
 
