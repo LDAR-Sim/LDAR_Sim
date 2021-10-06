@@ -1449,10 +1449,6 @@ Method weather envelopes
 
 **Description:** A list of parameters [x_0, wspd] that define the minimum detection limit of GHGSat1 sensor. The two parameters define a function of MDL of GHGSat1/D with the wind speed described in Table 2 of Jacob et al., 2016, where x__0 is the emission rate (in grams per second) at which leaks are detected and wspd is the wind speed (in meters per second) for x__0. Jacob et al., 2016 presented the detectability scales (MDL) of GHGSat are 0.25 ton/hour for a wind speed of 5 km/hour. They also indicated the MDL should be a proportional function of given MDL (0.25 ton/hour) and given wind speed (5 km/hour). In other words, the ratio between given MDL and wind speed is proportional to another ratio of different MDL and wind speed. Therefore, in the LDAR-Sim, we assume the MDL of satellite for any given site equals the ratio between the given MDL and wind speed times the wind speed from weather data at the location of sites. 
 
-$$
- \frac{Q_1}{U_1} = \frac{Q_2}{U_2}
-$$
-
 **Notes on acquisition:** We recommend extensive controlled release testing under a range of representative release rates, distances, and conditions to establish detection limits. Given the amount of work required to collect this information, we recommend using historical estimates.  
 
 **Notes of caution:** This group of values are only applicable for GHGSat1. Other values or metrics should be used if other satellites are used.
