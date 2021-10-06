@@ -20,5 +20,5 @@ cdsapi==0.5.1
 xarray==0.19.0
 basemap-data-hires==1.2.2
 pytz==2021.1
-tzwhere==3.0.3
+timezonefinder==5.2.0
 #orbit_predictor==1.14.2

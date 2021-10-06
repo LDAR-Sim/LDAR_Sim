@@ -46,7 +46,7 @@ def generate_sens_prog_set(sens_z_var, programs):
 
     Args:
         sens_z_var (dict): Must include two key-list sets:
-             path - List of paths to variable. eg.  P_Air.methods.Air.MDL
+             path - List of paths to variable. eg.  P_Air.methods.air.sensor.MDL
              vals - List of values associated with the param. eg [0, 1, 2, 3]
 
         programs (dict): program object
@@ -121,6 +121,8 @@ def group_timeseries(time_series, group_col):
 
 
 def generate_violin(grouped_ts, val_col, y_label, output_dir):
+    # Turn interactive plotting off
+    plt.ioff()
     outdata = [list(prog[val_col]) for pdix, prog in grouped_ts.items()]
     textstr = '\n'.join(['{}. {}'.format(pidx + 1, pname)
                          for pidx, pname in enumerate(grouped_ts)])
@@ -138,3 +140,4 @@ def generate_violin(grouped_ts, val_col, y_label, output_dir):
                   })
     fig.tight_layout()
     fig.savefig(output_dir/"violin_{}".format(val_col), dpi=fig.dpi)
+    plt.close(fig)

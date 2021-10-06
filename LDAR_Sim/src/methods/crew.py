@@ -21,7 +21,7 @@
 
 import numpy as np
 from importlib import import_module
-from aggregator import aggregate
+from datetime import timedelta
 
 
 class BaseCrew:
@@ -79,26 +79,25 @@ class BaseCrew:
         # If there are sites ready for survey
         if len(site_pool) > 0:
             itinerary = self.schedule.start_day(site_pool)
-            if len(itinerary) > 0:
-                for site_plan in itinerary:
-                    if site_plan['remaining_mins'] == 0:
-                        # Only record and fix leaks on the last day of work if theres rollover
-                        self.visit_site(site_plan['site'])
-                    # Update time
-                    self.worked_today = True
-                    # Mobile LDAR_mins also includes travel to site time
-                    self.schedule.update_schedule(site_plan['LDAR_mins'])
-                    self.daily_cost += self.config['cost']['per_site']
-                    if self.config['deployment_type'] == 'mobile':
-                        daily_LDAR_time += site_plan['LDAR_mins_onsite']
-                        daily_travel_time += site_plan['travel_to_mins']
+            for site_plan in itinerary:
+                if site_plan['remaining_mins'] == 0:
+                    # Only record and fix leaks on the last day of work if theres rollover
+                    self.visit_site(site_plan['site'])
+                self.worked_today = True
+                # NOTE Mobile LDAR_mins also includes travel to site time
+                self.state['t'].current_date += timedelta(minutes=int(site_plan['LDAR_mins']))
+                self.daily_cost += self.config['cost']['per_site']
+                if self.config['deployment_type'] == 'mobile':
+                    daily_LDAR_time += site_plan['LDAR_mins_onsite']
+                    daily_travel_time += site_plan['travel_to_mins']
 
-            # else: # this only happened if crew needs to travel all day
-            #     self.worked_today = True
-
+        # Update time series and variables and run end day if crew works
         if self.worked_today:
             cur_timestep = self.state['t'].current_timestep
             self.schedule.end_day(site_pool, itinerary)
+            # n_hours =
+            self.daily_cost += self.config['cost']['per_hour'] * \
+                (self.state['t'].current_date.hour-self.schedule.start_hour)
             self.daily_cost += self.config['cost']['per_day']
             self.timeseries['{}_cost'.format(m_name)][cur_timestep] += self.daily_cost
             self.timeseries['total_daily_cost'][cur_timestep] += self.daily_cost
@@ -113,21 +112,7 @@ class BaseCrew:
         """
         m_name = self.config['label']
 
-        # Aggregate true emissions to equipment and site level; get list of leaks present
-        leaks_present, equipment_rates, site_true_rate = aggregate(
-            site, self.state['leaks'])
-
-        # Add vented emissions
-        venting = 0
-        if self.parameters['consider_venting']:
-            venting = self.state['empirical_vents'][
-                np.random.randint(0, len(self.state['empirical_vents']))]
-        site_true_rate += venting
-        for rate in range(len(equipment_rates)):
-            equipment_rates[rate] += venting/int(site['equipment_groups'])
-
-        site_detect_results = self.detect_emissions(
-            site, leaks_present, equipment_rates, site_true_rate, venting)
+        site_detect_results = self.detect_emissions(site)
 
         if self.config['measurement_scale'].lower() == 'component':
             # Remove site from flag pool if component level measurement
@@ -143,19 +128,50 @@ class BaseCrew:
         site['{}_surveys_done_this_year'.format(m_name)] += 1
         site['{}_t_since_last_LDAR'.format(m_name)] = 0
 
-    def detect_emissions(self, *args):
+    def detect_emissions(self, site, *args):
         """ Run module to detect leaks and tag sites
         Returns:
             dict: {
                 'site': site,
-                'leaks_present': leaks_present,
-                'site_true_rate': site_true_rate,
-                'site_measured_rate': site_measured_rate,
-                'vent_rate': venting
+                '*args':  Various sensor parameters, see user manual for more info.
             }
         """
-        # Get the type of sensor, and call the the detect emissions function for sensor
+        m_name = self.config['label']
+        covered_leaks = []
+        is_sp_covered = True
+        covered_site_rate = 0
+        site_rate = 0
+        covered_equipment_rates = [0] * int(site['equipment_groups'])
+        equipment_rates = [0] * int(site['equipment_groups'])
+        for leak in site['active_leaks']:
+            # Check to see if leak is spatially covered
+            if '{}_sp_covered' not in leak:
+                is_sp_covered = np.random.binomial(1, self.config['coverage']['spatial'])
+                leak['{}_sp_covered'.format(m_name)] = is_sp_covered
+            if leak['{}_sp_covered'.format(m_name)]:
+                # Check to see if leak is temporally covered
+                if np.random.binomial(1, self.config['coverage']['temporal']):
+                    covered_leaks.append(leak)
+                    covered_site_rate += leak['rate']
+                    covered_equipment_rates[leak['equipment_group']-1] += leak['rate']
+            site_rate += leak['rate']
+            equipment_rates[leak['equipment_group']-1] += leak['rate']
+            # Get the type of sensor, and call the the detect emissions function for sensor
+            # Aggregate true emissions to equipment and site level; get list of leaks present
+
+        # Add vented emissions
+        venting = 0
+        if self.parameters['emissions']['consider_venting']:
+            venting = self.state['empirical_vents'][
+                np.random.randint(0, len(self.state['empirical_vents']))]
+            covered_site_rate += venting
+            site_rate += venting
+            for rate in range(len(covered_equipment_rates)):
+                covered_equipment_rates[rate] += venting/int(site['equipment_groups'])
+                equipment_rates[rate] += venting/int(site['equipment_groups'])
+
         sensor_mod = import_module(
-            'methods.sensors.{}'.format(self.config['sensor']))
+            'methods.sensors.{}'.format(self.config['sensor']['type']))
         detect_emis_sensor = getattr(sensor_mod, 'detect_emissions')
-        return detect_emis_sensor(self, *args)
+        return detect_emis_sensor(self, site, covered_leaks, covered_equipment_rates,
+                                  covered_site_rate, site_rate, venting, equipment_rates)

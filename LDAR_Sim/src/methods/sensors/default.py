@@ -18,36 +18,37 @@
 # along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 #
 # ------------------------------------------------------------------------------
-
 from method_functions import measured_rate
 
 
-def detect_emissions(self, site, leaks_present, equipment_rates, site_true_rate, venting):
+def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered_site_rate,
+                     site_rate, venting, equipment_rates):
+
     equip_measured_rates = []
     site_measured_rate = 0
     found_leak = False
+
     if self.config["measurement_scale"] == "site":
-        if site_true_rate > (self.config['MDL']):
+        if (covered_site_rate > self.config['sensor']['MDL'][0]):
             found_leak = True
-            # If source is above follow-up threshold, calculate measured rate using QE
-            site_measured_rate = measured_rate(site_true_rate, self.config['QE'])
+            site_measured_rate = measured_rate(covered_site_rate, self.config['sensor']['QE'])
         else:
             site[self.config['label'] + '_missed_leaks'] += 1
     elif self.config["measurement_scale"] == "equipment":
-        for rate in equipment_rates:
-            m_rate = measured_rate(rate, self.config['QE'])
-            if m_rate < self.config['MDL']:
+        for rate in covered_equipment_rates:
+            m_rate = measured_rate(rate, self.config['sensor']['QE'])
+            if (m_rate > self.config['sensor']['MDL'][0]):
+                found_leak = True
+            else:
                 site[self.config['label'] + '_missed_leaks'] += 1
                 m_rate = 0
-            else:
-                found_leak = True
             equip_measured_rates.append(m_rate)
             site_measured_rate += m_rate
 
     elif self.config["measurement_scale"] == "leak":
         # If measurement scale is a leak, all leaks will be tagged
-        for leak in leaks_present:
-            if leak['rate'] > (self.config['MDL']):
+        for leak in covered_leaks:
+            if (leak['rate'] > self.config['sensor']['MDL'][0]):
                 found_leak = True
                 if leak['tagged']:
                     self.timeseries[self.config['label'] +
@@ -58,16 +59,15 @@ def detect_emissions(self, site, leaks_present, equipment_rates, site_true_rate,
                     leak['date_tagged'] = self.state['t'].current_date
                     leak['tagged_by_company'] = self.config['label']
                     leak['tagged_by_crew'] = self.crewstate['id']
-                    self.state['tags'].append(leak)
-                    site_measured_rate += measured_rate(leak['rate'], self.config['QE'])
+                    site_measured_rate += measured_rate(leak['rate'], self.config['sensor']['QE'])
             else:
                 site[self.config['label'] + '_missed_leaks'] += 1
 
     # Put all necessary information in a dictionary to be assessed at end of day
     site_dict = {
         'site': site,
-        'leaks_present': leaks_present,
-        'site_true_rate': site_true_rate,
+        'leaks_present': covered_leaks,
+        'site_true_rate': site_rate,
         'site_measured_rate': site_measured_rate,
         'equip_measured_rates': equip_measured_rates,
         'vent_rate': venting,

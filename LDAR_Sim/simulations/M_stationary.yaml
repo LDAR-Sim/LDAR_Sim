@@ -1,0 +1,15 @@
+parameter_level: method
+version: '2.0'
+label: stationary
+module: dummy
+deployment_type: stationary
+measurement_scale: equipment
+sensor: 
+  type: default
+  MDL: [0.5]
+is_follow_up: False
+coverage:
+  temporal: 0.12
+cost:
+  upfront: 500
+  per_day: 1

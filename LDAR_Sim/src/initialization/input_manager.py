@@ -26,15 +26,6 @@ import sys
 from pathlib import Path
 
 from utils.check_parameter_types import check_types
-from default_parameters.default_global_parameters import default_global_parameters
-from default_parameters.default_program_parameters import default_program_parameters
-from default_parameters.default_aircraft_parameters import default_aircraft_parameters
-from default_parameters.default_operator_parameters import default_operator_parameters
-from default_parameters.default_OGI_parameters import default_OGI_parameters
-from default_parameters.default_OGI_FU_parameters import default_OGI_FU_parameters
-from default_parameters.default_satellite_parameters import default_satellite_parameters
-from default_parameters.default_truck_parameters import default_truck_parameters
-from default_parameters.default_stationary_parameters import default_stationary_parameters
 
 
 class InputManager:
@@ -42,18 +33,11 @@ class InputManager:
         """ Constructor creates a lookup of method defaults to run validation against
         """
         self.root_dir = root_dir
-        # Simulation parameter are parameters that are set up for this simulation
+        g_param_file = self.root_dir / 'src/default_parameters/g_default.yml'
+        with open(g_param_file, 'r') as f:
+            default_global_parameters = yaml.load(f.read(), Loader=yaml.FullLoader)
         self.simulation_parameters = copy.deepcopy(default_global_parameters)
-        # Construct a lookup of default method parameters
-        self.method_defaults = {
-            'aircraft': copy.deepcopy(default_aircraft_parameters),
-            'OGI': copy.deepcopy(default_OGI_parameters),
-            'OGI_FU': copy.deepcopy(default_OGI_FU_parameters),
-            'operator': copy.deepcopy(default_operator_parameters),
-            'satellite': copy.deepcopy(default_satellite_parameters),
-            'truck': copy.deepcopy(default_truck_parameters),
-            'stationary': copy.deepcopy(default_stationary_parameters),
-        }
+        # Simulation parameter are parameters that are set up for this simulation
         return
 
     def read_and_validate_parameters(self, parameter_filenames):
@@ -70,6 +54,7 @@ class InputManager:
             / self.simulation_parameters['input_directory']
         self.simulation_parameters['output_directory'] = self.root_dir \
             / self.simulation_parameters['output_directory']
+        self.remove_type_placeholders(self.simulation_parameters)
         return(copy.deepcopy(self.simulation_parameters))
 
     def write_parameters(self, filename):
@@ -112,7 +97,7 @@ class InputManager:
         """
         # Get File location
         file_path = Path(filename)
-        parameter_set_name, extension = file_path.stem, file_path.suffix
+        _, extension = file_path.stem, file_path.suffix
         if filename[0] == ".":
             # All relative need to be in reference to root folder
             fn_abspart = filename.split("./")[-1]
@@ -130,11 +115,7 @@ class InputManager:
 
         with open(param_file, 'r') as f:
             print('Reading ' + filename)
-            if extension == '.txt':
-                print('Warning: txt file inputs will be depreciated')
-                exec(f.read())
-                new_parameters.update(eval(parameter_set_name))
-            elif extension == '.json':
+            if extension == '.json':
                 new_parameters = json.loads(f.read())
             elif extension == '.yaml' or extension == '.yml':
                 new_parameters = yaml.load(f.read(), Loader=yaml.FullLoader)
@@ -157,7 +138,6 @@ class InputManager:
         mined_global_parameters = {}
         # if parameters['version'] == '1.0':
         #     parameters, mined_global_parameters = input_mapper_v1(parameters)
-
         return(parameters, mined_global_parameters)
 
     def parse_parameters(self, new_parameters_list):
@@ -169,7 +149,6 @@ class InputManager:
 
         :param new_parameters_list: a list of new parameter dictionaries
         """
-        self.simulation_parameters = copy.deepcopy(default_global_parameters)
         programs = []
         method_pool = {}
         for new_parameters in new_parameters_list:
@@ -185,21 +164,28 @@ class InputManager:
                     if len(new_parameters['programs']) > 0:
                         programs = programs + new_parameters.pop('programs')
 
-                check_types(default_global_parameters, new_parameters, omit_keys=['programs'])
+                check_types(self.simulation_parameters, new_parameters, omit_keys=['programs'])
                 self.simulation_parameters.update(new_parameters)
 
             elif new_parameters['parameter_level'] == 'program':
+                if 'default_parameters' not in new_parameters:
+                    def_file = 'p_default.yml'
+                else:
+                    def_file = new_parameters['default_parameters']
+                g_param_file = self.root_dir / 'src/default_parameters/{}'.format(def_file)
+                with open(g_param_file, 'r') as f:
+                    default_program_parameters = yaml.load(f.read(), Loader=yaml.FullLoader)
                 check_types(default_program_parameters, new_parameters, omit_keys=['methods'])
-
                 # Copy all default program parameters to build upon by calling update, then append
                 new_program = copy.deepcopy(default_program_parameters)
                 # HBD - Should be able to change single item in a dict and not he entire dict
-                self.prog_update(new_program, new_parameters)
+                self.retain_update(new_program, new_parameters)
                 programs.append(new_program)
 
             elif new_parameters['parameter_level'] == 'method':
                 # Create method pool entry that is referenced by the label
                 method_label = new_parameters['label']
+                # self.retain_update(method_pool[method_label], new_parameters)
                 method_pool.update({method_label: new_parameters})
 
             else:
@@ -223,18 +209,20 @@ class InputManager:
 
             # Next, perform type checking and updating from default module parameters, even for
             # methods pre-specified
-            for i in program['methods']:
-                module = program['methods'][i]['default_module']
-
-                # Perform type checking from known default methods
-                if module in self.method_defaults:
-                    check_types(self.method_defaults[module], program['methods'][i])
-                    method = copy.deepcopy(self.method_defaults[module])
-                    method.update(program['methods'][i])
-                    program['methods'][i] = method
+            for midx, method in program['methods'].items():
+                if 'default_parameters' not in method:
+                    def_file = 'm_default.yml'
                 else:
-                    print('Warning: no default parameters supplied for supplied method module: ' +
-                          module)
+                    def_file = new_parameters['default_parameters']
+                m_param_file = self.root_dir / 'src/default_parameters/{}'.format(def_file)
+                with open(m_param_file, 'r') as f:
+                    default_module = yaml.load(f.read(), Loader=yaml.FullLoader)
+                check_types(
+                    default_module,
+                    method,
+                    omit_keys=['default_parameters'])
+                self.retain_update(default_module, method)
+                program['methods'][midx] = default_module
 
             # Finally, manually append some keys from globals that are required to be in the program
             # parameters
@@ -244,10 +232,27 @@ class InputManager:
         # Third, install the programs into the simulation parameters
         self.simulation_parameters['programs'] = programs
 
-    def prog_update(self, program, new_parameters):
+    def retain_update(self, obj, new_parameters):
         for idx, param in new_parameters.items():
             if isinstance(param, dict):
-                self.prog_update(program[idx], param)
+                self.retain_update(obj[idx], param)
             else:
-                program.update({idx: param})
+                obj.update({idx: param})
+        return
+
+    def remove_type_placeholders(self, obj):
+        placeholders = ['_placeholder_int_', '_placeholder_float_', '_placeholder_str_']
+        if isinstance(obj, list):
+            iterator = enumerate(obj)
+        elif isinstance(obj, dict):
+            iterator = obj.items()
+        for idx, param in iterator:
+            if param in placeholders:
+                obj[idx] = None
+            # special case, empty list
+            elif isinstance(param, (list, tuple)) \
+                    and len(param) == 1 and (param[0] in placeholders):
+                obj[idx] = []
+            elif isinstance(param, (dict, list)):
+                self.remove_type_placeholders(obj[idx])
         return

@@ -23,7 +23,8 @@ import math
 import numpy as np
 from datetime import timedelta
 from importlib import import_module
-from generic_functions import get_prop_rate
+from utils.generic_functions import get_prop_rate
+from methods.deployment.generic_funcs import get_deployment_dates
 
 
 class BaseCompany:
@@ -46,6 +47,7 @@ class BaseCompany:
             self.config['deployment_type'].lower()))
         Schedule = getattr(deploy_mod, 'Schedule')
         self.schedule = Schedule(config, parameters, state)
+        self.deployment_years, self.deployment_months = get_deployment_dates(config, state)
         self.deployment_days = self.state['weather'].deployment_days(
             method_name=self.name,
             config=config,
@@ -105,14 +107,14 @@ class BaseCompany:
                 self.config['cost']['upfront']
 
         self.schedule.assign_agents()
-        self.schedule.get_deployment_dates()
 
     def deploy_crews(self):
         """
         The company tells all the crews to get to work.
         """
         # NOTE: crew checks weather conditions at start of the day
-        if self.schedule.in_deployment_period(self.state['t'].current_date):
+        c_date = self.state['t'].current_date
+        if c_date.month in self.deployment_months and c_date.year in self.deployment_years:
             self.candidate_flags = []
             if self.config['is_follow_up']:
                 site_pool = self.state['flags']
@@ -165,8 +167,8 @@ class BaseCompany:
 
         # Update followup specific parameters
         if self.config['is_follow_up']:
-            self.state['flags'] = [flag for flag in self.state['sites']
-                                   if flag['currently_flagged']]
+            self.state['flags'] = [site['facility_ID'] for site in self.state['sites']
+                                   if site['currently_flagged']]
         return
 
     def candidates_to_watchlist(self):
@@ -253,15 +255,14 @@ class BaseCompany:
                 self.name)][self.state['t'].current_timestep] += 1
 
             # Check to see if the site has any leaks that are active and tagged
-            site_leaks = [lk for lk in self.state['leaks']
-                          if lk['status'] == 'active' and lk['tagged']
-                          and lk['facility_ID'] == site_obj['facility_ID']]
-            if len(site_leaks) > 0:
+            site_leaks = len([lk for lk in site_obj['active_leaks'] if lk['tagged']])
+
+            if site_leaks > 0:
                 self.timeseries['{}_flags_redund2'.format(
                     self.name)][self.state['t'].current_timestep] += 1
 
             # Would the site have been chosen without venting?
-            if self.parameters['consider_venting']:
+            if self.parameters['emissions']['consider_venting']:
                 if (site_true_rate - venting) < self.config['follow_up']['thresh']:
                     self.timeseries['{}_flag_wo_vent'.format(self.name)][
                         self.state['t'].current_timestep] += 1

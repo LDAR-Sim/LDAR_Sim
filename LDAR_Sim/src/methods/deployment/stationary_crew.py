@@ -19,20 +19,17 @@
 #
 # ------------------------------------------------------------------------------
 
-from methods.deployment._base import SchedCrew as BaseSchedCrew
 
-
-class Schedule(BaseSchedCrew):
+class Schedule():
     def __init__(self, id, lat, lon, state, config, parameters, deployment_days, home_bases=None):
         self.parameters = parameters
         self.config = config
         self.state = state
         self.deployment_days = deployment_days
+        self.work_hours = 24
+        self.start_hour = 0
+        self.end_hour = 23
         self.scheduling = self.config['scheduling']
-
-    # --- inherited methods ---
-    # _base.crew ->  get_work_hours()
-    # _base.crew ->  update_schedule()
 
     def start_day(self, site_pool):
         """ Start day method. Get daily itinerary for crew.
@@ -53,8 +50,9 @@ class Schedule(BaseSchedCrew):
         for site in site_pool:
             site['{}_attempted_today?'.format(name)] = True
             # Check weather conditions
-            if self.deployment_days[site['lon_index'], site['lat_index'],
-                                    self.state['t'].current_timestep]:
+            if not self.parameters['consider_weather'] \
+                or self.deployment_days[site['lon_index'], site['lat_index'],
+                                        self.state['t'].current_timestep]:
                 site_plan = {
                     'site': site,
                     'go_to_site': True,
@@ -68,4 +66,6 @@ class Schedule(BaseSchedCrew):
     def end_day(self, site_pool, itinerary):
         """ End day function
         """
+        self.state['t'].current_date = self.state['t'].current_date.replace(
+            hour=int(self.end_hour))
         return

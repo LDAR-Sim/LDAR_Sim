@@ -20,7 +20,6 @@
 #
 # ------------------------------------------------------------------------------
 
-from methods.deployment._base import SchedCompany as BaseSchedCompany
 from methods.crew import BaseCrew
 
 
@@ -67,10 +66,7 @@ def make_crews(crews, config, state, parameters, timeseries, deployment_days):
                 config['cost']['upfront']
 
 
-class Schedule(BaseSchedCompany):
-    # --- inherited methods ---
-    # base.company ->  get_deployment_dates()
-    # base.company ->  can_deploy_today()
+class Schedule():
 
     def __init__(self, config, parameters, state):
         self.parameters = parameters

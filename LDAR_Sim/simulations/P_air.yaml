@@ -1,6 +1,6 @@
-program_name: P_stationary
+program_name: P_air
 parameter_level: program
 version: '2.0'
 method_labels:
-- stationary
-- OGI_FU_dev
+- aircraft
+- OGI_FU

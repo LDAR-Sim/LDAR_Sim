@@ -82,7 +82,7 @@ def generate_leak_timeseries(program, site, leak_count=0):
     n_timesteps = (datetime(*program['end_date'])-start_date).days
     site_timeseries = []
     for t in range(n_timesteps):
-        if random.binomial(1, program['LPR']):
+        if random.binomial(1, program['emissions']['LPR']):
             cur_dt = start_date + timedelta(days=t)
             site['cum_leaks'] += 1
             site_timeseries.append(generate_leak(program, site, cur_dt, site['cum_leaks']))
@@ -102,7 +102,7 @@ def generate_initial_leaks(program, site):
         list: List of leaks at a site
     """
     # Get distribit
-    n_leaks = random.binomial(program['NRd'], program['LPR'])
+    n_leaks = random.binomial(program['NRd'], program['emissions']['LPR'])
     prog_start_date = datetime(*program['start_date'])
     initial_site_leaks = []
     site.update({'initial_leaks': n_leaks, 'cum_leaks': n_leaks})

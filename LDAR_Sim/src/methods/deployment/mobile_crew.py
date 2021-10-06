@@ -22,16 +22,13 @@
 
 import numpy as np
 import pandas as pd
+from datetime import timedelta
 from geography.homebase import find_homebase, find_homebase_opt
 from geography.distance import get_distance
-from methods.deployment._base import SchedCrew as BaseSchedCrew
+from methods.deployment.generic_funcs import get_work_hours
 
 
-class Schedule(BaseSchedCrew):
-
-    # --- inherited methods ---
-    # _base.crew ->  get_work_hours()
-    # _base.crew ->  update_schedule()
+class Schedule():
 
     def __init__(self, id, lat, lon, state, config, parameters, deployment_days, home_bases=None):
         self.parameters = parameters
@@ -84,7 +81,7 @@ class Schedule(BaseSchedCrew):
         start_lon, start_lat = self.crew_lon, self.crew_lat
         site_plans_today = []
         self.travel_all_day = False
-        self.get_work_hours()
+        self.work_hours, self.start_hour, self.end_hour = get_work_hours(self.config, self.state)
         self.state['t'].current_date = self.state['t'].current_date.replace(
             hour=int(self.start_hour))  # Set start of work
         est_mins_remaining = (self.end_hour - self.start_hour)*60
@@ -95,12 +92,15 @@ class Schedule(BaseSchedCrew):
         #      Remove choosen site from site pool, then get new travel
         #      times and repeat (using while loop).
         # 2) No Route Planning - Fill the day with sites visits and
-        #      return the days site plan. The While loop is
+        #      return the days site plan.
 
         exit_flag = True
+        site_cnt = 0
+        # While loop is only needed for
         while est_mins_remaining > 0 and len(site_pool) > 0:
             site_plans_tmp = []
             for sidx, site in enumerate(site_pool):
+                site_cnt += 1
                 site_plan = self.plan_visit(site, est_mins_remaining=est_mins_remaining)
                 # site plans are dicts that include  site, LDAR_minsand go_to_site keys.
                 # Site plan can be empty if weather does not permit travel
@@ -111,12 +111,18 @@ class Schedule(BaseSchedCrew):
                         # The site order will not change if route_planning is not used
                         site_plans_today.append(site_plan)
                         est_mins_remaining -= site_plan['LDAR_mins']
-                        if est_mins_remaining <= 0:
-                            # if the day has been filled with surveys exit for and while
-                            # loop
-                            exit_flag = True
-                            break
+                        # # The following will allow the program to keep trying sites
+                        # # even after one has failed, in case there is another site
+                        # # that mets the criterea
+                        # if est_mins_remaining <= 0:
+                        #     # if the day has been filled with surveys exit for and while
+                        #     # loop
+                        #     exit_flag = True
+                        #     break
                         exit_flag = False
+                else:
+                    exit_flag = True
+                    break
 
             # If there is no route planning and the day has been filled with surveys
             # or all of the sites have been checked, exit the while loop
@@ -124,7 +130,7 @@ class Schedule(BaseSchedCrew):
                     and (exit_flag or sidx == len(site_pool) - 1):
                 break
 
-            # if crew have sites they can go to then choose site from list
+            # if a crew has sites they can go to then choose site from list
             if self.config['scheduling']['route_planning']:
                 if len(site_plans_tmp) > 0:
                     # choose a site to visit (rollover site, route planning site
@@ -162,7 +168,8 @@ class Schedule(BaseSchedCrew):
             else:
                 self.choose_accommodation()
         elif len(itinerary) > 0:
-            self.update_schedule(itinerary[-1]['travel_home_mins'])
+            self.state['t'].current_date += timedelta(
+                minutes=int(itinerary[-1]['travel_home_mins']))
 
     def plan_visit(self, site, next_site=None, est_mins_remaining=None):
         """ Check survey and travel times and see if there is enough time
@@ -188,8 +195,9 @@ class Schedule(BaseSchedCrew):
         site['{}_attempted_today?'.format(name)] = True
 
         # Check weather conditions
-        if not self.deployment_days[site['lon_index'], site['lat_index'],
-                                    self.state['t'].current_timestep]:
+        if self.parameters['consider_weather'] \
+            and not self.deployment_days[site['lon_index'], site['lat_index'],
+                                         self.state['t'].current_timestep]:
             return None
         if self.rollover:
             if site['facility_ID'] == self.rollover['site']['facility_ID']:
@@ -248,11 +256,11 @@ class Schedule(BaseSchedCrew):
                     self.crew_lon, self.crew_lat,
                     next_loc['lon'], next_loc['lat'], "Haversine")
 
-            speed = np.random.choice(self.config['scheduling']['speed_list'])
+            speed = np.random.choice(self.config['scheduling']['travel_speeds'])
             travel_time = (distance/speed)*60
         # ----------------------------------------------------------
         else:
-            travel_time = np.random.choice(self.config['t_bw_sites'])
+            travel_time = np.random.choice(self.config['t_bw_sites']['vals'])
         # returned dictionary
         out_dict = {
             'travel_time': travel_time,
@@ -342,11 +350,11 @@ class Schedule(BaseSchedCrew):
         if self.config['scheduling']['route_planning']:
             if site:
                 # today needs to travel all day
-                hb = self.upd_travel_time_loc(next_loc=site, homebase=True)
+                hb = self.upd_travel_time_loc(next_loc=site, is_homebase=True)
 
             else:
                 # if not means crew need to travel all the way to reach the next site
-                hb = self.upd_travel_time_loc(homebase=True)
+                hb = self.upd_travel_time_loc(is_homebase=True)
 
             self.crew_lon = hb['next_loc'][0]
             self.crew_lat = hb['next_loc'][1]
@@ -354,4 +362,4 @@ class Schedule(BaseSchedCrew):
         else:
             # travel time is sampled if not active route_planning
             self.last_site_travel_home_min = np.random.choice(
-                self.config['t_bw_sites'])
+                self.config['t_bw_sites']['vals'])
