@@ -26,10 +26,11 @@ import random
 import warnings
 import pandas as pd
 import numpy as np
+from methods.company import BaseCompany
 from numpy.random import choice, binomial
 from plotter import make_plots
 from daylight_calculator import DaylightCalculatorAve
-from generic_functions import make_maps
+from utils.generic_functions import make_maps
 from utils.distributions import leak_rvs
 from geography.vector import grid_contains_point
 from initialization.sites import generate_sites
@@ -160,11 +161,8 @@ class LdarSim:
             if m_obj['consider_daylight']:
                 calculate_daylight = True
             try:
-                company_name = str(m_obj['module']) + '_company'
-                module = __import__(company_name)
-                func = getattr(module, company_name)
                 state['methods'].append(
-                    func(state, params, m_obj, timeseries, m_label))
+                    BaseCompany(state, params, m_obj, timeseries, m_label))
             except AttributeError:
                 print('Cannot add this method: ' + m_label)
 

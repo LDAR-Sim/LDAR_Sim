@@ -23,11 +23,10 @@
 import numpy as np
 from shapely.geometry import Point
 from shapely import speedups
-from generic_functions import quick_cal_daylight, geo_idx
+from utils.generic_functions import quick_cal_daylight, geo_idx, init_orbit_poly
 from datetime import timedelta
 import netCDF4 as nc
 from orbit_predictor.sources import get_predictor_from_tle_lines
-from generic_functions import init_orbit_poly
 
 speedups.disable()
 

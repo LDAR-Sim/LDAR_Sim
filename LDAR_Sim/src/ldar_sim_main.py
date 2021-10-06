@@ -30,7 +30,7 @@ from initialization.sites import generate_sites, regenerate_sites
 from initialization.preseed import gen_seed_timeseries
 from initialization.input_manager import InputManager
 from initialization.args import files_from_args
-from generic_functions import check_ERA5_file
+from utils.generic_functions import check_ERA5_file
 from pathlib import Path
 from batch_reporting import BatchReporting
 from ldar_sim_run import ldar_sim_run

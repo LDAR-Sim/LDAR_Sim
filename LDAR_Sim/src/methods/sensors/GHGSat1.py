@@ -21,7 +21,7 @@
 
 import numpy as np
 import random
-from generic_functions import geo_idx
+from utils.generic_functions import geo_idx
 
 
 def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered_site_rate,

@@ -29,7 +29,7 @@ import shutil
 import pandas as pd
 
 from utils.result_processing import get_referenced_dataframe
-from generic_functions import check_ERA5_file
+from utils.generic_functions import check_ERA5_file
 from initialization.preseed import gen_seed_timeseries
 from initialization.sites import generate_sites, regenerate_sites
 from initialization.args import files_from_args
