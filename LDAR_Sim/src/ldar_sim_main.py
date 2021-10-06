@@ -21,7 +21,6 @@
 
 import fnmatch
 import pickle
-import argparse
 import os
 import shutil
 import datetime
@@ -30,91 +29,34 @@ import multiprocessing as mp
 from initialization.sites import generate_sites, regenerate_sites
 from initialization.preseed import gen_seed_timeseries
 from initialization.input_manager import InputManager
-from generic_functions import check_ERA5_file
+from initialization.args import files_from_args
+from utils.generic_functions import check_ERA5_file
 from pathlib import Path
 from batch_reporting import BatchReporting
 from ldar_sim_run import ldar_sim_run
 from copy import deepcopy
-from argparse import RawTextHelpFormatter
 from economics.cost_mitigation import cost_mitigation
-
 
 if __name__ == '__main__':
     # Get route directory , which is parent folder of ldar_sim_main file
     # Set current working directory directory to root directory
     root_dir = Path(os.path.dirname(os.path.realpath(__file__))).parent
-    # ------------------------------------------------------------------------------
-    # Look for parameter files supplied as arguments - if parameter files are supplied as
-    # arguments, proceed to parse and type check input parameter type with the input manager
-    # will also accept flagged input directory , (-P or --in_dir)
-    parser = argparse.ArgumentParser(formatter_class=RawTextHelpFormatter)
-    # ---Declare input arguments---
-    parser.add_argument(
-        'in_files', type=str, nargs='*',
-        help='Input files, seperate with space, can be absolute path or relative to' +
-        'root directory (LDAR_Sim). All files should have yaml, yml, or json extensions \n' +
-        'ie. python ldar_sim_main.py ./file1.json c:/path/to/file/file2.json')
-    parser.add_argument(
-        "-P", "--in_dir",
-        help='Input Directory, folder containing input files, will input all files within' +
-        'folder that have yaml, yml or json extensions \n' +
-        'ie. python ldar_sim_main.py --in_dir ./folder_with_infiles')
-    args = parser.parse_args()
-
-    if args.in_dir is not None:
-        # if an input directory is specified, get all files within that are in the directory
-        in_dir = root_dir / args.in_dir
-        # Get all yaml or json files in specified folder
-        parameter_filenames = [
-            "{}/{}".format(args.in_dir, f) for f in os.listdir(in_dir)
-            if ".yaml" in f or ".yml" in f or ".json" in f]
-    else:
-        parameter_filenames = args.in_files
-
-    if len(parameter_filenames) > 0:
-        print('LDAR-Sim using parameters supplied as arguments')
-        input_manager = InputManager(root_dir)
-        simulation_parameters = input_manager.read_and_validate_parameters(parameter_filenames)
-        # Assign appropriate local variables to match older way of inputting parameters
-        input_directory = simulation_parameters['input_directory']
-        output_directory = simulation_parameters['output_directory']
-        programs = simulation_parameters.pop('programs')
-        n_processes = simulation_parameters['n_processes']
-        print_from_simulations = simulation_parameters['print_from_simulations']
-        n_simulations = simulation_parameters['n_simulations']
-        ref_program = simulation_parameters['reference_program']
-        no_program = simulation_parameters['baseline_program']
-        write_data = simulation_parameters['write_data']
-        start_date = simulation_parameters['start_date']
-        pregen_leaks = simulation_parameters['pregenerate_leaks']
-        preseed_random = simulation_parameters['preseed_random']
-
-    else:
-        print('LDAR-Sim using parameters coded into ldar_sim_main.py')
-        print('Warning: this method of supplying parameters will be depreciated in the future')
-        # ------------------------------------------------------------------------------
-        # -----------------------------Global parameters--------------------------------
-
-        input_directory = root_dir / "inputs"
-        output_directory = root_dir / "outputs"
-        # Programs to compare; Position one should be the reference program (P_ref)
-        program_list = ['P_OGI', 'P_none']
-
-        # -----------------------------Set up programs----------------------------------
-        programs = []
-
-        for p in range(len(program_list)):
-            file = input_directory / '{}.txt'.format(program_list[p])
-            exec(open(file).read())
-            programs.append(eval(program_list[p]))
-
-        n_processes = programs[0]['n_processes']
-        print_from_simulations = programs[0]['print_from_simulations']
-        n_simulations = programs[0]['n_simulations']
-        ref_program = program_list[0]
-        no_program = program_list[1]
-        write_data = programs[0]['write_data']
-        start_date = programs[0]['start_date']
+    parameter_filenames = files_from_args(root_dir)
+    input_manager = InputManager(root_dir)
+    simulation_parameters = input_manager.read_and_validate_parameters(parameter_filenames)
+    # Assign appropriate local variables to match older way of inputting parameters
+    input_directory = simulation_parameters['input_directory']
+    output_directory = simulation_parameters['output_directory']
+    programs = simulation_parameters.pop('programs')
+    n_processes = simulation_parameters['n_processes']
+    print_from_simulations = simulation_parameters['print_from_simulations']
+    n_simulations = simulation_parameters['n_simulations']
+    ref_program = simulation_parameters['reference_program']
+    no_program = simulation_parameters['baseline_program']
+    write_data = simulation_parameters['write_data']
+    start_date = simulation_parameters['start_date']
+    pregen_leaks = simulation_parameters['pregenerate_leaks']
+    preseed_random = simulation_parameters['preseed_random']
 
     # -----------------------------Prepare model run----------------------------------
     # Check whether ERA5 data is already in the input directory and download data if not
@@ -196,9 +138,8 @@ if __name__ == '__main__':
                   }])
 
     # The following can be used for debugging outside of the starmap
-    # ldar_sim_run(simulations[0][0])
     trg_sim_idx = next((index for (index, d) in enumerate(simulations)
-                       if d[0]['program']['program_name'] == "P_air_dev"), None)
+                       if d[0]['program']['program_name'] == "P_air"), None)
 
     # ldar_sim_run(simulations[trg_sim_idx][0])
     # Perform simulations in parallel

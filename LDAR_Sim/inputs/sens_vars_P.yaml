@@ -1,0 +1,37 @@
+sens_z_var:
+  # paths:
+  #   - 'P_air.methods.aircraft.cost.per_day'
+  # vals: [1000, 10000]
+      
+sens_x_vars:
+  - paths:
+      - '__all.emissions.LPR'
+    vals: [0.00065, 0.0065, 0.065]
+  - paths:
+      - '__all.NRd'
+    vals: [150, 250, 350]
+  - paths:
+      - '__all.repair_delay'
+    vals: [0, 15, 30]
+  - paths:
+      - '__all.consider_weather'
+    vals: [True, False]
+  - paths:
+      - '__all.site_samples'
+    vals: [10, 100, 1000]
+  - paths:
+      - '__all.emissions.max_leak_rate'
+    vals: [10, 100, 1000]
+  - paths:
+      - '__all.emissions.leak_dist_params[0]'
+    vals: [-2.0, 1.0, 4.0]
+  - paths:
+      - '__all.emissions.leak_dist_params[1]'
+    vals: [0.5, 1.5, 2.5]
+    
+stat_columns:
+  - column: 'daily_emissions_kg'
+    description: 'Daily emissions (kg/day)'
+  - column: 'total_daily_cost'
+    description: 'Daily total cost ($)'
+

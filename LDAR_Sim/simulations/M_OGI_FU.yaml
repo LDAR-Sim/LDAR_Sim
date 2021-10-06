@@ -1,13 +1,13 @@
 parameter_level: method
 version: '2.0'
-label: OGI
+label: OGI_FU
 module: dummy
 deployment_type: mobile
 measurement_scale: component
 sensor: 
   type: OGI_camera
   MDL: [0.01275, 2.78e-6]
-is_follow_up: False
+is_follow_up: True
 cost:
   per_day: 2500
 t_bw_sites:

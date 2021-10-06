@@ -1,6 +1,6 @@
 # ------------------------------------------------------------------------------
 # Program:     The LDAR Simulator (LDAR-Sim)
-# File:        natural gas leak rate unit converter
+# File:        util.unit_converter
 # Purpose:     convert leak rates into different units
 #
 # Copyright (C) 2018-2021  Intelligent Methane Monitoring and Management System (IM3S) Group

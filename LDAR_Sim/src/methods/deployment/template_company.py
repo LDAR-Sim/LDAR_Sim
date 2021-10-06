@@ -20,7 +20,6 @@
 # ------------------------------------------------------------------------------
 
 
-from methods.deployment._base import SchedCompany as BaseSchedCompany
 from methods.crew import BaseCrew
 
 
@@ -42,15 +41,11 @@ def make_crews(crews, config, state, parameters, timeseries, deployment_days):
                               timeseries, deployment_days, id=i + 1))
 
 
-class Schedule(BaseSchedCompany):
+class Schedule():
     def __init__(self, config, parameters, state):
         self.parameters = parameters
         self.config = config
         self.state = state
-
-    # --- inherited methods ---
-    # base.company ->  get_deployment_dates()
-    # base.company ->  can_deploy_today()
 
     def assign_agents(self):
         """ assign agents to sites.
@@ -80,7 +75,7 @@ class Schedule(BaseSchedCompany):
         """
         return n_crews
 
-    def get_crew_site_list(self, site_pool, crew_ID, n_crews):
+    def get_crew_site_list(self, site_pool, crew_ID, n_crews,  crews=None):
         """ Allocates site pool among all crews. Ordering
             of sites is not changed by function.
         Args:

@@ -21,22 +21,20 @@
 import operator
 
 
-def aggregate(site, leaks):
+def aggregate(site):
 
-    leaks_present = []
     equipment_rates = []
     site_rate = 0
 
     # Make list of all leaks and add up all emissions at site
-    leaks_present = [leak for leak in leaks if leak['facility_ID'] == site['facility_ID']]
-    site_rate = sum(map(operator.itemgetter('rate'), leaks_present))
+    site_rate = sum(map(operator.itemgetter('rate'), site['active_leaks']))
 
     # Sum emissions by equipment group
     for group in range(int(site['equipment_groups'])):
         group_emissions = 0
-        for leak in leaks_present:
+        for leak in site['active_leaks']:
             if leak['equipment_group'] == (group + 1):
                 group_emissions += leak['rate']
         equipment_rates.append(group_emissions)
 
-    return leaks_present, equipment_rates, site_rate
+    return site['active_leaks'], equipment_rates, site_rate

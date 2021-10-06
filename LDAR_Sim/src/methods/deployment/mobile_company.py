@@ -23,7 +23,6 @@ import pandas as pd
 from sklearn.cluster import KMeans
 import numpy as np
 import math
-from methods.deployment._base import SchedCompany as BaseSchedCompany
 from methods.crew import BaseCrew
 
 
@@ -45,15 +44,11 @@ def make_crews(crews, config, state, parameters, timeseries, deployment_days):
                               timeseries, deployment_days, id=i + 1))
 
 
-class Schedule(BaseSchedCompany):
+class Schedule():
     def __init__(self, config, parameters, state):
         self.parameters = parameters
         self.config = config
         self.state = state
-
-    # --- inherited methods ---
-    # base.company ->  get_deployment_dates()
-    # base.company ->  can_deploy_today()
 
     def assign_agents(self):
         """ If route planning is enabled, use k-means clustering to split site into N clusters
@@ -105,7 +100,7 @@ class Schedule(BaseSchedCompany):
         Args:
             site_pool (dict): List of sites
         Returns:
-            site_pool (dict): List of sites ready for survey.
+            out_sites (dict): List of sites ready for survey.
         """
         name = self.config['label']
         days_since_LDAR = '{}_t_since_last_LDAR'.format(name)
@@ -115,35 +110,35 @@ class Schedule(BaseSchedCompany):
         meth = self.parameters['methods']
 
         if self.config['is_follow_up']:
-            filt_sites = filter(
-                lambda s, : (
-                    self.state['t'].current_date - s['date_flagged']).days
-                >= meth[s['flagged_by']]['reporting_delay'],
-                site_pool)
+            # filter then sort
+            out_sites = list(
+                sorted((s for s in self.state['sites']
+                        if s['facility_ID'] in site_pool
+                        and ((self.state['t'].current_date - s['date_flagged']).days
+                        >= meth[s['flagged_by']]['reporting_delay'])),
+                       key=lambda x: x[days_since_LDAR], reverse=True))
         else:
             days_since_LDAR = '{}_t_since_last_LDAR'.format(name)
-            filt_sites = filter(
-                lambda s: s[survey_done_this_year] < int(s[survey_frequency]) and
-                s[days_since_LDAR] >= int(s[survey_min_interval]), site_pool)
+            # filter then sort
+            out_sites = list(
+                sorted((s for s in site_pool
+                        if s[survey_done_this_year] < int(s[survey_frequency])
+                        and s[days_since_LDAR] >= int(s[survey_min_interval])),
+                       key=lambda x: x[days_since_LDAR], reverse=True))
+        return out_sites
 
-        sort_sites = sorted(
-            list(filt_sites), key=lambda x: x[days_since_LDAR], reverse=True)
-        return sort_sites
-
-    def get_working_crews(self, site_pool, n_crews, sites_per_crew=3):
+    def get_working_crews(self, site_pool, n_crews):
         """ Get number of working crews that day. Based on estimate
             that a crew can do 3 sites per day.
         Args:
             site_pool (dict): List of sites
             n_crews (int): Number of crews
-            sites_per_crew (int, optional): Number of sites a crew can survey in a day.
-            Defaults to 3.
 
         Returns:
             int: Number of crews to deploy that day.
         """
         n_sites = len(site_pool)
-        n_crews = math.ceil(n_sites/(n_crews*sites_per_crew))
+        n_crews = math.ceil(n_sites/(n_crews * self.config['est_site_p_day']))
         # cap working crews at max number of crews
         if n_crews > self.config['n_crews']:
             n_crews = self.config['n_crews']

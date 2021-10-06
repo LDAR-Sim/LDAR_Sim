@@ -22,7 +22,7 @@ import os
 import sys
 import gc
 import copy
-
+from datetime import datetime, timedelta
 from numpy import random as np_rand
 import random as rand
 from weather.weather_lookup import WeatherLookup as WL
@@ -30,7 +30,7 @@ from weather.weather_lookup_hourly import WeatherLookup as WL_h
 from ldar_sim import LdarSim
 from time_counter import TimeCounter
 from stdout_redirect import stdout_redirect
-from utils.distributions import unpackage_dist as unpack_leak_dist
+from initialization.sites import get_subtype_dist
 
 
 def ldar_sim_run(simulation):
@@ -68,7 +68,7 @@ def ldar_sim_run(simulation):
 
     # --------- Leak distributions -------------
     if len(parameters['leak_timeseries']) < 1:
-        unpack_leak_dist(parameters, parameters['input_directory'])
+        get_subtype_dist(parameters, parameters['input_directory'])
 
         # ------------------------------------------------------------------------------
         # -----------------------Initialize dynamic model state-------------------------
@@ -79,11 +79,11 @@ def ldar_sim_run(simulation):
         'methods': [],  # list of methods in action
         'sites': parameters['sites'],   # sites in the simulation
         'flags': [],  # list of sites flagged for follow-up
-        'leaks': [],  # list of all current leaks
+        # 'leaks': [],  # list of all current leaks
         'tags': [],  # leaks that have been tagged for repair
         'weather': None,  # weather gets assigned during initialization
         'daylight': None,  # daylight hours calculated during initialization
-        'init_leaks': [],  # the initial leaks generated at timestep 1
+        # 'init_leaks': [],  # the initial leaks generated at timestep 1
         'empirical_vents': [0],  # vent distribution created during initialization
         'max_leak_rate': None  # the largest leak in the input file
     }
@@ -110,14 +110,15 @@ def ldar_sim_run(simulation):
     state['t'] = TimeCounter(parameters)
     parameters.update({'timesteps': state['t'].timesteps})
     sim = LdarSim(global_params, state, parameters, timeseries)
-
+    start_date = datetime(*parameters['start_date'])
     # Loop through timeseries
-    while state['t'].current_date <= state['t'].end_date:
+    for ts in range(state['t'].timesteps):
+        state['t'].current_timestep = ts
+        state['t'].current_date = start_date + timedelta(days=ts)
         if parameters['seed_timeseries']:
             np_rand.seed(parameters['seed_timeseries'][state['t'].current_timestep])
             rand.seed(parameters['seed_timeseries'][state['t'].current_timestep])
         sim.update()
-        state['t'].next_day()
 
     # Clean up and write files
     sim_summary = sim.finalize()

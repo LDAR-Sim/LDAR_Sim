@@ -1,0 +1,13 @@
+parameter_level: method
+version: '2.0'
+label: operator
+module: dummy
+deployment_type: stationary
+measurement_scale: component
+sensor: 
+  type: default
+  MDL: [0.10]
+cost:
+  per_day: 0
+coverage:
+  spatial: 0.01

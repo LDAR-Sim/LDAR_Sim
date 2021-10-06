@@ -1,8 +1,8 @@
 
 # ------------------------------------------------------------------------------
 # Program:     The LDAR Simulator (LDAR-Sim)
-# File:        methods.deployment.mobile_company
-# Purpose:     Mobile company specific deployment classes and methods (ie. Scheduling)
+# File:        methods.deployment.orbit_company
+# Purpose:     Orbit company specific deployment classes and methods (ie. Scheduling)
 #
 # Copyright (C) 2018-2021  Intelligent Methane Monitoring and Management System (IM3S) Group
 #
@@ -19,19 +19,32 @@
 # along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 #
 # ------------------------------------------------------------------------------
+from methods.crew import BaseCrew
 
-from methods.deployment._base import SchedCompany as BaseSchedCompany
+
+def make_crews(crews, config, state, parameters, timeseries, deployment_days):
+    """ Generate crews using BaseCrew class.
+
+    Args:
+        crews (list): List of crews
+        config (dict): Method parameters
+        state (dict): Current state of LDAR-Sim
+        parameters (dict): Program parameters
+        timeseries (dict): Timeseries
+        deployment_days (list): days method can be deployed based on weather
+
+    --- Required in module.company.BaseCompany ---
+    """
+    for i in range(config['n_crews']):
+        crews.append(BaseCrew(state, parameters, config,
+                              timeseries, deployment_days, id=i + 1))
 
 
-class Schedule(BaseSchedCompany):
+class Schedule():
     def __init__(self, config, parameters, state):
         self.parameters = parameters
         self.config = config
         self.state = state
-
-        # --- inherited ---
-        # base.company ->  get_deployment_dates()
-        # base.company ->  can_deploy_today()
 
     def get_due_sites(self, site_pool):
         return site_pool
@@ -43,9 +56,8 @@ class Schedule(BaseSchedCompany):
         '''
         return
 
-    def get_working_crews(self, site_pool, n_crews, sites_per_crew=1):
+    def get_working_crews(self, site_pool, n_crews):
         return n_crews
 
-    def get_crew_site_list(self, site_pool, crew_num, n_crews):
-
+    def get_crew_site_list(self, site_pool, crew_num, n_crews, crews=None):
         return site_pool

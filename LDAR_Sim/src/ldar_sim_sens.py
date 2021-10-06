@@ -23,14 +23,13 @@ from pathlib import Path
 from ldar_sim_run import ldar_sim_run
 import os
 import copy
-import datetime
 import multiprocessing as mp
 from scipy.stats import ks_2samp
 import shutil
 import pandas as pd
 
 from utils.result_processing import get_referenced_dataframe
-from generic_functions import check_ERA5_file
+from utils.generic_functions import check_ERA5_file
 from initialization.preseed import gen_seed_timeseries
 from initialization.sites import generate_sites, regenerate_sites
 from initialization.args import files_from_args
@@ -93,9 +92,9 @@ def run_programs(programs, n_simulations, output_directory):
         res = p.starmap(ldar_sim_run, simulations)
 
     # Write metadata to file
-    metadata = open(output_directory / 'metadata.txt', 'w')
-    metadata.write(str(programs) + '\n' + str(datetime.datetime.now()))
-    metadata.close()
+    # metadata = open(output_directory / 'metadata.txt', 'w')
+    # metadata.write(str(programs) + '\n' + str(datetime.datetime.now()))
+    # metadata.close()
     return res
 
 
@@ -150,6 +149,11 @@ if __name__ == '__main__':
             var_paths = [path.split(".") for path in x_var['paths']]
             # Get program names and the their associated index in programs object
             key = var_paths[0][-1]
+            # Create output folder for the sensitivity variable
+            pset_output_dir = output_directory/'sens'/'{}'.format(key)
+            if pset_output_dir.exists() and pset_output_dir.is_dir():
+                shutil.rmtree(pset_output_dir)
+            os.makedirs(pset_output_dir)
             # Run the program sets with each value of sens_x_var
             for val in x_var['vals']:
                 munip_progs = copy.deepcopy(programs)
@@ -179,12 +183,6 @@ if __name__ == '__main__':
                 [['daily_emissions_kg', 'emis_rat', 'rat'],
                  ['total_daily_cost', 'cost_diff', 'diff']],
                 ref_program)
-
-            # Create output folder for the sensitivity variable
-            pset_output_dir = output_directory/'sens'/'{}'.format(key)
-            if pset_output_dir.exists() and pset_output_dir.is_dir():
-                shutil.rmtree(pset_output_dir)
-            os.makedirs(pset_output_dir)
 
             # Split up dataframe into multiple frames, by the sensitivity variable
             # this is required for plotting and estimating the KS p_vals

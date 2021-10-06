@@ -1,6 +1,6 @@
 # ------------------------------------------------------------------------------
 # Program:     The LDAR Simulator (LDAR-Sim)
-# File:        check_parameter_types
+# File:        utils.check_parameter_types
 # Purpose:     Check input parameter types
 #
 # Copyright (C) 2018-2021  Intelligent Methane Monitoring and Management System (IM3S) Group
@@ -34,9 +34,16 @@ def check_types(default, test, omit_keys=None, fatal=False):
         omit_keys = []
 
     # Perform type checking, allow integer inputs to be passed through as floats (but not reverse)
+    # Also allow placeholder values
     if type(default) is type(test):
         type_ok = True
     elif type(default) is float and type(test) is int:
+        type_ok = True
+    elif default == '_placeholder_int_' and (type(test) is int):
+        type_ok = True
+    elif default == '_placeholder_float_' and (type(test) is int or type(test) is float):
+        type_ok = True
+    elif default == '_placeholder_str_' and type(test) is str:
         type_ok = True
     else:
         type_ok = False

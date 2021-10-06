@@ -1,19 +1,59 @@
 sens_z_var:
   # paths:
   #   - 'P_air.methods.aircraft.cost.per_day'
-  #   - 'P_air_dev.methods.aircraft_dev.cost.per_day'
   # vals: [1000, 10000]
       
 sens_x_vars:
   - paths:
-      - '__all.LPR'
-    vals: [0.001, 0.005]
+      - 'P_air.methods.aircraft.cost.per_day'
+      - 'P_air.methods.OGI_FU.cost.per_day'
+      - 'P_OGI.methods.OGI.cost.per_day'
+      - 'P_stationary.methods.stationary.cost.per_day'
+    vals: [20, 200, 2000]
+  - paths:
+      - 'P_air.methods.aircraft.cost.upfront'
+      - 'P_air.methods.OGI_FU.cost.upfront'
+      - 'P_OGI.methods.OGI.cost.upfront'
+      - 'P_stationary.methods.stationary.cost.upfront'  
+    vals: [200, 2000, 20000]
+  - paths:
+      - 'P_air.methods.aircraft.coverage.spatial'
+      - 'P_OGI.methods.OGI.coverage.spatial'
+      - 'P_stationary.methods.stationary.coverage.spatial'
+    vals: [0.25, 0.5, 1.0]
+  - paths:
+      - 'P_air.methods.aircraft.coverage.temporal'
+      - 'P_OGI.methods.OGI.coverage.temporal'
+      - 'P_stationary.methods.stationary.coverage.temporal'
+    vals: [0.25, 0.5, 1.0]
+  - paths:
+      - 'P_air.methods.aircraft.follow_up.threshold'
+      - 'P_stationary.methods.stationary.follow_up.threshold'
+    vals: [0.01, 0.1, 1.0]
+  - paths:
+      - 'P_air.methods.aircraft.follow_up.proportion'
+      - 'P_stationary.methods.stationary.follow_up.proportion'
+    vals: [0.05, 0.5, 1.0]
+  - paths:
+      - 'P_air.methods.aircraft.sensor.MDL[0]'
+      - 'P_stationary.methods.stationary.sensor.MDL[0]'
+    vals: [0, 5.0, 10.0]
+  - paths:
+      - 'P_air.methods.aircraft.reporting_delay'
+      - 'P_air.methods.OGI_FU.reporting_delay'
+      - 'P_OGI.methods.OGI.reporting_delay'
+      - 'P_stationary.methods.stationary.reporting_delay'
+    vals: [0, 15, 30]
+  - paths:
+      - 'P_air.methods.aircraft.sensor.QE'
+      - 'P_stationary.methods.stationary.sensor.QE'
+    vals: [0.05, 0.1, 0.25]
+  - paths:
+      - 'P_air.methods.aircraft.measurement_scale'
+      - 'P_stationary.methods.stationary.measurement_scale'
+    vals: ['equipment', 'site']
 
 stat_columns:
-  - column: 'emis_rat'
-    description: 'Daily total cost difference($)'
-  - column: 'cost_diff'
-    description: 'Daily emissions ratio'
   - column: 'daily_emissions_kg'
     description: 'Daily emissions (kg/day)'
   - column: 'total_daily_cost'

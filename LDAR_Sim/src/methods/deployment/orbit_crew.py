@@ -1,8 +1,8 @@
 
 # ------------------------------------------------------------------------------
 # Program:     The LDAR Simulator (LDAR-Sim)
-# File:        methods.deployment.mobile_company
-# Purpose:     Mobile company specific deployment classes and methods (ie. Scheduling)
+# File:        methods.deployment.orbit_crew
+# Purpose:     Orbit company specific deployment classes and methods (ie. Scheduling)
 #
 # Copyright (C) 2018-2021  Intelligent Methane Monitoring and Management System (IM3S) Group
 #
@@ -23,17 +23,15 @@
 import numpy as np
 from shapely.geometry import Point
 from shapely import speedups
-from methods.deployment._base import SchedCrew as BaseSchedCrew
-from generic_functions import quick_cal_daylight, geo_idx
+from utils.generic_functions import quick_cal_daylight, geo_idx, init_orbit_poly
 from datetime import timedelta
 import netCDF4 as nc
 from orbit_predictor.sources import get_predictor_from_tle_lines
-from generic_functions import init_orbit_poly
 
 speedups.disable()
 
 
-class Schedule(BaseSchedCrew):
+class Schedule():
     def __init__(self, id, lat, lon, state, config, parameters, deployment_days, home_bases=None):
         self.parameters = parameters
         self.config = config
@@ -41,6 +39,9 @@ class Schedule(BaseSchedCrew):
         self.deployment_days = deployment_days
         self.crew_lat = lat
         self.crew_lon = lon
+        self.work_hours = 24
+        self.start_hour = 0
+        self.end_hour = 23
         self.allowed_end_time = None
 
         # extract cloud cover data
@@ -50,8 +51,8 @@ class Schedule(BaseSchedCrew):
         self.cloudcover = Dataset.variables['tcc'][:]
         Dataset.close()
         # obtain TLE file path
-        self.sat = self.config['satellite_name']
-        self.tlefile = self.config['TLE_files']
+        self.sat = self.config['TLE_label']
+        self.tlefile = self.config['TLE_file']
 
         self.get_orbit_predictor()
         self.get_orbit_path()
@@ -76,7 +77,7 @@ class Schedule(BaseSchedCrew):
             daily_site_plans = []
             for site in viewable_sites:
                 sat_dl, sat_cc = self.assess_weather(site)
-                if sat_dl and sat_cc:
+                if (sat_dl and sat_cc) or not self.parameters['consider_weather']:
                     plan = self.plan_visit(site)
                     daily_site_plans.append(plan)
 
