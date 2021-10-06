@@ -255,7 +255,7 @@ class BaseCompany:
                 self.name)][self.state['t'].current_timestep] += 1
 
             # Check to see if the site has any leaks that are active and tagged
-            site_leaks = sum([lk for lk in site_obj['active_leaks'] if lk['status'] == 'tagged'])
+            site_leaks = len([lk for lk in site_obj['active_leaks'] if lk['tagged']])
 
             if site_leaks > 0:
                 self.timeseries['{}_flags_redund2'.format(

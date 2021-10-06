@@ -1,5 +1,0 @@
-parameter_level: method
-version: '2.0'
-label: truck_dev
-default_module: truck
-module: dummy

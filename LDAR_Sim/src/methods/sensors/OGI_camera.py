@@ -28,7 +28,7 @@ def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered
 
     for leak in covered_leaks:
         k = np.random.normal(4.9, 0.3)
-        x0 = np.random.normal(self.config['MDL'][0], self.config['MDL'][1])
+        x0 = np.random.normal(self.config['sensor']['MDL'][0], self.config['sensor']['MDL'][1])
         x0 = math.log10(x0 * 3600)  # Convert from g/s to g/h and take log
 
         if leak['rate'] == 0:
@@ -38,13 +38,13 @@ def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered
             prob_detect = 1 / (1 + math.exp(-k * (x - x0)))
 
         if np.random.binomial(1, prob_detect):
-            if leak['status'] == 'tagged':
+            if leak['tagged']:
                 self.timeseries[self.config['label'] +
                                 '_redund_tags'][self.state['t'].current_timestep] += 1
 
             # Add these leaks to the 'tag pool'
-            elif leak['status'] == 'untagged':
-                leak['status'] == 'tagged'
+            else:
+                leak['tagged'] = True
                 leak['date_tagged'] = self.state['t'].current_date
                 leak['tagged_by_company'] = self.config['label']
                 leak['tagged_by_crew'] = self.id

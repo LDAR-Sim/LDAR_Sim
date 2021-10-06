@@ -39,10 +39,10 @@ def get_subtype_dist(program, wd):
         unpackage_dist(program)
     elif program['emissions']['leak_file_use'] == 'fit':
         program['subtypes'] = {0: {
-            'dist': fit_dist(
+            'leak_rate_dist': fit_dist(
                 samples=program['empirical_leaks'],
                 dist_type='lognorm'),
-            'units': ['gram', 'second']}}
+            'leak_rate_units': ['gram', 'second']}}
     elif not program['emissions']['subtype_leak_dist_file']:
         program['subtypes'] = {0: {
             'dist_type': program['emissions']['leak_dist_type'],
@@ -82,7 +82,7 @@ def generate_sites(program, in_dir):
 
     if program['emissions']['leak_file'] is not None:
         program['empirical_leaks'] = np.array(
-            pd.read_csv(in_dir / program['leak_file']).iloc[:, 0])
+            pd.read_csv(in_dir / program['emissions']['leak_file']).iloc[:, 0])
 
     get_subtype_dist(program, in_dir)
 

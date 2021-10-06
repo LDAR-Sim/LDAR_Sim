@@ -42,7 +42,8 @@ def get_work_hours(config, state):
 def get_deployment_dates(config, state):
     """ Using input parameters get the range of years and months available
         for company/ crew deployment. If non are specified, set to the
-        number of years within simulation and all months.
+        number of years within simulation and all months. defaults to
+        All years within simulation and all months if not specified.
     """
     # if user does not specify deployment interval, set to all months/years
     if len(config['scheduling']['deployment_years']) > 0:

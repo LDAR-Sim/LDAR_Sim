@@ -1,12 +1,13 @@
 parameter_level: method
 version: '2.0'
-label: satellite_dev
+label: satellite
 module: dummy
 deployment_type: orbit
 measurement_scale: site
-sensor: default
+sensor: 
+  type: default
+  MDL: [0.5]
 is_follow_up: False
-MDL: [278]
 cost:
   per_day: 100
 TLE_label: GHGSAT-D

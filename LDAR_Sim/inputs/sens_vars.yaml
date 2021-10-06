@@ -1,25 +1,87 @@
 sens_z_var:
   # paths:
   #   - 'P_air.methods.aircraft.cost.per_day'
-  #   - 'P_air_dev.methods.aircraft_dev.cost.per_day'
   # vals: [1000, 10000]
       
 sens_x_vars:
   - paths:
-      - '__all.LPR'
-    vals: [0.00065, 0.0065]
+      - 'P_air.methods.aircraft.cost.per_day'
+      - 'P_air_dev.methods.aircraft_dev.cost.per_day'
+      - 'P_air.methods.OGI_FU.cost.per_day'
+      - 'P_air_dev.methods.OGI_FU_dev.cost.per_day'
+      - 'P_OGI.methods.OGI.cost.per_day'
+      - 'P_OGI_dev.methods.OGI_dev.cost.per_day'
+      - 'P_stationary.methods.stationary.cost.per_day'
+      - 'P_stationary_dev.methods.stationary_dev.cost.per_day'      
+    vals: [20, 200, 2000]
   - paths:
-      - '__all.NRd'
-    vals: [50, 150, 365]
+      - 'P_air.methods.aircraft.cost.upfront'
+      - 'P_air_dev.methods.aircraft_dev.cost.upfront'
+      - 'P_air.methods.OGI_FU.cost.upfront'
+      - 'P_air_dev.methods.OGI_FU_dev.cost.upfront'
+      - 'P_OGI.methods.OGI.cost.upfront'
+      - 'P_OGI_dev.methods.OGI_dev.cost.upfront'
+      - 'P_stationary.methods.stationary.cost.upfront'
+      - 'P_stationary_dev.methods.stationary_dev.cost.upfront'      
+    vals: [200, 2000, 20000]
   - paths:
-      - '__all.leak_file'
-    vals: ["", 'leak_rates.csv']
+      - 'P_air.methods.aircraft.coverage.spatial'
+      - 'P_air_dev.methods.aircraft_dev.coverage.spatial'
+      - 'P_OGI.methods.OGI.coverage.spatial'
+      - 'P_OGI_dev.methods.OGI_dev.coverage.spatial'
+      - 'P_stationary.methods.stationary.coverage.spatial'
+      - 'P_stationary_dev.methods.stationary_dev.coverage.spatial'   
+    vals: [0.25, 0.5, 1.0]
+  - paths:
+      - 'P_air.methods.aircraft.coverage.temporal'
+      - 'P_air_dev.methods.aircraft_dev.coverage.temporal'
+      - 'P_OGI.methods.OGI.coverage.temporal'
+      - 'P_OGI_dev.methods.OGI_dev.coverage.temporal'
+      - 'P_stationary.methods.stationary.coverage.temporal'
+      - 'P_stationary_dev.methods.stationary_dev.coverage.temporal'   
+    vals: [0.25, 0.5, 1.0]
+  - paths:
+      - 'P_air.methods.aircraft.follow_up.threshold'
+      - 'P_air_dev.methods.aircraft_dev.follow_up.threshold'
+      - 'P_stationary.methods.stationary.follow_up.threshold'
+      - 'P_stationary_dev.methods.stationary_dev.follow_up.threshold'   
+    vals: [0.01, 0.1, 1.0]
+  - paths:
+      - 'P_air.methods.aircraft.follow_up.proportion'
+      - 'P_air_dev.methods.aircraft_dev.follow_up.proportion'
+      - 'P_stationary.methods.stationary.follow_up.proportion'
+      - 'P_stationary_dev.methods.stationary_dev.follow_up.proportion'   
+    vals: [0.05, 0.5, 1.0]
+  - paths:
+      - 'P_air.methods.aircraft.sensor.MDL[0]'
+      - 'P_air_dev.methods.aircraft_dev.sensor.MDL[0]'
+      - 'P_stationary.methods.stationary.sensor.MDL[0]'
+      - 'P_stationary_dev.methods.stationary_dev.sensor.MDL[0]'   
+    vals: [0, 5.0, 10.0]
+  - paths:
+      - 'P_air.methods.aircraft.reporting_delay'
+      - 'P_air_dev.methods.aircraft_dev.reporting_delay'
+      - 'P_air.methods.OGI_FU.reporting_delay'
+      - 'P_air_dev.methods.OGI_FU_dev.reporting_delay'
+      - 'P_OGI.methods.OGI.reporting_delay'
+      - 'P_OGI_dev.methods.OGI_dev.reporting_delay'
+      - 'P_stationary.methods.stationary.reporting_delay'
+      - 'P_stationary_dev.methods.stationary_dev.reporting_delay'   
+    vals: [0, 15, 30]
+  - paths:
+      - 'P_air.methods.aircraft.sensor.QE'
+      - 'P_air_dev.methods.aircraft_dev.sensor.QE'
+      - 'P_stationary.methods.stationary.sensor.QE'
+      - 'P_stationary_dev.methods.stationary_dev.sensor.QE'   
+    vals: [0.05, 0.1, 0.25]
+  - paths:
+      - 'P_air.methods.aircraft.measurement_scale'
+      - 'P_air_dev.methods.aircraft_dev.measurement_scale'
+      - 'P_stationary.methods.stationary.measurement_scale'
+      - 'P_stationary_dev.methods.stationary_dev.measurement_scale'   
+    vals: ['equipment', 'site']
 
 stat_columns:
-  - column: 'emis_rat'
-    description: 'Daily total cost difference($)'
-  - column: 'cost_diff'
-    description: 'Daily emissions ratio'
   - column: 'daily_emissions_kg'
     description: 'Daily emissions (kg/day)'
   - column: 'total_daily_cost'

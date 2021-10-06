@@ -29,15 +29,15 @@ def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered
     found_leak = False
 
     if self.config["measurement_scale"] == "site":
-        if (covered_site_rate > self.config['MDL'][0]):
+        if (covered_site_rate > self.config['sensor']['MDL'][0]):
             found_leak = True
-            site_measured_rate = measured_rate(covered_site_rate, self.config['QE'])
+            site_measured_rate = measured_rate(covered_site_rate, self.config['sensor']['QE'])
         else:
             site[self.config['label'] + '_missed_leaks'] += 1
     elif self.config["measurement_scale"] == "equipment":
         for rate in covered_equipment_rates:
-            m_rate = measured_rate(rate, self.config['QE'])
-            if (m_rate > self.config['MDL'][0]):
+            m_rate = measured_rate(rate, self.config['sensor']['QE'])
+            if (m_rate > self.config['sensor']['MDL'][0]):
                 found_leak = True
             else:
                 site[self.config['label'] + '_missed_leaks'] += 1
@@ -48,7 +48,7 @@ def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered
     elif self.config["measurement_scale"] == "leak":
         # If measurement scale is a leak, all leaks will be tagged
         for leak in covered_leaks:
-            if (leak['rate'] > self.config['MDL'][0]):
+            if (leak['rate'] > self.config['sensor']['MDL'][0]):
                 found_leak = True
                 if leak['tagged']:
                     self.timeseries[self.config['label'] +
@@ -59,7 +59,7 @@ def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered
                     leak['date_tagged'] = self.state['t'].current_date
                     leak['tagged_by_company'] = self.config['label']
                     leak['tagged_by_crew'] = self.crewstate['id']
-                    site_measured_rate += measured_rate(leak['rate'], self.config['QE'])
+                    site_measured_rate += measured_rate(leak['rate'], self.config['sensor']['QE'])
             else:
                 site[self.config['label'] + '_missed_leaks'] += 1
 

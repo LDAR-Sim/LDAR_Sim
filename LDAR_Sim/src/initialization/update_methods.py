@@ -59,7 +59,11 @@ def est_site_p_day(m, sites):
         int:estimated sites per day per crew.
     """
     def _s_per_day(s):
-        # Calc sites per day based on single site parameters
+        '''
+        Estimates the number of sites a crew can do in a day. Takes the number of minutes in a
+        day, subtracts the time required from a site at the end of a day. Then divides by
+        the the time required to travel to a site and complete LDAR work at a site.
+        '''
         workday_aj = work_mins - int(choice(m['t_bw_sites']['vals']))
         t_per_site = int(choice(m['t_bw_sites']['vals'])) + int(s['{}_time'.format(m_name)])
         return workday_aj / t_per_site
@@ -74,7 +78,8 @@ def est_site_p_day(m, sites):
 
 def est_t_bw_sites(m, sites):
     """ Estimate t_bw_sites for mobile deployments with routeplanning enabled
-        in minutes.
+        in minutes. Calculates the distances between all sites, then divides
+        by the average travel speed.
     Args:
         m (dict): method parameters
         sites (dict): site dictionary

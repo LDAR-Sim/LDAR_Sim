@@ -1,12 +1,13 @@
 parameter_level: method
 version: '2.0'
 label: aircraft
-module: aircraft
+module: dummy
 deployment_type: mobile
 measurement_scale: equipment
-sensor: default
+sensor: 
+  type: default
+  MDL: [0.01]
 is_follow_up: False
-MDL: [0.01]
 cost:
   per_day: 10000
 t_bw_sites:
