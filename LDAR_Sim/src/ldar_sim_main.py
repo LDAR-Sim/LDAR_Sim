@@ -41,12 +41,13 @@ if __name__ == '__main__':
     # Get route directory , which is parent folder of ldar_sim_main file
     # Set current working directory directory to root directory
     root_dir = Path(os.path.dirname(os.path.realpath(__file__))).parent
-    parameter_filenames = files_from_args(root_dir)
-    input_manager = InputManager(root_dir)
+    os.chdir(root_dir)
+    parameter_filenames = files_from_args()
+    input_manager = InputManager()
     simulation_parameters = input_manager.read_and_validate_parameters(parameter_filenames)
     # Assign appropriate local variables to match older way of inputting parameters
-    input_directory = simulation_parameters['input_directory']
-    output_directory = simulation_parameters['output_directory']
+    input_directory = Path(simulation_parameters['input_directory'])
+    output_directory = Path(simulation_parameters['output_directory'])
     programs = simulation_parameters.pop('programs')
     n_processes = simulation_parameters['n_processes']
     print_from_simulations = simulation_parameters['print_from_simulations']
@@ -73,7 +74,7 @@ if __name__ == '__main__':
     # If leak generator is used and there are generated files, user is prompted
     # to use files, If they say no, the files will be removed
     if pregen_leaks:
-        generator_folder = input_directory / "./generator"
+        generator_folder = input_directory / "generator"
         if not os.path.exists(generator_folder):
             os.mkdir(generator_folder)
         gen_files = fnmatch.filter(os.listdir(generator_folder), '*.p')
