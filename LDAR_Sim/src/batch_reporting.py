@@ -20,6 +20,8 @@
 # ------------------------------------------------------------------------------
 
 import warnings
+from pathlib import Path
+
 import plotnine as pn
 from mizani.formatters import date_format
 import os
@@ -42,42 +44,26 @@ class BatchReporting:
         self.ref_program = ref_program
         start_date = datetime.datetime(*start_date).strftime("%m-%d-%Y")
 
-        # Go to directory with program folders
-        os.chdir(self.output_directory)
+        self.directories = [f.name for f in os.scandir(output_directory) if f.is_dir()]
 
         # For each folder, build a dataframe combining all necessary files
-        self.directories = next(os.walk('.'))[1]
-        file_lists = [[] for i in range(len(self.directories))]
-
-        # List files
-        for i in range(len(self.directories)):
-            path = self.output_directory / self.directories[i]
-            for j in os.listdir(path):
-                if os.path.isfile(os.path.join(path, j)) and 'timeseries' in j:
-                    file_lists[i].append(j)
+        self.all_data = [[pd.read_csv(Path(f)) for f in os.scandir(fldr)
+                          if f.is_file() and 'timeseries' in f.name]
+                         for fldr in os.scandir(output_directory) if fldr.is_dir()]
+        self.site_data = [[pd.read_csv(Path(f)) for f in os.scandir(fldr)
+                          if f.is_file() and 'sites_output' in f.name]
+                          for fldr in os.scandir(output_directory) if fldr.is_dir()]
 
         # Delete any empty lists (to enable additional folders, e.g. for sensitivity analysis)
-        file_lists = [item for item in file_lists if len(item) > 0]
-
-        # Read csv files to lists
-        self.all_data = [[] for i in range(len(file_lists))]
-        for i in range(len(file_lists)):
-            for file in file_lists[i]:
-                path = self.output_directory / self.directories[i] / file
-                self.all_data[i].append(pd.read_csv(path))
-
         # Get vector of dates
-        dates = pd.read_csv(
-            self.output_directory / self.directories[0] / file_lists[0][0])['datetime']
-        dates = pd.to_datetime(dates)
 
+        dates = pd.to_datetime(self.all_data[0][0].datetime)
         mask = (dates > start_date)
         self.dates_trunc = dates.loc[mask]
 
         # Figure out the number of sites used in the simulation
         # (have to do it this way because n can be sampled or not)
-        site_path = self.output_directory / self.directories[0]
-        self.n_sites = len(pd.read_csv(site_path / 'sites_output_0.csv'))
+        self.n_sites = len(self.site_data[0][0])
 
         # ------- Build list of emissions dataframes ------ #
         self.emission_dfs = [[] for i in range(len(self.all_data))]
