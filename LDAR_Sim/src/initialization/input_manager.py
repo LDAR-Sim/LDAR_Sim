@@ -29,11 +29,10 @@ from utils.check_parameter_types import check_types
 
 
 class InputManager:
-    def __init__(self, root_dir):
+    def __init__(self):
         """ Constructor creates a lookup of method defaults to run validation against
         """
-        self.root_dir = root_dir
-        g_param_file = self.root_dir / 'src/default_parameters/g_default.yml'
+        g_param_file = './src/default_parameters/g_default.yml'
         with open(g_param_file, 'r') as f:
             default_global_parameters = yaml.load(f.read(), Loader=yaml.FullLoader)
         self.simulation_parameters = copy.deepcopy(default_global_parameters)
@@ -48,12 +47,8 @@ class InputManager:
         raw_parameters = self.read_parameter_files(parameter_filenames)
         self.parse_parameters(raw_parameters)
 
-        # Coerce all paths to absolute paths prior to release, add extra guards for other parts of
-        # the code that concatenate strings to construct file paths, and expect trailing slashes
-        self.simulation_parameters['input_directory'] = self.root_dir \
-            / self.simulation_parameters['input_directory']
-        self.simulation_parameters['output_directory'] = self.root_dir \
-            / self.simulation_parameters['output_directory']
+        # Add extra guards for other parts of the code that concatenate
+        # strings to construct file paths, and expect trailing slashes
         self.remove_type_placeholders(self.simulation_parameters)
         return(copy.deepcopy(self.simulation_parameters))
 
@@ -96,20 +91,8 @@ class InputManager:
         :return: dictionary of parameters read from the parameter file
         """
         # Get File location
-        file_path = Path(filename)
-        _, extension = file_path.stem, file_path.suffix
-        if filename[0] == ".":
-            # All relative need to be in reference to root folder
-            fn_abspart = filename.split("./")[-1]
-            temp_dir = self.root_dir
-            # if parent folder is required, move to parent directory number
-            # of times in relative path (.../ will backup 2 directories)
-            n_parents = filename.count("..")
-            for pcnt in range(n_parents):
-                temp_dir = temp_dir.parent
-            param_file = temp_dir / fn_abspart
-        else:
-            param_file = Path(filename)
+        param_file = Path(filename)
+        extension = param_file.suffix
 
         new_parameters = {}
 
@@ -172,8 +155,8 @@ class InputManager:
                     def_file = 'p_default.yml'
                 else:
                     def_file = new_parameters['default_parameters']
-                g_param_file = self.root_dir / 'src/default_parameters/{}'.format(def_file)
-                with open(g_param_file, 'r') as f:
+                p_param_file = './src/default_parameters/{}'.format(def_file)
+                with open(p_param_file, 'r') as f:
                     default_program_parameters = yaml.load(f.read(), Loader=yaml.FullLoader)
                 check_types(default_program_parameters, new_parameters, omit_keys=['methods'])
                 # Copy all default program parameters to build upon by calling update, then append
@@ -214,7 +197,7 @@ class InputManager:
                     def_file = 'm_default.yml'
                 else:
                     def_file = new_parameters['default_parameters']
-                m_param_file = self.root_dir / 'src/default_parameters/{}'.format(def_file)
+                m_param_file = './src/default_parameters/{}'.format(def_file)
                 with open(m_param_file, 'r') as f:
                     default_module = yaml.load(f.read(), Loader=yaml.FullLoader)
                 check_types(
