@@ -23,7 +23,7 @@ import os
 from argparse import ArgumentParser, RawTextHelpFormatter
 
 
-def files_from_args(root_dir):
+def files_from_args():
     '''
     Look for parameter files supplied as arguments - if parameter files are supplied as
     arguments, proceed to parse and type check input parameter type with the input manager.
@@ -45,10 +45,9 @@ def files_from_args(root_dir):
 
     if args.in_dir is not None:
         # if an input directory is specified, get all files within that are in the directory
-        in_dir = root_dir / args.in_dir
         # Get all yaml or json files in specified folder
         parameter_filenames = [
-            "{}/{}".format(args.in_dir, f) for f in os.listdir(in_dir)
+            "{}/{}".format(args.in_dir, f) for f in os.listdir(args.in_dir)
             if ".yaml" in f or ".yml" in f or ".json" in f]
     else:
         parameter_filenames = args.in_files
