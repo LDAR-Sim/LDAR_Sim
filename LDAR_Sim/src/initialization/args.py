@@ -24,14 +24,23 @@ from pathlib import Path
 from argparse import ArgumentParser, RawTextHelpFormatter
 
 
-def get_abs_path(path):
+def get_abs_path(path, ref_folder=None):
+    """ Get the absolute path of a file from the reference folder
+        If none is specified, use the current working directory
+
+    Args:
+        path (string): relative (or absolute) path to a file
+        ref_folder (Path, optional): reference folder. Defaults to None.
+    """
     def sel_parent(p_folder):
         return p_folder.parent
+    if ref_folder is None:
+        ref_folder = Path(os.getcwd())
     n_pars = len(path) - len(path.lstrip('.'))
     if n_pars > 0:
         n_pars -= 1
         mod_rel_path = path[n_pars:]
-        out_dir = Path(os.getcwd())
+        out_dir = ref_folder
         for par in range(n_pars):
             out_dir = sel_parent(out_dir)
         return out_dir / mod_rel_path
@@ -39,7 +48,7 @@ def get_abs_path(path):
         return Path(path)
 
 
-def files_from_args():
+def files_from_args(ref_path):
     '''
     Look for parameter files supplied as arguments - if parameter files are supplied as
     arguments, proceed to parse and type check input parameter type with the input manager.
@@ -63,12 +72,12 @@ def files_from_args():
         # if an input directory is specified, get all files within that are in the directory
         # Get all yaml or json files in specified folder
         parameter_files = [
-            get_abs_path(args.in_dir) / "{}".format(f)
-            for f in os.listdir(get_abs_path(args.in_dir))
+            get_abs_path(args.in_dir, ref_path) / "{}".format(f)
+            for f in os.listdir(get_abs_path(args.in_dir, ref_path))
             if ".yaml" in f or ".yml" in f or ".json" in f]
     else:
         parameter_files = [
-            get_abs_path(args.in_files)
+            get_abs_path(args.in_files, ref_path)
             for f in args.in_files
             if ".yaml" in f or ".yml" in f or ".json" in f]
 
