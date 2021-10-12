@@ -20,7 +20,23 @@
 # ------------------------------------------------------------------------------
 
 import os
+from pathlib import Path
 from argparse import ArgumentParser, RawTextHelpFormatter
+
+
+def get_abs_path(path):
+    def sel_parent(p_folder):
+        return p_folder.parent
+    n_pars = len(path) - len(path.lstrip('.'))
+    if n_pars > 0:
+        n_pars -= 1
+        mod_rel_path = path[n_pars:]
+        out_dir = Path(os.getcwd())
+        for par in range(n_pars):
+            out_dir = sel_parent(out_dir)
+        return out_dir / mod_rel_path
+    else:
+        return Path(path)
 
 
 def files_from_args():
@@ -46,13 +62,17 @@ def files_from_args():
     if args.in_dir is not None:
         # if an input directory is specified, get all files within that are in the directory
         # Get all yaml or json files in specified folder
-        parameter_filenames = [
-            "{}/{}".format(args.in_dir, f) for f in os.listdir(args.in_dir)
+        parameter_files = [
+            get_abs_path(args.in_dir) / "{}".format(f)
+            for f in os.listdir(get_abs_path(args.in_dir))
             if ".yaml" in f or ".yml" in f or ".json" in f]
     else:
-        parameter_filenames = args.in_files
+        parameter_files = [
+            get_abs_path(args.in_files)
+            for f in args.in_files
+            if ".yaml" in f or ".yml" in f or ".json" in f]
 
-    if len(parameter_filenames) < 1:
+    if len(parameter_files) < 1:
         print('Please provide at least one input argument')
         exit
-    return parameter_filenames
+    return parameter_files

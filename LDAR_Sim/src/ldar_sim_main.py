@@ -25,16 +25,16 @@ import os
 import shutil
 import datetime
 import multiprocessing as mp
+from pathlib import Path
+from copy import deepcopy
 
 from initialization.sites import generate_sites, regenerate_sites
 from initialization.preseed import gen_seed_timeseries
 from initialization.input_manager import InputManager
-from initialization.args import files_from_args
+from initialization.args import files_from_args, get_abs_path
 from utils.generic_functions import check_ERA5_file
-from pathlib import Path
 from batch_reporting import BatchReporting
 from ldar_sim_run import ldar_sim_run
-from copy import deepcopy
 from economics.cost_mitigation import cost_mitigation
 
 if __name__ == '__main__':
@@ -46,8 +46,8 @@ if __name__ == '__main__':
     input_manager = InputManager()
     simulation_parameters = input_manager.read_and_validate_parameters(parameter_filenames)
     # Assign appropriate local variables to match older way of inputting parameters
-    input_directory = Path(simulation_parameters['input_directory'])
-    output_directory = Path(simulation_parameters['output_directory'])
+    input_directory = get_abs_path(simulation_parameters['input_directory'])
+    output_directory = get_abs_path(simulation_parameters['output_directory'])
     programs = simulation_parameters.pop('programs')
     n_processes = simulation_parameters['n_processes']
     print_from_simulations = simulation_parameters['print_from_simulations']
@@ -140,7 +140,7 @@ if __name__ == '__main__':
 
     # The following can be used for debugging outside of the starmap
     trg_sim_idx = next((index for (index, d) in enumerate(simulations)
-                       if d[0]['program']['program_name'] == "P_air"), None)
+                        if d[0]['program']['program_name'] == "P_air"), None)
 
     # ldar_sim_run(simulations[trg_sim_idx][0])
     # Perform simulations in parallel

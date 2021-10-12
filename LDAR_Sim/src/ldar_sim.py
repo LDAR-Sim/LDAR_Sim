@@ -99,7 +99,7 @@ class LdarSim:
                 # Get min interval based on RS. a 90% ajustment is used to add a grace period
                 # prior to the next campaign period were surveys can start earlier
                 # Calculate the site minimum interval
-                if m_RS in site:
+                if m_RS in site and site[m_RS] != 0:
                     site['{}_min_int'.format(m_label)] = 365/site[m_RS]*0.9
                 # Automatically assign 1 crew to followup if left unspecified
                 elif m_obj['n_crews'] is None:
