@@ -69,7 +69,10 @@ def generate_sites(program, in_dir):
     sites = sites_in.to_dict('records')
 
     # Sample sites and shuffle
-    n_samples = program.get('site_samples', len(sites))
+    n_samples = program['site_samples']
+    if n_samples is None:
+        n_samples = len(sites)
+    # even if n_samples is None, the sample function is still used to shuffle
     sites = random.sample(sites, n_samples)
 
     # Get subtype Times

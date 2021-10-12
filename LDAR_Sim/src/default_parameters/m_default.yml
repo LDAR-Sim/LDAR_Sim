@@ -36,6 +36,7 @@ sensor:
   type: default
   QE: 0.0
   MDL: [0.01]
+  mod_loc: '_placeholder_str_'
 t_bw_sites:
   file: '_placeholder_str_'
   vals: [30]
