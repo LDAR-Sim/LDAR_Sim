@@ -97,7 +97,7 @@ class InputManager:
         new_parameters = {}
 
         with open(param_file, 'r') as f:
-            print('Reading ' + filename)
+            print('Reading ' + filename.name)
             if extension == '.json':
                 new_parameters = json.loads(f.read())
             elif extension == '.yaml' or extension == '.yml':
