@@ -5,6 +5,7 @@
 *.pyc
 *.vscode
 *.vscode
+**/plugins/
 **/outputs/
 *.nc
 *.p
