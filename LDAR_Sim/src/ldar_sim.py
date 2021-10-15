@@ -69,10 +69,9 @@ class LdarSim:
         if len(state['sites']) < 1:
             state['sites'], _, _ = generate_sites(params, params['input_directory'])
         state['max_leak_rate'] = params['emissions']['max_leak_rate']
-
         state['t'].set_UTC_offset(state['sites'])
 
-        # Sample sites
+        # Sample sites if they havent been provided from pregeneration step
         if not params['pregenerate_leaks']:
             if params['site_samples'] is not None:
                 state['sites'] = random.sample(
