@@ -61,7 +61,6 @@ def ldar_sim_run(simulation):
         sys.stdout = stdout_redirect([sys.stdout, logfile])
     else:
         sys.stdout = stdout_redirect([logfile])
-
     gc.collect()
     print(simulation['opening_message'])
     parameters['simulation'] = str(simulation['i'])
@@ -70,9 +69,8 @@ def ldar_sim_run(simulation):
     if len(parameters['leak_timeseries']) < 1:
         get_subtype_dist(parameters, parameters['input_directory'])
 
-        # ------------------------------------------------------------------------------
-        # -----------------------Initialize dynamic model state-------------------------
-
+    # --------------------------------------
+    # --- Initialize dynamic model state ---
     state = {
         't': None,
         'operator': None,  # operator gets assigned during initialization
