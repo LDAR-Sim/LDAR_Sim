@@ -55,6 +55,6 @@ def files_from_args():
 
     if len(parameter_filenames) < 1:
         print('Please provide at least one input argument')
-        sys.exit ()
-        
+        sys.exit()
+
     return parameter_filenames
