@@ -23,6 +23,7 @@ import copy
 import yaml
 import json
 import sys
+import os
 from pathlib import Path
 
 from utils.check_parameter_types import check_types
@@ -95,6 +96,13 @@ class InputManager:
         extension = param_file.suffix
 
         new_parameters = {}
+
+        if not os.path.exists(param_file):
+            print('Parameter file ' + str(param_file) + ' does not exist')
+            if not param_file.is_absolute():
+                print('Note that relative file paths must be relative to the root directory '
+                      '(see User Manual)')
+            sys.exit()
 
         with open(param_file, 'r') as f:
             print('Reading ' + filename)
