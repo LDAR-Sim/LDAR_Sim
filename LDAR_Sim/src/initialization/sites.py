@@ -25,6 +25,7 @@ import copy
 import numpy as np
 import pandas as pd
 import random
+import yaml
 
 
 from initialization.leaks import (generate_leak_timeseries,
@@ -32,16 +33,16 @@ from initialization.leaks import (generate_leak_timeseries,
 from utils.distributions import (fit_dist, unpackage_dist)
 
 
-def init_generator_files(generator_dir):
+def init_generator_files(generator_dir, sim_params):
 
     if not os.path.exists(generator_dir):
         os.mkdir(generator_dir)
     gen_files = fnmatch.filter(os.listdir(generator_dir), '*.p')
     if len(gen_files) > 0:
-        print('\n --- \n pregenerated data exists, do you want to use (y/n)?' +
-              ' "n" will remove contents of generated data folder.')
-        gen_prompt = input()
-        if gen_prompt.lower() == 'n':
+        with open(generator_dir / 'parameters.yaml', 'r') as f:
+            old_params = yaml.load(f.read(), Loader=yaml.FullLoader)
+        # Check to see if params used to generate the pickle files have changed
+        if old_params != sim_params:
             for file in gen_files:
                 os.remove(generator_dir / file)
 

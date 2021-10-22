@@ -1,7 +1,6 @@
 parameter_level: method
 version: '2.0'
 label: satellite
-module: dummy
 deployment_type: orbit
 measurement_scale: site
 sensor: 

@@ -1,6 +1,7 @@
-program_name: P_OGI
+program_name: P_drone
 parameter_level: program
 version: '2.0'
 method_labels:
-- OGI
+- drone
+- OGI_FU
 site_samples: 50
