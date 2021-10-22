@@ -78,7 +78,7 @@ def files_from_args(ref_path):
             if ".yaml" in f or ".yml" in f or ".json" in f]
     else:
         parameter_files = [
-            get_abs_path(args.in_files, ref_path)
+            get_abs_path(f, ref_path)
             for f in args.in_files
             if ".yaml" in f or ".yml" in f or ".json" in f]
 

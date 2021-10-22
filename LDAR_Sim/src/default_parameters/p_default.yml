@@ -6,7 +6,7 @@ program_name: 'default'
 weather_file: 'ERA5_AB_lowres_2015_2020.nc'
 weather_is_hourly: False
 infrastructure_file: 'facility_list_template.csv'
-site_samples: 50
+site_samples: 500
 subtype_times_file: "_placeholder_str_"
 consider_weather: False
 repair_delay: 14
@@ -17,7 +17,7 @@ emissions:
   leak_file: "_placeholder_str_"
   leak_file_use: 'sample'
   LPR: 0.0065
-  max_leak_rate: 1000.0
+  max_leak_rate: 100000.0
   subtype_leak_dist_file: "_placeholder_str_"
   units: ['kilogram', 'hour']
   vent_file: 'site_rates.csv'

@@ -10,3 +10,4 @@
 *.p
 # Include
 !ERA5_2017_2020_AB.nc
+**/generator/
