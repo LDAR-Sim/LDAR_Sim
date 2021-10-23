@@ -175,6 +175,10 @@ class InputManager:
                 sys.exit('Parameter_level of ' + str(new_parameters['parameter_level']) +
                          ' is not possible to parse')
 
+        # Double check there is at least 1 program
+        if len(programs) == 0:
+            sys.exit('No programs are supplied')
+
         # Second, install the programs, checking for specified children methods
         for program in programs:
             # Find any orphaned methods that can be installed in this program
