@@ -20,6 +20,7 @@
 # ------------------------------------------------------------------------------
 
 import os
+import sys
 from argparse import ArgumentParser, RawTextHelpFormatter
 
 
@@ -54,5 +55,6 @@ def files_from_args():
 
     if len(parameter_filenames) < 1:
         print('Please provide at least one input argument')
-        exit
+        sys.exit()
+
     return parameter_filenames
