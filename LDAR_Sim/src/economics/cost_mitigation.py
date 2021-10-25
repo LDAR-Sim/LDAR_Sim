@@ -54,12 +54,6 @@ def cost_mitigation(simulation_dfs, ref_program, no_program, output_directory):
 
     economics_outputs_df = pd.DataFrame(economics_outputs)
 
-    # Need to verify if P_none was input or economics module will not work.
-    if 'P_none' in economics_outputs_df.values:
-        print("P_none input. Economics functionality running.")
-    else:
-        raise Exception("No P_none input. Cannot run economics.")
-
     # Calculate the mean emissions and costs accross all sims, convert units.
     economics_df = economics_outputs_df.groupby(by='program_name').mean()
 
