@@ -64,6 +64,16 @@ if __name__ == '__main__':
     for p in programs:
         check_ERA5_file(input_directory, p['weather_file'])
 
+    has_ref = True
+    if len([p['program_name'] for p in programs if p['program_name'] == ref_program]) < 1:
+        print('Missing reference program...continuing')
+        no_ref = False
+    
+    has_base = True
+    if len([p['program_name'] for p in programs if p['program_name'] == no_program]) < 1:
+        print('Missing baseline program (No LDAR)...continuing')
+        no_base = False
+
     if os.path.exists(output_directory):
         shutil.rmtree(output_directory)
 
@@ -150,14 +160,17 @@ if __name__ == '__main__':
     # Do batch reporting
     if write_data:
         # Create a data object...
-        cost_mitigation = cost_mitigation(res, ref_program, no_program, output_directory)
-        reporting_data = BatchReporting(
-            output_directory, start_date, ref_program, no_program)
-        if n_simulations > 1:
-            reporting_data.program_report()
-            if len(programs) > 1:
-                reporting_data.batch_report()
-                reporting_data.batch_plots()
+        if has_ref & has_base:
+            cost_mitigation = cost_mitigation(res, ref_program, no_program, output_directory)
+            reporting_data = BatchReporting(
+                output_directory, start_date, ref_program, no_program)
+            if n_simulations > 1:
+                reporting_data.program_report()
+                if len(programs) > 1:
+                    reporting_data.batch_report()
+                    reporting_data.batch_plots()
+        else:
+            print('No reference or base program input...skipping batch reporting and economics.')
 
     # Write metadata
     metadata = open(output_directory / '_metadata.txt', 'w')
