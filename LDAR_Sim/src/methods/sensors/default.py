@@ -45,7 +45,7 @@ def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered
             equip_measured_rates.append(m_rate)
             site_measured_rate += m_rate
 
-    elif self.config["measurement_scale"] == "leak":
+    elif self.config["measurement_scale"] == "component":
         # If measurement scale is a leak, all leaks will be tagged
         for leak in covered_leaks:
             if (leak['rate'] > self.config['sensor']['MDL'][0]):
