@@ -35,7 +35,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 class BatchReporting:
 
-    def __init__(self, output_directory, start_date, ref_program, no_program):
+    def __init__(self, output_directory, start_date, ref_program, base_program):
         """
         Prepare output csv files to glean summary statistics and plotting data.
         """
