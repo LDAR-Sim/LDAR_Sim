@@ -53,7 +53,7 @@ if __name__ == '__main__':
     print_from_simulations = simulation_parameters['print_from_simulations']
     n_simulations = simulation_parameters['n_simulations']
     ref_program = simulation_parameters['reference_program']
-    no_program = simulation_parameters['baseline_program']
+    base_program = simulation_parameters['baseline_program']
     write_data = simulation_parameters['write_data']
     start_date = simulation_parameters['start_date']
     pregen_leaks = simulation_parameters['pregenerate_leaks']
@@ -70,8 +70,8 @@ if __name__ == '__main__':
         no_ref = False
     
     has_base = True
-    if len([p['program_name'] for p in programs if p['program_name'] == no_program]) < 1:
-        print('Missing baseline program (No LDAR)...continuing')
+    if len([p['program_name'] for p in programs if p['program_name'] == base_program]) < 1:
+        print('Missing baseline program...continuing')
         no_base = False
 
     if os.path.exists(output_directory):
@@ -161,9 +161,9 @@ if __name__ == '__main__':
     if write_data:
         # Create a data object...
         if has_ref & has_base:
-            cost_mitigation = cost_mitigation(res, ref_program, no_program, output_directory)
+            cost_mitigation = cost_mitigation(res, ref_program, base_program, output_directory)
             reporting_data = BatchReporting(
-                output_directory, start_date, ref_program, no_program)
+                output_directory, start_date, ref_program, base_program)
             if n_simulations > 1:
                 reporting_data.program_report()
                 if len(programs) > 1:
