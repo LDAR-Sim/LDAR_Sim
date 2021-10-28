@@ -19,14 +19,31 @@
 #
 # ------------------------------------------------------------------------------
 
-import random
+import os
+import fnmatch
 import copy
-import pandas as pd
 import numpy as np
+import pandas as pd
+import random
+
 
 from initialization.leaks import (generate_leak_timeseries,
                                   generate_initial_leaks)
 from utils.distributions import (fit_dist, unpackage_dist)
+
+
+def init_generator_files(generator_dir):
+
+    if not os.path.exists(generator_dir):
+        os.mkdir(generator_dir)
+    gen_files = fnmatch.filter(os.listdir(generator_dir), '*.p')
+    if len(gen_files) > 0:
+        print('\n --- \n pregenerated data exists, do you want to use (y/n)?' +
+              ' "n" will remove contents of generated data folder.')
+        gen_prompt = input()
+        if gen_prompt.lower() == 'n':
+            for file in gen_files:
+                os.remove(generator_dir / file)
 
 
 def get_subtype_dist(program, wd):
@@ -69,7 +86,10 @@ def generate_sites(program, in_dir):
     sites = sites_in.to_dict('records')
 
     # Sample sites and shuffle
-    n_samples = program.get('site_samples', len(sites))
+    n_samples = program['site_samples']
+    if n_samples is None:
+        n_samples = len(sites)
+    # even if n_samples is None, the sample function is still used to shuffle
     sites = random.sample(sites, n_samples)
 
     # Get subtype Times
