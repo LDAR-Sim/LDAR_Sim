@@ -30,7 +30,6 @@ import ephem
 from botocore.exceptions import ClientError
 import boto3  # for downloading data from AWS
 import matplotlib.pyplot as plt
-from mpl_toolkits.basemap import Basemap
 from osgeo import osr
 from osgeo import gdal
 
