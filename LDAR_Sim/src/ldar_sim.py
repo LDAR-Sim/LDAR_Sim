@@ -69,10 +69,9 @@ class LdarSim:
         if len(state['sites']) < 1:
             state['sites'], _, _ = generate_sites(params, params['input_directory'])
         state['max_leak_rate'] = params['emissions']['max_leak_rate']
-
         state['t'].set_UTC_offset(state['sites'])
 
-        # Sample sites
+        # Sample sites if they havent been provided from pregeneration step
         if not params['pregenerate_leaks']:
             if params['site_samples'] is not None:
                 state['sites'] = random.sample(
@@ -92,14 +91,17 @@ class LdarSim:
         # Additional variable(s) for each site
         for site in state['sites']:
             for m_label, m_obj in params['methods'].items():
-                # Site parameter overwrite
+                # Site parameter overwrite of RS and Time (used for sensitivity analysis)
                 m_RS = '{}_RS'.format(m_label)
                 if m_RS in m_obj:
                     site[m_RS] = m_obj[m_RS]
+                m_time = '{}_time'.format(m_label)
+                if m_time in m_obj:
+                    site[m_time] = m_obj[m_time]
                 # Get min interval based on RS. a 90% ajustment is used to add a grace period
                 # prior to the next campaign period were surveys can start earlier
                 # Calculate the site minimum interval
-                if m_RS in site:
+                if m_RS in site and site[m_RS] != 0:
                     site['{}_min_int'.format(m_label)] = 365/site[m_RS]*0.9
                 # Automatically assign 1 crew to followup if left unspecified
                 elif m_obj['n_crews'] is None:
