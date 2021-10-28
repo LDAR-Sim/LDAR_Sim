@@ -1,6 +1,6 @@
 parameter_level: method
 version: '2.0'
-label: aircraft
+label: truck
 deployment_type: mobile
 measurement_scale: equipment
 sensor: 
