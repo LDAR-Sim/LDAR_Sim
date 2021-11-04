@@ -16,14 +16,6 @@
         ]
     },
     "default": {
-        "basemap": {
-            "file": "https://download.lfd.uci.edu/pythonlibs/y2rycu7g/basemap-1.2.2-cp37-cp37m-win_amd64.whl",
-            "hashes": [
-                "sha256:ec3d4af74e8ed6e1bd1b3f2ef598086ec89825471eb87352fd5a105a0905f7c0"
-            ],
-            "index": "pypi",
-            "version": "==1.2.2"
-        },
         "boto3": {
             "hashes": [
                 "sha256:1c0003609e63e8cff51dee7a49e904bcdb20e140b5f7a10a03006289fd8c8dc1",
