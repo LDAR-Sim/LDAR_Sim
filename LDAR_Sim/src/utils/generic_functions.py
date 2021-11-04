@@ -31,7 +31,7 @@ from math import atan, atan2, cos, degrees, sin, sqrt
 import ephem
 from botocore.exceptions import ClientError
 import boto3  # for downloading data from AWS
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 from osgeo import osr
 from osgeo import gdal
 
