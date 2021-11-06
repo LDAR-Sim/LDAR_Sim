@@ -21,7 +21,6 @@ is_follow_up: False
 label: 'mobile'
 max_workday: 8
 measurement_scale: 'equipment'
-module: 'dummy'
 n_crews: '_placeholder_int_'
 parameter_level: 'method'
 reporting_delay: 2

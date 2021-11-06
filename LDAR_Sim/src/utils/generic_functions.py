@@ -21,7 +21,9 @@
 
 import sys
 import os
-import pandas as pd
+# import pandas as pd
+# import matplotlib.pyplot as plt
+# from mpl_toolkits.basemap import Basemap
 import numpy as np
 import datetime
 from shapely.geometry import Polygon
@@ -29,7 +31,7 @@ from math import atan, atan2, cos, degrees, sin, sqrt
 import ephem
 from botocore.exceptions import ClientError
 import boto3  # for downloading data from AWS
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 from osgeo import osr
 from osgeo import gdal
 
@@ -140,83 +142,88 @@ def make_maps(company, sites):
     os.chdir(company.parameters['output_directory'])
 
     # Export 2D proportions matrix as map
-    output_raster = gdal.GetDriverByName('GTiff').Create('DD_' + company.name + '_map' + '.tif',
-                                                         ncols, nrows, 1, gdal.GDT_Float32)
+    output_raster = gdal.GetDriverByName('GTiff') \
+        .Create('DD_{}_map.tif'.format(company.name), ncols, nrows, 1, gdal.GDT_Float32)
     output_raster.SetGeoTransform(geotransform)  # Specify file coordinates
     srs = osr.SpatialReference()  # Establish coordinate encoding
     srs.ImportFromEPSG(4326)  # Specify WGS84 lat/long
     output_raster.SetProjection(srs.ExportToWkt())  # Exports the coordinate system to the file
     output_raster.GetRasterBand(1).WriteArray(DD_output)  # Writes my array to the raster
+    output_raster.FlushCache()
     output_raster = None
 
     # Export 2D MCB matrix as map
-    output_raster = gdal.GetDriverByName('GTiff').Create('MCB_' + company.name + '_map' + '.tif',
-                                                         ncols, nrows, 1, gdal.GDT_Float32)
+    output_raster = gdal.GetDriverByName('GTiff') \
+        .Create('MCB_{}_map.tif'.format(company.name), ncols, nrows, 1, gdal.GDT_Float32)
     output_raster.SetGeoTransform(geotransform)  # Specify file coordinates
     srs = osr.SpatialReference()  # Establish coordinate encoding
     srs.ImportFromEPSG(4326)  # Specify WGS84 lat/long
     output_raster.SetProjection(srs.ExportToWkt())  # Exports the coordinate system to the file
     output_raster.GetRasterBand(1).WriteArray(MCB_output)  # Writes my array to the raster
+    output_raster.FlushCache()
     output_raster = None
 
-    # Make nice map images
-    plt.rcParams["figure.figsize"] = (10, 10)
-    map = Basemap(epsg=3401, llcrnrlon=xmin - 1, llcrnrlat=ymin - 1, urcrnrlon=xmax + 3,
-                  urcrnrlat=ymax + 1, resolution='i', area_thresh=10000.)
-    map.fillcontinents(color='#e8e8e8', alpha=1, zorder=1)
-    map.drawcountries(color='black', linewidth=2, zorder=3)
-    map.drawstates(color='black', linewidth=1, zorder=4)
-    map.drawparallels(
-        np.arange(ymin, ymax, round(abs(ymin - ymax) / 3)),
-        color="black", labels=[1, 0, 0, 0],
-        fontsize=10, linewidth=0.2, zorder=5)
-    map.drawmeridians(
-        np.arange(xmin, xmax, round(abs(xmin - xmax) / 3)),
-        color="black", labels=[0, 0, 0, 1],
-        fontsize=10, linewidth=0.2, zorder=6)
+    # Disabled as Basemap is now redundant
 
-    sitesx, sitesy = map(
-        (pd.to_numeric(sites['lon']) + 360).tolist(),
-        pd.to_numeric(sites['lat']).tolist())
-    map.scatter(sitesx, sitesy, marker='o', color='black', s=1, zorder=7)
+    # # Make nice map images
+    # plt.rcParams["figure.figsize"] = (10, 10)
+    # map = Basemap(epsg=3401, llcrnrlon=xmin - 1, llcrnrlat=ymin - 1, urcrnrlon=xmax + 3,
+    #               urcrnrlat=ymax + 1, resolution='i', area_thresh=10000.)
+    # map.fillcontinents(color='#e8e8e8', alpha=1, zorder=1)
+    # map.drawcountries(color='black', linewidth=2, zorder=3)
+    # map.drawstates(color='black', linewidth=1, zorder=4)
+    # map.drawparallels(
+    #     np.arange(ymin, ymax, round(abs(ymin - ymax) / 3)),
+    #     color="black", labels=[1, 0, 0, 0],
+    #     fontsize=10, linewidth=0.2, zorder=5)
+    # map.drawmeridians(
+    #     np.arange(xmin, xmax, round(abs(xmin - xmax) / 3)),
+    #     color="black", labels=[0, 0, 0, 1],
+    #     fontsize=10, linewidth=0.2, zorder=6)
 
-    m_lon, m_lat = np.meshgrid(lon, lat)
-    xi, yi = map(m_lon, m_lat)
+    # sitesx, sitesy = map(
+    #     (pd.to_numeric(sites['lon']) + 360).tolist(),
+    #     pd.to_numeric(sites['lat']).tolist())
+    # map.scatter(sitesx, sitesy, marker='o', color='black', s=1, zorder=7)
 
-    cs = map.pcolor(xi, yi, np.squeeze(DD_output), alpha=1, vmin=0, vmax=1, cmap='jet_r', zorder=2)
-    cbar = map.colorbar(cs, location='bottom', pad="5%")
-    cbar.set_alpha(1)
-    cbar.draw_all()
-    cbar.set_label('Proportion of days suitable for deployment', fontsize=12)
-    plt.savefig('DD_' + company.name + '_map' + '.png', dpi=300, verbose=False)
-    plt.clf()
+    # m_lon, m_lat = np.meshgrid(lon, lat)
+    # xi, yi = map(m_lon, m_lat)
 
-    map2 = Basemap(epsg=3401, llcrnrlon=xmin - 1, llcrnrlat=ymin - 1, urcrnrlon=xmax + 3,
-                   urcrnrlat=ymax + 1, resolution='i', area_thresh=10000.)
-    map2.fillcontinents(color='#e8e8e8', alpha=1, zorder=1)
-    map2.drawcountries(color='black', linewidth=2, zorder=3)
-    map2.drawstates(color='black', linewidth=1, zorder=4)
-    map2.drawparallels(
-        np.arange(ymin, ymax, round(abs(ymin - ymax) / 3)),
-        color="black", labels=[1, 0, 0, 0],
-        fontsize=10, linewidth=0.2, zorder=5)
-    map2.drawmeridians(
-        np.arange(xmin, xmax, round(abs(xmin - xmax) / 3)),
-        color="black", labels=[0, 0, 0, 1],
-        fontsize=10, linewidth=0.2, zorder=6)
-    map2.scatter(sitesx, sitesy, marker='o', color='black', s=1, zorder=7)
+    # cs = map.pcolor(xi, yi, np.squeeze(DD_output), alpha=1,
+    #                 vmin=0, vmax=1, cmap='jet_r', zorder=2)
+    # cbar = map.colorbar(cs, location='bottom', pad="5%")
+    # cbar.set_alpha(1)
+    # cbar.draw_all()
+    # cbar.set_label('Proportion of days suitable for deployment', fontsize=12)
+    # plt.savefig('DD_' + company.name + '_map' + '.png', dpi=300, verbose=False)
+    # plt.clf()
 
-    m_lon, m_lat = np.meshgrid(lon, lat)
-    xi, yi = map(m_lon, m_lat)
+    # map2 = Basemap(epsg=3401, llcrnrlon=xmin - 1, llcrnrlat=ymin - 1, urcrnrlon=xmax + 3,
+    #                urcrnrlat=ymax + 1, resolution='i', area_thresh=10000.)
+    # map2.fillcontinents(color='#e8e8e8', alpha=1, zorder=1)
+    # map2.drawcountries(color='black', linewidth=2, zorder=3)
+    # map2.drawstates(color='black', linewidth=1, zorder=4)
+    # map2.drawparallels(
+    #     np.arange(ymin, ymax, round(abs(ymin - ymax) / 3)),
+    #     color="black", labels=[1, 0, 0, 0],
+    #     fontsize=10, linewidth=0.2, zorder=5)
+    # map2.drawmeridians(
+    #     np.arange(xmin, xmax, round(abs(xmin - xmax) / 3)),
+    #     color="black", labels=[0, 0, 0, 1],
+    #     fontsize=10, linewidth=0.2, zorder=6)
+    # map2.scatter(sitesx, sitesy, marker='o', color='black', s=1, zorder=7)
 
-    cs = map2.pcolor(xi, yi, np.squeeze(MCB_output), alpha=1,
-                     vmin=0, vmax=365, cmap='jet', zorder=2)
-    cbar = map2.colorbar(cs, location='bottom', pad="5%")
-    cbar.set_alpha(1)
-    cbar.draw_all()
-    cbar.set_label('Maximum blackout period (days)', fontsize=12)
-    plt.savefig('MCB_' + company.name + '_map' + '.png', dpi=300, verbose=False)
-    plt.clf()
+    # m_lon, m_lat = np.meshgrid(lon, lat)
+    # xi, yi = map(m_lon, m_lat)
+
+    # cs = map2.pcolor(xi, yi, np.squeeze(MCB_output), alpha=1,
+    #                  vmin=0, vmax=365, cmap='jet', zorder=2)
+    # cbar = map2.colorbar(cs, location='bottom', pad="5%")
+    # cbar.set_alpha(1)
+    # cbar.draw_all()
+    # cbar.set_label('Maximum blackout period (days)', fontsize=12)
+    # plt.savefig('MCB_' + company.name + '_map' + '.png', dpi=300, verbose=False)
+    # plt.clf()
 
     return
 

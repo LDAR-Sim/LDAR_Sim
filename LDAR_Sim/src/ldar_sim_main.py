@@ -72,13 +72,12 @@ if __name__ == '__main__':
 
     # record input parameters as an output
     input_manager.write_parameters(out_dir / 'parameters.yaml')
-
     # If leak generator is used and there are generated files, user is prompted
     # to use files, If they say no, the files will be removed
     if sim_params['pregenerate_leaks']:
         generator_dir = in_dir / "generator"
-        init_generator_files(generator_dir)
-    simulations = create_sims(sim_params, programs, generator_dir, in_dir, out_dir)
+        init_generator_files(generator_dir, input_manager.simulation_parameters, in_dir)
+    simulations = create_sims(sim_params, programs, generator_dir, in_dir, out_dir, input_manager)
 
     # --- Debugging ---
     # The following can be used for debugging outside of the starmap
