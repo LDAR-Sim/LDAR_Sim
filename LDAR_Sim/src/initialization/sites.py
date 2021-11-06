@@ -24,6 +24,7 @@ import fnmatch
 import copy
 import numpy as np
 import pandas as pd
+import pickle
 import random
 import yaml
 
@@ -33,18 +34,26 @@ from initialization.leaks import (generate_leak_timeseries,
 from utils.distributions import (fit_dist, unpackage_dist)
 
 
-def init_generator_files(generator_dir, sim_params):
-
+def init_generator_files(generator_dir, sim_params, in_dir):
+    sites_file = sim_params['programs'][0]['infrastructure_file']
+    sites_in = pd.read_csv(in_dir / sites_file)
+    sim_sites = sites_in.to_dict('records')
     if not os.path.exists(generator_dir):
         os.mkdir(generator_dir)
     gen_files = fnmatch.filter(os.listdir(generator_dir), '*.p')
     if len(gen_files) > 0:
-        with open(generator_dir / 'parameters.yaml', 'r') as f:
-            old_params = yaml.load(f.read(), Loader=yaml.FullLoader)
-        # Check to see if params used to generate the pickle files have changed
-        if old_params != sim_params:
+        try:
+            old_sites = pickle.load(open(generator_dir / 'sites.p', "rb"))
+            old_params = pickle.load(open(generator_dir / 'params.p', "rb"))
+        except FileNotFoundError:
+            old_sites = None
+            old_params = None
+            # Check to see if params used to generate the pickle files have changed
+        if old_params != sim_params or old_sites != sim_sites:
             for file in gen_files:
                 os.remove(generator_dir / file)
+    pickle.dump(sim_sites, open(generator_dir / 'sites.p', "wb"))
+    pickle.dump(sim_params, open(generator_dir / 'params.p', "wb"))
 
 
 def get_subtype_dist(program, wd):

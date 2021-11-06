@@ -29,7 +29,6 @@ from initialization.sites import generate_sites, regenerate_sites
 
 def create_sims(sim_params, programs, generator_dir, in_dir, out_dir, input_manager):
     # Store params used to generate the pickle files for change detection
-    input_manager.write_parameters(generator_dir / 'parameters.yaml')
     n_simulations = sim_params['n_simulations']
     pregen_leaks = sim_params['pregenerate_leaks']
     preseed_random = sim_params['preseed_random']
