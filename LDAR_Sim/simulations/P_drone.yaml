@@ -1,6 +1,6 @@
-program_name: P_air
+program_name: P_drone
 parameter_level: program
 version: '2.0'
 method_labels:
-- aircraft
+- drone
 - OGI_FU

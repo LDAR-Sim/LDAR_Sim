@@ -1,7 +1,6 @@
 parameter_level: method
 version: '2.0'
 label: OGI_FU
-module: dummy
 deployment_type: mobile
 measurement_scale: component
 sensor: 

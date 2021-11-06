@@ -58,7 +58,7 @@ class InputManager:
         :param filename: filename to write the parameters to
         """
         with open(filename, 'w') as f:
-            f.write(yaml.dump(self.simulation_parameters))
+            f.write(yaml.dump(self.simulation_parameters, Dumper=NoAliasDumper))
 
     def read_parameter_files(self, parameter_filenames):
         """Method to read a collection of parameter files and perform any mapping prior to
@@ -251,3 +251,9 @@ class InputManager:
             elif isinstance(param, (dict, list)):
                 self.remove_type_placeholders(obj[idx])
         return
+
+
+class NoAliasDumper(yaml.SafeDumper):
+
+    def ignore_aliases(self, data):
+        return True
