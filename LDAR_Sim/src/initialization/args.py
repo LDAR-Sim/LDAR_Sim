@@ -23,9 +23,6 @@ from argparse import ArgumentParser, RawTextHelpFormatter
 from pathlib import Path
 import sys
 import os
-<< << << < HEAD
-== == == =
->>>>>> > 836ec97c69fe83aef282af1b0d73a07190026b1b
 
 
 def get_abs_path(path, ref_folder=None):
