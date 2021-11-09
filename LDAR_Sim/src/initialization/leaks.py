@@ -19,8 +19,9 @@
 #
 # ------------------------------------------------------------------------------
 
-from numpy import random
 from datetime import datetime, timedelta
+
+from numpy import random
 from utils.distributions import leak_rvs
 
 

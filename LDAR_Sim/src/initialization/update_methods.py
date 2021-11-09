@@ -18,12 +18,13 @@
 # along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 #
 
-from math import ceil, floor
-from numpy.random import choice
-from numpy import average, nanmean, nan, diag_indices_from, array as np_arr
-from sklearn.metrics.pairwise import haversine_distances
 # from scipy.stats import nanmean
-from math import radians
+from math import ceil, floor, radians
+
+from numpy import array as np_arr
+from numpy import average, diag_indices_from, nan, nanmean
+from numpy.random import choice
+from sklearn.metrics.pairwise import haversine_distances
 
 
 def est_n_crews(m, sites):

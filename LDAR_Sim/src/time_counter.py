@@ -21,8 +21,9 @@
 
 from datetime import datetime, timedelta
 from statistics import mean
-from timezonefinder import TimezoneFinder
+
 import pytz
+from timezonefinder import TimezoneFinder
 
 
 class TimeCounter:

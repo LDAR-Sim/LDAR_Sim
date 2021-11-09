@@ -14,23 +14,25 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # MIT License for more details.
 
+import copy
+import gc
 # You should have received a copy of the MIT License
 # along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 #
 # ------------------------------------------------------------------------------
 import os
-import sys
-import gc
-import copy
-from datetime import datetime, timedelta
-from numpy import random as np_rand
 import random as rand
+import sys
+from datetime import datetime, timedelta
+
+from initialization.sites import get_subtype_dist
+from numpy import random as np_rand
+from stdout_redirect import stdout_redirect
+from time_counter import TimeCounter
 from weather.weather_lookup import WeatherLookup as WL
 from weather.weather_lookup_hourly import WeatherLookup as WL_h
+
 from ldar_sim import LdarSim
-from time_counter import TimeCounter
-from stdout_redirect import stdout_redirect
-from initialization.sites import get_subtype_dist
 
 
 def ldar_sim_run(simulation):

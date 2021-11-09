@@ -20,11 +20,12 @@
 # ------------------------------------------------------------------------------
 
 import math
-import numpy as np
 from datetime import timedelta
 from importlib import import_module
-from utils.generic_functions import get_prop_rate
+
+import numpy as np
 from methods.deployment.generic_funcs import get_deployment_dates
+from utils.generic_functions import get_prop_rate
 
 
 class BaseCompany:

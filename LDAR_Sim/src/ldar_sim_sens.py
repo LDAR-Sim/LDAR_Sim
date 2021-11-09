@@ -14,31 +14,28 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # MIT License for more details.
 
+import copy
+import multiprocessing as mp
+import os
+import shutil
 # You should have received a copy of the MIT License
 # along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 #
 # ------------------------------------------------------------------------------
 from pathlib import Path
 
-from ldar_sim_run import ldar_sim_run
-import os
-import copy
-import multiprocessing as mp
-from scipy.stats import ks_2samp
-import shutil
 import pandas as pd
-
-from utils.result_processing import get_referenced_dataframe
-from utils.generic_functions import check_ERA5_file
-from initialization.preseed import gen_seed_timeseries
-from initialization.sites import generate_sites, regenerate_sites
 from initialization.args import files_from_args
 from initialization.input_manager import InputManager
-from utils.sensitivity import (yaml_to_dict,
-                               generate_sens_prog_set,
-                               set_from_keylist,
-                               generate_violin,
-                               group_timeseries)
+from initialization.preseed import gen_seed_timeseries
+from initialization.sites import generate_sites, regenerate_sites
+from ldar_sim_run import ldar_sim_run
+from scipy.stats import ks_2samp
+from utils.generic_functions import check_ERA5_file
+from utils.result_processing import get_referenced_dataframe
+from utils.sensitivity import (generate_sens_prog_set, generate_violin,
+                               group_timeseries, set_from_keylist,
+                               yaml_to_dict)
 
 
 def run_programs(programs, n_simulations, output_directory):

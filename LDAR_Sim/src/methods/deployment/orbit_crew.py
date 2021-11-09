@@ -20,13 +20,15 @@
 #
 # ------------------------------------------------------------------------------
 
-import numpy as np
-from shapely.geometry import Point
-from shapely import speedups
-from utils.generic_functions import quick_cal_daylight, geo_idx, init_orbit_poly
 from datetime import timedelta
+
 import netCDF4 as nc
+import numpy as np
 from orbit_predictor.sources import get_predictor_from_tle_lines
+from shapely import speedups
+from shapely.geometry import Point
+from utils.generic_functions import (geo_idx, init_orbit_poly,
+                                     quick_cal_daylight)
 
 speedups.disable()
 

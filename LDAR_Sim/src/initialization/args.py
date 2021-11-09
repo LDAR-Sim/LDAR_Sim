@@ -19,10 +19,10 @@
 #
 # ------------------------------------------------------------------------------
 
+import os
+import sys
 from argparse import ArgumentParser, RawTextHelpFormatter
 from pathlib import Path
-import sys
-import os
 
 
 def get_abs_path(path, ref_folder=None):

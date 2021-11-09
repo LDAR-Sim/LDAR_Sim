@@ -19,9 +19,12 @@
 #
 # ------------------------------------------------------------------------------
 
-from netCDF4 import Dataset
+from datetime import date
+from datetime import datetime as dt
+from datetime import timedelta as tdelt
+
 import numpy as np
-from datetime import date,  timedelta as tdelt, datetime as dt
+from netCDF4 import Dataset
 
 
 class WeatherLookup:

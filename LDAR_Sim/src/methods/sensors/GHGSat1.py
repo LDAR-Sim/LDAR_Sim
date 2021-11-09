@@ -19,8 +19,9 @@
 #
 # ------------------------------------------------------------------------------
 
-import numpy as np
 import random
+
+import numpy as np
 from utils.generic_functions import geo_idx
 
 

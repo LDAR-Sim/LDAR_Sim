@@ -19,9 +19,10 @@
 #
 # ------------------------------------------------------------------------------
 
-import numpy as np
-from importlib import import_module
 from datetime import timedelta
+from importlib import import_module
+
+import numpy as np
 
 
 class BaseCrew:

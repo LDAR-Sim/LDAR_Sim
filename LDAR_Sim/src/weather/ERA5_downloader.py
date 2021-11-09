@@ -19,11 +19,12 @@
 #
 # ------------------------------------------------------------------------------
 
-import cdsapi
 import os
-from math import floor, ceil
-import pandas as pd
+from math import ceil, floor
 from pathlib import Path
+
+import cdsapi
+import pandas as pd
 
 '''
 NOTE - This can take a very long time to download data from the copernicus server,

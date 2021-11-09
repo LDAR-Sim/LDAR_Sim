@@ -20,9 +20,9 @@
 #
 # ------------------------------------------------------------------------------
 
-import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 
 
 def cost_mitigation(simulation_dfs, ref_program, base_program,
@@ -81,7 +81,7 @@ def cost_mitigation(simulation_dfs, ref_program, base_program,
 
         economics_df['value_gas_sold'] = economics_df[
             'difference_base_mcf'] * economics_df['sale_price_natgas'] * -1
-        
+
         economics_df.loc[(economics_df.value_gas_sold <= 0), 'value_gas_sold'] = 0
 
         # Find difference from baseline (no LDAR) in tonnes CO2e.
@@ -130,7 +130,7 @@ def cost_mitigation(simulation_dfs, ref_program, base_program,
 
         # Get costs from other df's into new df.
         df1 = pd.DataFrame(df['timeseries'].filter(regex='cost$', axis=1).sum()
-                        for df in simulation_dfs)
+                           for df in simulation_dfs)
         df1['program_name'] = [df['program_name'] for df in simulation_dfs]
         cost_df = df1.groupby(by='program_name').mean()
         cost_df.reset_index(inplace=True)

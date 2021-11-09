@@ -19,8 +19,9 @@
 #
 # ------------------------------------------------------------------------------
 
-import numpy as np
 import math
+
+import numpy as np
 
 
 def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered_site_rate,

@@ -19,9 +19,10 @@
 #
 # ------------------------------------------------------------------------------
 
+import datetime
+
 import ephem
 import numpy as np
-import datetime
 
 
 # Calculate the study area average daylight for each day of the simulation

@@ -19,11 +19,12 @@
 #
 # ------------------------------------------------------------------------------
 
-import pandas as pd
-from sklearn.cluster import KMeans
-import numpy as np
 import math
+
+import numpy as np
+import pandas as pd
 from methods.crew import BaseCrew
+from sklearn.cluster import KMeans
 
 
 def make_crews(crews, config, state, parameters, timeseries, deployment_days):
