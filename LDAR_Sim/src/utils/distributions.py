@@ -14,13 +14,14 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # MIT License for more details.
 
+import json
+
+import numpy as np
 # You should have received a copy of the MIT License
 # along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 #
 # ------------------------------------------------------------------------------
 import scipy
-import json
-import numpy as np
 from utils.unit_converter import gas_convert
 
 

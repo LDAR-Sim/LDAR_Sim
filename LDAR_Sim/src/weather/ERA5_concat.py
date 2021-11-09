@@ -21,8 +21,9 @@
 
 
 import os
-import xarray
 from pathlib import Path
+
+import xarray
 
 '''
 Concatenate two weather netcdf files on the time column. Keep Lat Long coordinates the same

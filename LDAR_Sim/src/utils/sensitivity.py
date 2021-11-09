@@ -19,9 +19,10 @@
 #
 # ------------------------------------------------------------------------------
 
-import yaml
 import copy
+
 import matplotlib.pyplot as plt
+import yaml
 
 
 def yaml_to_dict(y_file):

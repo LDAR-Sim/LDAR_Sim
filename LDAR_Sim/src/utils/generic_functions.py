@@ -19,21 +19,22 @@
 #
 # ------------------------------------------------------------------------------
 
-import sys
+import datetime
 import os
+import sys
+from math import atan, atan2, cos, degrees, sin, sqrt
+from pathlib import Path
+
+import boto3
+import ephem
 # import pandas as pd
 # import matplotlib.pyplot as plt
 # from mpl_toolkits.basemap import Basemap
 import numpy as np
-import datetime
-from shapely.geometry import Polygon
-from math import atan, atan2, cos, degrees, sin, sqrt
-import ephem
 from botocore.exceptions import ClientError
-import boto3  # for downloading data from AWS
 # import matplotlib.pyplot as plt
-from osgeo import osr
-from osgeo import gdal
+from osgeo import gdal, osr
+from shapely.geometry import Polygon
 
 
 def gap_calculator(condition_vector):
@@ -228,38 +229,30 @@ def make_maps(company, sites):
     return
 
 
-def check_ERA5_file(dir, target_file):
-    ncfiles = []
-    target_file_found = False
-    # search netCDF file in the input directory
-    for file in os.listdir(dir):
-        if file.endswith(".nc"):
-            ncfiles.append(file)
+def check_ERA5_file(dir, programs):
+    for p in programs:
+        my_file = Path(dir / p['weather_file'])
+        if my_file.is_file():
+            print("Weather data checked. Continuing simulation.")
+        else:
+            print("Weather data not found. Downloading from AWS now ...")
+            try:
+                access_key = os.getenv('AWS_KEY')
+                secret_key = os.getenv('AWS_SEC')
+            except Exception:
+                print(
+                    "AWS_KEY and AWS_SEC environment variables have not been set," +
+                    "refer to model documentation for configuration instructions.")
 
-    for file in ncfiles:
-        if file == target_file:
-            target_file_found = True
-
-    if target_file_found:
-        print("Weather data checked. Continuing simulation.")
-
-    if not target_file_found:
-        print("Weather data not found. Downloading from AWS now ...")
-        try:
-            access_key = os.getenv('AWS_KEY')
-            secret_key = os.getenv('AWS_SEC')
-        except Exception:
-            print(
-                "AWS_KEY and AWS_SEC environment variables have not been set," +
-                "refer to model documentation for configuration instructions.")
-
-        try:
-            s3 = boto3.client('s3', aws_access_key_id=access_key, aws_secret_access_key=secret_key)
-            s3.download_file('im3sweather', target_file, r'{}/{}'.format(dir, target_file))
-        except ClientError:
-            print("Authentication Failed or Server Unavailable. Exiting")
-            sys.exit()
-        print("Weather data download complete")
+            try:
+                s3 = boto3.client('s3', aws_access_key_id=access_key,
+                                  aws_secret_access_key=secret_key)
+                s3.download_file('im3sweather', p['weather_file'],
+                                 r'{}/{}'.format(dir, p['weather_file']))
+            except ClientError:
+                print("Authentication Failed or Server Unavailable. Exiting")
+                sys.exit()
+            print("Weather data download complete")
 
 
 def geo_idx(dd, dd_array):

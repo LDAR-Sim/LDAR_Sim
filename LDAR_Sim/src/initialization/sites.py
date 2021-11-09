@@ -19,19 +19,17 @@
 #
 # ------------------------------------------------------------------------------
 
-import os
-import fnmatch
 import copy
-import numpy as np
-import pandas as pd
+import fnmatch
+import os
 import pickle
 import random
-import yaml
 
-
-from initialization.leaks import (generate_leak_timeseries,
-                                  generate_initial_leaks)
-from utils.distributions import (fit_dist, unpackage_dist)
+import numpy as np
+import pandas as pd
+from initialization.leaks import (generate_initial_leaks,
+                                  generate_leak_timeseries)
+from utils.distributions import fit_dist, unpackage_dist
 
 
 def init_generator_files(generator_dir, sim_params, in_dir):

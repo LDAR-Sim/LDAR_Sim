@@ -20,11 +20,12 @@
 # ------------------------------------------------------------------------------
 
 
+from datetime import timedelta
+
 import numpy as np
 import pandas as pd
-from datetime import timedelta
-from geography.homebase import find_homebase, find_homebase_opt
 from geography.distance import get_distance
+from geography.homebase import find_homebase, find_homebase_opt
 from methods.deployment.generic_funcs import get_work_hours
 
 

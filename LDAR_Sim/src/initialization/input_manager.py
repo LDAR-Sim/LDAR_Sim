@@ -20,12 +20,12 @@
 # ------------------------------------------------------------------------------
 
 import copy
-import yaml
 import json
-import sys
 import os
+import sys
 from pathlib import Path
 
+import yaml
 from utils.check_parameter_types import check_types
 
 

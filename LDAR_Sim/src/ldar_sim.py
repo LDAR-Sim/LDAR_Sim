@@ -21,22 +21,23 @@
 
 
 import datetime
-import sys
 import random
+import sys
 import warnings
-import pandas as pd
+
 import numpy as np
-from methods.company import BaseCompany
-from numpy.random import choice, binomial
-from plotter import make_plots
+import pandas as pd
 from daylight_calculator import DaylightCalculatorAve
-from utils.generic_functions import make_maps
-from utils.distributions import leak_rvs
 from geography.vector import grid_contains_point
+from initialization.leaks import generate_initial_leaks, generate_leak
 from initialization.sites import generate_sites
-from initialization.leaks import (generate_leak,
-                                  generate_initial_leaks)
-from initialization.update_methods import est_n_crews, est_site_p_day, est_t_bw_sites
+from initialization.update_methods import (est_n_crews, est_site_p_day,
+                                           est_t_bw_sites)
+from methods.company import BaseCompany
+from numpy.random import binomial, choice
+from plotter import make_plots
+from utils.distributions import leak_rvs
+from utils.generic_functions import make_maps
 
 warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning)
 
