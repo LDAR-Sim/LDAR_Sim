@@ -230,8 +230,13 @@ class LdarSim:
                 # Tag by operator if leak is due for NR
                 if leak['days_active'] == self.parameters['NRd']:
                     if leak['tagged']:
-                        self.timeseries['operator_redund_tags'][
-                            self.state['t'].current_timestep] += 1
+                        if leak['tagged_by_company'] == 'operator':
+                            self.timeseries['operator_redund_tags'][
+                                self.state['t'].current_timestep] += 1
+                        else:
+                            # Operator can still repair a tagged leak
+                            leak['date_tagged'] = self.state['t'].current_date
+                            leak['tagged_by_company'] = 'operator'
 
                     elif not leak['tagged']:
                         # Add these leaks to the 'tag pool'
@@ -288,14 +293,12 @@ class LdarSim:
             has_repairs = False
             for lidx, lk in enumerate(site['active_leaks']):
                 repair = False
-                if lk['tagged_by_company'] == 'operator':
-                    if (cur_date - lk['date_tagged']).days >= params['repair_delay']:
+                if lk['tagged']:
+                    if lk['tagged_by_company'] == 'operator':
                         repair = True
-
-                elif lk['tagged_by_company'] is not None:
-                    if (cur_date - lk['date_tagged']).days \
-                        >= (params['repair_delay']
-                            + params['methods'][lk['tagged_by_company']]['reporting_delay']):
+                    elif (cur_date - lk['date_tagged']).days \
+                            >= (params['repair_delay']
+                                + params['methods'][lk['tagged_by_company']]['reporting_delay']):
                         repair = True
 
                 # Repair Leaks
@@ -359,7 +362,11 @@ class LdarSim:
                                                 for lk in site['active_leaks']])
                 site['repaired_leak_emis'] = sum([lk['days_active'] * lk['rate'] * 86.4
                                                   for lk in site['repaired_leaks']])
+                site['mitigated_leak_emis_kg'] = sum(
+                    [(self.parameters['NRd'] - lk['days_active']) * lk['rate'] * 86.4
+                     for lk in site['repaired_leaks']])
                 site['total_emissions_kg'] = site['active_leak_emis'] + site['repaired_leak_emis']
+
                 leaks += site['active_leaks'] + site['repaired_leaks']
                 del site['n_new_leaks']
 
