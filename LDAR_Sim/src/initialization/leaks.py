@@ -61,6 +61,8 @@ def generate_leak(program, site, start_date, leak_count, days_active=0):
         'date_tagged': None,
         'tagged_by_company': None,
         'tagged_by_crew': None,
+        'init_detect_by': None,
+        'init_detect_date': None,
         'requires_shutdown': False,
         'date_repaired': None,
         'repair_delay': None,
