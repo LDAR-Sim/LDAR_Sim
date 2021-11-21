@@ -110,8 +110,9 @@ def generate_sites(program, in_dir):
             subtype_time = subtypes_times[site['subtype_code']]
             site.update(subtype_time)
 
+    # Get leaks from file
     if program['emissions']['leak_file'] is not None:
-        program['empirical_leaks'] = np.array(
+        program['emissions']['empirical_leaks'] = np.array(
             pd.read_csv(in_dir / program['emissions']['leak_file']).iloc[:, 0])
 
     get_subtype_dist(program, in_dir)
