@@ -19,6 +19,7 @@
 #
 # ------------------------------------------------------------------------------
 from method_functions import measured_rate
+from utils.attribution import update_tag
 
 
 def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered_site_rate,
@@ -50,15 +51,10 @@ def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered
         for leak in covered_leaks:
             if (leak['rate'] > self.config['sensor']['MDL'][0]):
                 found_leak = True
-                if leak['tagged']:
-                    self.timeseries[self.config['label'] +
-                                    '_redund_tags'][self.state['t'].current_timestep] += 1
+                is_new_leak = update_tag(leak, site, self.timeseries, self.state['t'],
+                                         self.config['label'], self.id)
                 # Add these leaks to the 'tag pool'
-                else:
-                    leak['tagged'] = True
-                    leak['date_tagged'] = self.state['t'].current_date
-                    leak['tagged_by_company'] = self.config['label']
-                    leak['tagged_by_crew'] = self.id
+                if is_new_leak:
                     site_measured_rate += measured_rate(leak['rate'], self.config['sensor']['QE'])
             else:
                 site[self.config['label'] + '_missed_leaks'] += 1

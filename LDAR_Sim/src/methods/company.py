@@ -25,6 +25,7 @@ from importlib import import_module
 
 import numpy as np
 from methods.deployment.generic_funcs import get_deployment_dates
+from utils.attribution import update_flag
 from utils.generic_functions import get_prop_rate
 
 
@@ -239,34 +240,9 @@ class BaseCompany:
                          (state['sites']) a site_measured_rate, and a site
                          vent rate
         """
-        site_obj = site['site']
-        site_true_rate = site['site_measured_rate']
-        venting = site['vent_rate']
-        self.site_watchlist.pop(site_obj['facility_ID'], None)
-        # If the site is already flagged, your flag is redundant
-        if site_obj['currently_flagged']:
-            self.timeseries['{}_flags_redund1'.format(
-                self.name)][self.state['t'].current_timestep] += 1
-        else:
-            # Flag the site for follow-up
-            site_obj['currently_flagged'] = True
-            site_obj['date_flagged'] = self.state['t'].current_date
-            site_obj['flagged_by'] = self.config['label']
-            self.timeseries['{}_eff_flags'.format(
-                self.name)][self.state['t'].current_timestep] += 1
-
-            # Check to see if the site has any leaks that are active and tagged
-            site_leaks = len([lk for lk in site_obj['active_leaks'] if lk['tagged']])
-
-            if site_leaks > 0:
-                self.timeseries['{}_flags_redund2'.format(
-                    self.name)][self.state['t'].current_timestep] += 1
-
-            # Would the site have been chosen without venting?
-            if self.parameters['emissions']['consider_venting']:
-                if (site_true_rate - venting) < self.config['follow_up']['thresh']:
-                    self.timeseries['{}_flag_wo_vent'.format(self.name)][
-                        self.state['t'].current_timestep] += 1
+        self.site_watchlist.pop(site['site']['facility_ID'], None)
+        update_flag(self.config, site, self.timeseries, self.state['t'],
+                    self.name, self.parameters['emissions']['consider_venting'])
 
     def flag_sites(self):
         """

@@ -20,8 +20,8 @@
 # ------------------------------------------------------------------------------
 
 import math
-
 import numpy as np
+from utils.attribution import update_tag
 
 
 def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered_site_rate,
@@ -39,17 +39,8 @@ def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered
             prob_detect = 1 / (1 + math.exp(-k * (x - x0)))
 
         if np.random.binomial(1, prob_detect):
-            if leak['tagged']:
-                self.timeseries[self.config['label'] +
-                                '_redund_tags'][self.state['t'].current_timestep] += 1
-
-            # Add these leaks to the 'tag pool'
-            else:
-                leak['tagged'] = True
-                leak['date_tagged'] = self.state['t'].current_date
-                leak['tagged_by_company'] = self.config['label']
-                leak['tagged_by_crew'] = self.id
-
+            update_tag(leak, site, self.timeseries, self.state['t'],
+                       self.config['label'], self.id)
         else:
             site[self.config['label'] + '_missed_leaks'] += 1
 

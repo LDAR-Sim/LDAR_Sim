@@ -36,6 +36,7 @@ from initialization.update_methods import (est_n_crews, est_site_p_day,
 from methods.company import BaseCompany
 from numpy.random import binomial, choice
 from plotter import make_plots
+from utils.attribution import update_tag
 from utils.distributions import leak_rvs
 from utils.generic_functions import make_maps
 
@@ -140,8 +141,8 @@ class LdarSim:
         timeseries['total_daily_cost'] = np.zeros(params['timesteps'])
         timeseries['repair_cost'] = np.zeros(params['timesteps'])
         timeseries['verification_cost'] = np.zeros(params['timesteps'])
-        timeseries['operator_redund_tags'] = np.zeros(self.parameters['timesteps'])
-        timeseries['operator_tags'] = np.zeros(self.parameters['timesteps'])
+        timeseries['natural_redund_tags'] = np.zeros(self.parameters['timesteps'])
+        timeseries['natural_tags'] = np.zeros(self.parameters['timesteps'])
         timeseries['new_leaks'] = np.zeros(self.parameters['timesteps'])
         timeseries['cum_repaired_leaks'] = np.zeros(self.parameters['timesteps'])
         timeseries['daily_emissions_kg'] = np.zeros(self.parameters['timesteps'])
@@ -227,24 +228,9 @@ class LdarSim:
                 leak['days_active'] += 1
                 self.active_leaks.append(leak)
 
-                # Tag by operator if leak is due for NR
+                # Tag by natural if leak is due for NR
                 if leak['days_active'] == self.parameters['NRd']:
-                    if leak['tagged']:
-                        if leak['tagged_by_company'] == 'operator':
-                            self.timeseries['operator_redund_tags'][
-                                self.state['t'].current_timestep] += 1
-                        else:
-                            # Operator can still repair a tagged leak
-                            leak['date_tagged'] = self.state['t'].current_date
-                            leak['tagged_by_company'] = 'operator'
-
-                    elif not leak['tagged']:
-                        # Add these leaks to the 'tag pool'
-                        leak['tagged'] = True
-                        leak['date_tagged'] = self.state['t'].current_date
-                        leak['tagged_by_company'] = 'operator'
-                        leak['tagged_by_crew'] = 1
-                        self.timeseries['operator_tags'][self.state['t'].current_timestep] += 1
+                    update_tag(leak, site, self.timeseries, self.state['t'], 'natural')
 
         self.timeseries['active_leaks'].append(len(self.active_leaks))
         self.timeseries['datetime'].append(self.state['t'].current_date)
@@ -294,7 +280,8 @@ class LdarSim:
             for lidx, lk in enumerate(site['active_leaks']):
                 repair = False
                 if lk['tagged']:
-                    if lk['tagged_by_company'] == 'operator':
+                    # if company is natural then repair immediately
+                    if lk['tagged_by_company'] == 'natural':
                         repair = True
                     elif (cur_date - lk['date_tagged']).days \
                             >= (params['repair_delay']
