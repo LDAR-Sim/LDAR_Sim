@@ -48,7 +48,7 @@ def generate_leak(program, site, start_date, leak_count, days_active=0):
             site['leak_rate_units'])
     return {
         'leak_ID': '{}_{}'.format(site['facility_ID'], str(leak_count).zfill(10)),
-        'facility_ID': site['facility_ID'],
+        'facility_ID': str(site['facility_ID']),
         'equipment_group': random.randint(1, int(site['equipment_groups'])+1),
         'rate': leak_rate,
         'lat': float(site['lat']),
