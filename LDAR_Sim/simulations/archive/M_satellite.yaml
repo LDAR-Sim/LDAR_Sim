@@ -4,10 +4,10 @@ label: satellite
 deployment_type: orbit
 measurement_scale: site
 sensor: 
-  type: default
+  type: satellite_default
   MDL: [0.5]
 is_follow_up: False
 cost:
   per_day: 100
-TLE_label: GHGSAT-D
+TLE_label: default
 TLE_file: Sat_TLEs.txt
