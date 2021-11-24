@@ -19,6 +19,7 @@
 #
 # ------------------------------------------------------------------------------
 
+import collections
 import datetime
 import os
 import sys
@@ -372,3 +373,14 @@ def init_orbit_poly(predictor, T1, T2, interval):
         T1 += datetime.timedelta(minutes=interval)
 
     return day_list, polygon_list
+
+
+def flatten_dict(d, parent_key='', sep='_'):
+    items = []
+    for k, v in d.items():
+        new_key = parent_key + sep + str(k) if parent_key else str(k)
+        if isinstance(v, collections.MutableMapping):
+            items.extend(flatten_dict(v, new_key, sep=sep).items())
+        else:
+            items.append((new_key, v))
+    return dict(items)

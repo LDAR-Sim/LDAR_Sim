@@ -27,8 +27,10 @@ import warnings
 
 import numpy as np
 import pandas as pd
+from math import floor
 from daylight_calculator import DaylightCalculatorAve
 from geography.vector import grid_contains_point
+from initialization.campaigns import init_campaigns
 from initialization.leaks import generate_initial_leaks, generate_leak
 from initialization.sites import generate_sites
 from initialization.update_methods import (est_n_crews, est_site_p_day,
@@ -38,7 +40,7 @@ from numpy.random import binomial, choice
 from plotter import make_plots
 from utils.attribution import update_tag
 from utils.distributions import leak_rvs
-from utils.generic_functions import make_maps
+from utils.generic_functions import make_maps, flatten_dict
 
 warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning)
 
@@ -90,8 +92,18 @@ class LdarSim:
             # Shuffle all the entries to randomize order for identical 't_Since_last_LDAR' values
             random.shuffle(state['sites'])
 
+        n_subtype_rs = {}
+        sites_per_subtype = {}
         # Additional variable(s) for each site
         for site in state['sites']:
+            if site['subtype_code'] not in n_subtype_rs:
+                n_subtype_rs.update({site['subtype_code']: {'natural': -1}})
+                sites_per_subtype.update({site['subtype_code']: 0})
+                add_subtype = True
+            else:
+                add_subtype = False
+            sites_per_subtype[site['subtype_code']] += 1
+            n_rs = n_subtype_rs[site['subtype_code']]
             for m_label, m_obj in params['methods'].items():
                 # Site parameter overwrite of RS and Time (used for sensitivity analysis)
                 m_RS = '{}_RS'.format(m_label)
@@ -100,11 +112,21 @@ class LdarSim:
                 m_time = '{}_time'.format(m_label)
                 if m_time in m_obj:
                     site[m_time] = m_obj[m_time]
-                # Get min interval based on RS. a 90% ajustment is used to add a grace period
+                if add_subtype:
+                    if m_RS in site:
+                        # if scheduled capture the RS value
+                        n_subtype_rs[site['subtype_code']].update({m_label: site[m_RS]})
+                    else:
+                        # If set rs value to -1 (used for tracking later)
+                        n_subtype_rs[site['subtype_code']].update({m_label: -1})
+                        # If the value changes set to None
+                elif m_RS in site and (n_rs[m_label] != site[m_RS] or n_rs[m_label] is None):
+                    n_subtype_rs[site['subtype_code']].update({m_label: None})
+                # Get min interval based on RS. a 95% ajustment is used to add a grace period
                 # prior to the next campaign period were surveys can start earlier
                 # Calculate the site minimum interval
                 if m_RS in site and site[m_RS] != 0:
-                    site['{}_min_int'.format(m_label)] = 365/site[m_RS]*0.9
+                    site['{}_min_int'.format(m_label)] = floor(365/site[m_RS])  # *0.95
                 # Automatically assign 1 crew to followup if left unspecified
                 elif m_obj['n_crews'] is None:
                     m_obj['n_crews'] = 1
@@ -136,6 +158,9 @@ class LdarSim:
                 [state['weather'].latitude, state['weather'].longitude])
             if not in_grid:
                 sys.exit(exit_msg)
+
+        self.state['campaigns'] = init_campaigns(n_subtype_rs, sites_per_subtype,
+                                                 self.state['t'].timesteps)
 
         #  --- timeseries variables ---
         timeseries['total_daily_cost'] = np.zeros(params['timesteps'])
@@ -230,10 +255,19 @@ class LdarSim:
 
                 # Tag by natural if leak is due for NR
                 if leak['days_active'] == self.parameters['NRd']:
-                    update_tag(leak, site, self.timeseries, self.state['t'], 'natural')
+                    update_tag(leak, site, self.timeseries, self.state['t'],
+                               self.state['campaigns'], 'natural')
 
         self.timeseries['active_leaks'].append(len(self.active_leaks))
         self.timeseries['datetime'].append(self.state['t'].current_date)
+        #
+        for s_t in self.state['campaigns']:
+            for m in self.state['campaigns'][s_t]:
+                m_camp = self.state['campaigns'][s_t][m]
+                if m_camp['current_campaign'] < m_camp['n_campaigns'] \
+                        and m_camp['ts_start'][m_camp['current_campaign']] \
+                        == self.state['t'].current_timestep:
+                    m_camp['current_campaign'] += 1
 
     def add_leaks(self):
         """
@@ -357,6 +391,7 @@ class LdarSim:
                 leaks += site['active_leaks'] + site['repaired_leaks']
                 del site['n_new_leaks']
 
+            campaign_df = pd.DataFrame(flatten_dict(self.state['campaigns'], parent_key='sub'))
             leak_df = pd.DataFrame(leaks)
             time_df = pd.DataFrame(self.timeseries)
             site_df = pd.DataFrame(self.state['sites'])
@@ -398,6 +433,10 @@ class LdarSim:
                 params['output_directory']
                 / 'sites_output_{}.csv'.format(params['simulation']), index=False)
 
+            campaign_df.to_csv(
+                params['output_directory']
+                / 'campaigns_output_{}.csv'.format(params['simulation']), index=False)
+
             # Write metadata
             f_name = params['output_directory'] / "metadata_{}.txt".format(params['simulation'])
             metadata = open(f_name, 'w')
@@ -422,8 +461,9 @@ class LdarSim:
             'leaks': leak_df,
             'timeseries': time_df,
             'sites': site_df,
+            'campaigns': campaign_df,
             'program_name': params['program_name'],
-            'p_params': params
+            'p_params': params,
         }
 
         return(sim_summary)
