@@ -443,13 +443,6 @@ class LdarSim:
             metadata.write(str(params) + '\n' + str(datetime.datetime.now()))
             metadata.close()
 
-        # Make maps and append site-level DD and MCB data
-        if self.global_params['make_maps']:
-            if params['simulation'] == '0':
-                for m in self.state['methods']:
-                    make_maps(m, site_df)
-                    m.site_reports()
-
         # Make plots
         if self.global_params['make_plots']:
             make_plots(
