@@ -14,7 +14,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # MIT License for more details.
 
-def update_tag(leak, site, timeseries, time_obj, company, crew_id=1):
+def update_tag(leak, site, timeseries, time_obj, campaigns, company, crew_id=1):
     """ Updates the tag on a leak. If a leak is not tagged
         This funciton will tag. If it is already tagged, the
         leak will be added as a redundant tag.
@@ -46,6 +46,8 @@ def update_tag(leak, site, timeseries, time_obj, company, crew_id=1):
         leak['date_tagged'] = time_obj.current_date
         leak['tagged_by_company'] = company
         leak['tagged_by_crew'] = crew_id
+        campaign = campaigns[site['subtype_code']][company]
+        campaign['n_tags'][campaign['current_campaign']-1] += 1
         # if initially flagged give credit to flagging company
         if site['currently_flagged'] and site['flagged_by'] is not None:
             leak['init_detect_by'] = site['flagged_by']
@@ -57,7 +59,7 @@ def update_tag(leak, site, timeseries, time_obj, company, crew_id=1):
     return True
 
 
-def update_flag(config, site, timeseries, time_obj, company, consider_venting):
+def update_flag(config, site, timeseries, time_obj, campaigns,  company, consider_venting):
     """ Updates the flag on a site. If a site is not flagged
         This funciton will flag. If it is already flagged, the
         site will be marked as either"
@@ -82,6 +84,8 @@ def update_flag(config, site, timeseries, time_obj, company, consider_venting):
         site_obj['currently_flagged'] = True
         site_obj['date_flagged'] = time_obj.current_date
         site_obj['flagged_by'] = company
+        campaign = campaigns[site_obj['subtype_code']][company]
+        campaign['n_flags'][campaign['current_campaign']-1] += 1
         timeseries['{}_eff_flags'.format(company)][time_obj.current_timestep] += 1
 
         # Check to see if the site has any leaks that are active and tagged
