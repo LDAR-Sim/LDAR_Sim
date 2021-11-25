@@ -58,7 +58,7 @@ def init_campaigns(n_subtype_rs, sites_per_subtype, timesteps):
         non_sched_meths = []
         for m_idx, m_rs in s_vals.items():
             if m_rs != -1:
-                if m_rs is not None:
+                if m_rs is not None and m_rs != 0:
                     d_per_campaign = int(floor(365/m_rs))
                     if has_one_campaign is True:
                         if ref_day_per_campaign is None:
