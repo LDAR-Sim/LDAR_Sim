@@ -40,7 +40,7 @@ from numpy.random import binomial, choice
 from plotter import make_plots
 from utils.attribution import update_tag
 from utils.distributions import leak_rvs
-from utils.generic_functions import make_maps, flatten_dict
+# from utils.generic_functions import make_maps, flatten_dict
 
 warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning)
 
@@ -391,7 +391,7 @@ class LdarSim:
                 leaks += site['active_leaks'] + site['repaired_leaks']
                 del site['n_new_leaks']
 
-            campaign_df = pd.DataFrame(flatten_dict(self.state['campaigns'], parent_key='sub'))
+            # campaign_df = pd.DataFrame(flatten_dict(self.state['campaigns'], parent_key='sub'))
             leak_df = pd.DataFrame(leaks)
             time_df = pd.DataFrame(self.timeseries)
             site_df = pd.DataFrame(self.state['sites'])
@@ -433,9 +433,9 @@ class LdarSim:
                 params['output_directory']
                 / 'sites_output_{}.csv'.format(params['simulation']), index=False)
 
-            campaign_df.to_csv(
-                params['output_directory']
-                / 'campaigns_output_{}.csv'.format(params['simulation']), index=False)
+            # campaign_df.to_csv(
+            #     params['output_directory']
+            #     / 'campaigns_output_{}.csv'.format(params['simulation']), index=False)
 
             # Write metadata
             f_name = params['output_directory'] / "metadata_{}.txt".format(params['simulation'])
@@ -461,7 +461,7 @@ class LdarSim:
             'leaks': leak_df,
             'timeseries': time_df,
             'sites': site_df,
-            'campaigns': campaign_df,
+            #  'campaigns': campaign_df,
             'program_name': params['program_name'],
             'p_params': params,
         }
