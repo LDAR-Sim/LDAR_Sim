@@ -796,18 +796,6 @@ The increment can be one of:
 
 **Notes of caution:** Categories used here must correspond with any categories used elsewhere in the model. In particular, when sampling from the leak_file, LDAR-Sim will match the additional categories specified in all files to refine the sampling process and generate emissions information that is representative of the facility for which sampling is being performed. Note that the number of leak rates required for the custom empirical distribution should increase exponentially for each new additional category used, because sampling will become increasingly specific. Categories must also be sufficiently exhaustive to be representative.
 
-### make_maps
-
-**Data type:** Boolean
-
-**Default input:** True
-
-**Description:** A binary True/False to control whether output maps are generated for each simulation. These maps can be used to understand where/when different technologies are effective and where/when deployment blackout periods occur. During runs with a very large number of simulations, setting make_maps to False will reduce run time.
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** N/A
-
 ### make_plots
 
 **Data type:** Boolean
@@ -1449,7 +1437,7 @@ Method weather envelopes
 **Default input:** N/A
 
 **Description:** The name of satellite. The following are accepted:
-  
+- default
 - GHGSAT-D
 - GOSAT (IBUKI)
 - SENTINEL-5(TROPOMI)
