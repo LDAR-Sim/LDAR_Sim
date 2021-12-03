@@ -1,6 +1,6 @@
 consider_daylight: False
 cost:
-  per_day: 2000
+  per_day: 0
   per_hour: 0
   per_site: 0
   upfront: 0
@@ -18,7 +18,7 @@ follow_up:
   threshold: 0.0
   threshold_type: 'absolute'
 is_follow_up: False
-label: 'mobile'
+label: '_placeholder_str_'
 max_workday: 8
 measurement_scale: 'equipment'
 n_crews: '_placeholder_int_'
@@ -41,6 +41,6 @@ t_bw_sites:
   vals: [30]
 weather_envs:
   precip: [0.0, 0.5]
-  temp: [-30.0, 40.0]
+  temp: [-40.0, 40.0]
   wind: [0.0, 10.0]  
 version: '2.0'

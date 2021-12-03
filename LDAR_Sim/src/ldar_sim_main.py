@@ -36,7 +36,18 @@ from initialization.sites import init_generator_files
 from ldar_sim_run import ldar_sim_run
 from utils.generic_functions import check_ERA5_file
 
+opening_msg = """
+You are running LDAR-Sim version 2.0 an open sourced software (MIT) license.
+It is continually being developed by the University of Calgary's Intelligent
+Methane Monitoring and Management System (IM3S) Group.
+Provide any issues, comments, questions, or recommendations to the IM3S by
+adding an issue to https://github.com/LDAR-Sim/LDAR_Sim.git.
+
+"""
+
 if __name__ == '__main__':
+    print(opening_msg)
+
     # Get route directory , which is parent folder of ldar_sim_main file
     # Set current working directory directory to root directory
     root_dir = Path(os.path.dirname(os.path.realpath(__file__))).parent
