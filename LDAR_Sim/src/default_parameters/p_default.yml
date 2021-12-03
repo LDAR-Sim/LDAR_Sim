@@ -12,7 +12,7 @@ consider_weather: False
 repair_delay: 14
 emissions:
   consider_venting: False
-  leak_dist_params: [-1.790, 2.170]
+  leak_dist_params: [-2.776, 1.462]
   leak_dist_type: 'lognorm'
   leak_file: "_placeholder_str_"
   leak_file_use: 'sample'
