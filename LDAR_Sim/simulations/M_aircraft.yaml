@@ -3,11 +3,15 @@ version: '2.0'
 label: aircraft
 deployment_type: mobile
 measurement_scale: equipment
+is_follow_up: False
 sensor: 
   type: default
-  MDL: [0.1]
-is_follow_up: False
+  MDL: [1.5]
 cost:
-  per_day: 2000
+  per_site: 200
+coverage:
+  spatial: 0.9
+  temporal: 0.9
 t_bw_sites:
-  vals: [10]
+  vals: [5]
+

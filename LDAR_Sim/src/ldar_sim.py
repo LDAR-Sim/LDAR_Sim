@@ -40,7 +40,6 @@ from numpy.random import binomial, choice
 from plotter import make_plots
 from utils.attribution import update_tag
 from utils.distributions import leak_rvs
-# from utils.generic_functions import make_maps, flatten_dict
 
 warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning)
 
