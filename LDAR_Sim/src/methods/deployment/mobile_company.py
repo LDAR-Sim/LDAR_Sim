@@ -139,11 +139,11 @@ class Schedule():
             int: Number of crews to deploy that day.
         """
         n_sites = len(site_pool)
-        n_crews = math.ceil(n_sites/(n_crews * self.config['est_site_p_day']))
+        n_working_crews = math.ceil(n_sites/self.config['est_site_p_day'])
         # cap working crews at max number of crews
-        if n_crews > self.config['n_crews']:
-            n_crews = self.config['n_crews']
-        return n_crews
+        if n_working_crews > n_crews:
+            n_working_crews = n_crews
+        return n_working_crews
 
     def get_crew_site_list(self, site_pool, crew_ID, n_crews, crews=None):
         """ This function divies the site pool among all crews. Ordering
