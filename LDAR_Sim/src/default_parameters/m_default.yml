@@ -1,13 +1,13 @@
 consider_daylight: False
 cost:
-  per_day: 2000
+  per_day: 0
   per_hour: 0
   per_site: 0
   upfront: 0
 coverage:
   spatial: 1.0
   temporal: 1.0
-deployment_type: 'mobile'
+deployment_type: '_placeholder_str_'
 follow_up:
   delay: 0
   instant_threshold: '_placeholder_float_'
@@ -18,9 +18,9 @@ follow_up:
   threshold: 0.0
   threshold_type: 'absolute'
 is_follow_up: False
-label: 'mobile'
+label: '_placeholder_str_'
 max_workday: 8
-measurement_scale: 'equipment'
+measurement_scale: '_placeholder_str_'
 n_crews: '_placeholder_int_'
 parameter_level: 'method'
 reporting_delay: 2
@@ -41,6 +41,6 @@ t_bw_sites:
   vals: [30]
 weather_envs:
   precip: [0.0, 0.5]
-  temp: [-30.0, 40.0]
+  temp: [-40.0, 40.0]
   wind: [0.0, 10.0]  
 version: '2.0'
