@@ -409,7 +409,7 @@ If you are developing in LDAR-Sim, please adhere to the following rules:
 
 **Data type:** Boolean
 
-**Default input:** False
+**Default input:** True
 
 **Description:** If set to True, leaks will be generated prior to running the simulations. This can be used to test a set of program simulations with the same leaks and the same sites. This can reduce modelling uncertainty when comparing two programs with a limited number of simulations, especially from very large leaks.
 
@@ -435,7 +435,7 @@ If enabled, the leaks will be stored locally in /inputs/generation after running
 
 **Data type:** Boolean
 
-**Default input:** False
+**Default input:** True
 
 **Description:** A binary True/False to indicate whether to print informational messages from within the simulations. These messages can have value when debugging or troubleshooting.
 
@@ -459,7 +459,7 @@ If enabled, the leaks will be stored locally in /inputs/generation after running
 
 **Data type:** String
 
-**Default input:** N/A
+**Default input:** 2.0
 
 **Description:** Specify version of LDAR-Sim. See section _Versioning of Parameter Files_ for more information.
 
@@ -525,7 +525,7 @@ If enabled, the leaks will be stored locally in /inputs/generation after running
 
 **Data type:** Integer
 
-**Default input:** N/A
+**Default input:** 200 $/repair
 
 **Description:** The average cost of leak repair. This value is added to the total program cost each time a leak is repaired, whether as a result of an LDAR program or due to routine maintenance by the operator.
 
@@ -603,7 +603,7 @@ If enabled, the leaks will be stored locally in /inputs/generation after running
 
 **Data type:** String
 
-**Default input:**"leaks_rates.csv"
+**Default input:** None
 
 **Description:** The leak\_file specifies the leak rates and relevant characteristics of empirical leaks, forming the basis of the leak-rate distribution that is sampled once for each new leak that is generated. At the bare minimum, the csv contains a single column with the heading name _gpersec_. Each cell contains a numeric value representing the emission rate of a real, previously detected, and quantified leak, in grams per second. For many applications, this single column may be sufficient. Additional columns can be included if 'intelligent' sampling of leak rates is to be used. These fields must have matching fields in the infrastructure_file. Examples include facility type, production type, company, and so on. Beyond column A, any column headings can be used, and all data contents are treated as character strings (category labels).
 
@@ -639,7 +639,7 @@ If enabled, the leaks will be stored locally in /inputs/generation after running
 
 **Data type:** Numeric
 
-**Default input:** 1000.0 (g/second)
+**Default input:** 100000.0 (g/second)
 
 **Description:** The maximum possible leak rate that can be sampled from a distribution.
 
@@ -649,11 +649,11 @@ If enabled, the leaks will be stored locally in /inputs/generation after running
 
 #### subtype_leak_dist_file
 
-**Data type:** List
+**Data type:** String
 
-**Default input:** [False, 'subtype_distributions.csv']
+**Default input:** None
 
-**Description:**
+**Description:** Name of file containing distributions for subtypes. Requires 3 or columns: subtype_code, dist_type, followed by scipy defined shape parameters, followed by the scipy scale. For example if dist_type is lognormal , their will be only one shape parameter (3rd column) and the the size parameter will be placed in the 4th column. Note: loc parameters are always set to zero. If this parameter is set to None, or left blank, distributions are set are set at a program level with the leak_dist_params, and leak_dist_type parameters.
 
 **Notes on acquisition:**
 
@@ -830,7 +830,7 @@ method_labels:
 
 **Data type:** Integer
 
-**Default input:** 150
+**Default input:** 365
 
 **Description:** The natural kill date of each leak in number of days. Represents leak removal from the leak pool due to routine maintenance, refits, retrofits, and other unintentional leak repairs.
 
@@ -864,11 +864,11 @@ method_labels:
 
 ### subtype_times_file
 
-**Data type:** List
+**Data type:** string
 
-**Default input:** [False, 'subtype_times_file.csv']
+**Default input:** None
 
-**Description:** Imports a lookup table that allows the modeler to set the survey time per facility according to facility type. This functionality can be used when survey times are not known for each individual site, but can be approximately estimated by facility subtype. Each row represents a facility type and each column represents a method. Times are the number of minutes that pass between arrival at a facility and completion of the inspection at that facility (exclusive of time between workdays and travel time if a site is too large to finish in any given day).
+**Description:** Imports a lookup table that allows the modeler to set the survey time per facility according to facility type. This functionality can be used when survey times are not known for each individual site, but can be approximately estimated by facility subtype. Each row represents a facility type and each column represents a method. Times are the number of minutes that pass between arrival at a facility and completion of the inspection at that facility (exclusive of time between workdays and travel time if a site is too large to finish in any given day). If this parameter is set to None, or left blank, times are set at a site level.
 
 **Notes on acquisition:** Ideally, empirical data for similar facilities are used to inform the lookup table and that each value represents a representative average based on a reasonable number of surveys
 
@@ -878,7 +878,7 @@ method_labels:
 
 **Data type:** String
 
-**Default input:** N/A
+**Default input:** 2.0
 
 **Description:** Specify version of LDAR-Sim. See section _Versioning of Parameter Files_ for more information.
 
@@ -912,7 +912,7 @@ If using different weather files for different programs (e.g., when comparing di
 
 **Data type:** Boolean
 
-**Default input:** True
+**Default input:** False
 
 **Description:** Specify if the weather file is ERA5 reanalysis hourly data downloaded directly from ERA5 copernicus database or API. If false, the weather file is assumed to be daily average data generated using the /weather/ERA5_hourly_to_daily.py script.
 
@@ -922,9 +922,9 @@ If using different weather files for different programs (e.g., when comparing di
 
 --------------------------------------------------------------------------------
 
-## 7\. Method Inputs
+## 7. Method Inputs
 
-### consider\_daylight
+### consider_daylight
 
 **Data type:** Boolean
 
@@ -940,11 +940,11 @@ If using different weather files for different programs (e.g., when comparing di
 
 Method costs. Currency is not important but must be consistent across all inputs.
 
-#### per\_day
+#### per_day
 
 **Data type:** Integer
 
-**Default input:** N/A
+**Default input:** 0
 
 **Description:** The daily cost charged by the service provider (per crew). It is charged each time a crew is deployed, regardless of how many sites they survey that day.
 
@@ -952,7 +952,7 @@ Method costs. Currency is not important but must be consistent across all inputs
 
 **Notes of caution:** N/A
 
-#### per\_hour
+#### per_hour
 
 **Data type:** Integer
 
@@ -968,7 +968,7 @@ Method costs. Currency is not important but must be consistent across all inputs
 
 **Data type:** Integer
 
-**Default input:** N/A
+**Default input:** 0
 
 **Description:** The cost charged by the service provider (per crew per site). It is charged each time a crew is deployed at a site.
 
@@ -980,7 +980,7 @@ Method costs. Currency is not important but must be consistent across all inputs
 
 **Data type:** Integer
 
-**Default input:** N/A
+**Default input:** 0
 
 **Description:** The initial up-front cost of each crew. This cost is only charged once.
 
@@ -1022,7 +1022,7 @@ Method costs. Currency is not important but must be consistent across all inputs
 
 **Data type:** String
 
-**Default input:** "mobile"
+**Default input:** None (Required to be set for each method added to program)
 
 **Description:** Methods are comprised of both a deployment type and a sensor type. The deployment type is a character string denoting the deployment type used in the method. For instance, 'mobile', 'stationary', or 'orbit'. Custom deployment types can be added and referenced here.
 
@@ -1048,7 +1048,7 @@ Method costs. Currency is not important but must be consistent across all inputs
 
 **Notes of caution:** N/A
 
-#### instant\_threshold
+#### instant_threshold
 
 **Data type:** Float
 
@@ -1060,7 +1060,7 @@ Method costs. Currency is not important but must be consistent across all inputs
 
 **Notes of caution:** Follow-up thresholds are explored in detail in Fox et al. 2021\. Choosing follow-up rules is complex and work practices should be developed following extensive analysis of different scenarios. It is important to understand how follow-up thresholds and follow-up ratios interact, especially if both are to be used in the same program. Note that follow-up thresholds are similar to minimum detection limits but that the former is checked against to the measured emission rate (which is a function of quantification error) while the latter is checked against the true emission rate.
 
-#### instant\_threshold\_type
+#### instant_threshold_type
 
 **Data type:** String
 
@@ -1072,7 +1072,7 @@ Method costs. Currency is not important but must be consistent across all inputs
 
 **Notes of caution:** See _follow_up.threshold_ for more information.
 
-#### interaction\_priority
+#### interaction_priority
 
 **Data type:** String
 
@@ -1096,7 +1096,7 @@ Method costs. Currency is not important but must be consistent across all inputs
 
 **Notes of caution:** The follow-up proportion ranks sites based on their measured emission rate, which may differ from the true emission rate if quantification error is used. The effect of follow_up.proportion will depend on the temporal interval over which sites accumulate in the candidate flags pool.
 
-#### redundancy\_filter
+#### redundancy_filter
 
 **Data type:** String
 
@@ -1138,7 +1138,7 @@ The follow-up delay parameter can be set to require multiple measurements for a 
 
 **Data type:** Boolean
 
-**Default input:** False
+**Default input:** False (Required to be set for each method added to program)
 
 **Description:** A binary True/False to indicate whether the method is used to survey sites previously flagged by screening technologies. If true this method will only visit sites flagged.
 
@@ -1150,7 +1150,7 @@ The follow-up delay parameter can be set to require multiple measurements for a 
 
 **Data type:** String
 
-**Default input:** "OGI"
+**Default input:** None (Required to be set for each method added to program)
 
 **Description:** A character string denoting the label of the method.
 
@@ -1162,7 +1162,7 @@ The follow-up delay parameter can be set to require multiple measurements for a 
 
 **Data type:** Integer
 
-**Default input:** 10
+**Default input:** 8
 
 **Description:** The maximum number of hours a crew can work in day (includes travel time).
 
@@ -1174,7 +1174,7 @@ The follow-up delay parameter can be set to require multiple measurements for a 
 
 **Data type:** String
 
-**Default input:** "component"
+**Default input:** None (Required to be set for each method added to program)
 
 **Description:** A character string describing the measurements scale. Possible inputs are "component", "equipment", and "site".
 
@@ -1186,7 +1186,7 @@ The follow-up delay parameter can be set to require multiple measurements for a 
 
 **Data type:** Integer
 
-**Default input:** 1
+**Default input:** None (Required to be set for each non-continuous monitoring method added to program)
 
 **Description:** The number of distinct, independent crews that will be deployed using the same method.
 
@@ -1202,7 +1202,7 @@ _see Global Inputs - parameter_level_
 
 **Data type:** Integer
 
-**Default input:** 0
+**Default input:** 2
 
 **Description:** The number of days that pass between the end of a survey (when a site is flagged or leaks are tagged) and when the duty holder is informed. The reporting delay is then followed by repair_delay.
 
@@ -1240,7 +1240,7 @@ _see Global Inputs - parameter_level_
 
 **Data type:** List of floats
 
-**Default input:** N/A
+**Default input:** [-114.062, 51.044] (Calgary Alberta)
 
 **Description:** A list of coordinates [longitude, latitude] that define the initial location of the LDAR crew. It is only required if route_planning is activated.
 
@@ -1252,7 +1252,7 @@ _see Global Inputs - parameter_level_
 
 **Data type:** String
 
-**Default input:** N/A
+**Default input:** 'Airport_AB_Coordinates.csv'
 
 **Description:** Specifies the name of the csv file that contains all of the required data on the home bases used for LDAR scheduling. At a bare minimum, the csv must contain the following columns: 'name', 'lat', and 'lon', where 'name' indicates the name of home bases (e.g., Calgary), and 'lat' and 'lon' are the coordinates of each home base. The home bases for the aircraft method should be airports and the home bases for all other mobile methods should be towns, cities, or hotels.
 
@@ -1276,7 +1276,7 @@ _see Global Inputs - parameter_level_
 
 **Data type:** List of floats
 
-**Default input:** [60.0,70.0,80.0,90.0] for road-based methods, [200.0,210.0,220.0,230.0] for aircraft.
+**Default input:** None (Is required to be defined if rout_planning is enaabled)
 
 **Description:** A list of speed limits that define the maximum travelling speed of technologies. A random speed is sampled from this list when calculating the travel time between two facilities or between the facility and a home base. This can also be a list with a single value.
 
@@ -1290,7 +1290,7 @@ _see Global Inputs - parameter_level_
 
 **Data type:** List
 
-**Default input:** [0.01]
+**Default input:** [0.01] (Should be set for each Method)
 
 **Description:** Minimum detection limit of the screening method in grams per second. Probability curves or surfaces as a function of emission rate, wind speed, distance, etc. must be hard coded.
 
@@ -1386,7 +1386,7 @@ Method weather envelopes
 
 **Data type:** List of Integers
 
-**Default input:** [0, 1]
+**Default input:** [0, 0.5]
 
 **Description:** The range of precipitation accumulation allowed (mm) over one hour.
 
@@ -1450,7 +1450,7 @@ Method weather envelopes
 ### version (method level)
 
 _see Global Inputs - version_
-
+s
 --------------------------------------------------------------------------------
 
 ## 8\. Data sources, modelling confidence and model sensitivity

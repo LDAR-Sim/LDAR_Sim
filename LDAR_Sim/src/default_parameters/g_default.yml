@@ -6,7 +6,6 @@ n_processes:  '_placeholder_int_'
 n_simulations: 3
 write_data: True
 make_plots: True
-make_maps: True
 print_from_simulations: True
 programs: []
 start_date: [2017, 1, 1]
