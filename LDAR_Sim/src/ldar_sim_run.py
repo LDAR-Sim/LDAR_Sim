@@ -86,7 +86,6 @@ def ldar_sim_run(simulation):
         # 'init_leaks': [],  # the initial leaks generated at timestep 1
         'empirical_vents': [0],  # vent distribution created during initialization
         'max_leak_rate': None,  # the largest leak in the input file
-        'campaigns': None
     }
 
     # ------------------------Initialize timeseries data----------------------------

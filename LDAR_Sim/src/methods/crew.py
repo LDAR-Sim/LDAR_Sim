@@ -115,15 +115,12 @@ class BaseCrew:
 
         site_detect_results = self.detect_emissions(site)
 
-        campaigns = self.state['campaigns'][site['subtype_code']][m_name]
         if self.config['measurement_scale'].lower() == 'component':
             # Remove site from flag pool if component level measurement
             site.update({'currently_flagged': False})
-            campaigns['n_sites_surveyed'][campaigns['current_campaign']-1] += 1
         elif site_detect_results['found_leak']:
             # all other sites flag
             self.candidate_flags.append(site_detect_results)
-            campaigns['n_sites_screened'][campaigns['current_campaign']-1] += 1
 
         # Update site
         self.timeseries['{}_sites_visited'.format(m_name)][self.state['t'].current_timestep] += 1

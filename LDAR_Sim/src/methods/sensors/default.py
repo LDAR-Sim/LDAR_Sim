@@ -18,7 +18,7 @@
 # along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 #
 # ------------------------------------------------------------------------------
-from method_functions import measured_rate
+from methods.funcs import measured_rate
 from utils.attribution import update_tag
 
 
@@ -52,7 +52,7 @@ def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered
             if (leak['rate'] > self.config['sensor']['MDL'][0]):
                 found_leak = True
                 is_new_leak = update_tag(leak, site, self.timeseries, self.state['t'],
-                                         self.state['campaigns'], self.config['label'], self.id)
+                                         self.config['label'], self.id)
                 # Add these leaks to the 'tag pool'
                 if is_new_leak:
                     site_measured_rate += measured_rate(leak['rate'], self.config['sensor']['QE'])

@@ -40,7 +40,7 @@ def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered
 
         if np.random.binomial(1, prob_detect):
             update_tag(leak, site, self.timeseries, self.state['t'],
-                       self.state['campaigns'], self.config['label'], self.id)
+                       self.config['label'], self.id)
         else:
             site[self.config['label'] + '_missed_leaks'] += 1
 
