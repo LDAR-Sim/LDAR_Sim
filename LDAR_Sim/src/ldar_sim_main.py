@@ -21,12 +21,12 @@
 
 
 import datetime
+import json
 import multiprocessing as mp
 import os
 import shutil
 from pathlib import Path
 
-from batch_reporting import BatchReporting
 from economics.cost_mitigation import cost_mitigation
 from initialization.args import files_from_args, get_abs_path
 from initialization.checks import for_program as check_for_prog
@@ -34,6 +34,8 @@ from initialization.input_manager import InputManager
 from initialization.sims import create_sims
 from initialization.sites import init_generator_files
 from ldar_sim_run import ldar_sim_run
+from out_processing.batch_reporting import BatchReporting
+from out_processing.prog_table import generate as gen_prog_table
 from utils.generic_functions import check_ERA5_file
 
 opening_msg = """
@@ -90,6 +92,7 @@ if __name__ == '__main__':
         sim_outputs = p.starmap(ldar_sim_run, simulations)
 
     # ---- Generate Outputs ----
+
     # Do batch reporting
     if sim_params['write_data']:
         # Create a data object...
@@ -104,6 +107,11 @@ if __name__ == '__main__':
                     reporting_data.batch_plots()
         else:
             print('No reference or base program input...skipping batch reporting and economics.')
+
+    # Generate output table
+    out_table = gen_prog_table(sim_outputs, base_program)
+    with open(out_dir / 'prog_table.json', 'w') as fp:
+        json.dump(out_table, fp)
 
     # Write program metadata
     metadata = open(out_dir / '_metadata.txt', 'w')

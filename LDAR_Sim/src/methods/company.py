@@ -241,7 +241,7 @@ class BaseCompany:
                          vent rate
         """
         self.site_watchlist.pop(site['site']['facility_ID'], None)
-        update_flag(self.config, site, self.timeseries, self.state['t'], self.state['campaigns'],
+        update_flag(self.config, site, self.timeseries, self.state['t'],
                     self.name, self.parameters['emissions']['consider_venting'])
 
     def flag_sites(self):
