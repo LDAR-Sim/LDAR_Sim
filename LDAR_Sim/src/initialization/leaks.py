@@ -23,6 +23,7 @@ from datetime import datetime, timedelta
 
 from numpy import random
 from utils.distributions import leak_rvs
+from utils.unit_converter import gas_convert
 
 
 def generate_leak(program, site, start_date, leak_count, days_active=0):
@@ -40,7 +41,13 @@ def generate_leak(program, site, start_date, leak_count, days_active=0):
     """
     if program['emissions']['leak_file'] \
             and program['emissions']['leak_file_use'] == 'sample':
-        leak_rate = random.choice(program['emissions']['empirical_leaks'])
+        sample_leak_rate = random.choice(program['emissions']['empirical_leaks'])
+        if site['leak_rate_units'][0].lower() != 'gram' and \
+                site['leak_rate_units'][1].lower() != "second":
+            leak_rate = gas_convert(sample_leak_rate, input_metric=site['leak_rate_units'][0],
+                                    input_increment=site['leak_rate_units'][1])
+        else:
+            leak_rate = sample_leak_rate
     else:
         leak_rate = leak_rvs(
             site['leak_rate_dist'],

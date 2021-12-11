@@ -39,6 +39,7 @@ def create_sims(sim_params, programs, generator_dir, in_dir, out_dir, input_mana
             file_loc = generator_dir / "pregen_{}_{}.p".format(i, 0)
             # If there is no pregenerated file for the program
             if not os.path.isfile(file_loc):
+
                 sites, leak_timeseries, initial_leaks = generate_sites(programs[0], in_dir)
         else:
             sites, leak_timeseries, initial_leaks = [], [], []

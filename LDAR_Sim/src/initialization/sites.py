@@ -67,9 +67,10 @@ def get_subtype_dist(program, wd):
     elif program['emissions']['leak_file_use'] == 'fit':
         program['subtypes'] = {0: {
             'leak_rate_dist': fit_dist(
-                samples=program['empirical_leaks'],
-                dist_type='lognorm'),
-            'leak_rate_units': ['gram', 'second']}}
+                samples=program['emissions']['empirical_leaks'],
+                dist_type=program['emissions']['leak_dist_type'],
+                params=program['emissions']['leak_dist_params']),
+            'leak_rate_units': program['emissions']['units']}}
     elif not program['emissions']['subtype_leak_dist_file']:
         program['subtypes'] = {0: {
             'dist_type': program['emissions']['leak_dist_type'],
@@ -114,9 +115,11 @@ def generate_sites(program, in_dir):
     if program['emissions']['leak_file'] is not None:
         program['emissions']['empirical_leaks'] = np.array(
             pd.read_csv(in_dir / program['emissions']['leak_file']).iloc[:, 0])
-
-    get_subtype_dist(program, in_dir)
-
+    if program['emissions']['leak_file_use'] != 'sample':
+        get_subtype_dist(program, in_dir)
+    else:
+        program['subtypes'] = {0: {'dist_type': 'sample',
+                                   'leak_rate_units': program['emissions']['units']}}
     leak_timeseries = {}
     initial_leaks = {}
     # Additional variable(s) for each site
@@ -133,6 +136,12 @@ def generate_sites(program, in_dir):
         initial_leaks.update({site['facility_ID']: initial_site_leaks})
         site_timeseries = generate_leak_timeseries(program, site)
         leak_timeseries.update({site['facility_ID']: site_timeseries})
+        # TEMP: Remove leak dist because it cannot always be pickled and used in multiprocessing
+        site.pop("leak_rate_dist", None)
+    # TEMP: Remove leak dist because it cannot always be pickled and used in multiprocessing
+    for subtype in program['subtypes']:
+        program['subtypes'][subtype]['leak_rate_dist'] = 'generated'
+
     return sites, leak_timeseries, initial_leaks
 
 
@@ -153,7 +162,7 @@ def regenerate_sites(program, prog_0_sites, in_dir):
         new_site = copy.deepcopy(sites[s_idx])
         new_site.update({'cum_leaks': site_or['cum_leaks'],
                          'initial_leaks': site_or['initial_leaks'],
-                         'leak_rate_dist': site_or['leak_rate_dist'],
+                        #  'leak_rate_dist': site_or['leak_rate_dist'],
                          'leak_rate_units': site_or['leak_rate_units']})
         out_sites.append(new_site)
     return out_sites

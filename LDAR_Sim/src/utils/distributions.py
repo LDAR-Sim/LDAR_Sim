@@ -25,7 +25,7 @@ import scipy
 from utils.unit_converter import gas_convert
 
 
-def fit_dist(samples=None, dist_type="lognorm", loc=0, shape=None, scale=None):
+def fit_dist(samples=None, dist_type="lognorm", loc=0, shape=None, scale=None, params=None):
     """Fit a distribution (leak rates) by a distribution type.
     Args:
         samples (list, optional): List of samples (leak rates in g/s)
@@ -40,23 +40,30 @@ def fit_dist(samples=None, dist_type="lognorm", loc=0, shape=None, scale=None):
         Scipy distribution Object: Distribution object, can be called with rvs, pdf,cdf exc.
     """
     dist = getattr(scipy.stats, dist_type)
-    if samples is not None:
-        try:
-            param = dist.fit(samples, floc=loc)
-        except:  # noqa: E722 - scipy custom error, needs to be imported
-            'some distributions cannot take 0 values'
-            samples = [s for s in samples if s > 0]
-            param = dist.fit(samples, floc=loc)
-        loc = param[-2],
-        scale = param[-1]
-        shape = param[:-2]
-    if isinstance(shape, str):
-        # IF shapes a string ie'[2,23.4]', then convert to pyobject (int or list)
-        shape = json.loads(shape)
-    if not isinstance(shape, list):
-        # If the shape is not a list, convert to a list
-        shape = [shape]
-    return dist(*shape, loc=loc, scale=scale)
+    if dist_type != 'gaussian_kde':
+        if samples is not None:
+            try:
+                param = dist.fit(samples, floc=loc)
+            except:  # noqa: E722 - scipy custom error, needs to be imported
+                'some distributions cannot take 0 values'
+                samples = [s for s in samples if s > 0]
+                param = dist.fit(samples, floc=loc)
+            loc = param[-2],
+            scale = param[-1]
+            shape = param[:-2]
+        if isinstance(shape, str):
+            # IF shapes a string ie'[2,23.4]', then convert to pyobject (int or list)
+            shape = json.loads(shape)
+        if not isinstance(shape, list):
+            # If the shape is not a list, convert to a list
+            shape = [shape]
+        return dist(*shape, loc=loc, scale=scale)
+    else:
+        kde = dist(samples)
+        # Set the KDE bandwidth
+        kde.set_bandwidth(bw_method=params[0])
+        kde.set_bandwidth(bw_method=kde.factor / params[1])
+        return kde
 
 
 def leak_rvs(distribution, max_size=None, gpsec_conversion=None):
@@ -71,7 +78,13 @@ def leak_rvs(distribution, max_size=None, gpsec_conversion=None):
     """
 
     while True:
-        leaksize = distribution.rvs()  # Get Random Value from Distribution
+        if distribution.__class__.__name__ == 'gaussian_kde':
+            while True:
+                leaksize = distribution.resample(1)[0][0]
+                if leaksize > 0:
+                    break
+        else:
+            leaksize = distribution.rvs()  # Get Random Value from Distribution
         if gpsec_conversion and  \
                 gpsec_conversion[0].lower() != 'gram' and \
                 gpsec_conversion[1].lower() != "second":
