@@ -87,16 +87,18 @@ def cost_mitigation(simulation_dfs, ref_program, base_program,
         # Find difference from baseline (no LDAR) in tonnes CO2e.
         # Use value for cost/mitigation ratio.
         # Need to verify that alt-program(s) achieve reductions over baseline.
-        for row in economics_df['difference_base_mcf']:
-            if row <= 0:
-                economics_df['dif_base_tonnesCO2e'] = (
-                    ((((abs(
-                        economics_df['difference_base_mcf'])
-                        * 1000) / 35.3147) * 0.678) / 1000) *
-                    economics_df['GWP_CH4'])
-
+        def converter(difference_base_mcf, GWP_CH4):
+            if difference_base_mcf <= 0:
+                temp = ((((abs(
+                    difference_base_mcf
+                    * 1000) / 35.3147) * 0.678) / 1000) * GWP_CH4)
             else:
-                economics_df['dif_base_tonnesCO2e'] = 0
+                temp = 0
+            return temp
+
+        economics_df['dif_base_tonnesCO2e'] = economics_df.apply(
+            lambda row: converter(
+                row['difference_base_mcf'], row['GWP_CH4']), axis=1)
 
         economics_df['cost_mitigation_ratio'] = np.divide(
             economics_df['total_program_cost'],
