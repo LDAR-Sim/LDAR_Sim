@@ -55,6 +55,7 @@ def generate_leak(program, site, start_date, leak_count, days_active=0):
         'lon': float(site['lon']),
         'status': 'active',
         'days_active': days_active,
+        'days_active_prog_start': days_active,
         'tagged': False,
         'component': 'unknown',
         'date_began': start_date,
