@@ -45,7 +45,6 @@ def generate(sim_results, baseline_program):
         {'in': 'lat', 'out': 'lat', 'type': float},
         {'in': 'lon', 'out': 'lon', 'type': float},
         {'in': 'total_emissions_kg', 'out': 'total_emissions_kg', 'type': float},
-        {'in': 'mitigated_leak_emis_kg', 'out': 'mitigated_leak_emis_kg', 'type': float},
         {'in': 'subtype_code', 'out': 'subtype_code', 'type': int},
     ], aggregate=False)
 

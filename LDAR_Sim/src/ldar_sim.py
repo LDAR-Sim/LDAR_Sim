@@ -366,13 +366,12 @@ class LdarSim:
             for site in self.state['sites']:
                 site['active_leak_cnt'] = len(site['active_leaks'])
                 site['repaired_leak_cnt'] = len(site['repaired_leaks'])
-                site['active_leak_emis'] = sum([lk['days_active'] * lk['rate'] * 86.4
-                                                for lk in site['active_leaks']])
-                site['repaired_leak_emis'] = sum([lk['days_active'] * lk['rate'] * 86.4
-                                                  for lk in site['repaired_leaks']])
-                site['mitigated_leak_emis_kg'] = sum(
-                    [(self.parameters['NRd'] - lk['days_active']) * lk['rate'] * 86.4
-                     for lk in site['repaired_leaks']])
+                site['active_leak_emis'] = sum([
+                    (lk['days_active'] - lk['days_active_prog_start']) * lk['rate'] * 86.4
+                    for lk in site['active_leaks']])
+                site['repaired_leak_emis'] = sum([
+                    (lk['days_active'] - lk['days_active_prog_start']) * lk['rate'] * 86.4
+                    for lk in site['repaired_leaks']])
                 site['total_emissions_kg'] = site['active_leak_emis'] + site['repaired_leak_emis']
 
                 leaks += site['active_leaks'] + site['repaired_leaks']
