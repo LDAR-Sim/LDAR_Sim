@@ -64,17 +64,17 @@ class BaseCompany:
         self.timeseries['{}_sites_visited'.format(self.name)] = np.zeros(n_ts)
         self.timeseries['{}_travel_time'.format(self.name)] = np.zeros(n_ts)
         self.timeseries['{}_survey_time'.format(self.name)] = np.zeros(n_ts)
-        if self.config["measurement_scale"] == 'component':
-            # If the technology is for flagging
-            self.timeseries['{}_redund_tags'.format(self.name)] = np.zeros(n_ts)
-        else:
-            self.timeseries['{}_eff_flags'.format(self.name)] = np.zeros(n_ts)
-            self.timeseries['{}_flags_redund1'.format(self.name)] = np.zeros(n_ts)
-            self.timeseries['{}_flags_redund2'.format(self.name)] = np.zeros(n_ts)
-            self.timeseries['{}_flag_wo_vent'.format(self.name)] = np.zeros(n_ts)
+        self.timeseries['{}_redund_tags'.format(self.name)] = np.zeros(n_ts)
+        self.timeseries['{}_missed_leaks'.format(self.name)] = np.zeros(n_ts)
+        self.timeseries['{}_sites_vis_w_leaks'.format(self.name)] = np.zeros(n_ts)
+        self.timeseries['{}_eff_flags'.format(self.name)] = np.zeros(n_ts)
+        self.timeseries['{}_n_tags'.format(self.name)] = np.zeros(n_ts)
+        self.timeseries['{}_flags_redund1'.format(self.name)] = np.zeros(n_ts)
+        self.timeseries['{}_flags_redund2'.format(self.name)] = np.zeros(n_ts)
+        self.timeseries['{}_flag_wo_vent'.format(self.name)] = np.zeros(n_ts)
 
+        if self.config["measurement_scale"] != 'component':
             # Assign the correct follow-up threshold
-
             if self.config['follow_up']['threshold_type'] == "absolute":
                 self.config['follow_up']['thresh'] = self.config['follow_up']['threshold']
             elif self.config['follow_up']['threshold_type'] == "proportion":
@@ -94,7 +94,12 @@ class BaseCompany:
 
         # --- init site specific variables ---
         for site in self.state['sites']:
-            site.update({'{}_t_since_last_LDAR'.format(self.name): 0})
+            survey_min_interval = '{}_min_int'.format(self.name)
+            if survey_min_interval in site:
+                t_since_last_LDAR = site[survey_min_interval]
+            else:
+                t_since_last_LDAR = 0
+            site.update({'{}_t_since_last_LDAR'.format(self.name): t_since_last_LDAR})
             site.update({'{}_surveys_conducted'.format(self.name): 0})
             site.update({'{}_attempted_today?'.format(self.name): False})
             site.update({'{}_surveys_done_this_year'.format(self.name): 0})

@@ -21,11 +21,16 @@
 
 import math
 import numpy as np
+from methods.funcs import measured_rate
 from utils.attribution import update_tag
 
 
 def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered_site_rate,
                      site_rate, venting, equipment_rates):
+    missed_leaks_str = '{}_missed_leaks'.format(self.config['label'])
+    equip_measured_rates = []
+    site_measured_rate = 0
+    found_leak = False
 
     for leak in covered_leaks:
         k = np.random.normal(4.9, 0.3)
@@ -39,9 +44,22 @@ def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered
             prob_detect = 1 / (1 + math.exp(-k * (x - x0)))
 
         if np.random.binomial(1, prob_detect):
-            update_tag(leak, site, self.timeseries, self.state['t'],
-                       self.config['label'], self.id)
+            found_leak = True
+            is_new_leak = update_tag(leak, site, self.timeseries, self.state['t'],
+                                     self.config['label'], self.id)
+            if is_new_leak:
+                site_measured_rate += measured_rate(leak['rate'], self.config['sensor']['QE'])
         else:
-            site[self.config['label'] + '_missed_leaks'] += 1
+            site[missed_leaks_str] += 1
+            self.timeseries[missed_leaks_str][self.state['t'].current_timestep] += 1
 
-    return None
+    site_dict = {
+        'site': site,
+        'leaks_present': covered_leaks,
+        'site_true_rate': site_rate,
+        'site_measured_rate': site_measured_rate,
+        'equip_measured_rates': equip_measured_rates,
+        'vent_rate': venting,
+        'found_leak': found_leak,
+    }
+    return site_dict
