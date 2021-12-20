@@ -20,11 +20,12 @@
 # ------------------------------------------------------------------------------
 
 from pandas import merge
-from numpy import median, inf, nan
+from numpy import median, inf
 from out_processing.clean_results import clean_sim_df, agg_flatten
+from out_processing.meth_table import generate as gen_meth_table
 
 
-def generate(sim_results, baseline_program):
+def generate(sim_results, baseline_program, programs):
     """ Generate output table for web app. This includes the following columnns:
         'program_name', 'sim', 'emis_kg_day_site_med', 'act_leaks_day_site_med',
         'mit_vol_tco2e', 'mit_vol_perc', 'cost', 'cost_mit_vol_tco2e',
@@ -111,7 +112,7 @@ def generate(sim_results, baseline_program):
     sim_progs['mit_vol_perc'] = sim_progs['mit_vol_kg_sum'] / sim_progs['volume_kg_sum']
     sim_progs['cost_mit_vol_tco2e'] = sim_progs['cost_day_sum'] / sim_progs['mit_vol_tco2e']
     sim_progs['emis_nat_perc'] = sim_progs['nat_vol_sum'] / sim_progs['volume_kg_sum']
-    sim_progs.replace([inf, -inf], nan, inplace=True)
+    sim_progs.replace([inf, -inf], "N/A", inplace=True)
 
     sim_progs = sim_progs.rename(columns={
         'cost_day_sum': 'cost', 'nat_vol_count': 'nat_leak_repair_count'})
@@ -124,7 +125,8 @@ def generate(sim_results, baseline_program):
                             include_col_name=True, include_agg_name=False)
     out_table = out_table.drop(columns=['sim'])
 
-    out_table = out_table.set_index('program_name').to_dict('records')
+    out_table = out_table.set_index('program_name', drop=False).to_dict('records')
+    out_meth_table = gen_meth_table(sim_results, programs)
     for p in out_table:
-        p.update({'methods': []})
+        p.update({'methods': out_meth_table[p['program_name']]})
     return out_table

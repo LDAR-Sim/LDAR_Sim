@@ -162,7 +162,7 @@ class LdarSim:
         timeseries['repair_cost'] = np.zeros(params['timesteps'])
         timeseries['verification_cost'] = np.zeros(params['timesteps'])
         timeseries['natural_redund_tags'] = np.zeros(self.parameters['timesteps'])
-        timeseries['natural_tags'] = np.zeros(self.parameters['timesteps'])
+        timeseries['natural_n_tags'] = np.zeros(self.parameters['timesteps'])
         timeseries['new_leaks'] = np.zeros(self.parameters['timesteps'])
         timeseries['cum_repaired_leaks'] = np.zeros(self.parameters['timesteps'])
         timeseries['daily_emissions_kg'] = np.zeros(self.parameters['timesteps'])
@@ -337,13 +337,14 @@ class LdarSim:
         timeseries = self.timeseries
         state = self.state
         new_leaks = 0
+        n_tags = 0
         cum_repaired_leaks = 0
         daily_emissions_kg = 0
         # Update timeseries
         for site in state['sites']:
             new_leaks += site['n_new_leaks']
             cum_repaired_leaks += len(site['repaired_leaks'])
-            # n_tags += site['n_new_leaks']
+            n_tags += site['n_new_leaks']
             # convert g/s to kg/day
             daily_emissions_kg += sum([lk['rate'] for lk in site['active_leaks']]) * 86.4
         cur_ts = [state['t'].current_timestep]
@@ -352,7 +353,7 @@ class LdarSim:
         timeseries['daily_emissions_kg'][cur_ts] = daily_emissions_kg
         timeseries['rolling_cost_estimate'][cur_ts] = sum(timeseries['total_daily_cost']) \
             / (len(timeseries['rolling_cost_estimate']) + 1) * 365 / 200
-        # timeseries['n_tags'][state['t'].current_timestep] = len(state['tags'])
+        timeseries['n_tags'][state['t'].current_timestep] = n_tags
         return
 
     def finalize(self):

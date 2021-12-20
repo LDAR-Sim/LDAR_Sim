@@ -83,7 +83,8 @@ if __name__ == '__main__':
     if sim_params['pregenerate_leaks']:
         generator_dir = in_dir / "generator"
         init_generator_files(generator_dir, input_manager.simulation_parameters, in_dir)
-
+    else:
+        generator_dir = None
     # --- Create simulations ---
     simulations = create_sims(sim_params, programs, generator_dir, in_dir, out_dir, input_manager)
 
@@ -109,9 +110,10 @@ if __name__ == '__main__':
             print('No reference or base program input...skipping batch reporting and economics.')
 
     # Generate output table
-    out_table = gen_prog_table(sim_outputs, base_program)
+    out_prog_table = gen_prog_table(sim_outputs, base_program, programs)
+
     with open(out_dir / 'prog_table.json', 'w') as fp:
-        json.dump(out_table, fp)
+        json.dump(out_prog_table, fp)
 
     # Write program metadata
     metadata = open(out_dir / '_metadata.txt', 'w')
