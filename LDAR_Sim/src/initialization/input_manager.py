@@ -140,7 +140,7 @@ class InputManager:
 
         :param new_parameters_list: a list of new parameter dictionaries
         """
-        programs = []
+        programs = {}
         method_pool = {}
         for new_parameters in new_parameters_list:
             # Address unsupplied parameter level by defaulting it as global
@@ -171,7 +171,7 @@ class InputManager:
                 new_program = copy.deepcopy(default_program_parameters)
                 # HBD - Should be able to change single item in a dict and not he entire dict
                 self.retain_update(new_program, new_parameters)
-                programs.append(new_program)
+                programs.update({new_program['program_name']: new_program})
 
             elif new_parameters['parameter_level'] == 'method':
                 # Create method pool entry that is referenced by the label
@@ -188,14 +188,14 @@ class InputManager:
             sys.exit('No programs are supplied')
 
         # Second, install the programs, checking for specified children methods
-        for program in programs:
+        for p_idx, program in programs.items():
             # Find any orphaned methods that can be installed in this program
             if 'method_labels' in program and program['method_labels'] is not None:
                 for method_label in program['method_labels']:
                     method_found = False
                     for i in method_pool:
                         if method_label == i:
-                            program['methods'].update({i: copy.deepcopy(method_pool[i])})
+                            programs[p_idx]['methods'].update({i: copy.deepcopy(method_pool[i])})
                             method_found = True
 
                     if not method_found:
@@ -217,12 +217,12 @@ class InputManager:
                     method,
                     omit_keys=['default_parameters'])
                 self.retain_update(default_module, method)
-                program['methods'][midx] = default_module
+                programs[p_idx]['methods'][midx] = default_module
 
             # Finally, manually append some keys from globals that are required to be in the program
             # parameters
-            program['start_date'] = self.simulation_parameters['start_date']
-            program['end_date'] = self.simulation_parameters['end_date']
+            programs[p_idx]['start_date'] = self.simulation_parameters['start_date']
+            programs[p_idx]['end_date'] = self.simulation_parameters['end_date']
 
         # Third, install the programs into the simulation parameters
         self.simulation_parameters['programs'] = programs

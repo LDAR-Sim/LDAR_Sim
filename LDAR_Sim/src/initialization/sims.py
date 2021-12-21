@@ -33,23 +33,23 @@ def create_sims(sim_params, programs, generator_dir, in_dir, out_dir, input_mana
     n_simulations = sim_params['n_simulations']
     pregen_leaks = sim_params['pregenerate_leaks']
     preseed_random = sim_params['preseed_random']
+    base_prog = sim_params['baseline_program']
     simulations = []
     for i in range(n_simulations):
         if pregen_leaks:
-            file_loc = generator_dir / "pregen_{}_{}.p".format(i, 0)
+            file_loc = generator_dir / "pregen_{}_{}.p".format(i, base_prog)
             # If there is no pregenerated file for the program
             if not os.path.isfile(file_loc):
-                sites, leak_timeseries, initial_leaks = generate_sites(programs[0], in_dir)
+                sites, leak_timeseries, initial_leaks = generate_sites(programs[base_prog], in_dir)
         else:
             sites, leak_timeseries, initial_leaks = [], [], []
         if preseed_random:
             seed_timeseries = gen_seed_timeseries(sim_params)
         else:
             seed_timeseries = None
-
-        for j in range(len(programs)):
+        for pidx, p in programs.items():
             if pregen_leaks:
-                file_loc = generator_dir / "pregen_{}_{}.p".format(i, j)
+                file_loc = generator_dir / "pregen_{}_{}.p".format(i, pidx)
                 if os.path.isfile(file_loc):
                     # If there is a  pregenerated file for the program
                     generated_data = pickle.load(open(file_loc, "rb"))
@@ -60,7 +60,7 @@ def create_sims(sim_params, programs, generator_dir, in_dir, out_dir, input_mana
                 else:
                     # Different programs can have different site level parameters ie survey
                     # frequency,so re-evaluate selected sites with new parameters
-                    sites = regenerate_sites(programs[j], sites, in_dir)
+                    sites = regenerate_sites(programs[pidx], sites, in_dir)
                     pickle.dump({
                         'sites': sites, 'leak_timeseries': leak_timeseries,
                         'initial_leaks': initial_leaks, 'seed_timeseries': seed_timeseries},
@@ -68,11 +68,11 @@ def create_sims(sim_params, programs, generator_dir, in_dir, out_dir, input_mana
             else:
                 sites = []
 
-            opening_message = "Simulating program {} of {} ; simulation {} of {}".format(
-                j + 1, len(programs), i + 1, n_simulations
+            opening_message = "Simulating program: {} ; simulation {} of {}".format(
+                pidx, i + 1, n_simulations
             )
             simulations.append(
-                [{'i': i, 'program': deepcopy(programs[j]),
+                [{'i': i, 'program': deepcopy(programs[pidx]),
                   'globals':sim_params,
                   'input_directory': in_dir,
                   'output_directory':out_dir,
