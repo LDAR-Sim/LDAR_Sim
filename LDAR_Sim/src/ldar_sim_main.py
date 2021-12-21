@@ -29,7 +29,6 @@ from pathlib import Path
 
 from economics.cost_mitigation import cost_mitigation
 from initialization.args import files_from_args, get_abs_path
-from initialization.checks import for_program as check_for_prog
 from initialization.input_manager import InputManager
 from initialization.sims import create_sims
 from initialization.sites import init_generator_files
@@ -69,8 +68,8 @@ if __name__ == '__main__':
 
     # --- Run Checks ----
     check_ERA5_file(in_dir, programs)
-    has_ref = check_for_prog(ref_program, programs)
-    has_base = check_for_prog(base_program, programs)
+    has_ref = ref_program in programs
+    has_base = base_program in programs
 
     # --- Setup Output folder
     if os.path.exists(out_dir):
@@ -82,7 +81,8 @@ if __name__ == '__main__':
     # to use files, If they say no, the files will be removed
     if sim_params['pregenerate_leaks']:
         generator_dir = in_dir / "generator"
-        init_generator_files(generator_dir, input_manager.simulation_parameters, in_dir)
+        init_generator_files(
+            generator_dir, input_manager.simulation_parameters, in_dir, programs[base_program])
     else:
         generator_dir = None
     # --- Create simulations ---

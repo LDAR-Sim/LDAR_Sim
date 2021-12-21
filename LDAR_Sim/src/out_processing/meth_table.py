@@ -54,13 +54,12 @@ def generate(sim_results, programs):
         '_tag_rate']
 
     ps_idx = ['program_name', 'sim']  # aggregation filter
-    progs = {p['program_name']: p for p in programs}
 
     all_meth_cols = set()
     all_meths = set()
 
     # Get unique methods and unique Column names
-    for pidx, p in progs.items():
+    for pidx, p in programs.items():
         for mindx, m in p['methods'].items():
             for col in targ_cols_pointer:
                 all_meth_cols.add("{}{}".format(mindx, col))
@@ -85,7 +84,7 @@ def generate(sim_results, programs):
 
     # Separate programs into new tables where each row is a method
     prog_table = {}
-    for pidx, p in progs.items():
+    for pidx, p in programs.items():
         targ_rows = stats_daily[stats_daily['program_name'] == pidx]
         meth_table = {}
         for mindx, m in p['methods'].items():
