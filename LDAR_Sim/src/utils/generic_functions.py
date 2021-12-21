@@ -19,7 +19,6 @@
 #
 # ------------------------------------------------------------------------------
 
-import collections
 import datetime
 import os
 import sys
@@ -108,9 +107,8 @@ def get_prop_rate(proportion, rates):
     return (rate)
 
 
-
 def check_ERA5_file(dir, programs):
-    for p in programs:
+    for pidx, p in programs.items():
         my_file = Path(dir / p['weather_file'])
         if my_file.is_file():
             print("Weather data checked. Continuing simulation.")
@@ -252,14 +250,3 @@ def init_orbit_poly(predictor, T1, T2, interval):
         T1 += datetime.timedelta(minutes=interval)
 
     return day_list, polygon_list
-
-
-def flatten_dict(d, parent_key='', sep='_'):
-    items = []
-    for k, v in d.items():
-        new_key = parent_key + sep + str(k) if parent_key else str(k)
-        if isinstance(v, collections.MutableMapping):
-            items.extend(flatten_dict(v, new_key, sep=sep).items())
-        else:
-            items.append((new_key, v))
-    return dict(items)

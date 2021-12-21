@@ -6,7 +6,7 @@ measurement_scale: component
 is_follow_up: False
 sensor: 
   type: default
-  MDL: [0.01]
+  MDL: [0.0362]
 cost:
   per_site: 600
 coverage:

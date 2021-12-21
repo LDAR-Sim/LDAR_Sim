@@ -32,8 +32,8 @@ from initialization.leaks import (generate_initial_leaks,
 from utils.distributions import fit_dist, unpackage_dist
 
 
-def init_generator_files(generator_dir, sim_params, in_dir):
-    sites_file = sim_params['programs'][0]['infrastructure_file']
+def init_generator_files(generator_dir, sim_params, in_dir, baseline_prog):
+    sites_file = baseline_prog['infrastructure_file']
     sites_in = pd.read_csv(in_dir / sites_file)
     sim_sites = sites_in.to_dict('records')
     if not os.path.exists(generator_dir):
