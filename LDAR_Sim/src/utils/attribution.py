@@ -46,6 +46,7 @@ def update_tag(leak, site, timeseries, time_obj, company, crew_id=1):
         leak['date_tagged'] = time_obj.current_date
         leak['tagged_by_company'] = company
         leak['tagged_by_crew'] = crew_id
+        timeseries['{}_n_tags'.format(company)][time_obj.current_timestep] += 1
         # if initially flagged give credit to flagging company
         if site['currently_flagged'] and site['flagged_by'] is not None:
             leak['init_detect_by'] = site['flagged_by']
@@ -53,7 +54,6 @@ def update_tag(leak, site, timeseries, time_obj, company, crew_id=1):
         else:
             leak['init_detect_by'] = company
             leak['init_detect_date'] = leak['date_tagged']
-        # timeseries['{}_tags'.format(company)][time_obj.current_timestep] += 1
     return True
 
 

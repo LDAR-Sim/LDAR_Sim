@@ -30,7 +30,8 @@ def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered
     equip_measured_rates = []
     site_measured_rate = 0
     found_leak = False
-    m_name = self.config['label']
+    n_leaks = len(covered_leaks)
+    missed_leaks_str = '{}_missed_leaks'.format(self.config['label'])
     # extract the wind speed on site based on site's geo indices
     site_lat = np.float16(site['lat'])
     site_lon = np.float16(site['lon'])
@@ -56,7 +57,8 @@ def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered
 
     else:
         site_dict = None
-        site['{}_missed_leaks'.format(m_name)] += len(covered_leaks)
+        site[missed_leaks_str] += n_leaks
+        self.timeseries[missed_leaks_str][self.state['t'].current_timestep] += n_leaks
 
     site_dict = {
         'site': site,
