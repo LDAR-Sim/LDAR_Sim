@@ -105,11 +105,11 @@ class LdarSim:
             for m_label, m_obj in params['methods'].items():
                 # Site parameter overwrite of RS and Time (used for sensitivity analysis)
                 m_RS = '{}_RS'.format(m_label)
-                if m_RS in m_obj:
-                    site[m_RS] = m_obj[m_RS]
+                if m_obj['RS'] is not None:
+                    site[m_RS] = m_obj['RS']
                 m_time = '{}_time'.format(m_label)
-                if m_time in m_obj:
-                    site[m_time] = m_obj[m_time]
+                if m_obj['time'] is not None:
+                    site[m_time] = m_obj['time']
                 if add_subtype:
                     if m_RS in site:
                         # if scheduled capture the RS value
