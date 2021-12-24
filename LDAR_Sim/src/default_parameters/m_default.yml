@@ -44,3 +44,5 @@ weather_envs:
   temp: [-40.0, 40.0]
   wind: [0.0, 10.0]  
 version: '2.0'
+RS: '_placeholder_int_'
+time:  '_placeholder_int_'

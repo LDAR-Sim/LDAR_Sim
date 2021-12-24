@@ -14,3 +14,4 @@ coverage:
   temporal: 0.9
 t_bw_sites: 
   vals: [45]
+time: 120

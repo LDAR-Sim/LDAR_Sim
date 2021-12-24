@@ -3,7 +3,7 @@ parameter_level: 'global'
 input_directory: './inputs'
 output_directory: './outputs'
 n_processes:  '_placeholder_int_'
-n_simulations: 3
+n_simulations: 2
 write_data: True
 make_plots: True
 print_from_simulations: True
