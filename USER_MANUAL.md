@@ -59,9 +59,9 @@ The **Root** folder includes all code, inputs, and outputs necessary to run LDAR
 
 The **inputs** folder contains input files required to run LDAR-Sim. These include airport files, empirical leak and vent data, facility lists, facility type defaults, and other inputs.
 
-The **outputs** folder stores all output data files produced by LDAR-Sim. The folder is cleaned, and added if required each time ldar_sim_main is run.
+The **outputs** folder stores all output data files produced by LDAR-Sim. The folder is cleaned, and added if required each time ldar_sim_main.py is run.
 
-The **src** folder stores the python source code. The main code of LDAR-Sim, LDAR_sim_main.py is stored in the base folder of src.
+The **src** folder stores the python source code. The main code of LDAR-Sim, ldar_sim_main.py, is stored in the base folder of src.
 
 The **simulations** stores >V2 input parameter files.
 
