@@ -1,6 +1,6 @@
 # ------------------------------------------------------------------------------
 # Program:     The LDAR Simulator (LDAR-Sim)
-# File:        methods.deployment.OGI_Camera
+# File:        methods.deployment.OGI_camera_rk
 # Purpose:     OGI company specific deployment classes and methods based on RK (2018)
 #
 # Copyright (C) 2018-2021  Intelligent Methane Monitoring and Management System (IM3S) Group
@@ -27,6 +27,31 @@ from utils.attribution import update_tag
 
 def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered_site_rate,
                      site_rate, venting, equipment_rates):
+    """ OGI camera method based on Ravikumar 2018
+
+    Args:
+        site (site obj): Site in which crew is working at
+        covered_leaks (list): list of leak objects that can be detected by the crew
+        covered_equipment_rates (list): list of equipment leak rates that can be
+                                        detected by the crew
+        covered_site_rate (float): total site emissions from leaks that are observable
+                                    from a crew
+        site_rate (float): total site emissions from leaks all leaks at site
+        venting (float): total site emissions from venting
+        equipment_rates (list): list of equipment leak rates for each equipment group
+
+    Returns:
+        site report (dict):
+                site  (site obj): same as input
+                leaks_present (list): same as covered leaks input
+                site_true_rate (float): same as site_rate
+                site_measured_rate (float): total emis from all leaks measured
+                equip_measured_rates (list): total of all leaks measured for each equip group
+                venting (float): same as input
+                found_leak (boolean): Did the crew find at least one leak at the site
+
+
+    """
     missed_leaks_str = '{}_missed_leaks'.format(self.config['label'])
     equip_measured_rates = []
     site_measured_rate = 0

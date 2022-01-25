@@ -1196,7 +1196,7 @@ The follow-up delay parameter can be set to require multiple measurements for a 
 
 ### parameter_level
 
-_see Global Inputs - parameter_level_
+see Global Inputs - parameter_level
 
 ### reporting_delay
 
@@ -1298,7 +1298,7 @@ _see Global Inputs - parameter_level_
 
 **Notes of caution:** A single value for MDL is used here, although a parameter list could be used that defines a sigmoidal probability of detection curve. These are examples and with more experimental data, probability of detection surfaces can be generated that can estimate detection probabilities as a function of numerous relevant variables (e.g., distance, wind speed, emission rate, etc.)
 
-#### MDL (OGI)
+#### MDL (ogi_camera_rk)
 
 **Data type:** List of floats
 
@@ -1315,6 +1315,25 @@ where f = is the fraction of leaks detected, _x_ is the emission rate in grams o
 **Notes on acquisition:** We recommend extensive controlled release testing under a range of representative release rates and conditions to establish detection limits. Given the amount of work required to collect this information, we recommend using historical estimates.
 
 **Notes of caution:** Detection probabilities for OGI cameras have been shown to vary with operator experience, wind speed, scene background, and other variables. Estimates from Ravikumar et al. (2018) are experimentally derived but are likely low because (i) the OGI inspector knew where to look, (ii) measurements were performed over only 1 week of good conditions, (iii) OGI cameras were tripod mounted, and (iv) videos were analyzed by experts after data collection. Estimates from Zimmerle et al. (2020) are an order of magnitude higher, and likely closer to reality. However, this estimate applies only to experienced inspectors with over 700 site inspections under their belts, so the true median detection across all inspectors may be lower. Furthermore, the Zimmerle study for experienced inspectors could still represent an underestimate as (i) weather conditions were relatively good, (ii) OGI inspectors were participating in a formal study and were likely very focused, and (iii) many of the leaks were odorized. These results would therefore not include laziness, neglect, or missing of leaks from difficult to access areas. See Section 3.8 for more information on detection limits, including the use of single values or probability surfaces.
+
+#### MDL (ogi_camera_zim)
+
+**Data type:** List of floats
+
+**Default input:** [0.24, 0.39]
+
+**Description:** A list of parameters [a, b] that define the leak rate based probability of detection of a leak. The two parameters define power law cumulative probability function as described in Zimmerle (2020), where both a and b are empirical parameters that define the shape of the curve, and are based on the camera crew experience.The probability detection of a leak with OGI is calculated using the following function:
+
+$$
+p = a*x^{b}
+$$
+
+where p is the probability of detection, _x_ is the emission rate in grams of methane per second. The default
+parameters used are that associated with the moderate ability to detect.
+
+**Notes on acquisition:** We recommend extensive controlled release testing under a range of representative release rates and conditions to establish detection limits. Given the amount of work required to collect this information, we recommend using historical estimates.
+
+**Notes of caution:** Detection probabilities for OGI cameras have been shown to vary with operator experience, wind speed, scene background, and other variables Parameters are experimentally derived. The Zimmerle study for experienced inspectors could still represent an underestimate as (i) weather conditions were relatively good, (ii) OGI inspectors were participating in a formal study and were likely very focused, and (iii) many of the leaks were odorized. These results would therefore not include laziness, neglect, or missing of leaks from difficult to access areas. See Section 3.8 for more information on detection limits, including the use of single values or probability surfaces.
 
 #### MDL (GHGSAT1)
 
@@ -1437,6 +1456,7 @@ Method weather envelopes
 **Default input:** N/A
 
 **Description:** The name of satellite. The following are accepted:
+
 - default
 - GHGSAT-D
 - GOSAT (IBUKI)
@@ -1449,8 +1469,8 @@ Method weather envelopes
 
 ### version (method level)
 
-_see Global Inputs - version_
-s
+see Global Inputs - version
+
 --------------------------------------------------------------------------------
 
 ## 8\. Data sources, modelling confidence and model sensitivity
