@@ -3,10 +3,10 @@ parameter_level: 'program'
 methods: {}
 method_labels: []
 program_name: 'default'
-weather_file: 'ERA5_AB_lowres_2015_2020.nc'
-weather_is_hourly: False
-infrastructure_file: 'facility_list_template.csv'
-site_samples: 50
+weather_file: 'weather_marcellus.nc'
+weather_is_hourly: True
+infrastructure_file: 'facilities_marcellus.csv'
+site_samples: 100
 subtype_times_file: "_placeholder_str_"
 consider_weather: False
 repair_delay: 14
