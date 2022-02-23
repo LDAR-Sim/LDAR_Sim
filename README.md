@@ -54,7 +54,13 @@ The easiest way to prepare your python installation is to use [pipenv](https://p
 
 `pipenv install`
 
-To make things easier, we have included windows binaries for the specific versions of cftime, GDAL, netCDF4, and pyproj. 
+To make things easier, we have included windows binaries for the specific versions of cftime, GDAL, netCDF4, and pyproj. However, the latest updated Pipfile doesn't need any binaries packages, and it has been checked on MacOS Monterey V12.2.
+
+**Note** that the main change in Pipfile is updating GDAL from v3.0.4 to v3.4.1. The compatibility of GDAL 3.4.1 has not been fully tested yet. However, it works properly with all the files in the simulations folder.
+
+To activate the environment type:
+
+`pipenv shell`
 
 #### Step 2 Alternative: Using Requirements.txt
 An alternative approach to using the PIPfile and the prebuilt wheels is by using Conda (Conda-forge) and the requirements file included in the "install folder" Follow the directions included in the Setting Up LDAR Sim Dev Environment file. The requirements.txt file can also be used with PIP and pipenv, but Python and GDAL (versions listed in the requirements file) should be installed seperately.
@@ -72,7 +78,7 @@ Checkout the [user manual](USER_MANUAL.md) for more info.
 The main program is a python script called LDAR_Sim_main.py. Within the virtual environent (or where all py packages are installed) run:<br>
  ```Python LDAR_Sim_main.py {G_XXX} {P_XXX} {M_XXX} {M_YYY}``` <br> where each arguement is a path too a global, program, or method input parameter file. for example:<br>
  ```Python LDAR_Sim_main.py ./simulations/G_.yaml ./simulations/P_air.yaml ./simulations/M_aircraft.yaml ./simulations/M_OGI_FU.yaml```<br>alternatively, an entire directory can be passed using the "-P", "--in_dir" flags where all files within the directory are added to the program. for example:<br>
- ```Python LDAR_Sim_main.py --in_dir ./simulations.py``` <br> will load all files in the simulations folder into the program. <br><br>
+ ```Python LDAR_Sim_main.py --in_dir ./simulations``` <br> will load all files in the simulations folder into the program. <br><br>
  Output files, including maps, charts and csv files will be generated and placed in the output folder. <br><br>
  **Note**: that you can use absolute references or relative, where the the root folder is this folder.
 
