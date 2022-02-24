@@ -22,4 +22,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ldar-sim
-          path: ./ldar-sim.zip
+          path: ./LDAR_Sim/ldar-sim.zip
