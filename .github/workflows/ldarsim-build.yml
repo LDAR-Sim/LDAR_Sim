@@ -1,0 +1,25 @@
+name: ldar-sim (python package)
+
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    container: python:3.8-buster
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: |
+          apt update
+          apt install -y build-essential
+          apt install -y python3-dev
+          apt install -y zip
+          pip3 install pipenv
+      - name: Build deployment package
+        working-directory: ./LDAR_Sim
+        run: pipenv run build
+      - name: Upload deployment package
+        uses: actions/upload-artifact@v2
+        with:
+          name: ldar-sim
+          path: ./LDAR_Sim/ldar-sim.zip
