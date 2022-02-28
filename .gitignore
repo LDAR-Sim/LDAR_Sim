@@ -9,6 +9,7 @@
 *.nc
 *.p
 **/build/
+*.DS_Store
 # Include
 !ERA5_2017_2020_AB.nc
 **/generator/
