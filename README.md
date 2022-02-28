@@ -54,9 +54,9 @@ The easiest way to prepare your python installation is to use [pipenv](https://p
 
 `pipenv install`
 
-To make things easier, we have included windows binaries for the specific versions of cftime, GDAL, netCDF4, and pyproj. However, the latest updated Pipfile doesn't need any binaries packages, and it has been checked on MacOS Monterey V12.2.
+We have updated Pipfile which included windows binaries for the specific versions of cftime, GDL, netCDF4, and pyproj. However, the latest updated Pipfile doesn't need any binaries packages.
 
-**Note** that the main change in Pipfile is updating GDAL from v3.0.4 to v3.4.1. The compatibility of GDAL 3.4.1 has not been fully tested yet. However, it works properly with all the files in the simulations folder.
+**Note**: The main change in Pipfile is removing GDAL library as it didn't import in any file. The current package works properly with all the files in the simulations folder.
 
 To activate the environment type:
 
