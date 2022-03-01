@@ -9,5 +9,7 @@
 *.nc
 *.p
 # Include
-!ERA5_2017_2020_AB.nc
+!weather_alberta.nc
+!weather_marcellus.nc
+!weather_permian.nc
 **/generator/

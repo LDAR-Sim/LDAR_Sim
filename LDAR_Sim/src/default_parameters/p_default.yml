@@ -3,9 +3,9 @@ parameter_level: 'program'
 methods: {}
 method_labels: []
 program_name: 'default'
-weather_file: 'weather_marcellus.nc'
+weather_file: 'weather_alberta.nc'
 weather_is_hourly: True
-infrastructure_file: 'facilities_marcellus.csv'
+infrastructure_file: 'facilities_alberta.csv'
 site_samples: 100
 subtype_times_file: "_placeholder_str_"
 consider_weather: False
