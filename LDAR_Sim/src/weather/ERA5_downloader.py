@@ -50,14 +50,14 @@ https://confluence.ecmwf.int/display/COPSRV/CDS+web+API+%28cdsapi%29+training
 '''
 
 # Input
-facil_file = "./inputs/facility_list_template.csv"
+facil_file = "./inputs/facilities_permian.csv"
 root_dir = Path(os.path.dirname(os.path.realpath(__file__))).parent.parent
 facilities = pd.read_csv(root_dir/facil_file)
 
 # Inputs
 start_year = 2019
 end_year = 2020
-region_name = 'AB'
+region_name = 'perm'
 res = [1, 1]  # Resolution in degrees
 vars = [
     'total_precipitation', '10m_u_component_of_wind',

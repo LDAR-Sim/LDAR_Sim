@@ -95,21 +95,25 @@ if __name__ == '__main__':
     # ---- Generate Outputs ----
 
     # Do batch reporting
+    print("....Generating output data")
     if sim_params['write_data']:
         # Create a data object...
         if has_ref & has_base:
+            print("....Generating cost mitigation outputs")
             cost_mitigation = cost_mitigation(sim_outputs, ref_program, base_program, out_dir)
             reporting_data = BatchReporting(
                 out_dir, sim_params['start_date'], ref_program, base_program)
             if sim_params['n_simulations'] > 1:
                 reporting_data.program_report()
                 if len(programs) > 1:
+                    print("....Generating program comparison plots")
                     reporting_data.batch_report()
                     reporting_data.batch_plots()
         else:
             print('No reference or base program input...skipping batch reporting and economics.')
 
     # Generate output table
+    print("....Exporting summary statistic tables")
     out_prog_table = gen_prog_table(sim_outputs, base_program, programs)
 
     with open(out_dir / 'prog_table.json', 'w') as fp:
