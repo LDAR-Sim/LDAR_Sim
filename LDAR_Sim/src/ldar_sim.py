@@ -27,7 +27,7 @@ import warnings
 
 import numpy as np
 import pandas as pd
-from math import floor
+from math import floor, ceil
 from weather.daylight_calculator import DaylightCalculatorAve
 from geography.vector import grid_contains_point
 from initialization.leaks import generate_initial_leaks, generate_leak
@@ -56,6 +56,7 @@ class LdarSim:
         self.active_leaks = []
 
         #  --- state variables ---
+        self.state['campaigns'] = {}
         state['candidate_flags'] = {}
         # Read in data files
         if params['emissions']['leak_file'] is not None:
@@ -91,6 +92,7 @@ class LdarSim:
             random.shuffle(state['sites'])
 
         n_subtype_rs = {}
+        n_screening_rs_sets = {}
         sites_per_subtype = {}
         # Additional variable(s) for each site
         for site in state['sites']:
@@ -107,6 +109,12 @@ class LdarSim:
                 m_RS = '{}_RS'.format(m_label)
                 if m_obj['RS'] is not None:
                     site[m_RS] = m_obj['RS']
+                if m_RS in site and m_obj['measurement_scale'] != 'component':
+                    if m_label not in n_screening_rs_sets:
+                        n_screening_rs_sets.update({m_label: site[m_RS]})
+                    elif n_screening_rs_sets[m_label] != site[m_RS]:
+                        n_screening_rs_sets.update({m_label: "varies"})
+
                 m_time = '{}_time'.format(m_label)
                 if m_obj['time'] is not None:
                     site[m_time] = m_obj['time']
@@ -151,11 +159,45 @@ class LdarSim:
                     range(len(state['weather'].longitude)),
                     key=lambda i: abs(state['weather'].longitude[i] - float(site['lon']) % 360))
             })
+
             in_grid, exit_msg = grid_contains_point(
                 [site['lat'], site['lon']],
                 [state['weather'].latitude, state['weather'].longitude])
             if not in_grid:
                 sys.exit(exit_msg)
+        n_sites = len(state['sites'])
+
+        # Setup Campaigns
+        for midx, rs in n_screening_rs_sets.items():
+            if rs != "varies":
+                days_in_campaign = int(floor(365/rs))
+                n_campaigns = int(ceil(params['timesteps']/days_in_campaign)+1)
+                min_followups = params['methods'][midx]['follow_up']['min_followups']
+                min_followup_check = params['methods'][midx]['follow_up']['min_followup_check']
+                if len(min_followups) == 0:
+                    # Visit all sites
+                    min_followups_sites = np.zeros(n_campaigns)
+                elif len(min_followups) == 1:
+                    # apply value to all campaigns
+                    min_followups_sites = np.ones(n_campaigns)*min_followups[0]*n_sites
+                else:
+                    reps = int(ceil(n_campaigns/len(min_followups)))
+                    min_followups_sites = np.tile(np.array(min_followups) * n_sites, reps)
+
+                self.state['campaigns'].update(
+                    {midx:
+                        {
+                            'n_days': days_in_campaign,
+                            'min_followups': min_followups_sites,
+                            'n_campaigns': n_campaigns,
+                            'current_campaign': 0,
+                            'schedule': [cnt*days_in_campaign
+                                         for cnt in range(n_campaigns)],
+                            'min_FU_check': min_followup_check,
+                            'FU_check_ts': days_in_campaign-min_followup_check,
+                            'sites_followed_up': set([])
+                        }
+                     })
 
         #  --- timeseries variables ---
         timeseries['total_daily_cost'] = np.zeros(params['timesteps'])
@@ -223,6 +265,13 @@ class LdarSim:
 
             # Change negatives to zero
             state['empirical_vents'] = [0 if i < 0 else i for i in state['empirical_vents']]
+
+        # HBD this is sooooo hacky Repair time seems like its wron
+        if len(self.state['campaigns']) > 0:
+            self.parameters['methods'].update({
+                'makeup': {
+                    'reporting_delay': 0}
+            })
         return
 
     def update(self):
@@ -236,13 +285,47 @@ class LdarSim:
         self.deploy_crews()  # Find leaks
         self.repair_leaks()  # Repair leaks
         self.report()  # Assemble any reporting about model state
+
+        # After reporting update campaign
+
         return
 
     def update_state(self):
         """
         update the state of active leaks
         """
+        # Set Check and update campaigns
+        cur_ts = self.state['t'].current_timestep
+        if len(self.state['campaigns']) > 0:
+            for midx, cpgn in self.state['campaigns'].items():
+                next_camp_start = cpgn['schedule'][cpgn['current_campaign']+1]
+                if cpgn['current_campaign'] < cpgn['n_campaigns'] \
+                        and cur_ts > next_camp_start:
+                    # Move to next Campaign
+                    self.state['campaigns'][midx].update({
+                        'sites_followed_up': set([]),
+                        'current_campaign': cpgn['current_campaign']+1,
+                        'FU_check_ts': next_camp_start + (
+                            cpgn['n_days'] - cpgn['min_FU_check']
+                        ),
+                    })
+                if cur_ts == cpgn['FU_check_ts']:
+                    # Move flag sites
+                    FU_sites = [s for s in self.state['sites']
+                                if s['facility_ID'] in cpgn['sites_followed_up']]
+                    Non_FU_sites = [s for s in self.state['sites']
+                                    if s['facility_ID'] not in cpgn['sites_followed_up']]
+                    makeup_cnt = cpgn['min_followups'][cpgn['current_campaign']] - len(FU_sites)
+                    if makeup_cnt < 0:
+                        makeup_cnt = 0
+                    flag_sites = random.sample(Non_FU_sites, int(makeup_cnt))
+                    for site in flag_sites:
+                        site['currently_flagged'] = True
+                        site['date_flagged'] = self.state['t'].current_date
+                        site['flagged_by'] = 'makeup'
+
         self.active_leaks = []
+
         for site in self.state['sites']:
             for leak in site['active_leaks']:
                 leak['days_active'] += 1
