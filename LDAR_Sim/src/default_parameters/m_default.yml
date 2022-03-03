@@ -9,6 +9,8 @@ coverage:
   temporal: 1.0
 deployment_type: '_placeholder_str_'
 follow_up:
+  min_followups: ['_placeholder_float_']
+  min_followup_check: 0
   delay: 0
   instant_threshold: '_placeholder_float_'
   instant_threshold_type: 'absolute'

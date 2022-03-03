@@ -57,7 +57,7 @@ def update_tag(leak, site, timeseries, time_obj, company, crew_id=1):
     return True
 
 
-def update_flag(config, site, timeseries, time_obj,  company, consider_venting):
+def update_flag(config, site, timeseries, time_obj, campaign, company, consider_venting=False):
     """ Updates the flag on a site. If a site is not flagged
         This funciton will flag. If it is already flagged, the
         site will be marked as either"
@@ -82,6 +82,8 @@ def update_flag(config, site, timeseries, time_obj,  company, consider_venting):
         site_obj['currently_flagged'] = True
         site_obj['date_flagged'] = time_obj.current_date
         site_obj['flagged_by'] = company
+        if company in campaign:
+            campaign[company]['sites_followed_up'].add(site_obj['facility_ID'])
         timeseries['{}_eff_flags'.format(company)][time_obj.current_timestep] += 1
 
         # Check to see if the site has any leaks that are active and tagged
