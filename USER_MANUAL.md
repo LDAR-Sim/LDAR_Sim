@@ -120,7 +120,7 @@ However, it may be more convenient once you are familiar with how parameter file
 
 All simulations using multiple parameter files are created the following way:
 
-1. Default parameters in the `inputs` folder are read into the model.
+1. Default parameters in the `LDAR_Sim/src/default_parameters` folder are read into the model.
 2. Each parameter file is read on top of the respective parameter set, updating only the keys that are supplied.
 
 Parameter files are read on top of each other, starting with the default set of parameters. How does this work? Here is an example `parameter_file1.yaml`:
