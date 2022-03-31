@@ -35,7 +35,7 @@ class InputManager:
         """
         g_param_file = './src/default_parameters/g_default.yml'
         with open(g_param_file, 'r') as f:
-            default_global_parameters = yaml.load(f.read(), Loader=yaml.FullLoader)
+            default_global_parameters = yaml.load(f.read(), Loader=yaml.SafeLoader)
         self.simulation_parameters = copy.deepcopy(default_global_parameters)
         # Simulation parameter are parameters that are set up for this simulation
         return
@@ -109,7 +109,7 @@ class InputManager:
             if extension == '.json':
                 new_parameters = json.loads(f.read())
             elif extension == '.yaml' or extension == '.yml':
-                new_parameters = yaml.load(f.read(), Loader=yaml.FullLoader)
+                new_parameters = yaml.load(f.read(), Loader=yaml.SafeLoader)
             else:
                 sys.exit('Invalid parameter file format: ' + filename)
 
@@ -165,7 +165,7 @@ class InputManager:
                     def_file = new_parameters['default_parameters']
                 p_param_file = './src/default_parameters/{}'.format(def_file)
                 with open(p_param_file, 'r') as f:
-                    default_program_parameters = yaml.load(f.read(), Loader=yaml.FullLoader)
+                    default_program_parameters = yaml.load(f.read(), Loader=yaml.SafeLoader)
                 check_types(default_program_parameters, new_parameters, omit_keys=['methods'])
                 # Copy all default program parameters to build upon by calling update, then append
                 new_program = copy.deepcopy(default_program_parameters)
@@ -211,7 +211,7 @@ class InputManager:
                     def_file = new_parameters['default_parameters']
                 m_param_file = './src/default_parameters/{}'.format(def_file)
                 with open(m_param_file, 'r') as f:
-                    default_module = yaml.load(f.read(), Loader=yaml.FullLoader)
+                    default_module = yaml.load(f.read(), Loader=yaml.SafeLoader)
                 check_types(
                     default_module,
                     method,
