@@ -6,7 +6,7 @@ measurement_scale: equipment
 is_follow_up: False
 sensor: 
   type: default
-  MDL: [1.5]
+  MDL: [1.4]
 cost:
   per_site: 200
 coverage:

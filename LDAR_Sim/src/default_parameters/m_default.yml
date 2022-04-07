@@ -13,6 +13,9 @@ follow_up:
   instant_threshold: '_placeholder_float_'
   instant_threshold_type: 'absolute'
   interaction_priority: 'threshold'
+  min_followups: ['_placeholder_float_']
+  min_followup_type: 'annual'
+  min_followup_days_to_end: 0
   proportion: 1.0
   redundancy_filter: 'recent'
   threshold: 0.0
