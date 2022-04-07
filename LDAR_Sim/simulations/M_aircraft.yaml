@@ -14,8 +14,5 @@ coverage:
   temporal: 0.9
 t_bw_sites:
   vals: [5]
-RS: 4
+RS: 2
 time: 1
-follow_up:
-  min_followups: [1.0, 0.5, 0.5, 0.5]
-  min_followup_check: 10

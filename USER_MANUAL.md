@@ -1084,6 +1084,41 @@ Method costs. Currency is not important but must be consistent across all inputs
 
 **Notes of caution:** N/A
 
+#### min_followups
+
+**Data type:** array of Numerics
+
+**Default input:** []
+
+**Description:** The percentage (0.0-1.0) of sites that must be flagged per survey. IF a screening technology flags 10% of sites during a campaign and the minimum_followup for the campaign, is 0.5, then 40% of all sites will be selected at random and flagged prior to the end of the campaing. If min_followup_type is 'campaign' then each value corresponds to the current survey within the year, for example if RS=2 each set of site surveys require a value. If min_followup_type is 'annual' then a single value (in the array) is expected for the entire year, regardless of RS value. Surveys will be performed n days prior to the end of a campaign / year based on min_followup_days_to_end. Note: Not enabled by default (empty string)
+
+**Notes on acquisition:** Often based on standards, ie. EPA proposed 6 screenings with minimum_followup of 1 were min_followup_type is annual.
+**Notes of caution:** 
+
+#### min_followup_type
+
+**Data type:** string - 'annual' or 'campaign
+
+**Default input:** 'annual'
+
+**Description:** see `min_followups`
+
+**Notes on acquisition:** 
+
+**Notes of caution:** 
+
+#### min_followup_days_to_end
+
+**Data type:** Integer
+
+**Default input:** 0
+
+**Description:** Number of days before the end of the campaign, year to schedule makeup Followup surveys. 
+
+**Notes on acquisition:** 
+
+**Notes of caution:** Check outputs to make sure that all scheduled makeup surveys are completed on time.
+
 #### proportion
 
 **Data type:** Numeric

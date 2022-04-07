@@ -168,12 +168,18 @@ class LdarSim:
         n_sites = len(state['sites'])
 
         # Setup Campaigns
+
         for midx, rs in n_screening_rs_sets.items():
-            if rs != "varies":
-                days_in_campaign = int(floor(365/rs))
+            meth = params['methods'][midx]
+            if rs != "varies" or meth['follow_up']['min_followup_type'] == 'annual':
+                if meth['follow_up']['min_followup_type'] == 'campaign':
+                    days_in_campaign = int(floor(365/rs))
+                else:
+                    days_in_campaign = 365
                 n_campaigns = int(ceil(params['timesteps']/days_in_campaign)+1)
-                min_followups = params['methods'][midx]['follow_up']['min_followups']
-                min_followup_check = params['methods'][midx]['follow_up']['min_followup_check']
+                min_followups = meth['follow_up']['min_followups']
+                min_FU_d_to_end = meth['follow_up'][
+                    'min_followup_days_to_end']
                 if len(min_followups) == 0:
                     # Visit all sites
                     min_followups_sites = np.zeros(n_campaigns)
@@ -193,8 +199,8 @@ class LdarSim:
                             'current_campaign': 0,
                             'schedule': [cnt*days_in_campaign
                                          for cnt in range(n_campaigns)],
-                            'min_FU_check': min_followup_check,
-                            'FU_check_ts': days_in_campaign-min_followup_check,
+                            'min_FU_check': min_FU_d_to_end,
+                            'FU_check_ts': days_in_campaign-min_FU_d_to_end,
                             'sites_followed_up': set([])
                         }
                      })
