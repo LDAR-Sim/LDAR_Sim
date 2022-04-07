@@ -48,24 +48,80 @@ Read and understand the LDAR-Sim LICENSE (MIT License).
 Read the user manual [manual](USER_MANUAL.md)
 Read [Fox et al 2020](https://www.sciencedirect.com/science/article/pii/S0959652620352811) to familiarize yourself with LDAR-Sim fundamentals.
 
-#### Step 2: Libraries and data
-Install python 3.x. and ensure all required python modules/packages/libraries are available, as listed in the Pipfile.
-The easiest way to prepare your python installation is to use [pipenv](https://pipenv.pypa.io/en/latest/) to manage a virtual environment that has the required packages. Navigate to the src directory and type: 
+#### Step 2: Installing Packages with Conda
+Using Conda (Conda-forge) and the requirements file included in the "install folder" Follow the directions included in the Setting Up LDAR Sim Dev Environment file. The requirements.txt file can also be used with PIP and pipenv, but Python should be installed seperately.
 
-`pipenv install`
+- Install Miniconda3 newest version
+- From Conda Shell: cd into LDAR-Sim/install
+  `conda config --add channels conda-forge`
+  `conda config --set channel_priority strict1`
+  `conda create -n ldar_sim --file requirements.txt`
+  `conda activate ldar_sim`
 
-To make things easier, we have included windows binaries for the specific versions of cftime, GDAL, netCDF4, and pyproj. 
+Alternatively pip and pipenv can be used to install there requirements file with:
+  `pip install ldar_sim -r requirements.txt`
 
-#### Step 2 Alternative: Using Requirements.txt
-An alternative approach to using the PIPfile and the prebuilt wheels is by using Conda (Conda-forge) and the requirements file included in the "install folder" Follow the directions included in the Setting Up LDAR Sim Dev Environment file. The requirements.txt file can also be used with PIP and pipenv, but Python and GDAL (versions listed in the requirements file) should be installed seperately.
+if you are using satellite modules orbit predictor needs to be added to environement
+  `pip install orbit_predictor==1.14.2`
+
 
 #### Step 3: Get Weather and Facilitity Data
 
-The application requires both facility and weather data to run. We have included sample facilities and weather data for Alberta as an example. Checkout the [user manual](USER_MANUAL.md) for more information on formating of facility data. Weather data can either be downloaded directly or through IM3S's s3 database. ERA5 data can be downloaded directly from copernicus using the /module_code/weather/ERA5_downloader.py module (see file for instructions). Note the output data is in hourly format, therefore the flag weather_is_hourly should be set to True. Multiple ERA nc files can be concatinated with ERA5_concat.py. 
+The application requires both facility and weather data to run. We have included sample facilities and weather data for Alberta as an example. Checkout the [user manual](USER_MANUAL.md) for more information on formating of facility data. Weather data can either be downloaded directly. ERA5 data can be downloaded directly from copernicus using the /module_code/weather/ERA5_downloader.py module (see file for instructions). Note the output data is in hourly format, therefore the flag weather_is_hourly should be set to True. Multiple ERA nc files can be concatinated with ERA5_concat.py. 
 
 #### Step 4: Populate the simulation folder with Programs and associated methods
 
-Checkout the [user manual](USER_MANUAL.md) for more info.
+The simulation files allow a user to set global / program/ and method parameters. If a parameter is not included in the file a default value will be used. One Global file and at least one Program File is required for running the program while method files are required for running a method. 
+
+##### Example:
+
+A Global yaml file is required, the most basic setup is as follows (note , that P_OGI, and P_none are required):
+G_.yaml => 
+``` yaml
+  parameter_level: global     // Denotes the program level (used for input handling)
+  version: '2.0'              // Denotes the version
+  reference_program: P_OGI    // Denotes the regulatory reference program for relative differences
+  baseline_program: P_none    // Denotes a baseline program for estimating program mitigation, usually in place of no formal LDAR
+```
+P_OGI.yaml => 
+A Program yaml file is required, the most basic setup is as follows (where a method Label points at a global parameter):
+``` yaml
+  program_name: P_OGI           // Denotes program name (must be unique)
+  parameter_level: program      // Denotes the program level (used for input handling)
+  version: '2.0'                // Denotes the version
+  method_labels:                // Denotes the associated methods
+    - OGI 
+```
+
+P_none.yaml => 
+``` yaml
+  program_name: P_none
+  parameter_level: program
+  version: '2.0'
+  method_labels: []
+
+```
+
+M_OGI.yaml => 
+A Method yaml file is required, the most basic setup is as follows:
+``` yaml
+    parameter_level: method         // Denotes program name (must be unique)
+    version: '2.0'                  // Denotes the version
+    label: OGI                      // Specify the label to link to an associated program
+    deployment_type: mobile         // How the technology operates, 'mobile', 'stationary' or 'orbit'
+    measurement_scale: component    // Does the sensor measure at a site level, equipement level or component level
+    is_follow_up: False             // Does the technology survey sites after a screening technology flags the site.
+    sensor:                     
+      MDL: [0.0362]                 // Minimum detectable leak in g/s.
+    cost:
+      per_site: 600                 // Cost per site survey ($)
+    t_bw_sites: 
+      vals: [30]                    // Time to travel between sites (minutes)
+    RS: 2                           // Surveys required per year per site (ie. 2 surveys per site every year)
+    time: 120                       // Time to perform detection at a site (minutes)
+```
+
+Checkout the [user manual](USER_MANUAL.md) for more info on the parameters.
 
 #### Step 5: Run the program
 

@@ -1,18 +1,12 @@
 The following were steps taken to create a Ldar_sim virtual environment with conda.
 
-- Installed Python 3.9. Added Python path. 
-- Installed Miniconda3 
-- Created a requirements.txt file with all required packages.
-
+- Install Miniconda3 newest version
 From Conda Shell:
+- cd into LDAR-Sim/install
+-   conda config - -add channels conda-forge
+-   conda config - -set channel_priority strict
+-   conda create - n ldar_sim - -file requirements.txt
+-   conda activate ldar_sim_env
 
-- Added conda forge channel and initialized a Conda Environment with 
-
-conda config --add channels conda-forge
-conda config --set channel_priority strict
-
-conda create -n ldar_sim_env --file requirements.txt
-conda activate ldar_sim_env
-
-The Access Key and Secret Key are added as environment variables   AWS_KEY and AWS_SEC. The code will call these 
-
+if you are using satellite modules orbit predictor needs to be added to environement
+-   pip install orbit_predictor == 1.14.2
