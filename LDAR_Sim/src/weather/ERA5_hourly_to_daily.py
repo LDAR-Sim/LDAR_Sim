@@ -19,13 +19,6 @@
 #
 # ------------------------------------------------------------------------------
 
-# -------------------------------------------------------------------------------
-# --------------------script to Conver hourly ERA5 data to daily ERA5 data-------
-# This script is created for converting hourly ERA5 data from multiple NetCDF4 files
-# into one daily ERA5 NetCDF file. This script shows an example of combining and
-# converting three hourly ERA5 NetCDF4 weather data of Alberta into one daily average
-# ERA5 NetCDF4 weather data of Alberta.
-
 import netCDF4 as nc
 import numpy as np
 
