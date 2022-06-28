@@ -148,7 +148,7 @@ class BaseCrew:
         equipment_rates = [0] * int(site['equipment_groups'])
         for leak in site['active_leaks']:
             # Check to see if leak is spatially covered
-            if '{}_sp_covered' not in leak:
+            if '{}_sp_covered'.format(m_name) not in leak:
                 is_sp_covered = np.random.binomial(1, self.config['coverage']['spatial'])
                 leak['{}_sp_covered'.format(m_name)] = is_sp_covered
             if leak['{}_sp_covered'.format(m_name)]:
