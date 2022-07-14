@@ -18,7 +18,7 @@
 # along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 #
 # ------------------------------------------------------------------------------
-from methods.funcs import measured_rate
+from methods.funcs import measured_rate as get_measured_rate
 from utils.attribution import update_tag
 
 
@@ -34,13 +34,13 @@ def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered
     if self.config["measurement_scale"] == "site":
         if (covered_site_rate > self.config['sensor']['MDL'][0]):
             found_leak = True
-            site_measured_rate = measured_rate(covered_site_rate, self.config['sensor']['QE'])
+            site_measured_rate = get_measured_rate(covered_site_rate, self.config['sensor']['QE'])
         else:
             site[missed_leaks_str] += n_leaks
             self.timeseries[missed_leaks_str][self.state['t'].current_timestep] += n_leaks
     elif self.config["measurement_scale"] == "equipment":
         for rate in covered_equipment_rates:
-            m_rate = measured_rate(rate, self.config['sensor']['QE'])
+            m_rate = get_measured_rate(rate, self.config['sensor']['QE'])
             if (m_rate > self.config['sensor']['MDL'][0]):
                 found_leak = True
             else:
@@ -56,11 +56,20 @@ def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered
         for leak in covered_leaks:
             if (leak['rate'] > self.config['sensor']['MDL'][0]):
                 found_leak = True
-                is_new_leak = update_tag(leak, site, self.timeseries, self.state['t'],
-                                         self.config['label'], self.id)
+                measured_rate = get_measured_rate(leak['rate'], self.config['sensor']['QE'])
+                is_new_leak = update_tag(
+                    leak,
+                    measured_rate,
+                    site,
+                    self.timeseries,
+                    self.state['t'],
+                    self.config['label'],
+                    self.id,
+                    self.parameters
+                )
                 # Add these leaks to the 'tag pool'
                 if is_new_leak:
-                    site_measured_rate += measured_rate(leak['rate'], self.config['sensor']['QE'])
+                    site_measured_rate += measured_rate
             else:
                 site[missed_leaks_str] += 1
 

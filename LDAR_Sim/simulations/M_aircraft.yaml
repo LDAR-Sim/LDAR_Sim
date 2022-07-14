@@ -6,7 +6,7 @@ measurement_scale: equipment
 is_follow_up: False
 sensor: 
   type: default
-  MDL: [1.4]
+  MDL: [1]
 cost:
   per_site: 200
 coverage:
@@ -14,5 +14,5 @@ coverage:
   temporal: 0.9
 t_bw_sites:
   vals: [5]
-RS: 2
+RS: 4
 time: 1

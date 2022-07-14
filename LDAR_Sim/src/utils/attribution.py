@@ -13,14 +13,19 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # MIT License for more details.
+from methods.reporting.estimate import estimate_start_date
 
-def update_tag(leak, site, timeseries, time_obj, company, crew_id=1):
+
+def update_tag(
+        leak, measured_rate, site, timeseries,
+        time_obj, company, crew_id=1, prog_params=None):
     """ Updates the tag on a leak. If a leak is not tagged
         This funciton will tag. If it is already tagged, the
         leak will be added as a redundant tag.
 
     Args:
         leak (leak obj): Leak object. See initialization.leaks for details
+        measured_rate (int): Rate of leak in g/s
         site (dict): site object
         timeseries (timeseries obj): ie self.timeseries
         time_obj (current time obj): current time state. ie self.state['t']
@@ -44,6 +49,24 @@ def update_tag(leak, site, timeseries, time_obj, company, crew_id=1):
         # Add these leaks to the 'tag pool'
         leak['tagged'] = True
         leak['date_tagged'] = time_obj.current_date
+        if site['currently_flagged'] and site['flagged_by'] is not None:
+            leak['init_detect_by'] = site['flagged_by']
+            leak['init_detect_date'] = site['date_flagged']
+        else:
+            leak['init_detect_by'] = company
+            leak['init_detect_date'] = leak['date_tagged']
+        # Only estimate start date, and rate if leak was actually tagged by LDAR
+        if company != 'natural':
+            leak['measured_rate'] = measured_rate
+            leak['estimated_date_began'] = estimate_start_date(
+                leak,
+                time_obj.current_timestep,
+                site,
+                prog_params['methods'][company],
+                prog_params['methods'][leak['init_detect_by']],
+            )
+            leak['measured_rate'] = measured_rate
+
         leak['tagged_by_company'] = company
         leak['tagged_by_crew'] = crew_id
         timeseries['{}_n_tags'.format(company)][time_obj.current_timestep] += 1

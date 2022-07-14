@@ -118,6 +118,7 @@ class BaseCrew:
         if self.config['measurement_scale'].lower() == 'component':
             # Remove site from flag pool if component level measurement
             site.update({'currently_flagged': False})
+            site['last_component_survey'] = cur_ts
             if site_detect_results['found_leak']:
                 self.timeseries['{}_sites_vis_w_leaks'.format(m_name)][cur_ts] += 1
         elif site_detect_results['found_leak']:
@@ -129,6 +130,7 @@ class BaseCrew:
         self.timeseries['{}_sites_visited'.format(m_name)][cur_ts] += 1
         site['{}_surveys_conducted'.format(m_name)] += 1
         site['{}_surveys_done_this_year'.format(m_name)] += 1
+        site['historic_t_since_LDAR'] = site['{}_t_since_last_LDAR'.format(m_name)]
         site['{}_t_since_last_LDAR'.format(m_name)] = 0
 
     def detect_emissions(self, site, *args):
