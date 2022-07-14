@@ -10,8 +10,8 @@ sensor:
 cost:
   per_site: 200
 coverage:
-  spatial: 1.0
-  temporal: 1.0
+  spatial: 0.9
+  temporal: 0.9
 t_bw_sites:
   vals: [5]
 RS: 4
