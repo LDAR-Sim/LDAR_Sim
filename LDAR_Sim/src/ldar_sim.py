@@ -24,16 +24,16 @@ import datetime
 import random
 import sys
 import warnings
-
+from math import floor
 import numpy as np
 import pandas as pd
-from math import floor, ceil
 from weather.daylight_calculator import DaylightCalculatorAve
 from geography.vector import grid_contains_point
 from initialization.leaks import generate_initial_leaks, generate_leak
 from initialization.sites import generate_sites
 from initialization.update_methods import (est_n_crews, est_site_p_day,
                                            est_t_bw_sites)
+from campaigns.methods import update_campaigns, setup_campaigns
 from methods.company import BaseCompany
 from numpy.random import binomial, choice
 from out_processing.plotter import make_plots
@@ -146,6 +146,8 @@ class LdarSim:
                 'total_emissions_kg': 0,
                 'active_leaks': initial_leaks,
                 'repaired_leaks': [],
+                'last_component_survey': None,
+                'historic_t_since_LDAR': None,
                 'tags': [],
                 'initial_leak_cnt': n_leaks,
                 'currently_flagged': False,
@@ -168,42 +170,11 @@ class LdarSim:
         n_sites = len(state['sites'])
 
         # Setup Campaigns
-
-        for midx, rs in n_screening_rs_sets.items():
-            meth = params['methods'][midx]
-            if rs != "varies" or meth['follow_up']['min_followup_type'] == 'annual':
-                if meth['follow_up']['min_followup_type'] == 'campaign':
-                    days_in_campaign = int(floor(365/rs))
-                else:
-                    days_in_campaign = 365
-                n_campaigns = int(ceil(params['timesteps']/days_in_campaign)+1)
-                min_followups = meth['follow_up']['min_followups']
-                min_FU_d_to_end = meth['follow_up'][
-                    'min_followup_days_to_end']
-                if len(min_followups) == 0:
-                    # Visit all sites
-                    min_followups_sites = np.zeros(n_campaigns)
-                elif len(min_followups) == 1:
-                    # apply value to all campaigns
-                    min_followups_sites = np.ones(n_campaigns)*min_followups[0]*n_sites
-                else:
-                    reps = int(ceil(n_campaigns/len(min_followups)))
-                    min_followups_sites = np.tile(np.array(min_followups) * n_sites, reps)
-
-                self.state['campaigns'].update(
-                    {midx:
-                        {
-                            'n_days': days_in_campaign,
-                            'min_followups': min_followups_sites,
-                            'n_campaigns': n_campaigns,
-                            'current_campaign': 0,
-                            'schedule': [cnt*days_in_campaign
-                                         for cnt in range(n_campaigns)],
-                            'min_FU_check': min_FU_d_to_end,
-                            'FU_check_ts': days_in_campaign-min_FU_d_to_end,
-                            'sites_followed_up': set([])
-                        }
-                     })
+        setup_campaigns(
+            self.state['campaigns'],
+            params,
+            n_sites,
+            n_screening_rs_sets)
 
         #  --- timeseries variables ---
         timeseries['total_daily_cost'] = np.zeros(params['timesteps'])
@@ -300,46 +271,21 @@ class LdarSim:
         """
         update the state of active leaks
         """
-        # Set Check and update campaigns
-        cur_ts = self.state['t'].current_timestep
         if len(self.state['campaigns']) > 0:
-            for midx, cpgn in self.state['campaigns'].items():
-                next_camp_start = cpgn['schedule'][cpgn['current_campaign']+1]
-                if cpgn['current_campaign'] < cpgn['n_campaigns'] \
-                        and cur_ts > next_camp_start:
-                    # Move to next Campaign
-                    self.state['campaigns'][midx].update({
-                        'sites_followed_up': set([]),
-                        'current_campaign': cpgn['current_campaign']+1,
-                        'FU_check_ts': next_camp_start + (
-                            cpgn['n_days'] - cpgn['min_FU_check']
-                        ),
-                    })
-                if cur_ts == cpgn['FU_check_ts']:
-                    # Move flag sites
-                    FU_sites = [s for s in self.state['sites']
-                                if s['facility_ID'] in cpgn['sites_followed_up']]
-                    Non_FU_sites = [s for s in self.state['sites']
-                                    if s['facility_ID'] not in cpgn['sites_followed_up']]
-                    makeup_cnt = cpgn['min_followups'][cpgn['current_campaign']] - len(FU_sites)
-                    if makeup_cnt < 0:
-                        makeup_cnt = 0
-                    flag_sites = random.sample(Non_FU_sites, int(makeup_cnt))
-                    for site in flag_sites:
-                        site['currently_flagged'] = True
-                        site['date_flagged'] = self.state['t'].current_date
-                        site['flagged_by'] = 'makeup'
-
+            update_campaigns(
+                self.state['campaigns'],
+                self.state['sites'],
+                self.state['t'].current_timestep,
+                self.state['t'].current_date
+            )
         self.active_leaks = []
-
         for site in self.state['sites']:
             for leak in site['active_leaks']:
                 leak['days_active'] += 1
                 self.active_leaks.append(leak)
-
                 # Tag by natural if leak is due for NR
                 if leak['days_active'] == self.parameters['NRd']:
-                    update_tag(leak, site, self.timeseries, self.state['t'], 'natural')
+                    update_tag(leak, None, site, self.timeseries, self.state['t'], 'natural')
 
         self.timeseries['active_leaks'].append(len(self.active_leaks))
         self.timeseries['datetime'].append(self.state['t'].current_date)
@@ -382,6 +328,7 @@ class LdarSim:
         Repair tagged leaks and remove from tag pool.
         """
         cur_date = self.state['t'].current_date
+        cur_ts = self.state['t'].current_timestep
         params = self.parameters
         timeseries = self.timeseries
         state = self.state
@@ -404,6 +351,16 @@ class LdarSim:
                     lk['status'] = 'repaired'
                     lk['date_repaired'] = state['t'].current_date
                     lk['repair_delay'] = (lk['date_repaired'] - lk['date_tagged']).days
+                    if lk['tagged_by_company'] != 'natural':
+                        est_duration = cur_ts - lk['estimated_date_began']
+                        # Estimated volume in kg. g/s => kg/day is 86.4
+                        lk['estimated_volume'] = est_duration*lk['measured_rate']*86.4
+                    if lk['day_ts_began'] < 0:
+                        duration = cur_ts
+                    else:
+                        duration = cur_ts - lk['day_ts_began']
+
+                    lk['volume'] = duration*lk['rate']*86.4
                     repair_cost = int(choice(params['economics']['repair_costs']['vals']))
                     timeseries['repair_cost'][state['t'].current_timestep] += repair_cost
                     timeseries['verification_cost'][
@@ -451,19 +408,25 @@ class LdarSim:
         """
         params = self.parameters
         leaks = []
+        cur_ts = self.state['t'].current_timestep
         if self.global_params['write_data']:
             # Attribute individual leak emissions to site totals
             for site in self.state['sites']:
+                for lk in site['active_leaks']:
+                    if lk['day_ts_began'] < 0:
+                        duration = cur_ts
+                    else:
+                        duration = cur_ts - lk['day_ts_began']
+                    lk['volume'] = duration * lk['rate'] * 86.4
                 site['active_leak_cnt'] = len(site['active_leaks'])
                 site['repaired_leak_cnt'] = len(site['repaired_leaks'])
                 site['active_leak_emis'] = sum([
-                    (lk['days_active'] - lk['days_active_prog_start']) * lk['rate'] * 86.4
+                    lk['volume']
                     for lk in site['active_leaks']])
                 site['repaired_leak_emis'] = sum([
-                    (lk['days_active'] - lk['days_active_prog_start']) * lk['rate'] * 86.4
+                    lk['volume']
                     for lk in site['repaired_leaks']])
                 site['total_emissions_kg'] = site['active_leak_emis'] + site['repaired_leak_emis']
-
                 leaks += site['active_leaks'] + site['repaired_leaks']
                 del site['n_new_leaks']
 

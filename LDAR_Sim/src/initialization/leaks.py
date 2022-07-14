@@ -25,7 +25,7 @@ from numpy import random
 from utils.distributions import leak_rvs
 
 
-def generate_leak(program, site, start_date, leak_count, days_active=0):
+def generate_leak(program, site, start_date, leak_count, days_active=0, day_ts_began=0):
     """ Generate a single leak at a site
 
     Args:
@@ -55,10 +55,14 @@ def generate_leak(program, site, start_date, leak_count, days_active=0):
         'lon': float(site['lon']),
         'status': 'active',
         'days_active': days_active,
-        'days_active_prog_start': days_active,
+        'volume': None,
+        'estimated_volume': None,
+        'measured_rate': None,
         'tagged': False,
         'component': 'unknown',
         'date_began': start_date,
+        'day_ts_began': day_ts_began,
+        'estimated_date_began': None,
         'date_tagged': None,
         'tagged_by_company': None,
         'tagged_by_crew': None,
@@ -89,7 +93,8 @@ def generate_leak_timeseries(program, site, leak_count=0):
         if random.binomial(1, program['emissions']['LPR']):
             cur_dt = start_date + timedelta(days=t)
             site['cum_leaks'] += 1
-            site_timeseries.append(generate_leak(program, site, cur_dt, site['cum_leaks']))
+            site_timeseries.append(generate_leak(program, site, cur_dt,
+                                   site['cum_leaks'], day_ts_began=t))
         else:
             site_timeseries.append(None)
     return site_timeseries
@@ -116,5 +121,7 @@ def generate_initial_leaks(program, site):
         days_active = random.randint(0, high=program['NRd'])
         leak_start_date = prog_start_date - timedelta(days=days_active)
         initial_site_leaks.append(
-            generate_leak(program, site, leak_start_date, leak_count, days_active))
+            generate_leak(
+                program, site, leak_start_date,
+                leak_count, days_active, day_ts_began=-days_active))
     return initial_site_leaks

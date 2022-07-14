@@ -21,7 +21,7 @@
 
 import math
 import numpy as np
-from methods.funcs import measured_rate
+from methods.funcs import measured_rate as get_measured_rate
 from utils.attribution import update_tag
 
 
@@ -70,10 +70,11 @@ def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered
 
         if np.random.binomial(1, prob_detect):
             found_leak = True
-            is_new_leak = update_tag(leak, site, self.timeseries, self.state['t'],
+            measured_rate = get_measured_rate(leak['rate'], self.config['sensor']['QE'])
+            is_new_leak = update_tag(leak, measured_rate, site, self.timeseries, self.state['t'],
                                      self.config['label'], self.id)
             if is_new_leak:
-                site_measured_rate += measured_rate(leak['rate'], self.config['sensor']['QE'])
+                site_measured_rate += get_measured_rate(leak['rate'], self.config['sensor']['QE'])
         else:
             site[missed_leaks_str] += 1
             self.timeseries[missed_leaks_str][self.state['t'].current_timestep] += 1
