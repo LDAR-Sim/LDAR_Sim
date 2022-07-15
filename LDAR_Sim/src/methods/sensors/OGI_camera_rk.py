@@ -71,8 +71,16 @@ def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered
         if np.random.binomial(1, prob_detect):
             found_leak = True
             measured_rate = get_measured_rate(leak['rate'], self.config['sensor']['QE'])
-            is_new_leak = update_tag(leak, measured_rate, site, self.timeseries, self.state['t'],
-                                     self.config['label'], self.id)
+            is_new_leak = update_tag(
+                leak,
+                measured_rate,
+                site,
+                self.timeseries,
+                self.state['t'],
+                self.config['label'],
+                self.id,
+                self.parameters
+            )
             if is_new_leak:
                 site_measured_rate += get_measured_rate(leak['rate'], self.config['sensor']['QE'])
         else:
