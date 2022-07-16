@@ -57,13 +57,17 @@ if __name__ == '__main__':
     # --- Retrieve input parameters and parse ---
     parameter_filenames = files_from_args(root_dir)
     input_manager = InputManager()
-    sim_params = input_manager.read_and_validate_parameters(parameter_filenames)
+    if 'out_dir' in parameter_filenames:
+        sim_params = input_manager.read_and_validate_parameters(parameter_filenames['parameter_files'])
+        out_dir = get_abs_path(parameter_filenames['out_dir'])
+    else:
+        sim_params = input_manager.read_and_validate_parameters(parameter_filenames)
+        out_dir = get_abs_path(sim_params['output_directory'])
 
     # --- Assign local variabls
     ref_program = sim_params['reference_program']
     base_program = sim_params['baseline_program']
     in_dir = get_abs_path(sim_params['input_directory'])
-    out_dir = get_abs_path(sim_params['output_directory'])
     programs = sim_params.pop('programs')
 
     # --- Run Checks ----

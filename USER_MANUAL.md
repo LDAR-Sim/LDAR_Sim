@@ -83,6 +83,12 @@ python ldar_sim_main.py --in_dir ./simulations
 
 We recommend running the model with a working directory set to /LDAR_Sim/src.
 
+Optionaly, a single folder name (absolute or relative to root) can be passed by flagged argument _-X_ or _--out_dir_. All output files will be added as outputs in that directory. For example the following will save all output files within the "out" folder:
+
+```buildoutcfg
+python ldar_sim_main.py --in_dir ./simulations --out_dir ./out
+```
+
 ### Parameter File Structure
 
 Parameter files are all key-value pairs (i.e., Python dictionary), with multiple levels of nesting. The model runs with 3 main levels in a hierarchy:
