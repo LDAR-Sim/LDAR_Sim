@@ -27,7 +27,6 @@ class WeatherLookup:
     def __init__(self, state, parameters):
         """
         Read in NetCDF files and returns the environment at a given place in time.
-
         """
         self.state = state
         self.parameters = parameters
@@ -66,9 +65,7 @@ class WeatherLookup:
         """
         Generate a 3D space-time matrix of all days on which weather
         conditions are suitable for a given method to conduct LDAR.
-
         Should only be called once/method during initialization.
-
         DD = deployment day
         """
 
