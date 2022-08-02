@@ -135,8 +135,11 @@ class LdarSim:
                 # prior to the next campaign period were surveys can start earlier
                 # Calculate the site minimum interval
                 if m_RS in site and site[m_RS] != 0:
+                    n_months = len(params['methods'][m_label]
+                                   ['scheduling']['deployment_months'])
+                    n_days = 30.4167 * n_months
                     site['{}_min_int'.format(m_label)] = floor(
-                        365/site[m_RS])  # *0.95
+                        n_days/site[m_RS])  # *0.95
                 # Automatically assign 1 crew to followup if left unspecified
                 elif m_obj['n_crews'] is None:
                     m_obj['n_crews'] = 1
