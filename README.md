@@ -128,7 +128,7 @@ Checkout the [user manual](USER_MANUAL.md) for more info on the parameters.
 The main program is a python script called LDAR_Sim_main.py. Within the virtual environent (or where all py packages are installed) run:<br>
  ```Python LDAR_Sim_main.py {G_XXX} {P_XXX} {M_XXX} {M_YYY}``` <br> where each arguement is a path too a global, program, or method input parameter file. for example:<br>
  ```Python LDAR_Sim_main.py ./simulations/G_.yaml ./simulations/P_air.yaml ./simulations/M_aircraft.yaml ./simulations/M_OGI_FU.yaml```<br>alternatively, an entire directory can be passed using the "-P", "--in_dir" flags where all files within the directory are added to the program. for example:<br>
- ```Python LDAR_Sim_main.py --in_dir ./simulations.py``` <br> will load all files in the simulations folder into the program. <br><br>
+ ```Python LDAR_Sim_main.py --in_dir ./simulations``` <br> will load all files in the simulations folder into the program. <br><br>
  Output files, including maps, charts and csv files will be generated and placed in the output folder. <br><br>
  **Note**: that you can use absolute references or relative, where the the root folder is this folder.
 
