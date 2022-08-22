@@ -87,7 +87,9 @@ def generate_leak_timeseries(program, site, leak_count=0):
     LPR = None
     if program['subtype_file'] is not None:
         LPR = site['LPR']
+        NRd = site['NRd']
     else:
+        NRd = program['NRd']
         LPR = program['emissions']['LPR']
     # Get leak timeseries
     start_date = datetime(*program['start_date'])

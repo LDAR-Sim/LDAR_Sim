@@ -74,7 +74,10 @@ class LdarSim:
                 params, params['input_directory'])
         state['max_leak_rate'] = params['emissions']['max_leak_rate']
         state['t'].set_UTC_offset(state['sites'])
-
+        if params['subtype_file'] is not None:
+            state['subtypes'] = pd.read_csv(
+                params['input_directory']/params['subtype_file'],
+                index_col='subtype_code').to_dict()
         # Sample sites if they havent been provided from pregeneration step
         if not params['pregenerate_leaks']:
             if params['site_samples'] is not None:
@@ -299,9 +302,14 @@ class LdarSim:
                 leak['days_active'] += 1
                 self.active_leaks.append(leak)
                 # Tag by natural if leak is due for NR
-                if leak['days_active'] == self.parameters['NRd']:
-                    update_tag(leak, None, site, self.timeseries,
-                               self.state['t'], 'natural')
+                if self.parameters['subtype_file'] is not None:
+                    if leak['days_active'] == self.state['subtypes']['NRd'][site['subtype_code']]:
+                        update_tag(leak, None, site, self.timeseries,
+                                   self.state['t'], 'natural')
+                else:
+                    if leak['days_active'] == self.parameters['NRd']:
+                        update_tag(leak, None, site, self.timeseries,
+                                   self.state['t'], 'natural')
 
         self.timeseries['active_leaks'].append(len(self.active_leaks))
         self.timeseries['datetime'].append(self.state['t'].current_date)
@@ -371,14 +379,18 @@ class LdarSim:
                     if lk['tagged_by_company'] != 'natural':
                         est_duration = cur_ts - lk['estimated_date_began']
                         # check if estimate is needed to be kept track of
-                        if site['estimate_A']:
-                            # Estimated volume in kg. g/s => kg/day is 86.4
-                            lk['estimated_volume'] = est_duration * \
-                                lk['measured_rate']*86.4
-                        elif site['estimate_B']:
-                            # Estimated volume in kg. g/s => kg/day is 86.4
-                            lk['estimated_volume_b'] = est_duration * \
-                                lk['measured_rate']*86.4
+                        if 'estimate_A' in site.keys():
+                            if site['estimate_A']:
+                                # Estimated volume in kg. g/s => kg/day is 86.4
+                                lk['estimated_volume'] = est_duration * \
+                                    lk['measured_rate']*86.4
+                            elif site['estimate_B']:
+                                # Estimated volume in kg. g/s => kg/day is 86.4
+                                lk['estimated_volume_b'] = est_duration * \
+                                    lk['measured_rate']*86.4
+                        else:
+                            lk['estimated_volume_b'] = 0
+                            lk['estimated_volume_a'] = 0
                     if lk['day_ts_began'] < 0:
                         duration = cur_ts
                     else:

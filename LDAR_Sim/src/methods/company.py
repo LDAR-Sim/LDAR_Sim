@@ -49,7 +49,8 @@ class BaseCompany:
             self.config['deployment_type'].lower()))
         Schedule = getattr(deploy_mod, 'Schedule')
         self.schedule = Schedule(config, parameters, state)
-        self.deployment_years, self.deployment_months = get_deployment_dates(config, state)
+        self.deployment_years, self.deployment_months = get_deployment_dates(
+            config, state)
         self.deployment_days = self.state['weather'].deployment_days(
             method_name=self.name,
             config=config,
@@ -59,14 +60,16 @@ class BaseCompany:
 
         # --- init time series ---
         n_ts = parameters['timesteps']
-        self.timeseries['{}_prop_sites_avail'.format(self.name)] = np.zeros(n_ts)
+        self.timeseries['{}_prop_sites_avail'.format(
+            self.name)] = np.zeros(n_ts)
         self.timeseries['{}_cost'.format(self.name)] = np.zeros(n_ts)
         self.timeseries['{}_sites_visited'.format(self.name)] = np.zeros(n_ts)
         self.timeseries['{}_travel_time'.format(self.name)] = np.zeros(n_ts)
         self.timeseries['{}_survey_time'.format(self.name)] = np.zeros(n_ts)
         self.timeseries['{}_redund_tags'.format(self.name)] = np.zeros(n_ts)
         self.timeseries['{}_missed_leaks'.format(self.name)] = np.zeros(n_ts)
-        self.timeseries['{}_sites_vis_w_leaks'.format(self.name)] = np.zeros(n_ts)
+        self.timeseries['{}_sites_vis_w_leaks'.format(
+            self.name)] = np.zeros(n_ts)
         self.timeseries['{}_eff_flags'.format(self.name)] = np.zeros(n_ts)
         self.timeseries['{}_n_tags'.format(self.name)] = np.zeros(n_ts)
         self.timeseries['{}_flags_redund1'.format(self.name)] = np.zeros(n_ts)
@@ -82,7 +85,8 @@ class BaseCompany:
                     self.config['follow_up']['proportion'],
                     self.state['empirical_leaks'])
             else:
-                print('Follow-up thresh type not recognized. Must be "absolute" or "proportion".')
+                print(
+                    'Follow-up thresh type not recognized. Must be "absolute" or "proportion".')
 
         # ---Init 2D matrices to store deployment day (DD) counts and MCBs ---
         self.DD_map = np.zeros(
@@ -99,7 +103,8 @@ class BaseCompany:
                 t_since_last_LDAR = site[survey_min_interval]
             else:
                 t_since_last_LDAR = 0
-            site.update({'{}_t_since_last_LDAR'.format(self.name): t_since_last_LDAR})
+            site.update({'{}_t_since_last_LDAR'.format(
+                self.name): t_since_last_LDAR})
             site.update({'{}_surveys_conducted'.format(self.name): 0})
             site.update({'{}_attempted_today?'.format(self.name): False})
             site.update({'{}_surveys_done_this_year'.format(self.name): 0})
@@ -108,7 +113,8 @@ class BaseCompany:
         make_crew_loc = import_module('methods.deployment.{}_company'.format(
             self.config['deployment_type'].lower()))
         make_crews = getattr(make_crew_loc, 'make_crews')
-        make_crews(self.crews, config, state, parameters, timeseries, self.deployment_days)
+        make_crews(self.crews, config, state, parameters,
+                   timeseries, self.deployment_days)
         for idx, cnt in enumerate(self.crews):
             self.timeseries['{}_cost'.format(self.name)][self.state['t'].current_timestep] += \
                 self.config['cost']['upfront']
@@ -134,14 +140,16 @@ class BaseCompany:
                 # assume all crews/sensors are working
                 n_working_crews = len(self.crews)
             else:
-                n_working_crews = self.schedule.get_working_crews(site_pool, self.config['n_crews'])
+                n_working_crews = self.schedule.get_working_crews(
+                    site_pool, self.config['n_crews'])
             for idx in range(n_working_crews):
                 # Triage sites to crew
                 crew_site_list = self.schedule.get_crew_site_list(site_pool, idx,
                                                                   n_working_crews, self.crews)
                 # Send crew to site
                 if len(crew_site_list) > 0:
-                    self.crews[idx].work_a_day(crew_site_list, self.candidate_flags)
+                    self.crews[idx].work_a_day(
+                        crew_site_list, self.candidate_flags)
             if len(self.candidate_flags) > 0:
                 self.candidates_to_watchlist()
 
@@ -214,9 +222,12 @@ class BaseCompany:
                         'vent_rate': site['vent_rate']
                     }})
             else:
-                site_wl[facility_ID]['dates'].append(self.state['t'].current_date)
-                site_wl[facility_ID]['measured_emis_rates'].append(site['site_measured_rate'])
-                site_wl[facility_ID]['measured_vent_rates'].append(site['vent_rate'])
+                site_wl[facility_ID]['dates'].append(
+                    self.state['t'].current_date)
+                site_wl[facility_ID]['measured_emis_rates'].append(
+                    site['site_measured_rate'])
+                site_wl[facility_ID]['measured_vent_rates'].append(
+                    site['vent_rate'])
                 # Calculate effective emissions and vent rates
                 site_wl[facility_ID]['site_measured_rate'] = self.aggregate_by(
                     site_wl[facility_ID]['measured_emis_rates'],
@@ -256,8 +267,10 @@ class BaseCompany:
 
         """
         site_wl = self.site_watchlist
-        first_survey_time = min(site['dates'][0] for sidx, site in site_wl.items())
-        can_flag_date = first_survey_time + timedelta(days=self.config['follow_up']['delay'])
+        first_survey_time = min(site['dates'][0]
+                                for sidx, site in site_wl.items())
+        can_flag_date = first_survey_time + \
+            timedelta(days=self.config['follow_up']['delay'])
         # If the delay / grace period has passed since the first leak reported in the watchlist
         # start surveys. Date is used to ignore the hour Leak was detected and focus on the day
         # instead.

@@ -118,6 +118,11 @@ class Schedule():
                         and ((self.state['t'].current_date - s['date_flagged']).days
                         >= meth[s['flagged_by']]['reporting_delay'])),
                        key=lambda x: x[days_since_LDAR], reverse=True))
+            # filter again for if preferred followup method is equivalent to method
+            out_sites = list(
+                sorted((s for s in out_sites
+                        if s['preferred_FU_method'] is None or s['preferred_FU_method'] == self.config['label']
+                        ), key=lambda x: x[days_since_LDAR], reverse=True))
         else:
             days_since_LDAR = '{}_t_since_last_LDAR'.format(name)
             # filter then sort
@@ -160,7 +165,8 @@ class Schedule():
         """
         if self.config['scheduling']['route_planning']:
             # divies the site pool based on clustering analysis
-            crew_site_list = [site for site in site_pool if site['crew_ID'] == crew_ID]
+            crew_site_list = [
+                site for site in site_pool if site['crew_ID'] == crew_ID]
         else:
             # This offsets by the crew number and increments by the
             # number of crews, n_crews= 3 ,  site_pool = [site[0], site[3], site[6]...]

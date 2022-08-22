@@ -99,23 +99,31 @@ def update_flag(config, site, timeseries, time_obj, campaign, company, consider_
     site_true_rate = site['site_measured_rate']
     venting = site['vent_rate']
     if site_obj['currently_flagged']:
-        timeseries['{}_flags_redund1'.format(company)][time_obj.current_timestep] += 1
+        timeseries['{}_flags_redund1'.format(
+            company)][time_obj.current_timestep] += 1
     else:
         # Flag the site for follow-up
         site_obj['currently_flagged'] = True
+
+        site_obj['preferred_FU_method'] = config['follow_up']['preferred_method']
+
         site_obj['date_flagged'] = time_obj.current_date
         site_obj['flagged_by'] = company
         if company in campaign:
             campaign[company]['sites_followed_up'].add(site_obj['facility_ID'])
-        timeseries['{}_eff_flags'.format(company)][time_obj.current_timestep] += 1
+        timeseries['{}_eff_flags'.format(
+            company)][time_obj.current_timestep] += 1
 
         # Check to see if the site has any leaks that are active and tagged
-        site_leaks = len([lk for lk in site_obj['active_leaks'] if lk['tagged']])
+        site_leaks = len(
+            [lk for lk in site_obj['active_leaks'] if lk['tagged']])
 
         if site_leaks > 0:
-            timeseries['{}_flags_redund2'.format(company)][time_obj.current_timestep] += 1
+            timeseries['{}_flags_redund2'.format(
+                company)][time_obj.current_timestep] += 1
 
         # Would the site have been chosen without venting?
         if consider_venting:
             if (site_true_rate - venting) < config['follow_up']['thresh']:
-                timeseries['{}_flag_wo_vent'.format(company)][time_obj.current_timestep] += 1
+                timeseries['{}_flag_wo_vent'.format(
+                    company)][time_obj.current_timestep] += 1
