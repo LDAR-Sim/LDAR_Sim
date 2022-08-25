@@ -44,7 +44,8 @@ def setup_campaigns(campaigns, prog_params, n_sites, n_screening_rs_sets):
                                      for cnt in range(n_campaigns)],
                         'min_FU_check': min_FU_d_to_end,
                         'FU_check_ts': days_in_campaign-min_FU_d_to_end,
-                        'sites_followed_up': set([])
+                        'sites_followed_up': set([]),
+                        'preferred_FU_method': meth['follow_up']['preferred_method']
                     }
                  })
 
@@ -76,3 +77,4 @@ def update_campaigns(campaigns, sites, cur_ts, current_date):
                 site['currently_flagged'] = True
                 site['date_flagged'] = current_date
                 site['flagged_by'] = 'makeup'
+                site['preferred_FU_method'] = cpgn['preferred_FU_method']
