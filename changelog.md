@@ -1,4 +1,15 @@
-# Change Log Version 2.0 (21/09)
+# Change Log
+
+## 2022-09
+
+1. **Subtype File addition** Programs: specify LPR, LDR for subtypes. Deprecates subtype-distribution. Will eventually also combine the subtype-times-file.
+2. **Updated Default parameters** Methods/Programs: Several parameters were updated to support floats(from ints).
+3. **Preferred Follow Up** - Methods: Ability to specify different followups for a single program having multiple non-component level surveys.
+4. **Updated User Manual** Updated user manual with additions.
+5. **Spatial coverage bug fix**
+6. **Repair delay** Programs: can now be a single value, a list or a log normal distribution.
+
+## Change Log Version 2.0 (21/09)
 
 1. **External leak generator -** Optionally creates a single set of leaks that can be used across multiple simulations to enable "apples to apples" comparisons of different programs. Leak lists can also be saved and shared to improve reproducibility.
 2. **Modularized methods -** Methods (e.g., aircraft) are now comprised of a deployment style (platform), a sensor type, the scale of measurement (equipment vs component vs site), and whether or not they perform follow-up inspections. Old method modules are now defunct.
