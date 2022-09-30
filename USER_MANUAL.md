@@ -877,6 +877,18 @@ If **\*\*\_RS** is present in the infrastructure file, it must **NOT** be set in
 
 If **\*\*\_time** is present in the infrastructure file, it must **NOT** be set in the **methods parameters**.
 
+#### estimate_A/estimate_B
+
+**Data type:** Boolean
+
+**Default input:** N/A
+
+**Description:** A boolean indicating if an estimated emission should be kept track of for given site. Can be used to calculate carbon tax estimation. The estimate is based on duration ([current survey date - last survey date] / 2 ) * leak rate. Fills out an extra column in the outputs.
+
+**Notes on acquisition:** N/A
+
+**Notes of Caution:** None
+
 #### fixed_sensors
 
 **Data type:** Integer

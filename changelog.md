@@ -8,6 +8,7 @@
 4. **Updated User Manual** Updated user manual with additions.
 5. **Spatial coverage bug fix**
 6. **Repair delay** Programs: can now be a single value, a list or a log normal distribution.
+7. **Estimate emissions** Optionally allows for additional outputs related to estimating emissions based on survey frequency and leak rate.
 
 ## Change Log Version 2.0 (21/09)
 
