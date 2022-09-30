@@ -12,7 +12,10 @@ def determine_delay(program):
         Returns:
             Static Repair delay value based on different functions
     """
-    if program['repair_delay']['type'] == 'default':
+    # add in compatbility with previous versions
+    if type(program['repair_delay']) == int:
+        delay = program['repair_delay']
+    elif program['repair_delay']['type'] == 'default':
         delay = program['repair_delay']['val'][0]
     elif program['repair_delay']['type'] == 'list':
         list_len = len(program['repair_delay']['val'])
