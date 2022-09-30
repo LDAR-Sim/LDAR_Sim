@@ -24,7 +24,7 @@ emissions:
   subtype_leak_dist_file: "_placeholder_str_"
   units: ['kilogram', 'hour']
   vent_file: 'site_rates.csv'
-NRd: 600
+NRd: 365
 economics:
   carbon_price_tonnesCO2e: 40.0
   cost_CCUS: 20.0
