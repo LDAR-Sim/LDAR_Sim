@@ -265,7 +265,8 @@ class LdarSim:
         if len(self.state['campaigns']) > 0:
             self.parameters['methods'].update({
                 'makeup': {
-                    'reporting_delay': 0}
+                    'reporting_delay': 0,
+                    'label': 'makeup'}
             })
         return
 
