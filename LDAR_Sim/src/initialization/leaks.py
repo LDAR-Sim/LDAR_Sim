@@ -100,7 +100,7 @@ def generate_leak_timeseries(program, site, leak_count=0):
             cur_dt = start_date + timedelta(days=t)
             site['cum_leaks'] += 1
             site_timeseries.append(generate_leak(
-                program, site, cur_dt, site['cum_leaks']))
+                program, site, cur_dt, site['cum_leaks'], day_ts_began=t))
         else:
             site_timeseries.append(None)
     return site_timeseries
