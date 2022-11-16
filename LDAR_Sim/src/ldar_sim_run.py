@@ -127,5 +127,6 @@ def ldar_sim_run(simulation):
 
     # Clean up and write files
     sim_summary = sim.finalize()
+    print(simulation['closing_message'])
     logfile.close()
     return (sim_summary)
