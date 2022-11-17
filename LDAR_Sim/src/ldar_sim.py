@@ -489,11 +489,12 @@ class LdarSim:
             leaks_repaired = leak_df[leak_df.status == 'repaired'] \
                 .sort_values('rate', ascending=False)
 
-            leaks_active['cum_frac_leaks'] = list(
-                np.linspace(0, 1, len(leaks_active)))
-            leaks_active['cum_rate'] = np.cumsum(leaks_active['rate'])
-            leaks_active['cum_frac_rate'] = leaks_active['cum_rate'] / \
-                max(leaks_active['cum_rate'])
+            if len(leaks_active) > 0:
+                leaks_active['cum_frac_leaks'] = list(
+                    np.linspace(0, 1, len(leaks_active)))
+                leaks_active['cum_rate'] = np.cumsum(leaks_active['rate'])
+                leaks_active['cum_frac_rate'] = leaks_active['cum_rate'] / \
+                    max(leaks_active['cum_rate'])
 
             if len(leaks_repaired) > 0:
                 leaks_repaired['cum_frac_leaks'] = list(
