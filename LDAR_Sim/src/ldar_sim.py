@@ -134,18 +134,18 @@ class LdarSim:
                         # If the value changes set to None
                 elif m_RS in site and (n_rs[m_label] != site[m_RS] or n_rs[m_label] is None):
                     n_subtype_rs[site['subtype_code']].update({m_label: None})
-                # Get min interval based on RS. a 95% ajustment is used to add a grace period
-                # prior to the next campaign period were surveys can start earlier
                 # Calculate the site minimum interval
                 if m_RS in site and site[m_RS] != 0:
                     n_months = len(params['methods'][m_label]
                                    ['scheduling']['deployment_months'])
                     n_days = 30.4167 * n_months
                     site['{}_min_int'.format(m_label)] = floor(
-                        n_days/site[m_RS])  # *0.95
+                        n_days/site[m_RS])
+
                 # Automatically assign 1 crew to followup if left unspecified
                 elif m_obj['n_crews'] is None:
                     m_obj['n_crews'] = 1
+
             if params['pregenerate_leaks']:
                 initial_leaks = params['initial_leaks'][site['facility_ID']]
                 n_leaks = len(params['initial_leaks'][site['facility_ID']])

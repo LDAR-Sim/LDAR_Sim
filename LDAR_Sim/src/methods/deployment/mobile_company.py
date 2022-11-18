@@ -129,15 +129,13 @@ class Schedule():
             # filter then sort
             out_sites = list(
                 sorted((s for s in site_pool
-                        if (s[survey_done_this_year] < int(s[survey_frequency]))
-                        and (s[days_since_LDAR] >= ((int(s[survey_min_interval])) - (math.floor(s[survey_time]/60/self.config['max_workday']))))),
-                        key=lambda x: x[days_since_LDAR], reverse=True))
-            
-            # out_sites = list(
-            #     sorted((s for s in site_pool
-            #             if s[survey_done_this_year] < int(s[survey_frequency])
-            #             and s[days_since_LDAR] >= int(s[survey_min_interval])),
-            #            key=lambda x: x[days_since_LDAR], reverse=True))
+                        if ((s[survey_done_this_year] < int(s[survey_frequency]))
+                            and (s[days_since_LDAR] >= ((int(s[survey_min_interval])) - (math.floor(s[survey_time]/60/self.config['max_workday']))))) or (
+                            ((s[survey_done_this_year] * s[survey_min_interval] + math.floor(
+                                s[survey_min_interval] / 2)) < math.floor(self.state['t'].current_timestep % 365))
+                            and
+                            (s[survey_done_this_year] * s[survey_min_interval] > math.floor(self.state['t'].current_timestep % 365)))),
+                       key=lambda x: x[days_since_LDAR], reverse=True))
 
         return out_sites
 
