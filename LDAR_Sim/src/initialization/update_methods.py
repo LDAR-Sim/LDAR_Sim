@@ -72,6 +72,8 @@ def est_site_p_day(m, sites):
     work_mins = m['max_workday']*60
     try:
         est_val = floor(average([_s_per_day(s) for s in sites]))
+        if(est_val == 0):
+            est_val = 1
     except KeyError:
         est_val = 1
     return est_val
