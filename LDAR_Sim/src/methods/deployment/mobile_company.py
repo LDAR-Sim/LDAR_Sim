@@ -108,6 +108,7 @@ class Schedule():
         survey_done_this_year = '{}_surveys_done_this_year'.format(name)
         survey_min_interval = '{}_min_int'.format(name)
         survey_frequency = '{}_RS'.format(name)
+        survey_time = '{}_time'.format(name)
         meth = self.parameters['methods']
 
         if self.config['is_follow_up']:
@@ -128,9 +129,16 @@ class Schedule():
             # filter then sort
             out_sites = list(
                 sorted((s for s in site_pool
-                        if s[survey_done_this_year] < int(s[survey_frequency])
-                        and s[days_since_LDAR] >= int(s[survey_min_interval])),
-                       key=lambda x: x[days_since_LDAR], reverse=True))
+                        if (s[survey_done_this_year] < int(s[survey_frequency]))
+                        and (s[days_since_LDAR] >= ((int(s[survey_min_interval])) - (math.floor(s[survey_time]/60/self.config['max_workday']))))),
+                        key=lambda x: x[days_since_LDAR], reverse=True))
+            
+            # out_sites = list(
+            #     sorted((s for s in site_pool
+            #             if s[survey_done_this_year] < int(s[survey_frequency])
+            #             and s[days_since_LDAR] >= int(s[survey_min_interval])),
+            #            key=lambda x: x[days_since_LDAR], reverse=True))
+
         return out_sites
 
     def get_working_crews(self, site_pool, n_crews):
