@@ -172,8 +172,8 @@ class BaseCompany:
         for site in self.state['sites']:
             site[days_since_LDAR] += 1
             site[attempted_today] = False
-            if self.state['t'].current_date.day == 1 \
-                    and self.state['t'].current_date.month == 1:
+            if self.state['t'].current_date.day == 31 \
+                    and self.state['t'].current_date.month == 12:
                 site[sites_this_year] = 0
 
         # Daily check of watchlist
