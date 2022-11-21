@@ -27,7 +27,6 @@ class WeatherLookup:
     def __init__(self, state, parameters):
         """
         Read in NetCDF files and returns the environment at a given place in time.
-
         """
         self.state = state
         self.parameters = parameters
@@ -35,13 +34,18 @@ class WeatherLookup:
         # Read in weather data as NetCDF file(s)
 
         self.weather_data = Dataset(
-            self.parameters['input_directory'] / self.parameters['weather_file'],
+            self.parameters['input_directory'] /
+            self.parameters['weather_file'],
             'r')  # Load wind and temp data
         self.weather_data.set_auto_mask(False)  # Load wind and temp data
-        self.temps = np.array(self.weather_data.variables['t2m'])  # Extract temperatures
-        self.temps = self.temps - 273.15  # Convert to degrees Celcius (time, lat, long)
-        self.u_wind = np.array(self.weather_data.variables['u10'])  # Extract u wind component
-        self.v_wind = np.array(self.weather_data.variables['v10'])  # Extract v wind component
+        # Extract temperatures
+        self.temps = np.array(self.weather_data.variables['t2m'])
+        # Convert to degrees Celcius (time, lat, long)
+        self.temps = self.temps - 273.15
+        # Extract u wind component
+        self.u_wind = np.array(self.weather_data.variables['u10'])
+        # Extract v wind component
+        self.v_wind = np.array(self.weather_data.variables['v10'])
         self.winds = np.add(np.square(self.u_wind), np.square(
             self.v_wind))  # Calculate the net wind speed
         # Calculate the net wind speed (time, lat, long)
@@ -50,12 +54,18 @@ class WeatherLookup:
         self.precip = np.array(self.weather_data.variables['tp'])
         self.precip = self.precip * 1000  # Convert m to mm (time, lat, long)
 
-        self.time_total = self.weather_data.variables['time'][:]  # Extract time values
-        self.latitude = self.weather_data.variables['lat'][:]  # Extract latitude values
-        self.longitude = self.weather_data.variables['lon'][:]  # Extract longitude values
-        self.time_length = len(self.time_total)  # Length of time dimension - number of timesteps
-        self.lat_length = len(self.latitude)  # Length of latitude dimension - n cells
-        self.lon_length = len(self.longitude)  # Length of longitude dimension - n cells
+        # Extract time values
+        self.time_total = self.weather_data.variables['time'][:]
+        # Extract latitude values
+        self.latitude = self.weather_data.variables['latitude'][:]
+        # Extract longitude values
+        self.longitude = self.weather_data.variables['longitude'][:]
+        # Length of time dimension - number of timesteps
+        self.time_length = len(self.time_total)
+        # Length of latitude dimension - n cells
+        self.lat_length = len(self.latitude)
+        # Length of longitude dimension - n cells
+        self.lon_length = len(self.longitude)
 
         self.weather_data.close()  # close the netCDF4 file
 
@@ -66,16 +76,17 @@ class WeatherLookup:
         """
         Generate a 3D space-time matrix of all days on which weather
         conditions are suitable for a given method to conduct LDAR.
-
         Should only be called once/method during initialization.
-
         DD = deployment day
         """
 
         # Initialize empty boolean arrays for threshold pass(1)/fail(0)
-        bool_temp = np.zeros((self.lon_length, self.lat_length, self.parameters['timesteps']))
-        bool_wind = np.zeros((self.lon_length, self.lat_length, self.parameters['timesteps']))
-        bool_precip = np.zeros((self.lon_length, self.lat_length, self.parameters['timesteps']))
+        bool_temp = np.zeros(
+            (self.lon_length, self.lat_length, self.parameters['timesteps']))
+        bool_wind = np.zeros(
+            (self.lon_length, self.lat_length, self.parameters['timesteps']))
+        bool_precip = np.zeros(
+            (self.lon_length, self.lat_length, self.parameters['timesteps']))
 
         # For each day...
         for day in range(self.parameters['timesteps']):

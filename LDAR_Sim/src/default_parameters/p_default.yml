@@ -8,8 +8,11 @@ weather_is_hourly: True
 infrastructure_file: 'facilities_alberta.csv'
 site_samples: 500
 subtype_times_file: "_placeholder_str_"
+subtype_file: "_placeholder_str_"
 consider_weather: False
-repair_delay: 14
+repair_delay: 
+  type: 'default'
+  val: [14.0]
 emissions:
   consider_venting: False
   leak_dist_params: [-2.776, 1.462]
@@ -21,7 +24,7 @@ emissions:
   subtype_leak_dist_file: "_placeholder_str_"
   units: ['kilogram', 'hour']
   vent_file: 'site_rates.csv'
-NRd: 600
+NRd: 365
 economics:
   carbon_price_tonnesCO2e: 40.0
   cost_CCUS: 20.0

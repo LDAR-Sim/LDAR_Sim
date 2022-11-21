@@ -40,7 +40,8 @@ def create_sims(sim_params, programs, generator_dir, in_dir, out_dir, input_mana
             file_loc = generator_dir / "pregen_{}_{}.p".format(i, base_prog)
             # If there is no pregenerated file for the program
             if not os.path.isfile(file_loc):
-                sites, leak_timeseries, initial_leaks = generate_sites(programs[base_prog], in_dir)
+                sites, leak_timeseries, initial_leaks = generate_sites(
+                    programs[base_prog], in_dir)
         else:
             sites, leak_timeseries, initial_leaks = [], [], []
         if preseed_random:
@@ -71,12 +72,15 @@ def create_sims(sim_params, programs, generator_dir, in_dir, out_dir, input_mana
             opening_message = "Simulating program: {} ; simulation {} of {}".format(
                 pidx, i + 1, n_simulations
             )
+            closing_message = "Finished simulating program {} ; simulation {} of {} ".format(
+                pidx, i + 1, n_simulations)
             simulations.append(
                 [{'i': i, 'program': deepcopy(programs[pidx]),
                   'globals':sim_params,
                   'input_directory': in_dir,
                   'output_directory':out_dir,
                   'opening_message': opening_message,
+                  'closing_message': closing_message,
                   'pregenerate_leaks': pregen_leaks,
                   'print_from_simulation': sim_params['print_from_simulations'],
                   'sites': sites,

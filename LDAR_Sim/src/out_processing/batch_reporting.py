@@ -44,7 +44,8 @@ class BatchReporting:
         self.ref_program = ref_program
         start_date = datetime.datetime(*start_date).strftime("%m-%d-%Y")
 
-        self.directories = [f.name for f in os.scandir(output_directory) if f.is_dir()]
+        self.directories = [f.name for f in os.scandir(
+            output_directory) if f.is_dir()]
 
         # For each folder, build a dataframe combining all necessary files
         self.all_data = [[pd.read_csv(Path(f)) for f in os.scandir(fldr)
@@ -79,10 +80,12 @@ class BatchReporting:
 
         # Add dates
         for i in range(len(self.emission_dfs)):
-            self.emission_dfs[i] = pd.concat([self.emission_dfs[i], dates], axis=1)
+            self.emission_dfs[i] = pd.concat(
+                [self.emission_dfs[i], dates], axis=1)
 
             # Axe spinup year
-            self.emission_dfs[i]['datetime'] = pd.to_datetime(self.emission_dfs[i]['datetime'])
+            self.emission_dfs[i]['datetime'] = pd.to_datetime(
+                self.emission_dfs[i]['datetime'])
             mask = (self.emission_dfs[i]['datetime'] > start_date)
             self.emission_dfs[i] = self.emission_dfs[i].loc[mask]
 
@@ -99,7 +102,8 @@ class BatchReporting:
 
         # Add dates
         for i in range(len(self.active_leak_dfs)):
-            self.active_leak_dfs[i] = pd.concat([self.active_leak_dfs[i], dates], axis=1)
+            self.active_leak_dfs[i] = pd.concat(
+                [self.active_leak_dfs[i], dates], axis=1)
 
             # Axe spinup year
             self.active_leak_dfs[i]['datetime'] = pd.to_datetime(
@@ -120,7 +124,8 @@ class BatchReporting:
 
             # Add dates
         for i in range(len(self.repair_leak_dfs)):
-            self.repair_leak_dfs[i] = pd.concat([self.repair_leak_dfs[i], dates], axis=1)
+            self.repair_leak_dfs[i] = pd.concat(
+                [self.repair_leak_dfs[i], dates], axis=1)
 
             # Axe spinup year
             self.repair_leak_dfs[i]['datetime'] = pd.to_datetime(
@@ -145,7 +150,8 @@ class BatchReporting:
             self.cost_dfs[i] = pd.concat([self.cost_dfs[i], dates], axis=1)
 
             # Axe spinup
-            self.cost_dfs[i]['datetime'] = pd.to_datetime(self.cost_dfs[i]['datetime'])
+            self.cost_dfs[i]['datetime'] = pd.to_datetime(
+                self.cost_dfs[i]['datetime'])
             mask = (self.cost_dfs[i]['datetime'] > start_date)
             self.cost_dfs[i] = self.cost_dfs[i].loc[mask]
 
@@ -191,9 +197,10 @@ class BatchReporting:
         '''
         # Read in all the descriptive files
         descriptive_files = {}
-        for i in os.listdir():
+        for i in os.listdir(self.output_directory):
             if i.endswith('_descriptives.csv'):
-                descriptive_files[i[:-17]] = pd.read_csv(i, index_col=0)
+                descriptive_files[i[:-17]
+                                  ] = pd.read_csv(self.output_directory/i, index_col=0)
 
         # Separate the reference program and the programs to compare to it
         ref = None
@@ -219,7 +226,8 @@ class BatchReporting:
 
             output_df = output_df.append([dif, rat])
 
-        output_df.to_csv(self.output_directory / 'program_comparisons.csv', index=True)
+        output_df.to_csv(self.output_directory /
+                         'program_comparisons.csv', index=True)
 
         return
 
@@ -255,7 +263,8 @@ class BatchReporting:
             df_p1 = df_p1.append(i, ignore_index=True)
 
         # Output Emissions df for other uses (e.g. live plot)
-        df_p1.to_csv(self.output_directory / 'mean_active_leaks.csv', index=True)
+        df_p1.to_csv(self.output_directory /
+                     'mean_active_leaks.csv', index=True)
 
         # Now repeat for emissions (which will actually be used for batch plotting)
         dfs = self.emission_dfs
@@ -288,7 +297,8 @@ class BatchReporting:
         # Output Emissions df for other uses (e.g. live plot)
         df_p1.to_csv(self.output_directory / 'mean_emissions.csv', index=True)
 
-        df_p1["var_prog"] = df_p1['variable'].astype(str) + df_p1['program'].astype(str)
+        df_p1["var_prog"] = df_p1['variable'].astype(
+            str) + df_p1['program'].astype(str)
 
         # Make plots from list of dataframes - one entry per dataframe
         pn.theme_set(pn.theme_linedraw())
@@ -326,7 +336,8 @@ class BatchReporting:
             panel_grid_major_y=pn.element_line(
                        colour='black', linewidth=1, alpha=0.5))
                    )
-        boxplot.save(self.output_directory / 'emissions_boxplot.png', dpi=900, verbose=False)
+        boxplot.save(self.output_directory /
+                     'emissions_boxplot.png', dpi=900, verbose=False)
 
         # Build relative mitigation plots
         dfs_p2 = dfs.copy()
@@ -361,13 +372,15 @@ class BatchReporting:
         df_p2['high_dif'] = dfs_p2[1]['mean_dif'] + 2 * dfs_p2[1]['std_dif']
         df_p2['low_ratio'] = dfs_p2[1]['mean_ratio'] / (dfs_p2[1]
                                                         ['mean_ratio'] + 2 * dfs_p2[1]['std_ratio'])
-        df_p2['high_ratio'] = dfs_p2[1]['mean_ratio'] + 2 * dfs_p2[1]['std_ratio']
+        df_p2['high_ratio'] = dfs_p2[1]['mean_ratio'] + \
+            2 * dfs_p2[1]['std_ratio']
 
         pd.options.mode.chained_assignment = None
         for i in dfs_p2[2:]:
             i['low_dif'] = i['mean_dif'] - 2 * i['std_dif']
             i['high_dif'] = i['mean_dif'] + 2 * i['std_dif']
-            i['low_ratio'] = i['mean_ratio'] / (i['mean_ratio'] + 2 * i['std_ratio'])
+            i['low_ratio'] = i['mean_ratio'] / \
+                (i['mean_ratio'] + 2 * i['std_ratio'])
             i['high_ratio'] = i['mean_ratio'] + 2 * i['std_ratio']
             short_df = i[['program', 'mean_dif', 'std_dif', 'low_dif',
                           'high_dif', 'mean_ratio', 'std_ratio', 'low_ratio', 'high_ratio']]
@@ -446,7 +459,8 @@ class BatchReporting:
             df_p1 = df_p1.append(i, ignore_index=True)
 
         # Output Emissions df for other uses (e.g. live plot)
-        df_p1.to_csv(self.output_directory / 'cost_estimate_temporal.csv', index=True)
+        df_p1.to_csv(self.output_directory /
+                     'cost_estimate_temporal.csv', index=True)
 
         # Make plots from list of dataframes - one entry per dataframe
         pn.theme_set(pn.theme_linedraw())
@@ -497,7 +511,8 @@ class BatchReporting:
                 dict.update({'Program': self.directories[i]})
                 dict.update({'Mean Cost': round(df_temp.iloc[:, j].mean())})
                 dict.update({'St. Dev.': df_temp.iloc[:, j].std()})
-                dict.update({'Method': method_lists[i][j].replace('_cost', '')})
+                dict.update(
+                    {'Method': method_lists[i][j].replace('_cost', '')})
                 rows_list.append(dict)
         df = pd.DataFrame(rows_list)
 
@@ -512,7 +527,8 @@ class BatchReporting:
             pn.scale_fill_hue(h=0.15, l=0.25, s=0.9) +
             # pn.geom_text(size=15, position=pn.position_stack(vjust=0.5)) +
             pn.theme(
-                panel_border=pn.element_rect(colour="black", fill=None, size=2),
+                panel_border=pn.element_rect(
+                    colour="black", fill=None, size=2),
                 panel_grid_minor_x=pn.element_blank(),
                 panel_grid_major_x=pn.element_blank(),
                 panel_grid_minor_y=pn.element_line(

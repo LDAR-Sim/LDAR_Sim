@@ -3,15 +3,18 @@
 See changelog [here](changelog.md)
 
 ## About LDAR-Sim
+
 The Leak Detection and Repair Simulator (LDAR-Sim) is an open-source modeling framework for exploring the effectiveness of methane leak detection programs. The purpose of LDAR-Sim is to enable transparent, collaborative, flexible, and intuitive investigation of emerging LDAR technologies, methods, work practices, regulations, and deployment strategies.
 
-LDAR-Sim has many potential uses, including: 
+LDAR-Sim has many potential uses, including:
+
   1) Test emissions reduction equivalence among distinct LDAR programs
   2) Evaluate performance and cost of methane sensing technologies and work practices
   3) Predict the emissions mitigation of proposed or existing fugitive methane policies
   4) Inform the development and niche of technologies and work practices
 
 To learn more about LDAR-Sim, you can:
+
   1) User manual [manual](USER_MANUAL.md)
   2) Read our [story map](https://arcg.is/1rXeX10) (less technical introduction).
   3) Read [Fox et al., 2020](https://www.sciencedirect.com/science/article/pii/S0959652620352811).
@@ -27,13 +30,15 @@ Thomas Barchyn: tbarchyn@ucalgary.ca
 Chris Hugenholtz: chhugenh@ucalgary.ca
 
 ## LDAR-Sim Licensing and Use
-LDAR-Sim was invented by Thomas Fox, Mozhou Gao, Thomas Barchyn, and Chris Hugenholtz at the University of Calgary's Centre for Smart Emissions Sensing Technologies. 
+
+LDAR-Sim was invented by Thomas Fox, Mozhou Gao, Thomas Barchyn, and Chris Hugenholtz at the University of Calgary's Centre for Smart Emissions Sensing Technologies.
 
 LDAR-Sim is free software: you can redistribute it and/or modify it under the terms of the MIT License . LDAR-Sim is distributed in the hope that it will be useful, but without any warranty; without even the implied warranty of merchantability or fitness for a particular purpose.
 
 NOTE: This applies to all versions following Commit 69c27ec, Made on March 1st, 2021, Previous versions of LDAR-Sim were licensed under the GNU Affero General Public License. All redistributions or modifications made on LDAR-Sim versions created before Commit 69c27ec (March 1st, 2021) are required to be in compliance with version 3 of the GNU Affero General Public License.
 
 ## [Fox_etal_2020 Release](https://github.com/tarcadius/LDAR_Sim/tree/Fox_etal_2020)
+
 The Fox et al. 2020 release is immortalized in a separate branch that can be found by [clicking here](https://github.com/tarcadius/LDAR_Sim/tree/Fox_etal_2020).
 
 The Fox et al., 2020 release contains the exact code and inputs used in [our LDAR-Sim synthesis paper](https://www.sciencedirect.com/science/article/pii/S0959652620352811). We recommend using this release, especially for first time users.
@@ -41,29 +46,37 @@ The Fox et al., 2020 release contains the exact code and inputs used in [our LDA
 Citation for this release: Fox, Thomas A., Mozhou Gao, Thomas E. Barchyn, Yorwearth L. Jamin, and Chris H. Hugenholtz. "An agent-based model for estimating emissions reduction equivalence among leak detection and repair programs." Journal of Cleaner Production (2020): 125237.
 
 ### Getting started
+
 This guide is intended to get a user running with LDAR-Sim, **note** that even though we have supplied default variables, these should be used with caution, as many are not fully understood, are dependent on specific company workpractices, and very by geographical region.
 
 #### Step 1: Before you begin
+
 Read and understand the LDAR-Sim LICENSE (MIT License).
 Read the user manual [manual](USER_MANUAL.md)
 Read [Fox et al 2020](https://www.sciencedirect.com/science/article/pii/S0959652620352811) to familiarize yourself with LDAR-Sim fundamentals.
 
 #### Step 2: Installing Packages with Conda
+
 Using Conda (Conda-forge) and the requirements file included in the "install folder" Follow the directions included in the Setting Up LDAR Sim Dev Environment file. The requirements.txt file can also be used with PIP and pipenv, but Python should be installed seperately.
 
 - Install Miniconda3 newest version
 - From Conda Shell: cd into LDAR-Sim/install
+
   `conda config --add channels conda-forge`
+
   `conda config --set channel_priority strict1`
+
   `conda create -n ldar_sim --file requirements.txt`
+
   `conda activate ldar_sim`
 
 Alternatively pip and pipenv can be used to install there requirements file with:
+
   `pip install ldar_sim -r requirements.txt`
 
 if you are using satellite modules orbit predictor needs to be added to environement
-  `pip install orbit_predictor==1.14.2`
 
+  `pip install orbit_predictor==1.14.2`
 
 #### Step 3: Get Weather and Facilitity Data
 
@@ -73,18 +86,21 @@ The application requires both facility and weather data to run. We have included
 
 The simulation files allow a user to set global / program/ and method parameters. If a parameter is not included in the file a default value will be used. One Global file and at least one Program File is required for running the program while method files are required for running a method. 
 
-##### Example:
+##### Example
 
 A Global yaml file is required, the most basic setup is as follows (note , that P_OGI, and P_none are required):
-G_.yaml => 
+G_.yaml =>
+
 ``` yaml
   parameter_level: global     // Denotes the program level (used for input handling)
   version: '2.0'              // Denotes the version
   reference_program: P_OGI    // Denotes the regulatory reference program for relative differences
   baseline_program: P_none    // Denotes a baseline program for estimating program mitigation, usually in place of no formal LDAR
 ```
-P_OGI.yaml => 
+
+P_OGI.yaml =>
 A Program yaml file is required, the most basic setup is as follows (where a method Label points at a global parameter):
+
 ``` yaml
   program_name: P_OGI           // Denotes program name (must be unique)
   parameter_level: program      // Denotes the program level (used for input handling)
@@ -93,7 +109,8 @@ A Program yaml file is required, the most basic setup is as follows (where a met
     - OGI 
 ```
 
-P_none.yaml => 
+P_none.yaml =>
+
 ``` yaml
   program_name: P_none
   parameter_level: program
@@ -102,8 +119,10 @@ P_none.yaml =>
 
 ```
 
-M_OGI.yaml => 
+M_OGI.yaml =>
+
 A Method yaml file is required, the most basic setup is as follows:
+
 ``` yaml
     parameter_level: method         // Denotes program name (must be unique)
     version: '2.0'                  // Denotes the version
@@ -125,17 +144,30 @@ Checkout the [user manual](USER_MANUAL.md) for more info on the parameters.
 
 #### Step 5: Run the program
 
-The main program is a python script called LDAR_Sim_main.py. Within the virtual environent (or where all py packages are installed) run:<br>
- ```Python LDAR_Sim_main.py {G_XXX} {P_XXX} {M_XXX} {M_YYY}``` <br> where each arguement is a path too a global, program, or method input parameter file. for example:<br>
- ```Python LDAR_Sim_main.py ./simulations/G_.yaml ./simulations/P_air.yaml ./simulations/M_aircraft.yaml ./simulations/M_OGI_FU.yaml```<br>alternatively, an entire directory can be passed using the "-P", "--in_dir" flags where all files within the directory are added to the program. for example:<br>
- ```Python LDAR_Sim_main.py --in_dir ./simulations``` <br> will load all files in the simulations folder into the program. <br><br>
- Output files, including maps, charts and csv files will be generated and placed in the output folder. <br><br>
+The main program is a python script called LDAR_Sim_main.py. Within the virtual environent (or where all py packages are installed) run:
+
+ ```Python LDAR_Sim_main.py {G_XXX} {P_XXX} {M_XXX} {M_YYY}```
+
+  where each arguement is a path too a global, program, or method input parameter file. for example:
+
+```Python LDAR_Sim_main.py ./simulations/G_.yaml ./simulations/P_air.yaml ./simulations/M_aircraft.yaml ./simulations/M_OGI_FU.yaml```
+
+alternatively, an entire directory can be passed using the "-P", "--in_dir" flags where all files within the directory are added to the program. for example:
+
+ ```Python LDAR_Sim_main.py --in_dir ./simulations```
+
+ will load all files in the simulations folder into the program.
+
+ Output files, including maps, charts and csv files will be generated and placed in the output folder.
+
  **Note**: that you can use absolute references or relative, where the the root folder is this folder.
 
 ## Other versions
+
 Several LDAR-Sim advances are not publicly available at this time, including more advanced equivalence scenario modeling, specific method modules, and cost-effectiveness comparisons.
 
 ## Contributions and collaboration
+
 The Included python code follows strict PEP8 Standards for formatting with the a modification to the Line Length rule, where lines cannot exceed 100 characters. Contributed code will be rejected if it does not meet this standard. We suggest using PEP8 autoformatters and Linting (Flake8 , Black) when making contributions.
 
-The authors welcome all contributions and collaborations. Please reach out - we would love to hear from you and/or work with you!   
+The authors welcome all contributions and collaborations. Please reach out - we would love to hear from you and/or work with you!

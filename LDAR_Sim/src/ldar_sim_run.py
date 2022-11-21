@@ -44,7 +44,8 @@ def ldar_sim_run(simulation):
     simulation = copy.deepcopy(simulation)
     parameters = simulation['program']
     parameters['input_directory'] = simulation['input_directory']
-    parameters['output_directory'] = simulation['output_directory'] / parameters['program_name']
+    parameters['output_directory'] = simulation['output_directory'] / \
+        parameters['program_name']
     parameters['pregenerate_leaks'] = simulation['pregenerate_leaks']
     parameters['leak_timeseries'] = simulation['leak_timeseries']
     parameters['initial_leaks'] = simulation['initial_leaks']
@@ -84,7 +85,8 @@ def ldar_sim_run(simulation):
         'weather': None,  # weather gets assigned during initialization
         'daylight': None,  # daylight hours calculated during initialization
         # 'init_leaks': [],  # the initial leaks generated at timestep 1
-        'empirical_vents': [0],  # vent distribution created during initialization
+        # vent distribution created during initialization
+        'empirical_vents': [0],
         'max_leak_rate': None,  # the largest leak in the input file
     }
 
@@ -96,6 +98,7 @@ def ldar_sim_run(simulation):
         'new_leaks': [],
         'n_tags': [],
         'rolling_cost_estimate': [],
+        'rolling_cost_estimate_b': [],
         'cum_repaired_leaks': [],
         'daily_emissions_kg': []
     }
@@ -116,11 +119,14 @@ def ldar_sim_run(simulation):
         state['t'].current_timestep = ts
         state['t'].current_date = start_date + timedelta(days=ts)
         if parameters['seed_timeseries']:
-            np_rand.seed(parameters['seed_timeseries'][state['t'].current_timestep])
-            rand.seed(parameters['seed_timeseries'][state['t'].current_timestep])
+            np_rand.seed(parameters['seed_timeseries']
+                         [state['t'].current_timestep])
+            rand.seed(parameters['seed_timeseries']
+                      [state['t'].current_timestep])
         sim.update()
 
     # Clean up and write files
     sim_summary = sim.finalize()
+    print(simulation['closing_message'])
     logfile.close()
     return (sim_summary)

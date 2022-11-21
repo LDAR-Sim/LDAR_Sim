@@ -70,12 +70,15 @@ def run_programs(programs, n_simulations, output_directory):
             opening_message = "Simulating program {} of {} ; simulation {} of {}".format(
                 j + 1, len(programs), i + 1, n_simulations
             )
+            closing_message = "Finished simulating program {} of {} ; simulation {} of {} ".format(
+                j + 1, len(programs), i + 1, n_simulations)
             simulations.append(
                 [{'i': i, 'program': copy.deepcopy(programs[j]),
                     'globals':simulation_parameters,
                     'input_directory': input_directory,
                     'output_directory':output_directory,
                     'opening_message': opening_message,
+                    'closing_message': closing_message,
                     'pregenerate_leaks': pregen_leaks,
                     'print_from_simulation': print_from_simulations,
                     'sites': sites,
