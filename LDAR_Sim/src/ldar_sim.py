@@ -32,7 +32,7 @@ from geography.vector import grid_contains_point
 from initialization.leaks import generate_initial_leaks, generate_leak
 from initialization.sites import generate_sites
 from initialization.update_methods import (est_n_crews, est_site_p_day,
-                                           est_t_bw_sites)
+                                           est_t_bw_sites, est_min_time_bt_surveys)
 from campaigns.methods import update_campaigns, setup_campaigns
 from methods.company import BaseCompany
 from numpy.random import binomial, choice
@@ -220,6 +220,8 @@ class LdarSim:
                     params['input_directory'] / m_obj['t_bw_sites']['file']).iloc[:, 0])
             if m_obj['consider_daylight']:
                 calculate_daylight = True
+            if m_obj['scheduling']['min_time_bt_surveys'] is None:
+                m_obj['scheduling']['min_time_bt_surveys'] = est_min_time_bt_surveys(m_obj)
             try:
                 state['methods'].append(
                     BaseCompany(state, params, m_obj, timeseries, m_label))

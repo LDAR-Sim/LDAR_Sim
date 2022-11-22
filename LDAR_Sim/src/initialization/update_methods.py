@@ -99,3 +99,18 @@ def est_t_bw_sites(m, sites):
     avg_speed = average(m['scheduling']['travel_speeds'])
     # Convert to minutes, returns as a list to conform with t_bw_sites var
     return [int(ceil((avg_speed/avg_dist_bw_sites)*60))]
+
+
+def est_min_time_bt_surveys(m):
+    """ Estimate the minimum time that should be enforced between surveys using
+        the method deployment months and the method RS value.
+    Args:
+        m (dict): method parameters
+
+    Returns:
+        int: Minimum time that must pass between surveys of a site in days
+    """
+    n_months = len(m['scheduling']['deployment_months'])
+    n_days = 30.4167 * n_months
+    min_time_bt_surveys = floor((n_days/m['RS']) / 2)
+    return min_time_bt_surveys

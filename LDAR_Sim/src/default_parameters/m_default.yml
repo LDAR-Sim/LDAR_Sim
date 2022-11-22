@@ -35,6 +35,7 @@ scheduling:
   home_bases_files: 'Airport_AB_Coordinates.csv'
   route_planning: False
   travel_speeds: ['_placeholder_int_']
+  min_time_bt_surveys: '_placeholder_int_'
 sensor:
   type: default
   QE: 0.0
