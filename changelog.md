@@ -1,5 +1,14 @@
 # Change Log
 
+## 2022-11
+
+1. **Survey Scheduling bug fixes**  Bug fixes made to survey scheduling for mobile methods.
+    1. ***Changed logic for scheduling surveys for sites*** Changed site survey scheduling logic to begin counting time since a site was last surveyed from the starting date of the previous survey, not the end date.
+    2. ***Changed rollover of mobile_crew to shared*** The rollover variable was for mobile crews was moved to a class variables so all crews now share a rollover list. This ensures survey progress is no longer reset if the crew surveying the site changes.
+    3. ***Added scheduling fix to reduce schedule slipping*** Added scheduling to add sites to the survey pool if half the survey duration(campaign) has passed. This is intended to reduce the observed issue of schedule slipping.
+    4. ***Bugfix for survey scheduling*** Fixed behavior where surveys completed on Jan 1 of any year would wrongly be considered as a survey done the previous year.
+2. **Added new parameter min_time_bt_surveys** Added a new parameter for setting value of minimum time that must pass between surveys, this is now the value used for determining when to add sites to survey pool.
+
 ## 2022-09
 
 1. **Subtype File addition** Programs: specify LPR, LDR for subtypes. Deprecates subtype-distribution. Will eventually also combine the subtype-times-file.
@@ -9,12 +18,6 @@
 5. **Spatial coverage bug fix**
 6. **Repair delay** Programs: can now be a single value, a list or a log normal distribution.
 7. **Estimate emissions** Optionally allows for additional outputs related to estimating emissions based on survey frequency and leak rate.
-8. **Survey Scheduling bug fixes**  Bug fixes made to survey scheduling for mobile methods.
-    1. ***Changed logic for scheduling surveys for sites*** Changed site survey scheduling logic to begin counting time since a site was last surveyed from the starting date of the previous survey, not the end date.
-    2. ***Changed rollover of mobile_crew to shared*** The rollover variable was for mobile crews was moved to a class variables so all crews now share a rollover list. This ensures survey progress is no longer reset if the crew surveying the site changes.
-    3. ***Added scheduling fix to reduce schedule slipping*** Added scheduling to add sites to the survey pool if half the survey duration(campaign) has passed. This is intended to reduce the observed issue of schedule slipping.
-    4. ***Bugfix for survey scheduling*** Fixed behavior where surveys completed on Jan 1 of any year would wrongly be considered as a survey done the previous year.
-9. **Added new parameter min_time_bt_surveys** Added a new parameter for setting value of minimum time that must pass between surveys, this is now the value used for determining when to add sites to survey pool.
 
 ## Change Log Version 2.0 (21/09)
 
