@@ -125,18 +125,33 @@ class Schedule():
                         if s['preferred_FU_method'] is None or s['preferred_FU_method'] == self.config['label']
                         ), key=lambda x: x[days_since_LDAR], reverse=True))
         else:
+            missing_months = 0
+            current_month = self.state['t'].current_date.month
+            for s in range(current_month):
+                if s in meth[name]["scheduling"]["deployment_months"]:
+                    missing_months = missing_months + (365/12)
+            missing_months = math.floor(missing_months)
+
             days_since_LDAR = '{}_t_since_last_LDAR'.format(name)
+
             # filter then sort
             out_sites = list(
                 sorted((s for s in site_pool
-                        if (((s[survey_done_this_year] < int(s[survey_frequency]))
-                            and (s[days_since_LDAR] >= ((int(s[survey_min_interval])) - (math.floor(s[survey_time]/60/self.config['max_workday'])))))
-                            and s[days_since_LDAR] >= meth[name]['scheduling']['min_time_bt_surveys']) or (
-                            ((s[survey_done_this_year] * s[survey_min_interval] + meth[name]['scheduling']['min_time_bt_surveys']) 
-                                < math.floor(self.state['t'].current_timestep % 365))
-                            and
-                            (s[survey_done_this_year] * s[survey_min_interval] > math.floor(self.state['t'].current_timestep % 365)))),
-                       key=lambda x: x[days_since_LDAR], reverse=True))
+                        if ((s[survey_done_this_year] < int(s[survey_frequency])) and
+                            (
+                            (
+                                s[days_since_LDAR] + math.floor(s[survey_time]/60/self.config['max_workday']) >= max(
+                                    [int(s[survey_min_interval]), meth[name]['scheduling']['min_time_bt_surveys']])
+                            ) or
+                            (
+                                s[survey_done_this_year] * max([int(s[survey_min_interval]), meth[name]['scheduling']['min_time_bt_surveys']]) +
+                                missing_months +
+                                meth[name]['scheduling']['min_time_bt_surveys'] < self.state['t'].current_timestep % 365
+                            )
+                        ))),
+                       key=lambda x: x[days_since_LDAR], reverse=True
+                       )
+            )
 
         return out_sites
 
