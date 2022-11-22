@@ -42,7 +42,8 @@ def est_n_crews(m, sites):
     m_name = m['label']
     avg_sites_per_day = est_site_p_day(m, sites)
     try:
-        avg_days_per_campaign = ceil(average([365 / s['{}_RS'.format(m_name)] for s in sites]))
+        avg_days_per_campaign = ceil(
+            average([365 / s['{}_RS'.format(m_name)] for s in sites]))
         n_crews = ceil(len(sites)/(avg_sites_per_day*avg_days_per_campaign))
     except KeyError:
         n_crews = 1
@@ -66,7 +67,8 @@ def est_site_p_day(m, sites):
         the the time required to travel to a site and complete LDAR work at a site.
         '''
         workday_aj = work_mins - int(choice(m['t_bw_sites']['vals']))
-        t_per_site = int(choice(m['t_bw_sites']['vals'])) + int(s['{}_time'.format(m_name)])
+        t_per_site = int(choice(m['t_bw_sites']['vals'])
+                         ) + int(s['{}_time'.format(m_name)])
         return workday_aj / t_per_site
     m_name = m['label']
     work_mins = m['max_workday']*60
@@ -90,7 +92,8 @@ def est_t_bw_sites(m, sites):
     Returns:
         list(ints): travel time between sites in minutes
     """
-    site_rads = [[radians(site['lat']), radians(site['lon'])] for site in sites]
+    site_rads = [[radians(site['lat']), radians(site['lon'])]
+                 for site in sites]
     # Calc distance matrix between all points and convert to KM
     dist_mat = np_arr(haversine_distances(site_rads)*6371000/1000)
     # Diagonals are the distance between a point and itself. Exclude from avg
@@ -110,6 +113,7 @@ def est_min_time_bt_surveys(m):
     Returns:
         int: Minimum time that must pass between surveys of a site in days
     """
+
     n_months = len(m['scheduling']['deployment_months'])
     n_days = 30.4167 * n_months
     min_time_bt_surveys = floor((n_days/m['RS']) / 2)

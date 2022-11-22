@@ -220,8 +220,9 @@ class LdarSim:
                     params['input_directory'] / m_obj['t_bw_sites']['file']).iloc[:, 0])
             if m_obj['consider_daylight']:
                 calculate_daylight = True
-            if m_obj['scheduling']['min_time_bt_surveys'] is None:
-                m_obj['scheduling']['min_time_bt_surveys'] = est_min_time_bt_surveys(m_obj)
+            if m_obj['scheduling']['min_time_bt_surveys'] is None and m_obj['deployment_type'] == 'mobile' and not m_obj['is_follow_up']:
+                m_obj['scheduling']['min_time_bt_surveys'] = est_min_time_bt_surveys(
+                    m_obj)
             try:
                 state['methods'].append(
                     BaseCompany(state, params, m_obj, timeseries, m_label))
