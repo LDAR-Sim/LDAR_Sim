@@ -9,6 +9,8 @@
     4. ***Bugfix for survey scheduling*** Fixed behavior where surveys completed on Jan 1 of any year would wrongly be considered as a survey done the previous year.
 2. **Added new parameter min_time_bt_surveys** Added a new parameter for setting value of minimum time that must pass between surveys, this is now the value used for determining when to add sites to survey pool.
 
+    ***_min_time_bt_surveys*** can be set like ***_RS*** or ***_time*** in the infrastructure file.
+
 ## 2022-09
 
 1. **Subtype File addition** Programs: specify LPR, LDR for subtypes. Deprecates subtype-distribution. Will eventually also combine the subtype-times-file.
