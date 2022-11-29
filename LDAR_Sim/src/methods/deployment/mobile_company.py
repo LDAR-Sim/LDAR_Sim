@@ -135,18 +135,27 @@ class Schedule():
             days_since_LDAR = '{}_t_since_last_LDAR'.format(name)
 
             # filter then sort
+            # Sort by:
+            #   if surveys done is less than the total surveys needed for that year
+            #               AND
+            #   days since last survey is greater or equal to the minimum time interval between surveys
+            #       - should be the next survey
+            #               OR
+            #   minimum days have passed between surveys
+            #       - survey needs to be forced to happen
             out_sites = list(
                 sorted((s for s in site_pool
                         if ((s[survey_done_this_year] < int(s[survey_frequency])) and
                             (
                             (
                                 s[days_since_LDAR] + math.floor(s[survey_time]/60/self.config['max_workday']) >= max(
-                                    [int(s[survey_min_interval]), meth[name]['scheduling']['min_time_bt_surveys']])
+                                    [int(s[survey_min_interval]), s['{}_min_time_bt_surveys'.format(name)]])
                             ) or
                             (
-                                s[survey_done_this_year] * max([int(s[survey_min_interval]), meth[name]['scheduling']['min_time_bt_surveys']]) +
+                                s[survey_done_this_year] * max([int(s[survey_min_interval]), s['{}_min_time_bt_surveys'.format(name)]]) +
                                 missing_months +
-                                meth[name]['scheduling']['min_time_bt_surveys'] < self.state['t'].current_timestep % 365
+                                s['{}_min_time_bt_surveys'.format(
+                                    name)] < self.state['t'].current_timestep % 365
                             )
                         ))),
                        key=lambda x: x[days_since_LDAR], reverse=True

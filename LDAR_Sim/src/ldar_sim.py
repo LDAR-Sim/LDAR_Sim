@@ -113,6 +113,17 @@ class LdarSim:
                 m_RS = '{}_RS'.format(m_label)
                 if m_obj['RS'] is not None:
                     site[m_RS] = m_obj['RS']
+
+                m_min_time_bt_surveys = '{}_min_time_bt_surveys'.format(
+                    m_label)
+                # when provided by user in method
+                if m_obj['scheduling']['min_time_bt_surveys'] is not None:
+                    site[m_min_time_bt_surveys] = m_obj['scheduling']['min_time_bt_surveys']
+                # when not provided
+                if not (m_min_time_bt_surveys in site) and m_obj['deployment_type'] == 'mobile' and not m_obj['is_follow_up']:
+                    site[m_min_time_bt_surveys] = est_min_time_bt_surveys(m_RS, len(m_obj['scheduling']['deployment_months']),
+                                                                          site)
+
                 if m_RS in site and m_obj['measurement_scale'] != 'component':
                     if m_label not in n_screening_rs_sets:
                         n_screening_rs_sets.update({m_label: site[m_RS]})
@@ -141,7 +152,6 @@ class LdarSim:
                     n_days = 30.4167 * n_months
                     site['{}_min_int'.format(m_label)] = floor(
                         n_days/site[m_RS])
-
                 # Automatically assign 1 crew to followup if left unspecified
                 elif m_obj['n_crews'] is None:
                     m_obj['n_crews'] = 1
@@ -220,9 +230,6 @@ class LdarSim:
                     params['input_directory'] / m_obj['t_bw_sites']['file']).iloc[:, 0])
             if m_obj['consider_daylight']:
                 calculate_daylight = True
-            if m_obj['scheduling']['min_time_bt_surveys'] is None and m_obj['deployment_type'] == 'mobile' and not m_obj['is_follow_up']:
-                m_obj['scheduling']['min_time_bt_surveys'] = est_min_time_bt_surveys(
-                    m_obj)
             try:
                 state['methods'].append(
                     BaseCompany(state, params, m_obj, timeseries, m_label))
