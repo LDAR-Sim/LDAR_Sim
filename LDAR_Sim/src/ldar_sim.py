@@ -120,9 +120,10 @@ class LdarSim:
                 if m_obj['scheduling']['min_time_bt_surveys'] is not None:
                     site[m_min_time_bt_surveys] = m_obj['scheduling']['min_time_bt_surveys']
                 # when not provided
-                if not (m_min_time_bt_surveys in site) and m_obj['deployment_type'] == 'mobile' and not m_obj['is_follow_up']:
-                    site[m_min_time_bt_surveys] = est_min_time_bt_surveys(m_RS, len(m_obj['scheduling']['deployment_months']),
-                                                                          site)
+                if not m_obj['is_follow_up'] and site[m_RS] > 0:
+                    if not (m_min_time_bt_surveys in site) and m_obj['deployment_type'] == 'mobile':
+                        site[m_min_time_bt_surveys] = est_min_time_bt_surveys(m_RS, len(m_obj['scheduling']['deployment_months']),
+                                                                            site)
 
                 if m_RS in site and m_obj['measurement_scale'] != 'component':
                     if m_label not in n_screening_rs_sets:
