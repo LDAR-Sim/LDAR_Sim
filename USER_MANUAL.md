@@ -1123,7 +1123,7 @@ Method costs. Currency is not important but must be consistent across all inputs
 
 **Default input:** 1.0
 
-**Description:** Probability (0-1) that an agent can locate a leak. Internally, each leak will be randomly assigned a True or False based on this probability indicating whether or not they are covered on the first pass. The leak will be checked if the value is true for the first and all subsequent surveys.
+**Description:** Probability (0-1) that a work practice can locate a leak. Internally, each leak will be randomly assigned a True or False value based on this probability indicating whether or not the leak can be detected by the work practice. This value is rolled once for each leak and work practice pair and remains consistent for subsequent surveys.
 
 `eg. coverage.spatial = 0.25`. The leak has a 25% chance of being detected regardless of the number of surveys.
 
