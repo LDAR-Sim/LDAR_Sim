@@ -541,13 +541,19 @@ class LdarSim:
                 leak_df, time_df, site_df, params['simulation'],
                 params['output_directory'])
 
+        # Extract necessary information from the parameters
+        wanted_c_economics = ['sale_price_natgas', 'GWP_CH4', 'carbon_price_tonnesCO2e', 'cost_CCUS']
+        carbon_economics = {key: value for key, value in params['economics'].items() if key in wanted_c_economics}
+        wanted_meta_cols = ['program_name', 'simulation', 'NRd', 'start_date']
+        metadata = {key: value for key, value in params.items() if key in wanted_meta_cols}
+
         sim_summary = {
-            'meta': params,
+            'meta': metadata,
             'leaks': leak_df,
             'timeseries': time_df,
             'sites': site_df,
             'program_name': params['program_name'],
-            'p_params': params,
+            'p_c_economics': carbon_economics,
         }
 
         return(sim_summary)
