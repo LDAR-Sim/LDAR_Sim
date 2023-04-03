@@ -71,7 +71,7 @@ class LdarSim:
             # Read in the sites as a list of dictionaries
         if len(state['sites']) < 1:
             state['sites'], _, _ = generate_sites(
-                params, params['input_directory'])
+                params, params['input_directory'], params['pregenerate_leaks'])
         state['max_leak_rate'] = params['emissions']['max_leak_rate']
         state['t'].set_UTC_offset(state['sites'])
         if params['subtype_file'] is not None:

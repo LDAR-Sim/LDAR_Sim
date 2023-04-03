@@ -54,7 +54,7 @@ def run_programs(programs, n_simulations, output_directory):
     for i in range(n_simulations):
         if pregen_leaks:
             sites, leak_timeseries, initial_leaks = generate_sites(
-                programs[0], input_directory)
+                programs[0], input_directory, pregen_leaks)
         else:
             sites = [], leak_timeseries = [], initial_leaks = []
         if preseed_random:
