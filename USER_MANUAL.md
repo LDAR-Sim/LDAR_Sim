@@ -1063,7 +1063,7 @@ If using different weather files for different programs (e.g., when comparing di
 
 **Notes of caution:** In most cases, True and False will yield similar results. Use of daylight constraints should be considered for companies that do not wish to deploy crews in the dark for safety reasons, especially for locations at high latitudes during winter months (e.g., Northern Alberta). However, this functionality should not be used to determine whether sunlight is available for passive remote sensing methods or other technologies that require sunlight operate, as the sun has already set when civil twilight occurs (see obs.horizon). Solar flux will vary with topography and cloud cover (use ERA5 data).
 
-### consider_venting (methods)
+### include_venting (methods)
 
 **Data type:** Boolean
 

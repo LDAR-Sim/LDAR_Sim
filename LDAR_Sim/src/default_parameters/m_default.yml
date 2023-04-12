@@ -1,5 +1,5 @@
 consider_daylight: False
-consider_venting: False
+include_venting: False
 cost:
   per_day: 0
   per_hour: 0

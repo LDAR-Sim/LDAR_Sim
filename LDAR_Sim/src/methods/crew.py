@@ -200,7 +200,7 @@ class BaseCrew:
 
         # Add vented emissions
         venting = 0
-        if self.parameters['emissions']['consider_venting']:
+        if self.config['include_venting']:
             if 'static_vent_rate' in site:
                 venting = site['static_vent_rate']
             else:
