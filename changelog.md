@@ -6,6 +6,12 @@
 2. **Site-Level Venting Rates** Venting rates can now be provided at a site level in the infrastructure file. This is a breaking change that removes previous venting behavior.
 3. **Requirements update** Requirements have been updated to allow users to use newest versions of libraries and python 3.11 for the conda environment.
 
+## 2023-04
+
+1. **Venting Update** Venting is now also considered at a method level. Will need to enable it at Program level, and then set it for each method.
+2. **Updated Default Parameters** Updated venting and n_processes defaults.
+3. **Updated User Manual** User manual updated.
+
 ## 2022-11
 
 1. **Survey Scheduling bug fixes**  Bug fixes made to survey scheduling for mobile methods.

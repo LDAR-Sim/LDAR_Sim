@@ -642,7 +642,7 @@ If enabled, the leaks will be stored locally in /inputs/generation after running
 
 ### emissions
 
-#### consider_venting
+#### consider_venting (program)
 
 **Data type:** Boolean
 
@@ -653,6 +653,8 @@ If enabled, the leaks will be stored locally in /inputs/generation after running
 **Notes on acquisition:** No data acquisition required.
 
 **Notes of caution:** Screening technology performance will typically suffer if only fugitive emissions are being targeted due to the confounding presence of design (e.g., vented) emissions. Results from simulations of screening technologies that do not consider venting are therefore optimistic and unlikely to be representative of true reductions. When vented emissions are considered, it will change what facilities are selected for follow-up by screening technologies.
+
+Users will need to also set consider_venting at a method level.
 
 #### leak_dist_params
 
@@ -1060,6 +1062,18 @@ If using different weather files for different programs (e.g., when comparing di
 **Notes on acquisition:** Acquisition is automated using required lat and lon coordinates for each facility (see infrastructure_file input) at each timestep.
 
 **Notes of caution:** In most cases, True and False will yield similar results. Use of daylight constraints should be considered for companies that do not wish to deploy crews in the dark for safety reasons, especially for locations at high latitudes during winter months (e.g., Northern Alberta). However, this functionality should not be used to determine whether sunlight is available for passive remote sensing methods or other technologies that require sunlight operate, as the sun has already set when civil twilight occurs (see obs.horizon). Solar flux will vary with topography and cloud cover (use ERA5 data).
+
+### consider_venting (methods)
+
+**Data type:** Boolean
+
+**Default input:** False
+
+**Description:** A binary True/False to indicate whether the technology can differentiate between venting and fugitives. See consider_venting (program) for more details.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** In most cases when the program level consider_venting is set to True, users should also set this parameter to True. If the program level consider_venting is set to False, there will be no venting values for the technologies to factor in when checking for emissions detection.
 
 ### cost
 
