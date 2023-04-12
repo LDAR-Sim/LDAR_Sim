@@ -258,7 +258,7 @@ class BaseCompany:
         """
         self.site_watchlist.pop(site['site']['facility_ID'], None)
         update_flag(self.config, site, self.timeseries, self.state['t'], self.state['campaigns'],
-                    self.name, self.parameters['emissions']['consider_venting'])
+                    self.name, self.config['consider_venting'])
 
     def flag_sites(self):
         """

@@ -87,7 +87,8 @@ class BaseCrew:
                     self.visit_site(site_plan['site'])
                 self.worked_today = True
                 # NOTE Mobile LDAR_mins also includes travel to site time
-                self.state['t'].current_date += timedelta(minutes=int(site_plan['LDAR_mins']))
+                self.state['t'].current_date += timedelta(
+                    minutes=int(site_plan['LDAR_mins']))
                 self.daily_cost += self.config['cost']['per_site']
                 if self.config['deployment_type'] == 'mobile':
                     daily_LDAR_time += site_plan['LDAR_mins_onsite']
@@ -101,9 +102,11 @@ class BaseCrew:
             self.daily_cost += self.config['cost']['per_hour'] * \
                 (self.state['t'].current_date.hour-self.schedule.start_hour)
             self.daily_cost += self.config['cost']['per_day']
-            self.timeseries['{}_cost'.format(m_name)][cur_timestep] += self.daily_cost
+            self.timeseries['{}_cost'.format(
+                m_name)][cur_timestep] += self.daily_cost
             self.timeseries['total_daily_cost'][cur_timestep] += self.daily_cost
-            self.timeseries['{}_survey_time'.format(m_name)][cur_timestep] += daily_LDAR_time
+            self.timeseries['{}_survey_time'.format(
+                m_name)][cur_timestep] += daily_LDAR_time
             if self.config['deployment_type'] == 'mobile':
                 self.timeseries['{}_travel_time'.format(m_name)][cur_timestep] += \
                     daily_travel_time + itinerary[-1]['travel_home_mins']
@@ -121,7 +124,8 @@ class BaseCrew:
             site.update({'currently_flagged': False})
             site['last_component_survey'] = cur_ts
             if site_detect_results['found_leak']:
-                self.timeseries['{}_sites_vis_w_leaks'.format(m_name)][cur_ts] += 1
+                self.timeseries['{}_sites_vis_w_leaks'.format(
+                    m_name)][cur_ts] += 1
         elif site_detect_results['found_leak']:
             # all other sites flag
             self.timeseries['{}_sites_vis_w_leaks'.format(m_name)][cur_ts] += 1
@@ -157,7 +161,8 @@ class BaseCrew:
         self.timeseries['{}_sites_visited'.format(m_name)][cur_ts] += 1
         site['{}_surveys_conducted'.format(m_name)] += 1
         site['{}_surveys_done_this_year'.format(m_name)] += 1
-        site['historic_t_since_LDAR'] = site['{}_t_since_last_LDAR'.format(m_name)]
+        site['historic_t_since_LDAR'] = site['{}_t_since_last_LDAR'.format(
+            m_name)]
         site['{}_t_since_last_LDAR'.format(m_name)] = 0
 
     def detect_emissions(self, site, *args):
@@ -178,14 +183,16 @@ class BaseCrew:
         for leak in site['active_leaks']:
             # Check to see if leak is spatially covered
             if '{}_sp_covered'.format(m_name) not in leak:
-                is_sp_covered = np.random.binomial(1, self.config['coverage']['spatial'])
+                is_sp_covered = np.random.binomial(
+                    1, self.config['coverage']['spatial'])
                 leak['{}_sp_covered'.format(m_name)] = is_sp_covered
             if leak['{}_sp_covered'.format(m_name)]:
                 # Check to see if leak is temporally covered
                 if np.random.binomial(1, self.config['coverage']['temporal']):
                     covered_leaks.append(leak)
                     covered_site_rate += leak['rate']
-                    covered_equipment_rates[leak['equipment_group']-1] += leak['rate']
+                    covered_equipment_rates[leak['equipment_group'] -
+                                            1] += leak['rate']
             site_rate += leak['rate']
             equipment_rates[leak['equipment_group']-1] += leak['rate']
             # Get the type of sensor, and call the the detect emissions function for sensor
@@ -201,7 +208,8 @@ class BaseCrew:
             covered_site_rate += venting
             site_rate += venting
             for rate in range(len(covered_equipment_rates)):
-                covered_equipment_rates[rate] += venting/int(site['equipment_groups'])
+                covered_equipment_rates[rate] += venting / \
+                    int(site['equipment_groups'])
                 equipment_rates[rate] += venting/int(site['equipment_groups'])
         # Import module. If none is specified use method.sensors.{method_type}
         if self.config['sensor']['mod_loc'] is None:
