@@ -22,6 +22,8 @@ follow_up:
   redundancy_filter: 'recent'
   threshold: 0.0
   threshold_type: 'absolute'
+  alt_threshold: 0.0
+  use_alt_thresh: False
 is_follow_up: False
 label: '_placeholder_str_'
 max_workday: 8

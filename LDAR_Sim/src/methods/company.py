@@ -282,13 +282,28 @@ class BaseCompany:
                 # site_wl is an ordered by leak size.
                 if prop_to_flag > 0.0:
                     site_wl_subset = list(site_wl.values())[:prop_to_flag]
-                    target_sites = [site for site in site_wl_subset
-                                    if site['site_measured_rate']
-                                    > self.config['follow_up']['threshold']]
+                    if self.config['follow_up']['use_alt_thresh']:
+                        target_sites = [site for sdx, site in site_wl_subset
+                                        if site['site_measured_rate'] >
+                                        self.config['follow_up']['threshold'] or
+                                        site['site_measured_rate']-site['vent_rate'] >
+                                        self.config['follow_up']['alt_thresh']]
+                    else:
+                        target_sites = [site for sdx, site in site_wl_subset
+                                        if site['site_measured_rate']
+                                        > self.config['follow_up']['threshold']]
+
             if self.config['follow_up']['interaction_priority'] == 'threshold':
-                sites_above_thresh = [site for sdx, site in site_wl.items()
-                                      if site['site_measured_rate']
-                                      > self.config['follow_up']['threshold']]
+                if self.config['follow_up']['use_alt_thresh']:
+                    sites_above_thresh = [site for sdx, site in site_wl
+                                          if site['site_measured_rate'] >
+                                          self.config['follow_up']['threshold'] or
+                                          site['site_measured_rate']-site['vent_rate'] >
+                                          self.config['follow_up']['alt_thresh']]
+                else:
+                    sites_above_thresh = [site for sdx, site in site_wl.items()
+                                          if site['site_measured_rate']
+                                          > self.config['follow_up']['threshold']]
                 prop_to_flag = int(math.ceil(
                     len(sites_above_thresh) * self.config['follow_up']['proportion']))
                 target_sites = sites_above_thresh[:prop_to_flag]

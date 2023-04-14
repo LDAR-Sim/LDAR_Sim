@@ -11,6 +11,7 @@
 1. **Venting Update** Venting is now also considered at a method level. Will need to enable it at Program level, and then set it for each method.
 2. **Updated Default Parameters** Updated venting and n_processes defaults.
 3. **Updated User Manual** User manual updated.
+4. **Alternative Threshold** An alternative threshold for when venting is considered is added.
 
 ## 2022-11
 

@@ -1321,6 +1321,30 @@ The follow-up delay parameter can be set to require multiple measurements for a 
 
 **Notes of caution:** See _follow_up.threshold_ for more information.
 
+#### alt_threshold
+
+**Data type:** Float
+
+**Default input:** 0.0
+
+**Description:** An alternative follow-up threshold for customizing work practices based on venting and site level thresholds. The follow_up.threshold compares the site level rate while this follow_up.alt_threshold will compare the fugitive emissions for flagging site for follow_up.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** Requires follow_up.user_alt_thresh set to True to function.
+
+#### use_alt_thresh
+
+**Data type:** Boolean
+
+**Default input:** False
+
+**Description:** A binary True/False to indicate whether or not an alternative threshold can also be used as criteria for follow-up flagging.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** Will not work if venting is not considered
+
 ### is_follow_up
 
 **Data type:** Boolean
