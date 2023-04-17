@@ -128,7 +128,7 @@ class Schedule():
             missing_months = 0
             current_month = self.state['t'].current_date.month
             for s in range(current_month):
-                if s in meth[name]["scheduling"]["deployment_months"]:
+                if s not in meth[name]["scheduling"]["deployment_months"]:
                     missing_months = missing_months + (365/12)
             missing_months = math.floor(missing_months)
 
