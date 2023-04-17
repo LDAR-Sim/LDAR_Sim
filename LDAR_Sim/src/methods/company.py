@@ -287,7 +287,7 @@ class BaseCompany:
                                         if site['site_measured_rate'] >
                                         self.config['follow_up']['threshold'] or
                                         site['site_measured_rate']-site['vent_rate'] >
-                                        self.config['follow_up']['alt_thresh']]
+                                        self.config['follow_up']['alt_threshold']]
                     else:
                         target_sites = [site for sdx, site in site_wl_subset
                                         if site['site_measured_rate']
@@ -295,11 +295,11 @@ class BaseCompany:
 
             if self.config['follow_up']['interaction_priority'] == 'threshold':
                 if self.config['follow_up']['use_alt_thresh']:
-                    sites_above_thresh = [site for sdx, site in site_wl
+                    sites_above_thresh = [site for sdx, site in site_wl.items()
                                           if site['site_measured_rate'] >
                                           self.config['follow_up']['threshold'] or
                                           site['site_measured_rate']-site['vent_rate'] >
-                                          self.config['follow_up']['alt_thresh']]
+                                          self.config['follow_up']['alt_threshold']]
                 else:
                     sites_above_thresh = [site for sdx, site in site_wl.items()
                                           if site['site_measured_rate']
