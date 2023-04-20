@@ -46,7 +46,7 @@ def generate(sim_results, baseline_program, programs):
         {'in': 'lat', 'out': 'lat', 'type': float},
         {'in': 'lon', 'out': 'lon', 'type': float},
         {'in': 'total_emissions_kg', 'out': 'total_emissions_kg', 'type': float},
-        {'in': 'subtype_code', 'out': 'subtype_code', 'type': int},
+        {'in': 'subtype_code', 'out': 'subtype_code', 'type': str},
     ], aggregate=False)
 
     # Requires to steps, count each by sim then take the average of the sim
@@ -101,17 +101,24 @@ def generate(sim_results, baseline_program, programs):
                                agg_types=['sum'],
                                include_col_name=True, include_agg_name=True)
 
-    sim_progs = merge(sim_stats_daily, sim_leaks_by_NRD, how='left', on=["program_name", 'sim'])
-    sim_progs = merge(sim_progs, sim_emis_mit, how='left', on=["program_name", 'sim'])
-    sim_progs = merge(sim_progs, sim_sites_count, how='left', on=["program_name", 'sim'])
+    sim_progs = merge(sim_stats_daily, sim_leaks_by_NRD,
+                      how='left', on=["program_name", 'sim'])
+    sim_progs = merge(sim_progs, sim_emis_mit, how='left',
+                      on=["program_name", 'sim'])
+    sim_progs = merge(sim_progs, sim_sites_count,
+                      how='left', on=["program_name", 'sim'])
 
-    sim_progs['emis_kg_day_site_med'] = sim_progs['emis_kg_day_median'] / sim_progs['site_count']
+    sim_progs['emis_kg_day_site_med'] = sim_progs['emis_kg_day_median'] / \
+        sim_progs['site_count']
     sim_progs['act_leaks_day_site_med'] = sim_progs['active_leaks_day_median'] \
         / sim_progs['site_count']
     sim_progs['mit_vol_tco2e'] = sim_progs['mit_vol_kg_sum'] / 1000*28
-    sim_progs['mit_vol_perc'] = sim_progs['mit_vol_kg_sum'] / sim_progs['volume_kg_sum']
-    sim_progs['cost_mit_vol_tco2e'] = sim_progs['cost_day_sum'] / sim_progs['mit_vol_tco2e']
-    sim_progs['emis_nat_perc'] = sim_progs['nat_vol_sum'] / sim_progs['volume_kg_sum']
+    sim_progs['mit_vol_perc'] = sim_progs['mit_vol_kg_sum'] / \
+        sim_progs['volume_kg_sum']
+    sim_progs['cost_mit_vol_tco2e'] = sim_progs['cost_day_sum'] / \
+        sim_progs['mit_vol_tco2e']
+    sim_progs['emis_nat_perc'] = sim_progs['nat_vol_sum'] / \
+        sim_progs['volume_kg_sum']
     sim_progs.replace([inf, -inf], "N/A", inplace=True)
 
     sim_progs = sim_progs.rename(columns={
@@ -125,7 +132,8 @@ def generate(sim_results, baseline_program, programs):
                             include_col_name=True, include_agg_name=False)
     out_table = out_table.drop(columns=['sim'])
 
-    out_table = out_table.set_index('program_name', drop=False).to_dict('records')
+    out_table = out_table.set_index(
+        'program_name', drop=False).to_dict('records')
     out_meth_table = gen_meth_table(sim_results, programs)
     for p in out_table:
         p.update({'methods': out_meth_table[p['program_name']]})
