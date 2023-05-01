@@ -280,10 +280,11 @@ class BaseCompany:
                 prop_to_flag = int(math.ceil(
                     len(site_wl) * self.config['follow_up']['proportion']))
                 # site_wl is an ordered by leak size.
-                site_wl_subset = site_wl.items()[:prop_to_flag]
-                target_sites = [site for sdx, site in site_wl_subset
-                                if site['site_measured_rate']
-                                > self.config['follow_up']['threshold']]
+                if prop_to_flag > 0.0:
+                    site_wl_subset = list(site_wl.values())[:prop_to_flag]
+                    target_sites = [site for site in site_wl_subset
+                                    if site['site_measured_rate']
+                                    > self.config['follow_up']['threshold']]
             if self.config['follow_up']['interaction_priority'] == 'threshold':
                 sites_above_thresh = [site for sdx, site in site_wl.items()
                                       if site['site_measured_rate']
