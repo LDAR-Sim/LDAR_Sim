@@ -71,7 +71,7 @@ def files_from_args(ref_path):
         "-X", "--out_dir",
         help='Output Directory, folder containing output files, will save all output files \n' +
         'ie. python ldar_sim_main.py --out_dir ./folder_for_save_outputs')
-    
+
     args = parser.parse_args()
 
     if args.in_dir is not None:
@@ -92,6 +92,22 @@ def files_from_args(ref_path):
         sys.exit()
     if args.out_dir is not None:
         out_dir = get_abs_path(args.out_dir, ref_path)
-        return {'parameter_files':parameter_files, 'out_dir': str(out_dir)}
+        return {'parameter_files': parameter_files, 'out_dir': str(out_dir)}
+
+    return parameter_files
+
+
+def files_from_path(in_path):
+    if in_path is not None:
+        # if an input directory is specified, get all files within that are in the directory
+        # Get all yaml or json files in specified folder
+        parameter_files = [
+            in_path / "{}".format(f)
+            for f in os.listdir(in_path)
+            if ".yaml" in f or ".yml" in f or ".json" in f]
+
+    if len(parameter_files) < 1:
+        print('Please provide at least one input argument')
+        sys.exit()
 
     return parameter_files
