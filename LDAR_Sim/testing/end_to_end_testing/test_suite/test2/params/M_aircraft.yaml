@@ -1,0 +1,18 @@
+parameter_level: method
+version: '2.0'
+label: aircraft
+deployment_type: mobile
+measurement_scale: equipment
+is_follow_up: False
+sensor: 
+  type: default
+  MDL: [1]
+cost:
+  per_site: 200
+coverage:
+  spatial: 0.9
+  temporal: 0.9
+t_bw_sites:
+  vals: [5]
+RS: 4
+time: 1

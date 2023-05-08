@@ -1,10 +1,7 @@
-
 parameter_level: global
-program_set_name: sample_simulations
-version: '2.0'
+version: "2.0"
 pregenerate_leaks: True
-preseed_random: False
-input_directory: './inputs'
-output_directory: './outputs'
-n_simulations: 3
 reference_program: P_OGI
+baseline_program: P_none
+preseed_random: True
+n_simulations: 1

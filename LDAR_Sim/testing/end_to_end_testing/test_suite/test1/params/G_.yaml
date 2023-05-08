@@ -8,3 +8,5 @@ input_directory: './inputs'
 output_directory: './outputs'
 n_simulations: 3
 reference_program: P_OGI
+preseed_random: True
+n_simulations: 1
