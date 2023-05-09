@@ -128,8 +128,9 @@ class BaseCrew:
                     m_name)][cur_ts] += 1
         elif self.config['is_follow_up']:
             site.update({'currently_flagged': False})
-            if site_detect_results['found_leak'] and self.config['measurement_scale'].lower()\
-                    == 'site':
+            if site_detect_results['found_leak'] and \
+                    (self.config['measurement_scale'].lower() == 'site'
+                     or self.config['measurement_scale'].lower == "equipment"):
                 self.timeseries['{}_sites_vis_w_leaks'.format(m_name)][cur_ts] += 1
                 self.candidate_flags.append(site_detect_results)
         elif site_detect_results['found_leak']:
