@@ -130,6 +130,7 @@ class BaseCrew:
             site.update({'currently_flagged': False})
             if site_detect_results['found_leak'] and self.config['measurement_scale'].lower()\
                     == 'site':
+                self.timeseries['{}_sites_vis_w_leaks'.format(m_name)][cur_ts] += 1
                 self.candidate_flags.append(site_detect_results)
         elif site_detect_results['found_leak']:
             # all other sites flag
