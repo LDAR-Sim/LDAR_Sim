@@ -19,15 +19,17 @@
 #
 # ------------------------------------------------------------------------------
 import datetime
+import json
 import multiprocessing as mp
 import os
 import pickle
 import shutil
 import sys
 from pathlib import Path
-from pandas import read_csv
 
+from pandas import read_csv
 from testing_utils.result_verification import compare_outputs
+
 # Get directories and set up root
 e2e_test_dir: Path = Path(os.path.dirname(os.path.realpath(__file__)))
 root_dir: Path = e2e_test_dir.parent.parent
@@ -42,12 +44,12 @@ if __name__ == '__main__':
     from initialization.input_manager import InputManager
     from initialization.sims import create_sims
     from ldar_sim_run import ldar_sim_run
-    from utils.generic_functions import check_ERA5_file
     from out_processing.batch_reporting import BatchReporting
     from out_processing.prog_table import generate as gen_prog_table
+    from utils.generic_functions import check_ERA5_file
+
     # Get root directory , which is parent folder of ldar_sim_main file
     # Set current working directory directory to root directory
-
     # --- Retrieve input parameters and parse ---
     for test in os.scandir(tests_dir):
         print(test)
@@ -123,16 +125,11 @@ if __name__ == '__main__':
                     'No reference or base program input...skipping batch reporting and economics.')
 
         # Generate output table
+        print("....Exporting summary statistic tables")
         out_prog_table = gen_prog_table(sim_outputs, base_program, programs)
 
-        meta = {
-            'n_sites': len(sim_outputs[0]['sites']),
-            'n_days': len(sim_outputs[0]['timeseries']),
-            'n_leaks': len(sim_outputs[0]['leaks']),
-            'pregen_leaks': sim_params['pregenerate_leaks'],
-            'reference_program': sim_params['reference_program'],
-            'baseline_program': sim_params['baseline_program']}
-        pickle.dump(meta, open(out_dir / "meta.p", "wb"))
+        with open(out_dir / 'prog_table.json', 'w') as fp:
+            json.dump(out_prog_table, fp)
 
         # Write program metadata
         metadata = open(out_dir / '_metadata.txt', 'w')
@@ -141,4 +138,8 @@ if __name__ == '__main__':
 
         metadata.close()
 
-        compare_outputs(test.name, out_prog_table, out_dir, sim_outputs, expected_results)
+        # Write simulation outputs
+        with open(out_dir / 'sim_outputs.pickle', 'wb') as sim_res:
+            pickle.dump(sim_outputs, sim_res)
+
+        compare_outputs(test.name, out_dir, expected_results)
