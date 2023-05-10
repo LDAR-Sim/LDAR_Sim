@@ -58,7 +58,8 @@ if __name__ == '__main__':
     parameter_filenames = files_from_args(root_dir)
     input_manager = InputManager()
     if 'out_dir' in parameter_filenames:
-        sim_params = input_manager.read_and_validate_parameters(parameter_filenames['parameter_files'])
+        sim_params = input_manager.read_and_validate_parameters(
+            parameter_filenames['parameter_files'])
         out_dir = get_abs_path(parameter_filenames['out_dir'])
     else:
         sim_params = input_manager.read_and_validate_parameters(parameter_filenames)
