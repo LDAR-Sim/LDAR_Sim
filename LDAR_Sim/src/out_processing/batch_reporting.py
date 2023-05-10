@@ -163,21 +163,23 @@ class BatchReporting:
         '''
         for i in range(len(self.active_leak_dfs)):
             data = [
-                {'mean': self.active_leak_dfs[i].describe().loc['50%'].mean(),
-                 'median': self.active_leak_dfs[i].describe().loc['50%'].median(),
-                 'std': self.active_leak_dfs[i].describe().loc['50%'].std(),
-                 'min': self.active_leak_dfs[i].describe().loc['50%'].min(),
-                 'max': self.active_leak_dfs[i].describe().loc['50%'].max()},
-                {'mean': self.emission_dfs[i].describe().loc['50%'].mean(),
-                 'median': self.emission_dfs[i].describe().loc['50%'].median(),
-                 'std': self.emission_dfs[i].describe().loc['50%'].std(),
-                 'min': self.emission_dfs[i].describe().loc['50%'].min(),
-                 'max': self.emission_dfs[i].describe().loc['50%'].max()},
-                {'mean': self.repair_leak_dfs[i].describe().loc['50%'].mean(),
-                 'median': self.repair_leak_dfs[i].describe().loc['50%'].median(),
-                 'std': self.repair_leak_dfs[i].describe().loc['50%'].std(),
-                 'min': self.repair_leak_dfs[i].describe().loc['50%'].min(),
-                 'max': self.repair_leak_dfs[i].describe().loc['50%'].max()}
+                {'mean': self.active_leak_dfs[i].describe(include=[np.number]).loc['50%'].mean(),
+                 'median': self.active_leak_dfs[i].describe(include=[np.number])
+                    .loc['50%'].median(),
+                 'std': self.active_leak_dfs[i].describe(include=[np.number]).loc['50%'].std(),
+                 'min': self.active_leak_dfs[i].describe(include=[np.number]).loc['50%'].min(),
+                 'max': self.active_leak_dfs[i].describe(include=[np.number]).loc['50%'].max()},
+                {'mean': self.emission_dfs[i].describe(include=[np.number]).loc['50%'].mean(),
+                 'median': self.emission_dfs[i].describe(include=[np.number]).loc['50%'].median(),
+                 'std': self.emission_dfs[i].describe(include=[np.number]).loc['50%'].std(),
+                 'min': self.emission_dfs[i].describe(include=[np.number]).loc['50%'].min(),
+                 'max': self.emission_dfs[i].describe(include=[np.number]).loc['50%'].max()},
+                {'mean': self.repair_leak_dfs[i].describe(include=[np.number]).loc['50%'].mean(),
+                 'median': self.repair_leak_dfs[i].describe(include=[np.number])
+                    .loc['50%'].median(),
+                 'std': self.repair_leak_dfs[i].describe(include=[np.number]).loc['50%'].std(),
+                 'min': self.repair_leak_dfs[i].describe(include=[np.number]).loc['50%'].min(),
+                 'max': self.repair_leak_dfs[i].describe(include=[np.number]).loc['50%'].max()}
             ]
             output_df = pd.DataFrame(data)
             output_df.rename(
@@ -211,7 +213,7 @@ class BatchReporting:
             else:
                 alts[i] = descriptive_files[i]
 
-        output_df = pd.DataFrame()
+        output_list: list = []
 
         for i in alts:
             dif = alts[i] - ref
@@ -224,7 +226,9 @@ class BatchReporting:
             rat['reference'] = self.ref_program
             rat['comparison'] = 'ratio (alt/ref)'
 
-            output_df = output_df.append([dif, rat])
+            output_list.extend([dif, rat])
+
+        output_df: pd.DataFrame() = pd.concat(output_list)
 
         output_df.to_csv(self.output_directory /
                          'program_comparisons.csv', index=True)
@@ -239,10 +243,10 @@ class BatchReporting:
 
         for i in range(len(dfs)):
             n_cols = dfs[i].shape[1]
-            dfs[i]['mean'] = dfs[i].iloc[:, 0:n_cols].mean(axis=1)
-            dfs[i]['std'] = dfs[i].iloc[:, 0:n_cols].std(axis=1)
-            dfs[i]['low'] = dfs[i].iloc[:, 0:n_cols].quantile(0.025, axis=1)
-            dfs[i]['high'] = dfs[i].iloc[:, 0:n_cols].quantile(0.975, axis=1)
+            dfs[i]['mean'] = dfs[i].iloc[:, 0:n_cols].mean(axis=1, numeric_only=True)
+            dfs[i]['std'] = dfs[i].iloc[:, 0:n_cols].std(axis=1, numeric_only=True)
+            dfs[i]['low'] = dfs[i].iloc[:, 0:n_cols].quantile(0.025, axis=1, numeric_only=True)
+            dfs[i]['high'] = dfs[i].iloc[:, 0:n_cols].quantile(0.975, axis=1, numeric_only=True)
             dfs[i]['program'] = self.directories[i]
 
         # Move reference program to the top of the list
@@ -258,9 +262,7 @@ class BatchReporting:
                                                     'std', 'low', 'high', 'program'])
 
         # Combine dataframes into single dataframe for plotting
-        df_p1 = dfs_p1[0]
-        for i in dfs_p1[1:]:
-            df_p1 = df_p1.append(i, ignore_index=True)
+        df_p1: pd.DataFrame = pd.concat(dfs_p1, ignore_index=True)
 
         # Output Emissions df for other uses (e.g. live plot)
         df_p1.to_csv(self.output_directory /
@@ -271,10 +273,10 @@ class BatchReporting:
 
         for i in range(len(dfs)):
             n_cols = dfs[i].shape[1]
-            dfs[i]['mean'] = dfs[i].iloc[:, 0:n_cols].mean(axis=1)
-            dfs[i]['std'] = dfs[i].iloc[:, 0:n_cols].std(axis=1)
-            dfs[i]['low'] = dfs[i].iloc[:, 0:n_cols].quantile(0.025, axis=1)
-            dfs[i]['high'] = dfs[i].iloc[:, 0:n_cols].quantile(0.975, axis=1)
+            dfs[i]['mean'] = dfs[i].iloc[:, 0:n_cols].mean(axis=1, numeric_only=True)
+            dfs[i]['std'] = dfs[i].iloc[:, 0:n_cols].std(axis=1, numeric_only=True)
+            dfs[i]['low'] = dfs[i].iloc[:, 0:n_cols].quantile(0.025, axis=1, numeric_only=True)
+            dfs[i]['high'] = dfs[i].iloc[:, 0:n_cols].quantile(0.975, axis=1, numeric_only=True)
             dfs[i]['program'] = self.directories[i]
 
             # Move reference program to the top of the list
@@ -290,9 +292,7 @@ class BatchReporting:
                                                     'std', 'low', 'high', 'program'])
 
         # Combine dataframes into single dataframe for plotting
-        df_p1 = dfs_p1[0]
-        for i in dfs_p1[1:]:
-            df_p1 = df_p1.append(i, ignore_index=True)
+        df_p1: pd.DataFrame = pd.concat(dfs_p1, ignore_index=True)
 
         # Output Emissions df for other uses (e.g. live plot)
         df_p1.to_csv(self.output_directory / 'mean_emissions.csv', index=True)
@@ -376,6 +376,7 @@ class BatchReporting:
             2 * dfs_p2[1]['std_ratio']
 
         pd.options.mode.chained_assignment = None
+        dfs2_list = [df_p2]
         for i in dfs_p2[2:]:
             i['low_dif'] = i['mean_dif'] - 2 * i['std_dif']
             i['high_dif'] = i['mean_dif'] + 2 * i['std_dif']
@@ -385,7 +386,9 @@ class BatchReporting:
             short_df = i[['program', 'mean_dif', 'std_dif', 'low_dif',
                           'high_dif', 'mean_ratio', 'std_ratio', 'low_ratio', 'high_ratio']]
             short_df['datetime'] = np.array(self.dates_trunc)
-            df_p2 = df_p2.append(short_df, ignore_index=True)
+            dfs2_list.append(short_df)
+
+        df_p2 = pd.concat(dfs2_list, ignore_index=True)
 
         # Make plot 2
         plot2 = (pn.ggplot(None) + pn.aes('datetime', 'mean_dif', group='program') +
@@ -435,10 +438,10 @@ class BatchReporting:
 
         for i in range(len(dfs)):
             n_cols = dfs[i].shape[1]
-            dfs[i]['mean'] = dfs[i].iloc[:, 0:n_cols].mean(axis=1)
-            dfs[i]['std'] = dfs[i].iloc[:, 0:n_cols].std(axis=1)
-            dfs[i]['low'] = dfs[i].iloc[:, 0:n_cols].quantile(0.025, axis=1)
-            dfs[i]['high'] = dfs[i].iloc[:, 0:n_cols].quantile(0.975, axis=1)
+            dfs[i]['mean'] = dfs[i].iloc[:, 0:n_cols].mean(axis=1, numeric_only=True)
+            dfs[i]['std'] = dfs[i].iloc[:, 0:n_cols].std(axis=1, numeric_only=True)
+            dfs[i]['low'] = dfs[i].iloc[:, 0:n_cols].quantile(0.025, axis=1, numeric_only=True)
+            dfs[i]['high'] = dfs[i].iloc[:, 0:n_cols].quantile(0.975, axis=1, numeric_only=True)
             dfs[i]['program'] = self.directories[i]
 
         # Move reference program to the top of the list
@@ -454,9 +457,7 @@ class BatchReporting:
                                                     'std', 'low', 'high', 'program'])
 
         # Combine dataframes into single dataframe for plotting
-        df_p1 = dfs_p1[0]
-        for i in dfs_p1[1:]:
-            df_p1 = df_p1.append(i, ignore_index=True)
+        df_p1 = pd.concat(dfs_p1, ignore_index=True)
 
         # Output Emissions df for other uses (e.g. live plot)
         df_p1.to_csv(self.output_directory /

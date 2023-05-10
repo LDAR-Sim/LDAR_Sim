@@ -503,7 +503,7 @@ class LdarSim:
                 leaks_repaired['cum_frac_rate'] = leaks_repaired['cum_rate'] \
                     / max(leaks_repaired['cum_rate'])
 
-            leak_df = leaks_active.append(leaks_repaired)
+            leak_df = pd.concat([leaks_active, leaks_repaired])
 
             # Write csv files
             leak_df.to_csv(

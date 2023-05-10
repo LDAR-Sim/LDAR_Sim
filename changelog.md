@@ -1,5 +1,8 @@
 # Change Log
 
+## 2023-05
+1. **Requirements update** Requirements have been updated to allow users to use newest versions of libraries and python 3.11 for the conda environment.
+
 ## 2022-09
 
 1. **Subtype File addition** Programs: specify LPR, LDR for subtypes. Deprecates subtype-distribution. Will eventually also combine the subtype-times-file.

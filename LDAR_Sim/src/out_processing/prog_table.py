@@ -19,6 +19,7 @@
 #
 # ------------------------------------------------------------------------------
 
+from numpy import NaN
 from pandas import merge
 from numpy import median, inf
 from out_processing.clean_results import clean_sim_df, agg_flatten
@@ -69,8 +70,6 @@ def generate(sim_results, baseline_program, programs):
         {'in': 'leak_ID', 'out': 'leak_ID', 'type': str},
         {'in': 'facility_ID', 'out': 'facility_ID', 'type': str},
         {'in': 'days_active', 'out': 'days_active', 'type': int},
-        {'in': 'date_began', 'out': 'date_began'},
-        {'in': 'date_repaired', 'out': 'date_repaired'},
         {'in': 'init_detect_by', 'out': 'init_detect_by'},
         {'in': 'rate', 'out': 'rate_kg_day', 'type': float, 'xfac': 86.4},
     ]
@@ -119,7 +118,7 @@ def generate(sim_results, baseline_program, programs):
         sim_progs['mit_vol_tco2e']
     sim_progs['emis_nat_perc'] = sim_progs['nat_vol_sum'] / \
         sim_progs['volume_kg_sum']
-    sim_progs.replace([inf, -inf], "N/A", inplace=True)
+    sim_progs.replace([inf, -inf], NaN, inplace=True)
 
     sim_progs = sim_progs.rename(columns={
         'cost_day_sum': 'cost', 'nat_vol_count': 'nat_leak_repair_count'})

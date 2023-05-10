@@ -148,7 +148,7 @@ def cost_mitigation(simulation_dfs, ref_program, base_program,
             if column != 'program_name':
                 cost_method_df[column] = cost_method_df[column].map(cost_site_year)
 
-        cost_method_df['adjusted_program_cost'] = cost_method_df.sum(axis=1)
+        cost_method_df['adjusted_program_cost'] = cost_method_df.sum(axis=1, numeric_only=True)
 
         # Reconfigure df columns to have verification cost first.
         # Allows it to be at the bottom of the bar plot.
