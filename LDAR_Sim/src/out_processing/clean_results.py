@@ -60,7 +60,7 @@ def clean_sim_df(sim_results, df,  index='index', params=[], aggregate=True, add
     # in_cols = [m['in'] for m in params]
     for sim in sim_results:
         if len(params) > 0:
-            copy_cols = set(list(sim[df].columns)).intersection(set(p_cols))
+            copy_cols = list(set(list(sim[df].columns)).intersection(set(p_cols)))
             p_obj = sim[df].copy()[copy_cols]
         else:
             p_obj = sim[df].copy()

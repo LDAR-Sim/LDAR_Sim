@@ -1,5 +1,9 @@
 # Change Log
 
+## 2023-05
+
+1. **Requirements update** Requirements have been updated to allow users to use newest versions of libraries and python 3.11 for the conda environment.
+
 ## 2022-11
 
 1. **Survey Scheduling bug fixes**  Bug fixes made to survey scheduling for mobile methods.
