@@ -23,6 +23,7 @@ import math
 
 import numpy as np
 import pandas as pd
+from utils.scheduling_utils import is_leap_year
 from methods.crew import BaseCrew
 from sklearn.cluster import KMeans
 
@@ -108,6 +109,7 @@ class Schedule():
         survey_done_this_year = '{}_surveys_done_this_year'.format(name)
         survey_min_interval = '{}_min_int'.format(name)
         survey_frequency = '{}_RS'.format(name)
+        survey_time = '{}_time'.format(name)
         meth = self.parameters['methods']
 
         if self.config['is_follow_up']:
@@ -120,17 +122,73 @@ class Schedule():
                        key=lambda x: x[days_since_LDAR], reverse=True))
             # filter again for if preferred followup method is equivalent to method
             out_sites = list(
-                sorted((s for s in out_sites
-                        if s['preferred_FU_method'] is None or s['preferred_FU_method'] == self.config['label']
-                        ), key=lambda x: x[days_since_LDAR], reverse=True))
+                sorted(
+                    (s for s in out_sites
+                     if s['preferred_FU_method'] is None or
+                     s['preferred_FU_method'] == self.config['label']
+                     ), key=lambda x: x[days_since_LDAR], reverse=True
+                )
+            )
         else:
+            missing_days = 0
+            missing_days_array = np.zeros(12)
+            current_month = self.state['t'].current_date.month
+            for s in range(1, current_month+1):
+                if s not in meth[name]["scheduling"]["deployment_months"]:
+                    missing_days = missing_days + (365/12)
+                    missing_days_array[s-1] = (365/12) + 1 if is_leap_year(
+                        self.state['t'].current_date.year) and s == 2 else (365/12)
+            missing_days = math.floor(missing_days)
+
             days_since_LDAR = '{}_t_since_last_LDAR'.format(name)
+
             # filter then sort
+            # Sort by:
+            #   if surveys done is less than the total surveys needed for that year
+            #               AND
+            #   days since last survey is greater or equal to
+            #   the minimum time interval between surveys
+            #       - should be the next survey
+            #               OR
+            #   minimum days have passed between surveys
+            #       - survey needs to be forced to happen
             out_sites = list(
                 sorted((s for s in site_pool
-                        if s[survey_done_this_year] < int(s[survey_frequency])
-                        and s[days_since_LDAR] >= int(s[survey_min_interval])),
-                       key=lambda x: x[days_since_LDAR], reverse=True))
+                        if ((s[survey_done_this_year] < int(s[survey_frequency])) and
+                            (
+                            (
+                                (
+                                    s[days_since_LDAR] +
+                                    math.floor(s[survey_time]/60/self.config['max_workday']) -
+                                    np.sum(
+                                        missing_days_array[
+                                            math.ceil(
+                                                (
+                                                    (self.state['t'].current_timestep -
+                                                     s[days_since_LDAR]) % 365
+                                                )/(365/12)
+                                            ):current_month
+                                        ]
+                                    )
+                                ) >= max(
+                                    [int(s[survey_min_interval]),
+                                     s['{}_min_time_bt_surveys'.format(name)]]
+                                )
+                            ) or
+                            (
+                                s[survey_done_this_year] * max(
+                                    [int(s[survey_min_interval]),
+                                     s['{}_min_time_bt_surveys'.format(name)]]
+                                ) +
+                                missing_days +
+                                s['{}_min_time_bt_surveys'.format(
+                                    name)] < self.state['t'].current_timestep % 365
+                            )
+                        ))),
+                       key=lambda x: x[days_since_LDAR], reverse=True
+                       )
+            )
+
         return out_sites
 
     def get_working_crews(self, site_pool, n_crews):

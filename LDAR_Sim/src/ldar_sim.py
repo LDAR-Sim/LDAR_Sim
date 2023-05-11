@@ -32,7 +32,7 @@ from geography.vector import grid_contains_point
 from initialization.leaks import generate_initial_leaks, generate_leak
 from initialization.sites import generate_sites
 from initialization.update_methods import (est_n_crews, est_site_p_day,
-                                           est_t_bw_sites)
+                                           est_t_bw_sites, est_min_time_bt_surveys)
 from campaigns.methods import update_campaigns, setup_campaigns
 from methods.company import BaseCompany
 from numpy.random import binomial, choice
@@ -113,6 +113,18 @@ class LdarSim:
                 m_RS = '{}_RS'.format(m_label)
                 if m_obj['RS'] is not None:
                     site[m_RS] = m_obj['RS']
+
+                m_min_time_bt_surveys = '{}_min_time_bt_surveys'.format(
+                    m_label)
+                # when provided by user in method
+                if m_obj['scheduling']['min_time_bt_surveys'] is not None:
+                    site[m_min_time_bt_surveys] = m_obj['scheduling']['min_time_bt_surveys']
+                # when not provided
+                if not m_obj['is_follow_up'] and m_obj['deployment_type'] == 'mobile' and site[m_RS] > 0:
+                    if not (m_min_time_bt_surveys in site):
+                        site[m_min_time_bt_surveys] = est_min_time_bt_surveys(m_RS, len(m_obj['scheduling']['deployment_months']),
+                                                                            site)
+
                 if m_RS in site and m_obj['measurement_scale'] != 'component':
                     if m_label not in n_screening_rs_sets:
                         n_screening_rs_sets.update({m_label: site[m_RS]})
@@ -134,18 +146,17 @@ class LdarSim:
                         # If the value changes set to None
                 elif m_RS in site and (n_rs[m_label] != site[m_RS] or n_rs[m_label] is None):
                     n_subtype_rs[site['subtype_code']].update({m_label: None})
-                # Get min interval based on RS. a 95% ajustment is used to add a grace period
-                # prior to the next campaign period were surveys can start earlier
                 # Calculate the site minimum interval
                 if m_RS in site and site[m_RS] != 0:
                     n_months = len(params['methods'][m_label]
                                    ['scheduling']['deployment_months'])
                     n_days = 30.4167 * n_months
                     site['{}_min_int'.format(m_label)] = floor(
-                        n_days/site[m_RS])  # *0.95
+                        n_days/site[m_RS])
                 # Automatically assign 1 crew to followup if left unspecified
                 elif m_obj['n_crews'] is None:
                     m_obj['n_crews'] = 1
+
             if params['pregenerate_leaks']:
                 initial_leaks = params['initial_leaks'][site['facility_ID']]
                 n_leaks = len(params['initial_leaks'][site['facility_ID']])
