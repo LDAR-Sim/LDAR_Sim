@@ -41,6 +41,8 @@ def generate_leak(program, site, start_date, leak_count, days_active=0, day_ts_b
     if program['emissions']['leak_file'] \
             and program['emissions']['leak_file_use'] == 'sample':
         leak_rate = random.choice(program['emissions']['empirical_leaks'])
+    elif 'leak_rate_source' in site and site['leak_rate_source'] == 'sample':
+        leak_rate = random.choice(site['empirical_leak_rates'])
     else:
         leak_rate = leak_rvs(
             site['leak_rate_dist'],
