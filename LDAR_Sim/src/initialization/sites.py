@@ -24,6 +24,7 @@ import fnmatch
 import os
 import pickle
 import random
+import site
 
 import numpy as np
 import pandas as pd
@@ -64,7 +65,7 @@ def get_subtype_dist(program, wd):
         program['subtypes'] = subtypes.to_dict('index')
         for st in program['subtypes']:
             program['subtypes'][st]['leak_rate_units'] = program['emissions']['units']
-        unpackage_dist(program)
+        unpackage_dist(program, wd)
     elif program['emissions']['leak_file_use'] == 'fit':
         program['subtypes'] = {0: {
             'leak_rate_dist': fit_dist(
@@ -77,7 +78,7 @@ def get_subtype_dist(program, wd):
             'dist_scale': program['emissions']['leak_dist_params'][0],
             'dist_shape': program['emissions']['leak_dist_params'][1:],
             'leak_rate_units': program['emissions']['units']}}
-        unpackage_dist(program)
+        unpackage_dist(program, wd)
 
 
 def get_subtype_file(program, wd):
@@ -88,7 +89,7 @@ def get_subtype_file(program, wd):
         program['subtypes'] = subtypes.to_dict('index')
         for st in program['subtypes']:
             program['subtypes'][st]['leak_rate_units'] = program['emissions']['units']
-        unpackage_dist(program)
+        unpackage_dist(program, wd)
     elif program['emissions']['leak_file_use'] == 'fit':
         program['subtypes'] = {0: {
             'leak_rate_dist': fit_dist(
@@ -101,7 +102,7 @@ def get_subtype_file(program, wd):
             'dist_scale': program['emissions']['leak_dist_params'][0],
             'dist_shape': program['emissions']['leak_dist_params'][1:],
             'leak_rate_units': program['emissions']['units']}}
-        unpackage_dist(program)
+        unpackage_dist(program, wd)
 
 
 def generate_sites(program, in_dir):
@@ -182,8 +183,15 @@ def regenerate_sites(program, prog_0_sites, in_dir):
         new_site = copy.deepcopy(sites[s_idx])
         new_site.update({'cum_leaks': site_or['cum_leaks'],
                          'initial_leaks': site_or['initial_leaks'],
-                         'leak_rate_dist': site_or['leak_rate_dist'],
                          'leak_rate_units': site_or['leak_rate_units'],
                          'repair_delay': site_or['repair_delay']})
+        if 'empirical_leak_rates' in site_or:
+            new_site.update({
+                'empirical_leak_rates': site_or['empirical_leak_rates']
+            })
+        else:
+            new_site.update({
+                'leak_rate_dist': site_or['leak_rate_dist'],
+            })
         out_sites.append(new_site)
     return out_sites

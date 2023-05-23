@@ -123,7 +123,7 @@ class LdarSim:
                 if not m_obj['is_follow_up'] and m_obj['deployment_type'] == 'mobile' and site[m_RS] > 0:
                     if not (m_min_time_bt_surveys in site):
                         site[m_min_time_bt_surveys] = est_min_time_bt_surveys(m_RS, len(m_obj['scheduling']['deployment_months']),
-                                                                            site)
+                                                                              site)
 
                 if m_RS in site and m_obj['measurement_scale'] != 'component':
                     if m_label not in n_screening_rs_sets:
@@ -256,6 +256,8 @@ class LdarSim:
                 for leak in range(n_mc_leaks):
                     if params['emissions']['leak_file'] is not None:
                         leaksize = random.choice(state['empirical_leaks'])
+                    elif site['leak_rate_source'] and site['leak_rate_source'] == 'sample':
+                        leaksize = random.choice(site['empirical_leak_rates'])
                     else:
                         leaksize = leak_rvs(
                             site['leak_rate_dist'],
@@ -550,4 +552,4 @@ class LdarSim:
             'p_params': params,
         }
 
-        return(sim_summary)
+        return (sim_summary)
