@@ -247,32 +247,60 @@ class LdarSim:
 
         # Initialize empirical distribution of vented emissions
         if params['emissions']['consider_venting']:
-            state['empirical_vents'] = []
+            if params["subtype_file"] and "empirical_site_rates" in site:
+                site['empirical_vents'] = []
 
-            # Run Monte Carlo simulations to get distribution of vented emissions
-            for i in range(1000):
-                n_mc_leaks = random.choice(range(20))
-                mc_leaks = []
-                for leak in range(n_mc_leaks):
-                    if params['emissions']['leak_file'] is not None:
-                        leaksize = random.choice(state['empirical_leaks'])
-                    elif site['leak_rate_source'] and site['leak_rate_source'] == 'sample':
-                        leaksize = random.choice(site['empirical_leak_rates'])
-                    else:
-                        leaksize = leak_rvs(
-                            site['leak_rate_dist'],
-                            params['emissions']['max_leak_rate'],
-                            site['leak_rate_units'])
-                    mc_leaks.append(leaksize)
+                # Run Monte Carlo simulations to get distribution of vented emissions
+                for i in range(1000):
+                    n_mc_leaks = random.choice(range(20))
+                    mc_leaks = []
+                    for leak in range(n_mc_leaks):
+                        if params['emissions']['leak_file'] is not None:
+                            leaksize = random.choice(state['empirical_leaks'])
+                        elif site['leak_rate_source'] and site['leak_rate_source'] == 'sample':
+                            leaksize = random.choice(site['empirical_leak_rates'])
+                        else:
+                            leaksize = leak_rvs(
+                                site['leak_rate_dist'],
+                                params['emissions']['max_leak_rate'],
+                                site['leak_rate_units'])
+                        mc_leaks.append(leaksize)
 
-                mc_leak_total = sum(mc_leaks)
-                mc_site_total = random.choice(state['empirical_sites'])
-                mc_vent_total = mc_site_total - mc_leak_total
-                state['empirical_vents'].append(mc_vent_total)
+                    mc_leak_total = sum(mc_leaks)
+                    mc_site_total = random.choice(state['empirical_sites'])
+                    mc_vent_total = mc_site_total - mc_leak_total
+                    site['empirical_vents'].append(mc_vent_total)
 
-            # Change negatives to zero
-            state['empirical_vents'] = [
-                0 if i < 0 else i for i in state['empirical_vents']]
+                # Change negatives to zero
+                site['empirical_vents'] = [
+                    0 if i < 0 else i for i in site['empirical_vents']]
+            else:
+                state['empirical_vents'] = []
+
+                # Run Monte Carlo simulations to get distribution of vented emissions
+                for i in range(1000):
+                    n_mc_leaks = random.choice(range(20))
+                    mc_leaks = []
+                    for leak in range(n_mc_leaks):
+                        if params['emissions']['leak_file'] is not None:
+                            leaksize = random.choice(state['empirical_leaks'])
+                        elif site['leak_rate_source'] and site['leak_rate_source'] == 'sample':
+                            leaksize = random.choice(site['empirical_leak_rates'])
+                        else:
+                            leaksize = leak_rvs(
+                                site['leak_rate_dist'],
+                                params['emissions']['max_leak_rate'],
+                                site['leak_rate_units'])
+                        mc_leaks.append(leaksize)
+
+                    mc_leak_total = sum(mc_leaks)
+                    mc_site_total = random.choice(state['empirical_sites'])
+                    mc_vent_total = mc_site_total - mc_leak_total
+                    state['empirical_vents'].append(mc_vent_total)
+
+                # Change negatives to zero
+                state['empirical_vents'] = [
+                    0 if i < 0 else i for i in state['empirical_vents']]
 
         # HBD this is sooooo hacky Repair time seems like its wron
         if len(self.state['campaigns']) > 0:

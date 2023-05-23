@@ -1,0 +1,35 @@
+# ------------------------------------------------------------------------------
+# Program:     The LDAR Simulator (LDAR-Sim)
+# File:        utils.emis_inputs
+# Purpose:     Store subtype level emissions input data
+#
+# Copyright (C) 2018-2021  Intelligent Methane Monitoring and Management System (IM3S) Group
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the MIT License as published
+# by the Free Software Foundation, version 3.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MIT License for more details.
+# You should have received a copy of the MIT License
+# along with this program.  If not, see <https://opensource.org/licenses/MIT>.
+#
+# ------------------------------------------------------------------------------
+import numpy as np
+import pandas as pd
+
+
+def assign_vents(program, wd) -> None:
+    for st_idx, subtype in program['subtypes'].items():
+        if 'vent_rates_file' in subtype:
+            subtype['empirical_vent_rates'] = np.array(
+                pd.read_csv(wd / subtype['vent_rates_file']).iloc[:, 0])
+
+
+def assign_site_emis(program, wd) -> None:
+    for st_idx, subtype in program['subtypes'].items():
+        if 'site_rates_file' in subtype:
+            subtype['empirical_site_rates'] = np.array(
+                pd.read_csv(wd / subtype['site_rates_file']).iloc[:, 0])

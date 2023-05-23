@@ -19,6 +19,7 @@
 #
 # ------------------------------------------------------------------------------
 
+import random
 from datetime import timedelta
 from importlib import import_module
 
@@ -167,8 +168,13 @@ class BaseCrew:
         # Add vented emissions
         venting = 0
         if self.parameters['emissions']['consider_venting']:
-            venting = self.state['empirical_vents'][
-                np.random.randint(0, len(self.state['empirical_vents']))]
+            if 'empirical_site_rates' in site:
+                venting = random.choice(site['empirical_vents'])
+            elif 'empirical_vent_rates' in site:
+                venting = random.choice(site['empirical_vent_rates'])
+            else:
+                venting = self.state['empirical_vents'][
+                    np.random.randint(0, len(self.state['empirical_vents']))]
             covered_site_rate += venting
             site_rate += venting
             for rate in range(len(covered_equipment_rates)):
