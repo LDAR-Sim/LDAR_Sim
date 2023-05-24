@@ -5,49 +5,49 @@ cost:
   per_site: 0
   upfront: 0
 coverage:
-  spatial: 1.0
-  temporal: 1.0
-deployment_type: '_placeholder_str_'
+  spatial: 1.0  # 0.0 to 1.0
+  temporal: 1.0 # 0.0 to 1.0
+deployment_type: '_placeholder_str_'  # mobile/stationary/orbit
 follow_up:
   preferred_method: '_placeholder_str_'
-  delay: 0
-  instant_threshold: '_placeholder_float_'
-  instant_threshold_type: 'absolute'
-  interaction_priority: 'threshold'
-  min_followups: ['_placeholder_float_']
-  min_followup_type: 'annual'
-  min_followup_days_to_end: 0
-  proportion: 1.0
-  redundancy_filter: 'recent'
-  threshold: 0.0
-  threshold_type: 'absolute'
-is_follow_up: False
+  delay: 0  # days
+  instant_threshold: '_placeholder_float_'  # g/s
+  instant_threshold_type: 'absolute'  # absolute/relative
+  interaction_priority: 'threshold' # threshold/proportion
+  min_followups: ['_placeholder_float_']  # list of values between 0.0 and 1.0
+  min_followup_type: 'annual' # annual/campaign
+  min_followup_days_to_end: 0 # days
+  proportion: 1.0 # 0 to 1.0
+  redundancy_filter: 'recent' # recent/max/average
+  threshold: 0.0  # g/s
+  threshold_type: 'absolute'  # absolute/relative
+is_follow_up: False # True/False
 label: '_placeholder_str_'
-max_workday: 8
-measurement_scale: '_placeholder_str_'
-n_crews: '_placeholder_int_'
+max_workday: 8  # 1 to 23
+measurement_scale: '_placeholder_str_'  # site/equipment/component
+n_crews: '_placeholder_int_'  # whole numbers
 parameter_level: 'method'
-reporting_delay: 2
+reporting_delay: 2  # days
 scheduling:
   deployment_months: [1,2,3,4,5,6,7,8,9,10,11,12]
   deployment_years: ['_placeholder_int_']
   LDAR_crew_init_location: [-114.062, 51.044]
   home_bases_files: 'Airport_AB_Coordinates.csv'
-  route_planning: False
+  route_planning: False # True/False
   travel_speeds: ['_placeholder_int_']
   min_time_bt_surveys: '_placeholder_int_'
 sensor:
-  type: default
+  type: default # default/OGI_camera_zim(see User manual for MDL values)/OGI_camera_rk
   QE: 0.0
   MDL: [0.01]
   mod_loc: '_placeholder_str_'
 t_bw_sites:
   file: '_placeholder_str_'
-  vals: [30.0]
+  vals: [30.0]  # minutes
 weather_envs:
   precip: [0.0, 0.5]
   temp: [-40.0, 40.0]
   wind: [0.0, 10.0]  
 version: '2.0'
 RS: '_placeholder_int_'
-time:  '_placeholder_int_'
+time:  '_placeholder_int_'  # minutes

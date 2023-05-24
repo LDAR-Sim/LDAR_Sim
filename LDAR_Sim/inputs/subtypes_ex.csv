@@ -1,0 +1,3 @@
+subtype_code,dist_type,dist_scale,dist_sigma,NRd,LPR
+subtype_a,lognorm,-1.79,2.17,730,0.0065
+subtype_b,lognorm,-1.79,2.17,365,0.013
