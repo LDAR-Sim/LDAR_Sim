@@ -28,6 +28,15 @@ import pickle
 import shutil
 import sys
 from pathlib import Path
+from typing import Any
+
+import yaml
+
+GLOBAL_PARAMS_TO_REP: 'dict[str, Any]' = {
+    'n_simulations': 1,
+    'pregenerate_leaks': True,
+    'preseed_random': True
+}
 
 # Get directories and set up root
 e2e_test_dir: Path = Path(os.path.dirname(os.path.realpath(__file__)))
@@ -50,12 +59,29 @@ if __name__ == '__main__':
     from out_processing.prog_table import generate as gen_prog_table
     from utils.generic_functions import check_ERA5_file
 
-    # --- Retrieve input parameters and parse ---
+    # --- Retrieve parameters and inputs ---
+    original_inputs_dir: Path = root_dir / sys.argv[1]
+    original_params_dir: Path = root_dir / sys.argv[2]
     params_dir: Path = test_creator_dir / "params"
-    test_case_dir: Path = test_creator_dir / sys.argv[1]
+    if original_params_dir != params_dir:
+        shutil.copytree(original_params_dir, params_dir)
+    test_case_dir: Path = test_creator_dir / sys.argv[3]
     if os.path.exists(test_case_dir):
         shutil.rmtree(test_case_dir)
     os.mkdir(test_case_dir)
+
+    # --- Fix certain global parameters for end-to-end testing
+    global_params_file: Path = params_dir / sys.argv[4]
+    with open(global_params_file, 'r') as file:
+        global_params = yaml.safe_load(file)
+
+    for key, value in GLOBAL_PARAMS_TO_REP.items():
+        global_params[key] = value
+
+    with open(global_params_file, 'w') as file:
+        yaml.safe_dump(global_params, file)
+
+    # Parse Parameters
     parameter_filenames = files_from_path(params_dir)
     input_manager = InputManager()
     sim_params = input_manager.read_and_validate_parameters(parameter_filenames)
@@ -65,12 +91,15 @@ if __name__ == '__main__':
     ref_program = sim_params['reference_program']
     base_program = sim_params['baseline_program']
     in_dir = get_abs_path(sim_params['input_directory'], test_creator_dir)
+    shutil.copytree(original_inputs_dir, in_dir)
+    if os.path.exists(in_dir / 'generator'):
+        shutil.rmtree(in_dir / 'generator')
     programs = sim_params.pop('programs')
 
     # --- Run Checks ----
     check_ERA5_file(in_dir, programs)
-    has_ref = ref_program in programs
-    has_base = base_program in programs
+    has_ref: bool = ref_program in programs
+    has_base: bool = base_program in programs
 
     # --- Setup Output folder
     if os.path.exists(out_dir):

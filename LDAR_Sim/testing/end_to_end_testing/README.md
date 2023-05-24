@@ -3,39 +3,17 @@
 
 ## Steps
 
-1. Using LDAR-Sim as normal, setup the parameters and inputs for the scenario you would like to add as a test case in the test suite
+1. Using LDAR-Sim as normal, setup the parameters and inputs for the scenario you would like to add as a test case in the test suite. It is recommended for creating end-to-end tests that only necessary inputs are included in the inputs folder.
 
-2. Change the global_parameter "preseed_random" to True
-
-    ```yaml
-    preseed_random: True
-    ```
-
-3. Change the global parameter "pregenerate_leaks" to True
-
-    ```yaml
-    pregenerate_leaks: True
-    ```
-
-4. Change the global parameter "n_simulations" to 1
-
-    ```yaml
-    n_simulations: 1
-    ```
-
-5. Delete the generator folder from the inputs folder if it exists
-
-6. Copy the inputs folder and the folder containing the simulation parameters inside the test_case_creator folder
-
-7. Run the test suite creator using the command:
+2. Run the test suite creator using the command:
 
     ```cmd
-    python LDAR_Sim/LDAR_Sim/testing/end_to_end_testing/e2e_test_case_creator.py <test_name>
+    python LDAR_Sim/LDAR_Sim/testing/end_to_end_testing/e2e_test_case_creator.py <inputs folder> <parameters folder> <test_name> <Global parameter file name>
     ```
 
-    from a conda terminal inside the LDAR-Sim repository at the highest level directory, where <test_name> is a user input indicating what the end to end test cse folder should be named.
+    from a conda terminal inside the LDAR-Sim repository at the highest level directory, where "inputs folder" and "parameters folder" are paths to the inputs and parameters folders from base LDAR-Sim (the LDAR_Sim folder containing code) respectively. An example of this would be "inputs" and "simulations" respectively. <test_name> is a user input indicating what the end to end test case folder should be named. "Global parameter file is name of the global parameters file, for example: "G_.yaml".
 
-8. Verify that the test has been correctly created in the end to end testing directory.
+3. Verify that the test has been correctly created in the end to end testing directory.
 
 # Instructions for Running End-to-End tests
 
