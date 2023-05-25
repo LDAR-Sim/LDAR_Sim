@@ -1,6 +1,12 @@
 
 # Unit Testing Info
 
+Before running Pytest coverage, install
+
+```cmd
+    pip install pytest-cov
+```
+
 ## Code Coverage Gude
 
 Pytest-cov allows for generation coverage reports for LDAR-Sim
