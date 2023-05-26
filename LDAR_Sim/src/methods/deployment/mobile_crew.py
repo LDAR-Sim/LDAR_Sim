@@ -30,6 +30,7 @@ from methods.deployment.generic_funcs import get_work_hours
 
 
 class Schedule():
+    rollover = []
 
     def __init__(self, id, lat, lon, state, config, parameters, deployment_days, home_bases=None):
         self.parameters = parameters
@@ -43,7 +44,7 @@ class Schedule():
         self.end_hour = None
         self.allowed_end_time = None
         self.last_site_travel_home_min = None
-        self.rollover = None  # (rollover_site_plan)
+        #self.rollover = None  # (rollover_site_plan)
         self.travel_all_day = False
         self.scheduling = self.config['scheduling']
         # define a list of home bases for crew and redefine the the initial location of crew
@@ -151,7 +152,7 @@ class Schedule():
         # add a site to the rollover list if there are still remainin mins in survey
         if len(site_plans_today) > 0:
             if site_plans_today[-1]['remaining_mins'] > 0:
-                self.rollover = site_plans_today[-1]
+                Schedule.rollover.append(site_plans_today[-1])
         else:
             self.travel_all_day = True
         # The crew does not actually travel this is only done for planning purposes
@@ -200,12 +201,16 @@ class Schedule():
             and not self.deployment_days[site['lon_index'], site['lat_index'],
                                          self.state['t'].current_timestep]:
             return None
-        if self.rollover:
-            if site['facility_ID'] == self.rollover['site']['facility_ID']:
-                # Remove facility from rollover list, and retrieve remaining survey minutes
-                LDAR_mins = self.rollover['remaining_mins']
-            else:
-                LDAR_mins = int(site['{}_time'.format(name)])
+
+        if len(Schedule.rollover) > 0:
+            for s in Schedule.rollover:
+                if site['facility_ID'] == s['site']['facility_ID']:
+                    # Remove facility from rollover list, and retrieve remaining survey minutes
+                    LDAR_mins = s['remaining_mins']
+                    Schedule.rollover.remove(s)
+                    break
+                else:
+                    LDAR_mins = int(site['{}_time'.format(name)])
         else:
             # Get survey minutes
             LDAR_mins = int(site['{}_time'.format(name)])
@@ -322,8 +327,8 @@ class Schedule():
         Returns:
             A dictionary (travel plan) of the selected site
         """
-        if self.rollover:
-            site_plan = self.rollover
+        if len(Schedule.rollover) > 0:
+            site_plan = Schedule.rollover
 
         # route planning -> find the nearest site
         if self.config['scheduling']['route_planning']:

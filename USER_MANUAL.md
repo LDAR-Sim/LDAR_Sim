@@ -1459,6 +1459,20 @@ see Global Inputs - parameter_level
 
 **Notes of caution:** Only mobile methods can use this functionality.
 
+#### min_time_bt_surveys (mobile only)
+
+**Data type:** Integer
+
+**Default input:** N/A. A value equivalent to half the survey period for a method will be calculated if this param is not set.
+
+**Description:** A value in days of a minimum time to enforce between consecutive surveys of a site.
+
+**Notes on acquisition:** This functionality is only currently supported with mobile methods.
+
+**Notes of caution:** Only mobile methods can use this functionality. This behavior implemented through this param will override behavior from other parameters such as RS. Users may see incorrect/strange behavior if an impractical value is chosen for min_time_bt_surveys.
+
+**min_time_bt_surveys** may also be set in the infrastructure file. To do so, it must not be present in the **methods parameters**
+
 ### sensor
 
 #### MDL (default)
