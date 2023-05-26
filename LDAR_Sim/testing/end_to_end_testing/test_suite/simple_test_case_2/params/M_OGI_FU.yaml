@@ -1,0 +1,17 @@
+parameter_level: method
+version: '2.0'
+label: OGI_FU
+deployment_type: mobile
+measurement_scale: component
+is_follow_up: True
+sensor: 
+  type: default
+  MDL: [0.0362]
+cost:
+  per_site: 700
+coverage:
+  spatial: 0.9
+  temporal: 0.9
+t_bw_sites: 
+  vals: [45]
+time: 120

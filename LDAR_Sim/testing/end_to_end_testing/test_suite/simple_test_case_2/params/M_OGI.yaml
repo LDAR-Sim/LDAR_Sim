@@ -1,0 +1,18 @@
+parameter_level: method
+version: '2.0'
+label: OGI
+deployment_type: mobile
+measurement_scale: component
+is_follow_up: False
+sensor: 
+  type: default
+  MDL: [0.0362]
+cost:
+  per_site: 600
+coverage:
+  spatial: 0.9
+  temporal: 0.9
+t_bw_sites: 
+  vals: [30]
+RS: 2
+time: 120
