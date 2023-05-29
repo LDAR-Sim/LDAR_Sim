@@ -2,7 +2,8 @@
 
 ## 2023-05
 
-1. **Requirements update** Requirements have been updated to allow users to use newest versions of libraries and python 3.11 for the conda environment.
+2. **Site-Level Venting Rates** Venting rates can now be provided at a site level in the infrastructure file. This is a breaking change that removes previous venting behavior.
+3. **Requirements update** Requirements have been updated to allow users to use newest versions of libraries and python 3.11 for the conda environment.
 
 ## 2022-11
 

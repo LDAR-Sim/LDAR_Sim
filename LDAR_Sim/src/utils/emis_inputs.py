@@ -26,10 +26,3 @@ def assign_vents(program, wd) -> None:
         if 'vent_rates_file' in subtype:
             subtype['empirical_vent_rates'] = np.array(
                 pd.read_csv(wd / subtype['vent_rates_file']).iloc[:, 0])
-
-
-def assign_site_emis(program, wd) -> None:
-    for st_idx, subtype in program['subtypes'].items():
-        if 'site_rates_file' in subtype:
-            subtype['empirical_site_rates'] = np.array(
-                pd.read_csv(wd / subtype['site_rates_file']).iloc[:, 0])
