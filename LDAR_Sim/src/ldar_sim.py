@@ -38,7 +38,7 @@ from methods.company import BaseCompany
 from numpy.random import binomial, choice
 from out_processing.plotter import make_plots
 from utils.attribution import update_tag
-from utils.distributions import leak_rvs
+from utils.distributions import leak_rvs  # Noqa: 401
 
 warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning)
 
@@ -62,9 +62,6 @@ class LdarSim:
         if params['emissions']['leak_file'] is not None:
             state['empirical_leaks'] = np.array(pd.read_csv(
                 params['input_directory'] / params['emissions']['leak_file']))
-        if params['emissions']['vent_file'] is not None:
-            state['empirical_sites'] = np.array(pd.read_csv(
-                params['input_directory'] / params['emissions']['vent_file']))
         if params['economics']['repair_costs']['file'] is not None:
             params['economics']['repair_costs']['vals'] = np.array(pd.read_csv(
                 params['input_directory'] / params['economics']['repair_costs']['file']))
@@ -120,10 +117,11 @@ class LdarSim:
                 if m_obj['scheduling']['min_time_bt_surveys'] is not None:
                     site[m_min_time_bt_surveys] = m_obj['scheduling']['min_time_bt_surveys']
                 # when not provided
-                if not m_obj['is_follow_up'] and m_obj['deployment_type'] == 'mobile' and site[m_RS] > 0:
+                if not m_obj['is_follow_up'] and m_obj['deployment_type'] == 'mobile' \
+                        and site[m_RS] > 0:
                     if not (m_min_time_bt_surveys in site):
-                        site[m_min_time_bt_surveys] = est_min_time_bt_surveys(m_RS, len(m_obj['scheduling']['deployment_months']),
-                                                                            site)
+                        site[m_min_time_bt_surveys] = est_min_time_bt_surveys(
+                            m_RS, len(m_obj['scheduling']['deployment_months']), site)
 
                 if m_RS in site and m_obj['measurement_scale'] != 'component':
                     if m_label not in n_screening_rs_sets:
@@ -244,33 +242,6 @@ class LdarSim:
         # If working without methods (operator only), need to get the first day going
         if not bool(params['methods']):
             state['t'].current_date = state['t'].current_date.replace(hour=1)
-
-        # Initialize empirical distribution of vented emissions
-        if params['emissions']['consider_venting']:
-            state['empirical_vents'] = []
-
-            # Run Monte Carlo simulations to get distribution of vented emissions
-            for i in range(1000):
-                n_mc_leaks = random.choice(range(20))
-                mc_leaks = []
-                for leak in range(n_mc_leaks):
-                    if params['emissions']['leak_file'] is not None:
-                        leaksize = random.choice(state['empirical_leaks'])
-                    else:
-                        leaksize = leak_rvs(
-                            site['leak_rate_dist'],
-                            params['emissions']['max_leak_rate'],
-                            site['leak_rate_units'])
-                    mc_leaks.append(leaksize)
-
-                mc_leak_total = sum(mc_leaks)
-                mc_site_total = random.choice(state['empirical_sites'])
-                mc_vent_total = mc_site_total - mc_leak_total
-                state['empirical_vents'].append(mc_vent_total)
-
-            # Change negatives to zero
-            state['empirical_vents'] = [
-                0 if i < 0 else i for i in state['empirical_vents']]
 
         # HBD this is sooooo hacky Repair time seems like its wron
         if len(self.state['campaigns']) > 0:
@@ -556,4 +527,4 @@ class LdarSim:
             'p_c_economics': carbon_economics,
         }
 
-        return(sim_summary)
+        return (sim_summary)

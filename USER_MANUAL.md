@@ -767,25 +767,13 @@ The increment can be one of:
 
 **Notes of caution:** N/A
 
-#### vent_file
-
-**Data type:** String
-
-**Default input:** "site_rates.csv"
-
-**Description:** The vent\_file specifies the facility-scale emission rates that are resampled alongside leak rate data to generate distributions of design (vented + incomplete combustion) emissions at each site. The csv contains a single column with the heading name _gpersec_. Each cell contains a numeric value representing the emission rate of a real, previously detected, and quantified facility-scale emission rate in grams per second.
-
-**Notes on acquisition:** Established methods should be used, when possible, and data should be representative of the region and facilities of study. Recommended approaches for facility-scale estimates include the tracer-release method, OTM33A, and aerial mass balance, among others.
-
-**Notes of caution:** N/A
-
 ### infrastructure_file
 
 **Data type:** String
 
 **Default input:**"facility_list_template.csv"
 
-**Description:** Character string that specifies the name of the csv file that contains all of the required data on the facilities that comprise the LDAR program. At a bare minimum, the csv must contain the following columns: 'facility_ID', 'lat', 'lon', 'equipment_groups', and 'subtype_code'. For each mobile measurement company used as part of the LDAR program, the number of annual surveys (survey frequency) must be indicated and the inspection time for each method indicated (in minutes). The number of fixed sensors used at each site must also be indicated. Subsections 1.7.X describe individual columns in greater detail.
+**Description:** Character string that specifies the name of the csv file that contains all of the required data on the sites that comprise the LDAR program. At a bare minimum, the csv must contain the following columns: 'facility_ID', 'lat', 'lon', 'equipment_groups', and 'subtype_code'. For each mobile measurement company used as part of the LDAR program, the number of annual surveys (survey frequency) must be indicated and the inspection time for each method indicated (in minutes). The number of fixed sensors used at each site must also be indicated. A static venting rate may be provided for each site. Subsections 1.7.X describe individual columns in greater detail.
 
 **Notes on acquisition:** See subsections.
 
@@ -906,6 +894,16 @@ If **\*\*\_time** is present in the infrastructure file, it must **NOT** be set 
 **Notes on acquisition:** Can be based on regulatory requirements, company policies, or can be fabricated by the modeler to explore different scenarios.
 
 **Notes of caution:** None
+
+#### static_venting_rate
+
+**Data type:** Floating Point Number
+
+**Default input:** N/A
+
+**Description** A floating point number indicating the static venting rate at each site.
+
+**Notes on acquisition** Can be based on measured data, estimated average site level venting rates or can be fabricated by the modeler to explore different scenarios.
 
 #### additional categories
 
@@ -1707,7 +1705,7 @@ Below are some examples of common sources of LDAR-Sim data. Not all parameters a
 
 - leak_file*
 - LPR*
-- vent_file*
+- static_venting_rates*
 
 ### Duty Holder / Operator (organizational data)
 
