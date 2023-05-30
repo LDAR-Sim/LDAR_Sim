@@ -144,4 +144,5 @@ if __name__ == '__main__':
             with open(out_dir / 'sim_outputs.pickle', 'wb') as sim_res:
                 pickle.dump(sim_outputs, sim_res)
 
+            # Compare results to expected
             compare_outputs(test.name, out_dir, expected_results)
