@@ -48,6 +48,9 @@ def compare_prog_tables(out_dir, expected_dir, logger) -> Literal['Success', 'Fa
         expected_prog_table: Any = json.loads(expected_prog_table_json)
 
     for prog, prog_e in zip(prog_table, expected_prog_table):
+        # Iterate through results in the program table and compare them to the expected results.
+        # If they are numeric, test that they are within 1% of each other,
+        # otherwise they should match.
         for (metric, val), (e_metric, e_val) in zip(prog.items(), prog_e.items()):
             if metric != 'program_name' and metric != 'methods':
                 if isinstance(e_val, numbers.Number) and not math.isnan(e_val):
@@ -56,12 +59,17 @@ def compare_prog_tables(out_dir, expected_dir, logger) -> Literal['Success', 'Fa
                     stat_similar = "Success"
                 else:
                     stat_similar = "Failure"
+                # Log the results of the comparison
                 logger.info(
                     f"Program table Program: {prog['program_name']} comparison of {metric}"
                     + f" to expected value results in: {stat_similar}")
                 if stat_similar == "Failure":
                     ret_string = stat_similar
             elif metric == 'methods':
+                # Iterate through results relating to a method in the program table,
+                # and compare them to the expected results.
+                # If they are numeric, test that they are within 1% of each other,
+                # otherwise they should match.
                 for (method, m_vals), (e_method, e_m_vals) in zip(val.items(), e_val.items()):
                     for m_val, e_m_val in zip(m_vals, e_m_vals):
                         if isinstance(e_m_vals[e_m_val], numbers.Number) \
@@ -73,6 +81,7 @@ def compare_prog_tables(out_dir, expected_dir, logger) -> Literal['Success', 'Fa
                             stat_similar = "Success"
                         else:
                             stat_similar = "Failure"
+                        # Log the results of the comparison
                         logger.info(
                             f"Program table Program: {prog['program_name']}, method: {method}, "
                             f"comparison of {m_val} to expected "
