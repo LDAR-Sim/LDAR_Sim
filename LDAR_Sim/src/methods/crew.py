@@ -126,6 +126,32 @@ class BaseCrew:
             self.timeseries['{}_sites_vis_w_leaks'.format(m_name)][cur_ts] += 1
             self.candidate_flags.append(site_detect_results)
 
+        # Record results of site visit
+        site_vis_rec = {
+            'site_vis_date': self.state['t'].current_date.strftime('%Y-%m-%d'),
+            'site_visited': site['facility_ID'],
+            'site_subtype_code': site['subtype_code'],
+            'leaks_at_site': [{k: v for k, v in leak.items() if k in
+                               ['leak_ID', 'rate', f'{m_name}_sp_covered', 'tagged', 'date_tagged']}
+                              for leak in site['active_leaks']],
+            'site_true_rate': site_detect_results['site_true_rate'],
+            'site_measured_rate': site_detect_results['site_measured_rate'],
+            'site_vent_rate': site_detect_results['vent_rate'],
+            'found_leak': site_detect_results['found_leak'],
+            'crew_ID': self.id,
+        }
+        for leak in site_vis_rec['leaks_at_site']:
+            if any(dictionary.get('leak_ID') == leak['leak_ID']
+                    for dictionary in site_detect_results['leaks_present']):
+                leak[f'{m_name}_survey_tp_covered'] = 1
+            else:
+                if leak[f'{m_name}_sp_covered'] == 1:
+                    leak[f'{m_name}_survey_tp_covered'] = 0
+                else:
+                    leak[f'{m_name}_survey_tp_covered'] = 'N/A'
+
+        self.state['site_visits'][self.config['label']].append(site_vis_rec)
+
         # Update site
         self.timeseries['{}_sites_visited'.format(m_name)][cur_ts] += 1
         site['{}_surveys_conducted'.format(m_name)] += 1

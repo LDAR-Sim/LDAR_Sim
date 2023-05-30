@@ -2,7 +2,8 @@
 
 ## 2023-06
 
-1. **Site-Level Venting Rates** Venting rates can now be provided at a site level in the infrastructure file. This is a breaking change that removes previous venting behavior.
+1. **New Output added to track site-visits** A new output csv file has been added to LDAR-Sim containing information tracking the results of site-visits by methods.
+2. **Site-Level Venting Rates** Venting rates can now be provided at a site level in the infrastructure file. This is a breaking change that removes previous venting behavior.
 
 ## 2023-05
 
