@@ -216,6 +216,8 @@ class LdarSim:
         # Initialize method(s) to be used; append to state
         calculate_daylight = False
         for m_label, m_obj in params['methods'].items():
+            # Initialize method site_visit tracking
+            state['site_visits'][m_label] = []
             # Update method parameters
             m_obj_wr = params['methods'][m_label]
             if m_obj['scheduling']['route_planning']:
@@ -456,6 +458,11 @@ class LdarSim:
             time_df = pd.DataFrame(self.timeseries)
             site_df = pd.DataFrame(self.state['sites'])
 
+            # Create site_visit dataframes
+            site_visits: dict[str, pd.DataFrame] = {}
+            for meth, meth_visits in self.state['site_visits'].items():
+                site_visits[meth] = pd.DataFrame((meth_visits))
+
             # Create some new variables for plotting
             site_df['cum_frac_sites'] = list(site_df.index)
             site_df['cum_frac_sites'] = site_df['cum_frac_sites'] / \
@@ -498,6 +505,10 @@ class LdarSim:
             site_df.to_csv(
                 params['output_directory']
                 / 'sites_output_{}.csv'.format(params['simulation']), index=False)
+
+            for meth, meth_vis_df in site_visits.items():
+                meth_vis_df.to_csv(params['output_directory'] /
+                                   f"site_visits_{meth}_{params['simulation']}.csv", index=False)
 
             # Write metadata
             f_name = params['output_directory'] / \

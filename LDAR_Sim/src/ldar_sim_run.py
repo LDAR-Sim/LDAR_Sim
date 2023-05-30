@@ -86,6 +86,7 @@ def ldar_sim_run(simulation):
         'daylight': None,  # daylight hours calculated during initialization
         # 'init_leaks': [],  # the initial leaks generated at timestep 1
         'max_leak_rate': None,  # the largest leak in the input file
+        'site_visits': {},
     }
 
     # ------------------------Initialize timeseries data----------------------------
