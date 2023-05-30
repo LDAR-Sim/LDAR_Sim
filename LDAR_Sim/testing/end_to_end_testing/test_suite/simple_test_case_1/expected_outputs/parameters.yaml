@@ -5,7 +5,7 @@ end_date:
 - 31
 input_directory: ./inputs
 make_plots: true
-n_processes: 5
+n_processes: null
 n_simulations: 1
 output_directory: ./outputs
 parameter_level: global
@@ -101,6 +101,7 @@ programs:
           - 12
           deployment_years: []
           home_bases_files: Airport_AB_Coordinates.csv
+          min_time_bt_surveys: null
           route_planning: false
           travel_speeds: []
         sensor:
@@ -230,6 +231,7 @@ programs:
           - 12
           deployment_years: []
           home_bases_files: Airport_AB_Coordinates.csv
+          min_time_bt_surveys: null
           route_planning: false
           travel_speeds: []
         sensor:
@@ -306,6 +308,7 @@ programs:
           - 12
           deployment_years: []
           home_bases_files: Airport_AB_Coordinates.csv
+          min_time_bt_surveys: null
           route_planning: false
           travel_speeds: []
         sensor:
