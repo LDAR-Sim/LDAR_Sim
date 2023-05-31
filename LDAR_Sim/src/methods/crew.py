@@ -207,17 +207,18 @@ class BaseCrew:
 
         # Add vented emissions
         venting = 0
-        if self.config['include_venting']:
-            if 'static_vent_rate' in site:
-                venting = site['static_vent_rate']
-            else:
-                venting = random.choice(site['empirical_vent_rates'])
-            covered_site_rate += venting
-            site_rate += venting
-            for rate in range(len(covered_equipment_rates)):
-                covered_equipment_rates[rate] += venting / \
-                    int(site['equipment_groups'])
-                equipment_rates[rate] += venting/int(site['equipment_groups'])
+        if self.parameters['emissions']['consider_venting']:
+            if self.config['include_venting']:
+                if 'static_vent_rate' in site:
+                    venting = site['static_vent_rate']
+                else:
+                    venting = random.choice(site['empirical_vent_rates'])
+                covered_site_rate += venting
+                site_rate += venting
+                for rate in range(len(covered_equipment_rates)):
+                    covered_equipment_rates[rate] += venting / \
+                        int(site['equipment_groups'])
+                    equipment_rates[rate] += venting/int(site['equipment_groups'])
         # Import module. If none is specified use method.sensors.{method_type}
         if self.config['sensor']['mod_loc'] is None:
             sensor_mod = import_module(

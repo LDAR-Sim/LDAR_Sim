@@ -654,7 +654,7 @@ If enabled, the leaks will be stored locally in /inputs/generation after running
 
 **Notes of caution:** Screening technology performance will typically suffer if only fugitive emissions are being targeted due to the confounding presence of design (e.g., vented) emissions. Results from simulations of screening technologies that do not consider venting are therefore optimistic and unlikely to be representative of true reductions. When vented emissions are considered, it will change what facilities are selected for follow-up by screening technologies.
 
-Users will need to also set consider_venting at a method level.
+If desired to set venting consideration at a method level, Users will need to also set include_venting to the desired value in the method level parameters.
 
 #### leak_dist_params
 
@@ -1067,13 +1067,13 @@ If using different weather files for different programs (e.g., when comparing di
 
 **Data type:** Boolean
 
-**Default input:** False
+**Default input:** True
 
-**Description:** A binary True/False to indicate whether the technology can differentiate between venting and fugitives. See consider_venting (program) for more details.
+**Description:** A binary True/False to indicate whether the technology can differentiate between venting and fugitives. See consider_venting (program) for more details. Defaults to true so all methods account for venting when consider venting is enabled.
 
 **Notes on acquisition:** N/A
 
-**Notes of caution:** In most cases when the program level consider_venting is set to True, users should also set this parameter to True. If the program level consider_venting is set to False, there will be no venting values for the technologies to factor in when checking for emissions detection.
+**Notes of caution:** In most cases when the program level consider_venting is set to True, users should also leave this parameter value to the default of True. If the program level consider_venting is set to False, venting will not be considered when checking for emissions detection.
 
 ### cost
 
