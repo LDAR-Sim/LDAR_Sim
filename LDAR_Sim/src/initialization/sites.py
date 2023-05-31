@@ -24,6 +24,7 @@ import fnmatch
 import os
 import pickle
 import random
+from xxlimited import new
 
 import numpy as np
 import pandas as pd
@@ -193,6 +194,10 @@ def regenerate_sites(program, prog_0_sites, in_dir):
         else:
             new_site.update({
                 'leak_rate_dist': site_or['leak_rate_dist'],
+            })
+        if 'empirical_vent_rates' in site_or:
+            new_site.update({
+                'empirical_vent_rates': site_or['empirical_vent_rates']
             })
         out_sites.append(new_site)
     return out_sites
