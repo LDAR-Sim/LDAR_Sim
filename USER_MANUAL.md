@@ -639,7 +639,6 @@ If enabled, the leaks will be stored locally in /inputs/generation after running
 
 **Notes of caution:** N/A
 
-
 ### emissions
 
 #### consider_venting (program)
@@ -897,7 +896,7 @@ If **\*\*\_time** is present in the infrastructure file, it must **NOT** be set 
 
 **Notes of caution:** None
 
-#### static_venting_rate
+#### static_vent_rate
 
 **Data type:** Floating Point Number
 
