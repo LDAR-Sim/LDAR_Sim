@@ -8,7 +8,7 @@ import numpy as np
 from pathlib import Path
 import sys
 
-from testing.test_methods.crew_testing_fixutres import (                    # noqa: F401
+from testing.unit_testing.test_methods.crew_testing_fixutres import (                    # noqa: F401
                                     mock_site_for_crew_testing_1_fix,
                                     mock_config_for_crew_testing_1_fix,
                                     mock_params_for_crew_testing_1_fix,
@@ -24,7 +24,7 @@ def test_004_detect_emissions_simple(mock_config_for_crew_testing_1,
                                      mocker) -> None:
     np.random.seed(0)  # Setting a seed for reproducibility
     sys.path.insert(1, str(Path(os.path.dirname(os.path.realpath(__file__))
-                                ).parent.parent / "src"))  # Add src directory to the path
+                                ).parent.parent.parent / "src"))  # Add src directory to the path
     # Mock the sensors detect emissions function called inside of crew.detect_emissions
     # to return the arguments it's been passed. This way we can check the behavior of
     # crew.detect emissions without being dependant on sensor.detect_emissions.
@@ -48,7 +48,7 @@ def test_004_detect_emissions_simple_w_vents(mock_state_for_crew_testing_2,
                                              mocker) -> None:
     np.random.seed(0)  # Setting a seed for reproducibility
     sys.path.insert(1, str(Path(os.path.dirname(os.path.realpath(__file__))
-                                ).parent.parent / "src"))  # Add src directory to the path
+                                ).parent.parent.parent / "src"))  # Add src directory to the path
     # Mock the sensors detect emissions function called inside of crew.detect_emissions
     # to return the arguments it's been passed. This way we can check the behavior of
     # crew.detect emissions without being dependant on sensor.detect_emissions.
