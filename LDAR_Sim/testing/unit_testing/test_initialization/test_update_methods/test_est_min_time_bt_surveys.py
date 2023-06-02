@@ -15,7 +15,7 @@ def site_and_M_RS_for_testing() -> Dict[str, Any]:
     }
 
 
-def test_031_est_min_time_bt_surveys_basic_case(site_and_M_RS_for_testing):
+def test_041_est_min_time_bt_surveys_basic_case(site_and_M_RS_for_testing):
     """Testing est_min_time_bt_survey correctly return a number of days equal to
     half the survey period for a simple test case, rounded down
 
@@ -27,7 +27,7 @@ def test_031_est_min_time_bt_surveys_basic_case(site_and_M_RS_for_testing):
         site_and_M_RS_for_testing["M_RS"], 12, site_and_M_RS_for_testing["site"]) == 45
 
 
-def test_001_est_min_time_bt_surveys_half_months(site_and_M_RS_for_testing):
+def test_041_est_min_time_bt_surveys_half_months(site_and_M_RS_for_testing):
     """Testing est_min_time_bt_survey correctly return a number of days equal to
     half the survey period for less than the full months, rounded down
 

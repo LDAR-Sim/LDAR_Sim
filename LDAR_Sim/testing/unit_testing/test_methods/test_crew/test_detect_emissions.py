@@ -17,7 +17,7 @@ from testing.unit_testing.test_methods.test_crew.crew_testing_fixtures import ( 
                                     mock_state_for_crew_testing_2_fix)
 
 
-def test_021_detect_emissions_simple(mock_config_for_crew_testing_1,
+def test_051_detect_emissions_simple(mock_config_for_crew_testing_1,
                                      mock_site_for_crew_testing_1,
                                      mock_params_for_crew_testing_1,
                                      mocker) -> None:
@@ -41,7 +41,7 @@ def test_021_detect_emissions_simple(mock_config_for_crew_testing_1,
     assert result == expected
 
 
-def test_021_detect_emissions_simple_w_vents(mock_state_for_crew_testing_2,
+def test_051_detect_emissions_simple_w_vents(mock_state_for_crew_testing_2,
                                              mock_config_for_crew_testing_2,
                                              mock_site_for_crew_testing_2,
                                              mock_params_for_crew_testing_2,
