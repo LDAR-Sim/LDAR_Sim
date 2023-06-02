@@ -19,7 +19,7 @@ from src.geography.vector import grid_contains_point
                                                               'far West and is outside the spatial bounds of ' +
                                                               'your grid data!'))
 ])
-def test_002_grid_contains_point(test_input, expected):
+def test_012_grid_contains_point(test_input, expected):
     """Tests grid cointains point"""
     result = grid_contains_point(test_input[0], test_input[1])
     assert expected == result

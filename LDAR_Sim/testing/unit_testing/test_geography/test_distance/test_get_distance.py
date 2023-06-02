@@ -2,7 +2,7 @@
 from src.geography.distance import get_distance
 
 
-def test_002_dist_euclidean():
+def test_011_dist_euclidean():
     """ Test Euclidean """
     expected = 2**0.5
     lat1 = 3
@@ -14,7 +14,7 @@ def test_002_dist_euclidean():
     assert d == expected
 
 
-def test_002_dist_haversine():
+def test_011_dist_haversine():
     """ Test Haversine """
     expected = 5897.658
     lat1 = -0.116773
