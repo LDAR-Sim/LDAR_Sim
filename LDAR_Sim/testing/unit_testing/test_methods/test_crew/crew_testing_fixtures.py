@@ -1,7 +1,9 @@
 """File containing fixtures to facilitate testing crew methods"""
+import datetime
 from typing import Any
 
 import pytest
+from src.time_counter import TimeCounter
 
 
 @pytest.fixture(name="mock_config_for_crew_testing_1")
@@ -47,6 +49,17 @@ def mock_params_for_crew_testing_1_fix() -> 'dict[str, Any]':
         'emissions': {
             'consider_venting': False
         }
+    }
+
+
+@pytest.fixture(name="mock_state_for_crew_testing_1")
+def mock_state_for_crew_testing_1_fix(mocker) -> 'dict[str, Any]':
+    # Create a mock object to replace the TimeCounter object
+    mock_tc = mocker.Mock(TimeCounter)
+
+    mock_tc.current_date = datetime.datetime(2017, 1, 1, 8, 0)
+    return {
+        't': mock_tc
     }
 
 
