@@ -1,4 +1,4 @@
-""" Unit test for testing vector.py"""
+"""Test file to unit test vector.py grid_contains_point functionality"""
 
 import pytest
 from src.geography.vector import grid_contains_point

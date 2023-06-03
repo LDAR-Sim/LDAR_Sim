@@ -1,4 +1,4 @@
-"""Unit testing for est_min_time_bt_surveys"""
+"""Test file to unit test update_methods.py est_min_time_bt_surveys functionality"""
 from src.initialization.update_methods import est_min_time_bt_surveys
 import pytest
 from typing import Any, Dict

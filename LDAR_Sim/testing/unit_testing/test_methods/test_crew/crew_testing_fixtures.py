@@ -1,3 +1,4 @@
+"""File containing fixtures to facilitate testing crew methods"""
 from typing import Any
 
 import pytest

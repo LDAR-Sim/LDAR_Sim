@@ -1,4 +1,4 @@
-"""Module for testing distance"""
+"""Test file to unit test distance.py get_distance functionality"""
 from src.geography.distance import get_distance
 
 

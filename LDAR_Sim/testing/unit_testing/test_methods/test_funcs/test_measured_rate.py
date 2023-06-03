@@ -1,4 +1,4 @@
-"""Unit test for testing functions.py"""
+"""Test file to unit test funcs.py measured_rate functionality"""
 
 import pytest
 import numpy as np
