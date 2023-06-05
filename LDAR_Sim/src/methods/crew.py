@@ -172,7 +172,7 @@ class BaseCrew:
         # Add vented emissions
         venting = 0
         if self.parameters['emissions']['consider_venting']:
-            venting = site['static_vent_rate']
+            venting = site['static_venting_rate']
             covered_site_rate += venting
             site_rate += venting
             for rate in range(len(covered_equipment_rates)):
