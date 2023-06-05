@@ -108,11 +108,12 @@ def generate_sites(program, in_dir, pregen_leaks):
     """[summary]
 
     Args:
-        program ([type]): [description]
-        in_dir ([type]): [description]
+        program (dict): The program to generate sites for.
+        in_dir (Path): The path to the inputs directory
+        pregen_leaks (boolean): Boolean indicating Whether or not to pregenerate leaks.
 
     Returns:
-        [type]: [description]
+        [dict]: sites, Union[dict, None]: leak_timeseries, Union[dict, None]: initial_leaks
     """
     # Read in the sites as a list of dictionaries
     sites_in = pd.read_csv(in_dir / program['infrastructure_file'])
@@ -170,8 +171,6 @@ def generate_sites(program, in_dir, pregen_leaks):
         return sites, leak_timeseries, initial_leaks
     else:
         return sites, None, None
-        
-    
 
 
 def regenerate_sites(program, prog_0_sites, in_dir):
