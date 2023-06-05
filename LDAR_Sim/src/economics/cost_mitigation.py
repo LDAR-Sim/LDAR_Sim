@@ -45,11 +45,11 @@ def cost_mitigation(simulation_dfs, ref_program, base_program,
         'program_name': df['program_name'],
         'total_program_emissions_kg':
         df['timeseries']['daily_emissions_kg'].sum(),
-        'sale_price_natgas': df['p_params']['economics']['sale_price_natgas'],
-        'GWP_CH4': df['p_params']['economics']['GWP_CH4'],
+        'sale_price_natgas': df['p_c_economics']['sale_price_natgas'],
+        'GWP_CH4': df['p_c_economics']['GWP_CH4'],
         'carbon_price_tonnesCO2e':
-        df['p_params']['economics']['carbon_price_tonnesCO2e'],
-        'cost_CCUS': df['p_params']['economics']['cost_CCUS'],
+        df['p_c_economics']['carbon_price_tonnesCO2e'],
+        'cost_CCUS': df['p_c_economics']['cost_CCUS'],
         'total_program_cost': df['timeseries']['total_daily_cost'].sum()
     } for df in simulation_dfs]
 

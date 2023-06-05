@@ -104,15 +104,16 @@ def get_subtype_file(program, wd):
         unpackage_dist(program)
 
 
-def generate_sites(program, in_dir):
+def generate_sites(program, in_dir, pregen_leaks):
     """[summary]
 
     Args:
-        program ([type]): [description]
-        in_dir ([type]): [description]
+        program (dict): The program to generate sites for.
+        in_dir (Path): The path to the inputs directory
+        pregen_leaks (boolean): Boolean indicating Whether or not to pregenerate leaks.
 
     Returns:
-        [type]: [description]
+        [dict]: sites, Union[dict, None]: leak_timeseries, Union[dict, None]: initial_leaks
     """
     # Read in the sites as a list of dictionaries
     sites_in = pd.read_csv(in_dir / program['infrastructure_file'])
@@ -155,13 +156,21 @@ def generate_sites(program, in_dir):
         elif len(program['subtypes']) > 0:
             site.update(program['subtypes'][0])
 
-        initial_site_leaks = generate_initial_leaks(program, site)
-        initial_leaks.update({site['facility_ID']: initial_site_leaks})
-        site_timeseries = generate_leak_timeseries(program, site)
-        leak_timeseries.update({site['facility_ID']: site_timeseries})
         # Determine repair delay for each site
         site['repair_delay'] = determine_delay(program)
-    return sites, leak_timeseries, initial_leaks
+
+        if pregen_leaks:
+            initial_site_leaks = generate_initial_leaks(program, site)
+            initial_leaks.update({site['facility_ID']: initial_site_leaks})
+            site_timeseries = generate_leak_timeseries(program, site)
+            leak_timeseries.update({site['facility_ID']: site_timeseries})
+            del site['leak_rate_dist']
+            program['emissions'].pop('empirical_leaks', None)
+
+    if pregen_leaks:
+        return sites, leak_timeseries, initial_leaks
+    else:
+        return sites, None, None
 
 
 def regenerate_sites(program, prog_0_sites, in_dir):
@@ -182,7 +191,6 @@ def regenerate_sites(program, prog_0_sites, in_dir):
         new_site = copy.deepcopy(sites[s_idx])
         new_site.update({'cum_leaks': site_or['cum_leaks'],
                          'initial_leaks': site_or['initial_leaks'],
-                         'leak_rate_dist': site_or['leak_rate_dist'],
                          'leak_rate_units': site_or['leak_rate_units'],
                          'repair_delay': site_or['repair_delay']})
         out_sites.append(new_site)
