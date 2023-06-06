@@ -2,7 +2,8 @@
 
 ## 2023-05
 
-1. **Requirements update** Requirements have been updated to allow users to use newest versions of libraries and python 3.11 for the conda environment.
+1. **Added Unit Testing** Unit testing can now be found under testing/unit_testing in the main LDAR-Sim folder
+2. **Requirements update** Requirements have been updated to allow users to use newest versions of libraries and python 3.11 for the conda environment.
 
 ## 2022-11
 

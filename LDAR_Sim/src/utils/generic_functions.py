@@ -55,7 +55,8 @@ def gap_calculator(condition_vector):
     # If there are multiple condition days, calculate longest gap
     elif len(indices[0] > 1):
         start_gap = indices[0][0]
-        mid_gap = max(abs(x - y) for (x, y) in zip(indices[0][1:], indices[0][:-1]))
+        mid_gap = max(abs(x - y)
+                      for (x, y) in zip(indices[0][1:], indices[0][:-1]))
         end_gap = len(condition_vector) - indices[0][-1]
         max_gap = max(start_gap, mid_gap, end_gap)
 
@@ -136,7 +137,7 @@ def check_ERA5_file(dir, programs):
 def geo_idx(dd, dd_array):
     """
      - dd - the decimal degree (latitude or longitude)
-     - dd_array - the list of decimal degrees to search.
+     - dd_array - the list of decimal degrees to search As a Numpy Array.
      search for nearest decimal degree in an array of decimal degrees and return the index.
      np.argmin returns the indices of minium value along an axis.
      so subtract dd from all values in dd_array, take absolute value and find index of minium.
