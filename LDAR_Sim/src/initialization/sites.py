@@ -165,7 +165,6 @@ def generate_sites(program, in_dir, pregen_leaks):
             site_timeseries = generate_leak_timeseries(program, site)
             leak_timeseries.update({site['facility_ID']: site_timeseries})
             del site['leak_rate_dist']
-            program['emissions'].pop('empirical_leaks', None)
 
     if pregen_leaks:
         return sites, leak_timeseries, initial_leaks
