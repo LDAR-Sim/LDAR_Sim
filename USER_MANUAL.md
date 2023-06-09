@@ -1689,7 +1689,25 @@ see Global Inputs - version
 
 --------------------------------------------------------------------------------
 
-## 8\. Data sources, modelling confidence and model sensitivity
+## 8\. Legacy Inputs
+
+As LDAR-Sim continues to grow and evolve, certain parameters may need to be retired and removed from the current version of LDAR-Sim. For completeness, the documentation for these parameters will be moved to this section along with an indication of which version of LDAR-Sim they were removed in.
+
+### vent_file -- Removed as of Version 2.1.2
+
+**Data type:** String
+
+**Default input:** "site_rates.csv"
+
+**Description:** The vent\_file specifies the facility-scale emission rates that are resampled alongside leak rate data to generate distributions of design (vented + incomplete combustion) emissions at each site. The csv contains a single column with the heading name _gpersec_. Each cell contains a numeric value representing the emission rate of a real, previously detected, and quantified facility-scale emission rate in grams per second.
+
+**Notes on acquisition:** Established methods should be used, when possible, and data should be representative of the region and facilities of study. Recommended approaches for facility-scale estimates include the tracer-release method, OTM33A, and aerial mass balance, among others.
+
+**Notes of caution:** N/A
+
+--------------------------------------------------------------------------------
+
+## 9\. Data sources, modelling confidence and model sensitivity
 
 There are a broad range of inputs used in LDAR-Sim that must be derived from various sources. Each of these parameters should be carefully considered and understood before using LDAR-Sim to inform decision making. Like other models, the quality of simulation results will depend on the quality and representativeness of the inputs used.
 
@@ -1728,7 +1746,7 @@ Below are some examples of common sources of LDAR-Sim data. Not all parameters a
 
 --------------------------------------------------------------------------------
 
-## 9\. References
+## 10\. References
 
 Fox, Thomas A., Mozhou Gao, Thomas E. Barchyn, Yorwearth L. Jamin, and Chris H. Hugenholtz. 2021\. "An Agent-Based Model for Estimating Emissions Reduction Equivalence among Leak Detection and Repair Programs." _Journal of Cleaner Production_, 125237\. <https://doi.org/10.1016/j.jclepro.2020.125237>.
 

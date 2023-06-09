@@ -38,7 +38,6 @@ from methods.company import BaseCompany
 from numpy.random import binomial, choice
 from out_processing.plotter import make_plots
 from utils.attribution import update_tag
-from utils.distributions import leak_rvs  # Noqa: 401
 
 warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning)
 
@@ -524,8 +523,10 @@ class LdarSim:
                 params['output_directory'])
 
         # Extract necessary information from the parameters
-        wanted_c_economics = ['sale_price_natgas', 'GWP_CH4', 'carbon_price_tonnesCO2e', 'cost_CCUS']
-        carbon_economics = {key: value for key, value in params['economics'].items() if key in wanted_c_economics}
+        wanted_c_economics = ['sale_price_natgas', 'GWP_CH4',
+                              'carbon_price_tonnesCO2e', 'cost_CCUS']
+        carbon_economics = {key: value for key,
+                            value in params['economics'].items() if key in wanted_c_economics}
         wanted_meta_cols = ['program_name', 'simulation', 'NRd', 'start_date']
         metadata = {key: value for key, value in params.items() if key in wanted_meta_cols}
 
