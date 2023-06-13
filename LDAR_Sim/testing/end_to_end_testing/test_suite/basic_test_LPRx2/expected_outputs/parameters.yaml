@@ -41,7 +41,6 @@ programs:
       units:
       - kilogram
       - hour
-      vent_file: site_rates.csv
     end_date:
     - 2021
     - 12
@@ -170,7 +169,6 @@ programs:
       units:
       - kilogram
       - hour
-      vent_file: site_rates.csv
     end_date:
     - 2021
     - 12
@@ -376,7 +374,6 @@ programs:
       units:
       - kilogram
       - hour
-      vent_file: site_rates.csv
     end_date:
     - 2021
     - 12

@@ -85,9 +85,8 @@ def ldar_sim_run(simulation):
         'weather': None,  # weather gets assigned during initialization
         'daylight': None,  # daylight hours calculated during initialization
         # 'init_leaks': [],  # the initial leaks generated at timestep 1
-        # vent distribution created during initialization
-        'empirical_vents': [0],
         'max_leak_rate': None,  # the largest leak in the input file
+        'site_visits': {},
     }
 
     # ------------------------Initialize timeseries data----------------------------
