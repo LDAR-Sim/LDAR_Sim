@@ -24,13 +24,13 @@ import fnmatch
 import os
 import pickle
 import random
-import site
 
 import numpy as np
 import pandas as pd
 from initialization.leaks import (generate_initial_leaks,
                                   generate_leak_timeseries)
 from utils.distributions import fit_dist, unpackage_dist
+from utils.emis_inputs import (assign_vents)
 from methods.init_func.repair_delay import determine_delay
 
 
@@ -90,6 +90,7 @@ def get_subtype_file(program, wd):
         for st in program['subtypes']:
             program['subtypes'][st]['leak_rate_units'] = program['emissions']['units']
         unpackage_dist(program, wd)
+        assign_vents(program, wd)
     elif program['emissions']['leak_file_use'] == 'fit':
         program['subtypes'] = {0: {
             'leak_rate_dist': fit_dist(
@@ -201,6 +202,10 @@ def regenerate_sites(program, prog_0_sites, in_dir):
         if 'leak_rate_dist' in site_or:
             new_site.update({
                 'leak_rate_dist': site_or['leak_rate_dist'],
+            })
+        if 'empirical_vent_rates' in site_or:
+            new_site.update({
+                'empirical_vent_rates': site_or['empirical_vent_rates']
             })
         out_sites.append(new_site)
     return out_sites
