@@ -1,5 +1,10 @@
 # Change Log
 
+## 2023-06 - Version 2.1.3
+
+1. **Added documentation for subtype_file functionality** Added documentation to the user manual to describe subtype file functionality.
+2. **Added ability to sample for leak rates, vent rates per subtype** Users can now specify vent rate and leak rate files to sample from on a per subtype basis in the subtype file.
+
 ## 2023-06 - Version 2.1.2
 
 1. **New Output added to track site-visits** A new output csv file has been added to LDAR-Sim containing information tracking the results of site-visits by methods.
