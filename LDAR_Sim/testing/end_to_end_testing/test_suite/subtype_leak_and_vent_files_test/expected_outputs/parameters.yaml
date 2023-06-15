@@ -1,0 +1,406 @@
+baseline_program: P_none
+end_date:
+- 2021
+- 12
+- 31
+input_directory: ./inputs
+make_plots: true
+n_processes: 6
+n_simulations: 1
+output_directory: ./outputs
+parameter_level: global
+pregenerate_leaks: true
+preseed_random: true
+print_from_simulations: true
+program_set_name: sample_simulations
+programs:
+  P_OGI:
+    NRd: 365
+    consider_weather: false
+    economics:
+      GWP_CH4: 28.0
+      carbon_price_tonnesCO2e: 40.0
+      cost_CCUS: 20.0
+      repair_costs:
+        file: null
+        vals:
+        - 200
+      sale_price_natgas: 3.0
+      verification_cost: 0
+    emissions:
+      LPR: 0.0065
+      consider_venting: true
+      leak_dist_params:
+      - -1.79
+      - 2.17
+      leak_dist_type: lognorm
+      leak_file: null
+      leak_file_use: sample
+      max_leak_rate: 100000
+      subtype_leak_dist_file: null
+      units:
+      - kilogram
+      - hour
+    end_date:
+    - 2021
+    - 12
+    - 31
+    infrastructure_file: facilities_Perm.csv
+    method_labels:
+    - OGI
+    methods:
+      OGI:
+        RS: 4
+        consider_daylight: false
+        cost:
+          per_day: 0
+          per_hour: 0
+          per_site: 500
+          upfront: 0
+        coverage:
+          spatial: 1.0
+          temporal: 1.0
+        deployment_type: mobile
+        follow_up:
+          delay: 0
+          instant_threshold: null
+          instant_threshold_type: absolute
+          interaction_priority: threshold
+          min_followup_days_to_end: 0
+          min_followup_type: annual
+          min_followups: []
+          preferred_method: null
+          proportion: 1.0
+          redundancy_filter: recent
+          threshold: 0.0
+          threshold_type: absolute
+        is_follow_up: false
+        label: OGI
+        max_workday: 8
+        measurement_scale: component
+        n_crews: null
+        parameter_level: method
+        reporting_delay: 2
+        scheduling:
+          LDAR_crew_init_location:
+          - -114.062
+          - 51.044
+          deployment_months:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+          - 8
+          - 9
+          - 10
+          - 11
+          - 12
+          deployment_years: []
+          home_bases_files: Airport_AB_Coordinates.csv
+          min_time_bt_surveys: null
+          route_planning: false
+          travel_speeds: []
+        sensor:
+          MDL:
+          - 0.24
+          - 0.39
+          QE: 0.0
+          mod_loc: null
+          type: OGI_camera_zim
+        t_bw_sites:
+          file: null
+          vals:
+          - 30
+        time: 120
+        version: '2.0'
+        weather_envs:
+          precip:
+          - 0.0
+          - 0.5
+          temp:
+          - -40.0
+          - 40.0
+          wind:
+          - 0.0
+          - 10.0
+    parameter_level: program
+    program_name: P_OGI
+    repair_delay:
+      type: default
+      val:
+      - 14.0
+    site_samples: 200
+    start_date:
+    - 2017
+    - 1
+    - 1
+    subtype_file: subtype_distributions.csv
+    subtype_times_file: null
+    version: '2.0'
+    weather_file: ERA5_2017_2019_Perm.nc
+    weather_is_hourly: true
+  P_air:
+    NRd: 365
+    consider_weather: false
+    economics:
+      GWP_CH4: 28.0
+      carbon_price_tonnesCO2e: 40.0
+      cost_CCUS: 20.0
+      repair_costs:
+        file: null
+        vals:
+        - 200
+      sale_price_natgas: 3.0
+      verification_cost: 0
+    emissions:
+      LPR: 0.0065
+      consider_venting: true
+      leak_dist_params:
+      - -1.79
+      - 2.17
+      leak_dist_type: lognorm
+      leak_file: null
+      leak_file_use: sample
+      max_leak_rate: 100000
+      subtype_leak_dist_file: null
+      units:
+      - kilogram
+      - hour
+    end_date:
+    - 2021
+    - 12
+    - 31
+    infrastructure_file: facilities_Perm.csv
+    method_labels:
+    - airH
+    - OGI_FU
+    methods:
+      OGI_FU:
+        RS: null
+        consider_daylight: false
+        cost:
+          per_day: 0
+          per_hour: 0
+          per_site: 500
+          upfront: 0
+        coverage:
+          spatial: 1.0
+          temporal: 1.0
+        deployment_type: mobile
+        follow_up:
+          delay: 0
+          instant_threshold: null
+          instant_threshold_type: absolute
+          interaction_priority: threshold
+          min_followup_days_to_end: 0
+          min_followup_type: annual
+          min_followups: []
+          preferred_method: null
+          proportion: 1.0
+          redundancy_filter: recent
+          threshold: 0.0
+          threshold_type: absolute
+        is_follow_up: true
+        label: OGI_FU
+        max_workday: 8
+        measurement_scale: component
+        n_crews: null
+        parameter_level: method
+        reporting_delay: 2
+        scheduling:
+          LDAR_crew_init_location:
+          - -114.062
+          - 51.044
+          deployment_months:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+          - 8
+          - 9
+          - 10
+          - 11
+          - 12
+          deployment_years: []
+          home_bases_files: Airport_AB_Coordinates.csv
+          min_time_bt_surveys: null
+          route_planning: false
+          travel_speeds: []
+        sensor:
+          MDL:
+          - 0.24
+          - 0.39
+          QE: 0.0
+          mod_loc: null
+          type: OGI_camera_zim
+        t_bw_sites:
+          file: null
+          vals:
+          - 30
+        time: 120
+        version: '2.0'
+        weather_envs:
+          precip:
+          - 0.0
+          - 0.5
+          temp:
+          - -40.0
+          - 40.0
+          wind:
+          - 0.0
+          - 10.0
+      airH:
+        RS: 4
+        consider_daylight: false
+        cost:
+          per_day: 0
+          per_hour: 0
+          per_site: 100
+          upfront: 0
+        coverage:
+          spatial: 1.0
+          temporal: 1.0
+        deployment_type: mobile
+        follow_up:
+          delay: 0
+          instant_threshold: null
+          instant_threshold_type: absolute
+          interaction_priority: threshold
+          min_followup_days_to_end: 0
+          min_followup_type: annual
+          min_followups: []
+          preferred_method: null
+          proportion: 1.0
+          redundancy_filter: recent
+          threshold: 0.0
+          threshold_type: absolute
+        is_follow_up: false
+        label: airH
+        max_workday: 8
+        measurement_scale: site
+        n_crews: null
+        parameter_level: method
+        reporting_delay: 2
+        scheduling:
+          LDAR_crew_init_location:
+          - -114.062
+          - 51.044
+          deployment_months:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+          - 8
+          - 9
+          - 10
+          - 11
+          - 12
+          deployment_years: []
+          home_bases_files: Airport_AB_Coordinates.csv
+          min_time_bt_surveys: null
+          route_planning: false
+          travel_speeds: []
+        sensor:
+          MDL:
+          - 5.55
+          QE: 0.0
+          mod_loc: null
+          type: default
+        t_bw_sites:
+          file: null
+          vals:
+          - 5
+        time: 5
+        version: '2.0'
+        weather_envs:
+          precip:
+          - 0.0
+          - 0.5
+          temp:
+          - -40.0
+          - 40.0
+          wind:
+          - 0.0
+          - 10.0
+    parameter_level: program
+    program_name: P_air
+    repair_delay:
+      type: default
+      val:
+      - 14.0
+    site_samples: 200
+    start_date:
+    - 2017
+    - 1
+    - 1
+    subtype_file: subtype_distributions.csv
+    subtype_times_file: null
+    version: '2.0'
+    weather_file: ERA5_2017_2019_Perm.nc
+    weather_is_hourly: true
+  P_none:
+    NRd: 365
+    consider_weather: false
+    economics:
+      GWP_CH4: 28.0
+      carbon_price_tonnesCO2e: 40.0
+      cost_CCUS: 20.0
+      repair_costs:
+        file: null
+        vals:
+        - 200
+      sale_price_natgas: 3.0
+      verification_cost: 0
+    emissions:
+      LPR: 0.0065
+      consider_venting: true
+      leak_dist_params:
+      - -1.79
+      - 2.17
+      leak_dist_type: lognorm
+      leak_file: null
+      leak_file_use: sample
+      max_leak_rate: 100000
+      subtype_leak_dist_file: null
+      units:
+      - kilogram
+      - hour
+    end_date:
+    - 2021
+    - 12
+    - 31
+    infrastructure_file: facilities_Perm.csv
+    method_labels: []
+    methods: {}
+    parameter_level: program
+    program_name: P_none
+    repair_delay:
+      type: default
+      val:
+      - 14.0
+    site_samples: 200
+    start_date:
+    - 2017
+    - 1
+    - 1
+    subtype_file: subtype_distributions.csv
+    subtype_times_file: null
+    version: '2.0'
+    weather_file: ERA5_2017_2019_Perm.nc
+    weather_is_hourly: true
+reference_program: P_OGI
+start_date:
+- 2017
+- 1
+- 1
+version: '2.0'
+write_data: true
