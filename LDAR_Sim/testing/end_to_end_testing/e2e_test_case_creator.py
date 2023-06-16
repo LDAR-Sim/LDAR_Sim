@@ -35,7 +35,9 @@ import yaml
 GLOBAL_PARAMS_TO_REP: 'dict[str, Any]' = {
     'n_simulations': 1,
     'pregenerate_leaks': True,
-    'preseed_random': True
+    'preseed_random': True,
+    'input_directory': './inputs',
+    'output_directory': './outputs',
 }
 
 # Get directories and set up root
@@ -58,6 +60,16 @@ if __name__ == '__main__':
     from out_processing.batch_reporting import BatchReporting
     from out_processing.prog_table import generate as gen_prog_table
     from utils.generic_functions import check_ERA5_file
+
+    # --- Clean out the test creator directory
+    for item in os.listdir(test_creator_dir):
+        item_path = os.path.join(test_creator_dir, item)
+
+        if item != ".gitignore":
+            if os.path.isfile(item_path):
+                os.remove(item_path)
+            elif os.path.isdir(item_path):
+                os.removedirs(item_path)
 
     # --- Retrieve parameters and inputs ---
     original_inputs_dir: Path = root_dir / sys.argv[1]
@@ -85,12 +97,12 @@ if __name__ == '__main__':
     parameter_filenames = files_from_path(params_dir)
     input_manager = InputManager()
     sim_params = input_manager.read_and_validate_parameters(parameter_filenames)
-    out_dir = out_dir = get_abs_path("./expected_outputs", test_case_dir)
+    out_dir = get_abs_path("./expected_outputs", test_case_dir)
 
     # --- Assign local variabls
     ref_program = sim_params['reference_program']
     base_program = sim_params['baseline_program']
-    in_dir = get_abs_path(sim_params['input_directory'], test_creator_dir)
+    in_dir = get_abs_path('./inputs', test_creator_dir)
     shutil.copytree(original_inputs_dir, in_dir)
     if os.path.exists(in_dir / 'generator'):
         shutil.rmtree(in_dir / 'generator')
