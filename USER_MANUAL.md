@@ -975,6 +975,129 @@ The NRd value should be the same for **all** programs
 
 **Notes of caution:** This functionality could be used to 'increase' the number of sites in a program, as sampling occurs with replacement. For example, if a program only had 5 sites, sampling of 100 sites would create the illusion of more sites in the program. However, the sites will only represent 5 locations, so if simulations include geographical considerations (e.g. road networks), this may not be advisable as travel times might not be meaningful.
 
+### subtype_file
+
+**Data type:** string
+
+**Default input:** None
+
+**Description:** Imports a lookup table that allows the modeler to set the leak rate source, vent_rate_file, NRd and LPR per facility according to subtype type. This functionality can be used when these values can be approximately estimated by site subtype. Each row represents a site subtype type and each column represents a value. If this parameter is set to None, or left blank, the described values are set at a program level. For more information on setting NRd and LPR see the entries in program level parameters for NRd and LPR.
+
+**Notes on acquisition:** Ideally, empirical data for similar sites is used to inform the lookup table.
+
+**Notes of caution:** Site subtype types must match those used in infrastructure_file. When used, the equivalent program level parameters will be overwritten. Subtype, NRD, LPR Leak rate source and the relevant leak rate source parameters must be set for each row in the subtype file.
+
+#### leak_rate_source
+
+**Data type:** string
+
+**Default input:** None
+
+**Description:** A column in the subtype_file indicating the source informing leak rate behavior. Valid options are "sample" and "dist". If 'dist', it is necessary to populate the dist_type, dist_scale, dist_sigma, dist_metric and dist_increment columns. If 'sample', it is necessary to populate the 'leaks_rates_file' column.
+
+**Notes on acquisition:** User defined
+
+**Notes of caution:** Must be populated when using the subtype file
+
+#### dist_type
+
+**Data type:** string
+
+**Default input:** None
+
+**Description:** The name of a distribution from the scipy library, used in conjunction with other subtype dist_<> params. See scipy documentation for more details.
+
+**Notes on acquisition:** User defined
+
+**Notes of caution:** Must be populated when using the subtype file with leak_rate_source set to "dist"
+
+#### dist_scale
+
+**Data type:** string
+
+**Default input:** None
+
+**Description:** The scale of the leak rate distribution to be used for each subtype.
+
+**Notes on acquisition:** Ideally, should be drawn from a distribution fit to empirical data for similar sites.
+
+**Notes of caution:** Must be populated when using the subtype file with leak_rate_source set to "dist"
+
+#### dist_sigma
+
+**Data type:** string
+
+**Default input:** None
+
+**Description:** The sigma of the leak rate distribution to be used for each subtype.
+
+**Notes on acquisition:** Ideally, should be drawn from a distribution fit to empirical data for similar sites.
+
+**Notes of caution:** Must be populated when using the subtype file with leak_rate_source set to "dist"
+
+#### dist_metric
+
+**Data type:** string
+
+**Default input:** None
+
+**Description:** Units of the amount used for inputs of subtype leak distributions.  Can be one of:
+
+- gram
+- kilogram
+- cubic meter
+- tonne
+- pound
+- cubic feet
+- liter
+- mscf
+
+**Notes on acquisition:** User defined
+
+**Notes of caution:** Must be populated when using the subtype file with leak_rate_source set to "dist"
+
+#### dist_increment
+
+**Data type:** string
+
+**Default input:** None
+
+**Description:** Units of the increment used for inputs of subtype leak distributions. Can be one of:
+
+- second
+- minute
+- hour
+- day
+- year
+
+**Notes on acquisition:** User defined
+
+**Notes of caution:** Must be populated when using the subtype file with leak_rate_source set to "dist"
+
+#### leak_rates_file
+
+**Data type:** string
+
+**Default input:** None
+
+**Description:** A string pointing to a file containing leak rates to sample from for the subtype. The file must be a single column csv file with the header "gpersec" and leak rates in grams per second.
+
+**Notes on acquisition:** Ideally, should be empirical data for similar sites.
+
+**Notes of caution:** Must be populated when using the subtype file with leak_rate_source set to "sample"
+
+#### vent_rates_file
+
+**Data type:** string
+
+**Default input:** None
+
+**Description:** A string pointing to a file containing venting rates to sample from for the subtype. The file must be a single column csv file with the header "gpersec" and venting rates in grams per second.
+
+**Notes on acquisition:** Ideally, should be empirical data for similar sites.
+
+**Notes of caution:** Must be populated when using the subtype file with consider_venting set to True if venting in not set per site in the infrastructure file.
+
 ### subtype_times_file
 
 **Data type:** string

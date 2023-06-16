@@ -1,0 +1,9 @@
+subtype_code,leak_rate_source,leak_rates_file,vent_rates_file,NRd,LPR
+1,sample,leak_rates_test.csv,vent_rates_test.csv,365,0.0065
+2,sample,leak_rates_test2.csv,vent_rates_test2.csv,365,0.0065
+3,sample,leak_rates_test3.csv,vent_rates_test3.csv,365,0.0065
+4,sample,leak_rates_test4.csv,vent_rates_test4.csv,365,0.0065
+5,sample,leak_rates_test4.csv,vent_rates_test.csv,365,0.0065
+6,sample,leak_rates_test3.csv,vent_rates_test2.csv,365,0.0065
+7,sample,leak_rates_test2.csv,vent_rates_test3.csv,365,0.0065
+8,sample,leak_rates_test.csv,vent_rates_test4.csv,365,0.0065

@@ -17,6 +17,7 @@
 import json
 
 import numpy as np
+import pandas as pd
 # You should have received a copy of the MIT License
 # along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 #
@@ -82,7 +83,7 @@ def leak_rvs(distribution, max_size=None, gpsec_conversion=None):
     return leaksize
 
 
-def unpackage_dist(program):
+def unpackage_dist(program, wd):
     """ Create scipy like leak distributions based on input dists or leak files
 
     Args:
@@ -91,11 +92,15 @@ def unpackage_dist(program):
     """
     # --------- Leak distributions -------------
     for st_idx, subtype in program['subtypes'].items():
-        if subtype['dist_type'] == 'lognorm':
-            subtype['dist_scale'] = np.exp(subtype['dist_scale'])
-        if 'dist_sigma' in subtype:
-            subtype['dist_shape'] = [subtype['dist_sigma']]
-        subtype['leak_rate_dist'] = fit_dist(
-            dist_type=subtype['dist_type'],
-            shape=subtype['dist_shape'],
-            scale=subtype['dist_scale'])
+        if 'leak_rate_source' not in subtype or subtype['leak_rate_source'] == 'dist':
+            if subtype['dist_type'] == 'lognorm':
+                subtype['dist_scale'] = np.exp(subtype['dist_scale'])
+            if 'dist_sigma' in subtype:
+                subtype['dist_shape'] = [subtype['dist_sigma']]
+            subtype['leak_rate_dist'] = fit_dist(
+                dist_type=subtype['dist_type'],
+                shape=subtype['dist_shape'],
+                scale=subtype['dist_scale'])
+        elif subtype['leak_rate_source'] == 'sample':
+            subtype['empirical_leak_rates'] = np.array(
+                pd.read_csv(wd / subtype['leak_rates_file']).iloc[:, 0])

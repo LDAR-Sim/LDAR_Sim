@@ -30,6 +30,7 @@ import pandas as pd
 from initialization.leaks import (generate_initial_leaks,
                                   generate_leak_timeseries)
 from utils.distributions import fit_dist, unpackage_dist
+from utils.emis_inputs import (assign_vents)
 from methods.init_func.repair_delay import determine_delay
 
 
@@ -64,7 +65,7 @@ def get_subtype_dist(program, wd):
         program['subtypes'] = subtypes.to_dict('index')
         for st in program['subtypes']:
             program['subtypes'][st]['leak_rate_units'] = program['emissions']['units']
-        unpackage_dist(program)
+        unpackage_dist(program, wd)
     elif program['emissions']['leak_file_use'] == 'fit':
         program['subtypes'] = {0: {
             'leak_rate_dist': fit_dist(
@@ -77,7 +78,7 @@ def get_subtype_dist(program, wd):
             'dist_scale': program['emissions']['leak_dist_params'][0],
             'dist_shape': program['emissions']['leak_dist_params'][1:],
             'leak_rate_units': program['emissions']['units']}}
-        unpackage_dist(program)
+        unpackage_dist(program, wd)
 
 
 def get_subtype_file(program, wd):
@@ -88,7 +89,8 @@ def get_subtype_file(program, wd):
         program['subtypes'] = subtypes.to_dict('index')
         for st in program['subtypes']:
             program['subtypes'][st]['leak_rate_units'] = program['emissions']['units']
-        unpackage_dist(program)
+        unpackage_dist(program, wd)
+        assign_vents(program, wd)
     elif program['emissions']['leak_file_use'] == 'fit':
         program['subtypes'] = {0: {
             'leak_rate_dist': fit_dist(
@@ -101,7 +103,7 @@ def get_subtype_file(program, wd):
             'dist_scale': program['emissions']['leak_dist_params'][0],
             'dist_shape': program['emissions']['leak_dist_params'][1:],
             'leak_rate_units': program['emissions']['units']}}
-        unpackage_dist(program)
+        unpackage_dist(program, wd)
 
 
 def generate_sites(program, in_dir, pregen_leaks):
@@ -164,7 +166,8 @@ def generate_sites(program, in_dir, pregen_leaks):
             initial_leaks.update({site['facility_ID']: initial_site_leaks})
             site_timeseries = generate_leak_timeseries(program, site)
             leak_timeseries.update({site['facility_ID']: site_timeseries})
-            del site['leak_rate_dist']
+            if 'leak_rate_dist' in site:
+                del site['leak_rate_dist']
 
     if pregen_leaks:
         return sites, leak_timeseries, initial_leaks
@@ -192,5 +195,17 @@ def regenerate_sites(program, prog_0_sites, in_dir):
                          'initial_leaks': site_or['initial_leaks'],
                          'leak_rate_units': site_or['leak_rate_units'],
                          'repair_delay': site_or['repair_delay']})
+        if 'empirical_leak_rates' in site_or:
+            new_site.update({
+                'empirical_leak_rates': site_or['empirical_leak_rates']
+            })
+        if 'leak_rate_dist' in site_or:
+            new_site.update({
+                'leak_rate_dist': site_or['leak_rate_dist'],
+            })
+        if 'empirical_vent_rates' in site_or:
+            new_site.update({
+                'empirical_vent_rates': site_or['empirical_vent_rates']
+            })
         out_sites.append(new_site)
     return out_sites
