@@ -1,5 +1,9 @@
 # Change Log
 
+## 2023-06 - Version 2.1.4
+
+1. **Added functionality for site level follow-ups** Users can now have measurement_scale "site" level follow ups by leveraging the follow-up: preferred_method parameter. This allows for modelling of multiple screenings based on the results of each prior screening (Which could increase confidence in fugitives, improve measurement accuracy, etc).
+
 ## 2023-06 - Version 2.1.3
 
 1. **Added documentation for subtype_file functionality** Added documentation to the user manual to describe subtype file functionality.

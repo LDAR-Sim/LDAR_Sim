@@ -1290,11 +1290,11 @@ Method costs. Currency is not important but must be consistent across all inputs
 
 **Default input:** N/A
 
-**Description:** Allows for surveying methods to determine which follow-up method to run if multiples are present. If not set, LDAR-Sim will expect only 1 followup method to be present for a single program.
+**Description:** Allows for surveying methods to determine which follow-up method to run if multiples are present. If not set, LDAR-Sim will expect only 1 followup method to be present for a single program. Site level follow-up methods can be used by leveraging this parameter, allowing for subsequent rounds of screenings based on initial screening results. This feature can be used to model work-practices with multiple screening done in order to increase confidence in fugitive emissions, measurement accuracy, etc. Each method in the follow-up chain must have the preferred_method set to the corresponding method it triggers.
 
 **Notes on acquisition:** N/A
 
-**Notes of caution:** If method within a program is set to have a preferred follow up method, all methods used by the program should also be set with a preferred method to avoid ambiguity of which followup method is being used.
+**Notes of caution:** If method within a program is set to have a preferred follow up method, all methods used by the program should also be set with a preferred method to avoid ambiguity of which followup method is being used. The last follow-up method in a work practice must be at a component level for leaks to be tagged and then repaired.
 
 #### delay
 
