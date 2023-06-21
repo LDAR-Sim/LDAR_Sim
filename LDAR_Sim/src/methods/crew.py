@@ -22,7 +22,7 @@
 import random
 from datetime import timedelta
 from importlib import import_module
-from typing import Any
+from typing import Any, Dict
 
 import numpy as np
 
@@ -199,7 +199,7 @@ class BaseCrew:
         return detect_emis_sensor(self, site, covered_leaks, covered_equipment_rates,
                                   covered_site_rate, site_rate, venting, equipment_rates)
 
-    def gen_site_vis_rec(self, site_detect_results, site) -> dict[str, Any]:
+    def gen_site_vis_rec(self, site_detect_results, site) -> Dict[str, Any]:
         """Returns a dictionary tracking key results from a crews visit to a site.
 
         Results tracked in the dictionary consist of the date of the site visit,
