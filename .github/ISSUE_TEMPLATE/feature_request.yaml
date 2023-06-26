@@ -4,31 +4,31 @@ title: "[FEAT] Brief Description"
 labels: ['enhancement']
 assignees: ''
 body:
-  - type: textarea
+- type: textarea
   attributes: 
     label: Requested Feature/Enhancement
     description: Describe the feature/enhancement being requested in detail. Be clear and concise. 
   validations: 
     required: true
-  - type: textarea
+- type: textarea
   attributes: 
     label: Need for feature/Enhancement
     description: Describe why the feature/enhancement is important. 
   validations: 
     required: true
-  - type: textarea
+- type: textarea
   attributes: 
     label: Problem to solve
     description: Describe what problem the feature/enhancement will solve, if any. 
   validations: 
     required: true
-  - type: textarea
+- type: textarea
   attributes: 
     label: Implementation Ideas
     description: Describe the ideas, if any that you have for how to solve the problem outlined as part of this feature/enhancement request. 
   validations: 
     required: true
-  - type: textarea
+- type: textarea
   attributes: 
     label: Additional context
     description: Include any other context about the feature request here. 
