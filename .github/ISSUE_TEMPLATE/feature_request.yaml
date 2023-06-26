@@ -1,8 +1,7 @@
 name: Feature/Enhancement request
-about: Request new functionality for LDAR-Sim
+description: Request new functionality for LDAR-Sim
 title: "[FEAT] Brief Description"
 labels: ['enhancement']
-assignees: ''
 body:
 - type: textarea
   attributes: 

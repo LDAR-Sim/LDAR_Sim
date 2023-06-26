@@ -1,8 +1,7 @@
-name: Bug report
-about: Report a bug or defect in LDAR-Sim
+name: 🐞Bug report
+description: Report a bug or defect in LDAR-Sim
 title: "[BUG] Brief Description"
 labels: ["bug"]
-assignees: ''
 body:
 - type: textarea
   attributes: 
@@ -22,7 +21,7 @@ body:
     description: |
       Include screenshots, error messages, output files and any other material that may be useful here to explain what happened.
 
-    Tip: You can attach images or output files by clicking this area to highlight it and then dragging files in.
+      **TIP** You can attach images or output files by clicking this area to highlight it and then dragging files in.
   validations:
     required: true
 - type: textarea
