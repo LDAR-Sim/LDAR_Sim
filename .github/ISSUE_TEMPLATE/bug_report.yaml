@@ -43,7 +43,7 @@ body:
     description: Include the version number of the LDAR-Sim version that was running when the bug occurred.
   validations: 
     required: true
-  - label: textarea
+  - type: textarea
   attributes:
     label: Additional Context
     description: Include any other context about the problem here.
