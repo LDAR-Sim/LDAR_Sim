@@ -1,0 +1,51 @@
+name: Bug report
+about: Report a bug or defect in LDAR-Sim
+title: "[BUG] Brief Description"
+labels: ["bug"]
+assignees: ''
+body:
+  -type: textarea
+  attributes: 
+    label: Bug/Defect description
+    description: Describe the bug/defect in as much detail as possible. Be clear and concise.
+  validations: 
+    required: true
+  -type: textarea
+  attributes: 
+    label: Steps to reproduce
+    description: Describe steps to reproduce the bug/defect. Be as accurate as possible in describing the steps to reproduce.
+  validations:
+    required: true
+  -type: textarea
+  attributes:
+    label: Evidence
+    description: |
+      Include screenshots, error messages, output files and any other material that may be useful here to explain what happened.
+
+    Tip: You can attach images or output files by clicking this area to highlight it and then dragging files in.
+  validations:
+    required: true
+  -type: textarea
+  attributes:
+    label: Expected behavior
+    description: Describe what you expected to happen. How is it different from what happened? Be clear and concise.
+  validations:
+    required: true
+  -type: textarea
+  attributes:
+    label: Inputs and Parameters
+    description: As part of the submissions for a bug report, include a zipped folder containing the LDAR-Sim input files and parameters if relevant and they do not contain confidential information. If they do contain confidential information, if it is possible to remove or redact that information and submit the files, it is recommended to do so.
+  validations:
+    required: false
+  -type: textarea
+  attributes:
+    label: Version Number
+    description: Include the version number of the LDAR-Sim version that was running when the bug occurred.
+  validations: 
+    required: true
+  -label: textarea
+  attributes:
+    label: Additional Context
+    description: Include any other context about the problem here.
+  validations:
+    required: false
