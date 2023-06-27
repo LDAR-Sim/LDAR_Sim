@@ -9,13 +9,13 @@ body:
     description: Please search to see if an issue already exists for this discussion/idea/question. 
     options:
     - label: I have searched to see if an issue already exists for this topic. 
-      required: true
+      required: true  
 - type: textarea
-  attributes: 
+  attributes:
     label: Discussion/Brainstorming/Question description
     description: |
     Describe the topic of discussion or idea in detail as possible.
 
-    If question, please add additional "question" label. 
-  validations: 
+    **If question, please add additional "question" label. 
+  validations:
     required: true
