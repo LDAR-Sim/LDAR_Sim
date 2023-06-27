@@ -1,0 +1,20 @@
+name: "💬Discussions, 💭Ideas or❓Questions"
+description: "Discussion/Brainstorming/Questions for LDAR-Sim"
+title: "[MISC] Brief Description"
+labels: ["discussion"]
+body:
+- type: textarea
+  attributes:
+    label: "Discussion/Brainstorming/Question description"
+    description: |
+      Describe the topic of discussion or idea in as much detail as possible.
+      **If this is a question, please add an additional label -question-**
+  validations:
+    required: true
+- type: checkboxes
+  attributes:
+    label: "Is this a duplicate/existing topic or question?"
+    description: "Please search to see if an issue already exists for this discussion/idea/question."
+    options:
+      - label: I have searched to see if an issue already exists for this topic.
+        required: true
