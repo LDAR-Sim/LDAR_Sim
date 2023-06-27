@@ -13,7 +13,8 @@ body:
 - type: textarea
   attributes: 
     label: Discussion/Brainstorming/Question description
-    description: Describe the topic of discussion or idea in detail as possible.
+    description: |
+    Describe the topic of discussion or idea in detail as possible.
 
     If question, please add additional "question" label. 
   validations: 
