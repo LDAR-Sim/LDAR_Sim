@@ -20,16 +20,16 @@ body:
     label: Problem to solve
     description: Describe what problem the feature/enhancement will solve, if any. 
   validations: 
-    required: true
+    required: false
 - type: textarea
   attributes: 
     label: Implementation Ideas
     description: Describe the ideas, if any that you have for how to solve the problem outlined as part of this feature/enhancement request. 
   validations: 
-    required: true
+    required: false
 - type: textarea
   attributes: 
     label: Additional context
     description: Include any other context about the feature request here. 
   validations: 
-    required: true
+    required: false
