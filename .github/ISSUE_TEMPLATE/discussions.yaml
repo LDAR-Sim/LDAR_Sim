@@ -3,13 +3,6 @@ description: Discussion/Brainstorming/Questions for LDAR-Sim
 title: "[MISC] Brief Description"
 labels: ["discussion"]
 body:
-- type: checkboxes
-  attributes:
-    label: Is this a duplicate/existing topic or question? 
-    description: Please search to see if an issue already exists for this discussion/idea/question. 
-    options:
-    - label: I have searched to see if an issue already exists for this topic. 
-      required: true  
 - type: textarea
   attributes:
     label: Discussion/Brainstorming/Question description
@@ -19,3 +12,10 @@ body:
     **If question, please add additional "question" label. 
   validations:
     required: true
+- type: checkboxes
+  attributes:
+    label: Is this a duplicate/existing topic or question? 
+    description: Please search to see if an issue already exists for this discussion/idea/question. 
+    options:
+    - label: I have searched to see if an issue already exists for this topic. 
+      required: true  
