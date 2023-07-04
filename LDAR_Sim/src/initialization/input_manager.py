@@ -30,13 +30,13 @@ from utils.check_parameter_types import check_types
 
 
 class InputManager:
-    def __init__(self):
+    def __init__(self) -> None:
         """ Constructor creates a lookup of method defaults to run validation against
         """
-        g_param_file = './src/default_parameters/g_default.yml'
-        with open(g_param_file, 'r') as f:
-            default_global_parameters = yaml.load(f.read(), Loader=yaml.SafeLoader)
-        self.simulation_parameters = copy.deepcopy(default_global_parameters)
+        sim_settings_file = './src/default_parameters/simulation_settings_default.yml'
+        with open(sim_settings_file, 'r') as f:
+            default_sim_setting_parameters = yaml.load(f.read(), Loader=yaml.SafeLoader)
+        self.simulation_parameters = copy.deepcopy(default_sim_setting_parameters)
         # Simulation parameter are parameters that are set up for this simulation
         return
 
@@ -51,7 +51,7 @@ class InputManager:
         # Add extra guards for other parts of the code that concatenate
         # strings to construct file paths, and expect trailing slashes
         self.remove_type_placeholders(self.simulation_parameters)
-        return(copy.deepcopy(self.simulation_parameters))
+        return (copy.deepcopy(self.simulation_parameters))
 
     def write_parameters(self, filename):
         """Method to write simulation parameters to the file system
@@ -72,18 +72,18 @@ class InputManager:
             new_parameters_list.append(self.read_parameter_file(parameter_filename))
 
         # Perform any mapping, optionally accumulating mined global parameters
-        global_parameters = {}
+        sim_setting_parameters = {}
         for i in range(len(new_parameters_list)):
-            new_parameters_list[i], mined_global_parameters = \
+            new_parameters_list[i], mined_sim_setting_parameters = \
                 self.map_parameters(new_parameters_list[i])
-            global_parameters.update(mined_global_parameters)
+            sim_setting_parameters.update(mined_sim_setting_parameters)
 
         # Append the mined global parameters for installation after all other parameter updates
-        if len(global_parameters) > 0:
-            global_parameters['parameter_level'] = 'global'
-            new_parameters_list.append(global_parameters)
+        if len(sim_setting_parameters) > 0:
+            sim_setting_parameters['parameter_level'] = 'simulation_settings'
+            new_parameters_list.append(sim_setting_parameters)
 
-        return(new_parameters_list)
+        return (new_parameters_list)
 
     def read_parameter_file(self, filename):
         """Method to read a single parameter file from a filename. This method can be extended to
@@ -113,7 +113,7 @@ class InputManager:
             else:
                 sys.exit('Invalid parameter file format: ' + filename)
 
-        return(new_parameters)
+        return (new_parameters)
 
     def map_parameters(self, parameters):
         """Function to map parameters from older versions to the present version, all mappings are
@@ -129,7 +129,7 @@ class InputManager:
         mined_global_parameters = {}
         # if parameters['version'] == '1.0':
         #     parameters, mined_global_parameters = input_mapper_v1(parameters)
-        return(parameters, mined_global_parameters)
+        return (parameters, mined_global_parameters)
 
     def parse_parameters(self, new_parameters_list):
         """Method to parse and validate new parameters, perform type checking, and organize for
@@ -143,20 +143,34 @@ class InputManager:
         programs = {}
         method_pool = {}
         for new_parameters in new_parameters_list:
-            # Address unsupplied parameter level by defaulting it as global
+            # Address unsupplied parameter level by defaulting it as simulation_settings
             if 'parameter_level' not in new_parameters:
-                new_parameters['parameter_level'] = 'global'
+                new_parameters['parameter_level'] = 'simulation_settings'
                 print('Warning: parameter_level should be supplied to parameter files, LDAR-Sim '
-                      'interprets parameter files as global if unspecified')
+                      'interprets parameter files as simulation_settings level if unspecified')
 
-            if new_parameters['parameter_level'] == 'global':
-                # Extract programs supplied in global parameter files to build programs list
+            if new_parameters['parameter_level'] == 'simulation_settings':
+                # Extract programs supplied in simulation_settings parameter files
+                # to build programs list
                 if 'programs' in new_parameters:
                     if len(new_parameters['programs']) > 0:
                         programs = programs + new_parameters.pop('programs')
 
                 check_types(self.simulation_parameters, new_parameters, omit_keys=['programs'])
                 self.simulation_parameters.update(new_parameters)
+
+            elif new_parameters['parameter_level'] == 'virtual_world':
+                if 'default_parameters' not in new_parameters:
+                    def_file = 'virtual_world_default.yml'
+                else:
+                    def_file = new_parameters['default_parameters']
+                v_world_param_file = './src/default_parameters/{}'.format(def_file)
+                with open(v_world_param_file, 'r') as f:
+                    default_v_world_params = yaml.load(f.read(), Loader=yaml.SafeLoader)
+                check_types(default_v_world_params, new_parameters)
+                new_v_world = copy.deepcopy(default_v_world_params)
+                self.retain_update(new_v_world, new_parameters)
+                self.simulation_parameters["virtual_world"] = new_v_world
 
             elif new_parameters['parameter_level'] == 'program':
                 if 'default_parameters' not in new_parameters:
@@ -218,11 +232,6 @@ class InputManager:
                     omit_keys=['default_parameters'])
                 self.retain_update(default_module, method)
                 programs[p_idx]['methods'][midx] = default_module
-
-            # Finally, manually append some keys from globals that are required to be in the program
-            # parameters
-            programs[p_idx]['start_date'] = self.simulation_parameters['start_date']
-            programs[p_idx]['end_date'] = self.simulation_parameters['end_date']
 
         # Third, install the programs into the simulation parameters
         self.simulation_parameters['programs'] = programs
