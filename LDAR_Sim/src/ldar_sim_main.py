@@ -46,17 +46,19 @@ Provide any issues, comments, questions, or recommendations to the IM3S by
 adding an issue to https://github.com/LDAR-Sim/LDAR_Sim.git.
 
 """
-# Get route directory , which is parent folder of ldar_sim_main file
-# Set current working directory directory to root directory
-root_dir = Path(os.path.dirname(os.path.realpath(__file__))).parent
-os.chdir(root_dir)
-
-src_dir = root_dir / 'src'
-sys.path.insert(0, str(root_dir))
-sys.path.insert(1, str(src_dir))
 
 if __name__ == '__main__':
     print(opening_msg)
+
+    # Get route directory , which is parent folder of ldar_sim_main file
+    # Set current working directory directory to root directory
+    root_dir = Path(os.path.dirname(os.path.realpath(__file__))).parent
+    os.chdir(root_dir)
+
+    src_dir = root_dir / 'src'
+    sys.path.insert(1, str(src_dir))
+    ext_sens_dir = root_dir / 'external_sensors'
+    sys.path.append(str(ext_sens_dir))
 
     # --- Retrieve input parameters and parse ---
     parameter_filenames = files_from_args(root_dir)
