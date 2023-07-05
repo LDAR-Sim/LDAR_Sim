@@ -43,14 +43,14 @@ warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning)
 
 
 class LdarSim:
-    def __init__(self, global_params, state, params, timeseries):
+    def __init__(self, simulation_settings, state, program_parameters, virtual_world, timeseries):
         """
         Construct the simulation.
         """
-
         self.state = state
-        self.global_params = global_params
-        self.parameters = params
+        self.simulation_settings = simulation_settings
+        self.virtual_world = virtual_world
+        self.program_parameters = program_parameters
         self.timeseries = timeseries
         self.active_leaks = []
 
@@ -58,29 +58,32 @@ class LdarSim:
         self.state['campaigns'] = {}
         state['candidate_flags'] = {}
         # Read in data files
-        if params['emissions']['leak_file'] is not None:
+        if virtual_world['emissions']['leak_file'] is not None:
             state['empirical_leaks'] = np.array(pd.read_csv(
-                params['input_directory'] / params['emissions']['leak_file']))
-        if params['economics']['repair_costs']['file'] is not None:
-            params['economics']['repair_costs']['vals'] = np.array(pd.read_csv(
-                params['input_directory'] / params['economics']['repair_costs']['file']))
+                virtual_world['input_directory'] / virtual_world['emissions']['leak_file']))
+        if virtual_world['economics']['repair_costs']['file'] is not None:
+            virtual_world['economics']['repair_costs']['vals'] = np.array(
+                pd.read_csv(
+                    virtual_world['input_directory'] /
+                    virtual_world['economics']['repair_costs']['file']
+                )
+            )
             # Read in the sites as a list of dictionaries
         if len(state['sites']) < 1:
             state['sites'], _, _ = generate_sites(
-                params, params['input_directory'], params['pregenerate_leaks'])
-        state['max_leak_rate'] = params['emissions']['max_leak_rate']
+                virtual_world, virtual_world['input_directory'], virtual_world['pregenerate_leaks'])
+        state['max_leak_rate'] = virtual_world['emissions']['max_leak_rate']
         state['t'].set_UTC_offset(state['sites'])
-        if params['subtype_file'] is not None:
+        if virtual_world['subtype_file'] is not None:
             state['subtypes'] = pd.read_csv(
-                params['input_directory']/params['subtype_file'],
+                virtual_world['input_directory']/virtual_world['subtype_file'],
                 index_col='subtype_code').to_dict()
         # Sample sites if they havent been provided from pregeneration step
-        if not params['pregenerate_leaks']:
-            if params['site_samples'] is not None:
+        if not virtual_world['pregenerate_leaks']:
+            if virtual_world['site_samples'] is not None:
                 state['sites'] = random.sample(
                     state['sites'],
-                    params['site_samples'])
-
+                    virtual_world['site_samples'])
             # Shuffle all the entries to randomize order for identical 't_Since_last_LDAR' values
             random.shuffle(state['sites'])
 
@@ -97,7 +100,7 @@ class LdarSim:
                 add_subtype = False
             sites_per_subtype[site['subtype_code']] += 1
             n_rs = n_subtype_rs[site['subtype_code']]
-            for m_label, m_obj in params['methods'].items():
+            for m_label, m_obj in program_parameters['methods'].items():
                 # Site parameter overwrite of RS and Time (used for sensitivity analysis)
                 m_RS = '{}_RS'.format(m_label)
                 if m_obj['RS'] is not None:
@@ -138,7 +141,7 @@ class LdarSim:
                     n_subtype_rs[site['subtype_code']].update({m_label: None})
                 # Calculate the site minimum interval
                 if m_RS in site and site[m_RS] != 0:
-                    n_months = len(params['methods'][m_label]
+                    n_months = len(program_parameters['methods'][m_label]
                                    ['scheduling']['deployment_months'])
                     n_days = 30.4167 * n_months
                     site['{}_min_int'.format(m_label)] = floor(
@@ -147,11 +150,11 @@ class LdarSim:
                 elif m_obj['n_crews'] is None:
                     m_obj['n_crews'] = 1
 
-            if params['pregenerate_leaks']:
-                initial_leaks = params['initial_leaks'][site['facility_ID']]
-                n_leaks = len(params['initial_leaks'][site['facility_ID']])
+            if virtual_world['pregenerate_leaks']:
+                initial_leaks = virtual_world['initial_leaks'][site['facility_ID']]
+                n_leaks = len(virtual_world['initial_leaks'][site['facility_ID']])
             else:
-                initial_leaks = generate_initial_leaks(params, site)
+                initial_leaks = generate_initial_leaks(virtual_world, site)
                 n_leaks = len(initial_leaks)
             site.update({
                 'total_emissions_kg': 0,
@@ -183,35 +186,36 @@ class LdarSim:
         # Setup Campaigns
         setup_campaigns(
             self.state['campaigns'],
-            params,
+            program_parameters,
+            virtual_world,
             n_sites,
             n_screening_rs_sets)
 
         #  --- timeseries variables ---
-        timeseries['total_daily_cost'] = np.zeros(params['timesteps'])
-        timeseries['repair_cost'] = np.zeros(params['timesteps'])
-        timeseries['verification_cost'] = np.zeros(params['timesteps'])
+        timeseries['total_daily_cost'] = np.zeros(virtual_world['timesteps'])
+        timeseries['repair_cost'] = np.zeros(virtual_world['timesteps'])
+        timeseries['verification_cost'] = np.zeros(virtual_world['timesteps'])
         timeseries['natural_redund_tags'] = np.zeros(
-            self.parameters['timesteps'])
-        timeseries['natural_n_tags'] = np.zeros(self.parameters['timesteps'])
-        timeseries['new_leaks'] = np.zeros(self.parameters['timesteps'])
+            self.virtual_world['timesteps'])
+        timeseries['natural_n_tags'] = np.zeros(self.virtual_world['timesteps'])
+        timeseries['new_leaks'] = np.zeros(self.virtual_world['timesteps'])
         timeseries['cum_repaired_leaks'] = np.zeros(
-            self.parameters['timesteps'])
+            self.virtual_world['timesteps'])
         timeseries['daily_emissions_kg'] = np.zeros(
-            self.parameters['timesteps'])
-        timeseries['n_tags'] = np.zeros(self.parameters['timesteps'])
+            self.virtual_world['timesteps'])
+        timeseries['n_tags'] = np.zeros(self.virtual_world['timesteps'])
         timeseries['rolling_cost_estimate'] = np.zeros(
-            self.parameters['timesteps'])
+            self.virtual_world['timesteps'])
         timeseries['rolling_cost_estimate_b'] = np.zeros(
-            self.parameters['timesteps'])
+            self.virtual_world['timesteps'])
 
         # Initialize method(s) to be used; append to state
         calculate_daylight = False
-        for m_label, m_obj in params['methods'].items():
+        for m_label, m_obj in program_parameters['methods'].items():
             # Initialize method site_visit tracking
             state['site_visits'][m_label] = []
             # Update method parameters
-            m_obj_wr = params['methods'][m_label]
+            m_obj_wr = program_parameters['methods'][m_label]
             if m_obj['scheduling']['route_planning']:
                 m_obj_wr['t_bw_sites']['vals'] = est_t_bw_sites(
                     m_obj, state['sites'])
@@ -220,26 +224,35 @@ class LdarSim:
             m_obj_wr['est_site_p_day'] = est_site_p_day(m_obj, state['sites'])
             if m_obj['t_bw_sites']['file'] is not None:
                 m_obj_wr['t_bw_sites']['vals'] = np.array(pd.read_csv(
-                    params['input_directory'] / m_obj['t_bw_sites']['file']).iloc[:, 0])
+                    virtual_world['input_directory'] / m_obj['t_bw_sites']['file']).iloc[:, 0])
             if m_obj['consider_daylight']:
                 calculate_daylight = True
             try:
                 state['methods'].append(
-                    BaseCompany(state, params, m_obj, timeseries, m_label))
+                    BaseCompany(
+                        state,
+                        program_parameters,
+                        virtual_world,
+                        simulation_settings,
+                        m_obj,
+                        timeseries,
+                        m_label
+                    )
+                )
             except AttributeError:
                 print('Cannot add this method: ' + m_label)
 
         # Initialize daylight
         if calculate_daylight:
-            state['daylight'] = DaylightCalculatorAve(state, params)
+            state['daylight'] = DaylightCalculatorAve(state, virtual_world)
 
         # If working without methods (operator only), need to get the first day going
-        if not bool(params['methods']):
+        if not bool(program_parameters['methods']):
             state['t'].current_date = state['t'].current_date.replace(hour=1)
 
         # HBD this is sooooo hacky Repair time seems like its wrong
         if len(self.state['campaigns']) > 0:
-            self.parameters['methods'].update({
+            self.program_parameters['methods'].update({
                 'makeup': {
                     'reporting_delay': 0,
                     'label': 'makeup'}
@@ -279,12 +292,12 @@ class LdarSim:
                 leak['days_active'] += 1
                 self.active_leaks.append(leak)
                 # Tag by natural if leak is due for NR
-                if self.parameters['subtype_file'] is not None:
+                if self.virtual_world['subtype_file'] is not None:
                     if leak['days_active'] == self.state['subtypes']['NRd'][site['subtype_code']]:
                         update_tag(leak, None, site, self.timeseries,
                                    self.state['t'], 'natural')
                 else:
-                    if leak['days_active'] == self.parameters['NRd']:
+                    if leak['days_active'] == self.virtual_world['NRd']:
                         update_tag(leak, None, site, self.timeseries,
                                    self.state['t'], 'natural')
 
@@ -297,15 +310,15 @@ class LdarSim:
         add new leaks to the leak pool
         """
         # First, determine whether each site gets a new leak or not
-        params = self.parameters
+        virtual_world = self.virtual_world
         for site in self.state['sites']:
             new_leak = None
             sidx = site['facility_ID']
-            if params['pregenerate_leaks']:
-                new_leak = params['leak_timeseries'][sidx][self.state['t'].current_timestep]
-            elif binomial(1, self.parameters['emissions']['LPR']):
+            if virtual_world['pregenerate_leaks']:
+                new_leak = virtual_world['leak_timeseries'][sidx][self.state['t'].current_timestep]
+            elif binomial(1, self.virtual_world['emissions']['LPR']):
                 new_leak = generate_leak(
-                    params, site, self.state['t'].current_date, site['cum_leaks'])
+                    virtual_world, site, self.state['t'].current_date, site['cum_leaks'])
             if new_leak is not None:
                 site.update({'n_new_leaks': 1})
                 site['cum_leaks'] += 1
@@ -330,7 +343,8 @@ class LdarSim:
         """
         cur_date = self.state['t'].current_date
         cur_ts = self.state['t'].current_timestep
-        params = self.parameters
+        virtual_world = self.virtual_world
+        program_parameters = self.program_parameters
         timeseries = self.timeseries
         state = self.state
         for site in state['sites']:
@@ -341,9 +355,13 @@ class LdarSim:
                     # if company is natural then repair immediately
                     if lk['tagged_by_company'] == 'natural':
                         repair = True
-                    elif (cur_date - lk['date_tagged']).days \
+                    elif (
+                            (cur_date - lk['date_tagged']).days
                             >= (site['repair_delay']
-                                + params['methods'][lk['tagged_by_company']]['reporting_delay']):
+                                + program_parameters['methods']
+                                [lk['tagged_by_company']]['reporting_delay']
+                                )
+                    ):
                         repair = True
 
                 # Repair Leaks
@@ -375,12 +393,12 @@ class LdarSim:
 
                     lk['volume'] = duration*lk['rate']*86.4
                     repair_cost = int(
-                        choice(params['economics']['repair_costs']['vals']))
+                        choice(virtual_world['economics']['repair_costs']['vals']))
                     timeseries['repair_cost'][state['t'].current_timestep] += repair_cost
-                    timeseries['verification_cost'][
-                        state['t'].current_timestep] += params['economics']['verification_cost']
+                    timeseries['verification_cost'][state['t'].current_timestep] \
+                        += virtual_world['economics']['verification_cost']
                     timeseries['total_daily_cost'][state['t'].current_timestep] \
-                        += repair_cost + params['economics']['verification_cost']
+                        += repair_cost + virtual_world['economics']['verification_cost']
             # Update site leaks
             if has_repairs:
                 site['repaired_leaks'] += [lk for lk in site['active_leaks']
@@ -421,10 +439,12 @@ class LdarSim:
         """
         Compile and write output files.
         """
-        params = self.parameters
+        virtual_world = self.virtual_world
+        simulation_settings = self.simulation_settings
+        program_parameters = self.program_parameters
         leaks = []
         cur_ts = self.state['t'].current_timestep
-        if self.global_params['write_data']:
+        if self.simulation_settings['write_data']:
             # Attribute individual leak emissions to site totals
             for site in self.state['sites']:
                 for lk in site['active_leaks']:
@@ -464,7 +484,7 @@ class LdarSim:
             site_df['cum_frac_emissions'] = site_df['cum_frac_emissions'] \
                 / max(site_df['cum_frac_emissions'])
             site_df['mean_rate_kg_day'] = site_df['total_emissions_kg'] / \
-                params['timesteps']
+                virtual_world['timesteps']
             leaks_active = leak_df[leak_df.status != 'repaired'] \
                 .sort_values('rate', ascending=False)
             leaks_repaired = leak_df[leak_df.status == 'repaired'] \
@@ -488,47 +508,82 @@ class LdarSim:
 
             # Write csv files
             leak_df.to_csv(
-                params['output_directory']
-                / 'leaks_output_{}.csv'.format(params['simulation']), index=False)
+                "/".join([
+                    simulation_settings['output_directory'],
+                    program_parameters['program_name'],
+                    'leaks_output_{}.csv'.format(virtual_world['simulation'])
+                ]),
+                index=False)
+
             time_df.to_csv(
-                params['output_directory']
-                / 'timeseries_output_{}.csv'.format(params['simulation']), index=False)
+                "/".join([
+                    simulation_settings['output_directory'],
+                    program_parameters['program_name'],
+                    'timeseries_output_{}.csv'.format(virtual_world['simulation'])
+                ]),
+                index=False)
 
             site_df.to_csv(
-                params['output_directory']
-                / 'sites_output_{}.csv'.format(params['simulation']), index=False)
+                "/".join([
+                    simulation_settings['output_directory'],
+                    program_parameters['program_name'],
+                    'sites_output_{}.csv'.format(virtual_world['simulation'])
+                ]),
+                index=False)
 
             for meth, meth_vis_df in site_visits.items():
-                meth_vis_df.to_csv(params['output_directory'] /
-                                   f"site_visits_{meth}_{params['simulation']}.csv", index=False)
+                meth_vis_df.to_csv(
+                    "/".join([
+                        simulation_settings['output_directory'],
+                        program_parameters['program_name'],
+                        f"site_visits_{meth}_{virtual_world['simulation']}.csv"
+                    ]),
+                    index=False
+                )
 
             # Write metadata
-            f_name = params['output_directory'] / \
-                "metadata_{}.txt".format(params['simulation'])
+            f_name = "/".join([
+                simulation_settings['output_directory'],
+                program_parameters['program_name'],
+                "metadata_{}.txt".format(virtual_world['simulation'])
+            ])
             metadata = open(f_name, 'w')
-            metadata.write(str(params) + '\n' + str(datetime.datetime.now()))
+            metadata.write(str(virtual_world) + '\n' + str(datetime.datetime.now()))
             metadata.close()
 
         # Make plots
-        if self.global_params['make_plots']:
+        if self.simulation_settings['make_plots']:
             make_plots(
-                leak_df, time_df, site_df, params['simulation'],
-                params['output_directory'])
+                leak_df, time_df, site_df, virtual_world['simulation'],
+                "/".join([
+                    simulation_settings['output_directory'],
+                    program_parameters['program_name']
+                ])
+            )
 
         # Extract necessary information from the parameters
         wanted_c_economics = ['sale_price_natgas', 'GWP_CH4',
                               'carbon_price_tonnesCO2e', 'cost_CCUS']
-        carbon_economics = {key: value for key,
-                            value in params['economics'].items() if key in wanted_c_economics}
+        carbon_economics = {
+            key: value for key, value in virtual_world['economics'].items()
+            if key in wanted_c_economics
+        }
+
+        # Extract Metadata
         wanted_meta_cols = ['program_name', 'simulation', 'NRd', 'start_date']
-        metadata = {key: value for key, value in params.items() if key in wanted_meta_cols}
+        metadata = {key: value for key, value in virtual_world.items() if key in wanted_meta_cols}
+
+        metadata.update({key: value for key, value in program_parameters.items()
+                        if key in wanted_meta_cols})
+        metadata.update({key: value for key, value in simulation_settings.items()
+                        if key in wanted_meta_cols})
 
         sim_summary = {
             'meta': metadata,
             'leaks': leak_df,
             'timeseries': time_df,
             'sites': site_df,
-            'program_name': params['program_name'],
+            'program_name': program_parameters['program_name'],
             'p_c_economics': carbon_economics,
         }
 
