@@ -77,65 +77,64 @@ def generate_leak(program, site, start_date, leak_count, days_active=0, day_ts_b
     }
 
 
-def generate_leak_timeseries(program, site, leak_count=0):
+def generate_leak_timeseries(virtual_world, site, start_date, end_date, leak_count=0):
     """ Generate a time series of leaks for a single site
     Args:
-        program (dict): Program parameter dictionary
+        virtual_world (dict): Virtual world parameter dictionary
         site (dict): Site parameter and variable dictionary
         leak_count (integer): Number of leaks at site, used for creating id
     Returns:
         list: Timeseries of leaks at a site. None is a placeholder for days without leaks
     """
     LPR = None
-    if program['subtype_file'] is not None:
+    if virtual_world['subtype_file'] is not None:
         LPR = site['LPR']
-        NRd = site['NRd']
     else:
-        NRd = program['NRd']
-        LPR = program['emissions']['LPR']
+        LPR = virtual_world['emissions']['LPR']
     # Get leak timeseries
-    start_date = datetime(*program['start_date'])
-    n_timesteps = (datetime(*program['end_date'])-start_date).days
+    start_date = datetime(*start_date)
+    n_timesteps = (datetime(*end_date)-start_date).days
     site_timeseries = []
     for t in range(n_timesteps):
         if random.binomial(1, LPR):
             cur_dt = start_date + timedelta(days=t)
             site['cum_leaks'] += 1
             site_timeseries.append(generate_leak(
-                program, site, cur_dt, site['cum_leaks'], day_ts_began=t))
+                virtual_world, site, cur_dt, site['cum_leaks'], day_ts_began=t))
         else:
             site_timeseries.append(None)
     return site_timeseries
 
 
-def generate_initial_leaks(program, site):
+def generate_initial_leaks(virtual_world, site, start_date):
     """ Generate initial leaks at a site
     Args:
-        program (dict): Program parameter dictionary
+        virtual_world (dict): Virtual world parameters dictionary
         site (dict): Site parameter and variable dictionary
     Returns:
         list: List of leaks at a site
     """
     NRd = None
     LPR = None
-    if program['subtype_file'] is not None:
+    if virtual_world['subtype_file'] is not None:
         NRd = site['NRd']
         LPR = site['LPR']
     else:
-        NRd = program['NRd']
-        LPR = program['emissions']['LPR']
+        NRd = virtual_world['NRd']
+        LPR = virtual_world['emissions']['LPR']
 
-    if program['n_init_leaks'] is not None:
-        n_leaks = program['n_init_leaks']
+    if virtual_world['n_init_leaks'] is not None:
+        n_leaks = virtual_world['n_init_leaks']
     else:
         n_leaks = random.binomial(NRd, LPR)
 
-    if program['n_init_days'] is not None:
-        init_max_days_active = program['n_init_days']
+    if virtual_world['n_init_days'] is not None:
+        init_max_days_active = virtual_world['n_init_days']
     else:
         init_max_days_active = NRd
 
-    prog_start_date = datetime(*program['start_date'])
+    prog_start_date = datetime(*start_date)
+
     initial_site_leaks = []
     site.update({'initial_leaks': n_leaks, 'cum_leaks': n_leaks})
     leak_count = 0
@@ -144,5 +143,5 @@ def generate_initial_leaks(program, site):
         days_active = random.randint(0, high=init_max_days_active)
         leak_start_date = prog_start_date - timedelta(days=days_active)
         initial_site_leaks.append(
-            generate_leak(program, site, leak_start_date, leak_count, days_active))
+            generate_leak(virtual_world, site, leak_start_date, leak_count, days_active))
     return initial_site_leaks
