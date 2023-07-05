@@ -42,35 +42,36 @@ def ldar_sim_run(simulation):
     """
     # i = simulation['i']
     simulation = copy.deepcopy(simulation)
-    parameters = simulation['program']
-    parameters['input_directory'] = simulation['input_directory']
-    parameters['output_directory'] = simulation['output_directory'] / \
-        parameters['program_name']
-    parameters['pregenerate_leaks'] = simulation['pregenerate_leaks']
-    parameters['leak_timeseries'] = simulation['leak_timeseries']
-    parameters['initial_leaks'] = simulation['initial_leaks']
-    parameters['seed_timeseries'] = simulation['seed_timeseries']
-    parameters['sites'] = simulation['sites']
-    global_params = simulation['globals']
+    virtual_world = simulation['virtual_world']
+    program_parameters = simulation['program']
+    input_directory = simulation['input_directory']
+    output_directory = simulation['output_directory'] / \
+        program_parameters['program_name']
+    virtual_world['pregenerate_leaks'] = simulation['pregenerate_leaks']
+    virtual_world['leak_timeseries'] = simulation['leak_timeseries']
+    virtual_world['initial_leaks'] = simulation['initial_leaks']
+    virtual_world['seed_timeseries'] = simulation['seed_timeseries']
+    virtual_world['sites'] = simulation['sites']
+    simulation_settings = simulation['simulation_settings']
 
-    if not os.path.exists(parameters['output_directory']):
+    if not os.path.exists(output_directory):
         try:
-            os.makedirs(parameters['output_directory'])
+            os.makedirs(output_directory)
         except Exception:
             pass
 
-    logfile = open(parameters['output_directory'] / 'logfile.txt', 'w')
+    logfile = open(output_directory / 'logfile.txt', 'w')
     if 'print_from_simulation' not in simulation or simulation['print_from_simulation']:
         sys.stdout = stdout_redirect([sys.stdout, logfile])
     else:
         sys.stdout = stdout_redirect([logfile])
     gc.collect()
     print(simulation['opening_message'])
-    parameters['simulation'] = str(simulation['i'])
+    virtual_world['simulation'] = str(simulation['i'])
 
     # --------- Leak distributions -------------
-    if len(parameters['leak_timeseries']) < 1:
-        get_subtype_dist(parameters, parameters['input_directory'])
+    if len(virtual_world['leak_timeseries']) < 1:
+        get_subtype_dist(virtual_world, input_directory)
 
     # --------------------------------------
     # --- Initialize dynamic model state ---
@@ -78,7 +79,7 @@ def ldar_sim_run(simulation):
         't': None,
         'operator': None,  # operator gets assigned during initialization
         'methods': [],  # list of methods in action
-        'sites': parameters['sites'],   # sites in the simulation
+        'sites': virtual_world['sites'],   # sites in the simulation
         'flags': [],  # list of sites flagged for follow-up
         # 'leaks': [],  # list of all current leaks
         'tags': [],  # leaks that have been tagged for repair
@@ -105,22 +106,22 @@ def ldar_sim_run(simulation):
     # -----------------------------Run simulations----------------------------------
 
     # Initialize objects
-    if 'weather_is_hourly' in parameters and parameters['weather_is_hourly']:
-        state['weather'] = WL_h(state, parameters)
+    if 'weather_is_hourly' in virtual_world and virtual_world['weather_is_hourly']:
+        state['weather'] = WL_h(state, virtual_world, input_directory)
     else:
-        state['weather'] = WL(state, parameters)
-    state['t'] = TimeCounter(parameters)
-    parameters.update({'timesteps': state['t'].timesteps})
-    sim = LdarSim(global_params, state, parameters, timeseries)
-    start_date = datetime(*parameters['start_date'])
+        state['weather'] = WL(state, virtual_world, input_directory)
+    state['t'] = TimeCounter(simulation_settings['start_date'], simulation_settings['end_date'])
+    virtual_world.update({'timesteps': state['t'].timesteps})
+    sim = LdarSim(simulation_settings, state, program_parameters, virtual_world, timeseries)
+    start_date = datetime(*simulation_settings['start_date'])
     # Loop through timeseries
     for ts in range(state['t'].timesteps):
         state['t'].current_timestep = ts
         state['t'].current_date = start_date + timedelta(days=ts)
-        if parameters['seed_timeseries']:
-            np_rand.seed(parameters['seed_timeseries']
+        if virtual_world['seed_timeseries']:
+            np_rand.seed(virtual_world['seed_timeseries']
                          [state['t'].current_timestep])
-            rand.seed(parameters['seed_timeseries']
+            rand.seed(virtual_world['seed_timeseries']
                       [state['t'].current_timestep])
         sim.update()
 
