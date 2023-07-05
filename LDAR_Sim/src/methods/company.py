@@ -34,13 +34,23 @@ class BaseCompany:
         deploy crews, flag sites and carry out reporting.
     """
 
-    def __init__(self, state, parameters, config, timeseries, module_name):
+    def __init__(
+            self,
+            state,
+            program_parameters,
+            virtual_world,
+            simulation_settings,
+            config,
+            timeseries,
+            module_name
+    ):
         """
         Initialize a company to manage the crews (e.g. a contracting company).
 
         """
         self.name, self.state, = config['label'], state
-        self.parameters = parameters
+        self.program_parameters = program_parameters
+        self.consider_venting = virtual_world['emissions']['consider_venting']
         self.config = config
         self.timeseries = timeseries
         self.site_watchlist = {}
@@ -48,7 +58,7 @@ class BaseCompany:
         deploy_mod = import_module('methods.deployment.{}_company'.format(
             self.config['deployment_type'].lower()))
         Schedule = getattr(deploy_mod, 'Schedule')
-        self.schedule = Schedule(config, parameters, state)
+        self.schedule = Schedule(config, program_parameters, state)
         self.deployment_years, self.deployment_months = get_deployment_dates(
             config, state)
         self.deployment_days = self.state['weather'].deployment_days(
@@ -56,10 +66,10 @@ class BaseCompany:
             config=config,
             start_date=self.state['t'].start_date,
             start_work_hour=8,  # Start hour in day
-            consider_weather=parameters['consider_weather'])
+            consider_weather=virtual_world['consider_weather'])
 
         # --- init time series ---
-        n_ts = parameters['timesteps']
+        n_ts = virtual_world['timesteps']
         self.timeseries['{}_prop_sites_avail'.format(
             self.name)] = np.zeros(n_ts)
         self.timeseries['{}_cost'.format(self.name)] = np.zeros(n_ts)
@@ -113,8 +123,16 @@ class BaseCompany:
         make_crew_loc = import_module('methods.deployment.{}_company'.format(
             self.config['deployment_type'].lower()))
         make_crews = getattr(make_crew_loc, 'make_crews')
-        make_crews(self.crews, config, state, parameters,
-                   timeseries, self.deployment_days)
+        make_crews(
+            self.crews,
+            config,
+            state,
+            program_parameters,
+            virtual_world,
+            simulation_settings,
+            timeseries,
+            self.deployment_days
+        )
         for idx, cnt in enumerate(self.crews):
             self.timeseries['{}_cost'.format(self.name)][self.state['t'].current_timestep] += \
                 self.config['cost']['upfront']
@@ -258,7 +276,7 @@ class BaseCompany:
         """
         self.site_watchlist.pop(site['site']['facility_ID'], None)
         update_flag(self.config, site, self.timeseries, self.state['t'], self.state['campaigns'],
-                    self.name, self.parameters['emissions']['consider_venting'])
+                    self.name, self.consider_venting)
 
     def flag_sites(self):
         """

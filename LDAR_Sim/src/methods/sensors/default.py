@@ -65,7 +65,7 @@ def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered
                     self.state['t'],
                     self.config['label'],
                     self.id,
-                    self.parameters
+                    self.program_parameters
                 )
                 # Add these leaks to the 'tag pool'
                 if is_new_leak:
