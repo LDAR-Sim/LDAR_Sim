@@ -23,14 +23,25 @@
 from methods.crew import BaseCrew
 
 
-def make_crews(crews, config, state, parameters, timeseries, deployment_days):
+def make_crews(
+    crews,
+    config,
+    state,
+    program_parameters,
+    virtual_world,
+    simulation_settings,
+    timeseries,
+    deployment_days
+):
     """ Generate crews using BaseCrew class.
 
     Args:
         crews (list): List of crews
         config (dict): Method parameters
         state (dict): Current state of LDAR-Sim
-        parameters (dict): Program parameters
+        program_parameters (dict): Program parameters
+        virtual_world (dict): Dictionary tracking virtual world properties
+        simulation_setting (dict): setting informing simulation properties
         timeseries (dict): Timeseries
         deployment_days (list): days method can be deployed based on weather
 
@@ -54,7 +65,9 @@ def make_crews(crews, config, state, parameters, timeseries, deployment_days):
             crews.append(
                 BaseCrew(
                     state,
-                    parameters,
+                    program_parameters,
+                    virtual_world,
+                    simulation_settings,
                     config,
                     timeseries,
                     deployment_days,
@@ -65,8 +78,8 @@ def make_crews(crews, config, state, parameters, timeseries, deployment_days):
 
 class Schedule():
 
-    def __init__(self, config, parameters, state):
-        self.parameters = parameters
+    def __init__(self, config, program_parameters, state):
+        self.program_parameters = program_parameters
         self.config = config
         self.state = state
 
