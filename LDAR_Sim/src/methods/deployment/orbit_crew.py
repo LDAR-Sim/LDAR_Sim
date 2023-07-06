@@ -34,10 +34,22 @@ speedups.disable()
 
 
 class Schedule():
-    def __init__(self, id, lat, lon, state, config, parameters, deployment_days, home_bases=None):
-        self.parameters = parameters
+    def __init__(
+            self,
+            id,
+            lat,
+            lon,
+            state,
+            config,
+            virtual_world,
+            simulation_settings,
+            deployment_days,
+            home_bases=None
+    ):
         self.config = config
         self.state = state
+        self.consider_weather = virtual_world["consider_weather"]
+        self.in_dir = simulation_settings["input_directory"]
         self.deployment_days = deployment_days
         self.crew_lat = lat
         self.crew_lon = lon
@@ -47,9 +59,8 @@ class Schedule():
         self.allowed_end_time = None
 
         # extract cloud cover data
-        input_directory = self.parameters['input_directory']
-        cloud = self.parameters['weather_file']
-        Dataset = nc.Dataset(input_directory / cloud, 'r')
+        cloud = virtual_world['weather_file']
+        Dataset = nc.Dataset(self.in_dir / cloud, 'r')
         self.cloudcover = Dataset.variables['tcc'][:]
         Dataset.close()
         # obtain TLE file path
@@ -79,7 +90,7 @@ class Schedule():
             daily_site_plans = []
             for site in viewable_sites:
                 sat_dl, sat_cc = self.assess_weather(site)
-                if (sat_dl and sat_cc) or not self.parameters['consider_weather']:
+                if (sat_dl and sat_cc) or not self.consider_weather:
                     plan = self.plan_visit(site)
                     daily_site_plans.append(plan)
 
@@ -177,7 +188,7 @@ class Schedule():
             TLE file and satellite name specified in the input parameter.
         """
         # build a satellite orbit object
-        input_directory = self.parameters['input_directory']
+        input_directory = self.in_dir
         TLEs = []
         with open(input_directory / self.tlefile) as f:
             for line in f:
