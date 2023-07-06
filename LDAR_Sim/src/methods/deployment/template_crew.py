@@ -22,10 +22,22 @@
 
 class Schedule():
 
-    def __init__(self, id, lat, lon, state, config, parameters, deployment_days, home_bases=None):
-        self.parameters = parameters
+    def __init__(
+            self,
+            id,
+            lat,
+            lon,
+            state,
+            config,
+            virtual_world,
+            simulation_settings,
+            deployment_days,
+            home_bases=None
+    ):
         self.config = config
         self.state = state
+        self.consider_weather = virtual_world["consider_weather"]
+        self.in_dir = simulation_settings["input_directory"]
         self.deployment_days = deployment_days
         self.crew_lat = lat
         self.crew_lon = lon
