@@ -125,14 +125,23 @@ def generate_initial_leaks(program, site):
         NRd = program['NRd']
         LPR = program['emissions']['LPR']
 
-    n_leaks = random.binomial(NRd, LPR)
+    if program['n_init_leaks'] is not None:
+        n_leaks = program['n_init_leaks']
+    else:
+        n_leaks = random.binomial(NRd, LPR)
+
+    if program['n_init_days'] is not None:
+        pot_active = program['n_init_days']
+    else:
+        pot_active = NRd
+
     prog_start_date = datetime(*program['start_date'])
     initial_site_leaks = []
     site.update({'initial_leaks': n_leaks, 'cum_leaks': n_leaks})
     leak_count = 0
     for leak in range(n_leaks):
         leak_count += 1
-        days_active = random.randint(0, high=NRd)
+        days_active = random.randint(0, high=pot_active)
         leak_start_date = prog_start_date - timedelta(days=days_active)
         initial_site_leaks.append(
             generate_leak(program, site, leak_start_date, leak_count, days_active))

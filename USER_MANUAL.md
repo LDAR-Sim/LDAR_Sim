@@ -935,6 +935,30 @@ method_labels:
 
 **Notes of caution:** N/A
 
+### n_init_leaks
+
+**Data type:** Integer
+
+**Default input:** N/A
+
+**Description:** The number of leaks present in the system at the time of the simulation start date
+
+**Notes on acquisition:** Estimate from empirical data or use previously published value.
+
+**Notes of caution:** This will overwrite the original functionality of utilizing NRd and LPR to calculate the number of initial leaks present in the simulation.
+
+### n_init_days
+
+**Data type:** Integer
+
+**Default input:** N/A (will be set to NRd if left blank)
+
+**Description:** The number of days the initial leaks could potentially been active for before the simulation started.
+
+**Notes on acquisition:** Known assumptions based on operations.
+
+**Notes of caution:** If value is larger than NRd, the number of leaks present in the initial system could potentially be less than the indicated value.
+
 ### NRD
 
 **Data type:** Integer
