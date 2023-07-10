@@ -41,6 +41,7 @@ This document provides coding guidelines and best practices for developing exter
 - Keep lines within a reasonable length (80-120 characters).
 - Use blank lines and proper spacing to enhance readability.
 - Follow appropriate naming conventions for constants and global variables.
+- If possible use Black as a formatter.
 
 ## Documentation
 
@@ -98,7 +99,7 @@ def detect_emissions(site, covered_leaks, covered_equipment_rates, covered_site_
                                         detected by the crew
         covered_site_rate (float): Total site emissions from leaks that are observable
                                     from a crew
-        site_rate (float): Total site emissions from all leaks at the site
+        site_rate (float): Total site emissions from all leaks at the site 
         venting (float): Total site emissions from venting
         equipment_rates (list): List of equipment leak rates for each equipment group
 
@@ -116,3 +117,5 @@ def detect_emissions(site, covered_leaks, covered_equipment_rates, covered_site_
     # ...
     # Return the site report
 ```
+
+**Note:** Rates provided by LDAR-Sim are in g/s, however resulting rate should be in kg/hr. 

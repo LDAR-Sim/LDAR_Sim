@@ -44,7 +44,6 @@ def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered
     a = first MDL value
     b = second MDL value
     r = emission rate
-    W = wind speed
 
     Args:
         site (site obj): Site in which crew is working at
@@ -81,7 +80,9 @@ def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered
         # factor of 3.6 converts g/s to kg/h
         rate = covered_site_rate * 3.6
         prob_detect = 1/(1+np.exp(mdl[0]-mdl[1]*rate))
-        if rate <= (mdl[2]*3.6):
+        if prob_detect >= 1:
+            prob_detect = 1
+        if rate < (mdl[2]*3.6):
             site[missed_leaks_str] += n_leaks
             self.timeseries[missed_leaks_str][self.state['t'].current_timestep] += n_leaks
         elif np.random.binomial(1, prob_detect):
@@ -97,7 +98,9 @@ def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered
             rate = m_rate * 3.6
             prob_detect = 1 / \
                 (1+np.exp(mdl[0]-mdl[1]*rate))
-            if rate <= (mdl[2]*3.6):
+            if prob_detect >= 1:
+                prob_detect = 1
+            if rate < (mdl[2]*3.6):
                 m_rate = 0
             elif np.random.binomial(1, prob_detect):
                 found_leak = True
@@ -115,7 +118,7 @@ def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered
                 (1+np.exp(mdl[0]-mdl[1]*rate))
             if prob_detect >= 1:
                 prob_detect = 1
-            if rate <= (mdl[2]*3.6):
+            if rate < (mdl[2]*3.6):
                 site[missed_leaks_str] += 1
                 self.timeseries[missed_leaks_str][self.state['t'].current_timestep] += 1
             elif np.random.binomial(1, prob_detect):

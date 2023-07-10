@@ -52,7 +52,7 @@ if __name__ == '__main__':
 
     # Get route directory , which is parent folder of ldar_sim_main file
     # Set current working directory directory to root directory
-    root_dir = Path(os.path.dirname(os.path.realpath(__file__))).parent
+    root_dir = Path(__file__).resolve().parent.parent
     os.chdir(root_dir)
 
     src_dir = root_dir / 'src'
