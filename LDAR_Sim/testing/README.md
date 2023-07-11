@@ -24,6 +24,7 @@ Module Unique Identifiers have been outlined below:
 - out_processing: 06
 - utils: 07
 - weather: 08
+- external_sensors: 09
 
 ## Required installation
 
@@ -33,7 +34,7 @@ Before running Pytest coverage, install
     pip install pytest-cov
 ```
 
-## Code Coverage Gude
+## Code Coverage Guide
 
 Pytest-cov allows for generation coverage reports for LDAR-Sim
 
@@ -78,3 +79,9 @@ Listed below are some other options for users:
     The line coverage report can be found in html format inside the testing/coverage/line folder
 
 For more details on pytest code coverage options, reference the documentation for pytest-cov at: <https://pytest-cov.readthedocs.io/en/latest/index.html>
+
+## Pytest configuration
+
+LDAR-Sim is structured in such a away that it uses relative pathways for module imports. This can cause troubles with unit tests, where it expects the full pathways for imports. A solution to this problem is to create a pytest.ini file, that dictates the relative python paths, based on the root folder.
+
+For more details, reference the documentation for pytest configuration at: <https://docs.pytest.org/en/7.1.x/reference/reference.html#configuration-options>

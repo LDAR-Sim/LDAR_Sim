@@ -24,6 +24,7 @@ import datetime
 import json
 import multiprocessing as mp
 import os
+import sys
 import shutil
 from pathlib import Path
 
@@ -51,8 +52,13 @@ if __name__ == '__main__':
 
     # Get route directory , which is parent folder of ldar_sim_main file
     # Set current working directory directory to root directory
-    root_dir = Path(os.path.dirname(os.path.realpath(__file__))).parent
+    root_dir = Path(__file__).resolve().parent.parent
     os.chdir(root_dir)
+
+    src_dir = root_dir / 'src'
+    sys.path.insert(1, str(src_dir))
+    ext_sens_dir = root_dir / 'external_sensors'
+    sys.path.append(str(ext_sens_dir))
 
     # --- Retrieve input parameters and parse ---
     parameter_filenames = files_from_args(root_dir)
@@ -62,7 +68,8 @@ if __name__ == '__main__':
             parameter_filenames['parameter_files'])
         out_dir = get_abs_path(parameter_filenames['out_dir'])
     else:
-        sim_params = input_manager.read_and_validate_parameters(parameter_filenames)
+        sim_params = input_manager.read_and_validate_parameters(
+            parameter_filenames)
         out_dir = get_abs_path(sim_params['output_directory'])
 
     # --- Assign local variabls
@@ -91,7 +98,8 @@ if __name__ == '__main__':
     else:
         generator_dir = None
     # --- Create simulations ---
-    simulations = create_sims(sim_params, programs, generator_dir, in_dir, out_dir, input_manager)
+    simulations = create_sims(sim_params, programs,
+                              generator_dir, in_dir, out_dir, input_manager)
 
     # --- Run simulations (in parallel) --
     with mp.Pool(processes=sim_params['n_processes']) as p:
@@ -105,7 +113,8 @@ if __name__ == '__main__':
         # Create a data object...
         if has_ref & has_base:
             print("....Generating cost mitigation outputs")
-            cost_mitigation = cost_mitigation(sim_outputs, ref_program, base_program, out_dir)
+            cost_mitigation = cost_mitigation(
+                sim_outputs, ref_program, base_program, out_dir)
             reporting_data = BatchReporting(
                 out_dir, sim_params['start_date'], ref_program, base_program)
             if sim_params['n_simulations'] > 1:
@@ -115,7 +124,8 @@ if __name__ == '__main__':
                     reporting_data.batch_report()
                     reporting_data.batch_plots()
         else:
-            print('No reference or base program input...skipping batch reporting and economics.')
+            print(
+                'No reference or base program input...skipping batch reporting and economics.')
 
     # Generate output table
     print("....Exporting summary statistic tables")
