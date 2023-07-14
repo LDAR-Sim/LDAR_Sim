@@ -37,7 +37,9 @@ from testing.unit_testing.test_methods.test_crew.crew_testing_fixtures import ( 
     mock_site_for_site_level_non_FU_visit_site_testing_small_leak_fix,
     mock_state_for_site_level_non_FU_visit_site_testing_small_leak_fix,
     mock_timeseries_for_site_level_non_FU_visit_site_testing_small_leak_fix,
-    mock_results_for_site_level_non_FU_visit_site_testing_small_leak_fix
+    mock_results_for_site_level_non_FU_visit_site_testing_small_leak_fix,
+    mock_vw_for_crew_testing_1_fix,
+    mock_settings_for_crew_testing_1_fix
     )
 
 
@@ -106,7 +108,12 @@ from testing.unit_testing.test_methods.test_crew.crew_testing_fixtures import ( 
 ]
 )
 def test_053_visit_site_gives_expected_behavior(
-    mocker, test_input, expected, request
+    mocker,
+    test_input,
+    expected,
+    request,
+    mock_vw_for_crew_testing_1,
+    mock_settings_for_crew_testing_1,
 ) -> None:
     # Add src directory to the path
     sys.path.insert(1, str(Path(os.path.dirname(os.path.realpath(__file__))
@@ -114,6 +121,8 @@ def test_053_visit_site_gives_expected_behavior(
     crew = BaseCrew(
         request.getfixturevalue(test_input[2]),
         None,
+        mock_vw_for_crew_testing_1,
+        mock_settings_for_crew_testing_1,
         request.getfixturevalue(test_input[1]),
         request.getfixturevalue(test_input[3]),
         None,
