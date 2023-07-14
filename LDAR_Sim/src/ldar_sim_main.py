@@ -39,7 +39,7 @@ from out_processing.prog_table import generate as gen_prog_table
 from utils.generic_functions import check_ERA5_file
 
 opening_msg = """
-You are running LDAR-Sim version 2.0 an open sourced software (MIT) license.
+You are running LDAR-Sim version 3.0.0 an open sourced software (MIT) license.
 It is continually being developed by the University of Calgary's Intelligent
 Methane Monitoring and Management System (IM3S) Group.
 Provide any issues, comments, questions, or recommendations to the IM3S by

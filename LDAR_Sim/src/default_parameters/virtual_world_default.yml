@@ -1,4 +1,4 @@
-version: "2.0"
+version: "3.0"
 parameter_level: "virtual_world"
 weather_file: "weather_alberta.nc"
 weather_is_hourly: True # True/False
@@ -18,7 +18,6 @@ emissions:
   leak_file_use: "sample" # sample/fit
   LPR: 0.0065
   max_leak_rate: 100000.0
-  subtype_leak_dist_file: "_placeholder_str_"
   units: ["kilogram", "hour"]
 NRd: 365
 n_init_leaks: "_placeholder_int_"

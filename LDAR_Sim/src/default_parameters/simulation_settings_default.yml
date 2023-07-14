@@ -1,4 +1,4 @@
-version: "2.0"
+version: "3.0"
 parameter_level: "simulation_settings"
 input_directory: "./inputs"
 output_directory: "./outputs"
@@ -7,7 +7,6 @@ n_simulations: 2
 write_data: True # True/False
 make_plots: True # True/False
 print_from_simulations: True # True/False
-programs: []
 start_date: [2017, 1, 1]
 end_date: [2021, 12, 31]
 reference_program: P_OGI

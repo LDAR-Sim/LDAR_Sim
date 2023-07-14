@@ -238,7 +238,7 @@ To specify this, we can refer to the program by name in the program definitions 
 
 ```yaml
 test_program_1:
-    version: '2.0'
+    version: '3.0'
     parameter_level: program
     method_labels: [new_LDAR_method_1]
     methods: []
@@ -249,7 +249,7 @@ This `new_LDAR_method_1` has to be defined elsewhere in a separate parameter fil
 
 ```yaml
 new_LDAR_method_1:
-    version: '2.0'
+    version: '3.0'
     parameter_level: method
     label: new_LDAR_method_1
     .... OTHER OGI METHOD PARAMETERS ....
@@ -259,7 +259,7 @@ When the simulation is put together, the program will be assembled to look like 
 
 ```yaml
 test_program:
-  version': '2.0',
+  version': '3.0',
   parameter_level: program,
   method_names: [new_LDAR_method_1],
   methods: [
@@ -307,7 +307,7 @@ Note that programs are interpreted as a flat list of parameters that are incorpo
 
 ### Versioning of Parameter Files
 
-All parameter files must specify a version to enable mapping and reverse compatibility. This versioning is used to call code that modifies a different version of the code to run properly. In cases this is simple mapping of parameters, in other cases, this involves calculations. Refer to `input_mapper_v1.py` for a template file and discussion document on input parameter mapping. Reverse compatibility mapping only exists for v2 forwards.
+All parameter files must specify a version to enable mapping and reverse compatibility. This versioning is used to allow code to verify that a compatible version of the parameters is being used. If the parameter version is incompatible, the software will output an error message with further instructions on where to find guidance on input parameter mapping to the latest version. Refer to `input_mapper_v1.py` for a template file and discussion document on input parameter mapping from V1.0 to V2.0. Reverse compatibility mapping only exists for minor parameter versions within the same major LDAR-Sim version (For example LDAR_Sim version 3.0 is not compatible with version 2.x.x parameters).
 
 ### Notes for Developers
 
@@ -319,7 +319,7 @@ If you are developing in LDAR-Sim, please adhere to the following rules:
 
 3. All parameter files require `parameter_level` to define the position within the hierarchy.
 
-4. If adding new functionality - please set the default to be 'off' or otherwise reverse compatible with existing functionality - this allows test simulations to run properly. Keep in mind older parameter files will use this default without realizing it, and if the behaviour of LDAR-Sim changes, you must add appropriate mapping hooks to the input mapper such that upon detecting an older parameter file, parameters are set to run identical to the old model.
+4. If adding new functionality - The version change associated with the change in functionality must be a Major or Minor version change, accompanied by a software release. This allows for users to download and run the version compatible with legacy parameters if required in the future. Any parameters changed or removed must be documented in Legacy Parameters in the user manual. Developers should aim to support backwards compatibility wherever reasonable.
 
 5. Please do not modify parameters in the program during simulation - consider parameters as 'read only' throughout the simulation.
 
@@ -725,18 +725,6 @@ If enabled, the leaks will be stored locally in /inputs/generation after running
 **Notes on acquisition:** No data acquisition required.
 
 **Notes of caution:** N/A
-
-#### subtype_leak_dist_file (deprecated)
-
-**Data type:** String
-
-**Default input:** None
-
-**Description:** Name of file containing distributions for subtypes. Requires 3 or 4 columns: subtype_code, dist_type, followed by scipy defined shape parameters, followed by the scipy scale. For example if dist_type is lognormal , their will be only one shape parameter (3rd column) and the size parameter will be placed in the 4th column. Note: loc parameters are always set to zero. If this parameter is set to None, or left blank, distributions are set are set at a program level with the leak_dist_params, and leak_dist_type parameters.
-
-**Notes on acquisition:**
-
-**Notes of caution:** If True, will overwrite global leak distribution.
 
 #### units
 
@@ -1829,6 +1817,18 @@ see Global Inputs - version
 ## 8\. Legacy Inputs
 
 As LDAR-Sim continues to grow and evolve, certain parameters may need to be retired and removed from the current version of LDAR-Sim. For completeness, the documentation for these parameters will be moved to this section along with an indication of which version of LDAR-Sim they were removed in.
+
+### subtype_leak_dist_file -- Removed as of version 3.0.0
+
+**Data type:** String
+
+**Default input:** None
+
+**Description:** Name of file containing distributions for subtypes. Requires 3 or columns: subtype_code, dist_type, followed by scipy defined shape parameters, followed by the scipy scale. For example if dist_type is lognormal , their will be only one shape parameter (3rd column) and the the size parameter will be placed in the 4th column. Note: loc parameters are always set to zero. If this parameter is set to None, or left blank, distributions are set are set at a program level with the leak_dist_params, and leak_dist_type parameters.
+
+**Notes on acquisition:**
+
+**Notes of caution:** If True, will overwrite global leak distribution.
 
 ### subtype_times_file -- Removed as of Version 2.4.0
 

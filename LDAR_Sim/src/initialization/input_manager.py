@@ -122,13 +122,31 @@ class InputManager:
         :return returns the compliant parameters dictionary, and optionally mined global parameters
         """
         if 'version' not in parameters:
-            print('Warning: interpreting parameters as version 2.0 because version key was missing')
-            parameters['version'] = '2.0'
+            print('Warning: interpreting parameters as version 3.0 because version key was missing')
+            parameters['version'] = '3.0'
 
-        # address all parameter mapping, the input_mapper_v1 is available as a template
+        legacy_parameter_warning = (
+            "\nLDAR-Sim has detected an attempt to run a simulation model"
+            " with legacy parameter files. \n\n"
+            "If the goal is to reproduce previously modelled results"
+            " using the legacy parameters, please download the version"
+            " of LDAR-Sim used to produce those results.\n"
+            "Versioned releases can be found at: https://github.com/LDAR-Sim/LDAR_Sim/releases.\n\n"
+            "Otherwise, please visit: "
+            "https://github.com/LDAR-Sim/LDAR_Sim/blob/master/ParameterMigrationGuide.md"
+            " for guidance on how to update parameter files to the latest version.\n"
+            "Please rerun the model once you have successfully"
+            " migrated your parameters to the latest version. \n\n"
+            "See https://github.com/LDAR-Sim/LDAR_Sim/blob/master/changelog.md"
+            " to find a record of what has changed with LDAR-Sim\n"
+        )
+
+        if parameters['version'] != '3.0':
+            print(legacy_parameter_warning)
+            sys.exit()
+
         mined_global_parameters = {}
-        # if parameters['version'] == '1.0':
-        #     parameters, mined_global_parameters = input_mapper_v1(parameters)
+
         return (parameters, mined_global_parameters)
 
     def parse_parameters(self, new_parameters_list):
@@ -203,7 +221,8 @@ class InputManager:
 
         # Second, install the programs, checking for specified children methods
         for p_idx, program in programs.items():
-            # Find any orphaned methods that can be installed in this program
+            programs[p_idx]['methods'] = {}
+            # Install methods from the method labels into the program
             if 'method_labels' in program and program['method_labels'] is not None:
                 for method_label in program['method_labels']:
                     method_found = False
