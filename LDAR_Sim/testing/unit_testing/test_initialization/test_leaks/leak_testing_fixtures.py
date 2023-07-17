@@ -52,8 +52,8 @@ def mock_site_for_leak_test_fix() -> Dict[str, Any]:
     }
 
 
-@pytest.fixture(name="mock_site_w_leak_test")
-def mock_site_w_leak_test_fix() -> list[Dict[str, Any]]:
+@pytest.fixture(name="mock_site_return_test")
+def mock_site_return_test_fix() -> list[Dict[str, Any]]:
     return [{
         'leak_ID': 'test_0000000001',
         'facility_ID': 'test',

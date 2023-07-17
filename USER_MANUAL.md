@@ -945,7 +945,7 @@ method_labels:
 
 **Notes on acquisition:** Estimate from empirical data or use previously published value. This value can be calculated by multiplying the n_init_days by LPR.
 
-**Notes of caution:** This will overwrite the original functionality of utilizing NRd and LPR to calculate the number of initial leaks present in the simulation.Additionally, this value is will be set for all sites, and cannot be specified for individual subtypes at this given time.
+**Notes of caution:** This will overwrite the original functionality of utilizing NRd and LPR to calculate the number of initial leaks present in the simulation. Additionally, this value is will be set for all sites, and cannot be specified for individual subtypes at this given time.
 
 ### n_init_days
 
@@ -953,7 +953,7 @@ method_labels:
 
 **Default input:** N/A (will be set to NRd if left blank)
 
-**Description:** The number of days the initial leaks could potentially been active for before the simulation started.
+**Description:** The number of days the initial leaks could potentially been active for before the simulation started. Recommended to always set this value between 0 and NRd.
 
 **Notes on acquisition:** Known assumptions based on operations.
 
@@ -974,6 +974,8 @@ Can alternatively be provided in the ```subtype_file```, which will overwrite wh
 **Notes of caution:** This value is highly uncertain and likely depends on context. Sensitivity analyses should be used to explore the impact of different NRd values.
 
 The NRd value should be the same for **all** programs
+
+Additionally, NRd is recommended to be always be equal or greater than n_init_days.
 
 ### program_name
 

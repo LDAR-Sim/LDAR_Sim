@@ -98,6 +98,9 @@ def generate(sim_results, baseline_program, programs):
         sim_progs = merge(sim_stats_daily, sim_leaks_by_NRD,
                           how='left', on=["program_name", 'sim'])
     else:
+        # these columns are created by the agg_flatten function call above.
+        # future work should initialize these columns all in one location instead of changing
+        # the data strcuture mid way through the code.
         sim_progs = sim_stats_daily
         sim_progs['nat_vol_sum'] = float('nan')
         sim_progs['nat_vol_count'] = float('nan')
