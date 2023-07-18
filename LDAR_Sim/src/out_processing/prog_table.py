@@ -87,21 +87,30 @@ def generate(sim_results, baseline_program, programs):
     leaks['mit_vol_kg'] = leaks['nat_volume_kg'] - leaks['volume_kg']
     # Get responsible companies and attribute leak mitigation to them.
     leaks['init_detect_by'] = leaks['init_detect_by'].replace([None], 'active')
+    if not leaks[leaks['init_detect_by'] == 'natural'].empty:
+        sim_leaks_by_NRD = agg_flatten(leaks[leaks['init_detect_by'] == 'natural'],
+                                       ps_idx,
+                                       ['volume_kg'],
+                                       ['sum', 'count'],
+                                       prefix="nat_vol",
+                                       include_col_name=False, include_agg_name=True)
 
-    sim_leaks_by_NRD = agg_flatten(leaks[leaks['init_detect_by'] == 'natural'],
-                                   ps_idx,
-                                   ['volume_kg'],
-                                   ['sum', 'count'],
-                                   prefix="nat_vol",
-                                   include_col_name=False, include_agg_name=True)
+        sim_progs = merge(sim_stats_daily, sim_leaks_by_NRD,
+                          how='left', on=["program_name", 'sim'])
+    else:
+        # these columns are created by the agg_flatten function call above.
+        # future work should initialize these columns all in one location instead of changing
+        # the data strcuture mid way through the code.
+        sim_progs = sim_stats_daily
+        sim_progs['nat_vol_sum'] = float('nan')
+        sim_progs['nat_vol_count'] = float('nan')
+        sim_progs['emis_nat_perc'] = float('nan')
 
     sim_emis_mit = agg_flatten(leaks, ps_idx,
                                ['mit_vol_kg', 'volume_kg'],
                                agg_types=['sum'],
                                include_col_name=True, include_agg_name=True)
 
-    sim_progs = merge(sim_stats_daily, sim_leaks_by_NRD,
-                      how='left', on=["program_name", 'sim'])
     sim_progs = merge(sim_progs, sim_emis_mit, how='left',
                       on=["program_name", 'sim'])
     sim_progs = merge(sim_progs, sim_sites_count,
@@ -119,7 +128,6 @@ def generate(sim_results, baseline_program, programs):
     sim_progs['emis_nat_perc'] = sim_progs['nat_vol_sum'] / \
         sim_progs['volume_kg_sum']
     sim_progs.replace([inf, -inf], NaN, inplace=True)
-
     sim_progs = sim_progs.rename(columns={
         'cost_day_sum': 'cost', 'nat_vol_count': 'nat_leak_repair_count'})
     out_table = sim_progs[[
@@ -127,6 +135,7 @@ def generate(sim_results, baseline_program, programs):
         'mit_vol_tco2e', 'mit_vol_perc', 'cost', 'cost_mit_vol_tco2e',
         'nat_leak_repair_count', 'emis_nat_perc'
     ]]
+
     out_table = agg_flatten(out_table, ['program_name'], agg_types=['mean'],
                             include_col_name=True, include_agg_name=False)
     out_table = out_table.drop(columns=['sim'])

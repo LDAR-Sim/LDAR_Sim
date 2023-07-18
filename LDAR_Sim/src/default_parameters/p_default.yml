@@ -24,6 +24,8 @@ emissions:
   subtype_leak_dist_file: "_placeholder_str_"
   units: ["kilogram", "hour"]
 NRd: 365
+n_init_leaks: "_placeholder_int_"
+n_init_days: "_placeholder_int_"
 economics:
   carbon_price_tonnesCO2e: 40.0
   cost_CCUS: 20.0
