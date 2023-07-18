@@ -126,6 +126,8 @@ programs:
           wind:
             - 0.0
             - 10.0
+    n_init_days: null
+    n_init_leaks: null
     parameter_level: program
     program_name: P_OGI
     repair_delay:
@@ -330,6 +332,8 @@ programs:
           wind:
             - 0.0
             - 10.0
+    n_init_days: null
+    n_init_leaks: null
     parameter_level: program
     program_name: P_air
     repair_delay:
@@ -379,6 +383,8 @@ programs:
     infrastructure_file: facilities_Perm.csv
     method_labels: []
     methods: {}
+    n_init_days: null
+    n_init_leaks: null
     parameter_level: program
     program_name: P_none
     repair_delay:
