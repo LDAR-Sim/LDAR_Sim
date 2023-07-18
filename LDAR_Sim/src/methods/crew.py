@@ -86,10 +86,12 @@ class BaseCrew:
                 if site_plan['remaining_mins'] == 0:
                     # Only record and fix leaks on the last day of work if theres rollover
                     self.visit_site(site_plan['site'])
+                    # Update the cost per site once the site is done surveying
+                    self.daily_cost += self.config['cost']['per_site']
                 self.worked_today = True
                 # NOTE Mobile LDAR_mins also includes travel to site time
-                self.state['t'].current_date += timedelta(minutes=int(site_plan['LDAR_mins']))
-                self.daily_cost += self.config['cost']['per_site']
+                self.state['t'].current_date += timedelta(
+                    minutes=int(site_plan['LDAR_mins']))
                 if self.config['deployment_type'] == 'mobile':
                     daily_LDAR_time += site_plan['LDAR_mins_onsite']
                     daily_travel_time += site_plan['travel_to_mins']
@@ -171,7 +173,7 @@ class BaseCrew:
                 if np.random.binomial(1, self.config['coverage']['temporal']):
                     covered_leaks.append(leak)
                     covered_site_rate += leak['rate']
-                    covered_equipment_rates[leak['equipment_group']-1] += leak['rate']
+                    covered_equipment_rates[leak['equipment_group'] - 1] += leak['rate']
             site_rate += leak['rate']
             equipment_rates[leak['equipment_group']-1] += leak['rate']
             # Get the type of sensor, and call the the detect emissions function for sensor
@@ -187,7 +189,7 @@ class BaseCrew:
             covered_site_rate += venting
             site_rate += venting
             for rate in range(len(covered_equipment_rates)):
-                covered_equipment_rates[rate] += venting/int(site['equipment_groups'])
+                covered_equipment_rates[rate] += venting / int(site['equipment_groups'])
                 equipment_rates[rate] += venting/int(site['equipment_groups'])
         # Import module. If none is specified use method.sensors.{method_type}
         if self.config['sensor']['mod_loc'] is None:
