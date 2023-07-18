@@ -128,16 +128,6 @@ def generate_sites(program, in_dir, pregen_leaks):
     # even if n_samples is None, the sample function is still used to shuffle
     sites = random.sample(sites, n_samples)
 
-    # Get subtype Times
-    if program['subtype_times_file'] is not None:
-        subtypes_times_f = pd.read_csv(
-            in_dir / program['subtype_times_file'],
-            index_col='subtype_code')
-        subtypes_times = subtypes_times_f.to_dict('index')
-        for site in sites:
-            subtype_time = subtypes_times[site['subtype_code']]
-            site.update(subtype_time)
-
     # Get leaks from file
     if program['emissions']['leak_file'] is not None:
         program['emissions']['empirical_leaks'] = np.array(

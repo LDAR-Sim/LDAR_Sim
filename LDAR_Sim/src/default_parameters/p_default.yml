@@ -7,7 +7,6 @@ weather_file: "weather_alberta.nc"
 weather_is_hourly: True # True/False
 infrastructure_file: "facilities_alberta.csv"
 site_samples: 500
-subtype_times_file: "_placeholder_str_"
 subtype_file: "_placeholder_str_"
 consider_weather: False # True/False
 repair_delay:

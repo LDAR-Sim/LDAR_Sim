@@ -80,14 +80,7 @@ class LdarSim:
                 state['sites'] = random.sample(
                     state['sites'],
                     params['site_samples'])
-            if params['subtype_times_file'] is not None:
-                subtype_times_file = pd.read_csv(
-                    params['input_directory'] / params['subtype_times_file'])
-                cols_to_add = subtype_times_file.columns[1:].tolist()
-                for col in cols_to_add:
-                    for site in state['sites']:
-                        site[col] = subtype_times_file.loc[subtype_times_file['subtype_code'] ==
-                                                           int(site['subtype_code']), col].iloc[0]
+
             # Shuffle all the entries to randomize order for identical 't_Since_last_LDAR' values
             random.shuffle(state['sites'])
 
