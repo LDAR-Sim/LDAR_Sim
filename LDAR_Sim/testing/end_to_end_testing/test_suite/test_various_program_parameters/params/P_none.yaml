@@ -1,0 +1,25 @@
+program_name: P_none
+parameter_level: program
+version: "2.0"
+site_samples: 50
+method_labels: []
+emissions:
+  consider_venting: False
+  LPR: 0.0065
+  max_leak_rate: 10
+  leak_file: "leak_file.csv"
+  leak_file_use: "sample" # sample/fit
+infrastructure_file: "facilities_Perm.csv"
+NRd: 182
+weather_file: "ERA5_2017_2019_Perm.nc"
+weather_is_hourly: True
+consider_weather: True
+economics:
+  carbon_price_tonnesCO2e: 80.0
+  cost_CCUS: 40.0
+  GWP_CH4: 56.0
+  sale_price_natgas: 6.0
+  repair_costs:
+    vals: [400]
+    file: "_placeholder_str_"
+  verification_cost: 100
