@@ -1,0 +1,952 @@
+site_vis_date,site_visited,site_subtype_code,leaks_at_site,site_true_rate,site_measured_rate,site_vent_rate,found_leak,crew_ID
+2017-01-06,855,311,"[{'leak_ID': '855_0000000001', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 1, 6, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-01-06,1807,311,"[{'leak_ID': '1807_0000000001', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 1, 6, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1807_0000000002', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 1, 6, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2017-01-06,68,311,[],0,0.0,0,False,1
+2017-01-12,133,311,"[{'leak_ID': '133_0000000001', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 1, 12, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-01-12,2190,311,"[{'leak_ID': '2190_0000000001', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 1, 12, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-01-12,1805,311,"[{'leak_ID': '1805_0000000001', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 1, 12, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1805_0000000002', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 1, 12, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",180000,180000.0,0,True,1
+2017-01-13,1461,311,"[{'leak_ID': '1461_0000000001', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 1, 13, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-01-13,1880,311,"[{'leak_ID': '1880_0000000001', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 1, 13, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1880_0000000002', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 1, 13, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1880_0000000003', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 1, 13, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90018,90018.0,0,True,1
+2017-01-13,2260,311,[],0,0.0,0,False,1
+2017-01-14,209,311,"[{'leak_ID': '209_0000000001', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 1, 14, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '209_0000000002', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 1, 14, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2017-01-17,974,311,"[{'leak_ID': '974_0000000001', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 1, 17, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '974_0000000002', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 1, 17, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2017-01-18,1072,311,"[{'leak_ID': '1072_0000000001', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 1, 18, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-01-18,1417,311,[],0,0.0,0,False,1
+2017-01-18,2338,311,"[{'leak_ID': '2338_0000000001', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 1, 18, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-01-21,1764,311,[],0,0.0,0,False,1
+2017-01-21,1655,311,[],0,0.0,0,False,1
+2017-01-21,1217,311,"[{'leak_ID': '1217_0000000001', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 1, 21, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-01-22,43,311,[],0,0.0,0,False,1
+2017-01-27,1202,311,[],0,0.0,0,False,1
+2017-01-27,972,311,[],0,0.0,0,False,1
+2017-02-03,1849,311,[],0,0.0,0,False,1
+2017-02-04,1999,311,"[{'leak_ID': '1999_0000000001', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 2, 4, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1999_0000000002', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 2, 4, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2017-02-04,1004,311,"[{'leak_ID': '1004_0000000001', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 2, 4, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-02-04,1947,311,[],0,0.0,0,False,1
+2017-02-05,610,311,"[{'leak_ID': '610_0000000001', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 2, 5, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '610_0000000002', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 2, 5, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2017-02-05,1076,311,"[{'leak_ID': '1076_0000000001', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 2, 5, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-02-05,214,311,"[{'leak_ID': '214_0000000001', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 2, 5, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-02-06,1370,311,"[{'leak_ID': '1370_0000000001', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 2, 6, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-02-13,424,311,"[{'leak_ID': '424_0000000002', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 2, 13, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-02-13,246,311,"[{'leak_ID': '246_0000000001', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 2, 13, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-02-13,255,311,"[{'leak_ID': '255_0000000001', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 2, 13, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-02-14,934,311,[],0,0.0,0,False,1
+2017-02-14,1779,311,"[{'leak_ID': '1779_0000000001', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 2, 14, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1779_0000000002', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 2, 14, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1779_0000000003', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 2, 14, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1779_0000000004', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 2, 14, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1779_0000000005', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 2, 14, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90036,90036.0,0,True,1
+2017-02-14,2417,311,[],0,0.0,0,False,1
+2017-02-19,1473,311,"[{'leak_ID': '1473_0000000002', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 2, 19, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-02-19,615,311,[],0,0.0,0,False,1
+2017-02-19,1497,311,"[{'leak_ID': '1497_0000000002', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 2, 19, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-02-20,1859,311,"[{'leak_ID': '1859_0000000001', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 2, 20, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-02-20,1784,311,[],0,0.0,0,False,1
+2017-02-20,1248,311,"[{'leak_ID': '1248_0000000001', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 2, 20, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-02-26,2277,311,"[{'leak_ID': '2277_0000000001', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 2, 26, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-02-27,1376,311,[],0,0.0,0,False,1
+2017-02-27,1619,311,[],0,0.0,0,False,1
+2017-02-27,2232,311,"[{'leak_ID': '2232_0000000001', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 2, 27, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '2232_0000000002', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 2, 27, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2017-02-28,1355,311,"[{'leak_ID': '1355_0000000001', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 2, 28, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-02-28,1403,311,"[{'leak_ID': '1403_0000000001', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 2, 28, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-02-28,562,311,"[{'leak_ID': '562_0000000001', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 2, 28, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '562_0000000002', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 2, 28, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '562_0000000003', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 2, 28, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '562_0000000004', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 2, 28, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",36,36.0,0,True,1
+2017-03-04,505,311,"[{'leak_ID': '505_0000000001', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 3, 4, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-03-04,1206,311,[],0,0.0,0,False,1
+2017-03-04,1488,311,"[{'leak_ID': '1488_0000000001', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 3, 4, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-04-09,855,311,[],0,0.0,0,False,1
+2017-04-09,1807,311,"[{'leak_ID': '1807_0000000003', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 4, 9, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1807_0000000004', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 4, 9, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2017-04-09,68,311,"[{'leak_ID': '68_0000000001', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 4, 9, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '68_0000000002', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 4, 9, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",180000,180000.0,0,True,1
+2017-04-13,133,311,"[{'leak_ID': '133_0000000002', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 4, 13, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '133_0000000003', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 4, 13, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2017-04-14,2190,311,[],0,0.0,0,False,1
+2017-04-14,1805,311,[],0,0.0,0,False,1
+2017-04-14,1461,311,"[{'leak_ID': '1461_0000000002', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 4, 14, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-04-15,1880,311,[],0,0.0,0,False,1
+2017-04-15,2260,311,"[{'leak_ID': '2260_0000000002', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 4, 15, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-04-15,209,311,"[{'leak_ID': '209_0000000003', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 4, 15, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-04-18,974,311,"[{'leak_ID': '974_0000000003', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 4, 18, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-04-19,1072,311,[],0,0.0,0,False,1
+2017-04-19,1417,311,[],0,0.0,0,False,1
+2017-04-19,2338,311,"[{'leak_ID': '2338_0000000002', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 4, 19, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-04-22,1764,311,"[{'leak_ID': '1764_0000000001', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 4, 22, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-04-22,1655,311,[],0,0.0,0,False,1
+2017-04-22,1217,311,[],0,0.0,0,False,1
+2017-04-26,43,311,"[{'leak_ID': '43_0000000001', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 4, 26, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-04-29,1202,311,[],0,0.0,0,False,1
+2017-04-29,972,311,"[{'leak_ID': '972_0000000001', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 4, 29, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-05-08,1849,311,"[{'leak_ID': '1849_0000000002', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 5, 8, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1849_0000000003', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 5, 8, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1849_0000000004', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 5, 8, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90018,90018.0,0,True,1
+2017-05-09,1999,311,"[{'leak_ID': '1999_0000000003', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 5, 9, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1999_0000000004', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 5, 9, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2017-05-09,1004,311,[],0,0.0,0,False,1
+2017-05-09,1947,311,"[{'leak_ID': '1947_0000000001', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 5, 9, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1947_0000000002', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 5, 9, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2017-05-10,610,311,"[{'leak_ID': '610_0000000003', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 5, 10, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-05-10,1076,311,[],0,0.0,0,False,1
+2017-05-10,214,311,[],0,0.0,0,False,1
+2017-05-16,1370,311,[],0,0.0,0,False,1
+2017-05-16,424,311,"[{'leak_ID': '424_0000000003', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 5, 16, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-05-16,246,311,"[{'leak_ID': '246_0000000002', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 5, 16, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-05-18,255,311,[],0,0.0,0,False,1
+2017-05-18,934,311,[],0,0.0,0,False,1
+2017-05-18,1779,311,"[{'leak_ID': '1779_0000000006', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 5, 18, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-05-19,2417,311,[],0,0.0,0,False,1
+2017-05-20,1473,311,"[{'leak_ID': '1473_0000000003', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 5, 20, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-05-22,615,311,[],0,0.0,0,False,1
+2017-05-22,1497,311,[],0,0.0,0,False,1
+2017-05-22,1859,311,[],0,0.0,0,False,1
+2017-05-23,1784,311,[],0,0.0,0,False,1
+2017-05-26,1248,311,"[{'leak_ID': '1248_0000000002', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 5, 26, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-05-26,2277,311,"[{'leak_ID': '2277_0000000002', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 5, 26, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-05-27,1376,311,[],0,0.0,0,False,1
+2017-05-27,1619,311,[],0,0.0,0,False,1
+2017-05-27,2232,311,"[{'leak_ID': '2232_0000000003', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 5, 27, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-05-28,1355,311,"[{'leak_ID': '1355_0000000002', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 5, 28, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-05-28,1403,311,"[{'leak_ID': '1403_0000000002', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 5, 28, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-05-28,562,311,[],0,0.0,0,False,1
+2017-05-29,505,311,"[{'leak_ID': '505_0000000002', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 5, 29, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '505_0000000003', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 5, 29, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2017-05-30,1206,311,[],0,0.0,0,False,1
+2017-05-31,1488,311,[],0,0.0,0,False,1
+2017-07-09,855,311,[],0,0.0,0,False,1
+2017-07-09,1807,311,"[{'leak_ID': '1807_0000000005', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 7, 9, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-07-09,68,311,"[{'leak_ID': '68_0000000003', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 7, 9, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-07-13,133,311,"[{'leak_ID': '133_0000000004', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 7, 13, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '133_0000000005', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 7, 13, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2017-07-14,2190,311,[],0,0.0,0,False,1
+2017-07-14,1805,311,[],0,0.0,0,False,1
+2017-07-14,1461,311,[],0,0.0,0,False,1
+2017-07-16,1880,311,[],0,0.0,0,False,1
+2017-07-16,2260,311,"[{'leak_ID': '2260_0000000003', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 7, 16, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-07-16,209,311,"[{'leak_ID': '209_0000000004', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 7, 16, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-07-18,974,311,"[{'leak_ID': '974_0000000004', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 7, 18, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '974_0000000005', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 7, 18, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2017-07-19,1072,311,[],0,0.0,0,False,1
+2017-07-19,1417,311,[],0,0.0,0,False,1
+2017-07-19,2338,311,"[{'leak_ID': '2338_0000000003', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 7, 19, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-07-22,1764,311,"[{'leak_ID': '1764_0000000002', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 7, 22, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-07-22,1655,311,[],0,0.0,0,False,1
+2017-07-23,1217,311,"[{'leak_ID': '1217_0000000002', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 7, 23, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-07-27,43,311,"[{'leak_ID': '43_0000000002', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 7, 27, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-07-30,1202,311,"[{'leak_ID': '1202_0000000002', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 7, 30, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-07-30,972,311,"[{'leak_ID': '972_0000000002', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 7, 30, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-08-08,1849,311,"[{'leak_ID': '1849_0000000005', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 8, 8, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-08-08,1999,311,[],0,0.0,0,False,1
+2017-08-08,1004,311,"[{'leak_ID': '1004_0000000002', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 8, 8, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-08-09,1947,311,"[{'leak_ID': '1947_0000000003', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 8, 9, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-08-09,610,311,[],0,0.0,0,False,1
+2017-08-09,1076,311,"[{'leak_ID': '1076_0000000002', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 8, 9, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-08-10,214,311,[],0,0.0,0,False,1
+2017-08-15,1370,311,"[{'leak_ID': '1370_0000000002', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 8, 15, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-08-15,424,311,[],0,0.0,0,False,1
+2017-08-15,246,311,"[{'leak_ID': '246_0000000003', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 8, 15, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-08-17,255,311,[],0,0.0,0,False,1
+2017-08-17,934,311,[],0,0.0,0,False,1
+2017-08-17,1779,311,[],0,0.0,0,False,1
+2017-08-18,2417,311,[],0,0.0,0,False,1
+2017-08-18,1473,311,[],0,0.0,0,False,1
+2017-08-18,615,311,"[{'leak_ID': '615_0000000001', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 8, 18, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '615_0000000002', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 8, 18, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '615_0000000003', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 8, 18, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90018,90018.0,0,True,1
+2017-08-19,1497,311,"[{'leak_ID': '1497_0000000003', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 8, 19, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-08-20,1859,311,[],0,0.0,0,False,1
+2017-08-20,1784,311,[],0,0.0,0,False,1
+2017-08-20,1248,311,"[{'leak_ID': '1248_0000000003', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 8, 20, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-08-22,2277,311,[],0,0.0,0,False,1
+2017-08-22,1376,311,"[{'leak_ID': '1376_0000000003', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 8, 22, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-08-23,1619,311,"[{'leak_ID': '1619_0000000001', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 8, 23, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1619_0000000002', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 8, 23, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2017-08-23,2232,311,[],0,0.0,0,False,1
+2017-08-23,1355,311,[],0,0.0,0,False,1
+2017-08-24,1403,311,[],0,0.0,0,False,1
+2017-08-24,562,311,[],0,0.0,0,False,1
+2017-08-24,505,311,[],0,0.0,0,False,1
+2017-08-25,1206,311,[],0,0.0,0,False,1
+2017-08-26,1488,311,[],0,0.0,0,False,1
+2017-10-14,855,311,"[{'leak_ID': '855_0000000002', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 10, 14, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-10-14,1807,311,[],0,0.0,0,False,1
+2017-10-20,68,311,"[{'leak_ID': '68_0000000004', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 10, 20, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '68_0000000005', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 10, 20, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2017-10-20,133,311,[],0,0.0,0,False,1
+2017-10-20,2190,311,"[{'leak_ID': '2190_0000000002', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 10, 20, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-10-21,1805,311,"[{'leak_ID': '1805_0000000003', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 10, 21, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-10-21,1461,311,[],0,0.0,0,False,1
+2017-10-21,1880,311,[],0,0.0,0,False,1
+2017-10-27,2260,311,[],0,0.0,0,False,1
+2017-10-31,209,311,[],0,0.0,0,False,1
+2017-10-31,974,311,[],0,0.0,0,False,1
+2017-10-31,1072,311,"[{'leak_ID': '1072_0000000002', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 10, 31, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-11-03,1417,311,[],0,0.0,0,False,1
+2017-11-04,2338,311,[],0,0.0,0,False,1
+2017-11-04,1764,311,[],0,0.0,0,False,1
+2017-11-04,1655,311,[],0,0.0,0,False,1
+2017-11-07,1217,311,[],0,0.0,0,False,1
+2017-11-07,43,311,"[{'leak_ID': '43_0000000003', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 11, 7, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-11-07,1202,311,[],0,0.0,0,False,1
+2017-11-08,972,311,"[{'leak_ID': '972_0000000003', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 11, 8, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-11-10,1849,311,[],0,0.0,0,False,1
+2017-11-10,1999,311,[],0,0.0,0,False,1
+2017-11-10,1004,311,[],0,0.0,0,False,1
+2017-11-11,1947,311,[],0,0.0,0,False,1
+2017-11-11,610,311,[],0,0.0,0,False,1
+2017-11-11,1076,311,[],0,0.0,0,False,1
+2017-11-12,214,311,[],0,0.0,0,False,1
+2017-11-14,1370,311,[],0,0.0,0,False,1
+2017-11-14,424,311,"[{'leak_ID': '424_0000000004', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 11, 14, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-11-14,246,311,[],0,0.0,0,False,1
+2017-11-16,255,311,"[{'leak_ID': '255_0000000002', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 11, 16, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '255_0000000003', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 11, 16, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2017-11-16,934,311,"[{'leak_ID': '934_0000000002', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 11, 16, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '934_0000000003', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 11, 16, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2017-11-16,1779,311,[],0,0.0,0,False,1
+2017-11-27,2417,311,[],0,0.0,0,False,1
+2017-12-01,1473,311,[],0,0.0,0,False,1
+2017-12-01,615,311,[],0,0.0,0,False,1
+2017-12-03,1497,311,[],0,0.0,0,False,1
+2017-12-03,1859,311,[],0,0.0,0,False,1
+2017-12-03,1784,311,[],0,0.0,0,False,1
+2017-12-07,1248,311,"[{'leak_ID': '1248_0000000004', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 12, 7, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1248_0000000005', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 12, 7, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2017-12-07,2277,311,"[{'leak_ID': '2277_0000000003', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 12, 7, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-12-07,1376,311,[],0,0.0,0,False,1
+2017-12-16,1619,311,"[{'leak_ID': '1619_0000000003', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 12, 16, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1619_0000000004', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 12, 16, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",180000,180000.0,0,True,1
+2017-12-16,2232,311,"[{'leak_ID': '2232_0000000004', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 12, 16, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-12-16,1355,311,[],0,0.0,0,False,1
+2017-12-17,1403,311,[],0,0.0,0,False,1
+2017-12-17,562,311,"[{'leak_ID': '562_0000000005', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 12, 17, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-12-17,505,311,"[{'leak_ID': '505_0000000004', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 12, 17, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '505_0000000005', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2017, 12, 17, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2017-12-19,1206,311,"[{'leak_ID': '1206_0000000003', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 12, 19, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-12-19,1488,311,[],0,0.0,0,False,1
+2018-01-21,855,311,"[{'leak_ID': '855_0000000003', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2018, 1, 21, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2018-01-21,1807,311,"[{'leak_ID': '1807_0000000006', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 1, 21, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1807_0000000007', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 1, 21, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2018-01-21,68,311,[],0,0.0,0,False,1
+2018-01-25,133,311,"[{'leak_ID': '133_0000000006', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 1, 25, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-01-26,2190,311,[],0,0.0,0,False,1
+2018-01-26,1805,311,[],0,0.0,0,False,1
+2018-01-26,1461,311,"[{'leak_ID': '1461_0000000003', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 1, 26, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1461_0000000004', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2018, 1, 26, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2018-02-06,1880,311,"[{'leak_ID': '1880_0000000004', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 2, 6, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-02-06,2260,311,"[{'leak_ID': '2260_0000000004', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 2, 6, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-02-06,209,311,[],0,0.0,0,False,1
+2018-02-10,974,311,[],0,0.0,0,False,1
+2018-02-10,1072,311,"[{'leak_ID': '1072_0000000003', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2018, 2, 10, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2018-02-10,1417,311,[],0,0.0,0,False,1
+2018-02-11,2338,311,"[{'leak_ID': '2338_0000000004', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 2, 11, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-02-11,1764,311,"[{'leak_ID': '1764_0000000003', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2018, 2, 11, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1764_0000000004', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2018, 2, 11, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1764_0000000005', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 2, 11, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",180009,180009.0,0,True,1
+2018-02-11,1655,311,"[{'leak_ID': '1655_0000000001', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 2, 11, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-02-13,1217,311,[],0,0.0,0,False,1
+2018-02-13,43,311,"[{'leak_ID': '43_0000000004', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2018, 2, 13, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2018-02-13,1202,311,[],0,0.0,0,False,1
+2018-02-14,972,311,[],0,0.0,0,False,1
+2018-02-14,1849,311,"[{'leak_ID': '1849_0000000006', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 2, 14, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-02-14,1999,311,[],0,0.0,0,False,1
+2018-02-15,1004,311,[],0,0.0,0,False,1
+2018-02-15,1947,311,"[{'leak_ID': '1947_0000000004', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 2, 15, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-02-15,610,311,"[{'leak_ID': '610_0000000004', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2018, 2, 15, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2018-02-16,1076,311,[],0,0.0,0,False,1
+2018-02-16,214,311,"[{'leak_ID': '214_0000000002', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 2, 16, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-02-16,1370,311,[],0,0.0,0,False,1
+2018-02-18,424,311,[],0,0.0,0,False,1
+2018-02-18,246,311,"[{'leak_ID': '246_0000000004', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 2, 18, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '246_0000000005', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 2, 18, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2018-02-18,255,311,"[{'leak_ID': '255_0000000004', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 2, 18, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '255_0000000005', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 2, 18, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2018-02-19,934,311,"[{'leak_ID': '934_0000000004', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 2, 19, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-02-19,1779,311,[],0,0.0,0,False,1
+2018-02-19,2417,311,[],0,0.0,0,False,1
+2018-02-20,1473,311,"[{'leak_ID': '1473_0000000004', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 2, 20, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-02-20,615,311,"[{'leak_ID': '615_0000000004', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 2, 20, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-02-20,1497,311,"[{'leak_ID': '1497_0000000004', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 2, 20, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-02-22,1859,311,"[{'leak_ID': '1859_0000000002', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2018, 2, 22, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2018-02-22,1784,311,[],0,0.0,0,False,1
+2018-02-22,1248,311,[],0,0.0,0,False,1
+2018-02-23,2277,311,"[{'leak_ID': '2277_0000000004', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 2, 23, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '2277_0000000005', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 2, 23, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2018-02-23,1376,311,"[{'leak_ID': '1376_0000000004', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2018, 2, 23, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2018-02-23,1619,311,"[{'leak_ID': '1619_0000000005', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 2, 23, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-02-24,2232,311,"[{'leak_ID': '2232_0000000005', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 2, 24, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '2232_0000000006', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 2, 24, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2018-02-24,1355,311,"[{'leak_ID': '1355_0000000003', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 2, 24, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-02-24,1403,311,[],0,0.0,0,False,1
+2018-02-25,562,311,"[{'leak_ID': '562_0000000006', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 2, 25, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-02-25,505,311,"[{'leak_ID': '505_0000000006', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2018, 2, 25, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '505_0000000007', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 2, 25, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2018-02-27,1206,311,[],0,0.0,0,False,1
+2018-02-27,1488,311,[],0,0.0,0,False,1
+2018-04-22,855,311,"[{'leak_ID': '855_0000000004', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 4, 22, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-04-22,1807,311,[],0,0.0,0,False,1
+2018-04-25,68,311,[],0,0.0,0,False,1
+2018-04-27,133,311,[],0,0.0,0,False,1
+2018-04-30,2190,311,"[{'leak_ID': '2190_0000000003', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 4, 30, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '2190_0000000004', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2018, 4, 30, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2018-04-30,1805,311,"[{'leak_ID': '1805_0000000004', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 4, 30, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1805_0000000005', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2018, 4, 30, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2018-04-30,1461,311,[],0,0.0,0,False,1
+2018-05-13,1880,311,[],0,0.0,0,False,1
+2018-05-13,2260,311,[],0,0.0,0,False,1
+2018-05-13,209,311,"[{'leak_ID': '209_0000000005', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2018, 5, 13, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2018-05-14,974,311,[],0,0.0,0,False,1
+2018-05-14,1072,311,[],0,0.0,0,False,1
+2018-05-14,1417,311,"[{'leak_ID': '1417_0000000001', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2018, 5, 14, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2018-05-15,2338,311,[],0,0.0,0,False,1
+2018-05-15,1764,311,[],0,0.0,0,False,1
+2018-05-15,1655,311,"[{'leak_ID': '1655_0000000002', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 5, 15, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-05-17,1217,311,"[{'leak_ID': '1217_0000000003', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2018, 5, 17, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2018-05-17,43,311,[],0,0.0,0,False,1
+2018-05-17,1202,311,"[{'leak_ID': '1202_0000000003', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 5, 17, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-05-18,972,311,"[{'leak_ID': '972_0000000004', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 5, 18, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-05-21,1849,311,"[{'leak_ID': '1849_0000000007', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 5, 21, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1849_0000000008', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 5, 21, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2018-05-21,1999,311,[],0,0.0,0,False,1
+2018-05-21,1004,311,[],0,0.0,0,False,1
+2018-05-22,1947,311,"[{'leak_ID': '1947_0000000005', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 5, 22, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-05-22,610,311,"[{'leak_ID': '610_0000000005', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2018, 5, 22, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '610_0000000006', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 5, 22, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2018-05-22,1076,311,"[{'leak_ID': '1076_0000000003', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2018, 5, 22, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2018-05-23,214,311,"[{'leak_ID': '214_0000000003', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 5, 23, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-05-23,1370,311,[],0,0.0,0,False,1
+2018-05-23,424,311,"[{'leak_ID': '424_0000000005', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 5, 23, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-05-24,246,311,[],0,0.0,0,False,1
+2018-05-24,255,311,"[{'leak_ID': '255_0000000006', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2018, 5, 24, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2018-05-24,934,311,"[{'leak_ID': '934_0000000005', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 5, 24, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-05-26,1779,311,[],0,0.0,0,False,1
+2018-05-26,2417,311,"[{'leak_ID': '2417_0000000001', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 5, 26, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '2417_0000000002', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2018, 5, 26, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2018-05-26,1473,311,[],0,0.0,0,False,1
+2018-05-31,615,311,[],0,0.0,0,False,1
+2018-05-31,1497,311,"[{'leak_ID': '1497_0000000005', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 5, 31, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-05-31,1859,311,[],0,0.0,0,False,1
+2018-06-04,1784,311,[],0,0.0,0,False,1
+2018-06-04,1248,311,"[{'leak_ID': '1248_0000000006', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 6, 4, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-06-04,2277,311,"[{'leak_ID': '2277_0000000006', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 6, 4, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '2277_0000000007', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 6, 4, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2018-06-05,1376,311,"[{'leak_ID': '1376_0000000005', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2018, 6, 5, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1376_0000000006', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 6, 5, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2018-06-06,1619,311,[],0,0.0,0,False,1
+2018-06-06,2232,311,"[{'leak_ID': '2232_0000000007', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2018, 6, 6, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2018-06-06,1355,311,[],0,0.0,0,False,1
+2018-06-07,1403,311,"[{'leak_ID': '1403_0000000003', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 6, 7, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-06-07,562,311,[],0,0.0,0,False,1
+2018-06-07,505,311,"[{'leak_ID': '505_0000000008', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 6, 7, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '505_0000000009', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 6, 7, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2018-06-08,1206,311,[],0,0.0,0,False,1
+2018-06-08,1488,311,[],0,0.0,0,False,1
+2018-07-26,855,311,[],0,0.0,0,False,1
+2018-07-26,1807,311,[],0,0.0,0,False,1
+2018-07-26,68,311,"[{'leak_ID': '68_0000000006', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2018, 7, 26, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2018-07-30,133,311,"[{'leak_ID': '133_0000000007', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 7, 30, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-07-30,2190,311,"[{'leak_ID': '2190_0000000005', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 7, 30, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '2190_0000000006', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 7, 30, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2018-07-30,1805,311,"[{'leak_ID': '1805_0000000006', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 7, 30, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-07-31,1461,311,[],0,0.0,0,False,1
+2018-08-12,1880,311,[],0,0.0,0,False,1
+2018-08-12,2260,311,[],0,0.0,0,False,1
+2018-08-14,209,311,"[{'leak_ID': '209_0000000006', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 8, 14, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-08-14,974,311,[],0,0.0,0,False,1
+2018-08-14,1072,311,[],0,0.0,0,False,1
+2018-08-15,1417,311,[],0,0.0,0,False,1
+2018-08-15,2338,311,"[{'leak_ID': '2338_0000000005', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 8, 15, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-08-15,1764,311,"[{'leak_ID': '1764_0000000006', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 8, 15, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-08-16,1655,311,"[{'leak_ID': '1655_0000000003', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 8, 16, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-08-16,1217,311,"[{'leak_ID': '1217_0000000004', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2018, 8, 16, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2018-08-16,43,311,[],0,0.0,0,False,1
+2018-08-17,1202,311,"[{'leak_ID': '1202_0000000004', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 8, 17, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-08-17,972,311,"[{'leak_ID': '972_0000000005', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 8, 17, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-08-17,1849,311,"[{'leak_ID': '1849_0000000009', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 8, 17, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-08-18,1999,311,"[{'leak_ID': '1999_0000000005', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 8, 18, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1999_0000000006', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 8, 18, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2018-08-18,1004,311,[],0,0.0,0,False,1
+2018-08-18,1947,311,"[{'leak_ID': '1947_0000000006', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 8, 18, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-08-19,610,311,[],0,0.0,0,False,1
+2018-08-19,1076,311,"[{'leak_ID': '1076_0000000004', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 8, 19, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-08-19,214,311,[],0,0.0,0,False,1
+2018-08-20,1370,311,"[{'leak_ID': '1370_0000000003', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 8, 20, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1370_0000000004', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 8, 20, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2018-08-20,424,311,[],0,0.0,0,False,1
+2018-08-20,246,311,[],0,0.0,0,False,1
+2018-08-21,255,311,[],0,0.0,0,False,1
+2018-08-21,934,311,"[{'leak_ID': '934_0000000006', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2018, 8, 21, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '934_0000000007', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 8, 21, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2018-08-21,1779,311,[],0,0.0,0,False,1
+2018-08-28,2417,311,"[{'leak_ID': '2417_0000000003', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 8, 28, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-08-29,1473,311,"[{'leak_ID': '1473_0000000005', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2018, 8, 29, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2018-08-29,615,311,[],0,0.0,0,False,1
+2018-09-02,1497,311,"[{'leak_ID': '1497_0000000006', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 9, 2, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-09-02,1859,311,"[{'leak_ID': '1859_0000000003', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 9, 2, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-09-02,1784,311,[],0,0.0,0,False,1
+2018-09-05,1248,311,"[{'leak_ID': '1248_0000000007', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 9, 5, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1248_0000000008', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2018, 9, 5, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1248_0000000009', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 9, 5, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90018,90018.0,0,True,1
+2018-09-05,2277,311,[],0,0.0,0,False,1
+2018-09-06,1376,311,[],0,0.0,0,False,1
+2018-09-07,1619,311,[],0,0.0,0,False,1
+2018-09-09,2232,311,"[{'leak_ID': '2232_0000000008', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 9, 9, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '2232_0000000009', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 9, 9, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2018-09-09,1355,311,"[{'leak_ID': '1355_0000000004', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 9, 9, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1355_0000000005', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 9, 9, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2018-09-09,1403,311,[],0,0.0,0,False,1
+2018-09-10,562,311,[],0,0.0,0,False,1
+2018-09-10,505,311,[],0,0.0,0,False,1
+2018-09-10,1206,311,"[{'leak_ID': '1206_0000000004', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 9, 10, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-09-12,1488,311,[],0,0.0,0,False,1
+2018-10-30,855,311,"[{'leak_ID': '855_0000000005', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 10, 30, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-10-30,1807,311,[],0,0.0,0,False,1
+2018-11-01,68,311,[],0,0.0,0,False,1
+2018-11-05,133,311,"[{'leak_ID': '133_0000000008', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 11, 5, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-11-05,2190,311,[],0,0.0,0,False,1
+2018-11-05,1805,311,"[{'leak_ID': '1805_0000000007', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 11, 5, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-11-07,1461,311,[],0,0.0,0,False,1
+2018-11-12,1880,311,[],0,0.0,0,False,1
+2018-11-12,2260,311,"[{'leak_ID': '2260_0000000005', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2018, 11, 12, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '2260_0000000006', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2018, 11, 12, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",180000,180000.0,0,True,1
+2018-11-18,209,311,"[{'leak_ID': '209_0000000007', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 11, 18, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-11-21,974,311,"[{'leak_ID': '974_0000000006', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2018, 11, 21, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '974_0000000007', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2018, 11, 21, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",180000,180000.0,0,True,1
+2018-11-21,1072,311,[],0,0.0,0,False,1
+2018-11-21,1417,311,"[{'leak_ID': '1417_0000000002', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 11, 21, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-11-22,2338,311,[],0,0.0,0,False,1
+2018-11-22,1764,311,"[{'leak_ID': '1764_0000000007', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 11, 22, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-11-23,1655,311,[],0,0.0,0,False,1
+2018-11-23,1217,311,"[{'leak_ID': '1217_0000000005', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 11, 23, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-11-23,43,311,"[{'leak_ID': '43_0000000005', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 11, 23, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-11-30,1202,311,[],0,0.0,0,False,1
+2018-11-30,972,311,"[{'leak_ID': '972_0000000006', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 11, 30, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-11-30,1849,311,"[{'leak_ID': '1849_0000000010', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 11, 30, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-12-06,1999,311,"[{'leak_ID': '1999_0000000007', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2018, 12, 6, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2018-12-06,1004,311,"[{'leak_ID': '1004_0000000003', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 12, 6, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-12-06,1947,311,"[{'leak_ID': '1947_0000000007', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 12, 6, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1947_0000000008', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2018, 12, 6, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2018-12-08,610,311,[],0,0.0,0,False,1
+2018-12-14,1076,311,[],0,0.0,0,False,1
+2018-12-14,214,311,"[{'leak_ID': '214_0000000004', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 12, 14, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-12-14,1370,311,"[{'leak_ID': '1370_0000000005', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 12, 14, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-12-19,424,311,[],0,0.0,0,False,1
+2018-12-19,246,311,"[{'leak_ID': '246_0000000006', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 12, 19, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '246_0000000007', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 12, 19, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '246_0000000008', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 12, 19, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",27,27.0,0,True,1
+2018-12-19,255,311,[],0,0.0,0,False,1
+2018-12-25,934,311,"[{'leak_ID': '934_0000000008', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2018, 12, 25, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '934_0000000009', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2018, 12, 25, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",180000,180000.0,0,True,1
+2018-12-25,1779,311,"[{'leak_ID': '1779_0000000007', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 12, 25, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1779_0000000008', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 12, 25, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2018-12-25,2417,311,[],0,0.0,0,False,1
+2018-12-29,1473,311,[],0,0.0,0,False,1
+2018-12-29,615,311,"[{'leak_ID': '615_0000000005', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 12, 29, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-12-29,1497,311,[],0,0.0,0,False,1
+2018-12-30,1859,311,"[{'leak_ID': '1859_0000000004', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 12, 30, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1859_0000000005', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2018, 12, 30, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2019-01-01,1784,311,[],0,0.0,0,False,1
+2019-01-02,1248,311,"[{'leak_ID': '1248_0000000010', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2019, 1, 2, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2019-01-02,2277,311,[],0,0.0,0,False,1
+2019-01-02,1376,311,"[{'leak_ID': '1376_0000000007', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 1, 2, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-01-03,1619,311,[],0,0.0,0,False,1
+2019-01-03,2232,311,"[{'leak_ID': '2232_0000000010', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 1, 3, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-01-03,1355,311,"[{'leak_ID': '1355_0000000006', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 1, 3, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-01-06,1403,311,[],0,0.0,0,False,1
+2019-01-08,562,311,[],0,0.0,0,False,1
+2019-01-10,505,311,"[{'leak_ID': '505_0000000010', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 1, 10, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-01-11,1206,311,[],0,0.0,0,False,1
+2019-01-11,1488,311,[],0,0.0,0,False,1
+2019-01-30,855,311,[],0,0.0,0,False,1
+2019-01-30,1807,311,[],0,0.0,0,False,1
+2019-02-01,68,311,[],0,0.0,0,False,1
+2019-02-05,133,311,"[{'leak_ID': '133_0000000009', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 2, 5, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-02-05,2190,311,[],0,0.0,0,False,1
+2019-02-05,1805,311,[],0,0.0,0,False,1
+2019-02-06,1461,311,"[{'leak_ID': '1461_0000000005', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2019, 2, 6, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2019-02-11,1880,311,[],0,0.0,0,False,1
+2019-02-11,2260,311,[],0,0.0,0,False,1
+2019-02-19,209,311,[],0,0.0,0,False,1
+2019-02-19,974,311,[],0,0.0,0,False,1
+2019-02-19,1072,311,[],0,0.0,0,False,1
+2019-02-22,1417,311,"[{'leak_ID': '1417_0000000003', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2019, 2, 22, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1417_0000000004', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 2, 22, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1417_0000000005', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 2, 22, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90018,90018.0,0,True,1
+2019-02-22,2338,311,[],0,0.0,0,False,1
+2019-02-22,1764,311,[],0,0.0,0,False,1
+2019-02-26,1655,311,[],0,0.0,0,False,1
+2019-02-26,1217,311,[],0,0.0,0,False,1
+2019-02-26,43,311,"[{'leak_ID': '43_0000000006', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 2, 26, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-02-27,1202,311,"[{'leak_ID': '1202_0000000005', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2019, 2, 27, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2019-02-27,972,311,[],0,0.0,0,False,1
+2019-02-28,1849,311,"[{'leak_ID': '1849_0000000011', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 2, 28, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1849_0000000012', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 2, 28, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1849_0000000013', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 2, 28, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",27,27.0,0,True,1
+2019-03-01,1999,311,[],0,0.0,0,False,1
+2019-03-01,1004,311,"[{'leak_ID': '1004_0000000004', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 3, 1, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-03-01,1947,311,"[{'leak_ID': '1947_0000000009', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2019, 3, 1, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2019-03-02,610,311,[],0,0.0,0,False,1
+2019-03-02,1076,311,[],0,0.0,0,False,1
+2019-03-02,214,311,[],0,0.0,0,False,1
+2019-03-03,1370,311,"[{'leak_ID': '1370_0000000006', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 3, 3, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-03-03,424,311,[],0,0.0,0,False,1
+2019-03-03,246,311,"[{'leak_ID': '246_0000000009', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2019, 3, 3, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2019-03-04,255,311,[],0,0.0,0,False,1
+2019-03-10,934,311,[],0,0.0,0,False,1
+2019-03-10,1779,311,[],0,0.0,0,False,1
+2019-03-10,2417,311,"[{'leak_ID': '2417_0000000004', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2019, 3, 10, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2019-03-11,1473,311,[],0,0.0,0,False,1
+2019-03-11,615,311,[],0,0.0,0,False,1
+2019-03-11,1497,311,"[{'leak_ID': '1497_0000000007', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 3, 11, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-03-12,1859,311,[],0,0.0,0,False,1
+2019-04-03,1784,311,[],0,0.0,0,False,1
+2019-04-03,1248,311,[],0,0.0,0,False,1
+2019-04-03,2277,311,[],0,0.0,0,False,1
+2019-04-05,1376,311,[],0,0.0,0,False,1
+2019-04-05,1619,311,[],0,0.0,0,False,1
+2019-04-05,2232,311,[],0,0.0,0,False,1
+2019-04-06,1355,311,[],0,0.0,0,False,1
+2019-04-07,1403,311,[],0,0.0,0,False,1
+2019-04-12,562,311,[],0,0.0,0,False,1
+2019-04-12,505,311,[],0,0.0,0,False,1
+2019-04-17,1206,311,"[{'leak_ID': '1206_0000000005', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 4, 17, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-04-17,1488,311,[],0,0.0,0,False,1
+2019-05-01,855,311,"[{'leak_ID': '855_0000000006', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 5, 1, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-05-01,1807,311,[],0,0.0,0,False,1
+2019-05-04,68,311,"[{'leak_ID': '68_0000000007', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 5, 4, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-05-07,133,311,"[{'leak_ID': '133_0000000010', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 5, 7, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-05-07,2190,311,[],0,0.0,0,False,1
+2019-05-07,1805,311,"[{'leak_ID': '1805_0000000008', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 5, 7, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-05-09,1461,311,"[{'leak_ID': '1461_0000000006', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 5, 9, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-05-13,1880,311,[],0,0.0,0,False,1
+2019-05-13,2260,311,[],0,0.0,0,False,1
+2019-05-18,209,311,"[{'leak_ID': '209_0000000008', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 5, 18, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '209_0000000009', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2019, 5, 18, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2019-05-20,974,311,[],0,0.0,0,False,1
+2019-05-22,1072,311,"[{'leak_ID': '1072_0000000004', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 5, 22, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-05-22,1417,311,"[{'leak_ID': '1417_0000000006', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2019, 5, 22, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2019-05-22,2338,311,[],0,0.0,0,False,1
+2019-05-23,1764,311,[],0,0.0,0,False,1
+2019-05-23,1655,311,"[{'leak_ID': '1655_0000000004', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 5, 23, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-05-24,1217,311,[],0,0.0,0,False,1
+2019-05-24,43,311,"[{'leak_ID': '43_0000000007', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2019, 5, 24, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '43_0000000008', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2019, 5, 24, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",180000,180000.0,0,True,1
+2019-05-24,1202,311,[],0,0.0,0,False,1
+2019-05-25,972,311,"[{'leak_ID': '972_0000000007', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 5, 25, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-05-25,1849,311,"[{'leak_ID': '1849_0000000014', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 5, 25, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-05-25,1999,311,[],0,0.0,0,False,1
+2019-05-26,1004,311,[],0,0.0,0,False,1
+2019-05-26,1947,311,"[{'leak_ID': '1947_0000000010', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2019, 5, 26, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2019-05-26,610,311,[],0,0.0,0,False,1
+2019-05-27,1076,311,[],0,0.0,0,False,1
+2019-05-27,214,311,[],0,0.0,0,False,1
+2019-05-27,1370,311,[],0,0.0,0,False,1
+2019-05-28,424,311,"[{'leak_ID': '424_0000000006', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 5, 28, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-05-28,246,311,"[{'leak_ID': '246_0000000010', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 5, 28, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-05-28,255,311,[],0,0.0,0,False,1
+2019-05-31,934,311,[],0,0.0,0,False,1
+2019-05-31,1779,311,"[{'leak_ID': '1779_0000000009', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 5, 31, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-06-01,2417,311,"[{'leak_ID': '2417_0000000005', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 6, 1, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '2417_0000000006', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 6, 1, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2019-06-01,1473,311,[],0,0.0,0,False,1
+2019-06-01,615,311,[],0,0.0,0,False,1
+2019-06-02,1497,311,[],0,0.0,0,False,1
+2019-06-02,1859,311,"[{'leak_ID': '1859_0000000006', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2019, 6, 2, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2019-07-03,1784,311,"[{'leak_ID': '1784_0000000001', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 7, 3, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-07-03,1248,311,[],0,0.0,0,False,1
+2019-07-03,2277,311,"[{'leak_ID': '2277_0000000008', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2019, 7, 3, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2019-07-05,1376,311,[],0,0.0,0,False,1
+2019-07-05,1619,311,[],0,0.0,0,False,1
+2019-07-05,2232,311,[],0,0.0,0,False,1
+2019-07-06,1355,311,"[{'leak_ID': '1355_0000000007', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 7, 6, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1355_0000000008', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 7, 6, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2019-07-07,1403,311,"[{'leak_ID': '1403_0000000004', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 7, 7, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-07-12,562,311,"[{'leak_ID': '562_0000000007', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2019, 7, 12, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2019-07-12,505,311,"[{'leak_ID': '505_0000000011', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2019, 7, 12, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2019-07-22,1206,311,"[{'leak_ID': '1206_0000000006', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 7, 22, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-07-22,1488,311,[],0,0.0,0,False,1
+2019-08-02,855,311,[],0,0.0,0,False,1
+2019-08-02,1807,311,[],0,0.0,0,False,1
+2019-08-03,68,311,[],0,0.0,0,False,1
+2019-08-06,133,311,[],0,0.0,0,False,1
+2019-08-06,2190,311,"[{'leak_ID': '2190_0000000007', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2019, 8, 6, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2019-08-06,1805,311,"[{'leak_ID': '1805_0000000009', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 8, 6, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-08-08,1461,311,[],0,0.0,0,False,1
+2019-08-13,1880,311,"[{'leak_ID': '1880_0000000005', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2019, 8, 13, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2019-08-13,2260,311,"[{'leak_ID': '2260_0000000007', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 8, 13, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-08-17,209,311,[],0,0.0,0,False,1
+2019-08-17,974,311,[],0,0.0,0,False,1
+2019-08-17,1072,311,[],0,0.0,0,False,1
+2019-08-19,1417,311,[],0,0.0,0,False,1
+2019-08-19,2338,311,"[{'leak_ID': '2338_0000000006', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 8, 19, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-08-19,1764,311,"[{'leak_ID': '1764_0000000008', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 8, 19, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-08-20,1655,311,[],0,0.0,0,False,1
+2019-08-22,1217,311,[],0,0.0,0,False,1
+2019-08-22,43,311,[],0,0.0,0,False,1
+2019-08-22,1202,311,"[{'leak_ID': '1202_0000000006', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 8, 22, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-08-23,972,311,"[{'leak_ID': '972_0000000008', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 8, 23, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-08-23,1849,311,[],0,0.0,0,False,1
+2019-08-23,1999,311,"[{'leak_ID': '1999_0000000008', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2019, 8, 23, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2019-08-24,1004,311,"[{'leak_ID': '1004_0000000005', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 8, 24, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-08-24,1947,311,[],0,0.0,0,False,1
+2019-08-24,610,311,"[{'leak_ID': '610_0000000007', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 8, 24, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-08-27,1076,311,"[{'leak_ID': '1076_0000000005', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 8, 27, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-08-28,214,311,[],0,0.0,0,False,1
+2019-08-28,1370,311,[],0,0.0,0,False,1
+2019-08-28,424,311,[],0,0.0,0,False,1
+2019-08-29,246,311,[],0,0.0,0,False,1
+2019-08-29,255,311,"[{'leak_ID': '255_0000000007', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2019, 8, 29, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2019-08-29,934,311,[],0,0.0,0,False,1
+2019-08-30,1779,311,[],0,0.0,0,False,1
+2019-08-30,2417,311,"[{'leak_ID': '2417_0000000007', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 8, 30, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '2417_0000000008', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 8, 30, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2019-08-30,1473,311,[],0,0.0,0,False,1
+2019-08-31,615,311,[],0,0.0,0,False,1
+2019-08-31,1497,311,"[{'leak_ID': '1497_0000000008', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 8, 31, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-08-31,1859,311,[],0,0.0,0,False,1
+2019-10-02,1784,311,[],0,0.0,0,False,1
+2019-10-02,1248,311,[],0,0.0,0,False,1
+2019-10-02,2277,311,[],0,0.0,0,False,1
+2019-10-04,1376,311,[],0,0.0,0,False,1
+2019-10-04,1619,311,"[{'leak_ID': '1619_0000000006', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 10, 4, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-10-04,2232,311,"[{'leak_ID': '2232_0000000011', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 10, 4, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-10-09,1355,311,[],0,0.0,0,False,1
+2019-10-09,1403,311,"[{'leak_ID': '1403_0000000005', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 10, 9, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-10-11,562,311,[],0,0.0,0,False,1
+2019-10-14,505,311,[],0,0.0,0,False,1
+2019-10-24,1206,311,[],0,0.0,0,False,1
+2019-10-28,1488,311,"[{'leak_ID': '1488_0000000002', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2019, 10, 28, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1488_0000000003', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 10, 28, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2019-11-05,855,311,"[{'leak_ID': '855_0000000007', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 11, 5, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-11-05,1807,311,"[{'leak_ID': '1807_0000000008', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 11, 5, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-11-05,68,311,"[{'leak_ID': '68_0000000008', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 11, 5, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '68_0000000009', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 11, 5, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2019-11-06,133,311,[],0,0.0,0,False,1
+2019-11-06,2190,311,"[{'leak_ID': '2190_0000000008', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 11, 6, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-11-06,1805,311,"[{'leak_ID': '1805_0000000010', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 11, 6, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-11-08,1461,311,[],0,0.0,0,False,1
+2019-11-20,1880,311,"[{'leak_ID': '1880_0000000006', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 11, 20, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-11-20,2260,311,"[{'leak_ID': '2260_0000000008', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 11, 20, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '2260_0000000009', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2019, 11, 20, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2019-11-20,209,311,"[{'leak_ID': '209_0000000010', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 11, 20, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-11-28,974,311,"[{'leak_ID': '974_0000000008', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 11, 28, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-11-28,1072,311,"[{'leak_ID': '1072_0000000005', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 11, 28, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-11-28,1417,311,[],0,0.0,0,False,1
+2019-11-29,2338,311,[],0,0.0,0,False,1
+2019-11-29,1764,311,[],0,0.0,0,False,1
+2019-11-29,1655,311,[],0,0.0,0,False,1
+2019-12-04,1217,311,"[{'leak_ID': '1217_0000000006', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2019, 12, 4, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2019-12-04,43,311,[],0,0.0,0,False,1
+2019-12-04,1202,311,"[{'leak_ID': '1202_0000000007', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 12, 4, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-12-16,972,311,"[{'leak_ID': '972_0000000009', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 12, 16, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '972_0000000010', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 12, 16, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2019-12-26,1849,311,"[{'leak_ID': '1849_0000000015', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 12, 26, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1849_0000000016', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 12, 26, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2019-12-26,1999,311,"[{'leak_ID': '1999_0000000009', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2019, 12, 26, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1999_0000000010', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2019, 12, 26, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",180000,180000.0,0,True,1
+2019-12-26,1004,311,"[{'leak_ID': '1004_0000000006', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2019, 12, 26, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1004_0000000007', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2019, 12, 26, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2020-01-06,1947,311,[],0,0.0,0,False,1
+2020-01-06,610,311,"[{'leak_ID': '610_0000000008', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2020, 1, 6, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '610_0000000009', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 1, 6, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2020-01-06,1076,311,"[{'leak_ID': '1076_0000000006', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 1, 6, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1076_0000000007', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 1, 6, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2020-01-13,214,311,"[{'leak_ID': '214_0000000005', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 1, 13, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-01-13,1370,311,"[{'leak_ID': '1370_0000000007', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 1, 13, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-01-13,424,311,"[{'leak_ID': '424_0000000007', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 1, 13, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-01-14,246,311,"[{'leak_ID': '246_0000000011', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 1, 14, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '246_0000000012', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 1, 14, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '246_0000000013', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 1, 14, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",27,27.0,0,True,1
+2020-01-14,255,311,"[{'leak_ID': '255_0000000008', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 1, 14, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-01-14,934,311,"[{'leak_ID': '934_0000000010', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 1, 14, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-01-17,1779,311,"[{'leak_ID': '1779_0000000010', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 1, 17, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-01-18,2417,311,[],0,0.0,0,False,1
+2020-01-18,1473,311,"[{'leak_ID': '1473_0000000006', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 1, 18, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1473_0000000007', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 1, 18, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2020-01-18,615,311,[],0,0.0,0,False,1
+2020-01-21,1497,311,[],0,0.0,0,False,1
+2020-01-21,1859,311,"[{'leak_ID': '1859_0000000007', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 1, 21, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-01-21,1784,311,"[{'leak_ID': '1784_0000000002', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 1, 21, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-01-27,1248,311,[],0,0.0,0,False,1
+2020-01-27,2277,311,[],0,0.0,0,False,1
+2020-02-03,1376,311,"[{'leak_ID': '1376_0000000008', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 2, 3, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-02-03,1619,311,"[{'leak_ID': '1619_0000000007', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2020, 2, 3, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-02-03,2232,311,"[{'leak_ID': '2232_0000000012', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 2, 3, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '2232_0000000013', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2020, 2, 3, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2020-02-04,1355,311,"[{'leak_ID': '1355_0000000009', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 2, 4, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-02-04,1403,311,"[{'leak_ID': '1403_0000000006', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 2, 4, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-02-04,562,311,[],0,0.0,0,False,1
+2020-02-05,505,311,[],0,0.0,0,False,1
+2020-02-05,1206,311,"[{'leak_ID': '1206_0000000007', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 2, 5, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1206_0000000008', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 2, 5, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1206_0000000009', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 2, 5, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",27,27.0,0,True,1
+2020-02-05,1488,311,"[{'leak_ID': '1488_0000000004', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 2, 5, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-02-06,855,311,"[{'leak_ID': '855_0000000008', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 2, 6, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-02-06,1807,311,[],0,0.0,0,False,1
+2020-02-13,68,311,"[{'leak_ID': '68_0000000010', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 2, 13, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-02-13,133,311,"[{'leak_ID': '133_0000000011', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2020, 2, 13, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-02-13,2190,311,[],0,0.0,0,False,1
+2020-02-14,1805,311,[],0,0.0,0,False,1
+2020-02-14,1461,311,"[{'leak_ID': '1461_0000000007', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 2, 14, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-02-19,1880,311,"[{'leak_ID': '1880_0000000007', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 2, 19, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1880_0000000008', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 2, 19, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2020-02-19,2260,311,[],0,0.0,0,False,1
+2020-02-19,209,311,"[{'leak_ID': '209_0000000011', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 2, 19, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-03-03,974,311,[],0,0.0,0,False,1
+2020-03-03,1072,311,"[{'leak_ID': '1072_0000000006', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 3, 3, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1072_0000000007', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2020, 3, 3, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1072_0000000008', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 3, 3, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90018,90018.0,0,True,1
+2020-03-03,1417,311,"[{'leak_ID': '1417_0000000007', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 3, 3, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1417_0000000008', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 3, 3, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1417_0000000009', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 3, 3, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1417_0000000010', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 3, 3, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1417_0000000011', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 3, 3, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1417_0000000012', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2020, 3, 3, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90045,90045.0,0,True,1
+2020-03-04,2338,311,[],0,0.0,0,False,1
+2020-03-04,1764,311,[],0,0.0,0,False,1
+2020-03-04,1655,311,[],0,0.0,0,False,1
+2020-03-05,1217,311,[],0,0.0,0,False,1
+2020-03-05,43,311,"[{'leak_ID': '43_0000000009', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 3, 5, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-03-05,1202,311,[],0,0.0,0,False,1
+2020-03-06,972,311,"[{'leak_ID': '972_0000000011', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 3, 6, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-03-08,1849,311,[],0,0.0,0,False,1
+2020-03-08,1999,311,[],0,0.0,0,False,1
+2020-03-08,1004,311,[],0,0.0,0,False,1
+2020-04-08,1947,311,[],0,0.0,0,False,1
+2020-04-08,610,311,"[{'leak_ID': '610_0000000010', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 4, 8, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-04-08,1076,311,[],0,0.0,0,False,1
+2020-04-13,214,311,"[{'leak_ID': '214_0000000006', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2020, 4, 13, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-04-13,1370,311,"[{'leak_ID': '1370_0000000008', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 4, 13, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-04-13,424,311,[],0,0.0,0,False,1
+2020-04-14,246,311,[],0,0.0,0,False,1
+2020-04-14,255,311,[],0,0.0,0,False,1
+2020-04-14,934,311,[],0,0.0,0,False,1
+2020-04-17,1779,311,"[{'leak_ID': '1779_0000000011', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 4, 17, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1779_0000000012', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 4, 17, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2020-04-18,2417,311,[],0,0.0,0,False,1
+2020-04-18,1473,311,"[{'leak_ID': '1473_0000000008', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 4, 18, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-04-18,615,311,[],0,0.0,0,False,1
+2020-04-25,1497,311,"[{'leak_ID': '1497_0000000009', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2020, 4, 25, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-04-27,1859,311,"[{'leak_ID': '1859_0000000008', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 4, 27, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-05-02,1784,311,"[{'leak_ID': '1784_0000000003', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2020, 5, 2, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-05-02,1248,311,[],0,0.0,0,False,1
+2020-05-02,2277,311,[],0,0.0,0,False,1
+2020-05-07,1376,311,"[{'leak_ID': '1376_0000000009', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2020, 5, 7, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-05-07,1619,311,[],0,0.0,0,False,1
+2020-05-07,2232,311,"[{'leak_ID': '2232_0000000014', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 5, 7, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-05-08,1355,311,"[{'leak_ID': '1355_0000000010', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 5, 8, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1355_0000000011', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2020, 5, 8, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2020-05-08,1403,311,"[{'leak_ID': '1403_0000000007', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2020, 5, 8, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-05-08,562,311,"[{'leak_ID': '562_0000000008', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 5, 8, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-05-09,505,311,[],0,0.0,0,False,1
+2020-05-09,1206,311,"[{'leak_ID': '1206_0000000010', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2020, 5, 9, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-05-09,1488,311,"[{'leak_ID': '1488_0000000005', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 5, 9, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-05-15,855,311,[],0,0.0,0,False,1
+2020-05-15,1807,311,[],0,0.0,0,False,1
+2020-05-15,68,311,"[{'leak_ID': '68_0000000011', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2020, 5, 15, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-05-17,133,311,[],0,0.0,0,False,1
+2020-05-17,2190,311,[],0,0.0,0,False,1
+2020-05-17,1805,311,"[{'leak_ID': '1805_0000000011', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 5, 17, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-05-21,1461,311,"[{'leak_ID': '1461_0000000008', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 5, 21, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1461_0000000009', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2020, 5, 21, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1461_0000000010', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 5, 21, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90018,90018.0,0,True,1
+2020-05-21,1880,311,"[{'leak_ID': '1880_0000000009', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2020, 5, 21, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-05-21,2260,311,[],0,0.0,0,False,1
+2020-05-22,209,311,"[{'leak_ID': '209_0000000012', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 5, 22, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-05-22,974,311,"[{'leak_ID': '974_0000000009', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 5, 22, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '974_0000000010', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2020, 5, 22, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2020-05-25,1072,311,[],0,0.0,0,False,1
+2020-05-25,1417,311,[],0,0.0,0,False,1
+2020-05-26,2338,311,"[{'leak_ID': '2338_0000000007', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2020, 5, 26, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '2338_0000000008', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2020, 5, 26, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",180000,180000.0,0,True,1
+2020-05-26,1764,311,"[{'leak_ID': '1764_0000000009', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 5, 26, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-05-26,1655,311,[],0,0.0,0,False,1
+2020-05-27,1217,311,[],0,0.0,0,False,1
+2020-05-27,43,311,"[{'leak_ID': '43_0000000010', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 5, 27, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-05-27,1202,311,[],0,0.0,0,False,1
+2020-05-28,972,311,[],0,0.0,0,False,1
+2020-05-30,1849,311,"[{'leak_ID': '1849_0000000017', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 5, 30, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1849_0000000018', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 5, 30, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2020-05-31,1999,311,[],0,0.0,0,False,1
+2020-05-31,1004,311,"[{'leak_ID': '1004_0000000008', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 5, 31, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-07-08,1947,311,"[{'leak_ID': '1947_0000000011', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2020, 7, 8, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-07-08,610,311,[],0,0.0,0,False,1
+2020-07-08,1076,311,[],0,0.0,0,False,1
+2020-07-13,214,311,[],0,0.0,0,False,1
+2020-07-13,1370,311,"[{'leak_ID': '1370_0000000009', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 7, 13, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1370_0000000010', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 7, 13, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2020-07-13,424,311,[],0,0.0,0,False,1
+2020-07-15,246,311,"[{'leak_ID': '246_0000000014', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 7, 15, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '246_0000000015', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2020, 7, 15, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '246_0000000016', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 7, 15, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90018,90018.0,0,True,1
+2020-07-15,255,311,"[{'leak_ID': '255_0000000009', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 7, 15, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-07-15,934,311,[],0,0.0,0,False,1
+2020-07-17,1779,311,[],0,0.0,0,False,1
+2020-07-18,2417,311,"[{'leak_ID': '2417_0000000009', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 7, 18, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-07-18,1473,311,"[{'leak_ID': '1473_0000000009', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 7, 18, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-07-18,615,311,"[{'leak_ID': '615_0000000006', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 7, 18, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-07-28,1497,311,[],0,0.0,0,False,1
+2020-07-28,1859,311,[],0,0.0,0,False,1
+2020-08-01,1784,311,"[{'leak_ID': '1784_0000000004', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 8, 1, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1784_0000000005', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2020, 8, 1, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2020-08-01,1248,311,[],0,0.0,0,False,1
+2020-08-01,2277,311,"[{'leak_ID': '2277_0000000009', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 8, 1, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '2277_0000000010', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2020, 8, 1, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2020-08-07,1376,311,"[{'leak_ID': '1376_0000000010', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 8, 7, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-08-07,1619,311,[],0,0.0,0,False,1
+2020-08-07,2232,311,[],0,0.0,0,False,1
+2020-08-08,1355,311,[],0,0.0,0,False,1
+2020-08-08,1403,311,"[{'leak_ID': '1403_0000000008', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2020, 8, 8, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-08-08,562,311,"[{'leak_ID': '562_0000000009', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 8, 8, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-08-09,505,311,"[{'leak_ID': '505_0000000012', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 8, 9, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-08-09,1206,311,"[{'leak_ID': '1206_0000000011', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 8, 9, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-08-09,1488,311,[],0,0.0,0,False,1
+2020-08-14,855,311,[],0,0.0,0,False,1
+2020-08-14,1807,311,[],0,0.0,0,False,1
+2020-08-14,68,311,"[{'leak_ID': '68_0000000012', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 8, 14, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '68_0000000013', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 8, 14, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '68_0000000014', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 8, 14, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",27,27.0,0,True,1
+2020-08-16,133,311,[],0,0.0,0,False,1
+2020-08-16,2190,311,"[{'leak_ID': '2190_0000000009', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2020, 8, 16, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-08-16,1805,311,"[{'leak_ID': '1805_0000000012', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 8, 16, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-08-17,1461,311,[],0,0.0,0,False,1
+2020-08-17,1880,311,"[{'leak_ID': '1880_0000000010', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 8, 17, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1880_0000000011', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 8, 17, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1880_0000000012', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 8, 17, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1880_0000000013', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2020, 8, 17, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90027,90027.0,0,True,1
+2020-08-17,2260,311,[],0,0.0,0,False,1
+2020-08-19,209,311,"[{'leak_ID': '209_0000000013', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 8, 19, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-08-19,974,311,[],0,0.0,0,False,1
+2020-08-19,1072,311,"[{'leak_ID': '1072_0000000009', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 8, 19, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-08-21,1417,311,"[{'leak_ID': '1417_0000000013', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2020, 8, 21, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1417_0000000014', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2020, 8, 21, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",180000,180000.0,0,True,1
+2020-08-21,2338,311,"[{'leak_ID': '2338_0000000009', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2020, 8, 21, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-08-22,1764,311,"[{'leak_ID': '1764_0000000010', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 8, 22, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-08-22,1655,311,[],0,0.0,0,False,1
+2020-08-22,1217,311,"[{'leak_ID': '1217_0000000007', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 8, 22, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-08-23,43,311,[],0,0.0,0,False,1
+2020-08-23,1202,311,[],0,0.0,0,False,1
+2020-08-23,972,311,"[{'leak_ID': '972_0000000012', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2020, 8, 23, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-08-25,1849,311,"[{'leak_ID': '1849_0000000019', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 8, 25, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1849_0000000020', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 8, 25, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2020-08-25,1999,311,[],0,0.0,0,False,1
+2020-08-25,1004,311,[],0,0.0,0,False,1
+2020-10-19,1947,311,[],0,0.0,0,False,1
+2020-10-19,610,311,[],0,0.0,0,False,1
+2020-10-19,1076,311,"[{'leak_ID': '1076_0000000008', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 10, 19, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1076_0000000009', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 10, 19, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2020-10-20,214,311,[],0,0.0,0,False,1
+2020-10-20,1370,311,"[{'leak_ID': '1370_0000000011', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2020, 10, 20, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-10-20,424,311,[],0,0.0,0,False,1
+2020-10-26,246,311,"[{'leak_ID': '246_0000000017', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2020, 10, 26, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-10-30,255,311,"[{'leak_ID': '255_0000000010', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 10, 30, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '255_0000000011', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2020, 10, 30, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2020-10-30,934,311,"[{'leak_ID': '934_0000000011', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 10, 30, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-10-30,1779,311,[],0,0.0,0,False,1
+2020-10-31,2417,311,"[{'leak_ID': '2417_0000000010', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 10, 31, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-11-03,1473,311,[],0,0.0,0,False,1
+2020-11-03,615,311,"[{'leak_ID': '615_0000000007', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2020, 11, 3, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-11-06,1497,311,[],0,0.0,0,False,1
+2020-11-07,1859,311,"[{'leak_ID': '1859_0000000009', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 11, 7, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1859_0000000010', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 11, 7, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2020-11-09,1784,311,"[{'leak_ID': '1784_0000000006', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2020, 11, 9, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1784_0000000007', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 11, 9, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2020-11-09,1248,311,"[{'leak_ID': '1248_0000000011', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 11, 9, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-11-09,2277,311,"[{'leak_ID': '2277_0000000011', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 11, 9, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-11-10,1376,311,[],0,0.0,0,False,1
+2020-11-10,1619,311,[],0,0.0,0,False,1
+2020-11-10,2232,311,"[{'leak_ID': '2232_0000000015', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 11, 10, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '2232_0000000016', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 11, 10, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2020-11-11,1355,311,[],0,0.0,0,False,1
+2020-11-11,1403,311,"[{'leak_ID': '1403_0000000009', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 11, 11, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-11-11,562,311,"[{'leak_ID': '562_0000000010', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 11, 11, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-11-12,505,311,"[{'leak_ID': '505_0000000013', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 11, 12, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-11-12,1206,311,"[{'leak_ID': '1206_0000000012', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 11, 12, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-11-12,1488,311,"[{'leak_ID': '1488_0000000006', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 11, 12, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-11-13,855,311,[],0,0.0,0,False,1
+2020-11-13,1807,311,"[{'leak_ID': '1807_0000000009', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 11, 13, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1807_0000000010', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 11, 13, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2020-11-13,68,311,[],0,0.0,0,False,1
+2020-11-15,133,311,"[{'leak_ID': '133_0000000012', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 11, 15, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '133_0000000013', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 11, 15, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2020-11-15,2190,311,[],0,0.0,0,False,1
+2020-11-15,1805,311,[],0,0.0,0,False,1
+2020-12-02,1461,311,[],0,0.0,0,False,1
+2020-12-02,1880,311,"[{'leak_ID': '1880_0000000014', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 12, 2, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1880_0000000015', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2020, 12, 2, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2020-12-02,2260,311,[],0,0.0,0,False,1
+2020-12-03,209,311,[],0,0.0,0,False,1
+2020-12-04,974,311,[],0,0.0,0,False,1
+2020-12-06,1072,311,[],0,0.0,0,False,1
+2020-12-06,1417,311,[],0,0.0,0,False,1
+2020-12-06,2338,311,[],0,0.0,0,False,1
+2020-12-15,1764,311,"[{'leak_ID': '1764_0000000011', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2020, 12, 15, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-12-15,1655,311,"[{'leak_ID': '1655_0000000005', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2020, 12, 15, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-12-15,1217,311,[],0,0.0,0,False,1
+2020-12-16,43,311,[],0,0.0,0,False,1
+2020-12-16,1202,311,"[{'leak_ID': '1202_0000000008', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2020, 12, 16, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-12-16,972,311,[],0,0.0,0,False,1
+2020-12-17,1849,311,[],0,0.0,0,False,1
+2020-12-18,1999,311,"[{'leak_ID': '1999_0000000011', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2020, 12, 18, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1999_0000000012', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2020, 12, 18, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2020-12-21,1004,311,[],0,0.0,0,False,1
+2021-01-20,1947,311,"[{'leak_ID': '1947_0000000012', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2021, 1, 20, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1947_0000000013', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 1, 20, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2021-01-20,610,311,[],0,0.0,0,False,1
+2021-01-20,1076,311,[],0,0.0,0,False,1
+2021-01-25,214,311,"[{'leak_ID': '214_0000000007', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 1, 25, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-01-25,1370,311,[],0,0.0,0,False,1
+2021-01-25,424,311,"[{'leak_ID': '424_0000000008', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2021, 1, 25, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2021-02-05,246,311,"[{'leak_ID': '246_0000000018', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 2, 5, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-02-05,255,311,[],0,0.0,0,False,1
+2021-02-05,934,311,[],0,0.0,0,False,1
+2021-02-09,1779,311,"[{'leak_ID': '1779_0000000013', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2021, 2, 9, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1779_0000000014', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 2, 9, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2021-02-09,2417,311,"[{'leak_ID': '2417_0000000011', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2021, 2, 9, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2021-02-09,1473,311,[],0,0.0,0,False,1
+2021-02-10,615,311,"[{'leak_ID': '615_0000000008', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 2, 10, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '615_0000000009', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 2, 10, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2021-02-10,1497,311,"[{'leak_ID': '1497_0000000010', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 2, 10, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-02-10,1859,311,[],0,0.0,0,False,1
+2021-02-12,1784,311,[],0,0.0,0,False,1
+2021-02-12,1248,311,[],0,0.0,0,False,1
+2021-02-12,2277,311,[],0,0.0,0,False,1
+2021-02-13,1376,311,"[{'leak_ID': '1376_0000000011', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2021, 2, 13, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1376_0000000012', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 2, 13, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2021-02-13,1619,311,"[{'leak_ID': '1619_0000000008', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 2, 13, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-02-13,2232,311,[],0,0.0,0,False,1
+2021-02-14,1355,311,[],0,0.0,0,False,1
+2021-02-14,1403,311,"[{'leak_ID': '1403_0000000010', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 2, 14, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1403_0000000011', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 2, 14, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2021-02-14,562,311,[],0,0.0,0,False,1
+2021-02-17,505,311,[],0,0.0,0,False,1
+2021-02-17,1206,311,[],0,0.0,0,False,1
+2021-02-17,1488,311,"[{'leak_ID': '1488_0000000007', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 2, 17, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-02-18,855,311,[],0,0.0,0,False,1
+2021-02-18,1807,311,"[{'leak_ID': '1807_0000000011', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 2, 18, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-02-18,68,311,[],0,0.0,0,False,1
+2021-02-19,133,311,"[{'leak_ID': '133_0000000014', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 2, 19, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-02-19,2190,311,"[{'leak_ID': '2190_0000000010', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 2, 19, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-02-19,1805,311,[],0,0.0,0,False,1
+2021-02-21,1461,311,[],0,0.0,0,False,1
+2021-02-21,1880,311,[],0,0.0,0,False,1
+2021-02-21,2260,311,[],0,0.0,0,False,1
+2021-02-22,209,311,[],0,0.0,0,False,1
+2021-02-22,974,311,[],0,0.0,0,False,1
+2021-02-22,1072,311,[],0,0.0,0,False,1
+2021-02-23,1417,311,[],0,0.0,0,False,1
+2021-02-23,2338,311,"[{'leak_ID': '2338_0000000010', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 2, 23, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-02-23,1764,311,[],0,0.0,0,False,1
+2021-02-24,1655,311,[],0,0.0,0,False,1
+2021-02-26,1217,311,[],0,0.0,0,False,1
+2021-02-26,43,311,[],0,0.0,0,False,1
+2021-02-26,1202,311,"[{'leak_ID': '1202_0000000009', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 2, 26, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-02-27,972,311,"[{'leak_ID': '972_0000000013', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2021, 2, 27, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2021-02-27,1849,311,"[{'leak_ID': '1849_0000000021', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 2, 27, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-02-27,1999,311,[],0,0.0,0,False,1
+2021-03-02,1004,311,[],0,0.0,0,False,1
+2021-04-24,1947,311,[],0,0.0,0,False,1
+2021-04-24,610,311,[],0,0.0,0,False,1
+2021-04-24,1076,311,"[{'leak_ID': '1076_0000000010', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2021, 4, 24, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2021-04-29,214,311,[],0,0.0,0,False,1
+2021-04-29,1370,311,[],0,0.0,0,False,1
+2021-04-29,424,311,[],0,0.0,0,False,1
+2021-05-12,246,311,"[{'leak_ID': '246_0000000019', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 5, 12, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-05-12,255,311,[],0,0.0,0,False,1
+2021-05-12,934,311,[],0,0.0,0,False,1
+2021-05-13,1779,311,[],0,0.0,0,False,1
+2021-05-13,2417,311,[],0,0.0,0,False,1
+2021-05-13,1473,311,[],0,0.0,0,False,1
+2021-05-14,615,311,[],0,0.0,0,False,1
+2021-05-14,1497,311,"[{'leak_ID': '1497_0000000011', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2021, 5, 14, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1497_0000000012', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 5, 14, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2021-05-14,1859,311,"[{'leak_ID': '1859_0000000011', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 5, 14, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1859_0000000012', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 5, 14, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2021-05-16,1784,311,"[{'leak_ID': '1784_0000000008', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 5, 16, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1784_0000000009', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2021, 5, 16, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2021-05-16,1248,311,[],0,0.0,0,False,1
+2021-05-16,2277,311,[],0,0.0,0,False,1
+2021-05-20,1376,311,[],0,0.0,0,False,1
+2021-05-20,1619,311,"[{'leak_ID': '1619_0000000009', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2021, 5, 20, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2021-05-20,2232,311,"[{'leak_ID': '2232_0000000017', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 5, 20, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-05-21,1355,311,[],0,0.0,0,False,1
+2021-05-21,1403,311,"[{'leak_ID': '1403_0000000012', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2021, 5, 21, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1403_0000000013', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 5, 21, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1403_0000000014', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 5, 21, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90018,90018.0,0,True,1
+2021-05-21,562,311,[],0,0.0,0,False,1
+2021-05-23,505,311,[],0,0.0,0,False,1
+2021-05-23,1206,311,"[{'leak_ID': '1206_0000000013', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2021, 5, 23, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1206_0000000014', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 5, 23, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2021-05-23,1488,311,[],0,0.0,0,False,1
+2021-05-25,855,311,[],0,0.0,0,False,1
+2021-05-25,1807,311,"[{'leak_ID': '1807_0000000012', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2021, 5, 25, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1807_0000000013', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2021, 5, 25, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",180000,180000.0,0,True,1
+2021-05-26,68,311,"[{'leak_ID': '68_0000000015', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 5, 26, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '68_0000000016', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 5, 26, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '68_0000000017', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 5, 26, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",27,27.0,0,True,1
+2021-05-26,133,311,[],0,0.0,0,False,1
+2021-05-26,2190,311,[],0,0.0,0,False,1
+2021-05-28,1805,311,[],0,0.0,0,False,1
+2021-05-29,1461,311,"[{'leak_ID': '1461_0000000011', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 5, 29, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-05-29,1880,311,"[{'leak_ID': '1880_0000000016', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2021, 5, 29, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2021-05-29,2260,311,"[{'leak_ID': '2260_0000000010', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 5, 29, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '2260_0000000011', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2021, 5, 29, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2021-05-30,209,311,[],0,0.0,0,False,1
+2021-05-30,974,311,"[{'leak_ID': '974_0000000011', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 5, 30, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '974_0000000012', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 5, 30, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2021-05-31,1072,311,[],0,0.0,0,False,1
+2021-05-31,1417,311,[],0,0.0,0,False,1
+2021-06-03,2338,311,[],0,0.0,0,False,1
+2021-06-03,1764,311,[],0,0.0,0,False,1
+2021-06-03,1655,311,[],0,0.0,0,False,1
+2021-06-04,1217,311,"[{'leak_ID': '1217_0000000008', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2021, 6, 4, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1217_0000000009', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 6, 4, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2021-06-04,43,311,[],0,0.0,0,False,1
+2021-06-05,1202,311,"[{'leak_ID': '1202_0000000010', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 6, 5, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-06-05,972,311,"[{'leak_ID': '972_0000000014', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 6, 5, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '972_0000000015', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 6, 5, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2021-06-05,1849,311,"[{'leak_ID': '1849_0000000022', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 6, 5, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1849_0000000023', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2021, 6, 5, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1849_0000000024', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 6, 5, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90018,90018.0,0,True,1
+2021-06-06,1999,311,"[{'leak_ID': '1999_0000000013', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 6, 6, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-06-06,1004,311,"[{'leak_ID': '1004_0000000009', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 6, 6, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-07-25,1947,311,"[{'leak_ID': '1947_0000000014', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 7, 25, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1947_0000000015', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 7, 25, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2021-07-29,610,311,[],0,0.0,0,False,1
+2021-07-29,1076,311,"[{'leak_ID': '1076_0000000011', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2021, 7, 29, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2021-07-29,214,311,[],0,0.0,0,False,1
+2021-08-01,1370,311,[],0,0.0,0,False,1
+2021-08-01,424,311,"[{'leak_ID': '424_0000000009', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 8, 1, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-08-11,246,311,[],0,0.0,0,False,1
+2021-08-13,255,311,"[{'leak_ID': '255_0000000012', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 8, 13, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-08-13,934,311,"[{'leak_ID': '934_0000000012', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 8, 13, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-08-13,1779,311,[],0,0.0,0,False,1
+2021-08-14,2417,311,"[{'leak_ID': '2417_0000000012', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 8, 14, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '2417_0000000013', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 8, 14, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2021-08-14,1473,311,[],0,0.0,0,False,1
+2021-08-14,615,311,[],0,0.0,0,False,1
+2021-08-15,1497,311,"[{'leak_ID': '1497_0000000013', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 8, 15, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '1497_0000000014', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 8, 15, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2021-08-15,1859,311,[],0,0.0,0,False,1
+2021-08-15,1784,311,[],0,0.0,0,False,1
+2021-08-16,1248,311,[],0,0.0,0,False,1
+2021-08-16,2277,311,"[{'leak_ID': '2277_0000000012', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 8, 16, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-08-16,1376,311,"[{'leak_ID': '1376_0000000013', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 8, 16, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-08-18,1619,311,[],0,0.0,0,False,1
+2021-08-18,2232,311,"[{'leak_ID': '2232_0000000018', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 8, 18, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-08-18,1355,311,[],0,0.0,0,False,1
+2021-08-19,1403,311,"[{'leak_ID': '1403_0000000015', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 8, 19, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-08-19,562,311,"[{'leak_ID': '562_0000000011', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 8, 19, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '562_0000000012', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 8, 19, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2021-08-19,505,311,[],0,0.0,0,False,1
+2021-08-20,1206,311,[],0,0.0,0,False,1
+2021-08-20,1488,311,[],0,0.0,0,False,1
+2021-08-20,855,311,"[{'leak_ID': '855_0000000009', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 8, 20, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-08-28,1807,311,[],0,0.0,0,False,1
+2021-09-01,68,311,[],0,0.0,0,False,1
+2021-09-01,133,311,[],0,0.0,0,False,1
+2021-09-01,2190,311,"[{'leak_ID': '2190_0000000011', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2021, 9, 1, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2021-09-04,1805,311,"[{'leak_ID': '1805_0000000013', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 9, 4, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-09-04,1461,311,"[{'leak_ID': '1461_0000000012', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 9, 4, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-09-05,1880,311,"[{'leak_ID': '1880_0000000017', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 9, 5, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-09-05,2260,311,"[{'leak_ID': '2260_0000000012', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 9, 5, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-09-06,209,311,"[{'leak_ID': '209_0000000014', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 9, 6, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '209_0000000015', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2021, 9, 6, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '209_0000000016', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 9, 6, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90018,90018.0,0,True,1
+2021-09-07,974,311,[],0,0.0,0,False,1
+2021-09-08,1072,311,"[{'leak_ID': '1072_0000000010', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 9, 8, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-09-08,1417,311,"[{'leak_ID': '1417_0000000015', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2021, 9, 8, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2021-09-08,2338,311,"[{'leak_ID': '2338_0000000011', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2021, 9, 8, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '2338_0000000012', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2021, 9, 8, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '2338_0000000013', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 9, 8, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",180009,180009.0,0,True,1
+2021-09-09,1764,311,"[{'leak_ID': '1764_0000000012', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 9, 9, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-09-09,1655,311,[],0,0.0,0,False,1
+2021-09-09,1217,311,[],0,0.0,0,False,1
+2021-09-11,43,311,[],0,0.0,0,False,1
+2021-09-11,1202,311,"[{'leak_ID': '1202_0000000011', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 9, 11, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-09-11,972,311,[],0,0.0,0,False,1
+2021-09-12,1849,311,[],0,0.0,0,False,1
+2021-09-12,1999,311,[],0,0.0,0,False,1
+2021-09-12,1004,311,"[{'leak_ID': '1004_0000000010', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 9, 12, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-10-31,1947,311,[],0,0.0,0,False,1
+2021-11-04,610,311,"[{'leak_ID': '610_0000000011', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 11, 4, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-11-04,1076,311,[],0,0.0,0,False,1
+2021-11-06,214,311,[],0,0.0,0,False,1
+2021-11-06,1370,311,"[{'leak_ID': '1370_0000000012', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 11, 6, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-11-06,424,311,"[{'leak_ID': '424_0000000010', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2021, 11, 6, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '424_0000000011', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2021, 11, 6, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '424_0000000012', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2021, 11, 6, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '424_0000000013', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2021, 11, 6, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",360000,360000.0,0,True,1
+2021-11-11,246,311,[],0,0.0,0,False,1
+2021-11-17,255,311,[],0,0.0,0,False,1
+2021-11-21,934,311,"[{'leak_ID': '934_0000000013', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 11, 21, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-11-21,1779,311,[],0,0.0,0,False,1
+2021-11-21,2417,311,[],0,0.0,0,False,1
+2021-11-22,1473,311,[],0,0.0,0,False,1
+2021-11-22,615,311,"[{'leak_ID': '615_0000000010', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2021, 11, 22, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2021-12-05,1497,311,[],0,0.0,0,False,1
+2021-12-05,1859,311,[],0,0.0,0,False,1
+2021-12-05,1784,311,[],0,0.0,0,False,1
+2021-12-07,1248,311,[],0,0.0,0,False,1
+2021-12-07,2277,311,[],0,0.0,0,False,1
+2021-12-13,1376,311,[],0,0.0,0,False,1
+2021-12-16,1619,311,"[{'leak_ID': '1619_0000000010', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 12, 16, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-12-16,2232,311,[],0,0.0,0,False,1
+2021-12-16,1355,311,[],0,0.0,0,False,1
+2021-12-24,1403,311,"[{'leak_ID': '1403_0000000016', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2021, 12, 24, 8, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2021-12-24,562,311,[],0,0.0,0,False,1
+2021-12-24,505,311,"[{'leak_ID': '505_0000000014', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 12, 24, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}, {'leak_ID': '505_0000000015', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 12, 24, 13, 0), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",18,18.0,0,True,1
+2021-12-28,855,311,[],0,0.0,0,False,1
+2021-12-28,1206,311,"[{'leak_ID': '1206_0000000015', 'rate': 9, 'tagged': True, 'date_tagged': datetime.datetime(2021, 12, 28, 10, 30), 'OGI_sp_covered': 1, 'OGI_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-12-28,1488,311,[],0,0.0,0,False,1

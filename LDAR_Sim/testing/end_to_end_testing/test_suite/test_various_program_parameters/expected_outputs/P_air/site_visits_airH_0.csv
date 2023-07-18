@@ -1,0 +1,1001 @@
+site_vis_date,site_visited,site_subtype_code,leaks_at_site,site_true_rate,site_measured_rate,site_vent_rate,found_leak,crew_ID
+2017-01-06,855,311,"[{'leak_ID': '855_0000000001', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-01-06,1807,311,"[{'leak_ID': '1807_0000000001', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1807_0000000002', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2017-01-06,68,311,[],0,0.0,0,False,1
+2017-01-06,133,311,"[{'leak_ID': '133_0000000001', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-01-06,2190,311,"[{'leak_ID': '2190_0000000001', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-01-06,1805,311,"[{'leak_ID': '1805_0000000001', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1805_0000000002', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",180000,180000.0,0,True,1
+2017-01-06,1461,311,"[{'leak_ID': '1461_0000000001', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-01-06,1880,311,"[{'leak_ID': '1880_0000000001', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1880_0000000002', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1880_0000000003', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90018,90018.0,0,True,1
+2017-01-06,2260,311,"[{'leak_ID': '2260_0000000001', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-01-06,209,311,"[{'leak_ID': '209_0000000001', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-01-06,974,311,"[{'leak_ID': '974_0000000001', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '974_0000000002', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2017-01-06,1072,311,"[{'leak_ID': '1072_0000000001', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-01-06,1417,311,[],0,0.0,0,False,1
+2017-01-06,2338,311,"[{'leak_ID': '2338_0000000001', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-01-06,1764,311,[],0,0.0,0,False,1
+2017-01-06,1655,311,[],0,0.0,0,False,1
+2017-01-06,1217,311,"[{'leak_ID': '1217_0000000001', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-01-06,43,311,[],0,0.0,0,False,1
+2017-01-06,1202,311,"[{'leak_ID': '1202_0000000001', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-01-06,972,311,[],0,0.0,0,False,1
+2017-01-06,1849,311,"[{'leak_ID': '1849_0000000001', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-01-06,1999,311,"[{'leak_ID': '1999_0000000001', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-01-06,1004,311,"[{'leak_ID': '1004_0000000001', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-01-06,1947,311,[],0,0.0,0,False,1
+2017-01-06,610,311,"[{'leak_ID': '610_0000000001', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '610_0000000002', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2017-01-06,1076,311,"[{'leak_ID': '1076_0000000001', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-01-06,214,311,"[{'leak_ID': '214_0000000001', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-01-06,1370,311,"[{'leak_ID': '1370_0000000001', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-01-06,424,311,"[{'leak_ID': '424_0000000002', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-01-06,246,311,"[{'leak_ID': '246_0000000001', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-01-06,255,311,"[{'leak_ID': '255_0000000001', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-01-06,934,311,"[{'leak_ID': '934_0000000001', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-01-06,1779,311,"[{'leak_ID': '1779_0000000001', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1779_0000000002', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1779_0000000003', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1779_0000000004', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1779_0000000005', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90036,90036.0,0,True,1
+2017-01-06,2417,311,[],0,0.0,0,False,1
+2017-01-06,1473,311,"[{'leak_ID': '1473_0000000001', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-01-06,615,311,[],0,0.0,0,False,1
+2017-01-06,1497,311,"[{'leak_ID': '1497_0000000001', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-01-06,1859,311,[],0,0.0,0,False,1
+2017-01-06,1784,311,[],0,0.0,0,False,1
+2017-01-06,1248,311,[],0,0.0,0,False,1
+2017-01-06,2277,311,"[{'leak_ID': '2277_0000000001', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-01-06,1376,311,"[{'leak_ID': '1376_0000000001', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1376_0000000002', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2017-01-06,1619,311,[],0,0.0,0,False,1
+2017-01-06,2232,311,"[{'leak_ID': '2232_0000000001', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '2232_0000000002', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2017-01-06,1355,311,[],0,0.0,0,False,1
+2017-01-06,1403,311,"[{'leak_ID': '1403_0000000001', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-01-06,562,311,"[{'leak_ID': '562_0000000001', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '562_0000000002', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2017-01-06,505,311,"[{'leak_ID': '505_0000000001', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-01-13,1206,311,"[{'leak_ID': '1206_0000000002', 'rate': 90000, 'tagged': True, 'date_tagged': datetime.datetime(2017, 1, 13, 0, 0), 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-01-13,1488,311,"[{'leak_ID': '1488_0000000001', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-04-09,855,311,[],0,0.0,0,False,1
+2017-04-09,1807,311,"[{'leak_ID': '1807_0000000003', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1807_0000000004', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2017-04-09,68,311,"[{'leak_ID': '68_0000000001', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '68_0000000002', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",180000,180000.0,0,True,1
+2017-04-09,133,311,"[{'leak_ID': '133_0000000002', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '133_0000000003', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2017-04-09,2190,311,[],0,0.0,0,False,1
+2017-04-09,1805,311,[],0,0.0,0,False,1
+2017-04-09,1461,311,[],0,0.0,0,False,1
+2017-04-09,1880,311,[],0,0.0,0,False,1
+2017-04-09,2260,311,"[{'leak_ID': '2260_0000000002', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-04-09,209,311,"[{'leak_ID': '209_0000000003', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-04-09,974,311,"[{'leak_ID': '974_0000000003', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-04-09,1072,311,[],0,0.0,0,False,1
+2017-04-09,1417,311,[],0,0.0,0,False,1
+2017-04-09,2338,311,"[{'leak_ID': '2338_0000000002', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-04-09,1764,311,"[{'leak_ID': '1764_0000000001', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-04-09,1655,311,[],0,0.0,0,False,1
+2017-04-09,1217,311,[],0,0.0,0,False,1
+2017-04-09,43,311,"[{'leak_ID': '43_0000000001', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-04-09,1202,311,[],0,0.0,0,False,1
+2017-04-09,972,311,"[{'leak_ID': '972_0000000001', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-04-09,1849,311,"[{'leak_ID': '1849_0000000002', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1849_0000000003', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2017-04-09,1999,311,[],0,0.0,0,False,1
+2017-04-09,1004,311,[],0,0.0,0,False,1
+2017-04-09,1947,311,"[{'leak_ID': '1947_0000000001', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-04-09,610,311,[],0,0.0,0,False,1
+2017-04-09,1076,311,[],0,0.0,0,False,1
+2017-04-09,214,311,[],0,0.0,0,False,1
+2017-04-09,1370,311,[],0,0.0,0,False,1
+2017-04-09,424,311,"[{'leak_ID': '424_0000000003', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-04-09,246,311,"[{'leak_ID': '246_0000000002', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-04-09,255,311,[],0,0.0,0,False,1
+2017-04-09,934,311,[],0,0.0,0,False,1
+2017-04-09,1779,311,[],0,0.0,0,False,1
+2017-04-09,2417,311,[],0,0.0,0,False,1
+2017-04-09,1473,311,[],0,0.0,0,False,1
+2017-04-09,615,311,[],0,0.0,0,False,1
+2017-04-09,1497,311,[],0,0.0,0,False,1
+2017-04-09,1859,311,"[{'leak_ID': '1859_0000000001', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-04-09,1784,311,[],0,0.0,0,False,1
+2017-04-09,1248,311,"[{'leak_ID': '1248_0000000001', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1248_0000000002', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2017-04-09,2277,311,[],0,0.0,0,False,1
+2017-04-09,1376,311,[],0,0.0,0,False,1
+2017-04-09,1619,311,[],0,0.0,0,False,1
+2017-04-09,2232,311,[],0,0.0,0,False,1
+2017-04-09,1355,311,"[{'leak_ID': '1355_0000000001', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1355_0000000002', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",180000,180000.0,0,True,1
+2017-04-09,1403,311,"[{'leak_ID': '1403_0000000002', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-04-09,562,311,"[{'leak_ID': '562_0000000004', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-04-09,505,311,"[{'leak_ID': '505_0000000002', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-04-14,1206,311,[],0,0.0,0,False,1
+2017-04-14,1488,311,[],0,0.0,0,False,1
+2017-07-09,855,311,[],0,0.0,0,False,1
+2017-07-09,1807,311,"[{'leak_ID': '1807_0000000005', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-07-09,68,311,"[{'leak_ID': '68_0000000003', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-07-09,133,311,"[{'leak_ID': '133_0000000004', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '133_0000000005', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2017-07-09,2190,311,[],0,0.0,0,False,1
+2017-07-09,1805,311,[],0,0.0,0,False,1
+2017-07-09,1461,311,"[{'leak_ID': '1461_0000000002', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-07-09,1880,311,[],0,0.0,0,False,1
+2017-07-09,2260,311,"[{'leak_ID': '2260_0000000003', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-07-09,209,311,"[{'leak_ID': '209_0000000004', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-07-09,974,311,[],0,0.0,0,False,1
+2017-07-09,1072,311,[],0,0.0,0,False,1
+2017-07-09,1417,311,[],0,0.0,0,False,1
+2017-07-09,2338,311,"[{'leak_ID': '2338_0000000003', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-07-09,1764,311,[],0,0.0,0,False,1
+2017-07-09,1655,311,[],0,0.0,0,False,1
+2017-07-09,1217,311,"[{'leak_ID': '1217_0000000002', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-07-09,43,311,[],0,0.0,0,False,1
+2017-07-09,1202,311,"[{'leak_ID': '1202_0000000002', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-07-09,972,311,"[{'leak_ID': '972_0000000002', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-07-09,1849,311,"[{'leak_ID': '1849_0000000004', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1849_0000000005', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",180000,180000.0,0,True,1
+2017-07-09,1999,311,"[{'leak_ID': '1999_0000000003', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1999_0000000004', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2017-07-09,1004,311,"[{'leak_ID': '1004_0000000002', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-07-09,1947,311,"[{'leak_ID': '1947_0000000002', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-07-09,610,311,"[{'leak_ID': '610_0000000003', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-07-09,1076,311,"[{'leak_ID': '1076_0000000002', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-07-09,214,311,[],0,0.0,0,False,1
+2017-07-09,1370,311,"[{'leak_ID': '1370_0000000002', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-07-09,424,311,[],0,0.0,0,False,1
+2017-07-09,246,311,"[{'leak_ID': '246_0000000003', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-07-09,255,311,[],0,0.0,0,False,1
+2017-07-09,934,311,[],0,0.0,0,False,1
+2017-07-09,1779,311,"[{'leak_ID': '1779_0000000006', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-07-09,2417,311,[],0,0.0,0,False,1
+2017-07-09,1473,311,"[{'leak_ID': '1473_0000000003', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-07-09,615,311,"[{'leak_ID': '615_0000000001', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '615_0000000002', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '615_0000000003', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90018,90018.0,0,True,1
+2017-07-09,1497,311,"[{'leak_ID': '1497_0000000003', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-07-09,1859,311,[],0,0.0,0,False,1
+2017-07-09,1784,311,[],0,0.0,0,False,1
+2017-07-09,1248,311,[],0,0.0,0,False,1
+2017-07-09,2277,311,"[{'leak_ID': '2277_0000000002', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-07-09,1376,311,[],0,0.0,0,False,1
+2017-07-09,1619,311,[],0,0.0,0,False,1
+2017-07-09,2232,311,"[{'leak_ID': '2232_0000000003', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-07-09,1355,311,[],0,0.0,0,False,1
+2017-07-09,1403,311,[],0,0.0,0,False,1
+2017-07-09,562,311,[],0,0.0,0,False,1
+2017-07-09,505,311,[],0,0.0,0,False,1
+2017-07-14,1206,311,[],0,0.0,0,False,1
+2017-07-14,1488,311,[],0,0.0,0,False,1
+2017-10-14,855,311,"[{'leak_ID': '855_0000000002', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-10-14,1807,311,[],0,0.0,0,False,1
+2017-10-20,68,311,"[{'leak_ID': '68_0000000004', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '68_0000000005', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2017-10-20,133,311,[],0,0.0,0,False,1
+2017-10-20,2190,311,"[{'leak_ID': '2190_0000000002', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-10-20,1805,311,"[{'leak_ID': '1805_0000000003', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-10-20,1461,311,[],0,0.0,0,False,1
+2017-10-20,1880,311,[],0,0.0,0,False,1
+2017-10-20,2260,311,[],0,0.0,0,False,1
+2017-10-20,209,311,[],0,0.0,0,False,1
+2017-10-20,974,311,"[{'leak_ID': '974_0000000004', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '974_0000000005', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2017-10-20,1072,311,"[{'leak_ID': '1072_0000000002', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-10-20,1417,311,[],0,0.0,0,False,1
+2017-10-20,2338,311,[],0,0.0,0,False,1
+2017-10-20,1764,311,"[{'leak_ID': '1764_0000000002', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-10-20,1655,311,[],0,0.0,0,False,1
+2017-10-20,1217,311,[],0,0.0,0,False,1
+2017-10-20,43,311,"[{'leak_ID': '43_0000000002', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '43_0000000003', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2017-10-20,1202,311,[],0,0.0,0,False,1
+2017-10-20,972,311,"[{'leak_ID': '972_0000000003', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-10-20,1849,311,[],0,0.0,0,False,1
+2017-10-20,1999,311,[],0,0.0,0,False,1
+2017-10-20,1004,311,[],0,0.0,0,False,1
+2017-10-20,1947,311,[],0,0.0,0,False,1
+2017-10-20,610,311,[],0,0.0,0,False,1
+2017-10-20,1076,311,[],0,0.0,0,False,1
+2017-10-20,214,311,[],0,0.0,0,False,1
+2017-10-20,1370,311,[],0,0.0,0,False,1
+2017-10-20,424,311,[],0,0.0,0,False,1
+2017-10-20,246,311,[],0,0.0,0,False,1
+2017-10-20,255,311,"[{'leak_ID': '255_0000000002', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-10-20,934,311,"[{'leak_ID': '934_0000000002', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-10-20,1779,311,[],0,0.0,0,False,1
+2017-10-20,2417,311,[],0,0.0,0,False,1
+2017-10-20,1473,311,[],0,0.0,0,False,1
+2017-10-20,615,311,[],0,0.0,0,False,1
+2017-10-20,1497,311,[],0,0.0,0,False,1
+2017-10-20,1859,311,[],0,0.0,0,False,1
+2017-10-20,1784,311,[],0,0.0,0,False,1
+2017-10-20,1248,311,"[{'leak_ID': '1248_0000000003', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1248_0000000004', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1248_0000000005', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",27,27.0,0,True,1
+2017-10-20,2277,311,"[{'leak_ID': '2277_0000000003', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-10-20,1376,311,"[{'leak_ID': '1376_0000000003', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2017-10-20,1619,311,"[{'leak_ID': '1619_0000000001', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1619_0000000002', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2017-10-20,2232,311,[],0,0.0,0,False,1
+2017-10-20,1355,311,[],0,0.0,0,False,1
+2017-10-20,1403,311,[],0,0.0,0,False,1
+2017-10-20,562,311,[],0,0.0,0,False,1
+2017-10-20,505,311,"[{'leak_ID': '505_0000000004', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2017-10-20,1206,311,[],0,0.0,0,False,1
+2017-10-20,1488,311,[],0,0.0,0,False,1
+2018-01-21,855,311,"[{'leak_ID': '855_0000000003', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2018-01-21,1807,311,"[{'leak_ID': '1807_0000000006', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1807_0000000007', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2018-01-21,68,311,[],0,0.0,0,False,1
+2018-01-21,133,311,"[{'leak_ID': '133_0000000006', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-01-21,2190,311,[],0,0.0,0,False,1
+2018-01-21,1805,311,[],0,0.0,0,False,1
+2018-01-21,1461,311,"[{'leak_ID': '1461_0000000003', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-01-21,1880,311,[],0,0.0,0,False,1
+2018-01-21,2260,311,[],0,0.0,0,False,1
+2018-01-21,209,311,[],0,0.0,0,False,1
+2018-01-21,974,311,[],0,0.0,0,False,1
+2018-01-21,1072,311,"[{'leak_ID': '1072_0000000003', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2018-01-21,1417,311,[],0,0.0,0,False,1
+2018-01-21,2338,311,"[{'leak_ID': '2338_0000000004', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-01-21,1764,311,"[{'leak_ID': '1764_0000000003', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1764_0000000004', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1764_0000000005', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",180009,180009.0,0,True,1
+2018-01-21,1655,311,"[{'leak_ID': '1655_0000000001', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-01-21,1217,311,[],0,0.0,0,False,1
+2018-01-21,43,311,"[{'leak_ID': '43_0000000004', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2018-01-21,1202,311,[],0,0.0,0,False,1
+2018-01-21,972,311,[],0,0.0,0,False,1
+2018-01-21,1849,311,"[{'leak_ID': '1849_0000000006', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-01-21,1999,311,[],0,0.0,0,False,1
+2018-01-21,1004,311,[],0,0.0,0,False,1
+2018-01-21,1947,311,"[{'leak_ID': '1947_0000000004', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-01-21,610,311,"[{'leak_ID': '610_0000000004', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2018-01-21,1076,311,[],0,0.0,0,False,1
+2018-01-21,214,311,"[{'leak_ID': '214_0000000002', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-01-21,1370,311,[],0,0.0,0,False,1
+2018-01-21,424,311,"[{'leak_ID': '424_0000000004', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2018-01-21,246,311,"[{'leak_ID': '246_0000000004', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '246_0000000005', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2018-01-21,255,311,"[{'leak_ID': '255_0000000003', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '255_0000000004', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2018-01-21,934,311,"[{'leak_ID': '934_0000000003', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-01-21,1779,311,[],0,0.0,0,False,1
+2018-01-21,2417,311,[],0,0.0,0,False,1
+2018-01-21,1473,311,"[{'leak_ID': '1473_0000000004', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-01-21,615,311,"[{'leak_ID': '615_0000000004', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-01-21,1497,311,[],0,0.0,0,False,1
+2018-01-21,1859,311,"[{'leak_ID': '1859_0000000002', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2018-01-21,1784,311,[],0,0.0,0,False,1
+2018-01-21,1248,311,[],0,0.0,0,False,1
+2018-01-21,2277,311,"[{'leak_ID': '2277_0000000004', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '2277_0000000005', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2018-01-21,1376,311,[],0,0.0,0,False,1
+2018-01-21,1619,311,"[{'leak_ID': '1619_0000000005', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-01-21,2232,311,"[{'leak_ID': '2232_0000000004', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '2232_0000000005', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2018-01-21,1355,311,[],0,0.0,0,False,1
+2018-01-21,1403,311,[],0,0.0,0,False,1
+2018-01-21,562,311,"[{'leak_ID': '562_0000000005', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '562_0000000006', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2018-01-21,505,311,"[{'leak_ID': '505_0000000006', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2018-01-26,1206,311,"[{'leak_ID': '1206_0000000003', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2018-01-26,1488,311,[],0,0.0,0,False,1
+2018-04-22,855,311,"[{'leak_ID': '855_0000000004', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-04-22,1807,311,[],0,0.0,0,False,1
+2018-04-25,68,311,[],0,0.0,0,False,1
+2018-04-25,133,311,[],0,0.0,0,False,1
+2018-04-25,2190,311,"[{'leak_ID': '2190_0000000003', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '2190_0000000004', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2018-04-25,1805,311,"[{'leak_ID': '1805_0000000004', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1805_0000000005', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2018-04-25,1461,311,[],0,0.0,0,False,1
+2018-04-25,1880,311,"[{'leak_ID': '1880_0000000004', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-04-25,2260,311,"[{'leak_ID': '2260_0000000004', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-04-25,209,311,"[{'leak_ID': '209_0000000005', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2018-04-25,974,311,[],0,0.0,0,False,1
+2018-04-25,1072,311,[],0,0.0,0,False,1
+2018-04-25,1417,311,"[{'leak_ID': '1417_0000000001', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2018-04-25,2338,311,[],0,0.0,0,False,1
+2018-04-25,1764,311,[],0,0.0,0,False,1
+2018-04-25,1655,311,"[{'leak_ID': '1655_0000000002', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-04-25,1217,311,"[{'leak_ID': '1217_0000000003', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2018-04-25,43,311,[],0,0.0,0,False,1
+2018-04-25,1202,311,"[{'leak_ID': '1202_0000000003', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-04-25,972,311,[],0,0.0,0,False,1
+2018-04-25,1849,311,"[{'leak_ID': '1849_0000000007', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-04-25,1999,311,[],0,0.0,0,False,1
+2018-04-25,1004,311,[],0,0.0,0,False,1
+2018-04-25,1947,311,"[{'leak_ID': '1947_0000000005', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-04-25,610,311,"[{'leak_ID': '610_0000000005', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '610_0000000006', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2018-04-25,1076,311,"[{'leak_ID': '1076_0000000003', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2018-04-25,214,311,"[{'leak_ID': '214_0000000003', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-04-25,1370,311,[],0,0.0,0,False,1
+2018-04-25,424,311,"[{'leak_ID': '424_0000000005', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-04-25,246,311,[],0,0.0,0,False,1
+2018-04-25,255,311,"[{'leak_ID': '255_0000000006', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2018-04-25,934,311,"[{'leak_ID': '934_0000000005', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-04-25,1779,311,[],0,0.0,0,False,1
+2018-04-25,2417,311,"[{'leak_ID': '2417_0000000001', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '2417_0000000002', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2018-04-25,1473,311,[],0,0.0,0,False,1
+2018-04-25,615,311,[],0,0.0,0,False,1
+2018-04-25,1497,311,"[{'leak_ID': '1497_0000000004', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-04-25,1859,311,[],0,0.0,0,False,1
+2018-04-25,1784,311,[],0,0.0,0,False,1
+2018-04-25,1248,311,"[{'leak_ID': '1248_0000000006', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-04-25,2277,311,"[{'leak_ID': '2277_0000000006', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-04-25,1376,311,"[{'leak_ID': '1376_0000000004', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1376_0000000005', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",180000,180000.0,0,True,1
+2018-04-25,1619,311,[],0,0.0,0,False,1
+2018-04-25,2232,311,"[{'leak_ID': '2232_0000000006', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '2232_0000000007', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2018-04-25,1355,311,"[{'leak_ID': '1355_0000000003', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-04-25,1403,311,"[{'leak_ID': '1403_0000000003', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-04-25,562,311,[],0,0.0,0,False,1
+2018-04-25,505,311,"[{'leak_ID': '505_0000000007', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '505_0000000008', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2018-04-30,1206,311,[],0,0.0,0,False,1
+2018-04-30,1488,311,[],0,0.0,0,False,1
+2018-07-26,855,311,[],0,0.0,0,False,1
+2018-07-26,1807,311,[],0,0.0,0,False,1
+2018-07-26,68,311,"[{'leak_ID': '68_0000000006', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2018-07-30,133,311,"[{'leak_ID': '133_0000000007', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-07-30,2190,311,"[{'leak_ID': '2190_0000000005', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '2190_0000000006', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2018-07-30,1805,311,"[{'leak_ID': '1805_0000000006', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-07-30,1461,311,[],0,0.0,0,False,1
+2018-07-30,1880,311,[],0,0.0,0,False,1
+2018-07-30,2260,311,[],0,0.0,0,False,1
+2018-07-30,209,311,"[{'leak_ID': '209_0000000006', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-07-30,974,311,[],0,0.0,0,False,1
+2018-07-30,1072,311,[],0,0.0,0,False,1
+2018-07-30,1417,311,[],0,0.0,0,False,1
+2018-07-30,2338,311,"[{'leak_ID': '2338_0000000005', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-07-30,1764,311,"[{'leak_ID': '1764_0000000006', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-07-30,1655,311,"[{'leak_ID': '1655_0000000003', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-07-30,1217,311,"[{'leak_ID': '1217_0000000004', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2018-07-30,43,311,[],0,0.0,0,False,1
+2018-07-30,1202,311,"[{'leak_ID': '1202_0000000004', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-07-30,972,311,"[{'leak_ID': '972_0000000004', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-07-30,1849,311,"[{'leak_ID': '1849_0000000009', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-07-30,1999,311,"[{'leak_ID': '1999_0000000005', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1999_0000000006', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2018-07-30,1004,311,[],0,0.0,0,False,1
+2018-07-30,1947,311,"[{'leak_ID': '1947_0000000006', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-07-30,610,311,[],0,0.0,0,False,1
+2018-07-30,1076,311,"[{'leak_ID': '1076_0000000004', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-07-30,214,311,[],0,0.0,0,False,1
+2018-07-30,1370,311,"[{'leak_ID': '1370_0000000003', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1370_0000000004', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2018-07-30,424,311,[],0,0.0,0,False,1
+2018-07-30,246,311,[],0,0.0,0,False,1
+2018-07-30,255,311,[],0,0.0,0,False,1
+2018-07-30,934,311,"[{'leak_ID': '934_0000000006', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '934_0000000007', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2018-07-30,1779,311,[],0,0.0,0,False,1
+2018-07-30,2417,311,"[{'leak_ID': '2417_0000000003', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-07-30,1473,311,"[{'leak_ID': '1473_0000000005', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2018-07-30,615,311,[],0,0.0,0,False,1
+2018-07-30,1497,311,"[{'leak_ID': '1497_0000000005', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1497_0000000006', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2018-07-30,1859,311,"[{'leak_ID': '1859_0000000003', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-07-30,1784,311,[],0,0.0,0,False,1
+2018-07-30,1248,311,"[{'leak_ID': '1248_0000000007', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1248_0000000008', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2018-07-30,2277,311,[],0,0.0,0,False,1
+2018-07-30,1376,311,"[{'leak_ID': '1376_0000000006', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-07-30,1619,311,[],0,0.0,0,False,1
+2018-07-30,2232,311,"[{'leak_ID': '2232_0000000008', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-07-30,1355,311,[],0,0.0,0,False,1
+2018-07-30,1403,311,[],0,0.0,0,False,1
+2018-07-30,562,311,[],0,0.0,0,False,1
+2018-07-30,505,311,[],0,0.0,0,False,1
+2018-07-30,1206,311,"[{'leak_ID': '1206_0000000004', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-07-30,1488,311,[],0,0.0,0,False,1
+2018-10-30,855,311,"[{'leak_ID': '855_0000000005', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-10-30,1807,311,[],0,0.0,0,False,1
+2018-11-01,68,311,[],0,0.0,0,False,1
+2018-11-05,133,311,"[{'leak_ID': '133_0000000008', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-11-05,2190,311,[],0,0.0,0,False,1
+2018-11-05,1805,311,"[{'leak_ID': '1805_0000000007', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-11-07,1461,311,[],0,0.0,0,False,1
+2018-11-07,1880,311,[],0,0.0,0,False,1
+2018-11-07,2260,311,"[{'leak_ID': '2260_0000000005', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '2260_0000000006', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",180000,180000.0,0,True,1
+2018-11-07,209,311,[],0,0.0,0,False,1
+2018-11-07,974,311,"[{'leak_ID': '974_0000000006', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '974_0000000007', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",180000,180000.0,0,True,1
+2018-11-07,1072,311,[],0,0.0,0,False,1
+2018-11-07,1417,311,"[{'leak_ID': '1417_0000000002', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-11-07,2338,311,[],0,0.0,0,False,1
+2018-11-07,1764,311,"[{'leak_ID': '1764_0000000007', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-11-07,1655,311,[],0,0.0,0,False,1
+2018-11-07,1217,311,"[{'leak_ID': '1217_0000000005', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-11-07,43,311,"[{'leak_ID': '43_0000000005', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-11-07,1202,311,[],0,0.0,0,False,1
+2018-11-07,972,311,"[{'leak_ID': '972_0000000005', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '972_0000000006', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2018-11-07,1849,311,"[{'leak_ID': '1849_0000000010', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-11-07,1999,311,"[{'leak_ID': '1999_0000000007', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2018-11-07,1004,311,"[{'leak_ID': '1004_0000000003', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-11-07,1947,311,"[{'leak_ID': '1947_0000000007', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-11-07,610,311,[],0,0.0,0,False,1
+2018-11-07,1076,311,[],0,0.0,0,False,1
+2018-11-07,214,311,"[{'leak_ID': '214_0000000004', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-11-07,1370,311,[],0,0.0,0,False,1
+2018-11-07,424,311,[],0,0.0,0,False,1
+2018-11-07,246,311,"[{'leak_ID': '246_0000000006', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '246_0000000007', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2018-11-07,255,311,[],0,0.0,0,False,1
+2018-11-07,934,311,"[{'leak_ID': '934_0000000008', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '934_0000000009', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",180000,180000.0,0,True,1
+2018-11-07,1779,311,[],0,0.0,0,False,1
+2018-11-07,2417,311,[],0,0.0,0,False,1
+2018-11-07,1473,311,[],0,0.0,0,False,1
+2018-11-07,615,311,[],0,0.0,0,False,1
+2018-11-07,1497,311,[],0,0.0,0,False,1
+2018-11-07,1859,311,"[{'leak_ID': '1859_0000000004', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1859_0000000005', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2018-11-07,1784,311,[],0,0.0,0,False,1
+2018-11-07,1248,311,"[{'leak_ID': '1248_0000000009', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1248_0000000010', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2018-11-07,2277,311,[],0,0.0,0,False,1
+2018-11-07,1376,311,[],0,0.0,0,False,1
+2018-11-07,1619,311,[],0,0.0,0,False,1
+2018-11-07,2232,311,[],0,0.0,0,False,1
+2018-11-07,1355,311,"[{'leak_ID': '1355_0000000004', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1355_0000000005', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1355_0000000006', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",27,27.0,0,True,1
+2018-11-07,1403,311,[],0,0.0,0,False,1
+2018-11-07,562,311,[],0,0.0,0,False,1
+2018-11-07,505,311,"[{'leak_ID': '505_0000000010', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2018-11-07,1206,311,[],0,0.0,0,False,1
+2018-11-07,1488,311,[],0,0.0,0,False,1
+2019-01-30,855,311,[],0,0.0,0,False,1
+2019-01-30,1807,311,[],0,0.0,0,False,1
+2019-02-01,68,311,[],0,0.0,0,False,1
+2019-02-05,133,311,"[{'leak_ID': '133_0000000009', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-02-05,2190,311,[],0,0.0,0,False,1
+2019-02-05,1805,311,[],0,0.0,0,False,1
+2019-02-06,1461,311,"[{'leak_ID': '1461_0000000005', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2019-02-06,1880,311,[],0,0.0,0,False,1
+2019-02-06,2260,311,[],0,0.0,0,False,1
+2019-02-06,209,311,"[{'leak_ID': '209_0000000007', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-02-06,974,311,[],0,0.0,0,False,1
+2019-02-06,1072,311,[],0,0.0,0,False,1
+2019-02-06,1417,311,"[{'leak_ID': '1417_0000000003', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2019-02-06,2338,311,[],0,0.0,0,False,1
+2019-02-06,1764,311,[],0,0.0,0,False,1
+2019-02-06,1655,311,[],0,0.0,0,False,1
+2019-02-06,1217,311,[],0,0.0,0,False,1
+2019-02-06,43,311,[],0,0.0,0,False,1
+2019-02-06,1202,311,"[{'leak_ID': '1202_0000000005', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2019-02-06,972,311,[],0,0.0,0,False,1
+2019-02-06,1849,311,"[{'leak_ID': '1849_0000000013', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-02-06,1999,311,[],0,0.0,0,False,1
+2019-02-06,1004,311,[],0,0.0,0,False,1
+2019-02-06,1947,311,[],0,0.0,0,False,1
+2019-02-06,610,311,[],0,0.0,0,False,1
+2019-02-06,1076,311,[],0,0.0,0,False,1
+2019-02-06,214,311,[],0,0.0,0,False,1
+2019-02-06,1370,311,"[{'leak_ID': '1370_0000000005', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1370_0000000006', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2019-02-06,424,311,[],0,0.0,0,False,1
+2019-02-06,246,311,"[{'leak_ID': '246_0000000008', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '246_0000000009', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2019-02-06,255,311,[],0,0.0,0,False,1
+2019-02-06,934,311,[],0,0.0,0,False,1
+2019-02-06,1779,311,"[{'leak_ID': '1779_0000000007', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1779_0000000008', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2019-02-06,2417,311,[],0,0.0,0,False,1
+2019-02-06,1473,311,[],0,0.0,0,False,1
+2019-02-06,615,311,"[{'leak_ID': '615_0000000005', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-02-06,1497,311,"[{'leak_ID': '1497_0000000007', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-02-06,1859,311,[],0,0.0,0,False,1
+2019-02-06,1784,311,[],0,0.0,0,False,1
+2019-02-06,1248,311,[],0,0.0,0,False,1
+2019-02-06,2277,311,[],0,0.0,0,False,1
+2019-02-06,1376,311,"[{'leak_ID': '1376_0000000007', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-02-06,1619,311,[],0,0.0,0,False,1
+2019-02-06,2232,311,"[{'leak_ID': '2232_0000000010', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-02-06,1355,311,[],0,0.0,0,False,1
+2019-02-06,1403,311,[],0,0.0,0,False,1
+2019-02-06,562,311,[],0,0.0,0,False,1
+2019-02-06,505,311,[],0,0.0,0,False,1
+2019-02-06,1206,311,[],0,0.0,0,False,1
+2019-02-06,1488,311,[],0,0.0,0,False,1
+2019-05-01,855,311,"[{'leak_ID': '855_0000000006', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-05-01,1807,311,[],0,0.0,0,False,1
+2019-05-04,68,311,"[{'leak_ID': '68_0000000007', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-05-07,133,311,"[{'leak_ID': '133_0000000010', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-05-07,2190,311,[],0,0.0,0,False,1
+2019-05-07,1805,311,"[{'leak_ID': '1805_0000000008', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-05-09,1461,311,"[{'leak_ID': '1461_0000000006', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-05-09,1880,311,[],0,0.0,0,False,1
+2019-05-09,2260,311,[],0,0.0,0,False,1
+2019-05-09,209,311,"[{'leak_ID': '209_0000000008', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '209_0000000009', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2019-05-09,974,311,[],0,0.0,0,False,1
+2019-05-09,1072,311,"[{'leak_ID': '1072_0000000004', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-05-09,1417,311,"[{'leak_ID': '1417_0000000006', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2019-05-09,2338,311,[],0,0.0,0,False,1
+2019-05-09,1764,311,[],0,0.0,0,False,1
+2019-05-09,1655,311,"[{'leak_ID': '1655_0000000004', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-05-09,1217,311,[],0,0.0,0,False,1
+2019-05-09,43,311,"[{'leak_ID': '43_0000000006', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '43_0000000007', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2019-05-09,1202,311,[],0,0.0,0,False,1
+2019-05-09,972,311,"[{'leak_ID': '972_0000000007', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-05-09,1849,311,[],0,0.0,0,False,1
+2019-05-09,1999,311,[],0,0.0,0,False,1
+2019-05-09,1004,311,"[{'leak_ID': '1004_0000000004', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-05-09,1947,311,"[{'leak_ID': '1947_0000000009', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1947_0000000010', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",180000,180000.0,0,True,1
+2019-05-09,610,311,[],0,0.0,0,False,1
+2019-05-09,1076,311,[],0,0.0,0,False,1
+2019-05-09,214,311,[],0,0.0,0,False,1
+2019-05-09,1370,311,[],0,0.0,0,False,1
+2019-05-09,424,311,[],0,0.0,0,False,1
+2019-05-09,246,311,"[{'leak_ID': '246_0000000010', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-05-09,255,311,[],0,0.0,0,False,1
+2019-05-09,934,311,[],0,0.0,0,False,1
+2019-05-09,1779,311,"[{'leak_ID': '1779_0000000009', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-05-09,2417,311,"[{'leak_ID': '2417_0000000004', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '2417_0000000005', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '2417_0000000006', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90018,90018.0,0,True,1
+2019-05-09,1473,311,[],0,0.0,0,False,1
+2019-05-09,615,311,[],0,0.0,0,False,1
+2019-05-09,1497,311,[],0,0.0,0,False,1
+2019-05-09,1859,311,"[{'leak_ID': '1859_0000000006', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2019-05-09,1784,311,[],0,0.0,0,False,1
+2019-05-09,1248,311,[],0,0.0,0,False,1
+2019-05-09,2277,311,[],0,0.0,0,False,1
+2019-05-09,1376,311,[],0,0.0,0,False,1
+2019-05-09,1619,311,[],0,0.0,0,False,1
+2019-05-09,2232,311,[],0,0.0,0,False,1
+2019-05-09,1355,311,[],0,0.0,0,False,1
+2019-05-09,1403,311,"[{'leak_ID': '1403_0000000004', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-05-09,562,311,[],0,0.0,0,False,1
+2019-05-09,505,311,"[{'leak_ID': '505_0000000011', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2019-05-09,1206,311,"[{'leak_ID': '1206_0000000005', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1206_0000000006', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2019-05-09,1488,311,[],0,0.0,0,False,1
+2019-08-02,855,311,[],0,0.0,0,False,1
+2019-08-02,1807,311,[],0,0.0,0,False,1
+2019-08-03,68,311,[],0,0.0,0,False,1
+2019-08-06,133,311,[],0,0.0,0,False,1
+2019-08-06,2190,311,"[{'leak_ID': '2190_0000000007', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2019-08-06,1805,311,"[{'leak_ID': '1805_0000000009', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-08-08,1461,311,[],0,0.0,0,False,1
+2019-08-08,1880,311,"[{'leak_ID': '1880_0000000005', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2019-08-08,2260,311,"[{'leak_ID': '2260_0000000007', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-08-10,209,311,[],0,0.0,0,False,1
+2019-08-13,974,311,[],0,0.0,0,False,1
+2019-08-14,1072,311,[],0,0.0,0,False,1
+2019-08-14,1417,311,[],0,0.0,0,False,1
+2019-08-14,2338,311,"[{'leak_ID': '2338_0000000006', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-08-14,1764,311,"[{'leak_ID': '1764_0000000008', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-08-14,1655,311,[],0,0.0,0,False,1
+2019-08-14,1217,311,[],0,0.0,0,False,1
+2019-08-14,43,311,"[{'leak_ID': '43_0000000008', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2019-08-14,1202,311,"[{'leak_ID': '1202_0000000006', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-08-14,972,311,"[{'leak_ID': '972_0000000008', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-08-14,1849,311,"[{'leak_ID': '1849_0000000014', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-08-14,1999,311,"[{'leak_ID': '1999_0000000008', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2019-08-14,1004,311,"[{'leak_ID': '1004_0000000005', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-08-14,1947,311,[],0,0.0,0,False,1
+2019-08-14,610,311,[],0,0.0,0,False,1
+2019-08-14,1076,311,"[{'leak_ID': '1076_0000000005', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-08-14,214,311,[],0,0.0,0,False,1
+2019-08-14,1370,311,[],0,0.0,0,False,1
+2019-08-14,424,311,"[{'leak_ID': '424_0000000006', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-08-14,246,311,[],0,0.0,0,False,1
+2019-08-14,255,311,"[{'leak_ID': '255_0000000007', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2019-08-14,934,311,[],0,0.0,0,False,1
+2019-08-14,1779,311,[],0,0.0,0,False,1
+2019-08-14,2417,311,"[{'leak_ID': '2417_0000000007', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-08-14,1473,311,[],0,0.0,0,False,1
+2019-08-14,615,311,[],0,0.0,0,False,1
+2019-08-14,1497,311,"[{'leak_ID': '1497_0000000008', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-08-14,1859,311,[],0,0.0,0,False,1
+2019-08-14,1784,311,"[{'leak_ID': '1784_0000000001', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-08-14,1248,311,[],0,0.0,0,False,1
+2019-08-14,2277,311,"[{'leak_ID': '2277_0000000008', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2019-08-14,1376,311,[],0,0.0,0,False,1
+2019-08-14,1619,311,"[{'leak_ID': '1619_0000000006', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-08-14,2232,311,[],0,0.0,0,False,1
+2019-08-14,1355,311,"[{'leak_ID': '1355_0000000007', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1355_0000000008', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2019-08-14,1403,311,[],0,0.0,0,False,1
+2019-08-14,562,311,"[{'leak_ID': '562_0000000007', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2019-08-14,505,311,[],0,0.0,0,False,1
+2019-08-14,1206,311,[],0,0.0,0,False,1
+2019-08-14,1488,311,[],0,0.0,0,False,1
+2019-11-05,855,311,"[{'leak_ID': '855_0000000007', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-11-05,1807,311,"[{'leak_ID': '1807_0000000008', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-11-05,68,311,"[{'leak_ID': '68_0000000008', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '68_0000000009', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2019-11-05,133,311,[],0,0.0,0,False,1
+2019-11-05,2190,311,"[{'leak_ID': '2190_0000000008', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-11-05,1805,311,"[{'leak_ID': '1805_0000000010', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-11-08,1461,311,[],0,0.0,0,False,1
+2019-11-08,1880,311,"[{'leak_ID': '1880_0000000006', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-11-08,2260,311,"[{'leak_ID': '2260_0000000008', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '2260_0000000009', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2019-11-11,209,311,"[{'leak_ID': '209_0000000010', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-11-28,974,311,"[{'leak_ID': '974_0000000008', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-11-28,1072,311,"[{'leak_ID': '1072_0000000005', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-11-28,1417,311,[],0,0.0,0,False,1
+2019-11-28,2338,311,[],0,0.0,0,False,1
+2019-11-28,1764,311,[],0,0.0,0,False,1
+2019-11-28,1655,311,[],0,0.0,0,False,1
+2019-11-28,1217,311,"[{'leak_ID': '1217_0000000006', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2019-11-28,43,311,[],0,0.0,0,False,1
+2019-11-28,1202,311,"[{'leak_ID': '1202_0000000007', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-11-28,972,311,"[{'leak_ID': '972_0000000009', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '972_0000000010', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2019-11-28,1849,311,"[{'leak_ID': '1849_0000000015', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1849_0000000016', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2019-11-28,1999,311,"[{'leak_ID': '1999_0000000009', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1999_0000000010', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",180000,180000.0,0,True,1
+2019-11-28,1004,311,"[{'leak_ID': '1004_0000000006', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1004_0000000007', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2019-11-28,1947,311,[],0,0.0,0,False,1
+2019-11-28,610,311,"[{'leak_ID': '610_0000000007', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '610_0000000008', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '610_0000000009', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90018,90018.0,0,True,1
+2019-11-28,1076,311,"[{'leak_ID': '1076_0000000006', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1076_0000000007', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2019-11-28,214,311,"[{'leak_ID': '214_0000000005', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-11-28,1370,311,"[{'leak_ID': '1370_0000000007', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-11-28,424,311,"[{'leak_ID': '424_0000000007', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-11-28,246,311,"[{'leak_ID': '246_0000000011', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '246_0000000012', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '246_0000000013', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",27,27.0,0,True,1
+2019-11-28,255,311,[],0,0.0,0,False,1
+2019-11-28,934,311,[],0,0.0,0,False,1
+2019-11-28,1779,311,"[{'leak_ID': '1779_0000000010', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-11-28,2417,311,"[{'leak_ID': '2417_0000000008', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-11-28,1473,311,"[{'leak_ID': '1473_0000000006', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1473_0000000007', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2019-11-28,615,311,[],0,0.0,0,False,1
+2019-11-28,1497,311,[],0,0.0,0,False,1
+2019-11-28,1859,311,"[{'leak_ID': '1859_0000000007', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-11-28,1784,311,[],0,0.0,0,False,1
+2019-11-28,1248,311,[],0,0.0,0,False,1
+2019-11-28,2277,311,[],0,0.0,0,False,1
+2019-11-28,1376,311,[],0,0.0,0,False,1
+2019-11-28,1619,311,[],0,0.0,0,False,1
+2019-11-28,2232,311,"[{'leak_ID': '2232_0000000011', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '2232_0000000012', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2019-11-28,1355,311,"[{'leak_ID': '1355_0000000009', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-11-28,1403,311,"[{'leak_ID': '1403_0000000005', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2019-11-28,562,311,[],0,0.0,0,False,1
+2019-11-28,505,311,[],0,0.0,0,False,1
+2019-11-28,1206,311,"[{'leak_ID': '1206_0000000007', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1206_0000000008', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2019-11-28,1488,311,"[{'leak_ID': '1488_0000000002', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1488_0000000003', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2020-02-04,855,311,"[{'leak_ID': '855_0000000008', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-02-04,1807,311,[],0,0.0,0,False,1
+2020-02-04,68,311,"[{'leak_ID': '68_0000000010', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-02-04,133,311,"[{'leak_ID': '133_0000000011', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-02-04,2190,311,[],0,0.0,0,False,1
+2020-02-04,1805,311,[],0,0.0,0,False,1
+2020-02-13,1461,311,"[{'leak_ID': '1461_0000000007', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-02-13,1880,311,"[{'leak_ID': '1880_0000000007', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1880_0000000008', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2020-02-13,2260,311,[],0,0.0,0,False,1
+2020-02-13,209,311,"[{'leak_ID': '209_0000000011', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-02-19,974,311,[],0,0.0,0,False,1
+2020-02-19,1072,311,"[{'leak_ID': '1072_0000000007', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1072_0000000008', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2020-02-19,1417,311,"[{'leak_ID': '1417_0000000007', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1417_0000000008', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1417_0000000009', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1417_0000000010', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1417_0000000011', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1417_0000000012', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90045,90045.0,0,True,1
+2020-02-19,2338,311,[],0,0.0,0,False,1
+2020-02-19,1764,311,[],0,0.0,0,False,1
+2020-02-19,1655,311,[],0,0.0,0,False,1
+2020-02-19,1217,311,[],0,0.0,0,False,1
+2020-02-19,43,311,"[{'leak_ID': '43_0000000009', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-02-19,1202,311,[],0,0.0,0,False,1
+2020-02-19,972,311,"[{'leak_ID': '972_0000000011', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-02-19,1849,311,[],0,0.0,0,False,1
+2020-02-19,1999,311,[],0,0.0,0,False,1
+2020-02-19,1004,311,[],0,0.0,0,False,1
+2020-02-19,1947,311,[],0,0.0,0,False,1
+2020-02-19,610,311,[],0,0.0,0,False,1
+2020-02-19,1076,311,[],0,0.0,0,False,1
+2020-02-19,214,311,[],0,0.0,0,False,1
+2020-02-19,1370,311,[],0,0.0,0,False,1
+2020-02-19,424,311,[],0,0.0,0,False,1
+2020-02-19,246,311,[],0,0.0,0,False,1
+2020-02-19,255,311,"[{'leak_ID': '255_0000000008', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-02-19,934,311,"[{'leak_ID': '934_0000000010', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-02-19,1779,311,"[{'leak_ID': '1779_0000000011', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-02-19,2417,311,[],0,0.0,0,False,1
+2020-02-19,1473,311,"[{'leak_ID': '1473_0000000008', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-02-19,615,311,[],0,0.0,0,False,1
+2020-02-19,1497,311,"[{'leak_ID': '1497_0000000009', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-02-19,1859,311,[],0,0.0,0,False,1
+2020-02-19,1784,311,"[{'leak_ID': '1784_0000000002', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-02-19,1248,311,[],0,0.0,0,False,1
+2020-02-19,2277,311,[],0,0.0,0,False,1
+2020-02-19,1376,311,"[{'leak_ID': '1376_0000000008', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-02-19,1619,311,"[{'leak_ID': '1619_0000000007', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-02-19,2232,311,"[{'leak_ID': '2232_0000000013', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-02-19,1355,311,"[{'leak_ID': '1355_0000000010', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-02-19,1403,311,"[{'leak_ID': '1403_0000000006', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-02-19,562,311,"[{'leak_ID': '562_0000000008', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-02-19,505,311,[],0,0.0,0,False,1
+2020-02-19,1206,311,[],0,0.0,0,False,1
+2020-02-19,1488,311,"[{'leak_ID': '1488_0000000004', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-05-07,855,311,[],0,0.0,0,False,1
+2020-05-07,1807,311,[],0,0.0,0,False,1
+2020-05-08,68,311,"[{'leak_ID': '68_0000000011', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-05-08,133,311,[],0,0.0,0,False,1
+2020-05-08,2190,311,[],0,0.0,0,False,1
+2020-05-08,1805,311,"[{'leak_ID': '1805_0000000011', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-05-15,1461,311,"[{'leak_ID': '1461_0000000008', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1461_0000000009', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1461_0000000010', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90018,90018.0,0,True,1
+2020-05-15,1880,311,"[{'leak_ID': '1880_0000000009', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-05-15,2260,311,[],0,0.0,0,False,1
+2020-05-15,209,311,[],0,0.0,0,False,1
+2020-05-17,974,311,"[{'leak_ID': '974_0000000009', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '974_0000000010', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2020-05-17,1072,311,[],0,0.0,0,False,1
+2020-05-17,1417,311,[],0,0.0,0,False,1
+2020-05-17,2338,311,"[{'leak_ID': '2338_0000000007', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '2338_0000000008', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",180000,180000.0,0,True,1
+2020-05-17,1764,311,"[{'leak_ID': '1764_0000000009', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-05-17,1655,311,[],0,0.0,0,False,1
+2020-05-17,1217,311,[],0,0.0,0,False,1
+2020-05-17,43,311,"[{'leak_ID': '43_0000000010', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-05-17,1202,311,[],0,0.0,0,False,1
+2020-05-17,972,311,[],0,0.0,0,False,1
+2020-05-17,1849,311,"[{'leak_ID': '1849_0000000017', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-05-17,1999,311,[],0,0.0,0,False,1
+2020-05-17,1004,311,"[{'leak_ID': '1004_0000000008', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-05-17,1947,311,"[{'leak_ID': '1947_0000000011', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-05-17,610,311,"[{'leak_ID': '610_0000000010', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-05-17,1076,311,[],0,0.0,0,False,1
+2020-05-17,214,311,"[{'leak_ID': '214_0000000006', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-05-17,1370,311,"[{'leak_ID': '1370_0000000008', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1370_0000000009', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2020-05-17,424,311,[],0,0.0,0,False,1
+2020-05-17,246,311,"[{'leak_ID': '246_0000000014', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '246_0000000015', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2020-05-17,255,311,[],0,0.0,0,False,1
+2020-05-17,934,311,[],0,0.0,0,False,1
+2020-05-17,1779,311,"[{'leak_ID': '1779_0000000012', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-05-17,2417,311,[],0,0.0,0,False,1
+2020-05-17,1473,311,"[{'leak_ID': '1473_0000000009', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-05-17,615,311,[],0,0.0,0,False,1
+2020-05-17,1497,311,[],0,0.0,0,False,1
+2020-05-17,1859,311,"[{'leak_ID': '1859_0000000008', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-05-17,1784,311,"[{'leak_ID': '1784_0000000003', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-05-17,1248,311,[],0,0.0,0,False,1
+2020-05-17,2277,311,"[{'leak_ID': '2277_0000000009', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-05-17,1376,311,[],0,0.0,0,False,1
+2020-05-17,1619,311,[],0,0.0,0,False,1
+2020-05-17,2232,311,"[{'leak_ID': '2232_0000000014', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-05-17,1355,311,"[{'leak_ID': '1355_0000000011', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-05-17,1403,311,"[{'leak_ID': '1403_0000000007', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-05-17,562,311,[],0,0.0,0,False,1
+2020-05-17,505,311,[],0,0.0,0,False,1
+2020-05-17,1206,311,"[{'leak_ID': '1206_0000000010', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-05-17,1488,311,"[{'leak_ID': '1488_0000000005', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-08-07,855,311,[],0,0.0,0,False,1
+2020-08-07,1807,311,[],0,0.0,0,False,1
+2020-08-07,68,311,"[{'leak_ID': '68_0000000012', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '68_0000000013', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '68_0000000014', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",27,27.0,0,True,1
+2020-08-07,133,311,[],0,0.0,0,False,1
+2020-08-07,2190,311,"[{'leak_ID': '2190_0000000009', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-08-07,1805,311,"[{'leak_ID': '1805_0000000012', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-08-14,1461,311,[],0,0.0,0,False,1
+2020-08-14,1880,311,"[{'leak_ID': '1880_0000000010', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1880_0000000011', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1880_0000000012', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1880_0000000013', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90027,90027.0,0,True,1
+2020-08-14,2260,311,[],0,0.0,0,False,1
+2020-08-14,209,311,"[{'leak_ID': '209_0000000012', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '209_0000000013', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2020-08-16,974,311,[],0,0.0,0,False,1
+2020-08-16,1072,311,"[{'leak_ID': '1072_0000000009', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-08-16,1417,311,"[{'leak_ID': '1417_0000000013', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1417_0000000014', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",180000,180000.0,0,True,1
+2020-08-16,2338,311,"[{'leak_ID': '2338_0000000009', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-08-16,1764,311,"[{'leak_ID': '1764_0000000010', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-08-16,1655,311,[],0,0.0,0,False,1
+2020-08-16,1217,311,"[{'leak_ID': '1217_0000000007', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-08-16,43,311,[],0,0.0,0,False,1
+2020-08-16,1202,311,[],0,0.0,0,False,1
+2020-08-16,972,311,"[{'leak_ID': '972_0000000012', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-08-16,1849,311,"[{'leak_ID': '1849_0000000019', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1849_0000000020', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2020-08-16,1999,311,[],0,0.0,0,False,1
+2020-08-16,1004,311,[],0,0.0,0,False,1
+2020-08-16,1947,311,[],0,0.0,0,False,1
+2020-08-16,610,311,[],0,0.0,0,False,1
+2020-08-16,1076,311,[],0,0.0,0,False,1
+2020-08-16,214,311,[],0,0.0,0,False,1
+2020-08-16,1370,311,"[{'leak_ID': '1370_0000000010', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-08-16,424,311,[],0,0.0,0,False,1
+2020-08-16,246,311,"[{'leak_ID': '246_0000000016', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-08-16,255,311,"[{'leak_ID': '255_0000000009', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-08-16,934,311,[],0,0.0,0,False,1
+2020-08-16,1779,311,[],0,0.0,0,False,1
+2020-08-16,2417,311,"[{'leak_ID': '2417_0000000009', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-08-16,1473,311,[],0,0.0,0,False,1
+2020-08-16,615,311,"[{'leak_ID': '615_0000000006', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '615_0000000007', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2020-08-16,1497,311,[],0,0.0,0,False,1
+2020-08-16,1859,311,"[{'leak_ID': '1859_0000000009', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1859_0000000010', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2020-08-16,1784,311,"[{'leak_ID': '1784_0000000004', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1784_0000000005', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2020-08-16,1248,311,[],0,0.0,0,False,1
+2020-08-16,2277,311,"[{'leak_ID': '2277_0000000010', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-08-16,1376,311,"[{'leak_ID': '1376_0000000010', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-08-16,1619,311,[],0,0.0,0,False,1
+2020-08-16,2232,311,[],0,0.0,0,False,1
+2020-08-16,1355,311,[],0,0.0,0,False,1
+2020-08-16,1403,311,"[{'leak_ID': '1403_0000000008', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-08-16,562,311,"[{'leak_ID': '562_0000000009', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-08-16,505,311,"[{'leak_ID': '505_0000000012', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-08-16,1206,311,"[{'leak_ID': '1206_0000000011', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-08-16,1488,311,[],0,0.0,0,False,1
+2020-11-06,855,311,[],0,0.0,0,False,1
+2020-11-06,1807,311,"[{'leak_ID': '1807_0000000009', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1807_0000000010', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2020-11-06,68,311,[],0,0.0,0,False,1
+2020-11-06,133,311,"[{'leak_ID': '133_0000000012', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '133_0000000013', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2020-11-06,2190,311,[],0,0.0,0,False,1
+2020-11-06,1805,311,[],0,0.0,0,False,1
+2020-11-13,1461,311,[],0,0.0,0,False,1
+2020-11-13,1880,311,"[{'leak_ID': '1880_0000000014', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-11-13,2260,311,[],0,0.0,0,False,1
+2020-11-13,209,311,[],0,0.0,0,False,1
+2020-11-15,974,311,[],0,0.0,0,False,1
+2020-11-15,1072,311,[],0,0.0,0,False,1
+2020-11-15,1417,311,[],0,0.0,0,False,1
+2020-11-15,2338,311,[],0,0.0,0,False,1
+2020-11-15,1764,311,[],0,0.0,0,False,1
+2020-11-15,1655,311,"[{'leak_ID': '1655_0000000005', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-11-15,1217,311,[],0,0.0,0,False,1
+2020-11-15,43,311,[],0,0.0,0,False,1
+2020-11-15,1202,311,"[{'leak_ID': '1202_0000000008', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-11-15,972,311,[],0,0.0,0,False,1
+2020-11-15,1849,311,[],0,0.0,0,False,1
+2020-11-15,1999,311,"[{'leak_ID': '1999_0000000011', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-11-15,1004,311,[],0,0.0,0,False,1
+2020-11-15,1947,311,[],0,0.0,0,False,1
+2020-11-15,610,311,[],0,0.0,0,False,1
+2020-11-15,1076,311,"[{'leak_ID': '1076_0000000008', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1076_0000000009', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2020-11-15,214,311,[],0,0.0,0,False,1
+2020-11-15,1370,311,"[{'leak_ID': '1370_0000000011', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-11-15,424,311,"[{'leak_ID': '424_0000000008', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-11-15,246,311,"[{'leak_ID': '246_0000000017', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-11-15,255,311,"[{'leak_ID': '255_0000000010', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '255_0000000011', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2020-11-15,934,311,"[{'leak_ID': '934_0000000011', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-11-15,1779,311,"[{'leak_ID': '1779_0000000013', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2020-11-15,2417,311,"[{'leak_ID': '2417_0000000010', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-11-15,1473,311,[],0,0.0,0,False,1
+2020-11-15,615,311,"[{'leak_ID': '615_0000000008', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-11-15,1497,311,[],0,0.0,0,False,1
+2020-11-15,1859,311,[],0,0.0,0,False,1
+2020-11-15,1784,311,"[{'leak_ID': '1784_0000000007', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-11-15,1248,311,"[{'leak_ID': '1248_0000000011', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-11-15,2277,311,"[{'leak_ID': '2277_0000000011', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-11-15,1376,311,[],0,0.0,0,False,1
+2020-11-15,1619,311,[],0,0.0,0,False,1
+2020-11-15,2232,311,"[{'leak_ID': '2232_0000000015', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '2232_0000000016', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2020-11-15,1355,311,[],0,0.0,0,False,1
+2020-11-15,1403,311,[],0,0.0,0,False,1
+2020-11-15,562,311,"[{'leak_ID': '562_0000000010', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-11-15,505,311,"[{'leak_ID': '505_0000000013', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-11-15,1206,311,"[{'leak_ID': '1206_0000000012', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2020-11-15,1488,311,"[{'leak_ID': '1488_0000000006', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-02-05,855,311,[],0,0.0,0,False,1
+2021-02-05,1807,311,"[{'leak_ID': '1807_0000000011', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-02-05,68,311,[],0,0.0,0,False,1
+2021-02-05,133,311,"[{'leak_ID': '133_0000000014', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-02-05,2190,311,"[{'leak_ID': '2190_0000000010', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-02-05,1805,311,[],0,0.0,0,False,1
+2021-02-12,1461,311,[],0,0.0,0,False,1
+2021-02-12,1880,311,"[{'leak_ID': '1880_0000000015', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2021-02-12,2260,311,[],0,0.0,0,False,1
+2021-02-12,209,311,[],0,0.0,0,False,1
+2021-02-14,974,311,[],0,0.0,0,False,1
+2021-02-14,1072,311,[],0,0.0,0,False,1
+2021-02-14,1417,311,[],0,0.0,0,False,1
+2021-02-14,2338,311,"[{'leak_ID': '2338_0000000010', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-02-14,1764,311,"[{'leak_ID': '1764_0000000011', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2021-02-14,1655,311,[],0,0.0,0,False,1
+2021-02-14,1217,311,[],0,0.0,0,False,1
+2021-02-14,43,311,[],0,0.0,0,False,1
+2021-02-14,1202,311,"[{'leak_ID': '1202_0000000009', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-02-14,972,311,"[{'leak_ID': '972_0000000013', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2021-02-14,1849,311,"[{'leak_ID': '1849_0000000021', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-02-14,1999,311,[],0,0.0,0,False,1
+2021-02-14,1004,311,[],0,0.0,0,False,1
+2021-02-14,1947,311,"[{'leak_ID': '1947_0000000012', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1947_0000000013', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2021-02-14,610,311,[],0,0.0,0,False,1
+2021-02-14,1076,311,[],0,0.0,0,False,1
+2021-02-14,214,311,"[{'leak_ID': '214_0000000007', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-02-14,1370,311,[],0,0.0,0,False,1
+2021-02-14,424,311,[],0,0.0,0,False,1
+2021-02-14,246,311,"[{'leak_ID': '246_0000000018', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-02-14,255,311,[],0,0.0,0,False,1
+2021-02-14,934,311,[],0,0.0,0,False,1
+2021-02-14,1779,311,"[{'leak_ID': '1779_0000000014', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-02-14,2417,311,"[{'leak_ID': '2417_0000000011', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2021-02-14,1473,311,[],0,0.0,0,False,1
+2021-02-14,615,311,"[{'leak_ID': '615_0000000009', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-02-14,1497,311,"[{'leak_ID': '1497_0000000010', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-02-14,1859,311,[],0,0.0,0,False,1
+2021-02-14,1784,311,[],0,0.0,0,False,1
+2021-02-14,1248,311,[],0,0.0,0,False,1
+2021-02-14,2277,311,[],0,0.0,0,False,1
+2021-02-14,1376,311,"[{'leak_ID': '1376_0000000011', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1376_0000000012', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2021-02-14,1619,311,"[{'leak_ID': '1619_0000000008', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-02-14,2232,311,[],0,0.0,0,False,1
+2021-02-14,1355,311,[],0,0.0,0,False,1
+2021-02-14,1403,311,"[{'leak_ID': '1403_0000000010', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1403_0000000011', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2021-02-14,562,311,[],0,0.0,0,False,1
+2021-02-14,505,311,[],0,0.0,0,False,1
+2021-02-14,1206,311,[],0,0.0,0,False,1
+2021-02-14,1488,311,"[{'leak_ID': '1488_0000000007', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-05-12,855,311,[],0,0.0,0,False,1
+2021-05-12,1807,311,"[{'leak_ID': '1807_0000000012', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1807_0000000013', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",180000,180000.0,0,True,1
+2021-05-12,68,311,"[{'leak_ID': '68_0000000015', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '68_0000000016', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '68_0000000017', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",27,27.0,0,True,1
+2021-05-12,133,311,[],0,0.0,0,False,1
+2021-05-12,2190,311,[],0,0.0,0,False,1
+2021-05-12,1805,311,[],0,0.0,0,False,1
+2021-05-14,1461,311,[],0,0.0,0,False,1
+2021-05-14,1880,311,[],0,0.0,0,False,1
+2021-05-14,2260,311,"[{'leak_ID': '2260_0000000010', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '2260_0000000011', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2021-05-14,209,311,[],0,0.0,0,False,1
+2021-05-16,974,311,"[{'leak_ID': '974_0000000011', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '974_0000000012', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2021-05-16,1072,311,[],0,0.0,0,False,1
+2021-05-16,1417,311,[],0,0.0,0,False,1
+2021-05-16,2338,311,[],0,0.0,0,False,1
+2021-05-17,1764,311,[],0,0.0,0,False,1
+2021-05-17,1655,311,[],0,0.0,0,False,1
+2021-05-20,1217,311,"[{'leak_ID': '1217_0000000008', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1217_0000000009', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2021-05-20,43,311,[],0,0.0,0,False,1
+2021-05-20,1202,311,"[{'leak_ID': '1202_0000000010', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-05-20,972,311,"[{'leak_ID': '972_0000000014', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '972_0000000015', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2021-05-20,1849,311,"[{'leak_ID': '1849_0000000022', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1849_0000000023', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1849_0000000024', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90018,90018.0,0,True,1
+2021-05-20,1999,311,[],0,0.0,0,False,1
+2021-05-20,1004,311,[],0,0.0,0,False,1
+2021-05-20,1947,311,[],0,0.0,0,False,1
+2021-05-20,610,311,[],0,0.0,0,False,1
+2021-05-20,1076,311,"[{'leak_ID': '1076_0000000010', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1076_0000000011', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",180000,180000.0,0,True,1
+2021-05-20,214,311,[],0,0.0,0,False,1
+2021-05-20,1370,311,[],0,0.0,0,False,1
+2021-05-20,424,311,[],0,0.0,0,False,1
+2021-05-20,246,311,"[{'leak_ID': '246_0000000019', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-05-20,255,311,[],0,0.0,0,False,1
+2021-05-20,934,311,[],0,0.0,0,False,1
+2021-05-20,1779,311,[],0,0.0,0,False,1
+2021-05-20,2417,311,"[{'leak_ID': '2417_0000000012', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-05-20,1473,311,[],0,0.0,0,False,1
+2021-05-20,615,311,[],0,0.0,0,False,1
+2021-05-20,1497,311,"[{'leak_ID': '1497_0000000011', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1497_0000000012', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2021-05-20,1859,311,"[{'leak_ID': '1859_0000000011', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1859_0000000012', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2021-05-20,1784,311,"[{'leak_ID': '1784_0000000008', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1784_0000000009', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2021-05-20,1248,311,[],0,0.0,0,False,1
+2021-05-20,2277,311,[],0,0.0,0,False,1
+2021-05-20,1376,311,[],0,0.0,0,False,1
+2021-05-20,1619,311,"[{'leak_ID': '1619_0000000009', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2021-05-20,2232,311,"[{'leak_ID': '2232_0000000017', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-05-20,1355,311,[],0,0.0,0,False,1
+2021-05-20,1403,311,"[{'leak_ID': '1403_0000000012', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1403_0000000013', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1403_0000000014', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90018,90018.0,0,True,1
+2021-05-20,562,311,[],0,0.0,0,False,1
+2021-05-20,505,311,[],0,0.0,0,False,1
+2021-05-20,1206,311,"[{'leak_ID': '1206_0000000013', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1206_0000000014', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2021-05-20,1488,311,[],0,0.0,0,False,1
+2021-08-11,855,311,"[{'leak_ID': '855_0000000009', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-08-11,1807,311,[],0,0.0,0,False,1
+2021-08-11,68,311,[],0,0.0,0,False,1
+2021-08-11,133,311,[],0,0.0,0,False,1
+2021-08-11,2190,311,"[{'leak_ID': '2190_0000000011', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2021-08-11,1805,311,"[{'leak_ID': '1805_0000000013', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-08-13,1461,311,"[{'leak_ID': '1461_0000000011', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-08-13,1880,311,"[{'leak_ID': '1880_0000000016', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1880_0000000017', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2021-08-13,2260,311,[],0,0.0,0,False,1
+2021-08-13,209,311,"[{'leak_ID': '209_0000000014', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '209_0000000015', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '209_0000000016', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90018,90018.0,0,True,1
+2021-08-15,974,311,[],0,0.0,0,False,1
+2021-08-15,1072,311,[],0,0.0,0,False,1
+2021-08-15,1417,311,"[{'leak_ID': '1417_0000000015', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2021-08-15,2338,311,"[{'leak_ID': '2338_0000000011', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '2338_0000000012', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",180000,180000.0,0,True,1
+2021-08-16,1764,311,"[{'leak_ID': '1764_0000000012', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-08-16,1655,311,[],0,0.0,0,False,1
+2021-08-16,1217,311,[],0,0.0,0,False,1
+2021-08-16,43,311,[],0,0.0,0,False,1
+2021-08-16,1202,311,"[{'leak_ID': '1202_0000000011', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-08-16,972,311,[],0,0.0,0,False,1
+2021-08-16,1849,311,[],0,0.0,0,False,1
+2021-08-16,1999,311,"[{'leak_ID': '1999_0000000013', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-08-16,1004,311,"[{'leak_ID': '1004_0000000009', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1004_0000000010', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2021-08-16,1947,311,"[{'leak_ID': '1947_0000000014', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1947_0000000015', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2021-08-16,610,311,[],0,0.0,0,False,1
+2021-08-16,1076,311,[],0,0.0,0,False,1
+2021-08-16,214,311,[],0,0.0,0,False,1
+2021-08-16,1370,311,[],0,0.0,0,False,1
+2021-08-16,424,311,"[{'leak_ID': '424_0000000009', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-08-16,246,311,[],0,0.0,0,False,1
+2021-08-16,255,311,"[{'leak_ID': '255_0000000012', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-08-16,934,311,"[{'leak_ID': '934_0000000012', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-08-16,1779,311,[],0,0.0,0,False,1
+2021-08-16,2417,311,"[{'leak_ID': '2417_0000000013', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-08-16,1473,311,[],0,0.0,0,False,1
+2021-08-16,615,311,[],0,0.0,0,False,1
+2021-08-16,1497,311,"[{'leak_ID': '1497_0000000013', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1497_0000000014', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2021-08-16,1859,311,[],0,0.0,0,False,1
+2021-08-16,1784,311,[],0,0.0,0,False,1
+2021-08-16,1248,311,[],0,0.0,0,False,1
+2021-08-16,2277,311,"[{'leak_ID': '2277_0000000012', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-08-16,1376,311,"[{'leak_ID': '1376_0000000013', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-08-16,1619,311,[],0,0.0,0,False,1
+2021-08-16,2232,311,"[{'leak_ID': '2232_0000000018', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-08-16,1355,311,[],0,0.0,0,False,1
+2021-08-16,1403,311,"[{'leak_ID': '1403_0000000015', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-08-16,562,311,"[{'leak_ID': '562_0000000011', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '562_0000000012', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2021-08-16,505,311,[],0,0.0,0,False,1
+2021-08-16,1206,311,[],0,0.0,0,False,1
+2021-08-16,1488,311,[],0,0.0,0,False,1
+2021-11-11,855,311,[],0,0.0,0,False,1
+2021-11-11,1807,311,"[{'leak_ID': '1807_0000000014', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-11-11,68,311,"[{'leak_ID': '68_0000000018', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-11-11,133,311,[],0,0.0,0,False,1
+2021-11-11,2190,311,"[{'leak_ID': '2190_0000000012', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-11-11,1805,311,[],0,0.0,0,False,1
+2021-11-20,1461,311,"[{'leak_ID': '1461_0000000012', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-11-21,1880,311,[],0,0.0,0,False,1
+2021-11-21,2260,311,"[{'leak_ID': '2260_0000000012', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '2260_0000000013', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2021-11-21,209,311,"[{'leak_ID': '209_0000000017', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '209_0000000018', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2021-12-05,974,311,[],0,0.0,0,False,1
+2021-12-05,1072,311,"[{'leak_ID': '1072_0000000010', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-12-05,1417,311,"[{'leak_ID': '1417_0000000016', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1417_0000000017', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1417_0000000018', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90018,90018.0,0,True,1
+2021-12-05,2338,311,"[{'leak_ID': '2338_0000000013', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-12-05,1764,311,[],0,0.0,0,False,1
+2021-12-05,1655,311,[],0,0.0,0,False,1
+2021-12-05,1217,311,"[{'leak_ID': '1217_0000000010', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2021-12-05,43,311,[],0,0.0,0,False,1
+2021-12-05,1202,311,"[{'leak_ID': '1202_0000000012', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1202_0000000013', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2021-12-05,972,311,"[{'leak_ID': '972_0000000016', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '972_0000000017', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",18,18.0,0,True,1
+2021-12-05,1849,311,[],0,0.0,0,False,1
+2021-12-05,1999,311,[],0,0.0,0,False,1
+2021-12-05,1004,311,"[{'leak_ID': '1004_0000000011', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '1004_0000000012', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90009,90009.0,0,True,1
+2021-12-05,1947,311,[],0,0.0,0,False,1
+2021-12-05,610,311,"[{'leak_ID': '610_0000000011', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-12-05,1076,311,[],0,0.0,0,False,1
+2021-12-05,214,311,[],0,0.0,0,False,1
+2021-12-05,1370,311,"[{'leak_ID': '1370_0000000012', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-12-05,424,311,"[{'leak_ID': '424_0000000010', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '424_0000000011', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '424_0000000012', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '424_0000000013', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}, {'leak_ID': '424_0000000014', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",360009,360009.0,0,True,1
+2021-12-05,246,311,[],0,0.0,0,False,1
+2021-12-05,255,311,[],0,0.0,0,False,1
+2021-12-05,934,311,"[{'leak_ID': '934_0000000013', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-12-05,1779,311,[],0,0.0,0,False,1
+2021-12-05,2417,311,[],0,0.0,0,False,1
+2021-12-05,1473,311,[],0,0.0,0,False,1
+2021-12-05,615,311,"[{'leak_ID': '615_0000000010', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2021-12-05,1497,311,[],0,0.0,0,False,1
+2021-12-05,1859,311,[],0,0.0,0,False,1
+2021-12-05,1784,311,[],0,0.0,0,False,1
+2021-12-05,1248,311,[],0,0.0,0,False,1
+2021-12-05,2277,311,[],0,0.0,0,False,1
+2021-12-05,1376,311,[],0,0.0,0,False,1
+2021-12-05,1619,311,"[{'leak_ID': '1619_0000000010', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-12-05,2232,311,[],0,0.0,0,False,1
+2021-12-05,1355,311,[],0,0.0,0,False,1
+2021-12-05,1403,311,"[{'leak_ID': '1403_0000000016', 'rate': 90000, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",90000,90000.0,0,True,1
+2021-12-05,562,311,[],0,0.0,0,False,1
+2021-12-05,505,311,"[{'leak_ID': '505_0000000014', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-12-05,1206,311,"[{'leak_ID': '1206_0000000015', 'rate': 9, 'tagged': False, 'date_tagged': None, 'airH_sp_covered': 1, 'airH_survey_tp_covered': 1}]",9,9.0,0,True,1
+2021-12-05,1488,311,[],0,0.0,0,False,1

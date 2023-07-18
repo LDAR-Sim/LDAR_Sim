@@ -1,0 +1,10 @@
+input_directory: ./inputs
+n_simulations: 1
+output_directory: ./outputs
+parameter_level: global
+pregenerate_leaks: true
+preseed_random: true
+program_set_name: sample_simulations
+reference_program: P_OGI
+version: '2.0'
+write_data: true
