@@ -1,5 +1,17 @@
 # Change Log
 
+## 2023-07 - Version 2.3.0
+
+1. **Added functionality for initializing pre-simulation leaks** Users can now utilize n_init_days and n_init_leaks to initialize pre-simulation leaks - leaks LDAR-Sim generates before the start date of the simulation.
+
+## 2023-07 - Version 2.2.1
+
+1. **Cost bug fix** Specific bug was encountered when using per_site costs with methods that take multiple days to finish surveying.
+
+## 2023-07 - Version 2.2.0
+
+1. **Added external sensors** Users have access to more technology sensors, documentation and guidance on how to create their own technology sensors.
+
 ## 2023-06 - Version 2.1.4
 
 1. **Added functionality for site level follow-ups** Users can now have measurement_scale "site" level follow ups by leveraging the follow-up: preferred_method parameter. This allows for modelling of multiple screenings based on the results of each prior screening (Which could increase confidence in fugitives, improve measurement accuracy, etc).
