@@ -57,7 +57,7 @@ Read [Fox et al 2020](https://www.sciencedirect.com/science/article/pii/S0959652
 
 #### Step 2: Installing Packages with Conda
 
-Using Conda (Conda-forge) and the requirements file included in the "install folder" Follow the directions included in the Setting Up LDAR Sim Dev Environment file. The requirements.txt file can also be used with PIP and pipenv, but Python should be installed seperately.
+Using Conda (Conda-forge) and the requirements file included in the "install folder" Follow the directions included in the Setting Up LDAR Sim Dev Environment file. The requirements.txt file can also be used with PIP and pipenv, but Python should be installed separately.
 
 - Install Miniconda3 newest version
 - From Conda Shell: cd into LDAR-Sim/install
@@ -70,17 +70,17 @@ Using Conda (Conda-forge) and the requirements file included in the "install fol
 
   `conda activate ldar_sim`
 
-Alternatively pip and pipenv can be used to install there requirements file with:
+Alternatively pip and pipenv can be used to install the requirements file with:
 
   `pip install ldar_sim -r requirements.txt`
 
-if you are using satellite modules orbit predictor needs to be added to environement
+if you are using satellite modules orbit predictor needs to be added to environment
 
   `pip install orbit_predictor==1.14.2`
 
-#### Step 3: Get Weather and Facilitity Data
+#### Step 3: Get Weather and Facility Data
 
-The application requires both facility and weather data to run. We have included sample facilities and weather data for Alberta as an example. Checkout the [user manual](USER_MANUAL.md) for more information on formating of facility data. Weather data can either be downloaded directly. ERA5 data can be downloaded directly from copernicus using the /module_code/weather/ERA5_downloader.py module (see file for instructions). Note the output data is in hourly format, therefore the flag weather_is_hourly should be set to True. Multiple ERA nc files can be concatinated with ERA5_concat.py. 
+The application requires both facility and weather data to run. We have included sample facilities and weather data for Alberta as an example. Checkout the [user manual](USER_MANUAL.md) for more information on formatting of facility data. Weather data can either be downloaded directly. ERA5 data can be downloaded directly from copernicus using the /module_code/weather/ERA5_downloader.py module (see file for instructions). Note the output data is in hourly format, therefore the flag weather_is_hourly should be set to True. Multiple ERA nc files can be concatenated with ERA5_concat.py. 
 
 #### Step 4: Populate the simulation folder with Programs and associated methods
 
@@ -128,7 +128,7 @@ A Method yaml file is required, the most basic setup is as follows:
     version: '2.0'                  // Denotes the version
     label: OGI                      // Specify the label to link to an associated program
     deployment_type: mobile         // How the technology operates, 'mobile', 'stationary' or 'orbit'
-    measurement_scale: component    // Does the sensor measure at a site level, equipement level or component level
+    measurement_scale: component    // Does the sensor measure at a site level, equipment level or component level
     is_follow_up: False             // Does the technology survey sites after a screening technology flags the site.
     sensor:                     
       MDL: [0.0362]                 // Minimum detectable leak in g/s.
@@ -144,11 +144,11 @@ Checkout the [user manual](USER_MANUAL.md) for more info on the parameters.
 
 #### Step 5: Run the program
 
-The main program is a python script called LDAR_Sim_main.py. Within the virtual environent (or where all py packages are installed) run:
+The main program is a python script called LDAR_Sim_main.py. Within the virtual environment (or where all py packages are installed) run:
 
  ```Python LDAR_Sim_main.py {G_XXX} {P_XXX} {M_XXX} {M_YYY}```
 
-  where each arguement is a path too a global, program, or method input parameter file. for example:
+  where each argument is a path to a global, program, or method input parameter file. for example:
 
 ```Python LDAR_Sim_main.py ./simulations/G_.yaml ./simulations/P_air.yaml ./simulations/M_aircraft.yaml ./simulations/M_OGI_FU.yaml```
 
@@ -160,7 +160,7 @@ alternatively, an entire directory can be passed using the "-P", "--in_dir" flag
 
  Output files, including maps, charts and csv files will be generated and placed in the output folder.
 
- **Note**: that you can use absolute references or relative, where the the root folder is this folder.
+ **Note**: that you can use absolute references or relative, where the root folder is this folder.
 
 ## Other versions
 
@@ -168,6 +168,6 @@ Several LDAR-Sim advances are not publicly available at this time, including mor
 
 ## Contributions and collaboration
 
-The Included python code follows strict PEP8 Standards for formatting with the a modification to the Line Length rule, where lines cannot exceed 100 characters. Contributed code will be rejected if it does not meet this standard. We suggest using PEP8 autoformatters and Linting (Flake8 , Black) when making contributions.
+The Included python code follows strict PEP8 Standards for formatting with a modification to the Line Length rule, where lines cannot exceed 100 characters. Contributed code will be rejected if it does not meet this standard. We suggest using PEP8 autoformatters and Linting (Flake8 , Black) when making contributions.
 
 The authors welcome all contributions and collaborations. Please reach out - we would love to hear from you and/or work with you!
