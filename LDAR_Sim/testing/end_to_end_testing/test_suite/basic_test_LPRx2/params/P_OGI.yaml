@@ -1,15 +1,5 @@
 program_name: P_OGI
 parameter_level: program
-version: "2.0"
-site_samples: 50
+version: "3.0"
 method_labels:
   - OGI
-emissions:
-  consider_venting: False
-  LPR: 0.013
-  max_leak_rate: 100000
-  leak_dist_params: [-1.79, 2.17]
-infrastructure_file: "facilities_Perm.csv"
-NRd: 365
-weather_file: "ERA5_2017_2019_Perm.nc"
-weather_is_hourly: True

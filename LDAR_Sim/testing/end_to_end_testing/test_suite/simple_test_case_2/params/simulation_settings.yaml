@@ -1,8 +1,8 @@
 baseline_program: P_none
 n_simulations: 1
-parameter_level: global
+parameter_level: simulation_settings
 pregenerate_leaks: true
 preseed_random: true
 reference_program: P_OGI
-version: '2.0'
+version: "3.0"
 write_data: true

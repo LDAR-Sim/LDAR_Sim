@@ -1,5 +1,5 @@
 parameter_level: method
-version: '2.0'
+version: "3.0"
 label: airH
 deployment_type: mobile
 measurement_scale: site
@@ -15,4 +15,3 @@ t_bw_sites:
   vals: [5]
 RS: 4
 time: 5
-

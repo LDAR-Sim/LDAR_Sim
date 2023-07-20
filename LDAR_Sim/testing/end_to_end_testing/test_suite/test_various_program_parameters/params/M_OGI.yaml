@@ -1,5 +1,5 @@
 parameter_level: method
-version: '2.0'
+version: "3.0"
 label: OGI
 deployment_type: mobile
 measurement_scale: component
@@ -12,5 +12,5 @@ cost:
   per_site: 500
 t_bw_sites:
   vals: [30]
-RS: 4 
+RS: 4
 time: 120
