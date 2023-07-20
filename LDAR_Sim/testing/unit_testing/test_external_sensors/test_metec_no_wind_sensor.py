@@ -4,21 +4,23 @@ from typing import Any
 
 from src.methods.crew import BaseCrew
 import numpy as np
-from testing.unit_testing.test_methods.test_crew.crew_testing_fixtures import (  # pylint: disable=unused-import
-    mock_site_for_crew_testing_1_fix,
-    mock_params_for_crew_testing_1_fix,
-    mock_config_for_crew_testing_2_fix,
-    mock_params_for_crew_testing_2_fix,
-    mock_site_for_crew_testing_2_fix,
-    mock_state_for_crew_testing_2_fix)
-from testing.unit_testing.test_external_sensors.external_sensor_testing_fixtures import (  # pylint: disable=unused-import
-    mock_config_for_sensor_testing_1_fix,
-    mock_site_dict_for_sensor_return_1_fix,
-    mock_config_for_sensor_testing_2_fix,
-    mock_site_dict_for_sensor_return_2_fix,
-    mock_site_for_sensor_testing_2_fix,
-    mock_state_for_sensor_testing_1_fix
-)
+from testing.unit_testing.test_methods.test_crew.crew_testing_fixtures \
+    import (  # pylint: disable=unused-import
+        mock_site_for_crew_testing_1_fix,
+        mock_vw_for_crew_testing_1_fix,
+        mock_config_for_crew_testing_2_fix,
+        mock_vw_for_crew_testing_2_fix,
+        mock_site_for_crew_testing_2_fix,
+    )
+from testing.unit_testing.test_external_sensors.external_sensor_testing_fixtures \
+    import (  # pylint: disable=unused-import
+        mock_config_for_sensor_testing_1_fix,
+        mock_site_dict_for_sensor_return_1_fix,
+        mock_config_for_sensor_testing_2_fix,
+        mock_site_dict_for_sensor_return_2_fix,
+        mock_site_for_sensor_testing_2_fix,
+        mock_state_for_sensor_testing_1_fix
+    )
 from external_sensors.METEC_NO_WIND import detect_emissions
 
 
