@@ -1,5 +1,9 @@
 # Change Log
 
+## 2023-07 - Version 3.0.0
+
+1. **Refactored Parameter Structure** The LDAR-Sim parameter structure has been refactored. Many of the parameters previously in the program level can now be located in the new virtual_world parameters file. This will help make LDAR-Sim parameterization more intuitive.
+
 ## 2023-07 - Version 2.4.0
 
 1. **Removed Subtype_times_file** The ability to set survey times for sites on a per subtype basis using the "subtype_times_file" parameter has been removed. This functionality will be reintroduced in the subtype file at a later date.
