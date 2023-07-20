@@ -43,7 +43,16 @@ warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning)
 
 
 class LdarSim:
-    def __init__(self, simulation_settings, state, program_parameters, virtual_world, timeseries):
+    def __init__(
+        self,
+        simulation_settings,
+        state,
+        program_parameters,
+        virtual_world,
+        timeseries,
+        input_dir,
+        output_dir
+    ):
         """
         Construct the simulation.
         """
@@ -53,6 +62,8 @@ class LdarSim:
         self.program_parameters = program_parameters
         self.timeseries = timeseries
         self.active_leaks = []
+        self.input_dir = input_dir
+        self.output_dir = output_dir
 
         #  --- state variables ---
         self.state['campaigns'] = {}
@@ -60,23 +71,23 @@ class LdarSim:
         # Read in data files
         if virtual_world['emissions']['leak_file'] is not None:
             state['empirical_leaks'] = np.array(pd.read_csv(
-                virtual_world['input_directory'] / virtual_world['emissions']['leak_file']))
+                input_dir / virtual_world['emissions']['leak_file']))
         if virtual_world['economics']['repair_costs']['file'] is not None:
             virtual_world['economics']['repair_costs']['vals'] = np.array(
                 pd.read_csv(
-                    virtual_world['input_directory'] /
+                    input_dir /
                     virtual_world['economics']['repair_costs']['file']
                 )
             )
             # Read in the sites as a list of dictionaries
         if len(state['sites']) < 1:
             state['sites'], _, _ = generate_sites(
-                virtual_world, virtual_world['input_directory'], virtual_world['pregenerate_leaks'])
+                virtual_world, input_dir, virtual_world['pregenerate_leaks'])
         state['max_leak_rate'] = virtual_world['emissions']['max_leak_rate']
         state['t'].set_UTC_offset(state['sites'])
         if virtual_world['subtype_file'] is not None:
             state['subtypes'] = pd.read_csv(
-                virtual_world['input_directory']/virtual_world['subtype_file'],
+                input_dir/virtual_world['subtype_file'],
                 index_col='subtype_code').to_dict()
         # Sample sites if they havent been provided from pregeneration step
         if not virtual_world['pregenerate_leaks']:
@@ -224,7 +235,7 @@ class LdarSim:
             m_obj_wr['est_site_p_day'] = est_site_p_day(m_obj, state['sites'])
             if m_obj['t_bw_sites']['file'] is not None:
                 m_obj_wr['t_bw_sites']['vals'] = np.array(pd.read_csv(
-                    virtual_world['input_directory'] / m_obj['t_bw_sites']['file']).iloc[:, 0])
+                    input_dir / m_obj['t_bw_sites']['file']).iloc[:, 0])
             if m_obj['consider_daylight']:
                 calculate_daylight = True
             try:
@@ -508,45 +519,32 @@ class LdarSim:
 
             # Write csv files
             leak_df.to_csv(
-                "/".join([
-                    simulation_settings['output_directory'],
-                    program_parameters['program_name'],
-                    'leaks_output_{}.csv'.format(virtual_world['simulation'])
-                ]),
+                self.output_dir /
+                'leaks_output_{}.csv'.format(virtual_world['simulation']),
                 index=False)
 
             time_df.to_csv(
-                "/".join([
-                    simulation_settings['output_directory'],
-                    program_parameters['program_name'],
-                    'timeseries_output_{}.csv'.format(virtual_world['simulation'])
-                ]),
+                self.output_dir /
+                'timeseries_output_{}.csv'.format(virtual_world['simulation']),
                 index=False)
 
             site_df.to_csv(
-                "/".join([
-                    simulation_settings['output_directory'],
-                    program_parameters['program_name'],
-                    'sites_output_{}.csv'.format(virtual_world['simulation'])
-                ]),
+                self.output_dir /
+                'sites_output_{}.csv'.format(virtual_world['simulation']),
                 index=False)
 
             for meth, meth_vis_df in site_visits.items():
                 meth_vis_df.to_csv(
-                    "/".join([
-                        simulation_settings['output_directory'],
-                        program_parameters['program_name'],
-                        f"site_visits_{meth}_{virtual_world['simulation']}.csv"
-                    ]),
+                    self.output_dir /
+                    f"site_visits_{meth}_{virtual_world['simulation']}.csv",
                     index=False
                 )
 
             # Write metadata
-            f_name = "/".join([
-                simulation_settings['output_directory'],
-                program_parameters['program_name'],
+            f_name = (
+                self.output_dir /
                 "metadata_{}.txt".format(virtual_world['simulation'])
-            ])
+            )
             metadata = open(f_name, 'w')
             metadata.write(str(virtual_world) + '\n' + str(datetime.datetime.now()))
             metadata.close()
@@ -555,10 +553,7 @@ class LdarSim:
         if self.simulation_settings['make_plots']:
             make_plots(
                 leak_df, time_df, site_df, virtual_world['simulation'],
-                "/".join([
-                    simulation_settings['output_directory'],
-                    program_parameters['program_name']
-                ])
+                self.output_dir
             )
 
         # Extract necessary information from the parameters

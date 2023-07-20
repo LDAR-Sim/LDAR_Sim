@@ -112,7 +112,15 @@ def ldar_sim_run(simulation):
         state['weather'] = WL(state, virtual_world, input_directory)
     state['t'] = TimeCounter(simulation_settings['start_date'], simulation_settings['end_date'])
     virtual_world.update({'timesteps': state['t'].timesteps})
-    sim = LdarSim(simulation_settings, state, program_parameters, virtual_world, timeseries)
+    sim = LdarSim(
+        simulation_settings,
+        state,
+        program_parameters,
+        virtual_world,
+        timeseries,
+        input_directory,
+        output_directory
+    )
     start_date = datetime(*simulation_settings['start_date'])
     # Loop through timeseries
     for ts in range(state['t'].timesteps):
