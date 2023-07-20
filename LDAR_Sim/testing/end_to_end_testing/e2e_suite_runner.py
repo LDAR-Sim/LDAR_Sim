@@ -27,7 +27,6 @@ import shutil
 import sys
 from pathlib import Path
 
-from pandas import read_csv
 from testing_utils.result_verification import compare_outputs
 
 # Get directories and set up root
@@ -67,11 +66,12 @@ if __name__ == '__main__':
             in_dir = get_abs_path(sim_params['input_directory'], test_dir)
             out_dir = get_abs_path(sim_params['output_directory'], test_dir)
             programs = sim_params.pop('programs')
+            virtual_world = sim_params.pop('virtual_world')
             generator_dir = in_dir / "generator"
             expected_results = test_dir / "expected_outputs"
 
             # --- Run Checks ----
-            check_ERA5_file(in_dir, programs)
+            check_ERA5_file(in_dir, virtual_world)
             has_ref: bool = ref_program in programs
             has_base: bool = base_program in programs
 
@@ -80,21 +80,12 @@ if __name__ == '__main__':
                 shutil.rmtree(out_dir)
             os.makedirs(out_dir)
 
-            # merging all parameter files
-            if programs[sim_params['baseline_program']]['subtype_file']:
-                param_dict_w_subtype = {**{'globals': sim_params}, ** {'subtype': read_csv(
-                    in_dir/programs[sim_params['baseline_program']]['subtype_file']).to_dict()}}
-            else:
-                param_dict_w_subtype = {
-                    **{'globals': sim_params}, ** {'subtype': None}}
-            param_dict_all = {**param_dict_w_subtype, **{'programs': programs}}
-
             # Save parameters for comparison
             input_manager.write_parameters(out_dir / 'parameters.yaml')
 
             # --- Create simulations ---
-            simulations = create_sims(sim_params, programs,
-                                      generator_dir, in_dir, out_dir, input_manager)
+            simulations = create_sims(sim_params, programs, virtual_world,
+                                      generator_dir, in_dir, out_dir)
 
             # --- Run simulations (in parallel) --
             n_processes = sim_params['n_processes']
@@ -103,7 +94,7 @@ if __name__ == '__main__':
                     sim_outputs = p.starmap(ldar_sim_run, simulations)
             else:
                 sim_outputs = [ldar_sim_run(simulation[0]) for simulation in simulations]
-            print("Done runing simulations...")
+            print("Done running simulations...")
             print("Processing outputs...")
 
             # Do batch reporting
