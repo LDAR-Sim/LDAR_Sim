@@ -1,12 +1,12 @@
 parameter_level: method
-version: '2.0'
+version: "3.0"
 label: aircraft_ex_sensor
 deployment_type: mobile
 measurement_scale: equipment
 is_follow_up: False
-sensor: 
+sensor:
   mod_loc: METEC_NO_WIND
-  MDL: [4,5,0]
+  MDL: [4, 5, 0]
 cost:
   per_site: 200
 coverage:
