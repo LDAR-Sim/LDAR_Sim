@@ -28,7 +28,7 @@ def input_mapper_v1(parameters):
 
     This function is a series of hooks that fall into several categories:
     1) Construction hooks: these hooks construct newer parameters from older parameters. This is
-    necessary if parameters were depreciated in the newest version of the model, but relied upon in
+    necessary if parameters were deprecated in the newest version of the model, but relied upon in
     older versions. For example, newer versions of the program may simply allow specification of a
     start and end date, but not include specification of the number of timesteps. To allow this, a
     construction hook could create start and end date from the number of timesteps using any
@@ -38,8 +38,8 @@ def input_mapper_v1(parameters):
     parameters in the model. To continue the above example, if the present version of the model
     does not use number of timesteps, and the number of timesteps is no longer specified in the
     default parameter file - that key should be removed. The issue here is without destruction of
-    depreciated parameters - this parameter file will fail validation. Of course, destruction must
-    be called AFTER construction so the information in the depreciated parameters is used to map
+    deprecated parameters - this parameter file will fail validation. Of course, destruction must
+    be called AFTER construction so the information in the deprecated parameters is used to map
     to the new parameters before being deleted!
 
     3) Recalculation hooks: these hooks recalculate variables or map the values. For example, if
@@ -48,7 +48,7 @@ def input_mapper_v1(parameters):
     had a spelling mistake in a string specification, this type of hook would map the parameters.
     Several examples:
 
-    # map a old spelling mistake properly - the present version of LDAR Sim has corrected the
+    # map an old spelling mistake properly - the present version of LDAR Sim has corrected the
     # spelling mistake but old parameter files continue to use the misspelled value
     if parameters['calculation_method'] == 'categoricle':
         parameters['calculation_method'] = 'categorical'

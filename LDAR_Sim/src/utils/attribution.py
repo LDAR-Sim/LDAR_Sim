@@ -20,7 +20,7 @@ def update_tag(
         leak, measured_rate, site, timeseries,
         time_obj, company, crew_id=1, prog_params=None):
     """ Updates the tag on a leak. If a leak is not tagged
-        This funciton will tag. If it is already tagged, the
+        This function will tag. If it is already tagged, the
         leak will be added as a redundant tag.
 
     Args:
@@ -82,7 +82,7 @@ def update_tag(
 
 def update_flag(config, site, timeseries, time_obj, campaign, company, consider_venting=False):
     """ Updates the flag on a site. If a site is not flagged
-        This funciton will flag. If it is already flagged, the
+        This function will flag. If it is already flagged, the
         site will be marked as either"
             redundant: if the site is already flagged
             redundant 2: if The site is not tagged by is not site has active tagged leaks
