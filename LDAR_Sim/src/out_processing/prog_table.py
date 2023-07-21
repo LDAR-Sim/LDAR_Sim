@@ -27,7 +27,7 @@ from out_processing.meth_table import generate as gen_meth_table
 
 
 def generate(sim_results, baseline_program, programs):
-    """ Generate output table for web app. This includes the following columnns:
+    """ Generate output table for web app. This includes the following columns:
         'program_name', 'sim', 'emis_kg_day_site_med', 'act_leaks_day_site_med',
         'mit_vol_tco2e', 'mit_vol_perc', 'cost', 'cost_mit_vol_tco2e',
         'nat_leak_repair_count', 'emis_nat_perc'
@@ -100,7 +100,7 @@ def generate(sim_results, baseline_program, programs):
     else:
         # these columns are created by the agg_flatten function call above.
         # future work should initialize these columns all in one location instead of changing
-        # the data strcuture mid way through the code.
+        # the data structure mid way through the code.
         sim_progs = sim_stats_daily
         sim_progs['nat_vol_sum'] = float('nan')
         sim_progs['nat_vol_count'] = float('nan')

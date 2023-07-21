@@ -63,7 +63,7 @@ class Schedule():
 
     def get_working_crews(self, site_pool, n_crews):
         """ Get number of working crews that day. Based on estimate
-            that a crew ccan do 3 sites per day.
+            that a crew can do 3 sites per day.
         Args:
             site_pool (dict): List of sites
             n_crews (int): Number of crews

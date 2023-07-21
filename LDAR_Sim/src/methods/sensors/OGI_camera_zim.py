@@ -25,10 +25,10 @@ from utils.attribution import update_tag
 
 def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered_site_rate,
                      site_rate, venting, equipment_rates):
-    """ OGI camera method based on Zimmerlie 2020 DOI 10.1021/acs.est.0c01285
+    """ OGI camera method based on Zimmerle 2020 DOI 10.1021/acs.est.0c01285
         uses power function as shown in figure 2 to calculate probability of
-        detection using leak size and  two mdl parameters are set based on which
-        are based on camera crew experience.
+        detection using leak size, and two mdl parameters are set based on camera
+        crew experience.
 
     Args:
         site (site obj): Site in which crew is working at

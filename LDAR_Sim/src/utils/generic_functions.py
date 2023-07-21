@@ -140,7 +140,7 @@ def geo_idx(dd, dd_array):
      - dd_array - the list of decimal degrees to search As a Numpy Array.
      search for nearest decimal degree in an array of decimal degrees and return the index.
      np.argmin returns the indices of minium value along an axis.
-     so subtract dd from all values in dd_array, take absolute value and find index of minium.
+     so subtract dd from all values in dd_array, take absolute value and find index of minimum.
    """
     geo_idx = (np.abs(dd_array - dd)).argmin()
     return geo_idx
@@ -187,7 +187,7 @@ def ecef_to_llh(ecef_km):
     a = 6378.1370
     # Derived Earth semimajor axis (km)
     b = 6356.752314
-    # pythagoras to calculate two earth's minor axises
+    # pythagoras to calculate two earth's minor axes
     p = sqrt(ecef_km[0] ** 2 + ecef_km[1] ** 2)
     # Calculate the angle between orbit object and earth center
     thet = atan(ecef_km[2] * a / (p * b))
@@ -210,8 +210,8 @@ def ecef_to_llh(ecef_km):
 
 def init_orbit_poly(predictor, T1, T2, interval):
     """
-    Grab the esitamted positions of satellite
-    predictor: orbit path predictor of satellit created by using orbit_predictor package
+    Grab the estimated positions of satellite
+    predictor: orbit path predictor of satellite created by using orbit_predictor package
     T1: start datetime
     T2: end datetime
     interval: time interval of each time step in minutes

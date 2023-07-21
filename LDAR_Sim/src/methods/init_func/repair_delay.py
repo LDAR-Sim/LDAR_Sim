@@ -6,13 +6,13 @@ def determine_delay(program):
     """
         Generates the repair delay
             default: Expects a single value
-            list: grabs a random value from a list of possiblities
+            list: grabs a random value from a list of possibilities
             distribution: generates a value from a distribution
         Arg: program parameter dictionary
         Returns:
             Static Repair delay value based on different functions
     """
-    # add in compatbility with previous versions
+    # add in compatibility with previous versions
     if type(program['repair_delay']) == int:
         delay = program['repair_delay']
     elif program['repair_delay']['type'] == 'default':

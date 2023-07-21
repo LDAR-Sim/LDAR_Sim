@@ -177,7 +177,7 @@ if __name__ == '__main__':
                 sim_progs += prog_results
 
             # This will calculate the emissions ratio and the cost difference and
-            # and generate pandas data frams that include those added columns
+            # and generate pandas data frames that include those added columns
             alt_ts = get_referenced_dataframe(
                 sim_progs,
                 [['daily_emissions_kg', 'emis_rat', 'rat'],

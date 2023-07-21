@@ -24,7 +24,7 @@ from out_processing.clean_results import clean_sim_df, agg_flatten
 
 
 def generate(sim_results, programs):
-    """ Generate output table for web app. This includes the following columnns:
+    """ Generate output table for web app. This includes the following columns:
         'program_name', 'sim', 'emis_kg_day_site_med', 'act_leaks_day_site_med',
         'mit_vol_tco2e', 'mit_vol_perc', 'cost', 'cost_mit_vol_tco2e',
         'nat_leak_repair_count', 'emis_nat_perc'

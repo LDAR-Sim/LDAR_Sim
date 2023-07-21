@@ -57,7 +57,7 @@ class Schedule():
 
     def start_day(self, site_pool):
         """ Start day method. Initialize time to account for work hours, and set
-            the crews location. The site pool , or sites that are ready for survey
+            the crews location. The site pool, or sites that are ready for survey,
             are passed from the company to the crew in the order of neglect. Here,
             the crew estimates the time required to travel and perform survey for
             sites, and sets an itinerary or list of site plans.
@@ -104,7 +104,7 @@ class Schedule():
             for sidx, site in enumerate(site_pool):
                 site_cnt += 1
                 site_plan = self.plan_visit(site, est_mins_remaining=est_mins_remaining)
-                # site plans are dicts that include  site, LDAR_minsand go_to_site keys.
+                # site plans are dicts that include site, LDAR_mins and go_to_site keys.
                 # Site plan can be empty if weather does not permit travel
                 if site_plan and site_plan['go_to_site']:
                     if self.config['scheduling']['route_planning']:
@@ -149,7 +149,7 @@ class Schedule():
                     break
         # -----------------------------
 
-        # add a site to the rollover list if there are still remainin mins in survey
+        # add a site to the rollover list if there are still remaining mins in survey
         if len(site_plans_today) > 0:
             if site_plans_today[-1]['remaining_mins'] > 0:
                 Schedule.rollover.append(site_plans_today[-1])

@@ -244,7 +244,7 @@ class LdarSim:
         if not bool(params['methods']):
             state['t'].current_date = state['t'].current_date.replace(hour=1)
 
-        # HBD this is sooooo hacky Repair time seems like its wron
+        # HBD this is sooooo hacky Repair time seems like its wrong
         if len(self.state['campaigns']) > 0:
             self.parameters['methods'].update({
                 'makeup': {

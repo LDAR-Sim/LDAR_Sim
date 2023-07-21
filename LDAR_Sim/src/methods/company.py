@@ -300,7 +300,7 @@ class BaseCompany:
 
     def aggregate_by(self, list, filter):
         '''
-        Gets the affective aggregated value from a list based on an input filter
+        Gets the effective aggregated value from a list based on an input filter
         Values of the filter can be 'recent', 'max', or 'mean'
 
         '''
