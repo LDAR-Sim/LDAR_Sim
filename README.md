@@ -1,4 +1,4 @@
-# The LDAR Simulator V2.0
+# The LDAR Simulator V3.0
 
 See changelog [here](changelog.md)
 
@@ -52,7 +52,8 @@ This guide is intended to get a user running with LDAR-Sim, **note** that even t
 #### Step 1: Before you begin
 
 Read and understand the LDAR-Sim LICENSE (MIT License).
-Read the user manual [manual](USER_MANUAL.md)
+Read the user [manual](USER_MANUAL.md).
+
 Read [Fox et al 2020](https://www.sciencedirect.com/science/article/pii/S0959652620352811) to familiarize yourself with LDAR-Sim fundamentals.
 
 #### Step 2: Installing Packages with Conda
@@ -80,19 +81,19 @@ if you are using satellite modules orbit predictor needs to be added to environm
 
 #### Step 3: Get Weather and Facility Data
 
-The application requires both facility and weather data to run. We have included sample facilities and weather data for Alberta as an example. Checkout the [user manual](USER_MANUAL.md) for more information on formatting of facility data. Weather data can either be downloaded directly. ERA5 data can be downloaded directly from Copernicus using the /module_code/weather/ERA5_downloader.py module (see file for instructions). Note the output data is in hourly format, therefore the flag weather_is_hourly should be set to True. Multiple ERA nc files can be concatenated with ERA5_concat.py. 
+The application requires both facility and weather data to run. We have included sample facilities and weather data for Alberta as an example. Checkout the [user manual](USER_MANUAL.md) for more information on formatting of facility data. Weather data can either be downloaded directly. ERA5 data can be downloaded directly from Copernicus using the /module_code/weather/ERA5_downloader.py module (see file for instructions). Note the output data is in hourly format, therefore the flag weather_is_hourly should be set to True. Multiple ERA nc files can be concatenated with ERA5_concat.py.
 
 #### Step 4: Populate the simulation folder with Programs and associated methods
 
-The simulation files allow a user to set global / program/ and method parameters. If a parameter is not included in the file a default value will be used. One Global file and at least one Program File is required for running the program while method files are required for running a method. 
+The simulation files allow a user to set simulation_setting / virtual_world / program/ and method parameters. If a parameter is not included in the file a default value will be used. One simulation_settings file, one virtual world file and at least one Program File is required for running the program while method files are required for running a method.
 
 ##### Example
 
-A Global yaml file is required, the most basic setup is as follows (note that P_OGI and P_none are required):
-G_.yaml =>
+A simulation settings yaml file is required, the most basic setup is as follows (note that P_OGI and P_none are required):
+Simulation_settings.yaml =>
 
 ``` yaml
-  parameter_level: global     // Denotes the program level (used for input handling)
+  parameter_level: simulation_settings     // Denotes the parameter level (used for input handling)
   version: '2.0'              // Denotes the version
   reference_program: P_OGI    // Denotes the regulatory reference program for relative differences
   baseline_program: P_none    // Denotes a baseline program for estimating program mitigation, usually in place of no formal LDAR
@@ -146,11 +147,11 @@ Checkout the [user manual](USER_MANUAL.md) for more info on the parameters.
 
 The main program is a python script called LDAR_Sim_main.py. Within the virtual environment (or where all py packages are installed) run:
 
- ```Python LDAR_Sim_main.py {G_XXX} {P_XXX} {M_XXX} {M_YYY}```
+ ```Python LDAR_Sim_main.py {SS_XXX} {VW_XXX} {P_XXX} {M_YYY}```
 
-  where each argument is a path to a global, program, or method input parameter file. for example:
+  where each argument is a path to a simulation settings, virtual world, program, or method input parameter file. for example:
 
-```Python LDAR_Sim_main.py ./simulations/G_.yaml ./simulations/P_aircraft.yaml ./simulations/P_none.yaml ./simulations/M_aircraft.yaml ./simulations/M_OGI_FU.yaml```
+```Python LDAR_Sim_main.py ./simulations/Simulation_settings.yaml ./simulations/virtual_world.yaml ./simulations/P_aircraft.yaml ./simulations/P_none.yaml ./ simulations/M_aircraft.yaml ./simulations/M_OGI_FU.```
 
 alternatively, an entire directory can be passed using the "-P", "--in_dir" flags where all files within the directory are added to the program. for example:
 
@@ -169,5 +170,7 @@ Several LDAR-Sim advances are not publicly available at this time, including mor
 ## Contributions and collaboration
 
 The Included python code follows strict PEP8 Standards for formatting with a modification to the Line Length rule, where lines cannot exceed 100 characters. Contributed code will be rejected if it does not meet this standard. We suggest using PEP8 autoformatters and Linting (Flake8 , Black) when making contributions.
+
+When submitting Issues, Commits and Pull Requests, please use the provided templates to ensure consistent format. For instructions on how to setup the LDAR-Sim commit message template please see the [Setup Instructions](LDAR_SIm/install/SetupIntructions.md)
 
 The authors welcome all contributions and collaborations. Please reach out - we would love to hear from you and/or work with you!
