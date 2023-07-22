@@ -53,13 +53,13 @@ def files_from_args(ref_path):
     '''
     Look for parameter files supplied as arguments - if parameter files are supplied as
     arguments, proceed to parse and type check input parameter type with the input manager.
-    The program will will also accept flagged input directory , (-P or --in_dir)
+    The program will also accept flagged input directory , (-P or --in_dir)
     '''
     parser = ArgumentParser(formatter_class=RawTextHelpFormatter)
     # ---Declare input arguments---
     parser.add_argument(
         'in_files', type=str, nargs='*',
-        help='Input files, seperate with space, can be absolute path or relative to' +
+        help='Input files, separate with space, can be absolute path or relative to' +
         'root directory (LDAR_Sim). All files should have yaml, yml, or json extensions \n' +
         'ie. python ldar_sim_main.py ./file1.json c:/path/to/file/file2.json')
     parser.add_argument(

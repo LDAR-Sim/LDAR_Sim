@@ -82,6 +82,6 @@ For more details on pytest code coverage options, reference the documentation fo
 
 ## Pytest configuration
 
-LDAR-Sim is structured in such a way that it uses relative pathways for module imports. This can cause troubles with unit tests, where it expects the full pathways for imports. A solution to this problem is to create a pytest.ini file, that dictates the relative python paths, based on the root folder.
+LDAR-Sim is structured in such a way that it uses relative paths for module imports. This can cause troubles with unit tests, where it expects the full path for imports. A solution to this problem is to create a pytest.ini file, that dictates the relative python paths, based on the root folder.
 
 For more details, reference the documentation for pytest configuration at: <https://docs.pytest.org/en/7.1.x/reference/reference.html#configuration-options>

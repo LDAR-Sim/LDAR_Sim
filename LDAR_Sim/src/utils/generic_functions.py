@@ -179,9 +179,9 @@ def ecef_to_llh(ecef_km):
     Converts the Earth-Centered Earth-Fixed (ECEF) coordinates (x, y, z) to
     (WGS-84) Geodetic point (lat, lon, h)
     ecef_km contains three elements
-    ecef_km[0] is the x coordiante of satellite in ecef in km
-    ecef_km[1] is the y coordiante of satellite in ecef in km
-    ecef_km[2] is the z coordiante of satellite in ecef in km
+    ecef_km[0] is the x coordinate of satellite in ecef in km
+    ecef_km[1] is the y coordinate of satellite in ecef in km
+    ecef_km[2] is the z coordinate of satellite in ecef in km
     """
     # WGS-84 Earth semimajor axis (km)
     a = 6378.1370

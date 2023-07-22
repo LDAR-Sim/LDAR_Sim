@@ -63,7 +63,7 @@ def run_programs(programs, n_simulations, output_directory):
             seed_timeseries = None
         for j in range(len(programs)):
             if pregen_leaks:
-                # Because changing the parameters, can change leak sizes, and counts,
+                # Because changing the parameters can change leak sizes, and counts,
                 # the leaks are regenerated at the initial generated sites, for each
                 # program
                 sites = regenerate_sites(programs[j], sites, input_directory)
@@ -176,7 +176,7 @@ if __name__ == '__main__':
                     prog.update({'key_x': key, 'value_x': val})
                 sim_progs += prog_results
 
-            # This will calculate the emissions ratio and the cost difference and
+            # This will calculate the emissions ratio and the cost difference
             # and generate pandas data frames that include those added columns
             alt_ts = get_referenced_dataframe(
                 sim_progs,

@@ -85,7 +85,7 @@ def update_flag(config, site, timeseries, time_obj, campaign, company, consider_
         This function will flag. If it is already flagged, the
         site will be marked as either"
             redundant: if the site is already flagged
-            redundant 2: if The site is not tagged by is not site has active tagged leaks
+            redundant 2: if the site is not tagged but has active tagged leaks
             flag w/o venting: Would the site have been flagged without venting
     Args:
         config (dict): Method parameters

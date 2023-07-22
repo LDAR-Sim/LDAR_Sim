@@ -115,7 +115,7 @@ class Schedule():
                         est_mins_remaining -= site_plan['LDAR_mins']
                         # # The following will allow the program to keep trying sites
                         # # even after one has failed, in case there is another site
-                        # # that mets the criterea
+                        # # that meets the criteria
                         # if est_mins_remaining <= 0:
                         #     # if the day has been filled with surveys exit for and while
                         #     # loop
@@ -348,7 +348,7 @@ class Schedule():
         """choose the home base for crew
 
         Args:
-            site: if site is defined, then choose the home base that close to both current
+            site: if site is defined, then choose the home base closest to both current
             location and next site
         Returns:
 

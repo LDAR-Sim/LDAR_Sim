@@ -732,7 +732,7 @@ If enabled, the leaks will be stored locally in /inputs/generation after running
 
 **Default input:** None
 
-**Description:** Name of file containing distributions for subtypes. Requires 3 or columns: subtype_code, dist_type, followed by scipy defined shape parameters, followed by the scipy scale. For example if dist_type is lognormal , their will be only one shape parameter (3rd column) and the size parameter will be placed in the 4th column. Note: loc parameters are always set to zero. If this parameter is set to None, or left blank, distributions are set are set at a program level with the leak_dist_params, and leak_dist_type parameters.
+**Description:** Name of file containing distributions for subtypes. Requires 3 or 4 columns: subtype_code, dist_type, followed by scipy defined shape parameters, followed by the scipy scale. For example if dist_type is lognormal , their will be only one shape parameter (3rd column) and the size parameter will be placed in the 4th column. Note: loc parameters are always set to zero. If this parameter is set to None, or left blank, distributions are set are set at a program level with the leak_dist_params, and leak_dist_type parameters.
 
 **Notes on acquisition:**
 
@@ -945,7 +945,7 @@ method_labels:
 
 **Notes on acquisition:** Estimate from empirical data or use previously published value. This value can be calculated by multiplying the n_init_days by LPR.
 
-**Notes of caution:** This will overwrite the original functionality of utilizing NRd and LPR to calculate the number of initial leaks present in the simulation. Additionally, this value is will be set for all sites, and cannot be specified for individual subtypes at this given time.
+**Notes of caution:** This will overwrite the original functionality of utilizing NRd and LPR to calculate the number of initial leaks present in the simulation. Additionally, this value will be set for all sites, and cannot be specified for individual subtypes at this given time.
 
 ### n_init_days
 
@@ -1188,7 +1188,7 @@ If using different weather files for different programs (e.g., when comparing di
 
 **Default input:** False
 
-**Description:** Specify if the weather file is ERA5 reanalysis hourly data downloaded directly from ERA5 copernicus database or API. If false, the weather file is assumed to be daily average data generated using the /weather/ERA5_hourly_to_daily.py script.
+**Description:** Specify if the weather file is ERA5 reanalysis hourly data downloaded directly from ERA5 Copernicus database or API. If false, the weather file is assumed to be daily average data generated using the /weather/ERA5_hourly_to_daily.py script.
 
 **Notes on acquisition:** N/A
 
@@ -1344,7 +1344,7 @@ Method costs. Currency is not important but must be consistent across all inputs
 
 **Notes on acquisition:** No data acquisition required.
 
-**Notes of caution:** Follow-up thresholds are explored in detail in Fox et al. 2021\. Choosing follow-up rules is complex and work practices should be developed following extensive analysis of different scenarios. It is important to understand how follow-up thresholds and follow-up ratios interact, especially if both are to be used in the same program. Note that follow-up thresholds are similar to minimum detection limits but that the former is checked against to the measured emission rate (which is a function of quantification error) while the latter is checked against the true emission rate.
+**Notes of caution:** Follow-up thresholds are explored in detail in Fox et al. 2021\. Choosing follow-up rules is complex and work practices should be developed following extensive analysis of different scenarios. It is important to understand how follow-up thresholds and follow-up ratios interact, especially if both are to be used in the same program. Note that follow-up thresholds are similar to minimum detection limits but that the former is checked against the measured emission rate (which is a function of quantification error) while the latter is checked against the true emission rate.
 
 #### instant_threshold_type
 
