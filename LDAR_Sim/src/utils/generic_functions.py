@@ -183,11 +183,11 @@ def ecef_to_llh(ecef_km):
     ecef_km[1] is the y coordinate of satellite in ecef in km
     ecef_km[2] is the z coordinate of satellite in ecef in km
     """
-    # WGS-84 Earth semimajor axis (km)
+    # WGS-84 Earth semi-major (equatorial) axis (km)
     a = 6378.1370
-    # Derived Earth semimajor axis (km)
+    # WGS-84 Earth semi-minor (polar) axis (km)
     b = 6356.752314
-    # pythagoras to calculate two earth's minor axes
+    # 2D distance to center
     p = sqrt(ecef_km[0] ** 2 + ecef_km[1] ** 2)
     # Calculate the angle between orbit object and earth center
     thet = atan(ecef_km[2] * a / (p * b))
