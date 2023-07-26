@@ -3,7 +3,7 @@
 
 ## Unit testing file format guide
 
-Inside of the unit_testing folder, tests should be grouped into sub-folders based on the module that is being tested, with folders matching LDAR-SIm module hierarchy. The folder should be named test_\<module name> For example: testing the method detect_emissions in crews.py should results a file named test_detect_emissions inside a folder structure of test_methods -> test_crews -> test_detect_emissions.py. Each python file containing tests should correspond to a specific method.
+Inside of the unit_testing folder, tests should be grouped into sub-folders based on the module that is being tested, with folders matching LDAR-Sim module hierarchy. The folder should be named test_\<module name> For example: testing the method detect_emissions in crews.py should results a file named test_detect_emissions inside a folder structure of test_methods -> test_crews -> test_detect_emissions.py. Each python file containing tests should correspond to a specific method.
 
 ## Test naming guide
 
@@ -82,6 +82,6 @@ For more details on pytest code coverage options, reference the documentation fo
 
 ## Pytest configuration
 
-LDAR-Sim is structured in such a away that it uses relative pathways for module imports. This can cause troubles with unit tests, where it expects the full pathways for imports. A solution to this problem is to create a pytest.ini file, that dictates the relative python paths, based on the root folder.
+LDAR-Sim is structured in such a way that it uses relative paths for module imports. This can cause troubles with unit tests, where it expects the full path for imports. A solution to this problem is to create a pytest.ini file, that dictates the relative python paths, based on the root folder.
 
 For more details, reference the documentation for pytest configuration at: <https://docs.pytest.org/en/7.1.x/reference/reference.html#configuration-options>

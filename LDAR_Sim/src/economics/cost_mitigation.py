@@ -55,7 +55,7 @@ def cost_mitigation(simulation_dfs, ref_program, base_program,
 
     economics_outputs_df = pd.DataFrame(economics_outputs)
 
-    # Calculate the mean emissions and costs accross all sims, convert units.
+    # Calculate the mean emissions and costs across all sims, convert units.
     economics_df = economics_outputs_df.groupby(by='program_name').mean()
 
     economics_df['total_emissions_mcf'] = (

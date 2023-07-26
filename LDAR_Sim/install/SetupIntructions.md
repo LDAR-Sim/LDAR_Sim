@@ -27,7 +27,7 @@ From Conda Shell:
     conda activate ldar_sim_env
     ```
 
-if you are using satellite modules orbit predictor needs to be added to environement
+if you are using satellite modules orbit predictor needs to be added to environment
 
 Run the following command:
 

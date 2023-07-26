@@ -158,7 +158,7 @@ class WeatherLookup:
         lat_index and lng_index or with provided lat_idx lon_idx.
 
         Args:
-            weather_vars (list of strings): LIsts of vars ['winds, 'temp', 'precip']
+            weather_vars (list of strings): Lists of vars ['winds, 'temp', 'precip']
             start_datetime (datetime): Start of Program Datetime
             number_of_hours (int, optional): Number of consecutive hours to return. Defaults to 24.
             site (dict, optional): location with lat_index and lng_index. Defaults to None.
@@ -179,7 +179,7 @@ class WeatherLookup:
             lat_idx = site['lat_index']
             lon_idx = site['lon_index']
         elif lat and lon:
-            # if a lat and logitude are provide find closes
+            # if a lat and logitude are provided find closest
             lat_idx = find_nearest(lat, self.latitude)
             lon_idx = find_nearest(lon, self.longitude)
 
@@ -195,8 +195,8 @@ class WeatherLookup:
         cur_day_srt_idx = int(hrs_s1900_UTC - start_hr_s1900_UTC)
         cur_day_stp_idx = int(cur_day_srt_idx + number_of_hours)
 
-        # could be used The following will "rollover" the weather data so the start and stop
-        # Hours happen at the same time on the same julian date (potentially on a different year).
+        # The following will "rollover" the weather data so the start and stop
+        # Hours happen at the same time on the same Julian date (potentially on a different year).
         # For example if the weather data goes from 2017-2020, and the current day is January 1st
         # 2021, the weather for Jan 1st 2017 will be used.
 
@@ -219,7 +219,7 @@ class WeatherLookup:
                                             lat_idx, lon_idx]
             else:
                 # Due to rollover the start index can occur later than
-                # than the end index. For example if the weather data goes from
+                # the end index. For example if the weather data goes from
                 # 2017-2020, the start time is December 31st 2020 20:00 UTC, and the
                 # end of day time is Jan 1st 2021 1:00 UTC, then the Start index will
                 # be larger than the end index, because the the end index will be pointing

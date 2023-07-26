@@ -60,10 +60,10 @@ class Schedule():
         self.get_orbit_path()
 
     def start_day(self, site_pool):
-        '''Start day method. Initialize time to accounty for work hours. The
+        '''Start day method. Initialize time to account for work hours. The
            site pool that are ready for survey are passed from the company to
            the satellite to filter out sites that are not viewable, covered
-           by clound, and don't have daylight.
+           by cloud, and don't have daylight.
         '''
         # Set start of work, satellite can work 24 hours per day
         self.state['t'].current_date = self.state['t'].current_date.replace(
@@ -134,7 +134,7 @@ class Schedule():
         return valid_site
 
     def assess_weather(self, site):
-        """Check whether the site is covered by clound or have enough daylight
+        """Check whether the site is covered by cloud or have enough daylight
             Args:
              site: a site
 

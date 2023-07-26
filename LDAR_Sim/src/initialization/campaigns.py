@@ -76,7 +76,7 @@ def init_campaigns(n_subtype_rs, sites_per_subtype, timesteps):
 
         # Add non-scheduled methods
         # if there is a only one RS value for all sites and methods is subtype then
-        # set non-scheduled methods to havethe asame survey period
+        # set non-scheduled methods to have the same survey period
         for m in non_sched_meths:
             if has_one_campaign and ref_day_per_campaign is not None:
                 d_per_campaign = ref_day_per_campaign

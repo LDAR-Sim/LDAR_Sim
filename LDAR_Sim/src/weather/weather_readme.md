@@ -21,7 +21,7 @@ Set the following prarmaeters to use:
 
 ## Weather Downloader (ERA5_downloader)
 
-NOTE - This can take a very long time to download data from the copernicus server,
+NOTE - This can take a very long time to download data from the Copernicus server,
 expect to be in the queue for 1-3 hours regardless of file size be patient.
 
 This script will download ERA reanalysis weather data. In order to run you have to:

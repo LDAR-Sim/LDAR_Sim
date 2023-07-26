@@ -64,7 +64,7 @@ def est_site_p_day(m, sites):
         '''
         Estimates the number of sites a crew can do in a day. Takes the number of minutes in a
         day, subtracts the time required from a site at the end of a day. Then divides by
-        the the time required to travel to a site and complete LDAR work at a site.
+        the time required to travel to a site and complete LDAR work at a site.
         '''
         workday_aj = work_mins - int(choice(m['t_bw_sites']['vals']))
         t_per_site = int(choice(m['t_bw_sites']['vals'])

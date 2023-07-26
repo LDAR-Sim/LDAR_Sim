@@ -58,7 +58,7 @@ def generate_sens_prog_set(sens_z_var, programs):
     new_progs = []
     prev_progs_names = set()
     if sens_z_var:
-        # Go through ensitivity progs
+        # Go through sensitivity progs
         var_paths = [path.split(".") for path in sens_z_var['paths']]
         # Get program names and the their associated index in programs object
         key = var_paths[0][-1]
@@ -89,7 +89,7 @@ def generate_sens_prog_set(sens_z_var, programs):
 
 def set_from_keylist(dic, keys, value):
     """ Update program value sensitivity keys (variable path) and value.
-        keys are a heirachical path to variable.
+        keys are a hierarchical path to variable.
 
              program     method       variable
                |            |  vargroup  |

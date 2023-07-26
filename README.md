@@ -33,7 +33,7 @@ Chris Hugenholtz: chhugenh@ucalgary.ca
 
 LDAR-Sim was invented by Thomas Fox, Mozhou Gao, Thomas Barchyn, and Chris Hugenholtz at the University of Calgary's Centre for Smart Emissions Sensing Technologies.
 
-LDAR-Sim is free software: you can redistribute it and/or modify it under the terms of the MIT License . LDAR-Sim is distributed in the hope that it will be useful, but without any warranty; without even the implied warranty of merchantability or fitness for a particular purpose.
+LDAR-Sim is free software: you can redistribute it and/or modify it under the terms of the MIT License. LDAR-Sim is distributed in the hope that it will be useful, but without any warranty; without even the implied warranty of merchantability or fitness for a particular purpose.
 
 NOTE: This applies to all versions following Commit 69c27ec, Made on March 1st, 2021, Previous versions of LDAR-Sim were licensed under the GNU Affero General Public License. All redistributions or modifications made on LDAR-Sim versions created before Commit 69c27ec (March 1st, 2021) are required to be in compliance with version 3 of the GNU Affero General Public License.
 
@@ -47,7 +47,7 @@ Citation for this release: Fox, Thomas A., Mozhou Gao, Thomas E. Barchyn, Yorwea
 
 ### Getting started
 
-This guide is intended to get a user running with LDAR-Sim, **note** that even though we have supplied default variables, these should be used with caution, as many are not fully understood, are dependent on specific company workpractices, and very by geographical region.
+This guide is intended to get a user running with LDAR-Sim, **note** that even though we have supplied default variables, these should be used with caution, as many are not fully understood, are dependent on specific company workpractices, and vary by geographical region.
 
 #### Step 1: Before you begin
 
@@ -80,7 +80,7 @@ if you are using satellite modules orbit predictor needs to be added to environm
 
 #### Step 3: Get Weather and Facility Data
 
-The application requires both facility and weather data to run. We have included sample facilities and weather data for Alberta as an example. Checkout the [user manual](USER_MANUAL.md) for more information on formatting of facility data. Weather data can either be downloaded directly. ERA5 data can be downloaded directly from copernicus using the /module_code/weather/ERA5_downloader.py module (see file for instructions). Note the output data is in hourly format, therefore the flag weather_is_hourly should be set to True. Multiple ERA nc files can be concatenated with ERA5_concat.py. 
+The application requires both facility and weather data to run. We have included sample facilities and weather data for Alberta as an example. Checkout the [user manual](USER_MANUAL.md) for more information on formatting of facility data. Weather data can either be downloaded directly. ERA5 data can be downloaded directly from Copernicus using the /module_code/weather/ERA5_downloader.py module (see file for instructions). Note the output data is in hourly format, therefore the flag weather_is_hourly should be set to True. Multiple ERA nc files can be concatenated with ERA5_concat.py. 
 
 #### Step 4: Populate the simulation folder with Programs and associated methods
 
@@ -88,7 +88,7 @@ The simulation files allow a user to set global / program/ and method parameters
 
 ##### Example
 
-A Global yaml file is required, the most basic setup is as follows (note , that P_OGI, and P_none are required):
+A Global yaml file is required, the most basic setup is as follows (note that P_OGI and P_none are required):
 G_.yaml =>
 
 ``` yaml
@@ -150,7 +150,7 @@ The main program is a python script called LDAR_Sim_main.py. Within the virtual 
 
   where each argument is a path to a global, program, or method input parameter file. for example:
 
-```Python LDAR_Sim_main.py ./simulations/G_.yaml ./simulations/P_air.yaml ./simulations/M_aircraft.yaml ./simulations/M_OGI_FU.yaml```
+```Python LDAR_Sim_main.py ./simulations/G_.yaml ./simulations/P_aircraft.yaml ./simulations/P_none.yaml ./simulations/M_aircraft.yaml ./simulations/M_OGI_FU.yaml```
 
 alternatively, an entire directory can be passed using the "-P", "--in_dir" flags where all files within the directory are added to the program. for example:
 

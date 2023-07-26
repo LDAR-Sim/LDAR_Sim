@@ -57,7 +57,7 @@ class Schedule():
 
     def start_day(self, site_pool):
         """ Start day method. Initialize time to account for work hours, and set
-            the crews location. The site pool , or sites that are ready for survey
+            the crews location. The site pool, or sites that are ready for survey,
             are passed from the company to the crew in the order of neglect. Here,
             the crew estimates the time required to travel and perform survey for
             sites, and sets an itinerary or list of site plans.
@@ -104,7 +104,7 @@ class Schedule():
             for sidx, site in enumerate(site_pool):
                 site_cnt += 1
                 site_plan = self.plan_visit(site, est_mins_remaining=est_mins_remaining)
-                # site plans are dicts that include  site, LDAR_minsand go_to_site keys.
+                # site plans are dicts that include site, LDAR_mins and go_to_site keys.
                 # Site plan can be empty if weather does not permit travel
                 if site_plan and site_plan['go_to_site']:
                     if self.config['scheduling']['route_planning']:
@@ -115,7 +115,7 @@ class Schedule():
                         est_mins_remaining -= site_plan['LDAR_mins']
                         # # The following will allow the program to keep trying sites
                         # # even after one has failed, in case there is another site
-                        # # that mets the criterea
+                        # # that meets the criteria
                         # if est_mins_remaining <= 0:
                         #     # if the day has been filled with surveys exit for and while
                         #     # loop
@@ -149,7 +149,7 @@ class Schedule():
                     break
         # -----------------------------
 
-        # add a site to the rollover list if there are still remainin mins in survey
+        # add a site to the rollover list if there are still remaining mins in survey
         if len(site_plans_today) > 0:
             if site_plans_today[-1]['remaining_mins'] > 0:
                 Schedule.rollover.append(site_plans_today[-1])
@@ -348,7 +348,7 @@ class Schedule():
         """choose the home base for crew
 
         Args:
-            site: if site is defined, then choose the home base that close to both current
+            site: if site is defined, then choose the home base closest to both current
             location and next site
         Returns:
 

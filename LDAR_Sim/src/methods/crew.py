@@ -28,8 +28,8 @@ import numpy as np
 
 
 class BaseCrew:
-    """ Base crws are used by methods to generate crew-level deployment and scheduling,
-        determine sites ready for survey, alocate sites to crews, and report on emissions.
+    """ Base crews are used by methods to generate crew-level deployment and scheduling,
+        determine sites ready for survey, allocate sites to crews, and report on emissions.
         Crew method consists of a deployment type and a sensor type which are set using
         the input parameter file.
     """
@@ -84,7 +84,7 @@ class BaseCrew:
             itinerary = self.schedule.start_day(site_pool)
             for site_plan in itinerary:
                 if site_plan['remaining_mins'] == 0:
-                    # Only record and fix leaks on the last day of work if theres rollover
+                    # Only record and fix leaks on the last day of work if there is rollover
                     self.visit_site(site_plan['site'])
                     # Update the cost per site once the site is done surveying
                     self.daily_cost += self.config['cost']['per_site']

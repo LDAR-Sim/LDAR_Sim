@@ -33,9 +33,9 @@ def fit_dist(samples=None, dist_type="lognorm", loc=0, shape=None, scale=None):
         dist_type (str, optional): scipy distribution type. Defaults to "lognorm".
         loc (int, optional): scipy loc field - linear shift to dist. Defaults to 0.
         shape (list, float, or string): scipy shape parameters
-        scale/mu (float): scipy scale parameters* Except for lognorm. This willbe a mu value,
+        scale/mu (float): scipy scale parameters* Except for lognorm. This will be a mu value,
          scale = exp(mu).
-    see distributions in https://docs.scipy.org/doc/scipy/reference/stats.html forname, method,
+    see distributions in https://docs.scipy.org/doc/scipy/reference/stats.html for name, method,
     and shape /scale purpose.
     Returns:
         Scipy distribution Object: Distribution object, can be called with rvs, pdf,cdf exc.
@@ -61,7 +61,7 @@ def fit_dist(samples=None, dist_type="lognorm", loc=0, shape=None, scale=None):
 
 
 def leak_rvs(distribution, max_size=None, gpsec_conversion=None):
-    """ Generate A random Leak, convert to g/s then checkit against
+    """ Generate A random Leak, convert to g/s then check it against
         leaks size, run until leak is smaller than max size
     Args:
         distribution (A scipy Distribution): Distribution of leak sizes
