@@ -1,8 +1,8 @@
 baseline_program: P_none
 end_date:
-- 2021
-- 12
-- 31
+  - 2021
+  - 12
+  - 31
 input_directory: ./inputs
 make_plots: true
 n_processes: null
@@ -24,30 +24,30 @@ programs:
       repair_costs:
         file: null
         vals:
-        - 200
+          - 200
       sale_price_natgas: 3.0
       verification_cost: 0
     emissions:
       LPR: 0.0065
       consider_venting: false
       leak_dist_params:
-      - -1.79
-      - 2.17
+        - -1.79
+        - 2.17
       leak_dist_type: lognorm
       leak_file: null
       leak_file_use: sample
       max_leak_rate: 100000
       subtype_leak_dist_file: null
       units:
-      - kilogram
-      - hour
+        - kilogram
+        - hour
     end_date:
-    - 2021
-    - 12
-    - 31
+      - 2021
+      - 12
+      - 31
     infrastructure_file: facilities_Perm.csv
     method_labels:
-    - OGI
+      - OGI
     methods:
       OGI:
         RS: 4
@@ -83,21 +83,21 @@ programs:
         reporting_delay: 2
         scheduling:
           LDAR_crew_init_location:
-          - -114.062
-          - 51.044
+            - -114.062
+            - 51.044
           deployment_months:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-          - 6
-          - 7
-          - 8
-          - 9
-          - 10
-          - 11
-          - 12
+            - 1
+            - 2
+            - 3
+            - 4
+            - 5
+            - 6
+            - 7
+            - 8
+            - 9
+            - 10
+            - 11
+            - 12
           deployment_years: []
           home_bases_files: Airport_AB_Coordinates.csv
           min_time_bt_surveys: null
@@ -105,41 +105,42 @@ programs:
           travel_speeds: []
         sensor:
           MDL:
-          - 0.24
-          - 0.39
+            - 0.24
+            - 0.39
           QE: 0.0
           mod_loc: null
           type: OGI_camera_zim
         t_bw_sites:
           file: null
           vals:
-          - 30
+            - 30
         time: 120
-        version: '2.0'
+        version: "2.0"
         weather_envs:
           precip:
-          - 0.0
-          - 0.5
+            - 0.0
+            - 0.5
           temp:
-          - -40.0
-          - 40.0
+            - -40.0
+            - 40.0
           wind:
-          - 0.0
-          - 10.0
+            - 0.0
+            - 10.0
+    n_init_days: null
+    n_init_leaks: null
     parameter_level: program
     program_name: P_OGI
     repair_delay:
       type: default
       val:
-      - 14.0
+        - 14.0
     site_samples: 50
     start_date:
-    - 2017
-    - 1
-    - 1
+      - 2017
+      - 1
+      - 1
     subtype_file: null
-    subtype_times_file: null
-    version: '2.0'
+    version: "2.0"
     weather_file: ERA5_2017_2019_Perm.nc
     weather_is_hourly: true
   P_air:
@@ -152,31 +153,31 @@ programs:
       repair_costs:
         file: null
         vals:
-        - 200
+          - 200
       sale_price_natgas: 3.0
       verification_cost: 0
     emissions:
       LPR: 0.0065
       consider_venting: false
       leak_dist_params:
-      - -1.79
-      - 2.17
+        - -1.79
+        - 2.17
       leak_dist_type: lognorm
       leak_file: null
       leak_file_use: sample
       max_leak_rate: 100000
       subtype_leak_dist_file: null
       units:
-      - kilogram
-      - hour
+        - kilogram
+        - hour
     end_date:
-    - 2021
-    - 12
-    - 31
+      - 2021
+      - 12
+      - 31
     infrastructure_file: facilities_Perm.csv
     method_labels:
-    - airH
-    - OGI_FU
+      - airH
+      - OGI_FU
     methods:
       OGI_FU:
         RS: null
@@ -212,21 +213,21 @@ programs:
         reporting_delay: 2
         scheduling:
           LDAR_crew_init_location:
-          - -114.062
-          - 51.044
+            - -114.062
+            - 51.044
           deployment_months:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-          - 6
-          - 7
-          - 8
-          - 9
-          - 10
-          - 11
-          - 12
+            - 1
+            - 2
+            - 3
+            - 4
+            - 5
+            - 6
+            - 7
+            - 8
+            - 9
+            - 10
+            - 11
+            - 12
           deployment_years: []
           home_bases_files: Airport_AB_Coordinates.csv
           min_time_bt_surveys: null
@@ -234,27 +235,27 @@ programs:
           travel_speeds: []
         sensor:
           MDL:
-          - 0.24
-          - 0.39
+            - 0.24
+            - 0.39
           QE: 0.0
           mod_loc: null
           type: OGI_camera_zim
         t_bw_sites:
           file: null
           vals:
-          - 30
+            - 30
         time: 120
-        version: '2.0'
+        version: "2.0"
         weather_envs:
           precip:
-          - 0.0
-          - 0.5
+            - 0.0
+            - 0.5
           temp:
-          - -40.0
-          - 40.0
+            - -40.0
+            - 40.0
           wind:
-          - 0.0
-          - 10.0
+            - 0.0
+            - 10.0
       airH:
         RS: 4
         consider_daylight: false
@@ -289,21 +290,21 @@ programs:
         reporting_delay: 2
         scheduling:
           LDAR_crew_init_location:
-          - -114.062
-          - 51.044
+            - -114.062
+            - 51.044
           deployment_months:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-          - 6
-          - 7
-          - 8
-          - 9
-          - 10
-          - 11
-          - 12
+            - 1
+            - 2
+            - 3
+            - 4
+            - 5
+            - 6
+            - 7
+            - 8
+            - 9
+            - 10
+            - 11
+            - 12
           deployment_years: []
           home_bases_files: Airport_AB_Coordinates.csv
           min_time_bt_surveys: null
@@ -311,40 +312,41 @@ programs:
           travel_speeds: []
         sensor:
           MDL:
-          - 5.55
+            - 5.55
           QE: 0.0
           mod_loc: null
           type: default
         t_bw_sites:
           file: null
           vals:
-          - 5
+            - 5
         time: 5
-        version: '2.0'
+        version: "2.0"
         weather_envs:
           precip:
-          - 0.0
-          - 0.5
+            - 0.0
+            - 0.5
           temp:
-          - -40.0
-          - 40.0
+            - -40.0
+            - 40.0
           wind:
-          - 0.0
-          - 10.0
+            - 0.0
+            - 10.0
+    n_init_days: null
+    n_init_leaks: null
     parameter_level: program
     program_name: P_air
     repair_delay:
       type: default
       val:
-      - 14.0
+        - 14.0
     site_samples: 50
     start_date:
-    - 2017
-    - 1
-    - 1
+      - 2017
+      - 1
+      - 1
     subtype_file: null
-    subtype_times_file: null
-    version: '2.0'
+    version: "2.0"
     weather_file: ERA5_2017_2019_Perm.nc
     weather_is_hourly: true
   P_none:
@@ -357,50 +359,51 @@ programs:
       repair_costs:
         file: null
         vals:
-        - 200
+          - 200
       sale_price_natgas: 3.0
       verification_cost: 0
     emissions:
       LPR: 0.0065
       consider_venting: false
       leak_dist_params:
-      - -1.79
-      - 2.17
+        - -1.79
+        - 2.17
       leak_dist_type: lognorm
       leak_file: null
       leak_file_use: sample
       max_leak_rate: 100000
       subtype_leak_dist_file: null
       units:
-      - kilogram
-      - hour
+        - kilogram
+        - hour
     end_date:
-    - 2021
-    - 12
-    - 31
+      - 2021
+      - 12
+      - 31
     infrastructure_file: facilities_Perm.csv
     method_labels: []
     methods: {}
+    n_init_days: null
+    n_init_leaks: null
     parameter_level: program
     program_name: P_none
     repair_delay:
       type: default
       val:
-      - 14.0
+        - 14.0
     site_samples: 50
     start_date:
-    - 2017
-    - 1
-    - 1
+      - 2017
+      - 1
+      - 1
     subtype_file: null
-    subtype_times_file: null
-    version: '2.0'
+    version: "2.0"
     weather_file: ERA5_2017_2019_Perm.nc
     weather_is_hourly: true
 reference_program: P_OGI
 start_date:
-- 2017
-- 1
-- 1
-version: '2.0'
+  - 2017
+  - 1
+  - 1
+version: "2.0"
 write_data: true

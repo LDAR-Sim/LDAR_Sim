@@ -1,5 +1,9 @@
 # Change Log
 
+## 2023-07 - Version 2.4.0
+
+1. **Removed Subtype_times_file** The ability to set survey times for sites on a per subtype basis using the "subtype_times_file" parameter has been removed. This functionality will be reintroduced in the subtype file at a later date.
+
 ## 2023-07 - Version 2.3.1
 
 1. **Added_End_to_end testing for program parameters** A new End-to_end test has been added to test previously untested program parameters.

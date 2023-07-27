@@ -1124,18 +1124,6 @@ Additionally, NRd is recommended to be always be equal or greater than n_init_da
 
 **Notes of caution:** Must be populated when using the subtype file with consider_venting set to True if venting in not set per site in the infrastructure file.
 
-### subtype_times_file
-
-**Data type:** string
-
-**Default input:** None
-
-**Description:** Imports a lookup table that allows the modeler to set the survey time per facility according to facility type. This functionality can be used when survey times are not known for each individual site, but can be approximately estimated by facility subtype. Each row represents a facility type and each column represents a method. Times are the number of minutes that pass between arrival at a facility and completion of the inspection at that facility (exclusive of time between workdays and travel time if a site is too large to finish in any given day). If this parameter is set to None, or left blank, times are set at a site level.
-
-**Notes on acquisition:** Ideally, empirical data for similar facilities are used to inform the lookup table and that each value represents a representative average based on a reasonable number of surveys
-
-**Notes of caution:** Facility types must match those used in infrastructure_file. When used, subtype_times_file overwrites any facility-specific times present in infrastructure_file.
-
 ### version (program level)
 
 **Data type:** String
@@ -1841,6 +1829,18 @@ see Global Inputs - version
 ## 8\. Legacy Inputs
 
 As LDAR-Sim continues to grow and evolve, certain parameters may need to be retired and removed from the current version of LDAR-Sim. For completeness, the documentation for these parameters will be moved to this section along with an indication of which version of LDAR-Sim they were removed in.
+
+### subtype_times_file -- Removed as of Version 2.4.0
+
+**Data type:** string
+
+**Default input:** None
+
+**Description:** Imports a lookup table that allows the modeler to set the survey time per facility according to facility type. This functionality can be used when survey times are not known for each individual site, but can be approximately estimated by facility subtype. Each row represents a facility type and each column represents a method. Times are the number of minutes that pass between arrival at a facility and completion of the inspection at that facility (exclusive of time between workdays and travel time if a site is too large to finish in any given day). If this parameter is set to None, or left blank, times are set at a site level.
+
+**Notes on acquisition:** Ideally, empirical data for similar facilities are used to inform the lookup table and that each value represents a representative average based on a reasonable number of surveys
+
+**Notes of caution:** Facility types must match those used in infrastructure_file. When used, subtype_times_file overwrites any facility-specific times present in infrastructure_file.
 
 ### vent_file -- Removed as of Version 2.1.2
 
