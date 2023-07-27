@@ -451,7 +451,7 @@ If you are developing in LDAR-Sim, please adhere to the following rules:
 
 **Data type:** List of integers [year, month, day]
 
-**Default input:** [2017,1,1]
+**Default input:** [2023,1,1]
 
 **Description:** The date at which the simulations begins.
 
@@ -463,7 +463,7 @@ If you are developing in LDAR-Sim, please adhere to the following rules:
 
 **Data type:** List of integers [year, month, day]
 
-**Default input:** [2025,12,31]
+**Default input:** [2027,12,31]
 
 **Description:** The date at which the simulations ends.
 
