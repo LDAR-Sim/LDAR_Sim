@@ -27,6 +27,13 @@ from pathlib import Path
 
 import yaml
 from utils.check_parameter_types import check_types
+from initialization.versioning import (
+    LEGACY_PARAMETER_WARNING,
+    CURRENT_MAJOR_VERSION,
+    CURRENT_MINOR_VERSION,
+    MINOR_VERSION_MISMATCH_WARNING,
+    check_major_version
+)
 
 
 class InputManager:
@@ -125,25 +132,14 @@ class InputManager:
             print('Warning: interpreting parameters as version 3.0 because version key was missing')
             parameters['version'] = '3.0'
 
-        legacy_parameter_warning = (
-            "\nLDAR-Sim has detected an attempt to run a simulation model"
-            " with legacy parameter files. \n\n"
-            "If the goal is to reproduce previously modelled results"
-            " using the legacy parameters, please download the version"
-            " of LDAR-Sim used to produce those results.\n"
-            "Versioned releases can be found at: https://github.com/LDAR-Sim/LDAR_Sim/releases.\n\n"
-            "Otherwise, please visit: "
-            "https://github.com/LDAR-Sim/LDAR_Sim/blob/master/ParameterMigrationGuide.md"
-            " for guidance on how to update parameter files to the latest version.\n"
-            "Please rerun the model once you have successfully"
-            " migrated your parameters to the latest version. \n\n"
-            "See https://github.com/LDAR-Sim/LDAR_Sim/blob/master/changelog.md"
-            " to find a record of what has changed with LDAR-Sim\n"
-        )
+        expected_version_string = ".".join([CURRENT_MAJOR_VERSION, CURRENT_MINOR_VERSION])
 
-        if parameters['version'] != '3.0':
-            print(legacy_parameter_warning)
-            sys.exit()
+        if str(parameters['version']) != expected_version_string:
+            if not check_major_version(str(parameters['version']), CURRENT_MAJOR_VERSION):
+                print(LEGACY_PARAMETER_WARNING)
+                sys.exit()
+            else:
+                print(MINOR_VERSION_MISMATCH_WARNING)
 
         mined_global_parameters = {}
 
