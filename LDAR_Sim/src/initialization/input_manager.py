@@ -169,7 +169,7 @@ class InputManager:
                 check_types(default_program_parameters, new_parameters, omit_keys=['methods'])
                 # Copy all default program parameters to build upon by calling update, then append
                 new_program = copy.deepcopy(default_program_parameters)
-                # HBD - Should be able to change single item in a dict and not he entire dict
+                # HBD - Should be able to change single item in a dict and not the entire dict
                 self.retain_update(new_program, new_parameters)
                 programs.update({new_program['program_name']: new_program})
 

@@ -29,7 +29,7 @@ substances = {
 
 # Mass in a tonne, Or volume in a cubic meter.
 in_metrics = {
-    # Unit referse to either tonne or cubic meter
+    # Unit refers to either tonne or cubic meter
     "cubic meter": {
         'per_unit': 1,
         'type': 'volume',
@@ -236,7 +236,7 @@ def gas_convert(
     else:
         CO2e_tpy = in_mass_tpy * GWP * NG_comp
 
-    # Equivelant in Cars Per Year (4.6 Tonnes / Year)
+    # Equivalent in Cars Per Year (4.6 Tonnes / Year)
     # CO2e_cpy = CO2e_tpy/4.6
 
     # ----  Now reverse the dance, back to the future! #####

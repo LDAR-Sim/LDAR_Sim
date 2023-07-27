@@ -111,7 +111,7 @@ new_time.long_name = 'time'
 
 
 # create weather variables
-# tempertaure
+# temperature
 temp = ncfile.createVariable('t2m', np.float64, ('time', 'lat', 'lon')
                              )  # note: unlimited dimension is leftmost
 temp.units = 'K'

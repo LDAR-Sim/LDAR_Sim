@@ -69,13 +69,13 @@ The **simulations** stores >V2 input parameter files.
 
 ## 4\. Running the Model
 
-To run the model, supply one or more input parameter files as arguments to the program. The main function is called `ldar_sim_main.py` and is the main entrypoint to the model. File paths can be relative to the root directory (e.g., `./parameter_file1.yaml`) or absolute (e.g., `D://parameter_files//parameter_file1.yaml`). File paths are positional arguments and should be seperated by a single space.
+To run the model, supply one or more input parameter files as arguments to the program. The main function is called `ldar_sim_main.py` and is the main entrypoint to the model. File paths can be relative to the root directory (e.g., `./parameter_file1.yaml`) or absolute (e.g., `D://parameter_files//parameter_file1.yaml`). File paths are positional arguments and should be separated by a single space.
 
 ```buildoutcfg
 python ldar_sim_main.py parameter_file1.yaml parameter_file2.yaml
 ```
 
-Alternatively, a single folder name (absolute or relative to root) can be passed by flagged argument _-P_ or _--in_dir_. All json or yaml files within that folder will be added as parameter_files. For example the following will use all parameter files within the sample simulation folder:
+Alternatively, a single folder name (absolute or relative to root) can be passed by flagged argument _-P_ or _--in_dir_. All json or yaml files within that folder will be added as parameter_files. For example, the following will use all parameter files within the sample simulation folder:
 
 ```buildoutcfg
 python ldar_sim_main.py --in_dir ./simulations
@@ -83,7 +83,7 @@ python ldar_sim_main.py --in_dir ./simulations
 
 We recommend running the model with a working directory set to /LDAR_Sim/src.
 
-Optionaly, a single folder name (absolute or relative to root) can be passed by flagged argument _-X_ or _--out_dir_. All output files will be added as outputs in that directory. For example the following will save all output files within the "out" folder:
+Optionally, a single folder name (absolute or relative to root) can be passed by flagged argument _-X_ or _--out_dir_. All output files will be added as outputs in that directory. For example, the following will save all output files within the "out" folder:
 
 ```buildoutcfg
 python ldar_sim_main.py --in_dir ./simulations --out_dir ./out
@@ -211,9 +211,9 @@ There are special considerations for methods:
   - `equipment`: Sensor measures the aggregate of all leaks at within a single equipment group.
   - `component`: Sensor measures each individual leak.
 
-- All methods require a `sensor` This can can either be custom built or one of the following can be used:
+- All methods require a `sensor` This can either be custom built or one of the following can be used:
 
-  - `default`: Uses a simple threashold where the leak rate is based on the measurement scale, for example if `measurement_scale = site` then the site's total emissions will be considered measured if greater than the sensors MDL. -`OGI_camera`: Uses detection curve based on Ravikumar, 2018.Requires measurement_scale = 'component'.
+  - `default`: Uses a simple threshold where the leak rate is based on the measurement scale, for example if `measurement_scale = site` then the site's total emissions will be considered measured if greater than the sensors MDL. -`OGI_camera`: Uses detection curve based on Ravikumar, 2018.Requires measurement_scale = 'component'.
 
 - Follow up technologies need to be set explicitly. `is_follow_up = True`. The default value is false
 - Third, because methods are often carefully designed and used in treatment / control experiments, it is helpful to allow reuse of specific methods by referring to methods by their `label`.
@@ -431,7 +431,7 @@ If enabled, the leaks will be stored locally in /inputs/generation after running
 
 **Default input:** False
 
-**Description:** If set to True, a timeseries of daily random integers will be created, and passed into each program, where each program within a simulation set receives the same timeseries. Then within each day of the simulation, the numpy and random seeds are set using the daily integer. This ensures that the output values will be the same in identical programs regardless of the stocastic nature of the software.
+**Description:** If set to True, a timeseries of daily random integers will be created, and passed into each program, where each program within a simulation set receives the same timeseries. Then within each day of the simulation, the numpy and random seeds are set using the daily integer. This ensures that the output values will be the same in identical programs regardless of the stochastic nature of the software.
 
 **Notes on acquisition:** N/A
 
@@ -537,7 +537,7 @@ If enabled, the leaks will be stored locally in /inputs/generation after running
 
 **Notes on acquisition:** The fuel charge rates for Canada can be found here: <https://www.canada.ca/en/revenue-agency/services/forms-publications/publications/fcrates/fuel-charge-rates.html>.
 
-**Notes of caution:** This rate rises by $10/tonne CO2e annaually and should be updated in the model to reflect changes in the price.
+**Notes of caution:** This rate rises by $10/tonne CO2e annually and should be updated in the model to reflect changes in the price.
 
 #### cost_CCUS
 
@@ -609,7 +609,7 @@ If enabled, the leaks will be stored locally in /inputs/generation after running
 
 **Notes of caution:** Cost of verification is likely to be facility specific. Modelers with good data and an intimate understanding of LDAR-Sim may opt to reprogram the model to accept a distribution of site-level verification cost estimates.
 
-**Notes on acquisition (economics):** The default values for these parameters represent generic costs of mitigation options and a conservative price for natural gas. Firms may have unique costs for carbon taxes based on the regulatory jurisdiction where their operations are located, CCUS, or low bleed retrofits that they want to input into the model. If not, default parameters can be used, or information from the IEA and RFF report from Munnings and Krupnick (2017) can be used to derive alternative values. Provinicial/State or Federal government websites should have carbon pricing scenarios available online.
+**Notes on acquisition (economics):** The default values for these parameters represent generic costs of mitigation options and a conservative price for natural gas. Firms may have unique costs for carbon taxes based on the regulatory jurisdiction where their operations are located, CCUS, or low bleed retrofits that they want to input into the model. If not, default parameters can be used, or information from the IEA and RFF report from Munnings and Krupnick (2017) can be used to derive alternative values. Provincial/State or Federal government websites should have carbon pricing scenarios available online.
 
 **Notes of caution (economics):** The value used for the cost of low bleed retrofits from Munnings and Krupnick (2017) is based on a national marginal abatement cost curve for methane abatement technologies in the U.S. O&G sector. As a result, this cost may not be truly representative of the costs for low bleed retrofits at sites in the O&G sector under LDAR regulations.
 
@@ -660,7 +660,7 @@ If enabled, the leaks will be stored locally in /inputs/generation after running
 
 **Default input:** [-2.776, 1.462]
 
-**Description:** A list describing the empirical leak function from which leak emission rates are drawn. The first term is the distribution scale and and any subsequent terms are the the distribution shape. These are used in conjunction with the leak_dist_type. See scipy documentation for more uses. Because the Lognormal distribution is often used in literature, it is considered a special case where the scale is the mu value , or the log of the scale used by the scipy function `eg. scale = exp(leak_dist_params)[0]`. The default value is a lognormal fit of the clearstone dataset, which were taken from OGI measurements of leaks from Canadian gas facilities.
+**Description:** A list describing the empirical leak function from which leak emission rates are drawn. The first term is the distribution scale and any subsequent terms are the distribution shape. These are used in conjunction with the leak_dist_type. See scipy documentation for more uses. Because the Lognormal distribution is often used in literature, it is considered a special case where the scale is the mu value , or the log of the scale used by the scipy function `eg. scale = exp(leak_dist_params)[0]`. The default value is a lognormal fit of the clearstone dataset, which were taken from OGI measurements of leaks from Canadian gas facilities.
 
 **Notes on acquisition:** N/A
 
@@ -726,13 +726,13 @@ If enabled, the leaks will be stored locally in /inputs/generation after running
 
 **Notes of caution:** N/A
 
-#### subtype_leak_dist_file (depricated)
+#### subtype_leak_dist_file (deprecated)
 
 **Data type:** String
 
 **Default input:** None
 
-**Description:** Name of file containing distributions for subtypes. Requires 3 or columns: subtype_code, dist_type, followed by scipy defined shape parameters, followed by the scipy scale. For example if dist_type is lognormal , their will be only one shape parameter (3rd column) and the the size parameter will be placed in the 4th column. Note: loc parameters are always set to zero. If this parameter is set to None, or left blank, distributions are set are set at a program level with the leak_dist_params, and leak_dist_type parameters.
+**Description:** Name of file containing distributions for subtypes. Requires 3 or 4 columns: subtype_code, dist_type, followed by scipy defined shape parameters, followed by the scipy scale. For example if dist_type is lognormal , their will be only one shape parameter (3rd column) and the size parameter will be placed in the 4th column. Note: loc parameters are always set to zero. If this parameter is set to None, or left blank, distributions are set are set at a program level with the leak_dist_params, and leak_dist_type parameters.
 
 **Notes on acquisition:**
 
@@ -945,7 +945,7 @@ method_labels:
 
 **Notes on acquisition:** Estimate from empirical data or use previously published value. This value can be calculated by multiplying the n_init_days by LPR.
 
-**Notes of caution:** This will overwrite the original functionality of utilizing NRd and LPR to calculate the number of initial leaks present in the simulation. Additionally, this value is will be set for all sites, and cannot be specified for individual subtypes at this given time.
+**Notes of caution:** This will overwrite the original functionality of utilizing NRd and LPR to calculate the number of initial leaks present in the simulation. Additionally, this value will be set for all sites, and cannot be specified for individual subtypes at this given time.
 
 ### n_init_days
 
@@ -1176,7 +1176,7 @@ If using different weather files for different programs (e.g., when comparing di
 
 **Default input:** False
 
-**Description:** Specify if the weather file is ERA5 reanalysis hourly data downloaded directly from ERA5 copernicus database or API. If false, the weather file is assumed to be daily average data generated using the /weather/ERA5_hourly_to_daily.py script.
+**Description:** Specify if the weather file is ERA5 reanalysis hourly data downloaded directly from ERA5 Copernicus database or API. If false, the weather file is assumed to be daily average data generated using the /weather/ERA5_hourly_to_daily.py script.
 
 **Notes on acquisition:** N/A
 
@@ -1332,7 +1332,7 @@ Method costs. Currency is not important but must be consistent across all inputs
 
 **Notes on acquisition:** No data acquisition required.
 
-**Notes of caution:** Follow-up thresholds are explored in detail in Fox et al. 2021\. Choosing follow-up rules is complex and work practices should be developed following extensive analysis of different scenarios. It is important to understand how follow-up thresholds and follow-up ratios interact, especially if both are to be used in the same program. Note that follow-up thresholds are similar to minimum detection limits but that the former is checked against to the measured emission rate (which is a function of quantification error) while the latter is checked against the true emission rate.
+**Notes of caution:** Follow-up thresholds are explored in detail in Fox et al. 2021\. Choosing follow-up rules is complex and work practices should be developed following extensive analysis of different scenarios. It is important to understand how follow-up thresholds and follow-up ratios interact, especially if both are to be used in the same program. Note that follow-up thresholds are similar to minimum detection limits but that the former is checked against the measured emission rate (which is a function of quantification error) while the latter is checked against the true emission rate.
 
 #### instant_threshold_type
 
@@ -1340,7 +1340,7 @@ Method costs. Currency is not important but must be consistent across all inputs
 
 **Default input:** "absolute"
 
-**Description:** How to establish the follow-up threshold for the instand threshold. Can be "absolute" or "relative". See _follow_up.instant_threshold_ and _follow_up.threshold_ for more information.
+**Description:** How to establish the follow-up threshold for the instant threshold. Can be "absolute" or "relative". See _follow_up.instant_threshold_ and _follow_up.threshold_ for more information.
 
 **Notes on acquisition:** No data acquisition required.
 
@@ -1364,7 +1364,7 @@ Method costs. Currency is not important but must be consistent across all inputs
 
 **Default input:** []
 
-**Description:** The percentage (0.0-1.0) of sites that must be flagged per survey. IF a screening technology flags 10% of sites during a campaign and the minimum_followup for the campaign, is 0.5, then 40% of all sites will be selected at random and flagged prior to the end of the campaing. If min_followup_type is 'campaign' then each value corresponds to the current survey within the year, for example if RS=2 each set of site surveys require a value. If min_followup_type is 'annual' then a single value (in the array) is expected for the entire year, regardless of RS value. Surveys will be performed n days prior to the end of a campaign / year based on min_followup_days_to_end. Note: Not enabled by default (empty string)
+**Description:** The percentage (0.0-1.0) of sites that must be flagged per survey. IF a screening technology flags 10% of sites during a campaign and the minimum_followup for the campaign, is 0.5, then 40% of all sites will be selected at random and flagged prior to the end of the campaign. If min_followup_type is 'campaign' then each value corresponds to the current survey within the year, for example if RS=2 each set of site surveys require a value. If min_followup_type is 'annual' then a single value (in the array) is expected for the entire year, regardless of RS value. Surveys will be performed n days prior to the end of a campaign / year based on min_followup_days_to_end. Note: Not enabled by default (empty string)
 
 **Notes on acquisition:** Often based on standards, ie. EPA proposed 6 screenings with minimum_followup of 1 were min_followup_type is annual.
 
@@ -1412,7 +1412,7 @@ Method costs. Currency is not important but must be consistent across all inputs
 
 **Default input:** "recent"
 
-**Description:** Specifies which measured emissions rate to use to identify which candidate sites to follow up at if individual sites have multiple independent measurements that have accumulated in the candidate flag pool. If the _follow\_up.delay_ is not zero, crews can survey the site several times before flagging the site. If this value is set to _recent_, the most recent site measurement will be used to check followup threshold and proportion. If the value is set to _max_, the highest emissions rate wil be used. If the value is set to _average_ the average emissions from all surveys will be used.
+**Description:** Specifies which measured emissions rate to use to identify which candidate sites to follow up at if individual sites have multiple independent measurements that have accumulated in the candidate flag pool. If the _follow\_up.delay_ is not zero, crews can survey the site several times before flagging the site. If this value is set to _recent_, the most recent site measurement will be used to check followup threshold and proportion. If the value is set to _max_, the highest emissions rate will be used. If the value is set to _average_ the average emissions from all surveys will be used.
 
 **Notes on acquisition:** No data acquisition required.
 
@@ -1502,7 +1502,7 @@ The follow-up delay parameter can be set to require multiple measurements for a 
 
 **Notes on acquisition:** No data acquisition required.
 
-**Notes of caution:** Unless explicitly evaluating labour constraints, ensure that sufficient crews are available to perform LDAR according to the requirements set out in the infrastructure_file. For example, if 2000 facilities require LDAR, and each takes an saverage of 300 minutes, ~10,000 work hours are required, or 3-4 crews working full time.
+**Notes of caution:** Unless explicitly evaluating labour constraints, ensure that sufficient crews are available to perform LDAR according to the requirements set out in the infrastructure_file. For example, if 2000 facilities require LDAR, and each takes an average of 300 minutes, ~10,000 work hours are required, or 3-4 crews working full time.
 
 ### parameter_level
 
@@ -1528,7 +1528,7 @@ see Global Inputs - parameter_level
 
 **Default input:** [1,2,3,4,5,6,7,8,9,10,11,12]
 
-**Description:** A list of months used for scheduling. Methods can only be deployed during these months. For example, [8,9] indicates methods can only be deployed in August and Septamber. If not defined, LDAR-Sim aussmes methods can be depolyed every month.
+**Description:** A list of months used for scheduling. Methods can only be deployed during these months. For example, [8,9] indicates methods can only be deployed in August and September. If not defined, LDAR-Sim assumes methods can be deployed every month.
 
 **Notes on acquisition:** N/A
 
@@ -1540,7 +1540,7 @@ see Global Inputs - parameter_level
 
 **Default input:** N/A
 
-**Description:** A list of years used for scheduling. Methods can only be deployed during these years. For example, [2017,2018] indicates methods can only be deployed in 2017 and 2018\. If not defined, LDAR-Sim aussmes methods can be depolyed every year.
+**Description:** A list of years used for scheduling. Methods can only be deployed during these years. For example, [2017,2018] indicates methods can only be deployed in 2017 and 2018\. If not defined, LDAR-Sim assumes methods can be deployed every year.
 
 **Notes on acquisition:** N/A
 
@@ -1586,7 +1586,7 @@ see Global Inputs - parameter_level
 
 **Data type:** List of floats
 
-**Default input:** None (Is required to be defined if rout_planning is enaabled)
+**Default input:** None (Is required to be defined if route_planning is enabled)
 
 **Description:** A list of speed limits that define the maximum travelling speed of technologies. A random speed is sampled from this list when calculating the travel time between two facilities or between the facility and a home base. This can also be a list with a single value.
 
@@ -1628,7 +1628,7 @@ see Global Inputs - parameter_level
 
 **Default input:** [0.01275, 2.78e-6]
 
-**Description:** A list of parameters [_xₒ_, σ] that define the minimum detection limit of OGI. The two parameters define a sigmoidal Gaussian cumulative probability function as described in Ravikumar et al. (2018), where _xₒ_ is the emission rate (in grams per second) at which 50% of leaks are detected (i.e., median detection limit), and σ is one standard deviation of  _xₒ_. The probability detection of a leak with OGI is calculated using a signmoidal probability function:
+**Description:** A list of parameters [_xₒ_, σ] that define the minimum detection limit of OGI. The two parameters define a sigmoidal Gaussian cumulative probability function as described in Ravikumar et al. (2018), where _xₒ_ is the emission rate (in grams per second) at which 50% of leaks are detected (i.e., median detection limit), and σ is one standard deviation of  _xₒ_. The probability detection of a leak with OGI is calculated using a sigmoidal probability function:
 
 $$
 f = 1/{(1+exp(-k(log(x)-log(x_0))))}
@@ -1646,7 +1646,7 @@ where f = is the fraction of leaks detected, _x_ is the emission rate in grams o
 
 **Default input:** [0.24, 0.39]
 
-**Description:** A list of parameters [a, b] that define the leak rate based probability of detection of a leak. The two parameters define power law cumulative probability function as described in Zimmerle (2020), where both a and b are empirical parameters that define the shape of the curve, and are based on the camera crew experience.The probability detection of a leak with OGI is calculated using the following function:
+**Description:** A list of parameters [a, b] that define the leak rate based probability of detection of a leak. The two parameters define power law cumulative probability function as described in Zimmerle (2020), where both a and b are empirical parameters that define the shape of the curve, and are based on the camera crew experience. The probability detection of a leak with OGI is calculated using the following function:
 
 $$
 p = a*x^{b}
@@ -1691,9 +1691,9 @@ parameters used are that associated with the moderate ability to detect.
 
 **Description:** Methods are comprised of both a deployment type and a sensor type. the sensor type is a character string denoting the sensor used in the method. For instance, 'OGI_camera_zim','OGI_camera_rk', or 'default'. The 'default' sensor uses the MDL as a threshold to detect leaks based on the measurement scale of the method. Custom sensors can be added and referenced here. Built in sensors are:
 
-- `default`: Uses a simple threashold where the leak rate is based on the measurement scale, for example if `measurement_scale = site` then the site's total emissions will be considered measured if greater than the sensors MDL.
+- `default`: Uses a simple threshold where the leak rate is based on the measurement scale, for example if `measurement_scale = site` then the site's total emissions will be considered measured if greater than the sensors MDL.
 - `OGI_camera_rk`: Uses detection curve based on Ravikumar, 2018.Requires measurement_scale = 'component'.
-- `OGI_camera_zim`: Uses detection curve based on Zimmerlie 2020.Requires measurement_scale = 'component'.
+- `OGI_camera_zim`: Uses detection curve based on Zimmerle 2020.Requires measurement_scale = 'component'.
 - `GHGSAT1` Uses a windspeed based method of detection from Jacob et al., 2016.
 
 **Notes on acquisition:** No data acquisition required.
@@ -1800,7 +1800,7 @@ Method weather envelopes
 
 **Notes on acquisition:** It is only required for satellite.
 
-**Notes of caution:** Please be sure the satellite is inlcuded in the TLE file
+**Notes of caution:** Please be sure the satellite is included in the TLE file
 
 ### TLE_label (satellite only)
 

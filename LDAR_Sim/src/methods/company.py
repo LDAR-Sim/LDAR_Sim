@@ -190,12 +190,12 @@ class BaseCompany:
         """
         Add candidate sites to watchlist, and calculate a site emission rate if there are
         multiple emissions measurements.The watchlist allows companies to keep track of
-        canditate site surveys. This is utilized by a company when a follow_up_delay
+        candidate site surveys. This is utilized by a company when a follow_up_delay
         is greater than zero, as multiple surveys can be done for each site before a site
         is flagged.
 
         If an instant repair threshold is utilized and a sites  emissions rate is greater than
-        the instant followup threshold, the site will be  immediately flagged.
+        the instant followup threshold, the site will be immediately flagged.
 
         """
         site_wl = self.site_watchlist
@@ -300,7 +300,7 @@ class BaseCompany:
 
     def aggregate_by(self, list, filter):
         '''
-        Gets the affective aggregated value from a list based on an input filter
+        Gets the effective aggregated value from a list based on an input filter
         Values of the filter can be 'recent', 'max', or 'mean'
 
         '''

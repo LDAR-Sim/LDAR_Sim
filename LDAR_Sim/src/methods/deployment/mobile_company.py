@@ -56,7 +56,7 @@ class Schedule():
         """ If route planning is enabled, use k-means clustering to split site into N clusters
             N equals to the number of crews.
 
-            The goal is to improve the coordiation of LDAR crews when there are
+            The goal is to improve the coordination of LDAR crews when there are
             more than one crew. The crews will only visit the site corresponding to their IDs.
             e.g., crew_ID 0 will only visit site in cluter 0
 
@@ -76,7 +76,7 @@ class Schedule():
                     ID.append(site['facility_ID'])
                     lats.append(site['lat'])
                     lons.append(site['lon'])
-                # a temporary dataframe creafed for storing ID, coordiates of sites
+                # a temporary dataframe created for storing ID, coordinates of sites
                 sdf = pd.DataFrame({"ID": ID, 'lon': lons, 'lat': lats})
                 locs = sdf[['lat', 'lon']].values
                 num = self.config['n_crews']
@@ -93,7 +93,7 @@ class Schedule():
         """ Retrieve a site list of sites due for screen / survey
 
             If the method is a followup, return sites that have passed
-            that have passed the reporting delay window.
+            the reporting delay window.
 
             If the method is not followup return sites that have passed
             the minimum survey interval, and that still require surveys
@@ -209,7 +209,7 @@ class Schedule():
         return n_working_crews
 
     def get_crew_site_list(self, site_pool, crew_ID, n_crews, crews=None):
-        """ This function divies the site pool among all crews. Ordering
+        """ This function divides the site pool among all crews. Ordering
             of sites is not changed by function.
         Args:
             site_pool (dict): List of sites
@@ -222,7 +222,7 @@ class Schedule():
             dict: Crew site list (subset of site_pool)
         """
         if self.config['scheduling']['route_planning']:
-            # divies the site pool based on clustering analysis
+            # divides the site pool based on clustering analysis
             crew_site_list = [
                 site for site in site_pool if site['crew_ID'] == crew_ID]
         else:

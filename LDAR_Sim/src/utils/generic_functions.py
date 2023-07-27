@@ -34,7 +34,7 @@ from shapely.geometry import Polygon
 
 def gap_calculator(condition_vector):
     """
-    This function calculates max gaps between daily activites in a time series.
+    This function calculates max gaps between daily activities in a time series.
     Requires only a single binary vector describing whether a condition was met.
     """
 
@@ -139,8 +139,8 @@ def geo_idx(dd, dd_array):
      - dd - the decimal degree (latitude or longitude)
      - dd_array - the list of decimal degrees to search As a Numpy Array.
      search for nearest decimal degree in an array of decimal degrees and return the index.
-     np.argmin returns the indices of minium value along an axis.
-     so subtract dd from all values in dd_array, take absolute value and find index of minium.
+     np.argmin returns the indices of minimum value along an axis.
+     so subtract dd from all values in dd_array, take absolute value and find index of minimum.
    """
     geo_idx = (np.abs(dd_array - dd)).argmin()
     return geo_idx
@@ -179,19 +179,19 @@ def ecef_to_llh(ecef_km):
     Converts the Earth-Centered Earth-Fixed (ECEF) coordinates (x, y, z) to
     (WGS-84) Geodetic point (lat, lon, h)
     ecef_km contains three elements
-    ecef_km[0] is the x coordiante of satellite in ecef in km
-    ecef_km[1] is the y coordiante of satellite in ecef in km
-    ecef_km[2] is the z coordiante of satellite in ecef in km
+    ecef_km[0] is the x coordinate of satellite in ecef in km
+    ecef_km[1] is the y coordinate of satellite in ecef in km
+    ecef_km[2] is the z coordinate of satellite in ecef in km
     """
-    # WGS-84 Earth semimajor axis (km)
+    # WGS-84 Earth semi-major (equatorial) axis (km)
     a = 6378.1370
-    # Derived Earth semimajor axis (km)
+    # WGS-84 Earth semi-minor (polar) axis (km)
     b = 6356.752314
-    # pythagoras to calculate two earth's minor axises
+    # 2D distance to center
     p = sqrt(ecef_km[0] ** 2 + ecef_km[1] ** 2)
     # Calculate the angle between orbit object and earth center
     thet = atan(ecef_km[2] * a / (p * b))
-    # Caluclate ellipsoid flatness and ellipsoid flatness factor
+    # Calculate ellipsoid flatness and ellipsoid flatness factor
     esq = 1.0 - (b / a) ** 2
     epsq = (a / b) ** 2 - 1.0
     # calculate latitude
@@ -210,8 +210,8 @@ def ecef_to_llh(ecef_km):
 
 def init_orbit_poly(predictor, T1, T2, interval):
     """
-    Grab the esitamted positions of satellite
-    predictor: orbit path predictor of satellit created by using orbit_predictor package
+    Grab the estimated positions of satellite
+    predictor: orbit path predictor of satellite created by using orbit_predictor package
     T1: start datetime
     T2: end datetime
     interval: time interval of each time step in minutes
@@ -227,7 +227,7 @@ def init_orbit_poly(predictor, T1, T2, interval):
         info1 = predictor.get_position(T1)
         # get position in ecef coordinate system
         ecef1 = info1.position_ecef
-        # covert ecef to lat, lon, and altitude
+        # convert ecef to lat, lon, and altitude
         lat1, lon1, h1 = ecef_to_llh(ecef1)
 
         # update time
@@ -237,7 +237,7 @@ def init_orbit_poly(predictor, T1, T2, interval):
         ecef2 = info2.position_ecef
         lat2, lon2, h2 = ecef_to_llh(ecef2)
 
-        # get the bounding box of the coverage of satellite between this two time step
+        # get the bounding box of the coverage of satellite between the two time steps
         pt1 = (lon1, lat1+0.1)
         pt2 = (lon1+0.1, lat1)
         pt3 = (lon2, lat2-0.1)

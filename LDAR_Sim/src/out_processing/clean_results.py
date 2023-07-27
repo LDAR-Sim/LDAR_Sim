@@ -29,7 +29,7 @@ def clean_sim_df(sim_results, df,  index='index', params=[], aggregate=True, add
 
     Args:
         sim_results (dict): results from simulations
-        df (string): dataframe to interprete, can be "leaks", "sites", or "timeseries"
+        df (string): dataframe to interpret, can be "leaks", "sites", or "timeseries"
         index (str, optional): The index column of the timeseries. Defaults to 'index'.
         params (list, optional): List of dicts of mapped columns to include. Defaults to [].
                                  dict should have:
@@ -39,7 +39,7 @@ def clean_sim_df(sim_results, df,  index='index', params=[], aggregate=True, add
                                     'xfac': A scalar which can be used to scale the output value
                                            of a column
 
-        aggregate (bool, optional):  Will averaged the values across all. Defaults to True.
+        aggregate (bool, optional):  Will average the values across all. Defaults to True.
         add_meta_cols (list, optional): List of dicts can be used to add a single value as a
                                         column . Defaults to [].
                                  dict should have:
