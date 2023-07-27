@@ -1,12 +1,12 @@
-# LDAR-Sim V3 Parameter Migration Guide
+# LDAR-Sim V3.0 Parameter Migration Guide
 
 ## Purpose
 
-This guide is intended to help guide users who are updating to LDAR-Sim V3 in updating their parameter files to the supported V3 format.
+This guide is intended to assist users users who are updating to LDAR-Sim V3.0 by providing instructions on how to update their parameter files to the supported V3.0 format.
 
-## What changed between V2 and V3?
+## What changed between V2 and V3.0?
 
-The majority of the LDAR_Sim parameters from V2 still exist in V3, but some of them have moved parameter files. In LDAR-Sim V3, global parameters has been renamed to Simulation_setting. A new parameters file: the "virtual_world" parameters has been introduced to contain parameters that inform the LDAR-Sim virtual world.
+The majority of the LDAR_Sim parameters from V2 still exist in V3.0, but some of them have moved parameter files. In LDAR-Sim V3.0, global parameters has been renamed to Simulation_setting. A new parameters file: the "virtual_world" parameters has been introduced to contain parameters that inform the LDAR-Sim virtual world.
 
 ### Details
 
@@ -24,7 +24,7 @@ Contains parameters used to inform properties of the LDAR-Sim simulation, such a
 
 Contains parameters used to inform the LDAR-Sim virtual world. These parameters will typically be a direct match for parameters previously found at the program level in V2. There can only be one Virtual World parameter file per simulation set.
 
-## Moving from V2 parameters to V3 Parameters
+## Moving from V2 parameters to V3.0 Parameters
 
 ### 1. Creating the Simulation Settings parameter file
 
@@ -60,7 +60,7 @@ Contains parameters used to inform the LDAR-Sim virtual world. These parameters 
 
 1. Locate the program parameter file associate with the baseline program for your simulation. It's name will match the value set for the baseline_program parameter in the Simulation_settings (Your transformed global parameters file). This will often be set to P_none.
 
-    Example: For
+    For Example:
 
     ```yaml
     baseline_program: P_none
@@ -175,4 +175,4 @@ parameter_level: "method"
     version: 3.0
     ```
 
-### Congratulations: The move from parameter files version 2 to version 3 is complete
+### Congratulations: The move from parameter files version 2 to version 3.0 is complete
