@@ -72,7 +72,7 @@ class LdarSim:
         if virtual_world['emissions']['leak_file'] is not None:
             state['empirical_leaks'] = np.array(pd.read_csv(
                 input_dir / virtual_world['emissions']['leak_file']))
-        if virtual_world['economics']['repair_costs']['file'] is not None:
+        if program_parameters['economics']['repair_costs']['file'] is not None:
             virtual_world['economics']['repair_costs']['vals'] = np.array(
                 pd.read_csv(
                     input_dir /
@@ -404,12 +404,12 @@ class LdarSim:
 
                     lk['volume'] = duration*lk['rate']*86.4
                     repair_cost = int(
-                        choice(virtual_world['economics']['repair_costs']['vals']))
+                        choice(program_parameters['economics']['repair_costs']['vals']))
                     timeseries['repair_cost'][state['t'].current_timestep] += repair_cost
                     timeseries['verification_cost'][state['t'].current_timestep] \
-                        += virtual_world['economics']['verification_cost']
+                        += program_parameters['economics']['verification_cost']
                     timeseries['total_daily_cost'][state['t'].current_timestep] \
-                        += repair_cost + virtual_world['economics']['verification_cost']
+                        += repair_cost + program_parameters['economics']['verification_cost']
             # Update site leaks
             if has_repairs:
                 site['repaired_leaks'] += [lk for lk in site['active_leaks']
@@ -560,7 +560,7 @@ class LdarSim:
         wanted_c_economics = ['sale_price_natgas', 'GWP_CH4',
                               'carbon_price_tonnesCO2e', 'cost_CCUS']
         carbon_economics = {
-            key: value for key, value in virtual_world['economics'].items()
+            key: value for key, value in program_parameters['economics'].items()
             if key in wanted_c_economics
         }
 
