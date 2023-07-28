@@ -32,6 +32,8 @@ from initialization.versioning import (
     CURRENT_MAJOR_VERSION,
     CURRENT_MINOR_VERSION,
     MINOR_VERSION_MISMATCH_WARNING,
+    CURRENT_FULL_VERSION,
+    MAJOR_VERSION_ONLY_WARNING,
     check_major_version
 )
 
@@ -130,12 +132,15 @@ class InputManager:
         """
         if 'version' not in parameters:
             print('Warning: interpreting parameters as version 3.0 because version key was missing')
-            parameters['version'] = '3.0'
+            parameters['version'] = CURRENT_FULL_VERSION
 
         expected_version_string = ".".join([CURRENT_MAJOR_VERSION, CURRENT_MINOR_VERSION])
 
         if str(parameters['version']) != expected_version_string:
-            if not check_major_version(str(parameters['version']), CURRENT_MAJOR_VERSION):
+            if str(parameters['version']) == CURRENT_MAJOR_VERSION:
+                print(MAJOR_VERSION_ONLY_WARNING)
+                sys.exit()
+            elif not check_major_version(str(parameters['version']), CURRENT_MAJOR_VERSION):
                 print(LEGACY_PARAMETER_WARNING)
                 sys.exit()
             else:
