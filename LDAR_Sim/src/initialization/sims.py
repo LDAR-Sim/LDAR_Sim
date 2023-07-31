@@ -33,10 +33,11 @@ def create_sims(sim_params, programs, virtual_world, generator_dir, in_dir, out_
     n_simulations = sim_params['n_simulations']
     pregen_leaks = sim_params['pregenerate_leaks']
     preseed_random = sim_params['preseed_random']
+    base_prog = sim_params['baseline_program']
     simulations = []
     for i in range(n_simulations):
         if pregen_leaks:
-            file_loc = generator_dir / "pregen_{}_{}.p".format(i, 'leaks')
+            file_loc = generator_dir / "pregen_{}_{}.p".format(i, base_prog)
             # If there is no pregenerated file for the virtual world
             if not os.path.isfile(file_loc):
                 sites, leak_timeseries, initial_leaks = generate_sites(
