@@ -1,0 +1,2 @@
+Simulating program: P_mobile_campaigns ; simulation 1 of 1
+Finished simulating program P_mobile_campaigns ; simulation 1 of 1 

@@ -1,0 +1,2 @@
+Simulating program: P_continuous ; simulation 1 of 1
+Finished simulating program P_continuous ; simulation 1 of 1 
