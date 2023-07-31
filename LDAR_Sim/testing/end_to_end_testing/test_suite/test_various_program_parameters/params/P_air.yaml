@@ -4,3 +4,12 @@ version: "3.0"
 method_labels:
   - airH
   - OGI_FU
+economics:
+  carbon_price_tonnesCO2e: 80.0
+  cost_CCUS: 40.0
+  GWP_CH4: 56.0
+  sale_price_natgas: 6.0
+  repair_costs:
+    vals: [400]
+    file: "_placeholder_str_"
+  verification_cost: 100

@@ -1,6 +1,6 @@
 baseline_program: P_none
 end_date:
-  - 2021
+  - 2027
   - 12
   - 31
 input_directory: ./inputs
@@ -14,6 +14,16 @@ preseed_random: true
 print_from_simulations: true
 programs:
   P_OGI:
+    economics:
+      GWP_CH4: 28.0
+      carbon_price_tonnesCO2e: 40.0
+      cost_CCUS: 20.0
+      repair_costs:
+        file: null
+        vals:
+          - 200
+      sale_price_natgas: 3.0
+      verification_cost: 0
     method_labels:
       - OGI
     methods:
@@ -93,12 +103,20 @@ programs:
           wind:
             - 0.0
             - 10.0
-    n_init_days: null
-    n_init_leaks: null
     parameter_level: program
     program_name: P_OGI
     version: "3.0"
   P_aircraft:
+    economics:
+      GWP_CH4: 28.0
+      carbon_price_tonnesCO2e: 40.0
+      cost_CCUS: 20.0
+      repair_costs:
+        file: null
+        vals:
+          - 200
+      sale_price_natgas: 3.0
+      verification_cost: 0
     method_labels:
       - aircraft
       - OGI_FU
@@ -255,12 +273,20 @@ programs:
           wind:
             - 0.0
             - 10.0
-    n_init_days: null
-    n_init_leaks: null
     parameter_level: program
     program_name: P_aircraft
     version: "3.0"
   P_drone:
+    economics:
+      GWP_CH4: 28.0
+      carbon_price_tonnesCO2e: 40.0
+      cost_CCUS: 20.0
+      repair_costs:
+        file: null
+        vals:
+          - 200
+      sale_price_natgas: 3.0
+      verification_cost: 0
     method_labels:
       - drone
       - OGI_FU
@@ -417,20 +443,36 @@ programs:
           wind:
             - 0.0
             - 10.0
-    n_init_days: null
-    n_init_leaks: null
     parameter_level: program
     program_name: P_drone
     version: "3.0"
   P_none:
+    economics:
+      GWP_CH4: 28.0
+      carbon_price_tonnesCO2e: 40.0
+      cost_CCUS: 20.0
+      repair_costs:
+        file: null
+        vals:
+          - 200
+      sale_price_natgas: 3.0
+      verification_cost: 0
     method_labels: []
     methods: {}
-    n_init_days: null
-    n_init_leaks: null
     parameter_level: program
     program_name: P_none
     version: "3.0"
   P_truck:
+    economics:
+      GWP_CH4: 28.0
+      carbon_price_tonnesCO2e: 40.0
+      cost_CCUS: 20.0
+      repair_costs:
+        file: null
+        vals:
+          - 200
+      sale_price_natgas: 3.0
+      verification_cost: 0
     method_labels:
       - truck
       - OGI_FU
@@ -587,30 +629,18 @@ programs:
           wind:
             - 0.0
             - 10.0
-    n_init_days: null
-    n_init_leaks: null
     parameter_level: program
     program_name: P_truck
     version: "3.0"
 reference_program: P_OGI
 start_date:
-  - 2017
+  - 2023
   - 1
   - 1
 version: "3.0"
 virtual_world:
   NRd: 365
   consider_weather: false
-  economics:
-    GWP_CH4: 28.0
-    carbon_price_tonnesCO2e: 40.0
-    cost_CCUS: 20.0
-    repair_costs:
-      file: null
-      vals:
-        - 200
-    sale_price_natgas: 3.0
-    verification_cost: 0
   emissions:
     LPR: 0.0065
     consider_venting: false

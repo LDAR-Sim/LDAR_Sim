@@ -5,7 +5,6 @@ weather_is_hourly: True # True/False
 consider_weather: False # True/False
 infrastructure_file: "facilities_alberta.csv"
 site_samples: 500
-subtype_times_file: "_placeholder_str_"
 subtype_file: "_placeholder_str_"
 repair_delay:
   type: "default" # default/list/distribution
