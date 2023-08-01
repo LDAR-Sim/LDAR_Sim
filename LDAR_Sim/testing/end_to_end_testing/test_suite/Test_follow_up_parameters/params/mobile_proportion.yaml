@@ -1,5 +1,5 @@
 parameter_level: method
-version: '2.0'
+version: '3.0'
 label: mobile_proportion
 deployment_type: mobile
 measurement_scale: site
@@ -34,6 +34,5 @@ weather_envs:
   precip: [0.0, 0.5]
   temp: [-40.0, 40.0]
   wind: [0.0, 10.0]  
-version: '2.0'
 RS: 4
 time: 30  # minutes

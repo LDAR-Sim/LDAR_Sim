@@ -1,5 +1,5 @@
 parameter_level: method
-version: '2.0'
+version: '3.0'
 label: Continuous
 deployment_type: stationary
 measurement_scale: site
