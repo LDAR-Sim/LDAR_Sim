@@ -520,17 +520,20 @@ class LdarSim:
             # Write csv files
             leak_df.to_csv(
                 self.output_dir /
-                'leaks_output_{}.csv'.format(virtual_world['simulation']),
+                'leaks_output_{}_{}.csv'.format(
+                    virtual_world['simulation'], program_parameters['program_name']),
                 index=False)
 
             time_df.to_csv(
                 self.output_dir /
-                'timeseries_output_{}.csv'.format(virtual_world['simulation']),
+                'timeseries_output_{}_{}.csv'.format(
+                    virtual_world['simulation'], program_parameters['program_name']),
                 index=False)
 
             site_df.to_csv(
                 self.output_dir /
-                'sites_output_{}.csv'.format(virtual_world['simulation']),
+                'sites_output_{}_{}.csv'.format(
+                    virtual_world['simulation'], program_parameters['program_name']),
                 index=False)
 
             for meth, meth_vis_df in site_visits.items():
