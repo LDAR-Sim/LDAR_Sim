@@ -1,0 +1,14 @@
+parameter_level: virtual_world
+version: "3.0"
+site_samples: 50
+emissions:
+  consider_venting: False
+  LPR: 0.0065
+  max_leak_rate: 10
+  leak_file: "leak_file.csv"
+  leak_file_use: "sample" # sample/fit
+infrastructure_file: "facilities_Perm.csv"
+NRd: 182
+weather_file: "ERA5_2017_2019_Perm.nc"
+weather_is_hourly: True
+consider_weather: True

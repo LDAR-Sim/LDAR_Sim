@@ -50,6 +50,10 @@ os.chdir(root_dir)
 # Add the source directory to the import file path to import all LDAR-Sim modules
 sys.path.insert(1, str(src_dir))
 
+# Add the external sensors to the root directory
+ext_sens_dir = root_dir / 'external_sensors'
+sys.path.append(str(ext_sens_dir))
+
 if __name__ == '__main__':
     from economics.cost_mitigation import cost_mitigation
     from initialization.args import files_from_path, get_abs_path
@@ -69,7 +73,7 @@ if __name__ == '__main__':
             if os.path.isfile(item_path):
                 os.remove(item_path)
             elif os.path.isdir(item_path):
-                os.removedirs(item_path)
+                shutil.rmtree(item_path)
 
     # --- Retrieve parameters and inputs ---
     original_inputs_dir: Path = root_dir / sys.argv[1]
@@ -83,15 +87,15 @@ if __name__ == '__main__':
     os.mkdir(test_case_dir)
 
     # --- Fix certain global parameters for end-to-end testing
-    global_params_file: Path = params_dir / sys.argv[4]
-    with open(global_params_file, 'r') as file:
-        global_params = yaml.safe_load(file)
+    sim_settings_file: Path = params_dir / sys.argv[4]
+    with open(sim_settings_file, 'r') as file:
+        sim_settings = yaml.safe_load(file)
 
     for key, value in GLOBAL_PARAMS_TO_REP.items():
-        global_params[key] = value
+        sim_settings[key] = value
 
-    with open(global_params_file, 'w') as file:
-        yaml.safe_dump(global_params, file)
+    with open(sim_settings_file, 'w') as file:
+        yaml.safe_dump(sim_settings, file)
 
     # Parse Parameters
     parameter_filenames = files_from_path(params_dir)
@@ -107,9 +111,10 @@ if __name__ == '__main__':
     if os.path.exists(in_dir / 'generator'):
         shutil.rmtree(in_dir / 'generator')
     programs = sim_params.pop('programs')
+    virtual_world = sim_params.pop('virtual_world')
 
     # --- Run Checks ----
-    check_ERA5_file(in_dir, programs)
+    check_ERA5_file(in_dir, virtual_world)
     has_ref: bool = ref_program in programs
     has_base: bool = base_program in programs
 
@@ -124,11 +129,18 @@ if __name__ == '__main__':
     if sim_params['pregenerate_leaks']:
         generator_dir = in_dir / "generator"
         init_generator_files(
-            generator_dir, input_manager.simulation_parameters, in_dir, programs[base_program])
+            generator_dir, input_manager.simulation_parameters, in_dir, virtual_world)
     else:
         generator_dir = None
     # --- Create simulations ---
-    simulations = create_sims(sim_params, programs, generator_dir, in_dir, out_dir, input_manager)
+    simulations = create_sims(
+        sim_params,
+        programs,
+        virtual_world,
+        generator_dir,
+        in_dir,
+        out_dir
+    )
 
     # --- Run simulations (in parallel) --
     with mp.Pool(processes=sim_params['n_processes']) as p:

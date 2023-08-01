@@ -5,17 +5,15 @@ end_date:
   - 31
 input_directory: ./inputs
 make_plots: true
-n_processes: null
+n_processes: 6
 n_simulations: 1
 output_directory: ./outputs
-parameter_level: global
+parameter_level: simulation_settings
 pregenerate_leaks: true
 preseed_random: true
 print_from_simulations: true
 programs:
   P_OGI:
-    NRd: 365
-    consider_weather: false
     economics:
       GWP_CH4: 28.0
       carbon_price_tonnesCO2e: 40.0
@@ -26,25 +24,6 @@ programs:
           - 200
       sale_price_natgas: 3.0
       verification_cost: 0
-    emissions:
-      LPR: 0.0065
-      consider_venting: false
-      leak_dist_params:
-        - -2.776
-        - 1.462
-      leak_dist_type: lognorm
-      leak_file: null
-      leak_file_use: sample
-      max_leak_rate: 100000.0
-      subtype_leak_dist_file: null
-      units:
-        - kilogram
-        - hour
-    end_date:
-      - 2021
-      - 12
-      - 31
-    infrastructure_file: facilities_alberta.csv
     method_labels:
       - OGI
     methods:
@@ -113,7 +92,7 @@ programs:
           vals:
             - 30
         time: 120
-        version: "2.0"
+        version: "3.0"
         weather_envs:
           precip:
             - 0.0
@@ -124,26 +103,10 @@ programs:
           wind:
             - 0.0
             - 10.0
-    n_init_days: null
-    n_init_leaks: null
     parameter_level: program
     program_name: P_OGI
-    repair_delay:
-      type: default
-      val:
-        - 14.0
-    site_samples: 500
-    start_date:
-      - 2017
-      - 1
-      - 1
-    subtype_file: null
-    version: "2.0"
-    weather_file: weather_alberta.nc
-    weather_is_hourly: true
+    version: "3.0"
   P_aircraft:
-    NRd: 365
-    consider_weather: false
     economics:
       GWP_CH4: 28.0
       carbon_price_tonnesCO2e: 40.0
@@ -154,25 +117,6 @@ programs:
           - 200
       sale_price_natgas: 3.0
       verification_cost: 0
-    emissions:
-      LPR: 0.0065
-      consider_venting: false
-      leak_dist_params:
-        - -2.776
-        - 1.462
-      leak_dist_type: lognorm
-      leak_file: null
-      leak_file_use: sample
-      max_leak_rate: 100000.0
-      subtype_leak_dist_file: null
-      units:
-        - kilogram
-        - hour
-    end_date:
-      - 2021
-      - 12
-      - 31
-    infrastructure_file: facilities_alberta.csv
     method_labels:
       - aircraft
       - OGI_FU
@@ -242,7 +186,7 @@ programs:
           vals:
             - 45
         time: 120
-        version: "2.0"
+        version: "3.0"
         weather_envs:
           precip:
             - 0.0
@@ -318,7 +262,7 @@ programs:
           vals:
             - 5
         time: 1
-        version: "2.0"
+        version: "3.0"
         weather_envs:
           precip:
             - 0.0
@@ -329,26 +273,10 @@ programs:
           wind:
             - 0.0
             - 10.0
-    n_init_days: null
-    n_init_leaks: null
     parameter_level: program
     program_name: P_aircraft
-    repair_delay:
-      type: default
-      val:
-        - 14.0
-    site_samples: 500
-    start_date:
-      - 2017
-      - 1
-      - 1
-    subtype_file: null
-    version: "2.0"
-    weather_file: weather_alberta.nc
-    weather_is_hourly: true
+    version: "3.0"
   P_drone:
-    NRd: 365
-    consider_weather: false
     economics:
       GWP_CH4: 28.0
       carbon_price_tonnesCO2e: 40.0
@@ -359,25 +287,6 @@ programs:
           - 200
       sale_price_natgas: 3.0
       verification_cost: 0
-    emissions:
-      LPR: 0.0065
-      consider_venting: false
-      leak_dist_params:
-        - -2.776
-        - 1.462
-      leak_dist_type: lognorm
-      leak_file: null
-      leak_file_use: sample
-      max_leak_rate: 100000.0
-      subtype_leak_dist_file: null
-      units:
-        - kilogram
-        - hour
-    end_date:
-      - 2021
-      - 12
-      - 31
-    infrastructure_file: facilities_alberta.csv
     method_labels:
       - drone
       - OGI_FU
@@ -447,7 +356,7 @@ programs:
           vals:
             - 45
         time: 120
-        version: "2.0"
+        version: "3.0"
         weather_envs:
           precip:
             - 0.0
@@ -523,7 +432,7 @@ programs:
           vals:
             - 30
         time: 20
-        version: "2.0"
+        version: "3.0"
         weather_envs:
           precip:
             - 0.0
@@ -534,26 +443,10 @@ programs:
           wind:
             - 0.0
             - 10.0
-    n_init_days: null
-    n_init_leaks: null
     parameter_level: program
     program_name: P_drone
-    repair_delay:
-      type: default
-      val:
-        - 14.0
-    site_samples: 500
-    start_date:
-      - 2017
-      - 1
-      - 1
-    subtype_file: null
-    version: "2.0"
-    weather_file: weather_alberta.nc
-    weather_is_hourly: true
+    version: "3.0"
   P_none:
-    NRd: 365
-    consider_weather: false
     economics:
       GWP_CH4: 28.0
       carbon_price_tonnesCO2e: 40.0
@@ -564,47 +457,12 @@ programs:
           - 200
       sale_price_natgas: 3.0
       verification_cost: 0
-    emissions:
-      LPR: 0.0065
-      consider_venting: false
-      leak_dist_params:
-        - -2.776
-        - 1.462
-      leak_dist_type: lognorm
-      leak_file: null
-      leak_file_use: sample
-      max_leak_rate: 100000.0
-      subtype_leak_dist_file: null
-      units:
-        - kilogram
-        - hour
-    end_date:
-      - 2021
-      - 12
-      - 31
-    infrastructure_file: facilities_alberta.csv
     method_labels: []
     methods: {}
-    n_init_days: null
-    n_init_leaks: null
     parameter_level: program
     program_name: P_none
-    repair_delay:
-      type: default
-      val:
-        - 14.0
-    site_samples: 500
-    start_date:
-      - 2017
-      - 1
-      - 1
-    subtype_file: null
-    version: "2.0"
-    weather_file: weather_alberta.nc
-    weather_is_hourly: true
+    version: "3.0"
   P_truck:
-    NRd: 365
-    consider_weather: false
     economics:
       GWP_CH4: 28.0
       carbon_price_tonnesCO2e: 40.0
@@ -615,25 +473,6 @@ programs:
           - 200
       sale_price_natgas: 3.0
       verification_cost: 0
-    emissions:
-      LPR: 0.0065
-      consider_venting: false
-      leak_dist_params:
-        - -2.776
-        - 1.462
-      leak_dist_type: lognorm
-      leak_file: null
-      leak_file_use: sample
-      max_leak_rate: 100000.0
-      subtype_leak_dist_file: null
-      units:
-        - kilogram
-        - hour
-    end_date:
-      - 2021
-      - 12
-      - 31
-    infrastructure_file: facilities_alberta.csv
     method_labels:
       - truck
       - OGI_FU
@@ -703,7 +542,7 @@ programs:
           vals:
             - 45
         time: 120
-        version: "2.0"
+        version: "3.0"
         weather_envs:
           precip:
             - 0.0
@@ -779,7 +618,7 @@ programs:
           vals:
             - 30
         time: 30
-        version: "2.0"
+        version: "3.0"
         weather_envs:
           precip:
             - 0.0
@@ -790,27 +629,42 @@ programs:
           wind:
             - 0.0
             - 10.0
-    n_init_days: null
-    n_init_leaks: null
     parameter_level: program
     program_name: P_truck
-    repair_delay:
-      type: default
-      val:
-        - 14.0
-    site_samples: 500
-    start_date:
-      - 2017
-      - 1
-      - 1
-    subtype_file: null
-    version: "2.0"
-    weather_file: weather_alberta.nc
-    weather_is_hourly: true
+    version: "3.0"
 reference_program: P_OGI
 start_date:
   - 2017
   - 1
   - 1
-version: "2.0"
+version: "3.0"
+virtual_world:
+  NRd: 365
+  consider_weather: false
+  emissions:
+    LPR: 0.0065
+    consider_venting: false
+    leak_dist_params:
+      - -2.776
+      - 1.462
+    leak_dist_type: lognorm
+    leak_file: null
+    leak_file_use: sample
+    max_leak_rate: 100000.0
+    units:
+      - kilogram
+      - hour
+  infrastructure_file: facilities_alberta.csv
+  n_init_days: null
+  n_init_leaks: null
+  parameter_level: virtual_world
+  repair_delay:
+    type: default
+    val:
+      - 14.0
+  site_samples: 500
+  subtype_file: null
+  version: "3.0"
+  weather_file: weather_alberta.nc
+  weather_is_hourly: true
 write_data: true

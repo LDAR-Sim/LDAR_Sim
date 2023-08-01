@@ -27,14 +27,13 @@ from timezonefinder import TimezoneFinder
 
 
 class TimeCounter:
-    def __init__(self, parameters):
+    def __init__(self, start_date, end_date) -> None:
         """
         Initialize a calendar and clock to count through the simulation.
 
         """
-        self.parameters = parameters
-        self.start_date = datetime(*parameters['start_date'])
-        self.end_date = datetime(*parameters['end_date'])
+        self.start_date = datetime(*start_date)
+        self.end_date = datetime(*end_date)
         self.timesteps = (self.end_date - self.start_date).days
         self.current_date = self.start_date
         self.current_timestep = 0

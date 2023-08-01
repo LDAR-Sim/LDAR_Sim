@@ -28,18 +28,18 @@ from netCDF4 import Dataset
 
 
 class WeatherLookup:
-    def __init__(self, state, parameters):
+    def __init__(self, state, virtual_world, input_directory):
         """
         Read in NetCDF files and returns the environment at a given place in time.
 
         """
         self.state = state
-        self.parameters = parameters
+        self.virtual_world = virtual_world
 
         # Read in weather data as NetCDF file(s)
 
         self.weather_data = Dataset(
-            self.parameters['input_directory'] / self.parameters['weather_file'],
+            input_directory / self.virtual_world['weather_file'],
             'r')  # Load wind and temp data
         self.weather_data.set_auto_mask(False)
         self.time_total = self.weather_data.variables['time'][:]  # Extract time values
@@ -102,14 +102,14 @@ class WeatherLookup:
 
         # Initialize empty boolean arrays for threshold pass(1)/fail(0)
         bool_temp = np.zeros((len(self.longitude), len(
-            self.latitude), self.parameters['timesteps']))
+            self.latitude), self.virtual_world['timesteps']))
         bool_wind = np.zeros((len(self.longitude), len(
-            self.latitude), self.parameters['timesteps']))
+            self.latitude), self.virtual_world['timesteps']))
         bool_precip = np.zeros((len(self.longitude), len(
-            self.latitude), self.parameters['timesteps']))
+            self.latitude), self.virtual_world['timesteps']))
 
         # For each day...
-        for day in range(self.parameters['timesteps']):
+        for day in range(self.virtual_world['timesteps']):
             start_dt = dt(start_date.year,
                           start_date.month,
                           start_date.day,

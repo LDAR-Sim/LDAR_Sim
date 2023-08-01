@@ -108,30 +108,29 @@ def get_prop_rate(proportion, rates):
     return (rate)
 
 
-def check_ERA5_file(dir, programs):
-    for pidx, p in programs.items():
-        my_file = Path(dir / p['weather_file'])
-        if my_file.is_file():
-            print("Weather data checked. Continuing simulation.")
-        else:
-            print("Weather data not found. Downloading from AWS now ...")
-            try:
-                access_key = os.getenv('AWS_KEY')
-                secret_key = os.getenv('AWS_SEC')
-            except Exception:
-                print(
-                    "AWS_KEY and AWS_SEC environment variables have not been set," +
-                    "refer to model documentation for configuration instructions.")
+def check_ERA5_file(dir, v_world):
+    my_file = Path(dir / v_world['weather_file'])
+    if my_file.is_file():
+        print("Weather data checked. Continuing simulation.")
+    else:
+        print("Weather data not found. Downloading from AWS now ...")
+        try:
+            access_key = os.getenv('AWS_KEY')
+            secret_key = os.getenv('AWS_SEC')
+        except Exception:
+            print(
+                "AWS_KEY and AWS_SEC environment variables have not been set," +
+                "refer to model documentation for configuration instructions.")
 
-            try:
-                s3 = boto3.client('s3', aws_access_key_id=access_key,
-                                  aws_secret_access_key=secret_key)
-                s3.download_file('im3sweather', p['weather_file'],
-                                 r'{}/{}'.format(dir, p['weather_file']))
-            except ClientError:
-                print("Authentication Failed or Server Unavailable. Exiting")
-                sys.exit()
-            print("Weather data download complete")
+        try:
+            s3 = boto3.client('s3', aws_access_key_id=access_key,
+                              aws_secret_access_key=secret_key)
+            s3.download_file('im3sweather', v_world['weather_file'],
+                             r'{}/{}'.format(dir, v_world['weather_file']))
+        except ClientError:
+            print("Authentication Failed or Server Unavailable. Exiting")
+            sys.exit()
+        print("Weather data download complete")
 
 
 def geo_idx(dd, dd_array):

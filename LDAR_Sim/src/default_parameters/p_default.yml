@@ -1,30 +1,7 @@
-version: "2.0"
+version: "3.0"
 parameter_level: "program"
-methods: {}
-method_labels: []
 program_name: "default"
-weather_file: "weather_alberta.nc"
-weather_is_hourly: True # True/False
-infrastructure_file: "facilities_alberta.csv"
-site_samples: 500
-subtype_file: "_placeholder_str_"
-consider_weather: False # True/False
-repair_delay:
-  type: "default" # default/list/distribution
-  val: [14.0]
-emissions:
-  consider_venting: False # True/False
-  leak_dist_params: [-2.776, 1.462]
-  leak_dist_type: "lognorm"
-  leak_file: "_placeholder_str_"
-  leak_file_use: "sample" # sample/fit
-  LPR: 0.0065
-  max_leak_rate: 100000.0
-  subtype_leak_dist_file: "_placeholder_str_"
-  units: ["kilogram", "hour"]
-NRd: 365
-n_init_leaks: "_placeholder_int_"
-n_init_days: "_placeholder_int_"
+method_labels: []
 economics:
   carbon_price_tonnesCO2e: 40.0
   cost_CCUS: 20.0

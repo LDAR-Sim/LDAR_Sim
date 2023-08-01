@@ -43,12 +43,20 @@ def mock_site_for_crew_testing_1_fix() -> 'dict[str, Any]':
     }
 
 
-@pytest.fixture(name="mock_params_for_crew_testing_1")
-def mock_params_for_crew_testing_1_fix() -> 'dict[str, Any]':
+@pytest.fixture(name="mock_vw_for_crew_testing_1")
+def mock_vw_for_crew_testing_1_fix() -> 'dict[str, Any]':
     return {
         'emissions': {
             'consider_venting': False
-        }
+        },
+        'consider_weather': False
+    }
+
+
+@pytest.fixture(name="mock_settings_for_crew_testing_1")
+def mock_settings_for_crew_testing_1_fix() -> 'dict[str, Any]':
+    return {
+        "input_directory": None
     }
 
 
@@ -96,23 +104,18 @@ def mock_site_for_crew_testing_2_fix() -> 'dict[str, Any]':
                 'rate': 3,
                 'equipment_group': 1
             }
-        ]
+        ],
+        "static_venting_rate": 1
     }
 
 
-@pytest.fixture(name="mock_params_for_crew_testing_2")
-def mock_params_for_crew_testing_2_fix() -> 'dict[str, Any]':
+@pytest.fixture(name="mock_vw_for_crew_testing_2")
+def mock_vw_for_crew_testing_2_fix() -> 'dict[str, Any]':
     return {
         'emissions': {
             'consider_venting': True
-        }
-    }
-
-
-@pytest.fixture(name="mock_state_for_crew_testing_2")
-def mock_state_for_crew_testing_2_fix() -> 'dict[str,Any]':
-    return {
-        'empirical_vents': [1]
+        },
+        "consider_weather": False
     }
 
 

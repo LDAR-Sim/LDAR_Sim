@@ -5,14 +5,13 @@ from datetime import datetime
 from typing import Any, Dict
 
 
-@pytest.fixture(name="mock_program")
-def mock_program_fix():
+@pytest.fixture(name="mock_vw")
+def mock_vw_fix():
     return {
         'subtype_file': None,
         'NRd': 10,
         'n_init_leaks': None,
         'n_init_days': None,
-        'start_date': (2022, 1, 1),
         'emissions': {
             'LPR': 0.5,
             'leak_file': None,
@@ -23,14 +22,13 @@ def mock_program_fix():
     }
 
 
-@pytest.fixture(name="mock_program_2")
-def mock_program_2_fix():
+@pytest.fixture(name="mock_vw_2")
+def mock_vw_2_fix():
     return {
         'subtype_file': None,
         'NRd': 10,
         'n_init_leaks': 1,
         'n_init_days': 10,
-        'start_date': (2022, 1, 1),
         'emissions': {
             'LPR': 0.5,
             'leak_file': None,

@@ -34,12 +34,24 @@ class BaseCrew:
         the input parameter file.
     """
 
-    def __init__(self, state, parameters, config, timeseries, deployment_days, id, site=None):
+    def __init__(
+            self,
+            state,
+            program_parameters,
+            virtual_world,
+            simulation_settings,
+            config,
+            timeseries,
+            deployment_days,
+            id,
+            site=None
+    ):
         """
         Constructs an individual crew based on defined configuration.
         """
         self.state = state
-        self.parameters = parameters
+        self.consider_venting = virtual_world['emissions']['consider_venting']
+        self.program_parameters = program_parameters
         self.config = config
         self.timeseries = timeseries
         self.deployment_days = deployment_days
@@ -58,8 +70,16 @@ class BaseCrew:
             self.config['deployment_type'].lower()))
         # Get schedule based on deployment type
         Schedule = getattr(sched_mod, 'Schedule')
-        self.schedule = Schedule(self.id, self.lat, self.lon, state,
-                                 config, parameters,  deployment_days)
+        self.schedule = Schedule(
+            self.id,
+            self.lat,
+            self.lon,
+            state,
+            config,
+            virtual_world,
+            simulation_settings,
+            deployment_days
+        )
 
         if self.config['deployment_type'] == 'mobile':
             self.worked_today = False
@@ -181,7 +201,7 @@ class BaseCrew:
 
         # Add vented emissions
         venting = 0
-        if self.parameters['emissions']['consider_venting']:
+        if self.consider_venting:
             if 'empirical_vent_rates' in site:
                 venting = random.choice(site['empirical_vent_rates'])
             else:

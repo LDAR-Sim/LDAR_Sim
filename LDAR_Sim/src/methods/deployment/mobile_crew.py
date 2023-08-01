@@ -32,10 +32,22 @@ from methods.deployment.generic_funcs import get_work_hours
 class Schedule():
     rollover = []
 
-    def __init__(self, id, lat, lon, state, config, parameters, deployment_days, home_bases=None):
-        self.parameters = parameters
+    def __init__(
+            self,
+            id,
+            lat,
+            lon,
+            state,
+            config,
+            virtual_world,
+            simulation_settings,
+            deployment_days,
+            home_bases=None
+    ):
         self.config = config
         self.state = state
+        self.consider_weather = virtual_world["consider_weather"]
+        self.in_dir = simulation_settings["input_directory"]
         self.deployment_days = deployment_days
         self.crew_lat = lat
         self.crew_lon = lon
@@ -44,12 +56,12 @@ class Schedule():
         self.end_hour = None
         self.allowed_end_time = None
         self.last_site_travel_home_min = None
-        #self.rollover = None  # (rollover_site_plan)
+        # self.rollover = None  # (rollover_site_plan)
         self.travel_all_day = False
         self.scheduling = self.config['scheduling']
         # define a list of home bases for crew and redefine the the initial location of crew
         if self.scheduling['route_planning']:
-            hb_file = self.parameters['input_directory'] / self.scheduling['home_bases_files']
+            hb_file = self.in_dir / self.scheduling['home_bases_files']
             HB = pd.read_csv(hb_file, sep=',')
             self.crew_lon = self.scheduling['LDAR_crew_init_location'][0]
             self.crew_lat = self.scheduling['LDAR_crew_init_location'][1]
@@ -197,7 +209,7 @@ class Schedule():
         site['{}_attempted_today?'.format(name)] = True
 
         # Check weather conditions
-        if self.parameters['consider_weather'] \
+        if self.consider_weather\
             and not self.deployment_days[site['lon_index'], site['lat_index'],
                                          self.state['t'].current_timestep]:
             return None

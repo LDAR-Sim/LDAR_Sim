@@ -1,14 +1,32 @@
 ﻿# LDAR-Sim Documentation for Input Parameters and Data
 
-Github Repository: IM3S
+Github Repository: LDAR-Sim
 
-Version: 2.0
+Version: 3.0
 
 Branch: Master
 
-Document Custodian: Thomas Fox
+Document Custodian: Sally Jang
 
-Email: thomas@highwoodemissions.com
+Email: <sally@highwoodemissions.com>
+
+--------------------------------------------------------------------------------
+
+## Table of Contents
+
+1. [Read this first](#1-read-this-first)
+2. [Introduction](#2-introduction)
+3. [File Structure](#3-file-structure)
+4. [Running the Model](#4-running-the-model)
+5. [Simulation Settings](#5-simulation-settings)
+6. [Virtual World Setting](#6-virtual-world-settings)
+7. [Program Inputs](#7-program-inputs)
+8. [Method Inputs](#8-method-inputs)
+9. [Infrastructure File](#9-infrastructure-file)
+10. [Subtype File](#10-subtype-file)
+11. [Legacy Inputs](#11-legacy-inputs)
+12. [Data sources, modelling confidence and model sensitivity](#12-data-sources-modelling-confidence-and-model-sensitivity)
+13. [References](#13-references)
 
 --------------------------------------------------------------------------------
 
@@ -20,8 +38,10 @@ Please note the following before reading, using, or modifying this document:
 - The document you are now reading will _always_ be associated with a specific version or branch of LDAR-Sim. Multiple versions of this document therefore exist, as multiple versions and sub-versions of LDAR-Sim exist.
 - **If you are submitting a pull request to the public LDAR-Sim repo**, please update this documentation alongside modifications to code. Your pull request will not be approved without updating this document with relevant changes to inputs, how they work, and their implications for outputs.
 - Within each category, please maintain alphabetic ordering on contents.
-- For more information on LDAR-Sim, including code, instructions, and additional resources, please visit the Github page by [clicking this link](https://github.com/tarcadius/LDAR_Sim).
+- For more information on LDAR-Sim, including code, instructions, and additional resources, please visit the Github page by [clicking this link](https://github.com/LDAR-Sim/LDAR_Sim).
 - If you find any errors or inaccuracies in this documentation or in LDAR-Sim, please contact the document custodian (email included above).
+- The parameter descriptions in this document are provided in an order matching that of parameters in the default parameter files. When updating this document to add new parameters descriptions, ensure the ordering is correct.
+- _**Useful tip for searching the document:**_ If searching for the entry describing as specific parameter as opposed to to searching for mentions of that parameter, search for <parameter_name> to uniquely match the entry describing the parameter, instead of any mention of it.
 
 --------------------------------------------------------------------------------
 
@@ -41,21 +61,21 @@ By detailing the model inputs, this report creates the technical foundation for 
 
 The LDAR-Sim software is organized using the following structure:
 
-- Root
-
+- Root(LDAR_Sim)
   - inputs
   - install
   - outputs
   - src
   - simulations
+  - external_sensors
 
 - CHANGELOG.md
-
+- ParameterMigrationGuide.md
 - LICENSE.txt
 - README.md
 - USER_MANUAL.md
 
-The **Root** folder includes all code, inputs, and outputs necessary to run LDAR-Sim. From a software perspective, the root folder is the parent to the src folder (folder containing LDAR_sim_main). This folder will be always be the root folder when making relative references in LDAR-Sim. For example, if input_directory is specified as_ ./inputs _from anywhere in the code, the targeted folder will be_ {absolute_path_to} / Root / inputs_.
+The **Root** folder includes all code, inputs, and outputs necessary to run LDAR-Sim. From a software perspective, the root folder is the parent to the src folder (folder containing LDAR_sim_main). This folder will be always be the root folder when making relative references in LDAR-Sim. For example, if input_directory is specified as _./inputs_ from anywhere in the code, the targeted folder will be _{absolute_path_to} / Root / inputs_.
 
 The **inputs** folder contains input files required to run LDAR-Sim. These include airport files, empirical leak and vent data, facility lists, facility type defaults, and other inputs.
 
@@ -63,7 +83,9 @@ The **outputs** folder stores all output data files produced by LDAR-Sim. The fo
 
 The **src** folder stores the python source code. The main code of LDAR-Sim, LDAR_sim_main.py is stored in the base folder of src.
 
-The **simulations** stores >V2 input parameter files.
+The **external_sensors** folder contains python source code for alternative technology sensors that users are free to use and add to.
+
+The **simulations** stores sample V3.0 input parameter files.
 
 --------------------------------------------------------------------------------
 
@@ -91,31 +113,33 @@ python ldar_sim_main.py --in_dir ./simulations --out_dir ./out
 
 ### Parameter File Structure
 
-Parameter files are all key-value pairs (i.e., Python dictionary), with multiple levels of nesting. The model runs with 3 main levels in a hierarchy:
+Parameter files are all key-value pairs (i.e., Python dictionary), with multiple levels of nesting. The model runs with 4 main levels in a hierarchy:
 
-- `global`: global parameters that are common across all programs in a simulation or set of simulations such as system parameters, etc.
-- `program`: program parameters that relate to a specific emissions reduction program (or lack thereof), of which there could be multiple within a given simulation. Commonly, an 'alternative' custom program is compared to a defined regulatory program. Many programs can be compared at once.
+- `simulation setting`: global simulation setting parameters that are common across all programs in a simulation or set of simulations such as system parameters, etc.
+- `virtual world`: virtual world parameters that are used to create the virtual world which the different emissions reduction programs are applied to.
+- `program`: program parameters that are used to define a specific emissions reduction program (or lack thereof). Commonly, an 'alternative' custom program is compared to a defined regulatory program. Many programs can be compared at once.
 - `method`: emissions reduction methods (e.g., specific LDAR technologies and work practices and/or LDAR service provider companies) that are deployed within a program. Methods are specified in a given program for deployment and multiple methods may be used at once (e.g., satellite + aircraft + OGI follow-up + routine AVO)
 
-Although a single program can be evaluated on its own, a typical simulation would compare at least two programs: a reference program and one or more test programs. Including a baseline program is also common.
+A typical simulation would compare at least two programs: a reference program and one or more test programs. Including a baseline program is also necessary.
 
 - `baseline program`: The program against which mitigation is estimated for reference and test programs (mitigation = baseline emissions - LDAR emissions). Typically involves running LDAR-Sim in the absence of a formal LDAR program (commonly denoted as 'P_none'). Even without a formal LDAR program, leaks are eventually removed from the simulation due to operator rounds (e.g., AVO), routine maintenance, refits and retrofits, or other factors.
 - `reference program`: The program against which test programs are compared (e.g., to establish equivalency). The reference program is often defined by regulations that require the use of OGI (commonly denoted 'P_OGI').
 - `test program`: A custom alternative program that the user wants to evaluate. Commonly denoted using 'P_' + program name (e.g., 'P_aircraft', 'P_GasCompanyX', 'P_drone', etc.).
 
-A simulation can consist of any number of programs and each program can consist of any number of methods. For example, the reference program could deploy one method (OGI). The test program could deploy two new LDAR methods (magical helicopter and unmagical binoculars). Each program would be run on the asset base multiple times through time to create a statistical representation of the emissions and cost data. Finally, the statistical emissions and cost distributions of the reference program can be compared to those of the test program. It is often the differences between the programs that represents the important information that is of interest to users of LDAR-Sim.
+A simulation can consist of any number of programs and each program can consist of any number of methods. For example, the reference program could deploy one method (OGI). The test program could deploy two new LDAR methods (magical helicopter and un-magical binoculars). Each program would be run on the asset base multiple times through time to create a statistical representation of the emissions and cost data. Finally, the statistical emissions and cost distributions of the reference program can be compared to those of the test program. It is often the differences between the programs that represents the important information that is of interest to users of LDAR-Sim.
 
 In this example, the hierarchy looks like:
 
 ```yaml
-Global parameters
+Simulation setting parameters
+Virtual world parameters
 Programs:
     Baseline program
     Reference program:
         Reference LDAR method (OGI)
     Test program:
         New LDAR method 1 (Magical Helicopter)
-        New LDAR method 2 (Unmagical Binoculars)
+        New LDAR method 2 (Un-magical Binoculars)
 ```
 
 ### Parameter file usage
@@ -132,7 +156,7 @@ All simulations using multiple parameter files are created the following way:
 Parameter files are read on top of each other, starting with the default set of parameters. How does this work? Here is an example `parameter_file1.yaml`:
 
 ```yaml
-version: 2.0
+version: 3.0
 n_simulations: 30
 LPR: 0.0065
 ```
@@ -140,14 +164,14 @@ LPR: 0.0065
 This will revise the `n_simulations` key to 30, from whatever was default, and the `LPR` key to 0.0065, from whatever was default. Next, `parameter_file2.yaml` is read, which looks like this:
 
 ```yaml
-version: 2.0
+version: 3.0
 n_simulations: 3
 ```
 
 This will replace the `n_simulations` key with 3 (instead of 30), but leave the `LPR` key, and all other parameters in the model untouched. The model will now run with parameters that look like this:
 
 ```yaml
-version: 2.0
+version: 3.0
 n_simulations: 3
 LPR: 0.0065
 .... ALL OTHER PARAMETERS RUN WITH DEFAULT VALUES ....
@@ -188,11 +212,12 @@ While global parameters are straightforward to specify this way (and the above e
 
 ### LDAR-Sim Parameter Hierarchy
 
-As noted above, LDAR-Sim uses a 3 level hierarchy of simulations, programs, and methods. To tell LDAR-Sim what level in the hierarchy your parameter file is destined for, you must specify a `parameter\_level` parameter that will specify what level your parameter file is aimed at - otherwise LDAR-Sim will interpret it as global.
+As noted above, LDAR-Sim uses a 4 level hierarchy of simulations, virtual world, programs, and methods. To tell LDAR-Sim what level in the hierarchy your parameter file is destined for, you must specify a `parameter\_level` parameter that will specify what level your parameter file is aimed at - otherwise LDAR-Sim will interpret it as global.
 
 The `parameter_level` parameter can be one of three values:
 
-- `global`: parameters are aimed at the global level.
+- `simulation_settings`: parameters are aimed at the simulation setting level.
+- `virtual_world`: parameters are used to define the virtual world.
 - `program`: parameters are used to define a program.
 - `method`: parameters are used to define a method and update a given method by name.
 
@@ -213,7 +238,7 @@ There are special considerations for methods:
 
 - All methods require a `sensor` This can either be custom built or one of the following can be used:
 
-  - `default`: Uses a simple threshold where the leak rate is based on the measurement scale, for example if `measurement_scale = site` then the site's total emissions will be considered measured if greater than the sensors MDL. -`OGI_camera`: Uses detection curve based on Ravikumar, 2018.Requires measurement_scale = 'component'.
+  - `default`: Uses a simple threshold where the leak rate is based on the measurement scale, for example if `measurement_scale = site` then the site's total emissions will be considered measured if greater than the sensors MDL. -`OGI_camera_rk`: Uses detection curve based on Ravikumar, 2018.Requires measurement_scale = 'component'.
 
 - Follow up technologies need to be set explicitly. `is_follow_up = True`. The default value is false
 - Third, because methods are often carefully designed and used in treatment / control experiments, it is helpful to allow reuse of specific methods by referring to methods by their `label`.
@@ -221,7 +246,8 @@ There are special considerations for methods:
 Consider the following simulation:
 
 ```yaml
-Global parameters
+Simulation setting parameters
+Virtual world parameters
 Programs:
     Reference program:
         Reference LDAR method
@@ -238,18 +264,17 @@ To specify this, we can refer to the program by name in the program definitions 
 
 ```yaml
 test_program_1:
-    version: '2.0'
+    version: '3.0'
     parameter_level: program
     method_labels: [new_LDAR_method_1]
-    methods: []
-    .... OTHER PROGRAM PARAMETERS ....
+    program_name: "test_program_1"
 ```
 
 This `new_LDAR_method_1` has to be defined elsewhere in a separate parameter file to be called by name.
 
 ```yaml
 new_LDAR_method_1:
-    version: '2.0'
+    version: '3.0'
     parameter_level: method
     label: new_LDAR_method_1
     .... OTHER OGI METHOD PARAMETERS ....
@@ -259,7 +284,7 @@ When the simulation is put together, the program will be assembled to look like 
 
 ```yaml
 test_program:
-  version': '2.0',
+  version': '3.0',
   parameter_level: program,
   method_names: [new_LDAR_method_1],
   methods: [
@@ -272,7 +297,7 @@ test_program:
 
 To review, the following parameters are necessary to enable this modularization and reproducibility within the parameter suites:
 
-`parameter_level`: `global`, `program`, or `method`, this defines the target level in the hierarchy. Without specification, LDAR-Sim interprets the parameters as global.
+`parameter_level`: `simulation_settings`, `virtual_world`, `program`, or `method`, this defines the target level in the hierarchy. Without specification, LDAR-Sim interprets the parameters as global.
 
 `label`: in method definitions `label` provides a unique name to refer to each method.
 
@@ -290,24 +315,23 @@ LDAR-Sim includes a flexible input parameter mapper that accepts a variety of in
 For example, here is a program definition in yaml:
 
 ```buildoutcfg
-version: '2.0'
+version: '3.0'
 parameter_level: program
 ```
 
 Here is a method definition in yaml:
 
 ```buildoutcfg
-version: '2.0'  
+version: '3.0'  
 parameter_level: method
-awesome_method:
-  label: awesome_method
+label: awesome_method
 ```
 
 Note that programs are interpreted as a flat list of parameters that are incorporated into a list where methods have one parameter (the method name), and other method parameters nested below.
 
 ### Versioning of Parameter Files
 
-All parameter files must specify a version to enable mapping and reverse compatibility. This versioning is used to call code that modifies a different version of the code to run properly. In cases this is simple mapping of parameters, in other cases, this involves calculations. Refer to `input_mapper_v1.py` for a template file and discussion document on input parameter mapping. Reverse compatibility mapping only exists for v2 forwards.
+All parameter files must specify a version to enable mapping. This versioning is used to allow code to verify that a compatible version of the parameters is being used. If the parameter version is incompatible, the software will output an error message with further instructions on where to find guidance on input parameter mapping to the latest version. Refer to `input_mapper_v1.py` for a template file and discussion document on input parameter mapping from V1.0 to V2.0. Refer to [ParameterMigrationGuide](ParameterMigrationGuide.md) for instructions on how to migrate parameters from v2.x.x to V3.0. Reverse compatibility mapping only exists for minor parameter versions within the same major LDAR-Sim version (For example LDAR_Sim version 3.0 is not compatible with version 2.x.x parameters).
 
 ### Notes for Developers
 
@@ -319,87 +343,75 @@ If you are developing in LDAR-Sim, please adhere to the following rules:
 
 3. All parameter files require `parameter_level` to define the position within the hierarchy.
 
-4. If adding new functionality - please set the default to be 'off' or otherwise reverse compatible with existing functionality - this allows test simulations to run properly. Keep in mind older parameter files will use this default without realizing it, and if the behaviour of LDAR-Sim changes, you must add appropriate mapping hooks to the input mapper such that upon detecting an older parameter file, parameters are set to run identical to the old model.
+4. If adding new functionality - The version change associated with the change in functionality must be a Major or Minor version change, accompanied by a software release. This allows for users to download and run the version compatible with legacy parameters if required in the future. Any parameters changed or removed must be documented in Legacy Parameters in the user manual. Developers should aim to support backwards compatibility wherever reasonable.
 
 5. Please do not modify parameters in the program during simulation - consider parameters as 'read only' throughout the simulation.
 
 --------------------------------------------------------------------------------
 
-## 5\. Global Inputs
+## 5\. Simulation Settings
 
-### baseline_program
+### &lt;parameter_level&gt; (simulation_settings)
+
+**Data Type:** String
+
+**Default input:** 'simulation_settings'
+
+**Description:** A string indicating the parameters in file are at the simulation level
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** Must be set to ```parameter_level: simulation_setting``` for a simulation setting parameter file.
+
+### &lt;version&gt; (simulation setting)
 
 **Data type:** String
 
-**Default input:** 'P_none'
+**Default input:** 3.0
 
-**Description:** A program that represents a scenario where there is no formal LDAR, or that has no LDAR methods. This is currently used for economic functions.
+**Description:** Specify version of LDAR-Sim. See section _[Versioning of Parameter Files](#versioning-of-parameter-files)_ for more information.
 
 **Notes on acquisition:** N/A
 
 **Notes of caution:** N/A
 
-### end_date
-
-**Data type:** List of integers [year, month, day]
-
-**Default input:** [2020,12,31]
-
-**Description:** The date at which the simulations ends.
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** We recommend running the simulation for several years due to the stochastic nature of LDAR systems and the periods of time over which leaks arise and are repaired.
-
-### input_directory
+### &lt;input_directory&gt;
 
 **Data type:** String
 
 **Default input:** "./inputs"
 
-**Description:** Specify location containing input files like infrastructure and weather. Can be an absolute path, or relative path to the root folder.
+**Description:** Specify location containing input files like infrastructure and weather. Can be an absolute path, or relative path from the root folder.
 
 **Notes on acquisition:** N/A
 
 **Notes of caution:** N/A
 
-### n_processes
-
-**Data type:** Integer or None
-
-**Default input:** None
-
-**Description:** The number of parallel processes to use. None = all available processes, 1 = one virtual core, and so on. We recommend using None to greatly reduce simulation run time.
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** Using None will require almost all of your computer's total processor utilization across all cores. If background tasks require CPU (e.g., OneDrive, internet browser) your computer may crash.
-
-### n_simulations
-
-**Data type:** Integer
-
-**Default input:** 3 (much more required to constrain uncertainty)
-
-**Description:** The number of repeat simulations to perform for each program.
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** Using more simulations leads to better-constrained results but requires greater run time. For high-consequence scenarios that are meant to inform decision-making, we recommend using 10+ simulations for each scenario modeled. A minimum of two simulations is required to compare a set of different LDAR programs.
-
-### output_directory
+### &lt;output_directory&gt;
 
 **Data type:** String
 
 **Default input:** './outputs'
 
-**Description:** Specify folder location to generate output files into. Can be an absolute path, or relative path to the root folder.
+**Description:** Specify folder location to generate output files into. Can be an absolute path, or relative path from the root folder.
 
 **Notes on acquisition:** N/A
 
 **Notes of caution:** N/A
 
-### reference_program
+### &lt;baseline_program&gt;
+
+**Data type:** String
+
+**Default input:** 'P_none'
+
+**Description:** A program that represents a scenario where there is no formal LDAR, or that has no LDAR methods.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** A baseline program is required to successfully run a simulation.
+
+### &lt;reference_program&gt;
 
 **Data type:** String
 
@@ -411,7 +423,91 @@ If you are developing in LDAR-Sim, please adhere to the following rules:
 
 **Notes of caution:** N/A
 
-### pregenerate_leaks
+### &lt;n_processes&gt;
+
+**Data type:** Integer or None
+
+**Default input:** 6
+
+**Description:** The number of parallel processes to use.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** Python is limited and cannot achieve true simultaneous execution of Python code. Therefore, generating too many processes may cause slower performance due to excessive context switching between the different processes.
+
+### &lt;n_simulations&gt;
+
+**Data type:** Integer
+
+**Default input:** 3 (much more required to constrain uncertainty)
+
+**Description:** The number of repeat simulations to perform for each program.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** Using more simulations leads to better-constrained results but requires greater run time. For high-consequence scenarios that are meant to inform decision-making, we recommend using 10+ simulations for each scenario modeled. A minimum of two simulations is required to compare a set of different LDAR programs.
+
+### &lt;start_date&gt;
+
+**Data type:** List of integers [year, month, day]
+
+**Default input:** [2023,1,1]
+
+**Description:** The date at which the simulations begins.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** The NetCDF file should encompass the start date and end date.
+
+### &lt;end_date&gt;
+
+**Data type:** List of integers [year, month, day]
+
+**Default input:** [2027,12,31]
+
+**Description:** The date at which the simulations ends.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** We recommend running the simulation for several years due to the stochastic nature of LDAR systems and the periods of time over which leaks arise and are repaired.
+
+### &lt;make_plots&gt;
+
+**Data type:** Boolean
+
+**Default input:** True
+
+**Description:** A binary True/False to control whether output plots are generated for each individual run of a simulation. Automatically generating plots provides a broad range of insights into individual simulation runs that can be extremely useful for interpretation. When dozens, 100s, or 1000s of simulation runs are being performed in succession (i.e., for sensitivity analysis or when comparing multiple different programs), plots from individual runs may not be needed and this variable can be turned to False (in these cases, the target information is in the aggregate results, so individual runs can be ignored). Turning this variable to False will reduce the run time of each simulation by a few seconds, which can be significant if the required number of simulations is high.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** N/A
+
+### &lt;print_from_simulations&gt;
+
+**Data type:** Boolean
+
+**Default input:** True
+
+**Description:** A binary True/False to indicate whether to print informational messages from within the simulations. These messages can have value when debugging or troubleshooting.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** N/A
+
+### &lt;write_data&gt;
+
+**Data type:** Boolean
+
+**Default input:** True
+
+**Description:** A binary True/False to activate the export of simulation data to csv files. Generally recommended that this remains set to True unless it is desired to reduce time/storage requirements during sensitivity analyses.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** Must be True to make automated maps and plots.
+
+### &lt;pregenerate_leaks&gt;
 
 **Data type:** Boolean
 
@@ -425,195 +521,129 @@ If enabled, the leaks will be stored locally in /inputs/generation after running
 
 **Notes of caution:** N/A
 
-### preseed_random
+### &lt;preseed_random&gt;
 
 **Data type:** Boolean
 
 **Default input:** False
 
-**Description:** If set to True, a timeseries of daily random integers will be created, and passed into each program, where each program within a simulation set receives the same timeseries. Then within each day of the simulation, the numpy and random seeds are set using the daily integer. This ensures that the output values will be the same in identical programs regardless of the stochastic nature of the software.
+**Description:** If set to True, a time series of daily random integers will be created, and passed into each program, where each program within a simulation set receives the same time series. Then within each day of the simulation, the numpy and random seeds are set using the daily integer. This ensures that the output values will be the same in identical programs regardless of the stochastic nature of the software.
 
 **Notes on acquisition:** N/A
 
 **Notes of caution:** This should only be used for QC and testing.
 
-### print_from_simulations
+--------------------------------------------------------------------------------
 
-**Data type:** Boolean
+## 6\. Virtual World Settings
 
-**Default input:** True
-
-**Description:** A binary True/False to indicate whether to print informational messages from within the simulations. These messages can have value when debugging or troubleshooting.
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** N/A
-
-### start_date
-
-**Data type:** List of integers [year, month, day]
-
-**Default input:** [2017,1,1]
-
-**Description:** The date at which the simulations begins.
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** The NetCDF file should encompass the start date and end date.
-
-### version
+### &lt;version&gt; (virtual world)
 
 **Data type:** String
 
-**Default input:** 2.0
+**Default input:** 3.0
 
-**Description:** Specify version of LDAR-Sim. See section _Versioning of Parameter Files_ for more information.
+**Description:** Specify version of LDAR-Sim. See section _[Versioning of Parameter Files](#versioning-of-parameter-files)_ for more information.
 
 **Notes on acquisition:** N/A
 
 **Notes of caution:** N/A
 
-### write_data
-
-**Data type:** Boolean
-
-**Default input:** True
-
-**Description:** A binary True/False to activate the export of simulation data to csv files. Generally recommended that this remains set to True unless it is desired to reduce time/storage requirements during sensitivity analyses.
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** Must be True to make automated maps and plots.
-
-### make_plots
-
-**Data type:** Boolean
-
-**Default input:** True
-
-**Description:** A binary True/False to control whether output plots are generated for each individual run of a simulation. Automatically generating plots provides a broad range of insights into individual simulation runs that can be extremely useful for interpretation. When dozens, 100s, or 1000s of simulation runs are being performed in succession (i.e., for sensitivity analysis or when comparing multiple different programs), plots from individual runs may not be needed and this variable can be turned to False (in these cases, the target information is in the aggregate results, so individual runs can be ignored). Turning this variable to False will reduce the run time of each simulation by a few seconds, which can be significant if the required number of simulations is high.
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** N/A
-
-### parameter_level (global)
+### &lt;parameter_level&gt; (virtual_world)
 
 **Data Type:** String
 
-**Default input:** 'global'
+**Default input:** 'virtual_world'
 
-**Description:** A string indicating the parameters in file are at the global level
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** Must be set to ```parameter_level: global``` for a global parameter file.
-
---------------------------------------------------------------------------------
-
-## 6\. Program Inputs
-
-### parameter_level (program)
-
-**Data Type:** String
-
-**Default input:** 'program'
-
-**Description:** A string indicating the parameters in file are at the program level
+**Description:** A string indicating the parameters in file are at the virtual world level
 
 **Notes on acquisition:** No data acquisition required.
 
-**Notes of caution:** Must be set to ```parameter_level: program``` for a program parameter file.
+**Notes of caution:** Must be set to ```parameter_level: virtual_world``` for a virtual world parameter file.
 
-### economics
-
-#### carbon_price_tonnesCO2e
-
-**Data type:** Numeric
-
-**Default input:** 40.0
-
-**Description:** The current federal price on carbon in Canada of $40/tonne CO2e is input as a default metric to compare the cost to mitigation ratios of LDAR programs to.
-
-**Notes on acquisition:** The fuel charge rates for Canada can be found here: <https://www.canada.ca/en/revenue-agency/services/forms-publications/publications/fcrates/fuel-charge-rates.html>.
-
-**Notes of caution:** This rate rises by $10/tonne CO2e annually and should be updated in the model to reflect changes in the price.
-
-#### cost_CCUS
-
-**Data type:** Numeric
-
-**Default input:** 20
-
-**Description:** The cost of pure stream CCUS at natural gas processing sites that are producing concentrated CO2 streams. This value offers another metric to compare the cost/mitigation ratios of LDAR programs to.
-
-**Notes on acquisition:** See the International Energy Agency's (IEA's) report here for a more detailed breakdown on the potential costs of CCUS: <https://www.iea.org/commentaries/is-carbon-capture-too-expensive>.
-
-**Notes of caution:** This value may not be representative of the costs of CCUS for produced CO2 at oil and gas production sites and firm specific estimates should be used if available.
-
-#### GWP_CH4
-
-**Data type:** Numeric
-
-**Default input:** 28.0
-
-**Description:** GWP of 28 over a 100-year time period was chosen as a default input. The model uses this value to convert between CH4 and CO2e when required. This value can be changed to 84-86 over 20 years to explore the impact that GWP has on mitigation costs.
-
-**Notes on acquisition:** This value is from Chapter 8 in the IPCC's Assessment Report 5 from Working Group 1 page 714: <https://www.ipcc.ch/site/assets/uploads/2018/02/WG1AR5_Chapter08_FINAL.pdf>
-
-**Notes of caution:** Using a GWP of CH4 for a 20-year time period may dramatically change results but all options should be explored.
-
-#### repair_costs
-
-##### file
+### &lt;weather_file&gt;
 
 **Data type:** String
 
-**Default input:** N/A
+**Default input:** "ERA5_2017_2020_AB.nc" (hourly weather file in Alberta)
 
-**Description:** A file name containing a list of repair costs that the simulation will sample from randomly.
+**Description:** Specifies the name of the ERA5 NetCDF4 file that contains all weather data to be used in the analysis. Generally, at a minimum, OGI requires wind, temperature, and precipitation data. LDAR-Sim reads in temperature data in degrees Celsius at 2 meters above ground, wind in meters per second at 10 meters above ground, and total precipitation in millimeters accumulated per hour. Other weather variables are freely available for download.
 
-##### vals
+**Notes on acquisition:** Raw data are available from the European Centre for Medium-Range Weather Forecasts. Pre-processed and ready to use weather data have been prepared and are available for download on AWS for Alberta, Colorado, and New Mexico. LDAR-Sim will access these files directly if the file names are specified correctly in the program file. Currently available files are:
 
-**Data type:** List of Integers
+- Alberta: "ERA5_AB_1x1_hourly_2015_2019.nc"
+- Colorado: "ERA5_CO_1x1_hourly_2015_2019.nc"
+- New Mexico: "ERA5_NM_1x1_hourly_2015_2019.nc"
 
-**Default input:** [200] $/repair
+Each of these files provides hourly weather (wind, temp, precipitation) data spanning the years specified at a spatial resolution of 1 degree latitude and 1 degree longitude. If custom configurations are needed for different regions, spatial resolutions, temporal resolutions, dates, or weather variables (e.g., clouds, snow cover, etc.), they must be downloaded manually from the ERA5 database. The 'ERA5_downloader' python file in the model code folder provides code and guidance for accessing custom weather data.
 
-**Description:** The average cost of leak repair. This value is added to the total program cost each time a leak is repaired, whether as a result of an LDAR program or due to routine maintenance by the operator.
+**Notes of caution:**
 
-**Notes on acquisition:** The duty holder should have data on cost of repairs.
+Weather file sizes can become quite large, especially when spatial and temporal resolution increase (maximum resolutions of 1.25 degrees and 1 hour, respectively). Modelers must decide how to navigate these tradeoffs, and understand the implications of the resolutions chosen.
 
-**Notes of caution:** Cost of repair is highly variable and not well characterized by a single value. For example, a percentage of leaks will have near-zero repair costs if it is just a matter of tightening a valve. Other repairs, especially if specialized equipment is involved, could be extremely expensive – especially if a shutdown is required and production declines, leading to indirect costs. Those with good data and an intimate understanding of LDAR-Sim may opt to reprogram the model to accept a distribution of repair costs associated with different kinds of repairs – this could greatly improve LDAR cost estimates.
+If using different weather files for different programs (e.g., when comparing different regions), weather data must be downloaded manually and saved to the inputs folder before beginning simulations, as the automatic downloader built into LDAR-Sim will only download one file at a time.
 
-#### sale_price_natgas
+### &lt;weather_is_hourly&gt;
 
-**Data type:** Numeric
+**Data type:** Boolean
 
-**Default input:** 3.0
+**Default input:** False
 
-**Description:** The sale price of natural gas per thousand cubic foot (mcf) which is used to calculate the potential value of gas sold when captured as part of an LDAR program. LDAR-Sim takes the difference in emissions from a baseline scenario and multiplies this by the price of natural gas.
+**Description:** Specify if the weather file is ERA5 reanalysis hourly data downloaded directly from ERA5 Copernicus database or API. If false, the weather file is assumed to be daily average data generated using the /weather/ERA5_hourly_to_daily.py script.
 
-**Notes on acquisition:** This value can be taken from local distribution companies or natural gas trading hubs. The U.S. Energy Information Administration is a good source for this information but units need to be converted to mcf before input into the model.
+**Notes on acquisition:** N/A
 
-**Notes of caution:** The default value of $3/mcf is a conservative estimate and users of LDAR-Sim will see different cost/benefit and cost/mitigation results if the price of natural gas is changed.
+**Notes of caution:** N/A
 
-#### verification_cost
+### &lt;consider_weather&gt;
+
+**Data type:** Boolean
+
+**Default input:** False
+
+**Description:** Specify if the weather will be considered when determining the different methods work hours per each day.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** Even if weather is considered false, ```weather_file``` must be present and valid.
+
+### &lt;infrastructure_file&gt;
+
+**Data type:** String
+
+**Default input:**"facility_list_template.csv"
+
+**Description:** Character string that specifies the name of the csv file that contains all of the required data on the sites that comprise the LDAR program. At a bare minimum, the csv must contain the following columns: 'facility_ID', 'lat', 'lon', 'equipment_groups', and 'subtype_code'. For each mobile measurement company used as part of the LDAR program, the number of annual surveys (survey frequency) must be indicated and the inspection time for each method indicated (in minutes). The number of fixed sensors used at each site must also be indicated. A static venting rate may be provided for each site. Subsections 1.7.X describe individual columns in greater detail.
+
+**Notes on acquisition:** See [infrastructure file](#9-infrastructure-file).
+
+**Notes of caution:** Although facility-specific inputs provide flexibility, in most cases the appropriate data will not be available, and the same survey time or survey frequency may be used for all facilities. In general, LDAR-Sim does not hard-code methods, facility types, production types, and so on. These are provided by the user as categorical variables and can be anything. However, categorical variables must be consistent among different input files or errors will occur.
+
+### &lt;site_samples&gt;
 
 **Data type:** Integer
 
-**Default input:** 0
+**Default input:** 500
 
-**Description:** The average cost of repair verification. This value is added to the total program cost each time a repair is verified. Some regulations require verification of successful repair within a certain number of days following repair. If the operator is already onsite and can easily verify the repair with readily available instruments (e.g., FID), the cost of verification could be negligible. If the operator has to drive long distances or engage an independent service provider to verify repairs, costs could be high.
+**Description:** The user can randomly subset/bootstrap all of the sites for a smaller or larger sample of sites. This variable is a integer indicating the number of sites to subset.
 
-**Notes on acquisition:** The duty holder should have data on cost of verification.
+**Notes on acquisition:** No data acquisition required.
 
-**Notes of caution:** Cost of verification is likely to be facility specific. Modelers with good data and an intimate understanding of LDAR-Sim may opt to reprogram the model to accept a distribution of site-level verification cost estimates.
+**Notes of caution:** This functionality could be used to 'increase' the number of sites in a program, as sampling occurs with replacement. For example, if a program only had 5 sites, sampling of 100 sites would create the illusion of more sites in the program. However, the sites will only represent 5 locations, so if simulations include geographical considerations (e.g. road networks), this may not be advisable as travel times might not be meaningful.
 
-**Notes on acquisition (economics):** The default values for these parameters represent generic costs of mitigation options and a conservative price for natural gas. Firms may have unique costs for carbon taxes based on the regulatory jurisdiction where their operations are located, CCUS, or low bleed retrofits that they want to input into the model. If not, default parameters can be used, or information from the IEA and RFF report from Munnings and Krupnick (2017) can be used to derive alternative values. Provincial/State or Federal government websites should have carbon pricing scenarios available online.
+### &lt;subtype_file&gt;
 
-**Notes of caution (economics):** The value used for the cost of low bleed retrofits from Munnings and Krupnick (2017) is based on a national marginal abatement cost curve for methane abatement technologies in the U.S. O&G sector. As a result, this cost may not be truly representative of the costs for low bleed retrofits at sites in the O&G sector under LDAR regulations.
+**Data type:** string
 
-### repair_delay
+**Default input:** None
+
+**Description:** Imports a lookup table that allows the modeler to set the leak rate source, vent_rate_file, NRd and LPR per facility according to subtype type. This functionality can be used when these values can be approximately estimated by site subtype. Each row represents a site subtype type and each column represents a value. If this parameter is set to None, or left blank, the described values are set at a program level. For more information on setting NRd and LPR see the entries in program level parameters for NRd and LPR.
+
+**Notes on acquisition:** Ideally, empirical data for similar sites is used to inform the lookup table.
+
+**Notes of caution:** Site subtype types must match those used in infrastructure_file. When used, the equivalent program level parameters will be overwritten. Subtype, NRD, LPR Leak rate source and the relevant leak rate source parameters must be set for each row in the subtype file.
+
+### &lt;repair_delay&gt;
 
 #### type (repair_delay)
 
@@ -629,7 +659,7 @@ If enabled, the leaks will be stored locally in /inputs/generation after running
 
 #### val (repair_delay)
 
-**Data type:** List of ints
+**Data type:** List of integers
 
 **Default input:** [14]
 
@@ -639,10 +669,9 @@ If enabled, the leaks will be stored locally in /inputs/generation after running
 
 **Notes of caution:** N/A
 
+### &lt;emissions&gt;
 
-### emissions
-
-#### consider_venting
+#### &lt;consider_venting&gt;
 
 **Data type:** Boolean
 
@@ -654,19 +683,19 @@ If enabled, the leaks will be stored locally in /inputs/generation after running
 
 **Notes of caution:** Screening technology performance will typically suffer if only fugitive emissions are being targeted due to the confounding presence of design (e.g., vented) emissions. Results from simulations of screening technologies that do not consider venting are therefore optimistic and unlikely to be representative of true reductions. When vented emissions are considered, it will change what facilities are selected for follow-up by screening technologies.
 
-#### leak_dist_params
+#### &lt;leak_dist_params&gt;
 
 **Data type:** List
 
 **Default input:** [-2.776, 1.462]
 
-**Description:** A list describing the empirical leak function from which leak emission rates are drawn. The first term is the distribution scale and any subsequent terms are the distribution shape. These are used in conjunction with the leak_dist_type. See scipy documentation for more uses. Because the Lognormal distribution is often used in literature, it is considered a special case where the scale is the mu value , or the log of the scale used by the scipy function `eg. scale = exp(leak_dist_params)[0]`. The default value is a lognormal fit of the clearstone dataset, which were taken from OGI measurements of leaks from Canadian gas facilities.
+**Description:** A list describing the empirical leak function from which leak emission rates are drawn. The first term is the distribution scale and any subsequent terms are the distribution shape. These are used in conjunction with the leak_dist_type. See scipy documentation for more uses. Because the Log normal distribution is often used in literature, it is considered a special case where the scale is the mu value , or the log of the scale used by the scipy function `eg. scale = exp(leak_dist_params)[0]`. The default value is a log normal fit of the clearstone dataset, which were taken from OGI measurements of leaks from Canadian gas facilities.
 
 **Notes on acquisition:** N/A
 
 **Notes of caution:** Can also be provided in the subtype_file
 
-#### leak_dist_type
+#### &lt;leak_dist_type&gt;
 
 **Data type:** string
 
@@ -678,7 +707,7 @@ If enabled, the leaks will be stored locally in /inputs/generation after running
 
 **Notes of caution:** Can also be provided in the ```subtype_file``` with the ```leak_dist_param```
 
-#### leak_file
+#### &lt;leak_file&gt;
 
 **Data type:** String
 
@@ -690,7 +719,7 @@ If enabled, the leaks will be stored locally in /inputs/generation after running
 
 **Notes of caution:** For non-mandatory columns (columns B onward), the number of leaks required for the distribution should increase exponentially for each new column, because leak rate sampling will become increasingly specific. Categories must also be sufficiently exhaustive to be representative.
 
-#### leak_file_use
+#### &lt;leak_file_use&gt;
 
 **Data type:** String
 
@@ -702,7 +731,7 @@ If enabled, the leaks will be stored locally in /inputs/generation after running
 
 **Notes of caution:** N/A
 
-#### LPR
+#### &lt;LPR&gt;
 
 **Data type:** Numeric
 
@@ -714,7 +743,7 @@ If enabled, the leaks will be stored locally in /inputs/generation after running
 
 **Notes of caution:** Available techniques for estimating LPR make a number of problematic assumptions. Ultimately, we have relatively poor data on LPR and the relationship between LPR and NRR. Modeling results are extremely sensitive to LPR. Given that LPR is elusive, we strongly recommend that a broad range of LPR values is evaluated in LDAR-Sim before any decisions are made. For more information, refer to discussions in the main text and supplementary information of Fox et al. (2020).
 
-#### max_leak_rate
+#### &lt;max_leak_rate&gt;
 
 **Data type:** Numeric
 
@@ -726,19 +755,7 @@ If enabled, the leaks will be stored locally in /inputs/generation after running
 
 **Notes of caution:** N/A
 
-#### subtype_leak_dist_file (deprecated)
-
-**Data type:** String
-
-**Default input:** None
-
-**Description:** Name of file containing distributions for subtypes. Requires 3 or 4 columns: subtype_code, dist_type, followed by scipy defined shape parameters, followed by the scipy scale. For example if dist_type is lognormal , their will be only one shape parameter (3rd column) and the size parameter will be placed in the 4th column. Note: loc parameters are always set to zero. If this parameter is set to None, or left blank, distributions are set are set at a program level with the leak_dist_params, and leak_dist_type parameters.
-
-**Notes on acquisition:**
-
-**Notes of caution:** If True, will overwrite global leak distribution.
-
-#### units
+#### &lt;units&gt;
 
 **Data type:** List of Strings
 
@@ -767,199 +784,7 @@ The increment can be one of:
 
 **Notes of caution:** N/A
 
-### infrastructure_file
-
-**Data type:** String
-
-**Default input:**"facility_list_template.csv"
-
-**Description:** Character string that specifies the name of the csv file that contains all of the required data on the sites that comprise the LDAR program. At a bare minimum, the csv must contain the following columns: 'facility_ID', 'lat', 'lon', 'equipment_groups', and 'subtype_code'. For each mobile measurement company used as part of the LDAR program, the number of annual surveys (survey frequency) must be indicated and the inspection time for each method indicated (in minutes). The number of fixed sensors used at each site must also be indicated. A static venting rate may be provided for each site. Subsections 1.7.X describe individual columns in greater detail.
-
-**Notes on acquisition:** See subsections.
-
-**Notes of caution:** Although facility-specific inputs provide flexibility, in most cases the appropriate data will not be available, and the same survey time or survey frequency may be used for all facilities. In general, LDAR-Sim does not hard-code methods, facility types, production types, and so on. These are provided by the user as categorical variables and can be anything. However, categorical variables must be consistent among different input files or errors will occur.
-
-#### facility_ID
-
-**Data type:** String
-
-**Default input:** N/A
-
-**Description:** A character string indicating the unique facility code.
-
-**Notes on acquisition:** Should be available from the facility operator or can be made up.
-
-**Notes of caution:** Must be a unique identifier.
-
-#### lat
-
-**Data type:** Numeric
-
-**Default input:** N/A
-
-**Description:** A numeric scalar indicating facility latitude in decimal degrees.
-
-**Notes on acquisition:** N/A
-
-**Notes of caution:** Should range between -90 (South Pole) and 90 (North Pole). Will be negative for facilities south of the equator. Fewer decimal places or offsets can be used to anonymize location.
-
-Must also be contained within the boundaries of the associated weather file
-
-#### lon
-
-**Data type:** Numeric
-
-**Default input:** N/A
-
-**Description:** A numeric scalar indicating facility longitude in decimal degrees.
-
-**Notes on acquisition:** N/A
-
-**Notes of caution:** Should be between -180 and 180 (both correspond to the 180th meridian). Will be negative for facilities west of the Prime Meridian and positive for facilities east of it. Fewer decimal places can be used to anonymize location.
-
-Must also be contained within the boundaries of the associated weather file
-
-#### subtype_code
-
-**Data type:** String
-
-**Default input:** N/A
-
-**Description:** A String or number indicating a type of facility.
-
-**Notes on acquisition:** N/A
-
-**Notes of caution:** If using ```subtype_file```, each of the _subtype_code_ present in the _infrastructure_file_ must be an entry in the ```subtype_file```
-
-#### equipment_groups
-
-**Data type:** Integer
-
-**Default input:** N/A
-
-**Description:** A integer indicating the number of equipment groups present at each individual site. Minimum of 1 equipment group needs to be set for each site.
-
-**Notes on acquisition:** N/A
-
-**Notes of caution:** N/A
-
-#### \*\*\__RS
-
-**Data type:** Integer
-
-**Default input:** N/A
-
-**Description:** For each method, an integer indicating the number of required surveys at each facility per calendar year. The three asterisks indicate the interchangeable method name (e.g., OGI_RS, truck_RS).
-
-**Notes on acquisition:** Survey frequencies can be based on regulatory requirements, company policies, or can be fabricated by the modeler to explore different scenarios.
-
-**Notes of caution:** Note that just because a number of surveys is prescribed, it does not mean that this number of surveys will necessarily be performed. For example, if labour limitations exist (i.e., not enough crews are available to inspect the number of facilities in the program) or if environmental conditions are unsuitable (i.e., a particular facility is in a cloudy location that cannot be accessed by satellite), the performed number of surveys may be less than the prescribed number. This variable is not required for continuous measurement methods.
-
-If **\*\*\_RS** is present in the infrastructure file, it must **NOT** be set in the **methods parameters**.
-
-#### \*\*\_time
-
-**Data type:** Integer
-
-**Default input:** N/A
-
-**Description:** For each mobile method, the number of minutes required to complete a survey at each facility. Three asterisks indicate the interchangeable method name (e.g., OGI_time).
-
-**Notes on acquisition:** In most cases, an estimate will be made as data will not exist for the specific combination of facility and unique method. However, as new methods and programs and implemented, data will become available to better refine modeling estimates and develop more intelligent programs.
-
-**Notes of caution:** This variable is an empirical estimate of how much time is required for a given mobile method to complete a survey at a given facility. This includes anything that happens onsite (e.g., calibrations, interfacing with the operator, etc.) but _does not include_ driving time between facilities or any other account of time spent offsite. This variable is simply the amount of time that passes from the start of a facility survey to the end. If a facility takes longer than there is time left in a day, then the agent/crew returns the following day to continue work, and so on and so forth, until the facility is completed. This variable is not required for continuous measurement methods.
-
-If **\*\*\_time** is present in the infrastructure file, it must **NOT** be set in the **methods parameters**.
-
-#### estimate_A/estimate_B
-
-**Data type:** Boolean
-
-**Default input:** N/A
-
-**Description:** A boolean indicating if an estimated emission should be kept track of for given site. Can be used to calculate carbon tax estimation. The estimate is based on duration ([current survey date - last survey date] / 2 ) * leak rate. Fills out an extra column in the outputs.
-
-**Notes on acquisition:** N/A
-
-**Notes of Caution:** None
-
-#### fixed_sensors
-
-**Data type:** Integer
-
-**Default input:** N/A
-
-**Description:** An integer indicating the number of fixed sensors installed at each facility.
-
-**Notes on acquisition:** Can be based on regulatory requirements, company policies, or can be fabricated by the modeler to explore different scenarios.
-
-**Notes of caution:** None
-
-#### static_venting_rate
-
-**Data type:** Floating Point Number
-
-**Default input:** N/A
-
-**Description** A floating point number indicating the static venting rate at each site.
-
-**Notes on acquisition** Can be based on measured data, estimated average site level venting rates or can be fabricated by the modeler to explore different scenarios.
-
-#### additional categories
-
-**Data type:** String
-
-**Default input:** N/A
-
-**Description:** Any column heading that helps to refine the numerical sampling process (i.e., 'intelligent' sampling). Common examples include facility type, production type, facility age, etc.
-
-**Notes on acquisition:** Specific to the category chosen and up to the user to define.
-
-**Notes of caution:** Categories used here must correspond with any categories used elsewhere in the model. In particular, when sampling from the leak_file, LDAR-Sim will match the additional categories specified in all files to refine the sampling process and generate emissions information that is representative of the facility for which sampling is being performed. Note that the number of leak rates required for the custom empirical distribution should increase exponentially for each new additional category used, because sampling will become increasingly specific. Categories must also be sufficiently exhaustive to be representative.
-
-### method_labels
-
-**Data type:** List of methods
-
-**Default input:** None
-
-**Description:** List of modules used within the program referenced by the method label (see method inputs section - labels for more info). For example, the following will use the aircraft and the OGI_FU methods:
-
-```yaml
-method_labels:
-- aircraft
-- OGI_FU
-```
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** N/A
-
-### n_init_leaks
-
-**Data type:** Integer
-
-**Default input:** N/A
-
-**Description:** The number of leaks present per site in the system at the time of the simulation start date
-
-**Notes on acquisition:** Estimate from empirical data or use previously published value. This value can be calculated by multiplying the n_init_days by LPR.
-
-**Notes of caution:** This will overwrite the original functionality of utilizing NRd and LPR to calculate the number of initial leaks present in the simulation. Additionally, this value will be set for all sites, and cannot be specified for individual subtypes at this given time.
-
-### n_init_days
-
-**Data type:** Integer
-
-**Default input:** N/A (will be set to NRd if left blank)
-
-**Description:** The number of days the initial leaks could potentially been active for before the simulation started. Recommended to always set this value between 0 and NRd.
-
-**Notes on acquisition:** Known assumptions based on operations.
-
-**Notes of caution:** If value is larger than NRd, the number of leaks present in the initial system could potentially be less than the indicated value.
-
-### NRD
+### &lt;NRD&gt;
 
 **Data type:** Integer
 
@@ -977,7 +802,59 @@ The NRd value should be the same for **all** programs
 
 Additionally, NRd is recommended to be always be equal or greater than n_init_days.
 
-### program_name
+### &lt;n_init_leaks&gt;
+
+**Data type:** Integer
+
+**Default input:** N/A
+
+**Description:** The number of leaks present per site in the system at the time of the simulation start date
+
+**Notes on acquisition:** Estimate from empirical data or use previously published value. This value can be calculated by multiplying the n_init_days by LPR.
+
+**Notes of caution:** This will overwrite the original functionality of utilizing NRd and LPR to calculate the number of initial leaks present in the simulation. Additionally, this value will be set for all sites, and cannot be specified for individual subtypes at this given time.
+
+### &lt;n_init_days&gt;
+
+**Data type:** Integer
+
+**Default input:** N/A (will be set to NRd if left blank)
+
+**Description:** The number of days the initial leaks could potentially been active for before the simulation started. Recommended to always set this value between 0 and NRd.
+
+**Notes on acquisition:** Known assumptions based on operations.
+
+**Notes of caution:** If value is larger than NRd, the number of leaks present in the initial system could potentially be less than the indicated value.
+
+--------------------------------------------------------------------------------
+
+## 7\. Program Inputs
+
+### &lt;version&gt; (program level)
+
+**Data type:** String
+
+**Default input:** 3.0
+
+**Description:** Specify version of LDAR-Sim. See section _[Versioning of Parameter Files](#versioning-of-parameter-files)_ for more information.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** N/A
+
+### &lt;parameter_level&gt; (program)
+
+**Data Type:** String
+
+**Default input:** 'program'
+
+**Description:** A string indicating the parameters in file are at the program level
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** Must be set to ```parameter_level: program``` for a program parameter file.
+
+### &lt;program_name&gt;
 
 **Data type:** String
 
@@ -989,31 +866,905 @@ Additionally, NRd is recommended to be always be equal or greater than n_init_da
 
 **Notes of caution:** N/A
 
-### site_samples
+### &lt;method_labels&gt;
 
-**Data type:** Integer
-
-**Default input:** 500
-
-**Description:** The user can randomly subset/bootstrap all of the sites for a smaller or larger sample of sites. Teis variable is a integer indicating the number of sites to subset.
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** This functionality could be used to 'increase' the number of sites in a program, as sampling occurs with replacement. For example, if a program only had 5 sites, sampling of 100 sites would create the illusion of more sites in the program. However, the sites will only represent 5 locations, so if simulations include geographical considerations (e.g. road networks), this may not be advisable as travel times might not be meaningful.
-
-### subtype_file
-
-**Data type:** string
+**Data type:** List of methods
 
 **Default input:** None
 
-**Description:** Imports a lookup table that allows the modeler to set the leak rate source, vent_rate_file, NRd and LPR per facility according to subtype type. This functionality can be used when these values can be approximately estimated by site subtype. Each row represents a site subtype type and each column represents a value. If this parameter is set to None, or left blank, the described values are set at a program level. For more information on setting NRd and LPR see the entries in program level parameters for NRd and LPR.
+**Description:** List of modules used within the program referenced by the method label (see method inputs section - labels for more info). For example, the following will use the aircraft and the OGI_FU methods:
 
-**Notes on acquisition:** Ideally, empirical data for similar sites is used to inform the lookup table.
+```yaml
+method_labels:
+- aircraft
+- OGI_FU
+```
 
-**Notes of caution:** Site subtype types must match those used in infrastructure_file. When used, the equivalent program level parameters will be overwritten. Subtype, NRD, LPR Leak rate source and the relevant leak rate source parameters must be set for each row in the subtype file.
+**Notes on acquisition:** No data acquisition required.
 
-#### leak_rate_source
+**Notes of caution:** N/A
+
+### &lt;economics&gt;
+
+#### &lt;carbon_price_tonnesCO2e&gt;
+
+**Data type:** Numeric
+
+**Default input:** 40.0
+
+**Description:** The current federal price on carbon in Canada of $40/tonne CO2e is input as a default metric to compare the cost to mitigation ratios of LDAR programs to.
+
+**Notes on acquisition:** The fuel charge rates for Canada can be found here: <https://www.canada.ca/en/revenue-agency/services/forms-publications/publications/fcrates/fuel-charge-rates.html>.
+
+**Notes of caution:** This rate rises by $10/tonne CO2e annually and should be updated in the model to reflect changes in the price.
+
+#### &lt;cost_CCUS&gt;
+
+**Data type:** Numeric
+
+**Default input:** 20
+
+**Description:** The cost of pure stream CCUS at natural gas processing sites that are producing concentrated CO2 streams. This value offers another metric to compare the cost/mitigation ratios of LDAR programs to.
+
+**Notes on acquisition:** See the International Energy Agency's (IEA's) report here for a more detailed breakdown on the potential costs of CCUS: <https://www.iea.org/commentaries/is-carbon-capture-too-expensive>.
+
+**Notes of caution:** This value may not be representative of the costs of CCUS for produced CO2 at oil and gas production sites and firm specific estimates should be used if available.
+
+#### &lt;GWP_CH4&gt;
+
+**Data type:** Numeric
+
+**Default input:** 28.0
+
+**Description:** GWP of 28 over a 100-year time period was chosen as a default input. The model uses this value to convert between CH4 and CO2e when required. This value can be changed to 84-86 over 20 years to explore the impact that GWP has on mitigation costs.
+
+**Notes on acquisition:** This value is from Chapter 8 in the IPCC's Assessment Report 5 from Working Group 1 page 714: <https://www.ipcc.ch/site/assets/uploads/2018/02/WG1AR5_Chapter08_FINAL.pdf>
+
+**Notes of caution:** Using a GWP of CH4 for a 20-year time period may dramatically change results but all options should be explored.
+
+#### &lt;sale_price_natgas&gt;
+
+**Data type:** Numeric
+
+**Default input:** 3.0
+
+**Description:** The sale price of natural gas per thousand cubic foot (mcf) which is used to calculate the potential value of gas sold when captured as part of an LDAR program. LDAR-Sim takes the difference in emissions from a baseline scenario and multiplies this by the price of natural gas.
+
+**Notes on acquisition:** This value can be taken from local distribution companies or natural gas trading hubs. The U.S. Energy Information Administration is a good source for this information but units need to be converted to mcf before input into the model.
+
+**Notes of caution:** The default value of $3/mcf is a conservative estimate and users of LDAR-Sim will see different cost/benefit and cost/mitigation results if the price of natural gas is changed.
+
+#### &lt;repair_costs&gt;
+
+##### file
+
+**Data type:** String
+
+**Default input:** N/A
+
+**Description:** A file name containing a list of repair costs that the simulation will sample from randomly.
+
+##### vals
+
+**Data type:** List of Integers
+
+**Default input:** [200] $/repair
+
+**Description:** The average cost of leak repair. This value is added to the total program cost each time a leak is repaired, whether as a result of an LDAR program or due to routine maintenance by the operator.
+
+**Notes on acquisition:** The duty holder should have data on cost of repairs.
+
+**Notes of caution:** Cost of repair is highly variable and not well characterized by a single value. For example, a percentage of leaks will have near-zero repair costs if it is just a matter of tightening a valve. Other repairs, especially if specialized equipment is involved, could be extremely expensive – especially if a shutdown is required and production declines, leading to indirect costs. Those with good data and an intimate understanding of LDAR-Sim may opt to reprogram the model to accept a distribution of repair costs associated with different kinds of repairs – this could greatly improve LDAR cost estimates.
+
+#### &lt;verification_cost&gt;
+
+**Data type:** Integer
+
+**Default input:** 0
+
+**Description:** The average cost of repair verification. This value is added to the total program cost each time a repair is verified. Some regulations require verification of successful repair within a certain number of days following repair. If the operator is already onsite and can easily verify the repair with readily available instruments (e.g., FID), the cost of verification could be negligible. If the operator has to drive long distances or engage an independent service provider to verify repairs, costs could be high.
+
+**Notes on acquisition:** The duty holder should have data on cost of verification.
+
+**Notes of caution:** Cost of verification is likely to be facility specific. Modelers with good data and an intimate understanding of LDAR-Sim may opt to reprogram the model to accept a distribution of site-level verification cost estimates.
+
+**Notes on acquisition (economics):** The default values for these parameters represent generic costs of mitigation options and a conservative price for natural gas. Firms may have unique costs for carbon taxes based on the regulatory jurisdiction where their operations are located, CCUS, or low bleed retrofits that they want to input into the model. If not, default parameters can be used, or information from the IEA and RFF report from Munnings and Krupnick (2017) can be used to derive alternative values. Provincial/State or Federal government websites should have carbon pricing scenarios available online.
+
+**Notes of caution (economics):** The value used for the cost of low bleed retrofits from Munnings and Krupnick (2017) is based on a national marginal abatement cost curve for methane abatement technologies in the U.S. O&G sector. As a result, this cost may not be truly representative of the costs for low bleed retrofits at sites in the O&G sector under LDAR regulations.
+
+--------------------------------------------------------------------------------
+
+## 8\. Method Inputs
+
+### &lt;parameter_level&gt; (method)
+
+**Data Type:** String
+
+**Default input:** 'method'
+
+**Description:** A string indicating the parameters in file are at the method level
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** Must be set to ```parameter_level: method``` for a method parameter file.
+
+### &lt;version&gt; (method level)
+
+**Data type:** String
+
+**Default input:** 3.0
+
+**Description:** Specify version of LDAR-Sim. See section _[Versioning of Parameter Files](#versioning-of-parameter-files)_ for more information.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** N/A
+
+### &lt;label&gt;
+
+**Data type:** String
+
+**Default input:** None (Required to be set for each method added to program)
+
+**Description:** A character string denoting the label of the method.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** Must match the label name specified in the program input parameter file, and any supplementary files, such as the infrastructure file.
+
+### &lt;measurement_scale&gt;
+
+**Data type:** String
+
+**Default input:** None (Required to be set for each method added to program)
+
+**Description:** A character string describing the measurements scale. Possible inputs are "component", "equipment", and "site".
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** N/A
+
+### &lt;deployment_type&gt;
+
+**Data type:** String
+
+**Default input:** None (Required to be set for each method added to program)
+
+**Description:** Methods are comprised of both a deployment type and a sensor type. The deployment type is a character string denoting the deployment type used in the method. For instance, 'mobile', 'stationary', or 'orbit'. Custom deployment types can be added and referenced here.
+
+- `mobile`: Agent moves between sites. Surveys occur when a site is "ready" for a survey and a crew is available to survey.
+- `stationary`: Each site has one or more _fixed_ sensors. Surveys are carried out daily.
+- `orbit`: Agent 'orbits' site and performs surveys at regular intervals.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** N/A
+
+### &lt;sensor&gt;
+
+#### &lt;type&gt;
+
+**Data type:** String
+
+**Default input:** "default"
+
+**Description:** Methods are comprised of both a deployment type and a sensor type. the sensor type is a character string denoting the sensor used in the method. For instance, 'OGI_camera_zim','OGI_camera_rk', or 'default'. The 'default' sensor uses the MDL as a threshold to detect leaks based on the measurement scale of the method. Custom sensors can be added and referenced here. Built in sensors are:
+
+- `default`: Uses a simple threshold where the leak rate is based on the measurement scale, for example if `measurement_scale = site` then the site's total emissions will be considered measured if greater than the sensors MDL.
+- `OGI_camera_rk`: Uses detection curve based on Ravikumar, 2018.Requires measurement_scale = 'component'.
+- `OGI_camera_zim`: Uses detection curve based on Zimmerle 2020.Requires measurement_scale = 'component'.
+- `GHGSAT1` Uses a wind speed based method of detection from Jacob et al., 2016.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** N/A
+
+#### &lt;QE&gt;
+
+**Data type:** Numeric
+
+**Default input:** 0
+
+**Description:** The standard deviation of a normal distribution with a mean of zero from which a quantification error multiplier is drawn each time an emission rate is estimated. For example, for a value of 2.2, ~35\% of measured emission rates will fall within a factor of two of the true emission rate. For a value of 7.5, ~82\% of measurements will fall within an order of magnitude of the true emission rate. When QE = 0, the measured emission rate equals the true emission rate. As QE increases, so does the average absolute difference between measured and true emission rates. See Fox et al. (2021) for more information and Ravikumar et al. (2019) for empirical quantification error estimates.
+
+**Notes on acquisition:** We recommend extensive controlled release testing under a range of representative release rates, distances, and conditions to establish quantification error. Given the amount of work required to collect this information, we recommend using historical estimates.
+
+**Notes of caution:** As facility-scale quantification error remains poorly constrained for LDAR screening methods, and likely depends on work practice, dispersion modeling, and environment, screening programs should be evaluated using a range of possible quantification errors. We recommend understanding exactly how quantification error works before making use of this functionality. Alternatively, we suggest using literature values of 2.2 and 7.5.
+
+#### &lt;MDL&gt; (default)
+
+**Data type:** List of integers
+
+**Default input:** [0.01] (Should be set for each Method)
+
+**Description:** Minimum detection limit of the screening method in grams per second. Probability curves or surfaces as a function of emission rate, wind speed, distance, etc. must be hard coded.
+
+**Notes on acquisition:** We recommend extensive controlled release testing under a range of representative release rates, distances, and conditions to establish detection limits. Given the amount of work required to collect this information, we recommend using historical estimates.
+
+**Notes of caution:** A single value for MDL is used here, although a parameter list could be used that defines a sigmoidal probability of detection curve. These are examples and with more experimental data, probability of detection surfaces can be generated that can estimate detection probabilities as a function of numerous relevant variables (e.g., distance, wind speed, emission rate, etc.)
+
+#### &lt;MDL&gt; (OGI_camera_rk)
+
+**Data type:** List of floats
+
+**Default input:** [0.01275, 2.78e-6]
+
+**Description:** A list of parameters [_xₒ_, σ] that define the minimum detection limit of OGI. The two parameters define a sigmoidal Gaussian cumulative probability function as described in Ravikumar et al. (2018), where _xₒ_ is the emission rate (in grams per second) at which 50% of leaks are detected (i.e., median detection limit), and σ is one standard deviation of  _xₒ_. The probability detection of a leak with OGI is calculated using a sigmoidal probability function:
+
+$$
+f = 1/{(1+exp(-k(log(x)-log(x_0))))}
+$$
+
+where f = is the fraction of leaks detected, _x_ is the emission rate in grams of methane per hour, _xₒ_ is the median detection limit (f = 0.5) and _k_ is the steepness of the sigmoid curve. Ravikumar et al. (2018) found that at 3 m _k_ =  4.9 g/hr +/- 3, and _xₒ_ = 0.47 +/- 0.1. However, detection limits were found to be an order of magnitude higher in the Zimmerle study. As such, LDAR-Sim assumes an _xₒ_ of 0.01275 g/s. For reasons listed below, we note that this is likely a conservative estimate. Also, this approach assumes a constant distance of 3 meters from camera to source.
+
+**Notes on acquisition:** We recommend extensive controlled release testing under a range of representative release rates and conditions to establish detection limits. Given the amount of work required to collect this information, we recommend using historical estimates.
+
+**Notes of caution:** Detection probabilities for OGI cameras have been shown to vary with operator experience, wind speed, scene background, and other variables. Estimates from Ravikumar et al. (2018) are experimentally derived but are likely low because (i) the OGI inspector knew where to look, (ii) measurements were performed over only 1 week of good conditions, (iii) OGI cameras were tripod mounted, and (iv) videos were analyzed by experts after data collection. Estimates from Zimmerle et al. (2020) are an order of magnitude higher, and likely closer to reality. However, this estimate applies only to experienced inspectors with over 700 site inspections under their belts, so the true median detection across all inspectors may be lower. Furthermore, the Zimmerle study for experienced inspectors could still represent an underestimate as (i) weather conditions were relatively good, (ii) OGI inspectors were participating in a formal study and were likely very focused, and (iii) many of the leaks were odorized. These results would therefore not include laziness, neglect, or missing of leaks from difficult to access areas. See Section 3.8 for more information on detection limits, including the use of single values or probability surfaces.
+
+#### &lt;MDL&gt; (OGI_camera_zim)
+
+**Data type:** List of floats
+
+**Default input:** [0.24, 0.39]
+
+**Description:** A list of parameters [a, b] that define the leak rate based probability of detection of a leak. The two parameters define power law cumulative probability function as described in Zimmerle (2020), where both a and b are empirical parameters that define the shape of the curve, and are based on the camera crew experience. The probability detection of a leak with OGI is calculated using the following function:
+
+$$
+p = a*x^{b}
+$$
+
+where p is the probability of detection, _x_ is the emission rate in grams of methane per second. The default
+parameters used are that associated with the moderate ability to detect.
+
+**Notes on acquisition:** We recommend extensive controlled release testing under a range of representative release rates and conditions to establish detection limits. Given the amount of work required to collect this information, we recommend using historical estimates.
+
+**Notes of caution:** Detection probabilities for OGI cameras have been shown to vary with operator experience, wind speed, scene background, and other variables Parameters are experimentally derived. The Zimmerle study for experienced inspectors could still represent an underestimate as (i) weather conditions were relatively good, (ii) OGI inspectors were participating in a formal study and were likely very focused, and (iii) many of the leaks were odorized. These results would therefore not include laziness, neglect, or missing of leaks from difficult to access areas. See Section 3.8 for more information on detection limits, including the use of single values or probability surfaces.
+
+#### &lt;MDL&gt; (GHGSAT1)
+
+**Data type:** List of floats
+
+**Default input:** [5.79, 1.39]
+
+**Description:** A list of parameters [x_0, wspd] that define the minimum detection limit of GHGSat1 sensor. The two parameters define a function of MDL of GHGSat1/D with the wind speed described in Table 2 of Jacob et al., 2016, where x__0 is the emission rate (in grams per second) at which leaks are detected and wspd is the wind speed (in meters per second) for x__0. Jacob et al., 2016 presented the detectability scales (MDL) of GHGSat are 0.25 ton/hour for a wind speed of 5 km/hour. They also indicated the MDL should be a proportional function of given MDL (0.25 ton/hour) and given wind speed (5 km/hour). In other words, the ratio between given MDL and wind speed is proportional to another ratio of different MDL and wind speed. Therefore, in the LDAR-Sim, we assume the MDL of satellite for any given site equals the ratio between the given MDL and wind speed times the wind speed from weather data at the location of sites.
+
+**Notes on acquisition:** We recommend extensive controlled release testing under a range of representative release rates, distances, and conditions to establish detection limits. Given the amount of work required to collect this information, we recommend using historical estimates.  
+
+**Notes of caution:** This group of values are only applicable for GHGSat1. Other values or metrics should be used if other satellites are used.
+
+#### &lt;mod_loc&gt;
+
+**Data type:** String
+
+**Default input:** N/A
+
+**Description:** A string which describes the external sensor location. Mod_loc replaces the existing technology sensors and is used in conjunction with MDL.
+
+**Notes on acquisition:** See [external sensor document](LDAR_Sim/external_sensors/README.md)
+
+**Notes of caution:** N/A
+
+### &lt;coverage&gt;
+
+#### &lt;spatial&gt;
+
+**Data type:** Numeric
+
+**Default input:** 1.0
+
+**Description:** Probability (0-1) that a work practice can locate a leak. Internally, each leak will be randomly assigned a True or False value based on this probability indicating whether or not the leak can be detected by the work practice. This value is rolled only once for each leak and work practice pair and remains consistent for subsequent surveys. Spatial coverage is also not affected by leak size.
+
+`eg. coverage.spatial = 0.25`. The leak has a 25% chance of being detected regardless of the number of surveys.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** Future research is required!
+
+#### &lt;temporal&gt;
+
+**Data type:** Numeric
+
+**Default input:** 1.0
+
+**Description:** Probability (0-1) that an agent can locate a leak during a survey. Internally, each leak will be randomly assigned a True or False based on this probability increasing survey will improve the chances of the leak being detected.
+
+`eg. coverage.temporal = 0.25`. The leak has a 25% chance of being detected **every time** it is surveyed.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** Future research is required!
+
+### &lt;cost&gt;
+
+Method costs. Currency is not important but must be consistent across all inputs.
+
+#### &lt;per_day&gt;
+
+**Data type:** Integer
+
+**Default input:** 0
+
+**Description:** The daily cost charged by the service provider (per crew). It is charged each time a crew is deployed, regardless of how many sites they survey that day.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** N/A
+
+#### &lt;per_hour&gt;
+
+**Data type:** Integer
+
+**Default input:** 0
+
+**Description:** The cost charged by the service provider (per crew per hour). The cost includes travel time.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** N/A
+
+#### &lt;per_site&gt;
+
+**Data type:** Integer
+
+**Default input:** 0
+
+**Description:** The cost charged by the service provider (per crew per site). It is charged each time a crew is deployed at a site.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** N/A
+
+#### &lt;upfront&gt;
+
+**Data type:** Integer
+
+**Default input:** 0
+
+**Description:** The initial up-front cost of each crew. This cost is only charged once.
+
+**Notes on acquisition:** Consult service provider.
+
+**Notes of caution:** Does not account for maintenance activities or the cost of replacing devices after at the end of their lifetime.
+
+### &lt;n_crews&gt;
+
+**Data type:** Integer
+
+**Default input:** None (Required to be set for each non-continuous monitoring method added to program)
+
+**Description:** The number of distinct, independent crews that will be deployed using the same method.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** Unless explicitly evaluating labour constraints, ensure that sufficient crews are available to perform LDAR according to the requirements set out in the infrastructure_file. For example, if 2000 facilities require LDAR, and each takes an average of 300 minutes, ~10,000 work hours are required, or 3-4 crews working full time.
+
+### &lt;consider_daylight&gt;
+
+**Data type:** Boolean
+
+**Default input:** False
+
+**Description:** A binary True/False to indicate whether crews should only work during daylight hours. If False, crews work the number of hours specified by the 'max_workday' input variable used for each method. If True, crews work the shorter of either 'max_workday' or the number of daylight hours calculated using the PyEphem package in python using latitude, longitude of each site, for each day of the year. PyEphem accepts two arguments: obs.horizon and obs.pressure.
+
+**Notes on acquisition:** Acquisition is automated using required lat and lon coordinates for each facility (see infrastructure_file input) at each time step.
+
+**Notes of caution:** In most cases, True and False will yield similar results. Use of daylight constraints should be considered for companies that do not wish to deploy crews in the dark for safety reasons, especially for locations at high latitudes during winter months (e.g., Northern Alberta). However, this functionality should not be used to determine whether sunlight is available for passive remote sensing methods or other technologies that require sunlight operate, as the sun has already set when civil twilight occurs (see obs.horizon). Solar flux will vary with topography and cloud cover (use ERA5 data).
+
+### &lt;RS&gt;
+
+**Data type:** Integer
+
+**Default input:** N/A
+
+**Description:** An integer indicating the number of required surveys at each facility per calendar year.
+
+**Notes on acquisition:** Survey frequencies can be based on regulatory requirements, company policies, or can be fabricated by the modeler to explore different scenarios.
+
+**Notes of caution:** Note that just because a number of surveys is prescribed, it does not mean that this number of surveys will necessarily be performed. For example, if labour limitations exist (i.e., not enough crews are available to inspect the number of facilities in the program) or if environmental conditions are unsuitable (i.e., a particular facility is in a cloudy location that cannot be accessed by satellite), the performed number of surveys may be less than the prescribed number. This variable is not required for continuous measurement methods.
+
+**RS** may also be set in the infrastructure file. To do so, it must not be present in the **methods parameters**
+
+### &lt;time&gt;
+
+**Data type:** Integer
+
+**Default input:** N/A
+
+**Description:** The number of minutes required to complete a survey at each facility.
+
+**Notes on acquisition:** In most cases, an estimate will be made as data will not exist for the specific combination of facility and unique method. However, as new methods and programs and implemented, data will become available to better refine modeling estimates and develop more intelligent programs.
+
+**Notes of caution:** This variable is an empirical estimate of how much time is required for a given mobile method to complete a survey at a given facility. This includes anything that happens onsite (e.g., calibrations, interfacing with the operator, etc.) but _does not include_ driving time between facilities or any other account of time spent offsite. This variable is simply the amount of time that passes from the start of a facility survey to the end. If a facility takes longer than there is time left in a day, then the agent/crew returns the following day to continue work, and so on and so forth, until the facility is completed. This variable is not required for continuous measurement methods.
+
+**Time** may also be set in the infrastructure file. To do so, it must not be present in the **methods parameters**
+
+### &lt;max_workday&gt;
+
+**Data type:** Integer
+
+**Default input:** 8
+
+**Description:** The maximum number of hours a crew can work in day (includes travel time).
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** Can be overwritten if consider_daylight is True and days are short. Until internal code is changed, max work day is 23 hours.
+
+### &lt;reporting_delay&gt;
+
+**Data type:** Integer
+
+**Default input:** 2
+
+**Description:** The number of days that pass between the end of a survey (when a site is flagged or leaks are tagged) and when the duty holder is informed. The reporting delay is then followed by repair_delay.
+
+**Notes on acquisition:** Get this information from the service provider.
+
+**Notes of caution:** Many service providers have automated systems for reporting leaks as soon as they are found and tagged. However, some companies still provide paper or pdf reports days or even weeks later. It is important to understand the expectations between the duty holder and the service provider.
+
+### &lt;t_bw_sites&gt;
+
+#### file (t_bw_sites)
+
+**Data type:** Character String
+
+**Default input:** None
+
+**Description:** A string denoting the filename of a csv file containing travel times. The file should include one row, with a headcolumn in row 1 of `time_btw_sites`
+
+**Notes on acquisition:** Each value should represent not only driving time, but all time spent not conducting surveys (driving, breaks, meals, break downs, trains, etc.) This data should be scraped from historical GPS data associated with LDAR survey crews, ideally for the facilities under evaluation.
+
+**Notes of caution:** These data may be difficult to acquire and may lack representativeness. An alternative is to use geospatial road data and route planning with LDAR-Sim.
+
+#### vals (t_bw_sites)
+
+**Data type:** List of Integers
+
+**Default input:** [30]
+
+**Description:** Time between sites. denotes the time in minutes required to plan, travel, setup, take down, required in between surveys. A value is selected at random from the list
+
+### &lt;scheduling&gt;
+
+#### &lt;deployment_months&gt;
+
+**Data type:** List of integers
+
+**Default input:** [1,2,3,4,5,6,7,8,9,10,11,12]
+
+**Description:** A list of months used for scheduling. Methods can only be deployed during these months. For example, [8,9] indicates methods can only be deployed in August and September. If not defined, LDAR-Sim assumes methods can be deployed every month.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** Only mobile methods can use this functionality.
+
+#### &lt;deployment_years&gt;
+
+**Data type:** List of integers
+
+**Default input:** N/A
+
+**Description:** A list of years used for scheduling. Methods can only be deployed during these years. For example, [2017,2018] indicates methods can only be deployed in 2017 and 2018\. If not defined, LDAR-Sim assumes methods can be deployed every year.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** Only mobile methods can use this functionality.
+
+#### &lt;LDAR_crew_init_location&gt; (mobile only)
+
+**Data type:** List of floats
+
+**Default input:** [-114.062, 51.044] (Calgary Alberta)
+
+**Description:** A list of coordinates [longitude, latitude] that define the initial location of the LDAR crew. It is only required if route_planning is activated.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** Only mobile methods can use this functionality.
+
+#### &lt;home_bases_files&gt; (mobile only)
+
+**Data type:** String
+
+**Default input:** 'Airport_AB_Coordinates.csv'
+
+**Description:** Specifies the name of the csv file that contains all of the required data on the home bases used for LDAR scheduling. At a bare minimum, the csv must contain the following columns: 'name', 'lat', and 'lon', where 'name' indicates the name of home bases (e.g., Calgary), and 'lat' and 'lon' are the coordinates of each home base. The home bases for the aircraft method should be airports and the home bases for all other mobile methods should be towns, cities, or hotels.
+
+**Notes on acquisition:** It is only required if route_planning is activated.
+
+**Notes of caution:** Only mobile methods can use this functionality.
+
+#### &lt;route_planning&gt; (mobile only) - Work in progress
+
+**Data type:** Boolean
+
+**Default input:** False
+
+**Description:** A binary True/False to activate the route planning. Route planning allows LDAR crews to choose the nearest facility and home bases to visit based on the shortest traveling cost. The traveling cost is travel time that is calculated using the Haversine distance metric and maximum speed limit of traveling. The maximum speed limit is sampled from travel_speeds. It also allows LDAR crews to depart from the home base (town, city, or airport) at the start of each day and return to the home base at the end of each day. This will be improved in the future, especially for OGI, drone, and trucks.
+
+**Notes on acquisition:** It requires the user to also define an input for home_bases_files, travel_speeds, and LDAR_crew_init_location.
+
+**Notes of caution:** Only mobile methods can use this functionality. Big simulations can stall if route planning is turned on.
+
+#### &lt;travel_speeds&gt; (mobile only)
+
+**Data type:** List of floats
+
+**Default input:** None (Is required to be defined if route_planning is enabled)
+
+**Description:** A list of speed limits that define the maximum traveling speed of technologies. A random speed is sampled from this list when calculating the travel time between two facilities or between the facility and a home base. This can also be a list with a single value.
+
+**Notes on acquisition:** It is only required if route_planning is activated.
+
+**Notes of caution:** Only mobile methods can use this functionality.
+
+#### &lt;min_time_bt_surveys&gt; (mobile only)
+
+**Data type:** Integer
+
+**Default input:** N/A. A value equivalent to half the survey period for a method will be calculated if this param is not set.
+
+**Description:** A value in days of a minimum time to enforce between consecutive surveys of a site.
+
+**Notes on acquisition:** This functionality is only currently supported with mobile methods.
+
+**Notes of caution:** Only mobile methods can use this functionality. This behavior implemented through this param will override behavior from other parameters such as RS. Users may see incorrect/strange behavior if an impractical value is chosen for min_time_bt_surveys.
+
+**min_time_bt_surveys** may also be set in the infrastructure file. To do so, it must not be present in the **methods parameters**
+
+### &lt;weather_envs&gt;
+
+Method weather envelopes
+
+#### &lt;precip&gt;
+
+**Data type:** List of Integers
+
+**Default input:** [0, 0.5]
+
+**Description:** The range of precipitation accumulation allowed (mm) over one hour.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** N/A
+
+#### &lt;temp&gt;
+
+**Data type:** List of Integers
+
+**Default input:** [-40, 40]
+
+**Description:** The range of average hourly temperature (°C) between which crews will work.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** Note that units are in degrees Celsius, not Fahrenheit.
+
+#### &lt;wind&gt;
+
+**Data type:** List of Integers
+
+**Default input:** [0, 10]
+
+**Description:** The bounding range of maximum average hourly wind speed (m/s at 10m) between which crews will work.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** N/A
+
+### &lt;is_follow_up&gt;
+
+**Data type:** Boolean
+
+**Default input:** False (Required to be set for each method added to program)
+
+**Description:** A binary True/False to indicate whether the method is used to survey sites previously flagged by screening technologies. If true this method will only visit sites flagged.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** No data acquisition required.
+
+### &lt;TLE_file (satellite only)&gt; - Work in progress
+
+**Data type:** String
+
+**Default input:** N/A
+
+**Description:** Specifies the name of the text file that contains orbit information of satellites. TLE stands for a two-line element set, which is a data format encoding a list of orbital elements of an Earth-orbiting object for a given point in time, the epoch. By using TLE of a satellite, LDAR-Sim can estimate the postion of satellite above earth at specific time.
+
+**Notes on acquisition:** It is only required for satellite.
+
+**Notes of caution:** Please be sure the satellite is included in the TLE file
+
+### &lt;TLE_label (satellite only)&gt; - Work in progress
+
+**Data type:** Character string that specifies the TLE file tag.
+
+**Default input:** N/A
+
+**Description:** The name of satellite. The following are accepted:
+
+- default
+- GHGSAT-D
+- GOSAT (IBUKI)
+- SENTINEL-5(TROPOMI)
+- TANSAT(CarbonSat)
+
+**Notes on acquisition:** It is only required for satellite.
+
+**Notes of caution:** Please be sure the satellite is included in the TLE file
+
+### &lt;follow_up&gt;
+
+#### &lt;preferred_method&gt;
+
+**Data type:** String
+
+**Default input:** N/A
+
+**Description:** Allows for surveying methods to determine which follow-up method to run if multiples are present. If not set, LDAR-Sim will expect only 1 followup method to be present for a single program. Site level follow-up methods can be used by leveraging this parameter, allowing for subsequent rounds of screenings based on initial screening results. This feature can be used to model work-practices with multiple screening done in order to increase confidence in fugitive emissions, measurement accuracy, etc. Each method in the follow-up chain must have the preferred_method set to the corresponding method it triggers.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** If method within a program is set to have a preferred follow up method, all methods used by the program should also be set with a preferred method to avoid ambiguity of which followup method is being used. The last follow-up method in a work practice must be at a component level for leaks to be tagged and then repaired.
+
+#### &lt;delay&gt;
+
+**Data type:** Integer
+
+**Default input:** 0
+
+**Description:** The number of days required to have passed since the first site added to the site watchlist before a site can be flagged. The company will hold all measurements in a site_watchlist. The emissons rate used to triage flagging based on followup threshold and proportion are specified with follow_up.redundancy
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** N/A
+
+#### &lt;instant_threshold&gt;
+
+**Data type:** Float
+
+**Default input:** 0.0
+
+**Description:** The follow-up instant threshold in grams per second. Measured site-level emissions must be above the follow-up threshold before a candidate site becomes immediately available for flagging. If _follow_up.instant_threshold_type_ is "absolute", the numeric value indicates the follow-up threshold in grams per second. If "relative", the numeric value is passed to a function that calculates emission rate that corresponds to a desired proportion of total emissions for a given leak size distribution. The function estimates the MDL needed to find the top X percent of sources for a given leak size distribution. For example, given a proportion of 0.01 and a leak-size distribution, this function will return an estimate of the follow-up threshold that will ensure that all leaks in the top 1% of leak sizes are found.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** Follow-up thresholds are explored in detail in Fox et al. 2021\. Choosing follow-up rules is complex and work practices should be developed following extensive analysis of different scenarios. It is important to understand how follow-up thresholds and follow-up ratios interact, especially if both are to be used in the same program. Note that follow-up thresholds are similar to minimum detection limits but that the former is checked against the measured emission rate (which is a function of quantification error) while the latter is checked against the true emission rate.
+
+#### &lt;instant_threshold_type&gt;
+
+**Data type:** String
+
+**Default input:** "absolute"
+
+**Description:** How to establish the follow-up threshold for the instant threshold. Can be "absolute" or "relative". See _follow_up.instant_threshold_ and _follow_up.threshold_ for more information.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** See _follow_up.threshold_ for more information.
+
+#### &lt;interaction_priority&gt;
+
+**Data type:** String
+
+**Default input:** "threshold"
+
+**Description:** Specifies which algorithm to run first on candidate sites when determining which to flag. If the value is _threshold_ the proportion of sites to follow up with will be taken from all sites over the threshold. If the value is _proportion_ the proportion of sites will be taken from the candidate sites, then from those sites followup will occur at sites above the threshold.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** N/A
+
+#### &lt;min_followups&gt;
+
+**Data type:** array of Numerics
+
+**Default input:** []
+
+**Description:** The percentage (0.0-1.0) of sites that must be flagged per survey. IF a screening technology flags 10% of sites during a campaign and the minimum_followup for the campaign, is 0.5, then 40% of all sites will be selected at random and flagged prior to the end of the campaign. If min_followup_type is 'campaign' then each value corresponds to the current survey within the year, for example if RS=2 each set of site surveys require a value. If min_followup_type is 'annual' then a single value (in the array) is expected for the entire year, regardless of RS value. Surveys will be performed n days prior to the end of a campaign / year based on min_followup_days_to_end. Note: Not enabled by default (empty string)
+
+**Notes on acquisition:** Often based on standards, ie. EPA proposed 6 screenings with minimum_followup of 1 were min_followup_type is annual.
+
+**Notes of caution:** N/A
+
+#### &lt;min_followup_type&gt;
+
+**Data type:** string - 'annual' or 'campaign
+
+**Default input:** 'annual'
+
+**Description:** see `min_followups`
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** N/A
+
+#### &lt;min_followup_days_to_end&gt;
+
+**Data type:** Integer
+
+**Default input:** 0
+
+**Description:** Number of days before the end of the campaign, year to schedule makeup Followup surveys.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** Check outputs to make sure that all scheduled makeup surveys are completed on time.
+
+#### &lt;proportion&gt;
+
+**Data type:** Numeric
+
+**Default input:** 1.0
+
+**Description:** A single value that defines the proportion of candidate flags to receive follow-up. For example, if the follow-up ratio is 0.5, the top 50% of candidate flags (ranked by measured emission rate) will receive follow-up. Candidate flags have already been checked against the minimum detection limit.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** The follow-up proportion ranks sites based on their measured emission rate, which may differ from the true emission rate if quantification error is used. The effect of follow_up.proportion will depend on the temporal interval over which sites accumulate in the candidate flags pool.
+
+#### &lt;redundancy_filter&gt;
+
+**Data type:** String
+
+**Default input:** "recent"
+
+**Description:** Specifies which measured emissions rate to use to identify which candidate sites to follow up at if individual sites have multiple independent measurements that have accumulated in the candidate flag pool. If the _follow\_up.delay_ is not zero, crews can survey the site several times before flagging the site. If this value is set to _recent_, the most recent site measurement will be used to check followup threshold and proportion. If the value is set to _max_, the highest emissions rate will be used. If the value is set to _average_ the average emissions from all surveys will be used.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** N/A
+
+#### &lt;threshold&gt;
+
+**Data type:** Float
+
+**Default input:** 0.0
+
+**Description:** The follow-up threshold in grams per second. Measured site-level emissions must be above the follow-up threshold before a site can be flagged. If _follow_up.threshold_type_ is "absolute", the numeric value indicates the follow-up threshold in grams per second. If "relative", the numeric value is passed to a function that calculates an emission rate that corresponds to a desired proportion of total emissions for a given leak size distribution. The function estimates the MDL needed to find the top X percent of sources for a given leak size distribution. For example, given a proportion of 0.01 and a leak-size distribution, this function will return an estimate of the follow-up threshold that will ensure that all leaks in the top 1% of leak sizes are found.
+
+The follow-up delay parameter can be set to require multiple measurements for a site above threshold before a site is flagged.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** Follow-up thresholds are explored in detail in Fox et al. 2021\. Choosing follow-up rules is complex and work practices should be developed following extensive analysis of different scenarios. It is important to understand how follow-up thresholds and follow-up ratios interact, especially if both are to be used in the same program. Note that follow-up thresholds are similar to minimum detection limits but that the former is checked against to the measured emission rate (which is a function of quantification error) while the latter is checked against the true emission rate.
+
+#### &lt;threshold_type&gt;
+
+**Data type:** String
+
+**Default input:** "absolute"
+
+**Description:** Can be "absolute" or "relative". See _follow_up.threshold_ for more information.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** See _follow_up.threshold_ for more information.
+
+--------------------------------------------------------------------------------
+
+## 9\. Infrastructure file
+
+### facility_ID
+
+**Data type:** String
+
+**Default input:** N/A
+
+**Description:** A character string indicating the unique facility code.
+
+**Notes on acquisition:** Should be available from the facility operator or can be made up.
+
+**Notes of caution:** Must be a unique identifier.
+
+### lat
+
+**Data type:** Numeric
+
+**Default input:** N/A
+
+**Description:** A numeric scalar indicating facility latitude in decimal degrees.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** Should range between -90 (South Pole) and 90 (North Pole). Will be negative for facilities south of the equator. Fewer decimal places or offsets can be used to anonymize location.
+
+Must also be contained within the boundaries of the associated weather file
+
+### lon
+
+**Data type:** Numeric
+
+**Default input:** N/A
+
+**Description:** A numeric scalar indicating facility longitude in decimal degrees.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** Should be between -180 and 180 (both correspond to the 180th meridian). Will be negative for facilities west of the Prime Meridian and positive for facilities east of it. Fewer decimal places can be used to anonymize location.
+
+Must also be contained within the boundaries of the associated weather file
+
+### subtype_code
+
+**Data type:** String
+
+**Default input:** N/A
+
+**Description:** A String or number indicating a type of facility.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** If using ```subtype_file```, each of the _subtype_code_ present in the _infrastructure_file_ must be an entry in the ```subtype_file```
+
+### equipment_groups
+
+**Data type:** Integer
+
+**Default input:** N/A
+
+**Description:** A integer indicating the number of equipment groups present at each individual site. Minimum of 1 equipment group needs to be set for each site.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** N/A
+
+### \*\*\__RS
+
+**Data type:** Integer
+
+**Default input:** N/A
+
+**Description:** For each method, an integer indicating the number of required surveys at each facility per calendar year. The three asterisks indicate the interchangeable method name (e.g., OGI_RS, truck_RS).
+
+**Notes on acquisition:** Survey frequencies can be based on regulatory requirements, company policies, or can be fabricated by the modeler to explore different scenarios.
+
+**Notes of caution:** Note that just because a number of surveys is prescribed, it does not mean that this number of surveys will necessarily be performed. For example, if labour limitations exist (i.e., not enough crews are available to inspect the number of facilities in the program) or if environmental conditions are unsuitable (i.e., a particular facility is in a cloudy location that cannot be accessed by satellite), the performed number of surveys may be less than the prescribed number. This variable is not required for continuous measurement methods.
+
+If **\*\*\_RS** is present in the infrastructure file, it must **NOT** be set in the **methods parameters**.
+
+### \*\*\_time
+
+**Data type:** Integer
+
+**Default input:** N/A
+
+**Description:** For each mobile method, the number of minutes required to complete a survey at each facility. Three asterisks indicate the interchangeable method name (e.g., OGI_time).
+
+**Notes on acquisition:** In most cases, an estimate will be made as data will not exist for the specific combination of facility and unique method. However, as new methods and programs and implemented, data will become available to better refine modeling estimates and develop more intelligent programs.
+
+**Notes of caution:** This variable is an empirical estimate of how much time is required for a given mobile method to complete a survey at a given facility. This includes anything that happens onsite (e.g., calibrations, interfacing with the operator, etc.) but _does not include_ driving time between facilities or any other account of time spent offsite. This variable is simply the amount of time that passes from the start of a facility survey to the end. If a facility takes longer than there is time left in a day, then the agent/crew returns the following day to continue work, and so on and so forth, until the facility is completed. This variable is not required for continuous measurement methods.
+
+If **\*\*\_time** is present in the infrastructure file, it must **NOT** be set in the **methods parameters**.
+
+### estimate_A/estimate_B
+
+**Data type:** Boolean
+
+**Default input:** N/A
+
+**Description:** A boolean indicating if an estimated emission should be kept track of for given site. Can be used to calculate carbon tax estimation. The estimate is based on duration ([current survey date - last survey date] / 2 ) * leak rate. Fills out an extra column in the outputs.
+
+**Notes on acquisition:** N/A
+
+**Notes of Caution:** None
+
+### static_venting_rate
+
+**Data type:** Floating Point Number
+
+**Default input:** N/A
+
+**Description** A floating point number indicating the static venting rate at each site.
+
+**Notes on acquisition** Can be based on measured data, estimated average site level venting rates or can be fabricated by the modeler to explore different scenarios.
+
+--------------------------------------------------------------------------------
+
+## 10\. Subtype File
+
+### leak_rate_source
 
 **Data type:** string
 
@@ -1025,7 +1776,7 @@ Additionally, NRd is recommended to be always be equal or greater than n_init_da
 
 **Notes of caution:** Must be populated when using the subtype file
 
-#### dist_type
+### dist_type
 
 **Data type:** string
 
@@ -1037,7 +1788,7 @@ Additionally, NRd is recommended to be always be equal or greater than n_init_da
 
 **Notes of caution:** Must be populated when using the subtype file with leak_rate_source set to "dist"
 
-#### dist_scale
+### dist_scale
 
 **Data type:** string
 
@@ -1049,7 +1800,7 @@ Additionally, NRd is recommended to be always be equal or greater than n_init_da
 
 **Notes of caution:** Must be populated when using the subtype file with leak_rate_source set to "dist"
 
-#### dist_sigma
+### dist_sigma
 
 **Data type:** string
 
@@ -1061,7 +1812,7 @@ Additionally, NRd is recommended to be always be equal or greater than n_init_da
 
 **Notes of caution:** Must be populated when using the subtype file with leak_rate_source set to "dist"
 
-#### dist_metric
+### dist_metric
 
 **Data type:** string
 
@@ -1100,7 +1851,7 @@ Additionally, NRd is recommended to be always be equal or greater than n_init_da
 
 **Notes of caution:** Must be populated when using the subtype file with leak_rate_source set to "dist"
 
-#### leak_rates_file
+### leak_rates_file
 
 **Data type:** string
 
@@ -1112,7 +1863,7 @@ Additionally, NRd is recommended to be always be equal or greater than n_init_da
 
 **Notes of caution:** Must be populated when using the subtype file with leak_rate_source set to "sample"
 
-#### vent_rates_file
+### vent_rates_file
 
 **Data type:** string
 
@@ -1124,713 +1875,25 @@ Additionally, NRd is recommended to be always be equal or greater than n_init_da
 
 **Notes of caution:** Must be populated when using the subtype file with consider_venting set to True if venting in not set per site in the infrastructure file.
 
-### version (program level)
-
-**Data type:** String
-
-**Default input:** 2.0
-
-**Description:** Specify version of LDAR-Sim. See section _Versioning of Parameter Files_ for more information.
-
-**Notes on acquisition:** N/A
-
-**Notes of caution:** N/A
-
-### weather_file
-
-**Data type:** String
-
-**Default input:** "ERA5_2017_2020_AB.nc" (hourly weather file in Alberta)
-
-**Description:** Specifies the name of the ERA5 NetCDF4 file that contains all weather data to be used in the analysis. Generally, at a minimum, OGI requires wind, temperature, and precipitation data. LDAR-Sim reads in temperature data in degrees Celsius at 2 meters above ground, wind in meters per second at 10 meters above ground, and total precipitation in millimeters accumulated per hour. Other weather variables are freely available for download.
-
-**Notes on acquisition:** Raw data are available from the European Centre for Medium-Range Weather Forecasts. Pre-processed and ready to use weather data have been prepared and are available for download on AWS for Alberta, Colorado, and New Mexico. LDAR-Sim will access these files directly if the file names are specified correctly in the program file. Currently available files are:
-
-- Alberta: "ERA5_AB_1x1_hourly_2015_2019.nc"
-- Colorado: "ERA5_CO_1x1_hourly_2015_2019.nc"
-- New Mexico: "ERA5_NM_1x1_hourly_2015_2019.nc"
-
-Each of these files provides hourly weather (wind, temp, precip) data spanning the years specified at a spatial resolution of 1 degree latitude and 1 degree longitude. If custom configurations are needed for different regions, spatial resolutions, temporal resolutions, dates, or weather variables (e.g., clouds, snow cover, etc.), they must be downloaded manually from the ERA5 database. The 'ERA5_downloader' python file in the model code folder provides code and guidance for accessing custom weather data.
-
-**Notes of caution:**
-
-Weather file sizes can become quite large, especially when spatial and temporal resolution increase (maximum resolutions of 1.25 degrees and 1 hour, respectively). Modelers must decide how to navigate these tradeoffs, and understand the implications of the resolutions chosen.
-
-If using different weather files for different programs (e.g., when comparing different regions), weather data must be downloaded manually and saved to the inputs folder before beginning simulations, as the automatic downloader built into LDAR-Sim will only download one file at a time.
-
-### consider_weather
-
-**Data type:** Boolean
-
-**Default input:** False
-
-**Description:** Specify if the weather will be considered when determining the different methods work hours per each day.
-
-**Notes on acquisition:** N/A
-
-**Notes of caution:** Even if weather is considered false, ```weather_file``` must be present and valid.
-
-### weather_is_hourly
-
-**Data type:** Boolean
-
-**Default input:** False
-
-**Description:** Specify if the weather file is ERA5 reanalysis hourly data downloaded directly from ERA5 Copernicus database or API. If false, the weather file is assumed to be daily average data generated using the /weather/ERA5_hourly_to_daily.py script.
-
-**Notes on acquisition:** N/A
-
-**Notes of caution:** N/A
-
 --------------------------------------------------------------------------------
 
-## 7. Method Inputs
-
-### consider_daylight
-
-**Data type:** Boolean
-
-**Default input:** False
-
-**Description:** A binary True/False to indicate whether crews should only work during daylight hours. If False, crews work the number of hours specified by the 'max_workday' input variable used for each method. If True, crews work the shorter of either 'max_workday' or the number of daylight hours calculated using the PyEphem package in python using latitude, longitude of each site, for each day of the year. PyEphem accepts two arguments: obs.horizon and obs.pressure.
-
-**Notes on acquisition:** Acquisition is automated using required lat and lon coordinates for each facility (see infrastructure_file input) at each timestep.
-
-**Notes of caution:** In most cases, True and False will yield similar results. Use of daylight constraints should be considered for companies that do not wish to deploy crews in the dark for safety reasons, especially for locations at high latitudes during winter months (e.g., Northern Alberta). However, this functionality should not be used to determine whether sunlight is available for passive remote sensing methods or other technologies that require sunlight operate, as the sun has already set when civil twilight occurs (see obs.horizon). Solar flux will vary with topography and cloud cover (use ERA5 data).
-
-### cost
-
-Method costs. Currency is not important but must be consistent across all inputs.
-
-#### per_day
-
-**Data type:** Integer
-
-**Default input:** 0
-
-**Description:** The daily cost charged by the service provider (per crew). It is charged each time a crew is deployed, regardless of how many sites they survey that day.
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** N/A
-
-#### per_hour
-
-**Data type:** Integer
-
-**Default input:** 0
-
-**Description:** The cost charged by the service provider (per crew per hour). The cost includes travel time.
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** N/A
-
-#### per_site
-
-**Data type:** Integer
-
-**Default input:** 0
-
-**Description:** The cost charged by the service provider (per crew per site). It is charged each time a crew is deployed at a site.
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** N/A
-
-#### upfront
-
-**Data type:** Integer
-
-**Default input:** 0
-
-**Description:** The initial up-front cost of each crew. This cost is only charged once.
-
-**Notes on acquisition:** Consult service provider.
-
-**Notes of caution:** Does not account for maintenance activities or the cost of replacing devices after at the end of their lifetime.
-
-### coverage
-
-#### spatial
-
-**Data type:** Numeric
-
-**Default input:** 1.0
-
-**Description:** Probability (0-1) that a work practice can locate a leak. Internally, each leak will be randomly assigned a True or False value based on this probability indicating whether or not the leak can be detected by the work practice. This value is rolled once for each leak and work practice pair and remains consistent for subsequent surveys.
-
-`eg. coverage.spatial = 0.25`. The leak has a 25% chance of being detected regardless of the number of surveys.
-
-**Notes on acquisition:** N/A
-
-**Notes of caution:** Future research is required!
-
-#### temporal
-
-**Data type:** Numeric
-
-**Default input:** 1.0
-
-**Description:** Probability (0-1) that an agent can locate a leak during a survey. Internally, each leak will be randomly assigned a True or False based on this probability increasing survey will improve the chances of the leak being detected.
-
-`eg. coverage.temporal = 0.25`. The leak has a 25% chance of being detected **every time** it is surveyed.
-
-**Notes on acquisition:** N/A
-
-**Notes of caution:** Future research is required!
-
-### deployment_type
-
-**Data type:** String
-
-**Default input:** None (Required to be set for each method added to program)
-
-**Description:** Methods are comprised of both a deployment type and a sensor type. The deployment type is a character string denoting the deployment type used in the method. For instance, 'mobile', 'stationary', or 'orbit'. Custom deployment types can be added and referenced here.
-
-- `mobile`: Agent moves between sites. Surveys occur when a site is "ready" for a survey and a crew is available to survey.
-- `stationary`: Each site has one or more _fixed_ sensors. Surveys are carried out daily.
-- `orbit`: Agent 'orbits' site and performs surveys at regular intervals.
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** N/A
-
-### follow_up
-
-#### preferred_method
-
-**Data type:** String
-
-**Default input:** N/A
-
-**Description:** Allows for surveying methods to determine which follow-up method to run if multiples are present. If not set, LDAR-Sim will expect only 1 followup method to be present for a single program. Site level follow-up methods can be used by leveraging this parameter, allowing for subsequent rounds of screenings based on initial screening results. This feature can be used to model work-practices with multiple screening done in order to increase confidence in fugitive emissions, measurement accuracy, etc. Each method in the follow-up chain must have the preferred_method set to the corresponding method it triggers.
-
-**Notes on acquisition:** N/A
-
-**Notes of caution:** If method within a program is set to have a preferred follow up method, all methods used by the program should also be set with a preferred method to avoid ambiguity of which followup method is being used. The last follow-up method in a work practice must be at a component level for leaks to be tagged and then repaired.
-
-#### delay
-
-**Data type:** Integer
-
-**Default input:** 0
-
-**Description:** The number of days required to have passed since the first site added to the site watchlist before a site can be flagged. The company will hold all measurements in a site_watchlist. The emissons rate used to triage flagging based on followup threshold and proportion are specified with follow_up.redundancy
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** N/A
-
-#### instant_threshold
-
-**Data type:** Float
-
-**Default input:** 0.0
-
-**Description:** The follow-up instant threshold in grams per second. Measured site-level emissions must be above the follow-up threshold before a candidate site becomes immediately available for flagging. If _follow_up.instant_threshold_type_ is "absolute", the numeric value indicates the follow-up threshold in grams per second. If "relative", the numeric value is passed to a function that calculates emission rate that corresponds to a desired proportion of total emissions for a given leak size distribution. The function estimates the MDL needed to find the top X percent of sources for a given leak size distribution. For example, given a proportion of 0.01 and a leak-size distribution, this function will return an estimate of the follow-up threshold that will ensure that all leaks in the top 1% of leak sizes are found.
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** Follow-up thresholds are explored in detail in Fox et al. 2021\. Choosing follow-up rules is complex and work practices should be developed following extensive analysis of different scenarios. It is important to understand how follow-up thresholds and follow-up ratios interact, especially if both are to be used in the same program. Note that follow-up thresholds are similar to minimum detection limits but that the former is checked against the measured emission rate (which is a function of quantification error) while the latter is checked against the true emission rate.
-
-#### instant_threshold_type
-
-**Data type:** String
-
-**Default input:** "absolute"
-
-**Description:** How to establish the follow-up threshold for the instant threshold. Can be "absolute" or "relative". See _follow_up.instant_threshold_ and _follow_up.threshold_ for more information.
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** See _follow_up.threshold_ for more information.
-
-#### interaction_priority
-
-**Data type:** String
-
-**Default input:** "threshold"
-
-**Description:** Specifies which algorithm to run first on candidate sites when determining which to flag. If the value is _threshold_ the proportion of sites to follow up with will be taken from all sites over the threshold. If the value is _proportion_ the proportion of sites will be taken from the candidate sites, then from those sites followup will occur at sites above the threshold.
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** N/A
-
-#### min_followups
-
-**Data type:** array of Numerics
-
-**Default input:** []
-
-**Description:** The percentage (0.0-1.0) of sites that must be flagged per survey. IF a screening technology flags 10% of sites during a campaign and the minimum_followup for the campaign, is 0.5, then 40% of all sites will be selected at random and flagged prior to the end of the campaign. If min_followup_type is 'campaign' then each value corresponds to the current survey within the year, for example if RS=2 each set of site surveys require a value. If min_followup_type is 'annual' then a single value (in the array) is expected for the entire year, regardless of RS value. Surveys will be performed n days prior to the end of a campaign / year based on min_followup_days_to_end. Note: Not enabled by default (empty string)
-
-**Notes on acquisition:** Often based on standards, ie. EPA proposed 6 screenings with minimum_followup of 1 were min_followup_type is annual.
-
-**Notes of caution:** N/A
-
-#### min_followup_type
-
-**Data type:** string - 'annual' or 'campaign
-
-**Default input:** 'annual'
-
-**Description:** see `min_followups`
-
-**Notes on acquisition:** N/A
-
-**Notes of caution:** N/A
-
-#### min_followup_days_to_end
-
-**Data type:** Integer
-
-**Default input:** 0
-
-**Description:** Number of days before the end of the campaign, year to schedule makeup Followup surveys.
-
-**Notes on acquisition:** N/A
-
-**Notes of caution:** Check outputs to make sure that all scheduled makeup surveys are completed on time.
-
-#### proportion
-
-**Data type:** Numeric
-
-**Default input:** 1.0
-
-**Description:** A single value that defines the proportion of candidate flags to receive follow-up. For example, if the follow-up ratio is 0.5, the top 50% of candidate flags (ranked by measured emission rate) will receive follow-up. Candidate flags have already been checked against the minimum detection limit.
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** The follow-up proportion ranks sites based on their measured emission rate, which may differ from the true emission rate if quantification error is used. The effect of follow_up.proportion will depend on the temporal interval over which sites accumulate in the candidate flags pool.
-
-#### redundancy_filter
-
-**Data type:** String
-
-**Default input:** "recent"
-
-**Description:** Specifies which measured emissions rate to use to identify which candidate sites to follow up at if individual sites have multiple independent measurements that have accumulated in the candidate flag pool. If the _follow\_up.delay_ is not zero, crews can survey the site several times before flagging the site. If this value is set to _recent_, the most recent site measurement will be used to check followup threshold and proportion. If the value is set to _max_, the highest emissions rate will be used. If the value is set to _average_ the average emissions from all surveys will be used.
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** N/A
-
-#### threshold
-
-**Data type:** Float
-
-**Default input:** 0.0
-
-**Description:** The follow-up threshold in grams per second. Measured site-level emissions must be above the follow-up threshold before a site can be flagged. If _follow_up.threshold_type_ is "absolute", the numeric value indicates the follow-up threshold in grams per second. If "relative", the numeric value is passed to a function that calculates an emission rate that corresponds to a desired proportion of total emissions for a given leak size distribution. The function estimates the MDL needed to find the top X percent of sources for a given leak size distribution. For example, given a proportion of 0.01 and a leak-size distribution, this function will return an estimate of the follow-up threshold that will ensure that all leaks in the top 1% of leak sizes are found.
-
-The follow-up delay parameter can be set to require multiple measurements for a site above threshold before a site is flagged.
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** Follow-up thresholds are explored in detail in Fox et al. 2021\. Choosing follow-up rules is complex and work practices should be developed following extensive analysis of different scenarios. It is important to understand how follow-up thresholds and follow-up ratios interact, especially if both are to be used in the same program. Note that follow-up thresholds are similar to minimum detection limits but that the former is checked against to the measured emission rate (which is a function of quantification error) while the latter is checked against the true emission rate.
-
-#### threshold_type
-
-**Data type:** String
-
-**Default input:** "absolute"
-
-**Description:** Can be "absolute" or "relative". See _follow_up.threshold_ for more information.
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** See _follow_up.threshold_ for more information.
-
-### is_follow_up
-
-**Data type:** Boolean
-
-**Default input:** False (Required to be set for each method added to program)
-
-**Description:** A binary True/False to indicate whether the method is used to survey sites previously flagged by screening technologies. If true this method will only visit sites flagged.
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** No data acquisition required.
-
-### label
-
-**Data type:** String
-
-**Default input:** None (Required to be set for each method added to program)
-
-**Description:** A character string denoting the label of the method.
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** Must match the label name specified in the program input parameter file, and any supplimentary files, such as the infrastructure file.
-
-### max_workday
-
-**Data type:** Integer
-
-**Default input:** 8
-
-**Description:** The maximum number of hours a crew can work in day (includes travel time).
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** Can be overwritten if consider_daylight is True and days are short. Until internal code is changed, max work day is 23 hours.
-
-### measurement_scale
-
-**Data type:** String
-
-**Default input:** None (Required to be set for each method added to program)
-
-**Description:** A character string describing the measurements scale. Possible inputs are "component", "equipment", and "site".
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** N/A
-
-### n_crews
-
-**Data type:** Integer
-
-**Default input:** None (Required to be set for each non-continuous monitoring method added to program)
-
-**Description:** The number of distinct, independent crews that will be deployed using the same method.
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** Unless explicitly evaluating labour constraints, ensure that sufficient crews are available to perform LDAR according to the requirements set out in the infrastructure_file. For example, if 2000 facilities require LDAR, and each takes an average of 300 minutes, ~10,000 work hours are required, or 3-4 crews working full time.
-
-### parameter_level
-
-see Global Inputs - parameter_level
-
-### reporting_delay
-
-**Data type:** Integer
-
-**Default input:** 2
-
-**Description:** The number of days that pass between the end of a survey (when a site is flagged or leaks are tagged) and when the duty holder is informed. The reporting delay is then followed by repair_delay.
-
-**Notes on acquisition:** Get this information from the service provider.
-
-**Notes of caution:** Many service providers have automated systems for reporting leaks as soon as they are found and tagged. However, some companies still provide paper or pdf reports days or even weeks later. It is important to understand the expectations between the duty holder and the service provider.
-
-### scheduling
-
-#### deployment_months
-
-**Data type:** List of integers
-
-**Default input:** [1,2,3,4,5,6,7,8,9,10,11,12]
-
-**Description:** A list of months used for scheduling. Methods can only be deployed during these months. For example, [8,9] indicates methods can only be deployed in August and September. If not defined, LDAR-Sim assumes methods can be deployed every month.
-
-**Notes on acquisition:** N/A
-
-**Notes of caution:** Only mobile methods can use this functionality.
-
-#### deployment_years
-
-**Data type:** List of integers
-
-**Default input:** N/A
-
-**Description:** A list of years used for scheduling. Methods can only be deployed during these years. For example, [2017,2018] indicates methods can only be deployed in 2017 and 2018\. If not defined, LDAR-Sim assumes methods can be deployed every year.
-
-**Notes on acquisition:** N/A
-
-**Notes of caution:** Only mobile methods can use this functionality.
-
-#### LDAR_crew_init_location (mobile only)
-
-**Data type:** List of floats
-
-**Default input:** [-114.062, 51.044] (Calgary Alberta)
-
-**Description:** A list of coordinates [longitude, latitude] that define the initial location of the LDAR crew. It is only required if route_planning is activated.
-
-**Notes on acquisition:** N/A
-
-**Notes of caution:** Only mobile methods can use this functionality.
-
-#### home_bases_files (mobile only)
-
-**Data type:** String
-
-**Default input:** 'Airport_AB_Coordinates.csv'
-
-**Description:** Specifies the name of the csv file that contains all of the required data on the home bases used for LDAR scheduling. At a bare minimum, the csv must contain the following columns: 'name', 'lat', and 'lon', where 'name' indicates the name of home bases (e.g., Calgary), and 'lat' and 'lon' are the coordinates of each home base. The home bases for the aircraft method should be airports and the home bases for all other mobile methods should be towns, cities, or hotels.
-
-**Notes on acquisition:** It is only required if route_planning is activated.
-
-**Notes of caution:** Only mobile methods can use this functionality.
-
-#### route_planning (mobile only)
-
-**Data type:** Boolean
-
-**Default input:** False
-
-**Description:** A binary True/False to activate the route planning. Route planning allows LDAR crews to choose the nearest facility and home bases to visit based on the shortest travelling cost. The travelling cost is travel time that is calculated using the Haversine distance metric and maximum speed limit of travelling. The maximum speed limit is sampled from travel_speeds. It also allows LDAR crews to depart from the home base (town, city, or airport) at the start of each day and return to the home base at the end of each day. This will be improved in the future, especially for OGI, drone, and trucks.
-
-**Notes on acquisition:** It requires the user to also define an input for home_bases_files, travel_speeds, and LDAR_crew_init_location.
-
-**Notes of caution:** Only mobile methods can use this functionality. Big simulations can stall if route planning is turned on.
-
-#### travel_speeds (mobile only)
-
-**Data type:** List of floats
-
-**Default input:** None (Is required to be defined if route_planning is enabled)
-
-**Description:** A list of speed limits that define the maximum travelling speed of technologies. A random speed is sampled from this list when calculating the travel time between two facilities or between the facility and a home base. This can also be a list with a single value.
-
-**Notes on acquisition:** It is only required if route_planning is activated.
-
-**Notes of caution:** Only mobile methods can use this functionality.
-
-#### min_time_bt_surveys (mobile only)
-
-**Data type:** Integer
-
-**Default input:** N/A. A value equivalent to half the survey period for a method will be calculated if this param is not set.
-
-**Description:** A value in days of a minimum time to enforce between consecutive surveys of a site.
-
-**Notes on acquisition:** This functionality is only currently supported with mobile methods.
-
-**Notes of caution:** Only mobile methods can use this functionality. This behavior implemented through this param will override behavior from other parameters such as RS. Users may see incorrect/strange behavior if an impractical value is chosen for min_time_bt_surveys.
-
-**min_time_bt_surveys** may also be set in the infrastructure file. To do so, it must not be present in the **methods parameters**
-
-### sensor
-
-#### MDL (default)
-
-**Data type:** List of ints
-
-**Default input:** [0.01] (Should be set for each Method)
-
-**Description:** Minimum detection limit of the screening method in grams per second. Probability curves or surfaces as a function of emission rate, wind speed, distance, etc. must be hard coded.
-
-**Notes on acquisition:** We recommend extensive controlled release testing under a range of representative release rates, distances, and conditions to establish detection limits. Given the amount of work required to collect this information, we recommend using historical estimates.
-
-**Notes of caution:** A single value for MDL is used here, although a parameter list could be used that defines a sigmoidal probability of detection curve. These are examples and with more experimental data, probability of detection surfaces can be generated that can estimate detection probabilities as a function of numerous relevant variables (e.g., distance, wind speed, emission rate, etc.)
-
-#### MDL (OGI_camera_rk)
-
-**Data type:** List of floats
-
-**Default input:** [0.01275, 2.78e-6]
-
-**Description:** A list of parameters [_xₒ_, σ] that define the minimum detection limit of OGI. The two parameters define a sigmoidal Gaussian cumulative probability function as described in Ravikumar et al. (2018), where _xₒ_ is the emission rate (in grams per second) at which 50% of leaks are detected (i.e., median detection limit), and σ is one standard deviation of  _xₒ_. The probability detection of a leak with OGI is calculated using a sigmoidal probability function:
-
-$$
-f = 1/{(1+exp(-k(log(x)-log(x_0))))}
-$$
-
-where f = is the fraction of leaks detected, _x_ is the emission rate in grams of methane per hour, _xₒ_ is the median detection limit (f = 0.5) and _k_ is the steepness of the sigmoid curve. Ravikumar et al. (2018) found that at 3 m _k_ =  4.9 g/hr +/- 3, and _xₒ_ = 0.47 +/- 0.1. However, detection limits were found to be an order of magnitude higher in the Zimmerle study. As such, LDAR-Sim assumes an _xₒ_ of 0.01275 g/s. For reasons listed below, we note that this is likely a conservative estimate. Also, this approach assumes a constant distance of 3 meters from camera to source.
-
-**Notes on acquisition:** We recommend extensive controlled release testing under a range of representative release rates and conditions to establish detection limits. Given the amount of work required to collect this information, we recommend using historical estimates.
-
-**Notes of caution:** Detection probabilities for OGI cameras have been shown to vary with operator experience, wind speed, scene background, and other variables. Estimates from Ravikumar et al. (2018) are experimentally derived but are likely low because (i) the OGI inspector knew where to look, (ii) measurements were performed over only 1 week of good conditions, (iii) OGI cameras were tripod mounted, and (iv) videos were analyzed by experts after data collection. Estimates from Zimmerle et al. (2020) are an order of magnitude higher, and likely closer to reality. However, this estimate applies only to experienced inspectors with over 700 site inspections under their belts, so the true median detection across all inspectors may be lower. Furthermore, the Zimmerle study for experienced inspectors could still represent an underestimate as (i) weather conditions were relatively good, (ii) OGI inspectors were participating in a formal study and were likely very focused, and (iii) many of the leaks were odorized. These results would therefore not include laziness, neglect, or missing of leaks from difficult to access areas. See Section 3.8 for more information on detection limits, including the use of single values or probability surfaces.
-
-#### MDL (OGI_camera_zim)
-
-**Data type:** List of floats
-
-**Default input:** [0.24, 0.39]
-
-**Description:** A list of parameters [a, b] that define the leak rate based probability of detection of a leak. The two parameters define power law cumulative probability function as described in Zimmerle (2020), where both a and b are empirical parameters that define the shape of the curve, and are based on the camera crew experience. The probability detection of a leak with OGI is calculated using the following function:
-
-$$
-p = a*x^{b}
-$$
-
-where p is the probability of detection, _x_ is the emission rate in grams of methane per second. The default
-parameters used are that associated with the moderate ability to detect.
-
-**Notes on acquisition:** We recommend extensive controlled release testing under a range of representative release rates and conditions to establish detection limits. Given the amount of work required to collect this information, we recommend using historical estimates.
-
-**Notes of caution:** Detection probabilities for OGI cameras have been shown to vary with operator experience, wind speed, scene background, and other variables Parameters are experimentally derived. The Zimmerle study for experienced inspectors could still represent an underestimate as (i) weather conditions were relatively good, (ii) OGI inspectors were participating in a formal study and were likely very focused, and (iii) many of the leaks were odorized. These results would therefore not include laziness, neglect, or missing of leaks from difficult to access areas. See Section 3.8 for more information on detection limits, including the use of single values or probability surfaces.
-
-#### MDL (GHGSAT1)
-
-**Data type:** List of floats
-
-**Default input:** [5.79, 1.39]
-
-**Description:** A list of parameters [x_0, wspd] that define the minimum detection limit of GHGSat1 sensor. The two parameters define a function of MDL of GHGSat1/D with the wind speed described in Table 2 of Jacob et al., 2016, where x__0 is the emission rate (in grams per second) at which leaks are detected and wspd is the wind speed (in meters per second) for x__0. Jacob et al., 2016 presented the detectability scales (MDL) of GHGSat are 0.25 ton/hour for a wind speed of 5 km/hour. They also indicated the MDL should be a proportional function of given MDL (0.25 ton/hour) and given wind speed (5 km/hour). In other words, the ratio between given MDL and wind speed is proportional to another ratio of different MDL and wind speed. Therefore, in the LDAR-Sim, we assume the MDL of satellite for any given site equals the ratio between the given MDL and wind speed times the wind speed from weather data at the location of sites.
-
-**Notes on acquisition:** We recommend extensive controlled release testing under a range of representative release rates, distances, and conditions to establish detection limits. Given the amount of work required to collect this information, we recommend using historical estimates.  
-
-**Notes of caution:** This group of values are only applicable for GHGSat1. Other values or metrics should be used if other satellites are used.
-
-#### QE
-
-**Data type:** Numeric
-
-**Default input:** 0
-
-**Description:** The standard deviation of a normal distribution with a mean of zero from which a quantification error multiplier is drawn each time an emission rate is estimated. For example, for a value of 2.2, ~35\% of measured emission rates will fall within a factor of two of the true emission rate. For a value of 7.5, ~82\% of measurements will fall within an order of magnitude of the true emission rate. When QE = 0, the measured emission rate equals the true emission rate. As QE increases, so does the average absolute difference between measured and true emission rates. See Fox et al. (2021) for more information and Ravikumar et al. (2019) for empirical quantification error estimates.
-
-**Notes on acquisition:** We recommend extensive controlled release testing under a range of representative release rates, distances, and conditions to establish quantification error. Given the amount of work required to collect this information, we recommend using historical estimates.
-
-**Notes of caution:** As facility-scale quantification error remains poorly constrained for LDAR screening methods, and likely depends on work practice, dispersion modeling, and environment, screening programs should be evaluated using a range of possible quantification errors. We recommend understanding exactly how quantification error works before making use of this functionality. Alternatively, we suggest using literature values of 2.2 and 7.5.
-
-#### type
-
-**Data type:** String
-
-**Default input:** "default"
-
-**Description:** Methods are comprised of both a deployment type and a sensor type. the sensor type is a character string denoting the sensor used in the method. For instance, 'OGI_camera_zim','OGI_camera_rk', or 'default'. The 'default' sensor uses the MDL as a threshold to detect leaks based on the measurement scale of the method. Custom sensors can be added and referenced here. Built in sensors are:
-
-- `default`: Uses a simple threshold where the leak rate is based on the measurement scale, for example if `measurement_scale = site` then the site's total emissions will be considered measured if greater than the sensors MDL.
-- `OGI_camera_rk`: Uses detection curve based on Ravikumar, 2018.Requires measurement_scale = 'component'.
-- `OGI_camera_zim`: Uses detection curve based on Zimmerle 2020.Requires measurement_scale = 'component'.
-- `GHGSAT1` Uses a windspeed based method of detection from Jacob et al., 2016.
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** N/A
-
-### t_bw_sites
-
-#### file (t_bw_sites)
-
-**Data type:** Character String
-
-**Default input:** None
-
-**Description:** A string denoting the filename of a csv file containing travel times. The file should include one row, with a headcolumn in row 1 of `time_btw_sites`
-
-**Notes on acquisition:** Each value should represent not only driving time, but all time spent not conducting surveys (driving, breaks, meals, break downs, trains, etc.) This data should be scraped from historical GPS data associated with LDAR survey crews, ideally for the facilities under evaluation.
-
-**Notes of caution:** These data may be difficult to acquire and may lack representativeness. An alternative is to use geospatial road data and route planning with LDAR-Sim.
-
-#### vals (t_bw_sites)
-
-**Data type:** List of Integers
-
-**Default input:** [30]
-
-**Description:** Time between sites. denotes the time in minutes required to plan, travel, setup, take down, required in between surveys. A value is selected at random from the list
-
-### weather_envs
-
-Method weather envelopes
-
-#### precip
-
-**Data type:** List of Integers
-
-**Default input:** [0, 0.5]
-
-**Description:** The range of precipitation accumulation allowed (mm) over one hour.
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** N/A
-
-#### temp
-
-**Data type:** List of Integers
-
-**Default input:** [-40, 40]
-
-**Description:** The range of average hourly temperature (°C) between which crews will work.
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** Note that units are in degrees Celsius, not Fahrenheit.
-
-#### wind
-
-**Data type:** List of Integers
-
-**Default input:** [0, 10]
-
-**Description:** The bounding range of maximum average hourly wind speed (m/s at 10m) between which crews will work.
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** N/A
-
-### RS
-
-**Data type:** Integer
-
-**Default input:** N/A
-
-**Description:** An integer indicating the number of required surveys at each facility per calendar year.
-
-**Notes on acquisition:** Survey frequencies can be based on regulatory requirements, company policies, or can be fabricated by the modeler to explore different scenarios.
-
-**Notes of caution:** Note that just because a number of surveys is prescribed, it does not mean that this number of surveys will necessarily be performed. For example, if labour limitations exist (i.e., not enough crews are available to inspect the number of facilities in the program) or if environmental conditions are unsuitable (i.e., a particular facility is in a cloudy location that cannot be accessed by satellite), the performed number of surveys may be less than the prescribed number. This variable is not required for continuous measurement methods.
-
-**RS** may also be set in the infrastructure file. To do so, it must not be present in the **methods parameters**
-
-### time
-
-**Data type:** Integer
-
-**Default input:** N/A
-
-**Description:** The number of minutes required to complete a survey at each facility.
-
-**Notes on acquisition:** In most cases, an estimate will be made as data will not exist for the specific combination of facility and unique method. However, as new methods and programs and implemented, data will become available to better refine modeling estimates and develop more intelligent programs.
-
-**Notes of caution:** This variable is an empirical estimate of how much time is required for a given mobile method to complete a survey at a given facility. This includes anything that happens onsite (e.g., calibrations, interfacing with the operator, etc.) but _does not include_ driving time between facilities or any other account of time spent offsite. This variable is simply the amount of time that passes from the start of a facility survey to the end. If a facility takes longer than there is time left in a day, then the agent/crew returns the following day to continue work, and so on and so forth, until the facility is completed. This variable is not required for continuous measurement methods.
-
-**Time** may also be set in the infrastructure file. To do so, it must not be present in the **methods parameters**
-
-### TLE_file (satellite only)
-
-**Data type:** String
-
-**Default input:** N/A
-
-**Description:** Specifies the name of the text file that contains orbit information of satellites. TLE stands for a two-line element set, which is a data format encoding a list of orbital elements of an Earth-orbiting object for a given point in time, the epoch. By using TLE of a satellite, LDAR-Sim can estimate the postion of satellite above earth at specific time.
-
-**Notes on acquisition:** It is only required for satellite.
-
-**Notes of caution:** Please be sure the satellite is included in the TLE file
-
-### TLE_label (satellite only)
-
-**Data type:** Character string that specifies the TLE file tag.
-
-**Default input:** N/A
-
-**Description:** The name of satellite. The following are accepted:
-
-- default
-- GHGSAT-D
-- GOSAT (IBUKI)
-- SENTINEL-5(TROPOMI)
-- TANSAT(CarbonSat)
-
-**Notes on acquisition:** It is only required for satellite.
-
-**Notes of caution:** Please be sure the satellite is included in the TLE file
-
-### version (method level)
-
-see Global Inputs - version
-
---------------------------------------------------------------------------------
-
-## 8\. Legacy Inputs
+## 11\. Legacy Inputs
 
 As LDAR-Sim continues to grow and evolve, certain parameters may need to be retired and removed from the current version of LDAR-Sim. For completeness, the documentation for these parameters will be moved to this section along with an indication of which version of LDAR-Sim they were removed in.
 
-### subtype_times_file -- Removed as of Version 2.4.0
+### &lt;subtype_leak_dist_file&gt; -- Removed as of version 3.0.0
+
+**Data type:** String
+
+**Default input:** None
+
+**Description:** Name of file containing distributions for subtypes. Requires 3 or 4 columns: subtype_code, dist_type, followed by scipy defined shape parameters, followed by the scipy scale. For example if dist_type is log normal , their will be only one shape parameter (3rd column) and the the size parameter will be placed in the 4th column. Note: loc parameters are always set to zero. If this parameter is set to None, or left blank, distributions are set are set at a program level with the leak_dist_params, and leak_dist_type parameters.
+
+**Notes on acquisition:**
+
+**Notes of caution:** If True, will overwrite global leak distribution.
+
+### &lt;subtype_times_file&gt; -- Removed as of version 2.4.0
 
 **Data type:** string
 
@@ -1842,7 +1905,7 @@ As LDAR-Sim continues to grow and evolve, certain parameters may need to be reti
 
 **Notes of caution:** Facility types must match those used in infrastructure_file. When used, subtype_times_file overwrites any facility-specific times present in infrastructure_file.
 
-### vent_file -- Removed as of Version 2.1.2
+### &lt;vent_file&gt; -- Removed as of Version 2.1.2
 
 **Data type:** String
 
@@ -1856,7 +1919,7 @@ As LDAR-Sim continues to grow and evolve, certain parameters may need to be reti
 
 --------------------------------------------------------------------------------
 
-## 9\. Data sources, modelling confidence and model sensitivity
+## 12\. Data sources, modelling confidence and model sensitivity
 
 There are a broad range of inputs used in LDAR-Sim that must be derived from various sources. Each of these parameters should be carefully considered and understood before using LDAR-Sim to inform decision making. Like other models, the quality of simulation results will depend on the quality and representativeness of the inputs used.
 
@@ -1895,7 +1958,7 @@ Below are some examples of common sources of LDAR-Sim data. Not all parameters a
 
 --------------------------------------------------------------------------------
 
-## 10\. References
+## 13\. References
 
 Fox, Thomas A., Mozhou Gao, Thomas E. Barchyn, Yorwearth L. Jamin, and Chris H. Hugenholtz. 2021\. "An Agent-Based Model for Estimating Emissions Reduction Equivalence among Leak Detection and Repair Programs." _Journal of Cleaner Production_, 125237\. <https://doi.org/10.1016/j.jclepro.2020.125237>.
 

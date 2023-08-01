@@ -34,8 +34,8 @@ from utils.emis_inputs import (assign_vents)
 from methods.init_func.repair_delay import determine_delay
 
 
-def init_generator_files(generator_dir, sim_params, in_dir, baseline_prog):
-    sites_file = baseline_prog['infrastructure_file']
+def init_generator_files(generator_dir, sim_params, in_dir, virtual_world):
+    sites_file = virtual_world['infrastructure_file']
     sites_in = pd.read_csv(in_dir / sites_file)
     sim_sites = sites_in.to_dict('records')
     if not os.path.exists(generator_dir):
@@ -106,11 +106,11 @@ def get_subtype_file(program, wd):
         unpackage_dist(program, wd)
 
 
-def generate_sites(program, in_dir, pregen_leaks):
+def generate_sites(virtual_world, in_dir, pregen_leaks, start_date, end_date):
     """[summary]
 
     Args:
-        program (dict): The program to generate sites for.
+        virtual_world (dict): The virtual world parameters informing site generation.
         in_dir (Path): The path to the inputs directory
         pregen_leaks (boolean): Boolean indicating Whether or not to pregenerate leaks.
 
@@ -118,43 +118,43 @@ def generate_sites(program, in_dir, pregen_leaks):
         [dict]: sites, Union[dict, None]: leak_timeseries, Union[dict, None]: initial_leaks
     """
     # Read in the sites as a list of dictionaries
-    sites_in = pd.read_csv(in_dir / program['infrastructure_file'])
+    sites_in = pd.read_csv(in_dir / virtual_world['infrastructure_file'])
     sites = sites_in.to_dict('records')
 
     # Sample sites and shuffle
-    n_samples = program['site_samples']
+    n_samples = virtual_world['site_samples']
     if n_samples is None:
         n_samples = len(sites)
     # even if n_samples is None, the sample function is still used to shuffle
     sites = random.sample(sites, n_samples)
 
     # Get leaks from file
-    if program['emissions']['leak_file'] is not None:
-        program['emissions']['empirical_leaks'] = np.array(
-            pd.read_csv(in_dir / program['emissions']['leak_file']).iloc[:, 0])
+    if virtual_world['emissions']['leak_file'] is not None:
+        virtual_world['emissions']['empirical_leaks'] = np.array(
+            pd.read_csv(in_dir / virtual_world['emissions']['leak_file']).iloc[:, 0])
 
     # get_subtype_dist(program, in_dir)
-    get_subtype_file(program, in_dir)
+    get_subtype_file(virtual_world, in_dir)
 
     leak_timeseries = {}
     initial_leaks = {}
     # Additional variable(s) for each site
     for site in sites:
         # Add a distribution and unit for each leak
-        if len(program['subtypes']) > 1:
+        if len(virtual_world['subtypes']) > 1:
             # Get all keys from subtypes
-            for col in program['subtypes'][next(iter(program['subtypes']))]:
-                site[col] = program['subtypes'][site['subtype_code']][col]
-        elif len(program['subtypes']) > 0:
-            site.update(program['subtypes'][0])
+            for col in virtual_world['subtypes'][next(iter(virtual_world['subtypes']))]:
+                site[col] = virtual_world['subtypes'][site['subtype_code']][col]
+        elif len(virtual_world['subtypes']) > 0:
+            site.update(virtual_world['subtypes'][0])
 
         # Determine repair delay for each site
-        site['repair_delay'] = determine_delay(program)
+        site['repair_delay'] = determine_delay(virtual_world)
 
         if pregen_leaks:
-            initial_site_leaks = generate_initial_leaks(program, site)
+            initial_site_leaks = generate_initial_leaks(virtual_world, site, start_date)
             initial_leaks.update({site['facility_ID']: initial_site_leaks})
-            site_timeseries = generate_leak_timeseries(program, site)
+            site_timeseries = generate_leak_timeseries(virtual_world, site, start_date, end_date)
             leak_timeseries.update({site['facility_ID']: site_timeseries})
             if 'leak_rate_dist' in site:
                 del site['leak_rate_dist']
@@ -165,7 +165,7 @@ def generate_sites(program, in_dir, pregen_leaks):
         return sites, None, None
 
 
-def regenerate_sites(program, prog_0_sites, in_dir):
+def regenerate_sites(virtual_world, prog_0_sites, in_dir):
     '''
     Regenerate sites allows site level parameters to update on pregenerated
     sites. This is necessary when programs have different site level params
@@ -173,7 +173,7 @@ def regenerate_sites(program, prog_0_sites, in_dir):
     '''
     # Read in the sites as a list of dictionaries
     sites_in = pd.read_csv(
-        in_dir / program['infrastructure_file'], index_col='facility_ID')
+        in_dir / virtual_world['infrastructure_file'], index_col='facility_ID')
     # Add facility ID back into object
     sites_in['facility_ID'] = sites_in.index
     sites = sites_in.to_dict('index')

@@ -1,21 +1,19 @@
 baseline_program: P_none
 end_date:
-- 2021
-- 12
-- 31
+  - 2021
+  - 12
+  - 31
 input_directory: ./inputs
 make_plots: true
-n_processes: null
+n_processes: 6
 n_simulations: 1
 output_directory: ./outputs
-parameter_level: global
+parameter_level: simulation_settings
 pregenerate_leaks: true
 preseed_random: true
 print_from_simulations: true
 programs:
   P_continuous:
-    NRd: 365
-    consider_weather: false
     economics:
       GWP_CH4: 28.0
       carbon_price_tonnesCO2e: 40.0
@@ -23,31 +21,12 @@ programs:
       repair_costs:
         file: null
         vals:
-        - 200
+          - 200
       sale_price_natgas: 3.0
       verification_cost: 0
-    emissions:
-      LPR: 0.0065
-      consider_venting: false
-      leak_dist_params:
-      - -2.776
-      - 1.462
-      leak_dist_type: lognorm
-      leak_file: test_rates.csv
-      leak_file_use: sample
-      max_leak_rate: 100000.0
-      subtype_leak_dist_file: null
-      units:
-      - kilogram
-      - hour
-    end_date:
-    - 2021
-    - 12
-    - 31
-    infrastructure_file: facilities_alberta.csv
     method_labels:
-    - Continuous
-    - OGI_FU
+      - Continuous
+      - OGI_FU
     methods:
       Continuous:
         RS: null
@@ -83,21 +62,21 @@ programs:
         reporting_delay: 2
         scheduling:
           LDAR_crew_init_location:
-          - -114.062
-          - 51.044
+            - -114.062
+            - 51.044
           deployment_months:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-          - 6
-          - 7
-          - 8
-          - 9
-          - 10
-          - 11
-          - 12
+            - 1
+            - 2
+            - 3
+            - 4
+            - 5
+            - 6
+            - 7
+            - 8
+            - 9
+            - 10
+            - 11
+            - 12
           deployment_years: []
           home_bases_files: Airport_AB_Coordinates.csv
           min_time_bt_surveys: null
@@ -105,26 +84,26 @@ programs:
           travel_speeds: []
         sensor:
           MDL:
-          - 2
+            - 2
           QE: 0.0
           mod_loc: null
           type: default
         t_bw_sites:
           file: null
           vals:
-          - 30.0
+            - 30.0
         time: null
-        version: '2.0'
+        version: "3.0"
         weather_envs:
           precip:
-          - 0.0
-          - 0.5
+            - 0.0
+            - 0.5
           temp:
-          - -40.0
-          - 40.0
+            - -40.0
+            - 40.0
           wind:
-          - 0.0
-          - 10.0
+            - 0.0
+            - 10.0
       OGI_FU:
         RS: null
         consider_daylight: false
@@ -159,21 +138,21 @@ programs:
         reporting_delay: 2
         scheduling:
           LDAR_crew_init_location:
-          - -114.062
-          - 51.044
+            - -114.062
+            - 51.044
           deployment_months:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-          - 6
-          - 7
-          - 8
-          - 9
-          - 10
-          - 11
-          - 12
+            - 1
+            - 2
+            - 3
+            - 4
+            - 5
+            - 6
+            - 7
+            - 8
+            - 9
+            - 10
+            - 11
+            - 12
           deployment_years: []
           home_bases_files: Airport_AB_Coordinates.csv
           min_time_bt_surveys: null
@@ -181,47 +160,30 @@ programs:
           travel_speeds: []
         sensor:
           MDL:
-          - 0.5
+            - 0.5
           QE: 0.0
           mod_loc: null
           type: default
         t_bw_sites:
           file: null
           vals:
-          - 45
+            - 45
         time: 120
-        version: '2.0'
+        version: "3.0"
         weather_envs:
           precip:
-          - 0.0
-          - 0.5
+            - 0.0
+            - 0.5
           temp:
-          - -40.0
-          - 40.0
+            - -40.0
+            - 40.0
           wind:
-          - 0.0
-          - 10.0
-    n_init_days: null
-    n_init_leaks: null
+            - 0.0
+            - 10.0
     parameter_level: program
     program_name: P_continuous
-    repair_delay:
-      type: default
-      val:
-      - 14.0
-    site_samples: 50
-    start_date:
-    - 2017
-    - 1
-    - 1
-    subtype_file: null
-    subtype_times_file: null
-    version: '2.0'
-    weather_file: weather_alberta.nc
-    weather_is_hourly: true
+    version: "3.0"
   P_mobile_campaigns:
-    NRd: 365
-    consider_weather: false
     economics:
       GWP_CH4: 28.0
       carbon_price_tonnesCO2e: 40.0
@@ -229,31 +191,12 @@ programs:
       repair_costs:
         file: null
         vals:
-        - 200
+          - 200
       sale_price_natgas: 3.0
       verification_cost: 0
-    emissions:
-      LPR: 0.0065
-      consider_venting: false
-      leak_dist_params:
-      - -2.776
-      - 1.462
-      leak_dist_type: lognorm
-      leak_file: test_rates.csv
-      leak_file_use: sample
-      max_leak_rate: 100000.0
-      subtype_leak_dist_file: null
-      units:
-      - kilogram
-      - hour
-    end_date:
-    - 2021
-    - 12
-    - 31
-    infrastructure_file: facilities_alberta.csv
     method_labels:
-    - mobile_campaigns
-    - OGI_FU
+      - mobile_campaigns
+      - OGI_FU
     methods:
       OGI_FU:
         RS: null
@@ -289,21 +232,21 @@ programs:
         reporting_delay: 2
         scheduling:
           LDAR_crew_init_location:
-          - -114.062
-          - 51.044
+            - -114.062
+            - 51.044
           deployment_months:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-          - 6
-          - 7
-          - 8
-          - 9
-          - 10
-          - 11
-          - 12
+            - 1
+            - 2
+            - 3
+            - 4
+            - 5
+            - 6
+            - 7
+            - 8
+            - 9
+            - 10
+            - 11
+            - 12
           deployment_years: []
           home_bases_files: Airport_AB_Coordinates.csv
           min_time_bt_surveys: null
@@ -311,26 +254,26 @@ programs:
           travel_speeds: []
         sensor:
           MDL:
-          - 0.5
+            - 0.5
           QE: 0.0
           mod_loc: null
           type: default
         t_bw_sites:
           file: null
           vals:
-          - 45
+            - 45
         time: 120
-        version: '2.0'
+        version: "3.0"
         weather_envs:
           precip:
-          - 0.0
-          - 0.5
+            - 0.0
+            - 0.5
           temp:
-          - -40.0
-          - 40.0
+            - -40.0
+            - 40.0
           wind:
-          - 0.0
-          - 10.0
+            - 0.0
+            - 10.0
       mobile_campaigns:
         RS: 4
         consider_daylight: false
@@ -351,10 +294,10 @@ programs:
           min_followup_days_to_end: 45
           min_followup_type: campaign
           min_followups:
-          - 1
-          - 0.5
-          - 0.5
-          - 0.5
+            - 1
+            - 0.5
+            - 0.5
+            - 0.5
           preferred_method: null
           proportion: 1.0
           redundancy_filter: recent
@@ -369,21 +312,21 @@ programs:
         reporting_delay: 2
         scheduling:
           LDAR_crew_init_location:
-          - -114.062
-          - 51.044
+            - -114.062
+            - 51.044
           deployment_months:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-          - 6
-          - 7
-          - 8
-          - 9
-          - 10
-          - 11
-          - 12
+            - 1
+            - 2
+            - 3
+            - 4
+            - 5
+            - 6
+            - 7
+            - 8
+            - 9
+            - 10
+            - 11
+            - 12
           deployment_years: []
           home_bases_files: Airport_AB_Coordinates.csv
           min_time_bt_surveys: null
@@ -391,47 +334,30 @@ programs:
           travel_speeds: []
         sensor:
           MDL:
-          - 3
+            - 3
           QE: 0.0
           mod_loc: null
           type: default
         t_bw_sites:
           file: null
           vals:
-          - 30.0
+            - 30.0
         time: 30
-        version: '2.0'
+        version: "3.0"
         weather_envs:
           precip:
-          - 0.0
-          - 0.5
+            - 0.0
+            - 0.5
           temp:
-          - -40.0
-          - 40.0
+            - -40.0
+            - 40.0
           wind:
-          - 0.0
-          - 10.0
-    n_init_days: null
-    n_init_leaks: null
+            - 0.0
+            - 10.0
     parameter_level: program
     program_name: P_mobile_campaigns
-    repair_delay:
-      type: default
-      val:
-      - 14.0
-    site_samples: 50
-    start_date:
-    - 2017
-    - 1
-    - 1
-    subtype_file: null
-    subtype_times_file: null
-    version: '2.0'
-    weather_file: weather_alberta.nc
-    weather_is_hourly: true
+    version: "3.0"
   P_mobile_proportion:
-    NRd: 365
-    consider_weather: false
     economics:
       GWP_CH4: 28.0
       carbon_price_tonnesCO2e: 40.0
@@ -439,31 +365,12 @@ programs:
       repair_costs:
         file: null
         vals:
-        - 200
+          - 200
       sale_price_natgas: 3.0
       verification_cost: 0
-    emissions:
-      LPR: 0.0065
-      consider_venting: false
-      leak_dist_params:
-      - -2.776
-      - 1.462
-      leak_dist_type: lognorm
-      leak_file: test_rates.csv
-      leak_file_use: sample
-      max_leak_rate: 100000.0
-      subtype_leak_dist_file: null
-      units:
-      - kilogram
-      - hour
-    end_date:
-    - 2021
-    - 12
-    - 31
-    infrastructure_file: facilities_alberta.csv
     method_labels:
-    - mobile_proportion
-    - OGI_FU
+      - mobile_proportion
+      - OGI_FU
     methods:
       OGI_FU:
         RS: null
@@ -499,21 +406,21 @@ programs:
         reporting_delay: 2
         scheduling:
           LDAR_crew_init_location:
-          - -114.062
-          - 51.044
+            - -114.062
+            - 51.044
           deployment_months:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-          - 6
-          - 7
-          - 8
-          - 9
-          - 10
-          - 11
-          - 12
+            - 1
+            - 2
+            - 3
+            - 4
+            - 5
+            - 6
+            - 7
+            - 8
+            - 9
+            - 10
+            - 11
+            - 12
           deployment_years: []
           home_bases_files: Airport_AB_Coordinates.csv
           min_time_bt_surveys: null
@@ -521,26 +428,26 @@ programs:
           travel_speeds: []
         sensor:
           MDL:
-          - 0.5
+            - 0.5
           QE: 0.0
           mod_loc: null
           type: default
         t_bw_sites:
           file: null
           vals:
-          - 45
+            - 45
         time: 120
-        version: '2.0'
+        version: "3.0"
         weather_envs:
           precip:
-          - 0.0
-          - 0.5
+            - 0.0
+            - 0.5
           temp:
-          - -40.0
-          - 40.0
+            - -40.0
+            - 40.0
           wind:
-          - 0.0
-          - 10.0
+            - 0.0
+            - 10.0
       mobile_proportion:
         RS: 4
         consider_daylight: false
@@ -575,21 +482,21 @@ programs:
         reporting_delay: 2
         scheduling:
           LDAR_crew_init_location:
-          - -114.062
-          - 51.044
+            - -114.062
+            - 51.044
           deployment_months:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-          - 6
-          - 7
-          - 8
-          - 9
-          - 10
-          - 11
-          - 12
+            - 1
+            - 2
+            - 3
+            - 4
+            - 5
+            - 6
+            - 7
+            - 8
+            - 9
+            - 10
+            - 11
+            - 12
           deployment_years: []
           home_bases_files: Airport_AB_Coordinates.csv
           min_time_bt_surveys: null
@@ -597,47 +504,30 @@ programs:
           travel_speeds: []
         sensor:
           MDL:
-          - 3
+            - 3
           QE: 0.0
           mod_loc: null
           type: default
         t_bw_sites:
           file: null
           vals:
-          - 30.0
+            - 30.0
         time: 30
-        version: '2.0'
+        version: "3.0"
         weather_envs:
           precip:
-          - 0.0
-          - 0.5
+            - 0.0
+            - 0.5
           temp:
-          - -40.0
-          - 40.0
+            - -40.0
+            - 40.0
           wind:
-          - 0.0
-          - 10.0
-    n_init_days: null
-    n_init_leaks: null
+            - 0.0
+            - 10.0
     parameter_level: program
     program_name: P_mobile_proportion
-    repair_delay:
-      type: default
-      val:
-      - 14.0
-    site_samples: 50
-    start_date:
-    - 2017
-    - 1
-    - 1
-    subtype_file: null
-    subtype_times_file: null
-    version: '2.0'
-    weather_file: weather_alberta.nc
-    weather_is_hourly: true
+    version: "3.0"
   P_mobile_threshold:
-    NRd: 365
-    consider_weather: false
     economics:
       GWP_CH4: 28.0
       carbon_price_tonnesCO2e: 40.0
@@ -645,31 +535,12 @@ programs:
       repair_costs:
         file: null
         vals:
-        - 200
+          - 200
       sale_price_natgas: 3.0
       verification_cost: 0
-    emissions:
-      LPR: 0.0065
-      consider_venting: false
-      leak_dist_params:
-      - -2.776
-      - 1.462
-      leak_dist_type: lognorm
-      leak_file: test_rates.csv
-      leak_file_use: sample
-      max_leak_rate: 100000.0
-      subtype_leak_dist_file: null
-      units:
-      - kilogram
-      - hour
-    end_date:
-    - 2021
-    - 12
-    - 31
-    infrastructure_file: facilities_alberta.csv
     method_labels:
-    - mobile_threshold
-    - OGI_FU
+      - mobile_threshold
+      - OGI_FU
     methods:
       OGI_FU:
         RS: null
@@ -705,21 +576,21 @@ programs:
         reporting_delay: 2
         scheduling:
           LDAR_crew_init_location:
-          - -114.062
-          - 51.044
+            - -114.062
+            - 51.044
           deployment_months:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-          - 6
-          - 7
-          - 8
-          - 9
-          - 10
-          - 11
-          - 12
+            - 1
+            - 2
+            - 3
+            - 4
+            - 5
+            - 6
+            - 7
+            - 8
+            - 9
+            - 10
+            - 11
+            - 12
           deployment_years: []
           home_bases_files: Airport_AB_Coordinates.csv
           min_time_bt_surveys: null
@@ -727,26 +598,26 @@ programs:
           travel_speeds: []
         sensor:
           MDL:
-          - 0.5
+            - 0.5
           QE: 0.0
           mod_loc: null
           type: default
         t_bw_sites:
           file: null
           vals:
-          - 45
+            - 45
         time: 120
-        version: '2.0'
+        version: "3.0"
         weather_envs:
           precip:
-          - 0.0
-          - 0.5
+            - 0.0
+            - 0.5
           temp:
-          - -40.0
-          - 40.0
+            - -40.0
+            - 40.0
           wind:
-          - 0.0
-          - 10.0
+            - 0.0
+            - 10.0
       mobile_threshold:
         RS: 4
         consider_daylight: false
@@ -781,21 +652,21 @@ programs:
         reporting_delay: 2
         scheduling:
           LDAR_crew_init_location:
-          - -114.062
-          - 51.044
+            - -114.062
+            - 51.044
           deployment_months:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-          - 6
-          - 7
-          - 8
-          - 9
-          - 10
-          - 11
-          - 12
+            - 1
+            - 2
+            - 3
+            - 4
+            - 5
+            - 6
+            - 7
+            - 8
+            - 9
+            - 10
+            - 11
+            - 12
           deployment_years: []
           home_bases_files: Airport_AB_Coordinates.csv
           min_time_bt_surveys: null
@@ -803,47 +674,30 @@ programs:
           travel_speeds: []
         sensor:
           MDL:
-          - 3
+            - 3
           QE: 0.0
           mod_loc: null
           type: default
         t_bw_sites:
           file: null
           vals:
-          - 30.0
+            - 30.0
         time: 30
-        version: '2.0'
+        version: "3.0"
         weather_envs:
           precip:
-          - 0.0
-          - 0.5
+            - 0.0
+            - 0.5
           temp:
-          - -40.0
-          - 40.0
+            - -40.0
+            - 40.0
           wind:
-          - 0.0
-          - 10.0
-    n_init_days: null
-    n_init_leaks: null
+            - 0.0
+            - 10.0
     parameter_level: program
     program_name: P_mobile_threshold
-    repair_delay:
-      type: default
-      val:
-      - 14.0
-    site_samples: 50
-    start_date:
-    - 2017
-    - 1
-    - 1
-    subtype_file: null
-    subtype_times_file: null
-    version: '2.0'
-    weather_file: weather_alberta.nc
-    weather_is_hourly: true
+    version: "3.0"
   P_none:
-    NRd: 365
-    consider_weather: false
     economics:
       GWP_CH4: 28.0
       carbon_price_tonnesCO2e: 40.0
@@ -851,52 +705,48 @@ programs:
       repair_costs:
         file: null
         vals:
-        - 200
+          - 200
       sale_price_natgas: 3.0
       verification_cost: 0
-    emissions:
-      LPR: 0.0065
-      consider_venting: false
-      leak_dist_params:
-      - -2.776
-      - 1.462
-      leak_dist_type: lognorm
-      leak_file: test_rates.csv
-      leak_file_use: sample
-      max_leak_rate: 100000.0
-      subtype_leak_dist_file: null
-      units:
-      - kilogram
-      - hour
-    end_date:
-    - 2021
-    - 12
-    - 31
-    infrastructure_file: facilities_alberta.csv
     method_labels: []
     methods: {}
-    n_init_days: null
-    n_init_leaks: null
     parameter_level: program
     program_name: P_none
-    repair_delay:
-      type: default
-      val:
-      - 14.0
-    site_samples: 50
-    start_date:
-    - 2017
-    - 1
-    - 1
-    subtype_file: null
-    subtype_times_file: null
-    version: '2.0'
-    weather_file: weather_alberta.nc
-    weather_is_hourly: true
+    version: "3.0"
 reference_program: P_continuous
 start_date:
-- 2017
-- 1
-- 1
-version: '2.0'
+  - 2017
+  - 1
+  - 1
+version: "3.0"
+virtual_world:
+  NRd: 365
+  consider_weather: false
+  emissions:
+    LPR: 0.0065
+    consider_venting: false
+    leak_dist_params:
+      - -2.776
+      - 1.462
+    leak_dist_type: lognorm
+    leak_file: test_rates.csv
+    leak_file_use: sample
+    max_leak_rate: 100000.0
+    subtype_leak_dist_file: null
+    units:
+      - kilogram
+      - hour
+  infrastructure_file: facilities_alberta.csv
+  n_init_days: null
+  n_init_leaks: null
+  parameter_level: virtual_world
+  repair_delay:
+    type: default
+    val:
+      - 14.0
+  site_samples: 50
+  subtype_file: null
+  version: "3.0"
+  weather_file: weather_alberta.nc
+  weather_is_hourly: true
 write_data: true

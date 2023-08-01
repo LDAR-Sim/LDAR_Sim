@@ -1,10 +1,10 @@
 parameter_level: method
-version: '2.0'
+version: "3.0"
 label: aircraft
 deployment_type: mobile
 measurement_scale: equipment
 is_follow_up: False
-sensor: 
+sensor:
   type: default
   MDL: [1]
 cost:

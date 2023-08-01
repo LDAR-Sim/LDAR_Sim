@@ -3,8 +3,10 @@ input_directory: ./inputs
 make_plots: true
 n_simulations: 1
 output_directory: ./outputs
-parameter_level: global
+parameter_level: simulation_settings
 pregenerate_leaks: true
 preseed_random: true
 reference_program: P_continuous
-version: '2.0'
+version: "3.0"
+start_date: [2017, 1, 1]
+end_date: [2021, 12, 31]

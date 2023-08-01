@@ -1,24 +1,4 @@
 program_name: P_none
 parameter_level: program
-version: "2.0"
+version: "3.0"
 method_labels: []
-weather_file: "weather_alberta.nc"
-weather_is_hourly: True # True/False
-infrastructure_file: "facilities_alberta.csv"
-site_samples: 50
-subtype_times_file: "_placeholder_str_"
-subtype_file: "_placeholder_str_"
-consider_weather: False # True/False
-repair_delay:
-  type: "default" # default/list/distribution
-  val: [14.0]
-emissions:
-  consider_venting: False # True/False
-  leak_dist_type: "lognorm"
-  leak_file: "test_rates.csv"
-  leak_file_use: "sample" # sample/fit
-  LPR: 0.0065
-  max_leak_rate: 100000.0
-  subtype_leak_dist_file: "_placeholder_str_"
-  units: ["kilogram", "hour"]
-NRd: 365

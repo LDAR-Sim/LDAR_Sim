@@ -39,7 +39,7 @@ from out_processing.prog_table import generate as gen_prog_table
 from utils.generic_functions import check_ERA5_file
 
 opening_msg = """
-You are running LDAR-Sim version 2.0 an open sourced software (MIT) license.
+You are running LDAR-Sim version 3.0.0 an open sourced software (MIT) license.
 It is continually being developed by the University of Calgary's Intelligent
 Methane Monitoring and Management System (IM3S) Group.
 Provide any issues, comments, questions, or recommendations to the IM3S by
@@ -77,9 +77,10 @@ if __name__ == '__main__':
     base_program = sim_params['baseline_program']
     in_dir = get_abs_path(sim_params['input_directory'])
     programs = sim_params.pop('programs')
+    virtual_world = sim_params.pop('virtual_world')
 
     # --- Run Checks ----
-    check_ERA5_file(in_dir, programs)
+    check_ERA5_file(in_dir, virtual_world)
     has_ref = ref_program in programs
     has_base = base_program in programs
 
@@ -94,12 +95,12 @@ if __name__ == '__main__':
     if sim_params['pregenerate_leaks']:
         generator_dir = in_dir / "generator"
         init_generator_files(
-            generator_dir, input_manager.simulation_parameters, in_dir, programs[base_program])
+            generator_dir, input_manager.simulation_parameters, in_dir, virtual_world)
     else:
         generator_dir = None
     # --- Create simulations ---
-    simulations = create_sims(sim_params, programs,
-                              generator_dir, in_dir, out_dir, input_manager)
+    simulations = create_sims(sim_params, programs, virtual_world,
+                              generator_dir, in_dir, out_dir)
 
     # --- Run simulations (in parallel) --
     with mp.Pool(processes=sim_params['n_processes']) as p:

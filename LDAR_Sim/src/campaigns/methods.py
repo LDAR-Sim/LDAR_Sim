@@ -3,7 +3,7 @@ from math import floor, ceil
 from numpy import zeros, ones, tile, array
 
 
-def setup_campaigns(campaigns, prog_params, n_sites, n_screening_rs_sets):
+def setup_campaigns(campaigns, prog_params, virtual_world, n_sites, n_screening_rs_sets):
     """ Setup Campaigns
 
     Args:
@@ -19,7 +19,7 @@ def setup_campaigns(campaigns, prog_params, n_sites, n_screening_rs_sets):
                 days_in_campaign = int(floor(365/rs))
             else:
                 days_in_campaign = 365
-            n_campaigns = int(ceil(prog_params['timesteps']/days_in_campaign)+1)
+            n_campaigns = int(ceil(virtual_world['timesteps']/days_in_campaign)+1)
             min_followups = meth['follow_up']['min_followups']
             min_FU_d_to_end = meth['follow_up'][
                 'min_followup_days_to_end']

@@ -24,18 +24,17 @@ from netCDF4 import Dataset
 
 
 class WeatherLookup:
-    def __init__(self, state, parameters):
+    def __init__(self, state, virtual_world, input_directory):
         """
         Read in NetCDF files and returns the environment at a given place in time.
         """
         self.state = state
-        self.parameters = parameters
+        self.virtual_world = virtual_world
 
         # Read in weather data as NetCDF file(s)
 
         self.weather_data = Dataset(
-            self.parameters['input_directory'] /
-            self.parameters['weather_file'],
+            input_directory / self.virtual_world['weather_file'],
             'r')  # Load wind and temp data
         self.weather_data.set_auto_mask(False)  # Load wind and temp data
         # Extract temperatures
@@ -82,14 +81,14 @@ class WeatherLookup:
 
         # Initialize empty boolean arrays for threshold pass(1)/fail(0)
         bool_temp = np.zeros(
-            (self.lon_length, self.lat_length, self.parameters['timesteps']))
+            (self.lon_length, self.lat_length, self.virtual_world['timesteps']))
         bool_wind = np.zeros(
-            (self.lon_length, self.lat_length, self.parameters['timesteps']))
+            (self.lon_length, self.lat_length, self.virtual_world['timesteps']))
         bool_precip = np.zeros(
-            (self.lon_length, self.lat_length, self.parameters['timesteps']))
+            (self.lon_length, self.lat_length, self.virtual_world['timesteps']))
 
         # For each day...
-        for day in range(self.parameters['timesteps']):
+        for day in range(self.virtual_world['timesteps']):
 
             # Count DDs for each criteria
             for lat in range(self.lat_length):
