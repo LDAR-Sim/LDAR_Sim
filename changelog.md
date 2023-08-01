@@ -1,5 +1,9 @@
 # Change Log
 
+## 2023-07 - Version 3.0.1
+
+1. **Updated Output CSV file names** The output file names will now also contain program name.
+
 ## 2023-07 - Version 3.0.0
 
 1. **Refactored Parameter Structure** The LDAR-Sim parameter structure has been refactored. Many of the parameters previously in the program level can now be located in the new virtual_world parameters file. This will help make LDAR-Sim parameterization more intuitive.

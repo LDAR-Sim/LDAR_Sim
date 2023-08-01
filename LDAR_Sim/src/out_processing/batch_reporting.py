@@ -489,7 +489,8 @@ class BatchReporting:
         method_lists = []
         for i in range(len(self.directories)):
             df = pd.read_csv(
-                self.output_directory / self.directories[i] / "timeseries_output_0.csv")
+                self.output_directory / self.directories[i] /
+                "timeseries_output_0_{}.csv".format(self.directories[i]))
             df = df.filter(regex='cost$', axis=1)
             df = df.drop(columns=["total_daily_cost"])
             method_lists.append(list(df))
