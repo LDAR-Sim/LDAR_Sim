@@ -810,6 +810,8 @@ Additionally, NRd is recommended to be always be equal or greater than n_init_da
 
 **Description:** The probability of a given site to have a leak arise at a given day. This parameter behaves similarly to LPR, however this probability is only used for initialization of the simulation, LPR will determine the probability of leaks arising at a given site for the rest of the duration of the simulation.
 
+Example: if n_init_leaks_prob = 0.1 and n_init_days = 10 on a given day there is 10% chance that a leak will arise at a given site. There would be around 1 (10*0.1) leaks at a given site at the beginning of the simulation. There is a potential to have more or less leaks.
+
 By default LPR will be used if value is not provided
 
 **Notes on acquisition:** Estimate from empirical data or use previously published value. This value can be calculated by multiplying the n_init_days by LPR.
