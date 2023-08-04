@@ -123,15 +123,15 @@ def generate_initial_leaks(virtual_world, site, start_date):
         NRd = virtual_world['NRd']
         LPR = virtual_world['emissions']['LPR']
 
-    if virtual_world['n_init_leaks'] is not None:
-        n_leaks = virtual_world['n_init_leaks']
-    else:
-        n_leaks = random.binomial(NRd, LPR)
-
     if virtual_world['n_init_days'] is not None:
         init_max_days_active = virtual_world['n_init_days']
     else:
         init_max_days_active = NRd
+
+    if virtual_world['n_init_leaks_prob'] is not None:
+        n_leaks = random.binomial(init_max_days_active, virtual_world['n_init_leaks_prob'])
+    else:
+        n_leaks = random.binomial(init_max_days_active, LPR)
 
     prog_start_date = datetime(*start_date)
 

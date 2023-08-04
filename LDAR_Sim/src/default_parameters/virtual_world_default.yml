@@ -19,5 +19,5 @@ emissions:
   max_leak_rate: 100000.0
   units: ["kilogram", "hour"]
 NRd: 365
-n_init_leaks: "_placeholder_int_"
+n_init_leaks_prob: "_placeholder_float_"
 n_init_days: "_placeholder_int_"

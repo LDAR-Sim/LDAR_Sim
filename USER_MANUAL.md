@@ -802,13 +802,15 @@ The NRd value should be the same for **all** programs
 
 Additionally, NRd is recommended to be always be equal or greater than n_init_days.
 
-### &lt;n_init_leaks&gt;
+### &lt;n_init_leaks_prob&gt;
 
-**Data type:** Integer
+**Data type:** Float
 
 **Default input:** N/A
 
-**Description:** The number of leaks present per site in the system at the time of the simulation start date
+**Description:** The probability of a given site to have a leak arise at a given day. This parameter behaves similarly to LPR, however this probability is only used for initialization of the simulation, LPR will determine the probability of leaks arising at a given site for the rest of the duration of the simulation.
+
+By default LPR will be used if value is not provided
 
 **Notes on acquisition:** Estimate from empirical data or use previously published value. This value can be calculated by multiplying the n_init_days by LPR.
 

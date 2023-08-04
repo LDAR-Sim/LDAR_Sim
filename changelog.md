@@ -1,5 +1,9 @@
 # Change Log
 
+## 2023-08 - Version 3.1.0
+
+1. **Reworked n_init_leaks** The parameter n_init_leaks was reworked to n_init_leaks_prob. See the User Manual for details on how to use the parameter.
+
 ## 2023-07 - Version 3.0.1
 
 1. **Updated Output CSV file names** The output file names will now also contain program name.
