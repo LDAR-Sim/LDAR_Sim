@@ -15,11 +15,11 @@ LDAR-Sim has many potential uses, including:
 
 To learn more about LDAR-Sim, you can:
 
-  1) User manual [manual](USER_MANUAL.md)
+  1) User [manual](USER_MANUAL.md)
   2) Read our [story map](https://arcg.is/1rXeX10) (less technical introduction).
-  3) Read [Fox et al., 2020](https://www.sciencedirect.com/science/article/pii/S0959652620352811).
+  3) Read [Fox et al., 2021](https://www.sciencedirect.com/science/article/pii/S0959652620352811).
 
-For first time users, we recommend attempting to reproduce the case study results in Fox et al. 2020 (see below).
+For first time users, we recommend attempting to reproduce the case study results in Fox et al. 2021 (see below).
 
 Thomas Fox: thomas@highwoodemissions.com
 
@@ -43,7 +43,7 @@ The Fox et al. 2020 release is immortalized in a separate branch that can be fou
 
 The Fox et al., 2020 release contains the exact code and inputs used in [our LDAR-Sim synthesis paper](https://www.sciencedirect.com/science/article/pii/S0959652620352811). We recommend using this release, especially for first time users.
 
-Citation for this release: Fox, Thomas A., Mozhou Gao, Thomas E. Barchyn, Yorwearth L. Jamin, and Chris H. Hugenholtz. "An agent-based model for estimating emissions reduction equivalence among leak detection and repair programs." Journal of Cleaner Production (2020): 125237.
+Citation for this release: Fox, Thomas A., Mozhou Gao, Thomas E. Barchyn, Yorwearth L. Jamin, and Chris H. Hugenholtz. "An agent-based model for estimating emissions reduction equivalence among leak detection and repair programs." Journal of Cleaner Production (2021): 125237.
 
 ### Getting started
 
@@ -54,7 +54,7 @@ This guide is intended to get a user running with LDAR-Sim, **note** that even t
 Read and understand the LDAR-Sim LICENSE (MIT License).
 Read the user [manual](USER_MANUAL.md).
 
-Read [Fox et al 2020](https://www.sciencedirect.com/science/article/pii/S0959652620352811) to familiarize yourself with LDAR-Sim fundamentals.
+Read [Fox et al 2021](https://www.sciencedirect.com/science/article/pii/S0959652620352811) to familiarize yourself with LDAR-Sim fundamentals.
 
 #### Step 2: Installing Packages with Conda
 
@@ -81,7 +81,7 @@ if you are using satellite modules orbit predictor needs to be added to environm
 
 #### Step 3: Get Weather and Facility Data
 
-The application requires both facility and weather data to run. We have included sample facilities and weather data for Alberta as an example. Checkout the [user manual](USER_MANUAL.md) for more information on formatting of facility data. Weather data can either be downloaded directly. ERA5 data can be downloaded directly from Copernicus using the /module_code/weather/ERA5_downloader.py module (see file for instructions). Note the output data is in hourly format, therefore the flag weather_is_hourly should be set to True. Multiple ERA nc files can be concatenated with ERA5_concat.py.
+The application requires both facility and weather data to run. We have included sample facilities and weather data for Alberta as an example. Check out the [user manual](USER_MANUAL.md) for more information on formatting of facility data. Weather data can either be downloaded manually, or ERA5 data can be downloaded directly from Copernicus using the /module_code/weather/ERA5_downloader.py module (see file for instructions). Note the output data is in hourly format, therefore the flag weather_is_hourly should be set to True. Multiple ERA nc files can be concatenated with ERA5_concat.py.
 
 #### Step 4: Populate the simulation folder with Programs and associated methods
 
@@ -141,7 +141,7 @@ A Method yaml file is required, the most basic setup is as follows:
     time: 120                       // Time to perform detection at a site (minutes)
 ```
 
-Checkout the [user manual](USER_MANUAL.md) for more info on the parameters.
+Check out the [user manual](USER_MANUAL.md) for more info on the parameters.
 
 #### Step 5: Run the program
 
@@ -171,6 +171,6 @@ Several LDAR-Sim advances are not publicly available at this time, including mor
 
 The Included python code follows strict PEP8 Standards for formatting with a modification to the Line Length rule, where lines cannot exceed 100 characters. Contributed code will be rejected if it does not meet this standard. We suggest using PEP8 autoformatters and Linting (Flake8 , Black) when making contributions.
 
-When submitting Issues, Commits and Pull Requests, please use the provided templates to ensure consistent format. For instructions on how to setup the LDAR-Sim commit message template please see the [Setup Instructions](LDAR_SIm/install/SetupIntructions.md)
+When submitting Issues, Commits and Pull Requests, please use the provided templates to ensure consistent format. For instructions on how to setup the LDAR-Sim commit message template please see the [Setup Instructions](LDAR_Sim/install/SetupInstructions.md)
 
 The authors welcome all contributions and collaborations. Please reach out - we would love to hear from you and/or work with you!

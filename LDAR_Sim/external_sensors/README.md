@@ -25,8 +25,8 @@ This document provides coding guidelines and best practices for developing exter
 
 ## File Structure
 
-- Organize your plugin files such that they are located in the `external_sensors` folder
-- Each sensor should be one file
+- Organize your plugin files such that they are located in the `external_sensors` folder.
+- Each sensor should be one file.
 - Consider using a package structure for larger plugins.
 
 ## Naming Conventions
@@ -63,7 +63,7 @@ def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered
     Utilizes 3 values set as the MDL:
         mdl = [a, b, c]
         where 
-        a and b are utilize for the POD curve variables 
+        a and b are the POD curve variables 
         c represents the floor/minimum cutoff value of the leak rates
     """
 ```

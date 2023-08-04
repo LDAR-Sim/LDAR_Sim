@@ -38,7 +38,7 @@ for y in yrs:
         'r')  # where you save data
     t = len(data['time'][:])  # read time
     days = int(t/24)
-    # create empty arrays for each variable of ech file
+    # create empty arrays for each variable of each file
     U10 = np.empty((days, 45, 41), dtype=np.float)
     V10 = np.empty((days, 45, 41), dtype=np.float)
     T2M = np.empty((days, 45, 41), dtype=np.float)
@@ -47,7 +47,7 @@ for y in yrs:
     ui = 23
     index = 0
     # for every 24 hours we calculate averages for each weather variable and
-    # assign averages tothe predefined empty arrays
+    # assign averages to the predefined empty arrays
     while ui < t:
 
         # wind

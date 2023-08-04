@@ -12,7 +12,7 @@ This file can be used to combine two different weather files
 
 The two weather files ***MUST*** have the same ***time period*** for the program to run.
 
-Set the following prarmaeters to use:
+Set the following parameters to use:
 
      folder (folder that contains all the files - default is the inputs folder)
      f1 (first file to concat)

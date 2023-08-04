@@ -25,7 +25,7 @@ def get_referenced_dataframe(sim_results, columns, ref_prog='P_ref'):
     """ Generate Ratios between values from programs and a reference program
         eg:
         get_ref_ratios(sim_results, ['daily_emissions_kg', 'emis_rat', 'rat'], ref_prog='P_ref')
-        will get calulate the ratio of daily_emissions_kg between all programs and the reference
+        will calulate the ratio of daily_emissions_kg between all programs and the reference
         program for all timesteps, and store the values in a dataframe column named emis_rat
     Args:
         sim_results (list): list: Output results from Simulations. Each simulation will include

@@ -223,7 +223,7 @@ The `parameter_level` parameter can be one of three values:
 
 There are special considerations for methods:
 
-- All methods require a unique `label`. This is use internally as a unique id, and is required to utilize `_RS` and `_time` variables from the facility file.
+- All methods require a unique `label`. This is used internally as a unique id, and is required to utilize `_RS` and `_time` variables from the facility file.
 - All methods require a `deployment_type`. This can be custom coded following the `template_crew` and `template_company` modules or one of the prebuilt methods can be used:
 
   - `mobile`: Agent moves between sites. Surveys occur when a site is "ready" for a survey and a crew is available to survey.
@@ -238,7 +238,7 @@ There are special considerations for methods:
 
 - All methods require a `sensor` This can either be custom built or one of the following can be used:
 
-  - `default`: Uses a simple threshold where the leak rate is based on the measurement scale, for example if `measurement_scale = site` then the site's total emissions will be considered measured if greater than the sensors MDL. -`OGI_camera_rk`: Uses detection curve based on Ravikumar, 2018.Requires measurement_scale = 'component'.
+  - `default`: Uses a simple threshold where the leak rate is based on the measurement scale, for example if `measurement_scale = site` then the site's total emissions will be considered measured if greater than the sensors MDL. -`OGI_camera_rk`: Uses detection curve based on Ravikumar, 2018. Requires measurement_scale = 'component'.
 
 - Follow up technologies need to be set explicitly. `is_follow_up = True`. The default value is false
 - Third, because methods are often carefully designed and used in treatment / control experiments, it is helpful to allow reuse of specific methods by referring to methods by their `label`.
@@ -613,9 +613,9 @@ If using different weather files for different programs (e.g., when comparing di
 
 **Default input:**"facility_list_template.csv"
 
-**Description:** Character string that specifies the name of the csv file that contains all of the required data on the sites that comprise the LDAR program. At a bare minimum, the csv must contain the following columns: 'facility_ID', 'lat', 'lon', 'equipment_groups', and 'subtype_code'. For each mobile measurement company used as part of the LDAR program, the number of annual surveys (survey frequency) must be indicated and the inspection time for each method indicated (in minutes). The number of fixed sensors used at each site must also be indicated. A static venting rate may be provided for each site. Subsections 1.7.X describe individual columns in greater detail.
+**Description:** Character string that specifies the name of the csv file that contains all of the required data on the sites that comprise the LDAR program. At a bare minimum, the csv must contain the following columns: 'facility_ID', 'lat', 'lon', 'equipment_groups', and 'subtype_code'. For each mobile measurement company used as part of the LDAR program, the number of annual surveys (survey frequency) must be indicated and the inspection time for each method indicated (in minutes). The number of fixed sensors used at each site must also be indicated. A static venting rate may be provided for each site.
 
-**Notes on acquisition:** See [infrastructure file](#9-infrastructure-file).
+**Notes on acquisition:** See [infrastructure file](#9-infrastructure-file) which describes individual columns in greater detail.
 
 **Notes of caution:** Although facility-specific inputs provide flexibility, in most cases the appropriate data will not be available, and the same survey time or survey frequency may be used for all facilities. In general, LDAR-Sim does not hard-code methods, facility types, production types, and so on. These are provided by the user as categorical variables and can be anything. However, categorical variables must be consistent among different input files or errors will occur.
 
@@ -641,7 +641,7 @@ If using different weather files for different programs (e.g., when comparing di
 
 **Notes on acquisition:** Ideally, empirical data for similar sites is used to inform the lookup table.
 
-**Notes of caution:** Site subtype types must match those used in infrastructure_file. When used, the equivalent program level parameters will be overwritten. Subtype, NRD, LPR Leak rate source and the relevant leak rate source parameters must be set for each row in the subtype file.
+**Notes of caution:** Site subtype types must match those used in infrastructure_file. When used, the equivalent program level parameters will be overwritten. Subtype, NRd, LPR, Leak rate source and the relevant leak rate source parameters must be set for each row in the subtype file.
 
 ### &lt;repair_delay&gt;
 
@@ -737,11 +737,11 @@ If using different weather files for different programs (e.g., when comparing di
 
 **Default input:** 0.0065
 
-**Description:** A numeric scalar that denotes the leak production rate (LPR). New leaks are generated using a site-level empirical LPR that is independent of the number of leaks already present on site. LPR is the probability that a new leak will arise, each day, for each site. The LPR is an empirical representation of all conditions that lead to the occurrence of leaks, including facility age, management practices, predictive maintenance, and random chance. Currently, a single LPR is used for all facility types, production types, facility ages, and so on. In the future, as more LDAR data becomes available, LPRs could be calculated that are specific to each of these or other variables, or distributions of LPRs could be generated. For an extended discussion on LPR, see Fox et al. (2020).
+**Description:** A numeric scalar that denotes the leak production rate (LPR). New leaks are generated using a site-level empirical LPR that is independent of the number of leaks already present on site. LPR is the probability that a new leak will arise, each day, for each site. The LPR is an empirical representation of all conditions that lead to the occurrence of leaks, including facility age, management practices, predictive maintenance, and random chance. Currently, a single LPR is used for all facility types, production types, facility ages, and so on. In the future, as more LDAR data becomes available, LPRs could be calculated that are specific to each of these or other variables, or distributions of LPRs could be generated. For an extended discussion on LPR, see Fox et al. (2021).
 
 **Notes on acquisition:** While the "true" LPR is elusive, it can be estimated by dividing the number of leaks found during an LDAR survey at a facility by the number of days that have passed since the previous LDAR survey at the same facility. If this is done for a large number of survey intervals at a large number of facilities, one should eventually converge on a representative estimate. When LDAR-Sim is used, operator-specific LPR values should be estimated if sufficient data exist to do so.
 
-**Notes of caution:** Available techniques for estimating LPR make a number of problematic assumptions. Ultimately, we have relatively poor data on LPR and the relationship between LPR and NRR. Modeling results are extremely sensitive to LPR. Given that LPR is elusive, we strongly recommend that a broad range of LPR values is evaluated in LDAR-Sim before any decisions are made. For more information, refer to discussions in the main text and supplementary information of Fox et al. (2020).
+**Notes of caution:** Available techniques for estimating LPR make a number of problematic assumptions. Ultimately, we have relatively poor data on LPR and the relationship between LPR and NRd. Modeling results are extremely sensitive to LPR. Given that LPR is elusive, we strongly recommend that a broad range of LPR values is evaluated in LDAR-Sim before any decisions are made. For more information, refer to discussions in the main text and supplementary information of Fox et al. (2021).
 
 #### &lt;max_leak_rate&gt;
 
@@ -761,7 +761,7 @@ If using different weather files for different programs (e.g., when comparing di
 
 **Default input:** ['kilogram', 'hour']
 
-**Description:** Units used for inputs of leak and vent samples / distributions. Consists of two terms, an amount and an increment. the amount can be one of:
+**Description:** Units used for inputs of leak and vent samples / distributions. Consists of two terms, an amount and an increment. The amount can be one of:
 
 - gram
 - kilogram
@@ -892,11 +892,11 @@ method_labels:
 
 **Default input:** 40.0
 
-**Description:** The current federal price on carbon in Canada of $40/tonne CO2e is input as a default metric to compare the cost to mitigation ratios of LDAR programs to.
+**Description:** The federal price on carbon in Canada of $40/tonne CO2e (as of April 2021) is input as a default metric to compare the cost to mitigation ratios of LDAR programs to.
 
-**Notes on acquisition:** The fuel charge rates for Canada can be found here: <https://www.canada.ca/en/revenue-agency/services/forms-publications/publications/fcrates/fuel-charge-rates.html>.
+**Notes on acquisition:** The current fuel charge rates for Canada can be found here: <https://www.canada.ca/en/revenue-agency/services/forms-publications/publications/fcrates/fuel-charge-rates.html>.
 
-**Notes of caution:** This rate rises by $10/tonne CO2e annually and should be updated in the model to reflect changes in the price.
+**Notes of caution:** This rate rises by $15/tonne CO2e annually and should be updated in the model to reflect changes in the price.
 
 #### &lt;cost_CCUS&gt;
 
@@ -1051,8 +1051,8 @@ method_labels:
 **Description:** Methods are comprised of both a deployment type and a sensor type. the sensor type is a character string denoting the sensor used in the method. For instance, 'OGI_camera_zim','OGI_camera_rk', or 'default'. The 'default' sensor uses the MDL as a threshold to detect leaks based on the measurement scale of the method. Custom sensors can be added and referenced here. Built in sensors are:
 
 - `default`: Uses a simple threshold where the leak rate is based on the measurement scale, for example if `measurement_scale = site` then the site's total emissions will be considered measured if greater than the sensors MDL.
-- `OGI_camera_rk`: Uses detection curve based on Ravikumar, 2018.Requires measurement_scale = 'component'.
-- `OGI_camera_zim`: Uses detection curve based on Zimmerle 2020.Requires measurement_scale = 'component'.
+- `OGI_camera_rk`: Uses detection curve based on Ravikumar, 2018. Requires measurement_scale = 'component'.
+- `OGI_camera_zim`: Uses detection curve based on Zimmerle 2020. Requires measurement_scale = 'component'.
 - `GHGSAT1` Uses a wind speed based method of detection from Jacob et al., 2016.
 
 **Notes on acquisition:** No data acquisition required.
@@ -1099,7 +1099,7 @@ where f = is the fraction of leaks detected, _x_ is the emission rate in grams o
 
 **Notes on acquisition:** We recommend extensive controlled release testing under a range of representative release rates and conditions to establish detection limits. Given the amount of work required to collect this information, we recommend using historical estimates.
 
-**Notes of caution:** Detection probabilities for OGI cameras have been shown to vary with operator experience, wind speed, scene background, and other variables. Estimates from Ravikumar et al. (2018) are experimentally derived but are likely low because (i) the OGI inspector knew where to look, (ii) measurements were performed over only 1 week of good conditions, (iii) OGI cameras were tripod mounted, and (iv) videos were analyzed by experts after data collection. Estimates from Zimmerle et al. (2020) are an order of magnitude higher, and likely closer to reality. However, this estimate applies only to experienced inspectors with over 700 site inspections under their belts, so the true median detection across all inspectors may be lower. Furthermore, the Zimmerle study for experienced inspectors could still represent an underestimate as (i) weather conditions were relatively good, (ii) OGI inspectors were participating in a formal study and were likely very focused, and (iii) many of the leaks were odorized. These results would therefore not include laziness, neglect, or missing of leaks from difficult to access areas. See Section 3.8 for more information on detection limits, including the use of single values or probability surfaces.
+**Notes of caution:** Detection probabilities for OGI cameras have been shown to vary with operator experience, wind speed, scene background, and other variables. Estimates from Ravikumar et al. (2018) are experimentally derived but are likely low because (i) the OGI inspector knew where to look, (ii) measurements were performed over only 1 week of good conditions, (iii) OGI cameras were tripod mounted, and (iv) videos were analyzed by experts after data collection. Estimates from Zimmerle et al. (2020) are an order of magnitude higher, and likely closer to reality. However, this estimate applies only to experienced inspectors with over 700 site inspections under their belts, so the true median detection across all inspectors may be lower. Furthermore, the Zimmerle study for experienced inspectors could still represent an underestimate as (i) weather conditions were relatively good, (ii) OGI inspectors were participating in a formal study and were likely very focused, and (iii) many of the leaks were odorized. These results would therefore not include laziness, neglect, or missing of leaks from difficult to access areas. See <MDL> for more information on detection limits, including the use of single values or probability surfaces.
 
 #### &lt;MDL&gt; (OGI_camera_zim)
 
@@ -1224,7 +1224,7 @@ Method costs. Currency is not important but must be consistent across all inputs
 
 **Notes on acquisition:** Consult service provider.
 
-**Notes of caution:** Does not account for maintenance activities or the cost of replacing devices after at the end of their lifetime.
+**Notes of caution:** Does not account for maintenance activities or the cost of replacing devices at the end of their lifetime.
 
 ### &lt;n_crews&gt;
 
@@ -1272,7 +1272,7 @@ Method costs. Currency is not important but must be consistent across all inputs
 
 **Description:** The number of minutes required to complete a survey at each facility.
 
-**Notes on acquisition:** In most cases, an estimate will be made as data will not exist for the specific combination of facility and unique method. However, as new methods and programs and implemented, data will become available to better refine modeling estimates and develop more intelligent programs.
+**Notes on acquisition:** In most cases, an estimate will be made as data will not exist for the specific combination of facility and unique method. However, as new methods and programs are implemented, data will become available to better refine modeling estimates and develop more intelligent programs.
 
 **Notes of caution:** This variable is an empirical estimate of how much time is required for a given mobile method to complete a survey at a given facility. This includes anything that happens onsite (e.g., calibrations, interfacing with the operator, etc.) but _does not include_ driving time between facilities or any other account of time spent offsite. This variable is simply the amount of time that passes from the start of a facility survey to the end. If a facility takes longer than there is time left in a day, then the agent/crew returns the following day to continue work, and so on and so forth, until the facility is completed. This variable is not required for continuous measurement methods.
 
@@ -1406,9 +1406,9 @@ Method costs. Currency is not important but must be consistent across all inputs
 
 **Description:** A value in days of a minimum time to enforce between consecutive surveys of a site.
 
-**Notes on acquisition:** This functionality is only currently supported with mobile methods.
+**Notes on acquisition:** N/A
 
-**Notes of caution:** Only mobile methods can use this functionality. This behavior implemented through this param will override behavior from other parameters such as RS. Users may see incorrect/strange behavior if an impractical value is chosen for min_time_bt_surveys.
+**Notes of caution:** Only mobile methods can use this functionality. The behavior implemented through this param will override behavior from other parameters such as RS. Users may see incorrect/strange behavior if an impractical value is chosen for min_time_bt_surveys.
 
 **min_time_bt_surveys** may also be set in the infrastructure file. To do so, it must not be present in the **methods parameters**
 
@@ -1470,7 +1470,7 @@ Method weather envelopes
 
 **Default input:** N/A
 
-**Description:** Specifies the name of the text file that contains orbit information of satellites. TLE stands for a two-line element set, which is a data format encoding a list of orbital elements of an Earth-orbiting object for a given point in time, the epoch. By using TLE of a satellite, LDAR-Sim can estimate the postion of satellite above earth at specific time.
+**Description:** Specifies the name of the text file that contains orbit information of satellites. TLE stands for a two-line element set, which is a data format encoding a list of orbital elements of an Earth-orbiting object for a given point in time, the epoch. By using TLE of a satellite, LDAR-Sim can estimate the position of satellite above earth at specific time.
 
 **Notes on acquisition:** It is only required for satellite.
 
@@ -1526,7 +1526,7 @@ Method weather envelopes
 
 **Default input:** 0.0
 
-**Description:** The follow-up instant threshold in grams per second. Measured site-level emissions must be above the follow-up threshold before a candidate site becomes immediately available for flagging. If _follow_up.instant_threshold_type_ is "absolute", the numeric value indicates the follow-up threshold in grams per second. If "relative", the numeric value is passed to a function that calculates emission rate that corresponds to a desired proportion of total emissions for a given leak size distribution. The function estimates the MDL needed to find the top X percent of sources for a given leak size distribution. For example, given a proportion of 0.01 and a leak-size distribution, this function will return an estimate of the follow-up threshold that will ensure that all leaks in the top 1% of leak sizes are found.
+**Description:** The follow-up instant threshold in grams per second. Measured site-level emissions must be above the follow-up threshold before a candidate site becomes immediately available for flagging. If _follow_up.instant_threshold_type_ is "absolute", the numeric value indicates the follow-up threshold in grams per second. If "relative", the numeric value is passed to a function that calculates the emission rate that corresponds to a desired proportion of total emissions for a given leak size distribution. The function estimates the MDL needed to find the top X percent of sources for a given leak size distribution. For example, given a proportion of 0.01 and a leak-size distribution, this function will return an estimate of the follow-up threshold that will ensure that all leaks in the top 1% of leak sizes are found.
 
 **Notes on acquisition:** No data acquisition required.
 
@@ -1562,15 +1562,15 @@ Method weather envelopes
 
 **Default input:** []
 
-**Description:** The percentage (0.0-1.0) of sites that must be flagged per survey. IF a screening technology flags 10% of sites during a campaign and the minimum_followup for the campaign, is 0.5, then 40% of all sites will be selected at random and flagged prior to the end of the campaign. If min_followup_type is 'campaign' then each value corresponds to the current survey within the year, for example if RS=2 each set of site surveys require a value. If min_followup_type is 'annual' then a single value (in the array) is expected for the entire year, regardless of RS value. Surveys will be performed n days prior to the end of a campaign / year based on min_followup_days_to_end. Note: Not enabled by default (empty string)
+**Description:** The percentage (0.0-1.0) of sites that must be flagged per survey. If a screening technology flags 10% of sites during a campaign and the minimum_followup for the campaign, is 0.5, then 40% of all sites will be selected at random and flagged prior to the end of the campaign. If min_followup_type is 'campaign' then each value corresponds to the current survey within the year, for example if RS=2 each set of site surveys require a value. If min_followup_type is 'annual' then a single value (in the array) is expected for the entire year, regardless of RS value. Surveys will be performed n days prior to the end of a campaign / year based on min_followup_days_to_end. Note: Not enabled by default (empty string)
 
-**Notes on acquisition:** Often based on standards, ie. EPA proposed 6 screenings with minimum_followup of 1 were min_followup_type is annual.
+**Notes on acquisition:** Often based on standards, ie. EPA proposed 6 screenings with minimum_followup of 1 where min_followup_type is annual.
 
 **Notes of caution:** N/A
 
 #### &lt;min_followup_type&gt;
 
-**Data type:** string - 'annual' or 'campaign
+**Data type:** string - 'annual' or 'campaign'
 
 **Default input:** 'annual'
 
@@ -1873,7 +1873,7 @@ If **\*\*\_time** is present in the infrastructure file, it must **NOT** be set 
 
 **Notes on acquisition:** Ideally, should be empirical data for similar sites.
 
-**Notes of caution:** Must be populated when using the subtype file with consider_venting set to True if venting in not set per site in the infrastructure file.
+**Notes of caution:** Must be populated when using the subtype file with consider_venting set to True if venting is not set per site in the infrastructure file.
 
 --------------------------------------------------------------------------------
 
@@ -1887,7 +1887,7 @@ As LDAR-Sim continues to grow and evolve, certain parameters may need to be reti
 
 **Default input:** None
 
-**Description:** Name of file containing distributions for subtypes. Requires 3 or 4 columns: subtype_code, dist_type, followed by scipy defined shape parameters, followed by the scipy scale. For example if dist_type is log normal , their will be only one shape parameter (3rd column) and the the size parameter will be placed in the 4th column. Note: loc parameters are always set to zero. If this parameter is set to None, or left blank, distributions are set are set at a program level with the leak_dist_params, and leak_dist_type parameters.
+**Description:** Name of file containing distributions for subtypes. Requires 3 or 4 columns: subtype_code, dist_type, followed by scipy defined shape parameters, followed by the scipy scale. For example if dist_type is log normal , their will be only one shape parameter (3rd column) and the size parameter will be placed in the 4th column. Note: loc parameters are always set to zero. If this parameter is set to None, or left blank, distributions are set are set at a program level with the leak_dist_params, and leak_dist_type parameters.
 
 **Notes on acquisition:**
 

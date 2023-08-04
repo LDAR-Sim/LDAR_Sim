@@ -27,7 +27,7 @@ def check_types(default, test, omit_keys=None, fatal=False):
     :param default: default element to test
     :param test: test element to test
     :param omit_keys: a list of dictionary keys to omit from further recursive testing
-    :param fatal: boolean to control whether sys.exit() is called upon a error
+    :param fatal: boolean to control whether sys.exit() is called upon an error
     """
     # Infer 'None' to an empty list
     if omit_keys is None:

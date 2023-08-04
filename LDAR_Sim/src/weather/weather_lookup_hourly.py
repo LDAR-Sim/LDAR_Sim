@@ -222,7 +222,7 @@ class WeatherLookup:
                 # the end index. For example if the weather data goes from
                 # 2017-2020, the start time is December 31st 2020 20:00 UTC, and the
                 # end of day time is Jan 1st 2021 1:00 UTC, then the Start index will
-                # be larger than the end index, because the the end index will be pointing
+                # be larger than the end index, because the end index will be pointing
                 # at Jan 1st 2017 1:00 UTC.
                 hrly_weather_day_1 = data_set[cur_day_srt_idx:,
                                               lat_idx, lon_idx]

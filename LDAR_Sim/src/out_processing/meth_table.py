@@ -112,7 +112,7 @@ def generate(sim_results, programs):
         if len(meth_table) > 0:
             meth_df = concat([m for _, m in meth_table.items()])
         else:
-            # If there are no methods add default columnss
+            # If there are no methods add default columns
             meth_df = DataFrame(columns=[s[1:] for s in targ_cols_pointer])
 
         prog_table.update({pidx: meth_df.to_dict('index')})

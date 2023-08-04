@@ -147,7 +147,7 @@ if __name__ == '__main__':
         for x_var in sens_x_vars:
             sim_progs = []
             var_paths = [path.split(".") for path in x_var['paths']]
-            # Get program names and the their associated index in programs object
+            # Get program names and their associated index in programs object
             key = var_paths[0][-1]
             # Create output folder for the sensitivity variable
             pset_output_dir = output_directory/'sens'/'{}'.format(key)
@@ -164,7 +164,7 @@ if __name__ == '__main__':
                         if p["orig_program_name"] == path[0] or path[0].lower() == '__all':
                             set_from_keylist(munip_progs[idx], path[1:], val)
 
-                # Generate output folder if it doesnt exist
+                # Generate output folder if it does not exist
                 prog_outdir = output_directory / '{}/{}/'.format(key, val)
                 if not os.path.exists(prog_outdir):
                     os.makedirs(prog_outdir)

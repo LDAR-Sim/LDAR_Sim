@@ -57,7 +57,7 @@ def create_sims(sim_params, programs, virtual_world, generator_dir, in_dir, out_
             if pregen_leaks:
                 file_loc = generator_dir / "pregen_{}_{}.p".format(i, pidx)
                 if os.path.isfile(file_loc):
-                    # If there is a  pregenerated file for the virtual world
+                    # If there is a pregenerated file for the virtual world
                     generated_data = pickle.load(open(file_loc, "rb"))
                     sites = generated_data['sites']
                     leak_timeseries = generated_data['leak_timeseries']
