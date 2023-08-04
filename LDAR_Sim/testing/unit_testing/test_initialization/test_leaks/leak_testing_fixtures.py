@@ -10,7 +10,7 @@ def mock_vw_fix():
     return {
         'subtype_file': None,
         'NRd': 10,
-        'n_init_leaks': None,
+        'n_init_leaks_prob': None,
         'n_init_days': None,
         'emissions': {
             'LPR': 0.5,
@@ -27,7 +27,7 @@ def mock_vw_2_fix():
     return {
         'subtype_file': None,
         'NRd': 10,
-        'n_init_leaks': 1,
+        'n_init_leaks_prob': 0.1,
         'n_init_days': 10,
         'emissions': {
             'LPR': 0.5,

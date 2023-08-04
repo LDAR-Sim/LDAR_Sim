@@ -738,7 +738,7 @@ virtual_world:
       - hour
   infrastructure_file: facilities_alberta.csv
   n_init_days: null
-  n_init_leaks: null
+  n_init_leaks_prob: null
   parameter_level: virtual_world
   repair_delay:
     type: default
