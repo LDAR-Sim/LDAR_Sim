@@ -30,7 +30,7 @@ def get_referenced_dataframe(sim_results, columns, ref_prog='P_ref'):
     Args:
         sim_results (list): list: Output results from Simulations. Each simulation will include
             timeseries, sites, leaks, and meta (data) dictionaries.
-        columns (list of lists): a list of columns to calulate where the first element is the
+        columns (list of lists): a list of columns to calculate where the first element is the
             column within the timeseries dataframe, the second is the name for the new output column
             and the third is the operation (diff or rat) Where diff takes the difference between
             the reference program and all other programs, and rat take the ratio between the two.
