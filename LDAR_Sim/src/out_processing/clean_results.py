@@ -123,7 +123,7 @@ def agg_flatten(df, group_by, agg_cols=None, agg_types=["mean"],
                             - common functions 'mean', numpy.median, 'sum', 'count'
         prefix (string, optional): A prefix that is assigned to all agg_cols. Defaults to None.
                                     ie. if agg_cols = ['ID', 'shape'] and prefix = 'fun' then
-                                    the output columns will include 'fun_ID', 'fun_shape'. 
+                                    the output columns will include 'fun_ID', 'fun_shape'.
                                     does not apply on the group by columns
         include_col_name (bool, optional): Include original column name. Defaults to True.
         include_agg_name (bool, optional): Include the aggregation name. Defaults to False.
