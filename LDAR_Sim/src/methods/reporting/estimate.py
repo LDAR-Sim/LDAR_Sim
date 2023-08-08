@@ -4,7 +4,6 @@
 # Purpose:     Basic method of estimating leak start date (half the time since last component
 #              Survey)
 #
-# Copyright (C) 2018-2022  Intelligent Methane Monitoring and Management System (IM3S) Group
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the MIT License as published
