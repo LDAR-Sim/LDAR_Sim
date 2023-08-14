@@ -89,7 +89,7 @@ class LdarSim:
             state['subtypes'] = pd.read_csv(
                 input_dir/virtual_world['subtype_file'],
                 index_col='subtype_code').to_dict()
-        # Sample sites if they havent been provided from pregeneration step
+        # Sample sites if they have not been provided from pregeneration step
         if not virtual_world['pregenerate_leaks']:
             if virtual_world['site_samples'] is not None:
                 state['sites'] = random.sample(

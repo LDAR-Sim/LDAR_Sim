@@ -50,7 +50,7 @@ def generate(sim_results, baseline_program, programs):
         {'in': 'subtype_code', 'out': 'subtype_code', 'type': str},
     ], aggregate=False)
 
-    # Requires to steps, count each by sim then take the average of the sim
+    # Requires two steps, count each by sim then take the average of the sim
     sim_sites_count = agg_flatten(prog_sites, ps_idx, ['facility_ID'], ['count'],
                                   prefix="site", include_col_name=False, include_agg_name=True)
 

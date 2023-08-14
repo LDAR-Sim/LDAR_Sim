@@ -207,7 +207,7 @@ class BaseCompany:
     def candidates_to_watchlist(self):
         """
         Add candidate sites to watchlist, and calculate a site emission rate if there are
-        multiple emissions measurements.The watchlist allows companies to keep track of
+        multiple emissions measurements. The watchlist allows companies to keep track of
         candidate site surveys. This is utilized by a company when a follow_up_delay
         is greater than zero, as multiple surveys can be done for each site before a site
         is flagged.
@@ -218,7 +218,7 @@ class BaseCompany:
         """
         site_wl = self.site_watchlist
 
-        # Go through Each Candidate site, and add it to the watchlist
+        # Go through each Candidate site, and add it to the watchlist
         # A watchlist keeps track of sites with leaks that have not yet been flagged
         for site in self.candidate_flags:
             facility_ID = site['site']['facility_ID']
@@ -257,7 +257,7 @@ class BaseCompany:
                 )
 
         # Sort Watchlist by emissions rate
-        # This ensures that the leakest sites are at the top of the dictionary
+        # This ensures that the leakiest sites are at the top of the dictionary
         # so proportional site followup can be performed without resorting everyday
         # within the flag_sites function.
         site_wl = {k: v for k, v in sorted(

@@ -79,7 +79,7 @@ class Schedule():
 
             The goal is to improve the coordination of LDAR crews when there are
             more than one crew. The crews will only visit the site corresponding to their IDs.
-            e.g., crew_ID 0 will only visit site in cluter 0
+            e.g., crew_ID 0 will only visit site in cluster 0
 
             This functionality is only used when geography and route_planning are both enabled.
 

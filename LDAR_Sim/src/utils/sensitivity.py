@@ -42,7 +42,7 @@ def yaml_to_dict(y_file):
 
 
 def generate_sens_prog_set(sens_z_var, programs):
-    """ Generate a program set of sensitivity programs using the a
+    """ Generate a program set of sensitivity programs using
         a range of values for the parameter.
 
     Args:
@@ -60,7 +60,7 @@ def generate_sens_prog_set(sens_z_var, programs):
     if sens_z_var:
         # Go through sensitivity progs
         var_paths = [path.split(".") for path in sens_z_var['paths']]
-        # Get program names and the their associated index in programs object
+        # Get program names and their associated index in programs object
         key = var_paths[0][-1]
         for val in sens_z_var['vals']:
             for path in var_paths:

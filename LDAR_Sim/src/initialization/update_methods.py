@@ -29,7 +29,7 @@ from sklearn.metrics.pairwise import haversine_distances
 
 def est_n_crews(m, sites):
     """ Estimate the number of mobile crews required to survey all sites within a campaign. This
-    function will find estimate number of crews based on an estimate of sites per day a single
+    function will estimate number of crews based on an estimate of sites per day a single
     crew is able to accomplish. If the function fails (usually non mobile method) n_crews of 1
     will be returned.
 
@@ -74,7 +74,7 @@ def est_site_p_day(m, sites):
     work_mins = m['max_workday']*60
     try:
         est_val = floor(average([_s_per_day(s) for s in sites]))
-        if(est_val == 0):
+        if (est_val == 0):
             est_val = 1
     except KeyError:
         est_val = 1

@@ -5,7 +5,7 @@ An alternative sensor, specifically built to replicate the probability of detect
 # ------------------------------------------------------------------------------
 # Program:     The LDAR Simulator (LDAR-Sim)
 # File:        methods.deployment.OGI_camera_zim
-# Purpose:     OGI company specific deployment classes and methods based on zimmerle (2020)
+# Purpose:     OGI company specific deployment classes and methods based on Zimmerle (2020)
 #
 # Copyright (C) 2018-2021  Intelligent Methane Monitoring and Management System (IM3S) Group
 #
@@ -36,7 +36,7 @@ def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered
     Utilizes 3 values set as the MDL:
         mdl = [a, b, c]
         where 
-        a and b : utilize for the PoD curve variables 
+        a and b : are the PoD curve variables 
         c : represents the floor/minimum cutoff value of the leak rates that the sensor can detect
 
     PoD = 1 / (1 + e ^ (a - b * r )) 

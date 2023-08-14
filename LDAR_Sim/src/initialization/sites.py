@@ -112,7 +112,7 @@ def generate_sites(virtual_world, in_dir, pregen_leaks, start_date, end_date):
     Args:
         virtual_world (dict): The virtual world parameters informing site generation.
         in_dir (Path): The path to the inputs directory
-        pregen_leaks (boolean): Boolean indicating Whether or not to pregenerate leaks.
+        pregen_leaks (boolean): Boolean indicating whether or not to pregenerate leaks.
 
     Returns:
         [dict]: sites, Union[dict, None]: leak_timeseries, Union[dict, None]: initial_leaks

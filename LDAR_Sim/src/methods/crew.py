@@ -196,7 +196,7 @@ class BaseCrew:
                     covered_equipment_rates[leak['equipment_group'] - 1] += leak['rate']
             site_rate += leak['rate']
             equipment_rates[leak['equipment_group']-1] += leak['rate']
-            # Get the type of sensor, and call the the detect emissions function for sensor
+            # Get the type of sensor, and call the detect emissions function for sensor
             # Aggregate true emissions to equipment and site level; get list of leaks present
 
         # Add vented emissions

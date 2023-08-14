@@ -46,7 +46,7 @@ class Schedule():
         self.end_hour = None
         self.allowed_end_time = None
         self.scheduling = self.config['scheduling']
-        # define a list of home bases for crew and redefine the the initial location of crew
+        # define a list of home bases for crew and redefine the initial location of crew
 
     def start_day(self, site_pool):
         """ Start day method. Get daily itinerary for crew. Can include other functions

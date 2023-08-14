@@ -107,4 +107,4 @@ def input_mapper_v1(parameters):
     # 4. Key-change hooks
     pass
 
-    return(parameters, mined_global_parameters)
+    return (parameters, mined_global_parameters)

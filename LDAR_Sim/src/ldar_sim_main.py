@@ -50,7 +50,7 @@ adding an issue to https://github.com/LDAR-Sim/LDAR_Sim.git.
 if __name__ == '__main__':
     print(opening_msg)
 
-    # Get route directory , which is parent folder of ldar_sim_main file
+    # Get route directory, which is parent folder of ldar_sim_main file
     # Set current working directory directory to root directory
     root_dir = Path(__file__).resolve().parent.parent
     os.chdir(root_dir)

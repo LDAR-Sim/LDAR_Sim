@@ -59,7 +59,7 @@ class Schedule():
         # self.rollover = None  # (rollover_site_plan)
         self.travel_all_day = False
         self.scheduling = self.config['scheduling']
-        # define a list of home bases for crew and redefine the the initial location of crew
+        # define a list of home bases for crew and redefine the initial location of crew
         if self.scheduling['route_planning']:
             hb_file = self.in_dir / self.scheduling['home_bases_files']
             HB = pd.read_csv(hb_file, sep=',')
@@ -103,7 +103,7 @@ class Schedule():
         # ---- Go through Sites and get travel times ----
         # 1) Route Planning - add them to a temporary site plan list.
         #      Choose site from site plan list based on travel time.
-        #      Remove choosen site from site pool, then get new travel
+        #      Remove chosen site from site pool, then get new travel
         #      times and repeat (using while loop).
         # 2) No Route Planning - Fill the day with sites visits and
         #      return the days site plan.
@@ -153,7 +153,7 @@ class Schedule():
                     site_plans_today.append(site_plan)
                     est_mins_remaining -= site_plan['LDAR_mins']
                     site_ID = site_plan['site']['facility_ID']
-                    # remove choosen site from site pool
+                    # remove chosen site from site pool
                     site_pool = [s for s in site_pool if s['facility_ID'] != site_ID]
                     self.crew_lon = site_plan['site']['lon']
                     self.crew_lat = site_plan['site']['lat']
@@ -254,7 +254,7 @@ class Schedule():
 
         Returns:
             dict: {
-                'travel_time': time in minutes to trave between current site and crews
+                'travel_time': time in minutes to travel between current site and crews
                                current location
                 'next_site': next location the crew will travel to.
             }
