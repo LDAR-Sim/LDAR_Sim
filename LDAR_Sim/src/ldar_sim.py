@@ -28,7 +28,7 @@ from math import floor
 import numpy as np
 import pandas as pd
 from weather.daylight_calculator import DaylightCalculatorAve
-from config.output_flags import OUTPUTS, SITE_VISITS
+from config.output_flags import OUTPUTS, SITE_VISITS, SITES, LEAKS, TIMESERIES, PLOTS
 from geography.vector import grid_contains_point
 from initialization.leaks import generate_initial_leaks, generate_leak
 from initialization.sites import generate_sites
@@ -456,106 +456,109 @@ class LdarSim:
         program_parameters = self.program_parameters
         leaks = []
         cur_ts = self.state['t'].current_timestep
-        if self.simulation_settings['write_data']:
-            # Attribute individual leak emissions to site totals
-            for site in self.state['sites']:
-                for lk in site['active_leaks']:
-                    if lk['day_ts_began'] < 0:
-                        duration = cur_ts
-                    else:
-                        duration = cur_ts - lk['day_ts_began']
-                    lk['volume'] = duration * lk['rate'] * 86.4
-                site['active_leak_cnt'] = len(site['active_leaks'])
-                site['repaired_leak_cnt'] = len(site['repaired_leaks'])
-                site['active_leak_emis'] = sum([
-                    lk['volume']
-                    for lk in site['active_leaks']])
-                site['repaired_leak_emis'] = sum([
-                    lk['volume']
-                    for lk in site['repaired_leaks']])
-                site['total_emissions_kg'] = site['active_leak_emis'] + \
-                    site['repaired_leak_emis']
-                leaks += site['active_leaks'] + site['repaired_leaks']
-                del site['n_new_leaks']
 
-            leak_df = pd.DataFrame(leaks)
-            time_df = pd.DataFrame(self.timeseries)
-            site_df = pd.DataFrame(self.state['sites'])
+        # Attribute individual leak emissions to site totals
+        for site in self.state['sites']:
+            for lk in site['active_leaks']:
+                if lk['day_ts_began'] < 0:
+                    duration = cur_ts
+                else:
+                    duration = cur_ts - lk['day_ts_began']
+                lk['volume'] = duration * lk['rate'] * 86.4
+            site['active_leak_cnt'] = len(site['active_leaks'])
+            site['repaired_leak_cnt'] = len(site['repaired_leaks'])
+            site['active_leak_emis'] = sum([
+                lk['volume']
+                for lk in site['active_leaks']])
+            site['repaired_leak_emis'] = sum([
+                lk['volume']
+                for lk in site['repaired_leaks']])
+            site['total_emissions_kg'] = site['active_leak_emis'] + \
+                site['repaired_leak_emis']
+            leaks += site['active_leaks'] + site['repaired_leaks']
+            del site['n_new_leaks']
 
-            # Create site_visit dataframes
-            site_visits: dict[str, pd.DataFrame] = {}
-            for meth, meth_visits in self.state['site_visits'].items():
-                site_visits[meth] = pd.DataFrame((meth_visits))
+        leak_df = pd.DataFrame(leaks)
+        time_df = pd.DataFrame(self.timeseries)
+        site_df = pd.DataFrame(self.state['sites'])
 
-            # Create some new variables for plotting
-            site_df['cum_frac_sites'] = list(site_df.index)
-            site_df['cum_frac_sites'] = site_df['cum_frac_sites'] / \
-                max(site_df['cum_frac_sites'])
-            site_df['cum_frac_emissions'] = np.cumsum(
-                sorted(site_df['total_emissions_kg'], reverse=True))
-            site_df['cum_frac_emissions'] = site_df['cum_frac_emissions'] \
-                / max(site_df['cum_frac_emissions'])
-            site_df['mean_rate_kg_day'] = site_df['total_emissions_kg'] / \
-                virtual_world['timesteps']
-            leaks_active = leak_df[leak_df.status != 'repaired'] \
-                .sort_values('rate', ascending=False)
-            leaks_repaired = leak_df[leak_df.status == 'repaired'] \
-                .sort_values('rate', ascending=False)
+        # Create site_visit dataframes
+        site_visits: dict[str, pd.DataFrame] = {}
+        for meth, meth_visits in self.state['site_visits'].items():
+            site_visits[meth] = pd.DataFrame((meth_visits))
 
-            if len(leaks_active) > 0:
-                leaks_active['cum_frac_leaks'] = list(
-                    np.linspace(0, 1, len(leaks_active)))
-                leaks_active['cum_rate'] = np.cumsum(leaks_active['rate'])
-                leaks_active['cum_frac_rate'] = leaks_active['cum_rate'] / \
-                    max(leaks_active['cum_rate'])
+        # Create some new variables for plotting
+        site_df['cum_frac_sites'] = list(site_df.index)
+        site_df['cum_frac_sites'] = site_df['cum_frac_sites'] / \
+            max(site_df['cum_frac_sites'])
+        site_df['cum_frac_emissions'] = np.cumsum(
+            sorted(site_df['total_emissions_kg'], reverse=True))
+        site_df['cum_frac_emissions'] = site_df['cum_frac_emissions'] \
+            / max(site_df['cum_frac_emissions'])
+        site_df['mean_rate_kg_day'] = site_df['total_emissions_kg'] / \
+            virtual_world['timesteps']
+        leaks_active = leak_df[leak_df.status != 'repaired'] \
+            .sort_values('rate', ascending=False)
+        leaks_repaired = leak_df[leak_df.status == 'repaired'] \
+            .sort_values('rate', ascending=False)
 
-            if len(leaks_repaired) > 0:
-                leaks_repaired['cum_frac_leaks'] = list(
-                    np.linspace(0, 1, len(leaks_repaired)))
-                leaks_repaired['cum_rate'] = np.cumsum(leaks_repaired['rate'])
-                leaks_repaired['cum_frac_rate'] = leaks_repaired['cum_rate'] \
-                    / max(leaks_repaired['cum_rate'])
+        if len(leaks_active) > 0:
+            leaks_active['cum_frac_leaks'] = list(
+                np.linspace(0, 1, len(leaks_active)))
+            leaks_active['cum_rate'] = np.cumsum(leaks_active['rate'])
+            leaks_active['cum_frac_rate'] = leaks_active['cum_rate'] / \
+                max(leaks_active['cum_rate'])
 
-            leak_df = pd.concat([leaks_active, leaks_repaired])
+        if len(leaks_repaired) > 0:
+            leaks_repaired['cum_frac_leaks'] = list(
+                np.linspace(0, 1, len(leaks_repaired)))
+            leaks_repaired['cum_rate'] = np.cumsum(leaks_repaired['rate'])
+            leaks_repaired['cum_frac_rate'] = leaks_repaired['cum_rate'] \
+                / max(leaks_repaired['cum_rate'])
 
-            # Write csv files
+        leak_df = pd.concat([leaks_active, leaks_repaired])
+
+        # Write csv files
+        if simulation_settings[OUTPUTS][LEAKS]:
             leak_df.to_csv(
                 self.output_dir /
                 'leaks_output_{}_{}.csv'.format(
                     virtual_world['simulation'], program_parameters['program_name']),
                 index=False)
 
+        if simulation_settings[OUTPUTS][TIMESERIES]:
             time_df.to_csv(
                 self.output_dir /
                 'timeseries_output_{}_{}.csv'.format(
                     virtual_world['simulation'], program_parameters['program_name']),
                 index=False)
 
+        if simulation_settings[OUTPUTS][SITES]:
             site_df.to_csv(
                 self.output_dir /
                 'sites_output_{}_{}.csv'.format(
                     virtual_world['simulation'], program_parameters['program_name']),
                 index=False)
 
-            if simulation_settings[OUTPUTS][SITE_VISITS]:
-                for meth, meth_vis_df in site_visits.items():
-                    meth_vis_df.to_csv(
-                        self.output_dir /
-                        f"site_visits_{meth}_{virtual_world['simulation']}.csv",
-                        index=False
-                    )
+        if simulation_settings[OUTPUTS][SITE_VISITS]:
+            for meth, meth_vis_df in site_visits.items():
+                meth_vis_df.to_csv(
+                    self.output_dir /
+                    f"site_visits_{meth}_{virtual_world['simulation']}.csv",
+                    index=False
+                )
 
-            # Write metadata
-            f_name = (
-                self.output_dir /
-                "metadata_{}.txt".format(virtual_world['simulation'])
-            )
-            metadata = open(f_name, 'w')
-            metadata.write(str(virtual_world) + '\n' + str(datetime.datetime.now()))
-            metadata.close()
+        # Write metadata
+        f_name = (
+            self.output_dir /
+            "metadata_{}.txt".format(virtual_world['simulation'])
+        )
+        metadata = open(f_name, 'w')
+        metadata.write(str(virtual_world) + '\n' + str(datetime.datetime.now()))
+        metadata.close()
 
         # Make plots
-        if self.simulation_settings['make_plots']:
+        if self.simulation_settings[OUTPUTS][PLOTS]:
             make_plots(
                 leak_df, time_df, site_df, virtual_world['simulation'],
                 self.output_dir

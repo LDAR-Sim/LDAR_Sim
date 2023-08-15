@@ -28,6 +28,7 @@ import sys
 import shutil
 from pathlib import Path
 
+from config.output_flags import OUTPUTS, TIMESERIES, SITES, LEAKS, BATCH_REPORTING
 from economics.cost_mitigation import cost_mitigation
 from initialization.args import files_from_args, get_abs_path
 from initialization.input_manager import InputManager
@@ -110,7 +111,10 @@ if __name__ == '__main__':
 
     # Do batch reporting
     print("....Generating output data")
-    if sim_params['write_data']:
+    if (sim_params[OUTPUTS][BATCH_REPORTING] and
+        (sim_params[OUTPUTS][SITES] and
+            sim_params[OUTPUTS][LEAKS] and
+            sim_params[OUTPUTS][TIMESERIES])):
         # Create a data object...
         if has_ref & has_base:
             print("....Generating cost mitigation outputs")

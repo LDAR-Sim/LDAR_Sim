@@ -47,6 +47,7 @@ if __name__ == '__main__':
     from out_processing.batch_reporting import BatchReporting
     from out_processing.prog_table import generate as gen_prog_table
     from utils.generic_functions import check_ERA5_file
+    from config.output_flags import OUTPUTS, SITES, LEAKS, TIMESERIES, BATCH_REPORTING
 
     # Get root directory , which is parent folder of ldar_sim_main file
     # Set current working directory directory to root directory
@@ -100,7 +101,10 @@ if __name__ == '__main__':
 
             # Do batch reporting
             print("....Generating output data")
-            if sim_params['write_data']:
+            if (sim_params[OUTPUTS][BATCH_REPORTING] and
+                (sim_params[OUTPUTS][SITES] and
+                    sim_params[OUTPUTS][LEAKS] and
+                    sim_params[OUTPUTS][TIMESERIES])):
                 # Create a data object...
                 if has_ref & has_base:
                     print("....Generating cost mitigation outputs")

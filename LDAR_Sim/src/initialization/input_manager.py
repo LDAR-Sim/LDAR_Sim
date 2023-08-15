@@ -176,7 +176,7 @@ class InputManager:
                         programs = programs + new_parameters.pop('programs')
 
                 check_types(self.simulation_parameters, new_parameters, omit_keys=['programs'])
-                self.simulation_parameters.update(new_parameters)
+                self.retain_update(self.simulation_parameters, new_parameters)
 
             elif new_parameters['parameter_level'] == 'virtual_world':
                 if 'default_parameters' not in new_parameters:

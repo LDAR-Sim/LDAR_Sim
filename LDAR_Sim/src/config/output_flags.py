@@ -19,3 +19,8 @@
 
 OUTPUTS = 'outputs'
 SITE_VISITS = 'site_visits'
+LEAKS = "leaks"
+SITES = "sites"
+TIMESERIES = "timeseries"
+PLOTS = "plots"
+BATCH_REPORTING = "batch_reporting"

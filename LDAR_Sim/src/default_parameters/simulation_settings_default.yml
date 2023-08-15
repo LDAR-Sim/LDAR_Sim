@@ -8,10 +8,13 @@ n_processes: 6 # Recommend: 6
 n_simulations: 2
 start_date: [2023, 1, 1]
 end_date: [2027, 12, 31]
-make_plots: True # True/False
 print_from_simulations: True # True/False
-write_data: True # True/False
 pregenerate_leaks: True # True/False
 preseed_random: False # True/False
 outputs:
   site_visits: False
+  leaks: True
+  sites: True
+  timeseries: True
+  plots: True
+  batch_reporting: True
