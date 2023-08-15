@@ -28,6 +28,7 @@ from math import floor
 import numpy as np
 import pandas as pd
 from weather.daylight_calculator import DaylightCalculatorAve
+from config.output_flags import OUTPUTS, SITE_VISITS
 from geography.vector import grid_contains_point
 from initialization.leaks import generate_initial_leaks, generate_leak
 from initialization.sites import generate_sites
@@ -536,12 +537,13 @@ class LdarSim:
                     virtual_world['simulation'], program_parameters['program_name']),
                 index=False)
 
-            for meth, meth_vis_df in site_visits.items():
-                meth_vis_df.to_csv(
-                    self.output_dir /
-                    f"site_visits_{meth}_{virtual_world['simulation']}.csv",
-                    index=False
-                )
+            if simulation_settings[OUTPUTS][SITE_VISITS]:
+                for meth, meth_vis_df in site_visits.items():
+                    meth_vis_df.to_csv(
+                        self.output_dir /
+                        f"site_visits_{meth}_{virtual_world['simulation']}.csv",
+                        index=False
+                    )
 
             # Write metadata
             f_name = (

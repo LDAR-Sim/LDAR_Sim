@@ -13,3 +13,5 @@ print_from_simulations: True # True/False
 write_data: True # True/False
 pregenerate_leaks: True # True/False
 preseed_random: False # True/False
+outputs:
+  site_visits: False
