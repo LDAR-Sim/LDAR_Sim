@@ -1,3 +1,4 @@
+import filecmp
 import json
 import logging
 import math
@@ -91,6 +92,43 @@ def compare_prog_tables(out_dir, expected_dir, logger) -> Literal['Success', 'Fa
     return ret_string
 
 
+def compare_out_files(out_dir, expected_results, logger) -> Literal['Success', 'Failure']:
+    ret_string: Literal = 'Success'
+
+    # Setup Directory Comparison
+    comparison: filecmp.dircmp = filecmp.dircmp(out_dir, expected_results)
+    non_identical_files_batch: list = []
+
+    # Compare files in top-level output directories
+    if comparison.left_only or comparison.right_only:
+        ret_string = 'Failure'  # Directories have differences
+        non_identical_files_batch.extend(comparison.left_only + comparison.right_only)
+        non_identical_files_print: str = ', '.join(
+            [str(element) for element in non_identical_files_batch])
+        logger.info(f"Non-Identical files found in batch outputs: {non_identical_files_print}")
+    else:
+        logger.info("Batch outputs identical")
+
+    # Loop through each program directory and compare
+    for subdir in comparison.common_dirs:
+        non_identical_files_program: list = []
+        sub_comp: filecmp.dircmp = filecmp.dircmp(
+            f"{out_dir}/{subdir}", f"{expected_results}/{subdir}")
+        if sub_comp.left_only or sub_comp.right_only:
+            ret_string = 'Failure'
+            non_identical_files_program.extend(sub_comp.left_only + sub_comp.right_only)
+            non_identical_files_print: str = ', '.join(
+                [str(element) for element in non_identical_files_program])
+            logger.info(
+                f"Non-Identical files found in Program {subdir} "
+                f"directory: {non_identical_files_print}"
+            )
+        else:
+            logger.info(f"All files in Program {subdir} directory identical")
+
+    return ret_string
+
+
 def compare_outputs(test_case, out_dir, expected_results,
                     test_results_dir=DEFAULT_TEST_DIR) -> None:
     # Setup logging
@@ -116,6 +154,11 @@ def compare_outputs(test_case, out_dir, expected_results,
     prog_table_match: Literal['Success', 'Failure'] = compare_prog_tables(
         out_dir, expected_results, logger)
     logger.info(f"{'Programs comparison status:'} {prog_table_match}")
+
+    # Compare filenames in expected outputs to outputs
+    out_files_match: Literal['Success', 'Failure'] = compare_out_files(
+        out_dir, expected_results, logger)
+    logger.info(f"{'Output Files comparison status:'} {out_files_match}")
 
     # Log Test Ending Message
     logger.info("End to End Testing Complete -----------------------------------------------------")
