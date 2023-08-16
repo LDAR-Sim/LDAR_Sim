@@ -39,6 +39,7 @@ os.chdir(root_dir)
 sys.path.insert(1, str(src_dir))
 
 if __name__ == '__main__':
+    from economics.cost_mitigation import cost_mitigation
     from initialization.args import files_from_path, get_abs_path
     from initialization.input_manager import InputManager
     from initialization.sims import create_sims
@@ -102,9 +103,9 @@ if __name__ == '__main__':
             if sim_params['write_data']:
                 # Create a data object...
                 if has_ref & has_base:
-                    # print("....Generating cost mitigation outputs")
-                    # cost_mitigation = cost_mitigation(sim_outputs,
-                    # ref_program, base_program, out_dir)
+                    print("....Generating cost mitigation outputs")
+                    cost_mitigation_df = cost_mitigation(
+                        sim_outputs, ref_program, base_program, out_dir)
                     reporting_data = BatchReporting(
                         out_dir, sim_params['start_date'], ref_program, base_program)
                     if sim_params['n_simulations'] > 1:
