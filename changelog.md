@@ -1,5 +1,9 @@
 # Change Log
 
+## 2023-08 - Version 3.1.1
+
+1. **Added new E2E functionality** As part of the pass pass criteria for E2E tests, outputs must contain all the same files as expected outputs.
+
 ## 2023-08 - Version 3.1.0
 
 1. **Reworked n_init_leaks** The parameter n_init_leaks was reworked to n_init_leaks_prob. See the User Manual for details on how to use the parameter.
