@@ -1,5 +1,5 @@
 parameter_level: method
-version: "3.0"
+version: "3.2"
 label: OGI
 deployment_type: mobile
 measurement_scale: component

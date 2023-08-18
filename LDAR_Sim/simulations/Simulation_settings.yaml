@@ -1,5 +1,5 @@
 parameter_level: simulation_settings
-version: "3.0"
+version: "3.2"
 pregenerate_leaks: True
 reference_program: P_OGI
 baseline_program: P_none
