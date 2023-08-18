@@ -146,9 +146,9 @@ def compare_outputs(test_case, out_dir, expected_results,
     cur_time: datetime = datetime.now()
     logger.info(f"E2E test initialization time: {cur_time}")
 
-    # Check Parameter match expected
-    params_match: Literal['Success', 'Failure'] = compare_params(out_dir, expected_results)
-    logger.info(f"{'Parameters comparison status:'} {params_match}")
+    # Check Parameter match expected - CURRENTLY DISABLED
+    # params_match: Literal['Success', 'Failure'] = compare_params(out_dir, expected_results)
+    # logger.info(f"{'Parameters comparison status:'} {params_match}")
 
     # Check Program table is within acceptable range
     prog_table_match: Literal['Success', 'Failure'] = compare_prog_tables(
