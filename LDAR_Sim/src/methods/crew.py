@@ -25,9 +25,8 @@ from importlib import import_module
 from typing import Any, Dict
 
 import numpy as np
-from sklearn.base import OutlierMixin
 
-from config.output_flags import OUTPUTS, SITE_VISITS
+from config.output_flag_mapping import OUTPUTS, SITE_VISITS
 
 
 class BaseCrew:

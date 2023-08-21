@@ -27,8 +27,8 @@ from pathlib import Path
 from typing import Union
 
 import yaml
-from config.output_flags import (BATCH_REPORTING, LEAKS, OUTPUTS, PLOTS, SITES,
-                                 TIMESERIES)
+from config.output_flag_mapping import (BATCH_REPORTING, LEAKS, OUTPUTS, PLOTS, SITES,
+                                        TIMESERIES)
 from initialization.versioning import (CURRENT_FULL_VERSION,
                                        CURRENT_MAJOR_VERSION,
                                        CURRENT_MINOR_VERSION,
@@ -126,8 +126,9 @@ class InputManager:
     def handle_parameter_versioning(self, parameters) -> None:
         if not self.old_params:
             if 'version' not in parameters:
-                print(('Warning: interpreting parameters as version 3.1 '
-                      'because version key was missing'))
+                print(('Warning: interpreting parameters as version ' +
+                       CURRENT_FULL_VERSION +
+                      ' because version key was missing'))
                 parameters['version'] = CURRENT_FULL_VERSION
 
             expected_version_string = ".".join([CURRENT_MAJOR_VERSION, CURRENT_MINOR_VERSION])

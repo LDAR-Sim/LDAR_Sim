@@ -7,7 +7,7 @@ from testing.unit_testing.test_initialization.test_input_manager.input_manager_t
     mock_parameter_no_data_no_plots_fix
 )
 
-from config.output_flags import OUTPUTS, SITES, TIMESERIES, LEAKS, PLOTS, BATCH_REPORTING
+from config.output_flag_mapping import OUTPUTS, SITES, TIMESERIES, LEAKS, PLOTS, BATCH_REPORTING
 
 from initialization.input_manager import InputManager
 

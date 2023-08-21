@@ -64,7 +64,7 @@ if __name__ == '__main__':
     from out_processing.batch_reporting import BatchReporting
     from out_processing.prog_table import generate as gen_prog_table
     from utils.generic_functions import check_ERA5_file
-    from config.output_flags import OUTPUTS, SITES, LEAKS, TIMESERIES, BATCH_REPORTING
+    from config.output_flag_mapping import OUTPUTS, SITES, LEAKS, TIMESERIES, BATCH_REPORTING
 
     # --- Clean out the test creator directory
     for item in os.listdir(test_creator_dir):

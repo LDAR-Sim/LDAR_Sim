@@ -28,7 +28,7 @@ import sys
 import shutil
 from pathlib import Path
 
-from config.output_flags import OUTPUTS, TIMESERIES, SITES, LEAKS, BATCH_REPORTING
+from config.output_flag_mapping import OUTPUTS, TIMESERIES, SITES, LEAKS, BATCH_REPORTING
 from economics.cost_mitigation import cost_mitigation
 from initialization.args import files_from_args, get_abs_path
 from initialization.input_manager import InputManager

@@ -28,7 +28,7 @@ from math import floor
 import numpy as np
 import pandas as pd
 from weather.daylight_calculator import DaylightCalculatorAve
-from config.output_flags import OUTPUTS, SITE_VISITS, SITES, LEAKS, TIMESERIES, PLOTS
+from config.output_flag_mapping import OUTPUTS, SITE_VISITS, SITES, LEAKS, TIMESERIES, PLOTS
 from geography.vector import grid_contains_point
 from initialization.leaks import generate_initial_leaks, generate_leak
 from initialization.sites import generate_sites
