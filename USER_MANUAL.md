@@ -533,7 +533,7 @@ If enabled, the leaks will be stored locally in /inputs/generation after running
 
 **Notes on acquisition:** N/A
 
-**Notes of caution:** If this is disabled, it will by extension also disabled batch_reporting.
+**Notes of caution:** If this is disabled, it will by extension also disable batch_reporting.
 
 #### &lt;sites&gt;
 
