@@ -1,7 +1,8 @@
 # ------------------------------------------------------------------------------
 # Program:     The LDAR Simulator (LDAR-Sim)
-# File:        LDAR-Sim
-# Purpose:     Primary module of LDAR-Sim
+# File:        output_flag_mapping
+# Purpose:     Variables mapping to the expected string for output flags,
+#              making it easier to refactor output flags in the future
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the MIT License as published
