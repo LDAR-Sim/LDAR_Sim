@@ -56,7 +56,10 @@ def mock_vw_for_crew_testing_1_fix() -> 'dict[str, Any]':
 @pytest.fixture(name="mock_settings_for_crew_testing_1")
 def mock_settings_for_crew_testing_1_fix() -> 'dict[str, Any]':
     return {
-        "input_directory": None
+        "input_directory": None,
+        "outputs": {
+            "site_visits": True
+        }
     }
 
 

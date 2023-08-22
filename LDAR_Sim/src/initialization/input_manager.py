@@ -24,21 +24,26 @@ import json
 import os
 import sys
 from pathlib import Path
+from typing import Union
 
 import yaml
+from config.output_flag_mapping import (BATCH_REPORTING, LEAKS, OUTPUTS, PLOTS, SITES,
+                                        TIMESERIES)
+from initialization.versioning import (CURRENT_FULL_VERSION,
+                                       CURRENT_MAJOR_VERSION,
+                                       CURRENT_MINOR_VERSION,
+                                       LEGACY_PARAMETER_WARNING,
+                                       MAJOR_VERSION_ONLY_WARNING,
+                                       MINOR_VERSION_MISMATCH_WARNING,
+                                       check_major_version)
 from utils.check_parameter_types import check_types
-from initialization.versioning import (
-    LEGACY_PARAMETER_WARNING,
-    CURRENT_MAJOR_VERSION,
-    CURRENT_MINOR_VERSION,
-    MINOR_VERSION_MISMATCH_WARNING,
-    CURRENT_FULL_VERSION,
-    MAJOR_VERSION_ONLY_WARNING,
-    check_major_version
-)
 
 
 class InputManager:
+
+    MAKE_PLOTS = "make_plots"
+    WRITE_DATA = "write_data"
+
     def __init__(self) -> None:
         """ Constructor creates a lookup of method defaults to run validation against
         """
@@ -46,6 +51,8 @@ class InputManager:
         with open(sim_settings_file, 'r') as f:
             default_sim_setting_parameters = yaml.load(f.read(), Loader=yaml.SafeLoader)
         self.simulation_parameters = copy.deepcopy(default_sim_setting_parameters)
+
+        self.old_params = False
         # Simulation parameter are parameters that are set up for this simulation
         return
 
@@ -81,16 +88,8 @@ class InputManager:
             new_parameters_list.append(self.read_parameter_file(parameter_filename))
 
         # Perform any mapping, optionally accumulating mined global parameters
-        sim_setting_parameters = {}
         for i in range(len(new_parameters_list)):
-            new_parameters_list[i], mined_sim_setting_parameters = \
-                self.map_parameters(new_parameters_list[i])
-            sim_setting_parameters.update(mined_sim_setting_parameters)
-
-        # Append the mined global parameters for installation after all other parameter updates
-        if len(sim_setting_parameters) > 0:
-            sim_setting_parameters['parameter_level'] = 'simulation_settings'
-            new_parameters_list.append(sim_setting_parameters)
+            new_parameters_list[i] = self.map_parameters(new_parameters_list[i])
 
         return (new_parameters_list)
 
@@ -124,31 +123,62 @@ class InputManager:
 
         return (new_parameters)
 
+    def handle_parameter_versioning(self, parameters) -> None:
+        if not self.old_params:
+            if 'version' not in parameters:
+                print(('Warning: interpreting parameters as version ' +
+                       CURRENT_FULL_VERSION +
+                      ' because version key was missing'))
+                parameters['version'] = CURRENT_FULL_VERSION
+
+            expected_version_string = ".".join([CURRENT_MAJOR_VERSION, CURRENT_MINOR_VERSION])
+
+            if str(parameters['version']) != expected_version_string:
+                if str(parameters['version']) == CURRENT_MAJOR_VERSION:
+                    print(MAJOR_VERSION_ONLY_WARNING)
+                    sys.exit()
+                elif not check_major_version(str(parameters['version']), CURRENT_MAJOR_VERSION):
+                    print(LEGACY_PARAMETER_WARNING)
+                    sys.exit()
+                else:
+                    print(MINOR_VERSION_MISMATCH_WARNING)
+                    self.old_params = True
+        return
+
+    def map_simulation_settings(self, parameters) -> None:
+        outputs: Union[bool, None] = parameters.get(OUTPUTS)
+
+        if outputs is None:
+            parameters[OUTPUTS] = {}
+
+        make_plots: Union[bool, None] = parameters.get(self.MAKE_PLOTS)
+
+        if make_plots is not None:
+            parameters[OUTPUTS][PLOTS] = make_plots
+            del parameters[self.MAKE_PLOTS]
+
+        write_data: Union[bool, None] = parameters.get(self.WRITE_DATA)
+
+        if write_data is not None:
+            parameters[OUTPUTS][BATCH_REPORTING] = write_data
+            parameters[OUTPUTS][SITES] = write_data
+            parameters[OUTPUTS][LEAKS] = write_data
+            parameters[OUTPUTS][TIMESERIES] = write_data
+
+        return
+
     def map_parameters(self, parameters):
         """Function to map parameters from older versions to the present version, all mappings are
         externally specified in the relevant function.
         :param parameters = the input parameter dictionary
         :return returns the compliant parameters dictionary, and optionally mined global parameters
         """
-        if 'version' not in parameters:
-            print('Warning: interpreting parameters as version 3.0 because version key was missing')
-            parameters['version'] = CURRENT_FULL_VERSION
+        self.handle_parameter_versioning(parameters)
 
-        expected_version_string = ".".join([CURRENT_MAJOR_VERSION, CURRENT_MINOR_VERSION])
+        if parameters['parameter_level'] == "simulation_settings":
+            self.map_simulation_settings(parameters)
 
-        if str(parameters['version']) != expected_version_string:
-            if str(parameters['version']) == CURRENT_MAJOR_VERSION:
-                print(MAJOR_VERSION_ONLY_WARNING)
-                sys.exit()
-            elif not check_major_version(str(parameters['version']), CURRENT_MAJOR_VERSION):
-                print(LEGACY_PARAMETER_WARNING)
-                sys.exit()
-            else:
-                print(MINOR_VERSION_MISMATCH_WARNING)
-
-        mined_global_parameters = {}
-
-        return (parameters, mined_global_parameters)
+        return parameters
 
     def parse_parameters(self, new_parameters_list):
         """Method to parse and validate new parameters, perform type checking, and organize for
@@ -176,7 +206,7 @@ class InputManager:
                         programs = programs + new_parameters.pop('programs')
 
                 check_types(self.simulation_parameters, new_parameters, omit_keys=['programs'])
-                self.simulation_parameters.update(new_parameters)
+                self.retain_update(self.simulation_parameters, new_parameters)
 
             elif new_parameters['parameter_level'] == 'virtual_world':
                 if 'default_parameters' not in new_parameters:

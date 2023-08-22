@@ -26,6 +26,8 @@ from typing import Any, Dict
 
 import numpy as np
 
+from config.output_flag_mapping import OUTPUTS, SITE_VISITS
+
 
 class BaseCrew:
     """ Base crews are used by methods to generate crew-level deployment and scheduling,
@@ -52,6 +54,7 @@ class BaseCrew:
         self.state = state
         self.consider_venting = virtual_world['emissions']['consider_venting']
         self.program_parameters = program_parameters
+        self.simulation_settings = simulation_settings
         self.config = config
         self.timeseries = timeseries
         self.deployment_days = deployment_days
@@ -158,8 +161,9 @@ class BaseCrew:
             self.candidate_flags.append(site_detect_results)
 
         # Record results of site visit
-        site_vis_rec = self.gen_site_vis_rec(site_detect_results, site)
-        self.state['site_visits'][self.config['label']].append(site_vis_rec)
+        if self.simulation_settings[OUTPUTS][SITE_VISITS]:
+            site_vis_rec = self.gen_site_vis_rec(site_detect_results, site)
+            self.state['site_visits'][self.config['label']].append(site_vis_rec)
 
         # Update site
         self.timeseries['{}_sites_visited'.format(m_name)][cur_ts] += 1

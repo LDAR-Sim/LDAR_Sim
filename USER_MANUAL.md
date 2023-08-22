@@ -471,18 +471,6 @@ If you are developing in LDAR-Sim, please adhere to the following rules:
 
 **Notes of caution:** We recommend running the simulation for several years due to the stochastic nature of LDAR systems and the periods of time over which leaks arise and are repaired.
 
-### &lt;make_plots&gt;
-
-**Data type:** Boolean
-
-**Default input:** True
-
-**Description:** A binary True/False to control whether output plots are generated for each individual run of a simulation. Automatically generating plots provides a broad range of insights into individual simulation runs that can be extremely useful for interpretation. When dozens, 100s, or 1000s of simulation runs are being performed in succession (i.e., for sensitivity analysis or when comparing multiple different programs), plots from individual runs may not be needed and this variable can be turned to False (in these cases, the target information is in the aggregate results, so individual runs can be ignored). Turning this variable to False will reduce the run time of each simulation by a few seconds, which can be significant if the required number of simulations is high.
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** N/A
-
 ### &lt;print_from_simulations&gt;
 
 **Data type:** Boolean
@@ -494,18 +482,6 @@ If you are developing in LDAR-Sim, please adhere to the following rules:
 **Notes on acquisition:** No data acquisition required.
 
 **Notes of caution:** N/A
-
-### &lt;write_data&gt;
-
-**Data type:** Boolean
-
-**Default input:** True
-
-**Description:** A binary True/False to activate the export of simulation data to csv files. Generally recommended that this remains set to True unless it is desired to reduce time/storage requirements during sensitivity analyses.
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** Must be True to make automated maps and plots.
 
 ### &lt;pregenerate_leaks&gt;
 
@@ -532,6 +508,80 @@ If enabled, the leaks will be stored locally in /inputs/generation after running
 **Notes on acquisition:** N/A
 
 **Notes of caution:** This should only be used for QC and testing.
+
+### &lt;outputs&gt;
+
+#### &lt;site_visits&gt;
+
+**Data type:** Boolean
+
+**Default input:** False
+
+**Description:** A binary True/False to control whether csv files containing details of screening and survey results will be created.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** Site visit output files take up a large amount of memory. It is suggested to leave site visits disabled (False) unless needed for troubleshooting or illustrative purposes.
+
+#### &lt;leaks&gt;
+
+**Data type:** Boolean
+
+**Default input:** True
+
+**Description:** A binary True/False to control whether csv files containing details of all leaks generated during the simulation will be created for each program.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** If this is disabled, it will by extension also disable batch_reporting.
+
+#### &lt;sites&gt;
+
+**Data type:** Boolean
+
+**Default input:** True
+
+**Description:** A binary True/False to control whether csv files containing details of emissions at all sites in the simulation will be created for each program.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** If this is disabled, it will by extension also disabled batch_reporting.
+
+#### &lt;timeseries&gt;
+
+**Data type:** Boolean
+
+**Default input:** True
+
+**Description:** A binary True/False to control whether csv files containing a timeseries with simulation details for each day in the simulation will be created for each program.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** If this is disabled, it will by extension also disabled batch_reporting.
+
+#### &lt;plots&gt;
+
+**Data type:** Boolean
+
+**Default input:** True
+
+**Description:** A binary True/False to control whether output plots are generated for each individual run of a simulation. Automatically generating plots provides a broad range of insights into individual simulation runs that can be extremely useful for interpretation. When dozens, 100s, or 1000s of simulation runs are being performed in succession (i.e., for sensitivity analysis or when comparing multiple different programs), plots from individual runs may not be needed and this variable can be turned to False (in these cases, the target information is in the aggregate results, so individual runs can be ignored). Turning this variable to False will reduce the run time of each simulation by a few seconds, which can be significant if the required number of simulations is high.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** N/A
+
+#### &lt;batch_reporting&gt;
+
+**Data type:** Boolean
+
+**Default input:** True
+
+**Description:** A binary True/False to control summary csv outputs summarizing results across all simulations.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** N/A
 
 --------------------------------------------------------------------------------
 
@@ -1884,6 +1934,30 @@ If **\*\*\_time** is present in the infrastructure file, it must **NOT** be set 
 ## 11\. Legacy Inputs
 
 As LDAR-Sim continues to grow and evolve, certain parameters may need to be retired and removed from the current version of LDAR-Sim. For completeness, the documentation for these parameters will be moved to this section along with an indication of which version of LDAR-Sim they were removed in.
+
+### &lt;write_data&gt -- Removed as of version 3.2.0;
+
+**Data type:** Boolean
+
+**Default input:** True
+
+**Description:** A binary True/False to activate the export of simulation data to csv files. Generally recommended that this remains set to True unless it is desired to reduce time/storage requirements during sensitivity analyses.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** Must be True to make automated maps and plots.
+
+### &lt;make_plots&gt; -- Removed as of version 3.2.0
+
+**Data type:** Boolean
+
+**Default input:** True
+
+**Description:** A binary True/False to control whether output plots are generated for each individual run of a simulation. Automatically generating plots provides a broad range of insights into individual simulation runs that can be extremely useful for interpretation. When dozens, 100s, or 1000s of simulation runs are being performed in succession (i.e., for sensitivity analysis or when comparing multiple different programs), plots from individual runs may not be needed and this variable can be turned to False (in these cases, the target information is in the aggregate results, so individual runs can be ignored). Turning this variable to False will reduce the run time of each simulation by a few seconds, which can be significant if the required number of simulations is high.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** N/A
 
 ### &lt;subtype_leak_dist_file&gt; -- Removed as of version 3.0.0
 
