@@ -327,7 +327,7 @@ class BaseCompany:
         elif filter == 'max':
             return max(list)
         elif filter == 'mean':
-            return np.average(list)
+            return np.mean(list)
 
     def site_reports(self):
         """

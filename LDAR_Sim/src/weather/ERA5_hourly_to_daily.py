@@ -53,19 +53,19 @@ for y in yrs:
         # wind
         u = data.variables['u10'][li:ui, :, :]
         v = data.variables['v10'][li:ui, :, :]
-        u_ave = np.average(u, axis=0)
-        v_ave = np.average(v, axis=0)
+        u_ave = np.mean(u, axis=0)
+        v_ave = np.mean(v, axis=0)
         U10[index, :, :] = u_ave
         V10[index, :, :] = v_ave
 
         # temperature
         t2m = data.variables['t2m'][li:ui, :, :]
-        t2m_ave = np.average(t2m, axis=0)
+        t2m_ave = np.mean(t2m, axis=0)
         T2M[index, :, :] = t2m_ave
 
         # Total precipitation
         tp = data.variables['tp'][li:ui, :, :]
-        tp_ave = np.average(tp, axis=0)
+        tp_ave = np.mean(tp, axis=0)
         TP[index, :, :] = tp_ave
 
         li += 24
