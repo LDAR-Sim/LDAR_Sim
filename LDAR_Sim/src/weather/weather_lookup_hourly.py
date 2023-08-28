@@ -128,17 +128,17 @@ class WeatherLookup:
                             ['winds', 'precip', 'temps'],
                             nday_dt, number_of_hours=max_day,
                             lat_idx=lat, lon_idx=lon)
-                        if config['weather_envs']['temp'][0] <= np.average(hr_weather['temps']) \
+                        if config['weather_envs']['temp'][0] <= np.mean(hr_weather['temps']) \
                                 <= config['weather_envs']['temp'][1]:
                             # Count one instrument day (instrument can be used)
                             bool_temp[lon, lat, day] = 1
                         # If you are below the maximum wind...
-                        if config['weather_envs']['wind'][0] <= np.average(hr_weather['winds']) \
+                        if config['weather_envs']['wind'][0] <= np.mean(hr_weather['winds']) \
                                 <= config['weather_envs']['wind'][1]:
                             # Count one instrument day (instrument can be used)
                             bool_wind[lon, lat, day] = 1
                         # If you are below the precipitation threshold...
-                        if config['weather_envs']['precip'][0] <= np.average(hr_weather['precip']) \
+                        if config['weather_envs']['precip'][0] <= np.mean(hr_weather['precip']) \
                                 <= config['weather_envs']['precip'][1]:
                             # Count one instrument day (instrument can be used)
                             bool_precip[lon, lat, day] = 1
