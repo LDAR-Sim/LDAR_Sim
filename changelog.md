@@ -1,5 +1,9 @@
 # Change Log
 
+## 2023-08 - Version 3.2.2
+
+1. **Fix to update_tag** Fix applied to update tag to increment natural_n_tags when the natural company overwrites an existing tag and repairs the book.
+
 ## 2023-08 - Version 3.2.0
 
 1. **Added outputs parameters to control files output from LDAR-Sim** New output parameters introduced to the LDAR-Sim simulation settings allow for users to select specific outputs to enable/disable. This can help reduce the memory load of simulations for users running large simulations if they do not care about every result.
