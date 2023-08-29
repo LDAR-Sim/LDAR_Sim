@@ -40,6 +40,7 @@ def update_tag(
             # natural can still repair a tagged leak
             leak['date_tagged'] = time_obj.current_date
             leak['tagged_by_company'] = company
+            timeseries['natural_n_tags'][time_obj.current_timestep] += 1
         elif leak['tagged_by_company'] == company:
             timeseries['{}_redund_tags'.format(company)][
                 time_obj.current_timestep] += 1
