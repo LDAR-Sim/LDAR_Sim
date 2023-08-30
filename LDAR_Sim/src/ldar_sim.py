@@ -206,6 +206,7 @@ class LdarSim:
         #  --- timeseries variables ---
         timeseries['total_daily_cost'] = np.zeros(virtual_world['timesteps'])
         timeseries['repair_cost'] = np.zeros(virtual_world['timesteps'])
+        timeseries['nat_repair_cost'] = np.zeros(virtual_world['timesteps'])
         timeseries['verification_cost'] = np.zeros(virtual_world['timesteps'])
         timeseries['natural_redund_tags'] = np.zeros(
             self.virtual_world['timesteps'])
@@ -383,7 +384,23 @@ class LdarSim:
                     lk['date_repaired'] = state['t'].current_date
                     lk['repair_delay'] = (
                         lk['date_repaired'] - lk['date_tagged']).days
+
+                    if lk['day_ts_began'] < 0:
+                        duration = cur_ts
+                    else:
+                        duration = cur_ts - lk['day_ts_began']
+
+                    lk['volume'] = duration*lk['rate']*86.4
+                    repair_cost = int(
+                        choice(program_parameters['economics']['repair_costs']['vals']))
+
                     if lk['tagged_by_company'] != 'natural':
+                        timeseries['repair_cost'][state['t'].current_timestep] += repair_cost
+                        timeseries['verification_cost'][state['t'].current_timestep] \
+                            += program_parameters['economics']['verification_cost']
+                        timeseries['total_daily_cost'][state['t'].current_timestep] \
+                            += repair_cost + program_parameters['economics']['verification_cost']
+
                         est_duration = cur_ts - lk['estimated_date_began']
                         # check if estimate is needed to be kept track of
                         if 'estimate_A' in site.keys():
@@ -398,19 +415,10 @@ class LdarSim:
                         else:
                             lk['estimated_volume_b'] = 0
                             lk['estimated_volume_a'] = 0
-                    if lk['day_ts_began'] < 0:
-                        duration = cur_ts
                     else:
-                        duration = cur_ts - lk['day_ts_began']
+                        timeseries['nat_repair_cost'][state['t'].current_timestep] += repair_cost
+                        timeseries['total_daily_cost'][state['t'].current_timestep] += repair_cost
 
-                    lk['volume'] = duration*lk['rate']*86.4
-                    repair_cost = int(
-                        choice(program_parameters['economics']['repair_costs']['vals']))
-                    timeseries['repair_cost'][state['t'].current_timestep] += repair_cost
-                    timeseries['verification_cost'][state['t'].current_timestep] \
-                        += program_parameters['economics']['verification_cost']
-                    timeseries['total_daily_cost'][state['t'].current_timestep] \
-                        += repair_cost + program_parameters['economics']['verification_cost']
             # Update site leaks
             if has_repairs:
                 site['repaired_leaks'] += [lk for lk in site['active_leaks']
