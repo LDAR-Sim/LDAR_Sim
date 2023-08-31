@@ -1,1 +1,70 @@
-[{"program_name": "P_OGI", "emis_kg_day_site_med": 933322.1760000002, "act_leaks_day_site_med": 0.44, "mit_vol_tco2e": 4174687256.947201, "mit_vol_perc": 1.4856243907368754, "cost": 786500.0, "cost_mit_vol_tco2e": 0.000188397346098481, "nat_leak_repair_count": 11.0, "emis_nat_perc": 0.05641657697316022, "methods": {"OGI": {"sites_visited": 951.0, "n_flags": "N/A", "missed_leaks": 0.0, "n_tags": 616.0, "flag_rate": "N/A", "tag_rate": 0.4794952681388013, "method_name": "OGI", "prescribed_surveys": 951.0}}}, {"program_name": "P_air", "emis_kg_day_site_med": 933446.5920000003, "act_leaks_day_site_med": 0.48, "mit_vol_tco2e": 4003060787.712001, "mit_vol_perc": 1.3425511465974023, "cost": 641500.0, "cost_mit_vol_tco2e": 0.00016025237537465857, "nat_leak_repair_count": 3.0, "emis_nat_perc": 0.013292637954263747, "methods": {"airH": {"sites_visited": 1000.0, "n_flags": 460.0, "missed_leaks": 0.0, "n_tags": "N/A", "flag_rate": 0.46, "tag_rate": "N/A", "method_name": "airH", "prescribed_surveys": 1000.0}, "OGI_FU": {"sites_visited": 460.0, "n_flags": "N/A", "missed_leaks": 0.0, "n_tags": 635.0, "flag_rate": "N/A", "tag_rate": 0.991304347826087, "method_name": "OGI_FU", "prescribed_surveys": "N/A"}}}, {"program_name": "P_none", "emis_kg_day_site_med": 2489050.9439999987, "act_leaks_day_site_med": 1.2, "mit_vol_tco2e": 0.0, "mit_vol_perc": 0.0, "cost": 298500.0, "cost_mit_vol_tco2e": NaN, "nat_leak_repair_count": 597.0, "emis_nat_perc": 0.9590294014939178, "methods": {}}]
+[
+    {
+        "program_name": "P_OGI",
+        "emis_kg_day_site_med": 933322.1760000002,
+        "act_leaks_day_site_med": 0.44,
+        "mit_vol_tco2e": 4174687256.947201,
+        "mit_vol_perc": 1.4856243907368754,
+        "cost": 784900.0,
+        "cost_mit_vol_tco2e": 0.00018801408385594117,
+        "nat_leak_repair_count": 11.0,
+        "emis_nat_perc": 0.05641657697316022,
+        "methods": {
+            "OGI": {
+                "sites_visited": 951.0,
+                "n_flags": "N/A",
+                "missed_leaks": 0.0,
+                "n_tags": 616.0,
+                "flag_rate": "N/A",
+                "tag_rate": 0.4794952681388013,
+                "method_name": "OGI",
+                "prescribed_surveys": 951.0
+            }
+        }
+    },
+    {
+        "program_name": "P_air",
+        "emis_kg_day_site_med": 933446.5920000003,
+        "act_leaks_day_site_med": 0.48,
+        "mit_vol_tco2e": 4003060787.712001,
+        "mit_vol_perc": 1.3425511465974023,
+        "cost": 639900.0,
+        "cost_mit_vol_tco2e": 0.00015985268121939831,
+        "nat_leak_repair_count": 3.0,
+        "emis_nat_perc": 0.013292637954263747,
+        "methods": {
+            "airH": {
+                "sites_visited": 1000.0,
+                "n_flags": 460.0,
+                "missed_leaks": 0.0,
+                "n_tags": "N/A",
+                "flag_rate": 0.46,
+                "tag_rate": "N/A",
+                "method_name": "airH",
+                "prescribed_surveys": 1000.0
+            },
+            "OGI_FU": {
+                "sites_visited": 460.0,
+                "n_flags": "N/A",
+                "missed_leaks": 0.0,
+                "n_tags": 635.0,
+                "flag_rate": "N/A",
+                "tag_rate": 0.991304347826087,
+                "method_name": "OGI_FU",
+                "prescribed_surveys": "N/A"
+            }
+        }
+    },
+    {
+        "program_name": "P_none",
+        "emis_kg_day_site_med": 2489050.9439999987,
+        "act_leaks_day_site_med": 1.2,
+        "mit_vol_tco2e": 0.0,
+        "mit_vol_perc": 0.0,
+        "cost": 238800.0,
+        "cost_mit_vol_tco2e": NaN,
+        "nat_leak_repair_count": 597.0,
+        "emis_nat_perc": 0.9590294014939178,
+        "methods": {}
+    }
+]
