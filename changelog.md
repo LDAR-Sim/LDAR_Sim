@@ -1,5 +1,9 @@
 # Change Log
 
+## 2023-08 - Version 3.2.3
+
+1. **Splitting of natural repair cost** The cost of repair due to NRd was split from repair cost.
+
 ## 2023-08 - Version 3.2.2
 
 1. **Fix to update_tag** Fix applied to update tag to increment natural_n_tags when the natural company overwrites an existing tag and repairs the book.
