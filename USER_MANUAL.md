@@ -1670,6 +1670,18 @@ Method weather envelopes
 
 **Notes of caution:** N/A
 
+#### &lt;sort&gt;
+
+**Data type:** Boolean
+
+**Default input:** True
+
+**Description:** Indicates whether the sites flagged for follow-up will be sorted by their emission rates for subsequent follow-up survey methods.
+
+**Notes on acquisition:** Based on operator work practices.
+
+**Notes of caution:** N/A
+
 #### &lt;threshold&gt;
 
 **Data type:** Float
