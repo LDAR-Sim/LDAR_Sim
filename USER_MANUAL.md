@@ -1680,7 +1680,7 @@ Method weather envelopes
 
 **Notes on acquisition:** Based on operator work practices.
 
-**Notes of caution:** N/A
+**Notes of caution:** For the intended follow-up `interaction_priority:proportion` use case, it's advisable to enable sorting by setting `sort: True`. This ensures that the original purpose of using `interaction_priority:proportion` is maintained.
 
 #### &lt;threshold&gt;
 
