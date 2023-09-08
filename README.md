@@ -39,7 +39,7 @@ NOTE: This applies to all versions following Commit 69c27ec, Made on March 1st, 
 
 ## Special Thanks and Acknowledgements
 
- The LDAR-Sim development team would like to special thank and acknowledgement to the University of Calgary's Intelligent Methane Monitoring and Management System (IM3S) Group for their significant contributions to the development and growth of LDAR-Sim from 2018 to 2021.
+ The LDAR-Sim development team would like to give a special thanks and acknowledgement to the University of Calgary's Intelligent Methane Monitoring and Management System (IM3S) Group for their significant contributions to the development and growth of LDAR-Sim from 2018 to 2021.
 
 ## [Fox_etal_2020 Release](https://github.com/tarcadius/LDAR_Sim/tree/Fox_etal_2020)
 
