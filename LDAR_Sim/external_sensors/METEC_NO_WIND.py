@@ -4,8 +4,8 @@ An alternative sensor, specifically built to replicate the probability of detect
 """
 # ------------------------------------------------------------------------------
 # Program:     The LDAR Simulator (LDAR-Sim)
-# File:        methods.deployment.OGI_camera_zim
-# Purpose:     OGI company specific deployment classes and methods based on Zimmerle (2020)
+# File:        external_sensors.METEC_NO_WIND
+# Purpose:     METEC specific deployment classes and methods based on no wind curves
 #
 #
 # This program is free software: you can redistribute it and/or modify
