@@ -169,7 +169,7 @@ Several LDAR-Sim advances are not publicly available at this time, including mor
 
 ## Contributions and collaboration
 
-The Included python code follows strict PEP8 Standards for formatting with a modification to the Line Length rule, where lines cannot exceed 100 characters. Contributed code will be rejected if it does not meet this standard. We suggest using PEP8 autoformatters and Linting (Flake8 , Black) when making contributions.
+The included python code follows strict PEP8 Standards for formatting with a modification to the Line Length rule, where lines cannot exceed 100 characters. Contributed code will be rejected if it does not meet this standard. We suggest using autopep8 for style formatting and flake8 for additional linting when making contributions.
 
 When submitting Issues, Commits and Pull Requests, please use the provided templates to ensure consistent format. For instructions on how to setup the LDAR-Sim commit message template please see the [Setup Instructions](LDAR_Sim/install/SetupInstructions.md)
 

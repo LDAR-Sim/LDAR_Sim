@@ -18,8 +18,7 @@ This document provides coding guidelines and best practices for developing exter
 ## General Guidelines
 
 - Keep the code modular, well-organized, and maintainable.
-- Follow the [Python PEP 8 Style Guide](https://www.python.org/dev/peps/pep-0008/) for code style and formatting.
-  - If possible use the autopep8 auto formatting
+- Use consistent and readable code formatting.
 - Write code that is concise, readable, and self-explanatory.
 - Avoid unnecessary code duplication; favor code reuse.
 
@@ -37,11 +36,11 @@ This document provides coding guidelines and best practices for developing exter
 
 ## Code Formatting
 
-- Use consistent and readable code formatting.
-- Keep lines within a reasonable length (80-120 characters).
+- Follow the [Python PEP 8 Style Guide](https://www.python.org/dev/peps/pep-0008/) for code style and formatting.
+  - If possible use the autopep8 auto formatting
+- Keep lines within a reasonable length (80-100 characters).
 - Use blank lines and proper spacing to enhance readability.
 - Follow appropriate naming conventions for constants and global variables.
-- If possible use Black as a formatter.
 
 ## Documentation
 
