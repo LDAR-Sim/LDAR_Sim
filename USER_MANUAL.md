@@ -1670,13 +1670,13 @@ Method weather envelopes
 
 **Notes of caution:** N/A
 
-#### &lt;sort&gt;
+#### &lt;sort_by_rate&gt;
 
 **Data type:** Boolean
 
 **Default input:** True
 
-**Description:** Indicates whether the sites flagged for follow-up will be sorted by their emission rates for subsequent follow-up survey methods.
+**Description:** Indicates whether the sites flagged for follow-up will be sorted by their emission rates for subsequent follow-up survey methods. If set to True, follow-ups will sorted based on the observed site emission rates, prioritizing the largest emitting sites first.
 
 **Notes on acquisition:** Based on operator work practices.
 
