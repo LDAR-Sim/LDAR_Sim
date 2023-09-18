@@ -3,7 +3,6 @@
 # File:        End-to-End Test Suite Runner
 # Purpose:     Interface for running LDAR-Sim End-to-End test.
 #
-# Copyright (C) 2018-2023  Intelligent Methane Monitoring and Management System (IM3S) Group
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the MIT License as published

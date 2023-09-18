@@ -3,7 +3,6 @@
 # File:        LDAR-Sim main
 # Purpose:     Interface for parameterizing and running LDAR-Sim.
 #
-# Copyright (C) 2018-2021  Intelligent Methane Monitoring and Management System (IM3S) Group
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the MIT License as published
@@ -41,9 +40,7 @@ from utils.generic_functions import check_ERA5_file
 
 opening_msg = """
 You are running LDAR-Sim version 3.0.0 an open sourced software (MIT) license.
-It is continually being developed by the University of Calgary's Intelligent
-Methane Monitoring and Management System (IM3S) Group.
-Provide any issues, comments, questions, or recommendations to the IM3S by
+Provide any issues, comments, questions, or recommendations by
 adding an issue to https://github.com/LDAR-Sim/LDAR_Sim.git.
 
 """

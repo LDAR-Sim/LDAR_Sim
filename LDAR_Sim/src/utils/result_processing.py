@@ -3,7 +3,6 @@
 # File:        utils.result_processing
 # Purpose:     process the output of ldar_sim_run / starmap
 #
-# Copyright (C) 2018-2021  Intelligent Methane Monitoring and Management System (IM3S) Group
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the MIT License as published

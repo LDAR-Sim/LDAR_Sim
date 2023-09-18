@@ -3,7 +3,6 @@
 # File:        ERA_concat.py
 # Purpose:     Concatenate timeseries from ERA5 netcdf files
 #
-# Copyright (C) 2018-2021  Intelligent Methane Monitoring and Management System (IM3S) Group
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the MIT License as published

@@ -4,10 +4,9 @@ An alternative sensor, specifically built to replicate the probability of detect
 """
 # ------------------------------------------------------------------------------
 # Program:     The LDAR Simulator (LDAR-Sim)
-# File:        methods.deployment.OGI_camera_zim
-# Purpose:     OGI company specific deployment classes and methods based on Zimmerle (2020)
+# File:        external_sensors.METEC_NO_WIND
+# Purpose:     METEC specific deployment classes and methods based on no wind curves
 #
-# Copyright (C) 2018-2021  Intelligent Methane Monitoring and Management System (IM3S) Group
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the MIT License as published

@@ -37,6 +37,10 @@ LDAR-Sim is free software: you can redistribute it and/or modify it under the te
 
 NOTE: This applies to all versions following Commit 69c27ec, Made on March 1st, 2021, Previous versions of LDAR-Sim were licensed under the GNU Affero General Public License. All redistributions or modifications made on LDAR-Sim versions created before Commit 69c27ec (March 1st, 2021) are required to be in compliance with version 3 of the GNU Affero General Public License.
 
+## Special Thanks and Acknowledgements
+
+ The LDAR-Sim development team would like to give a special thanks and acknowledgement to the University of Calgary's Intelligent Methane Monitoring and Management System (IM3S) Group for their significant contributions to the development and growth of LDAR-Sim from 2018 to 2021.
+
 ## [Fox_etal_2020 Release](https://github.com/tarcadius/LDAR_Sim/tree/Fox_etal_2020)
 
 The Fox et al. 2020 release is immortalized in a separate branch that can be found by [clicking here](https://github.com/tarcadius/LDAR_Sim/tree/Fox_etal_2020).
