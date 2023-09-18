@@ -1,4 +1,4 @@
-version: "3.0"
+version: "3.3"
 parameter_level: "virtual_world"
 weather_file: "weather_alberta.nc"
 weather_is_hourly: True # True/False

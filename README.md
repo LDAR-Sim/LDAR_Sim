@@ -1,4 +1,4 @@
-# The LDAR Simulator V3.0
+# The LDAR Simulator V3.3
 
 See changelog [here](changelog.md)
 
