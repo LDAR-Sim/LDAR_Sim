@@ -264,6 +264,7 @@ class BaseCompany:
             key=lambda x: x[1]['site_measured_rate'],
             reverse=True)
         }
+        self.site_watchlist = site_wl
 
     def flag_site(self, site):
         """ Flag a single site and check for leak redundancy

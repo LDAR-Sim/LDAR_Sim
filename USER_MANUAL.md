@@ -2,7 +2,7 @@
 
 Github Repository: LDAR-Sim
 
-Version: 3.0
+Version: 3.3
 
 Branch: Master
 

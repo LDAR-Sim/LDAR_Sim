@@ -1,5 +1,9 @@
 # Change Log
 
+## 2023-09-14 - Version 3.3.0
+
+1. **Bugfix to Proportion** LDAR-Sim proportion has been fixed to properly proportion by top proportion % of emitting sites where previously proportioning was done by dropping sites with the longest time since last being surveyed.
+
 ## 2023-08 - Version 3.2.3
 
 1. **Splitting of natural repair cost** The cost of repair due to NRd was split from repair cost.
