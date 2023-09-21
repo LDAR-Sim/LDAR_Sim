@@ -1670,6 +1670,18 @@ Method weather envelopes
 
 **Notes of caution:** N/A
 
+#### &lt;sort_by_rate&gt;
+
+**Data type:** Boolean
+
+**Default input:** True
+
+**Description:** Indicates whether the sites flagged for follow-up will be sorted by their emission rates for subsequent follow-up survey methods. If set to True, follow-ups will sorted based on the observed site emission rates, prioritizing the largest emitting sites first.
+
+**Notes on acquisition:** Based on operator work practices.
+
+**Notes of caution:** For the intended follow-up `interaction_priority:proportion` use case, it's advisable to enable sorting by setting `sort_by_rate: True`. This ensures that the original purpose of using `interaction_priority:proportion` is maintained.
+
 #### &lt;threshold&gt;
 
 **Data type:** Float

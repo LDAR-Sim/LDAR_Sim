@@ -259,11 +259,12 @@ class BaseCompany:
         # This ensures that the leakiest sites are at the top of the dictionary
         # so proportional site followup can be performed without resorting everyday
         # within the flag_sites function.
-        site_wl = {k: v for k, v in sorted(
-            site_wl.items(),
-            key=lambda x: x[1]['site_measured_rate'],
-            reverse=True)
-        }
+        if self.config['follow_up']['sort_by_rate']:
+            site_wl = {k: v for k, v in sorted(
+                site_wl.items(),
+                key=lambda x: x[1]['site_measured_rate'],
+                reverse=True)
+            }
         self.site_watchlist = site_wl
 
     def flag_site(self, site):

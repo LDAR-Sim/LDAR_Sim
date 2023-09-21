@@ -1,5 +1,9 @@
 # Change Log
 
+## 2023-09-21 - Version 3.3.1
+
+1. **Follow-up Watchlist sorting toggle** Sorting on the follow-up watch list can be turned off.
+
 ## 2023-09-14 - Version 3.3.0
 
 1. **Bugfix to Proportion** LDAR-Sim proportion has been fixed to properly proportion by top proportion % of emitting sites where previously proportioning was done by dropping sites with the longest time since last being surveyed.

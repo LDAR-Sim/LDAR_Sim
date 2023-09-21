@@ -49,5 +49,6 @@ follow_up:
   min_followup_days_to_end: 0 # days
   proportion: 1.0 # 0 to 1.0
   redundancy_filter: "recent" # recent/max/average
+  sort_by_rate: True # True/False
   threshold: 0.0 # g/s
   threshold_type: "absolute" # absolute/relative
