@@ -2,7 +2,7 @@
 
 ## 2023-09-21 - Version 3.3.1
 
-1. **Follow-up Watchlist sorting** Sorting on the follow-up watch list can be turned off.
+1. **Follow-up Watchlist sorting toggle** Sorting on the follow-up watch list can be turned off.
 
 ## 2023-09-14 - Version 3.3.0
 
