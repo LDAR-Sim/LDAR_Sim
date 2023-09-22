@@ -5,6 +5,14 @@ SITE_LEAKS = "cum_leaks"
 
 BATCH_SIMULATIONS = "batch_sims"
 SITES_SUMMARY_FP = "sites_summary.csv"
+TS_SUMMARY_FP = "timeseries_summary.csv"
+
+TS_EMISSIONS = 'daily_emissions_kg'
+TS_COST = 'total_daily_cost'
+TS_REPAIR_COST = 'repair_cost'
+TS_ACTIVE_LEAKS = 'active_leaks'
+TS_NEW_LEAKS = 'new_leaks'
+TS_N_TAGS = 'n_tags'
 
 
 def write_sites_summary(site_df, summary_path, prog_name):
@@ -33,3 +41,28 @@ def get_sites_summary(site_df, prog_name):
     site_summary.update(
         [("95th_percentile_leaks_per_site", np.percentile(site_df[SITE_LEAKS], 95))])
     return site_summary
+
+
+def get_ts_summary(ts_df, prog_name):
+    ts_summary = {}
+    ts_summary_cols = [TS_EMISSIONS, TS_COST, TS_REPAIR_COST,
+                       TS_ACTIVE_LEAKS, TS_NEW_LEAKS, TS_N_TAGS]
+    ts_summary.update([("Program", prog_name)])
+    for col in ts_summary_cols:
+        ts_summary.update([(f"Mean_{col}_per_day", ts_df[col].mean())])
+        ts_summary.update([(f"5th_percentile_{col}_per_day", np.percentile(ts_df[col], 5))])
+        ts_summary.update([(f"95th_percentile_{col}_per_day", np.percentile(ts_df[col], 95))])
+    return ts_summary
+
+
+def write_ts_summary(ts_df, summary_path, prog_name):
+    site_summary = get_ts_summary(ts_df, prog_name)
+
+    with open(summary_path / TS_SUMMARY_FP, mode='a', newline='') as ts_sum_file:
+        fieldnames = site_summary.keys()
+        writer = csv.DictWriter(ts_sum_file, fieldnames=fieldnames)
+
+        if ts_sum_file.tell() == 0:
+            writer.writeheader()
+
+        writer.writerow(site_summary)
