@@ -48,7 +48,7 @@ def get_sites_summary(site_df, prog_name):
     return site_summary
 
 
-def write_leakss_summary(leaks_df, summary_path, prog_name):
+def write_leaks_summary(leaks_df, summary_path, prog_name):
     leaks_summary = get_leaks_summary(leaks_df, prog_name)
 
     with open(summary_path / LEAKS_SUMMARY_FP, mode='a', newline='') as leaks_sum_file:
