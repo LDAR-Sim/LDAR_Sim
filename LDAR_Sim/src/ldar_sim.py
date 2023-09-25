@@ -38,7 +38,7 @@ from methods.company import BaseCompany
 from numpy.random import binomial, choice
 from out_processing.plotter import make_plots
 from utils.attribution import update_tag
-from batch.batch_summary_funcs import write_sites_summary, BATCH_SIMULATIONS
+from batch.batch_summary_funcs import write_sites_summary, BATCH_SIMULATIONS, write_ts_summary
 
 warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning)
 
@@ -535,7 +535,9 @@ class LdarSim:
             )
             # TODO add a batch folder to outputs in the batch script and then alter the path below
             summary_path = self.output_dir.parent
-            write_sites_summary(site_df, summary_path, program_parameters['program_name'])
+            prog_name = program_parameters['program_name']
+            write_sites_summary(site_df, summary_path, prog_name)
+            write_ts_summary(time_df, summary_path, prog_name)
 
         # Write csv files
         if simulation_settings[OUTPUTS][LEAKS]:
