@@ -538,7 +538,7 @@ class LdarSim:
             prog_name = program_parameters['program_name']
             write_sites_summary(site_df, summary_path, prog_name)
             write_ts_summary(time_df, summary_path, prog_name)
-            write_leaks_summary(leak_df, summary_path, program_parameters['program_name'])
+            write_leaks_summary(leak_df, summary_path, prog_name)
 
         # Write csv files
         if simulation_settings[OUTPUTS][LEAKS]:
