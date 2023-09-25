@@ -27,7 +27,7 @@ from initialization.preseed import gen_seed_timeseries
 from initialization.sites import generate_sites, regenerate_sites
 
 
-def create_sims(sim_params, programs, virtual_world, generator_dir, in_dir, out_dir):
+def create_sims(sim_params, programs, virtual_world, generator_dir, in_dir, out_dir, batch=False):
     # Store params used to generate the pickle files for change detection
     n_simulations = sim_params['n_simulations']
     pregen_leaks = sim_params['pregenerate_leaks']
@@ -90,5 +90,6 @@ def create_sims(sim_params, programs, virtual_world, generator_dir, in_dir, out_
                   'leak_timeseries': leak_timeseries,
                   'initial_leaks': initial_leaks,
                   'seed_timeseries': seed_timeseries,
+                  'batch_run': batch
                   }])
     return simulations

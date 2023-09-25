@@ -526,14 +526,13 @@ class LdarSim:
 
         leak_df = pd.concat([leaks_active, leaks_repaired])
 
-        if BATCH_SIMULATIONS in simulation_settings and simulation_settings[BATCH_SIMULATIONS]:
+        if simulation_settings['batch_run']:
             site_df = site_df.drop(
                 ['active_leaks', 'repaired_leaks', 'last_component_survey',
                  'historic_t_since_LDAR', 'tags', 'currently_flagged', 'flagged_by',
                  'date_flagged', 'crew_ID', 'cum_frac_sites', 'cum_frac_emissions'],
                 axis=1
             )
-            # TODO add a batch folder to outputs in the batch script and then alter the path below
             summary_path = self.output_dir.parent
             prog_name = program_parameters['program_name']
             write_sites_summary(site_df, summary_path, prog_name)
@@ -580,9 +579,8 @@ class LdarSim:
         metadata.close()
 
         # Make plots
-        # TODO uncomment this when switching over to true flag
         if self.simulation_settings[OUTPUTS][PLOTS] and \
-                BATCH_SIMULATIONS not in simulation_settings:
+                not simulation_settings['batch_run']:
             make_plots(
                 leak_df, time_df, site_df, virtual_world['simulation'],
                 self.output_dir

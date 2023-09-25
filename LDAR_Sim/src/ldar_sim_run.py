@@ -52,6 +52,7 @@ def ldar_sim_run(simulation):
     virtual_world['seed_timeseries'] = simulation['seed_timeseries']
     virtual_world['sites'] = simulation['sites']
     simulation_settings = simulation['simulation_settings']
+    simulation_settings['batch_run'] = simulation['batch_run']
 
     if not os.path.exists(output_directory):
         try:

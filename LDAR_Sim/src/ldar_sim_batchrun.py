@@ -108,7 +108,7 @@ if __name__ == '__main__':
             generator_dir = None
         # --- Create simulations ---
         simulations = create_sims(sim_params, programs, virtual_world,
-                                  generator_dir, in_dir, out_dir)
+                                  generator_dir, in_dir, out_dir, batch=True)
 
         # --- Run simulations (in parallel) --
         with mp.Pool(processes=sim_params['n_processes']) as p:
