@@ -5,6 +5,11 @@ SITE_LEAKS = "cum_leaks"
 
 BATCH_SIMULATIONS = "batch_sims"
 SITES_SUMMARY_FP = "sites_summary.csv"
+
+LEAKS_SUMMARY_FP = "leaks_summary.csv"
+LEAKS_RATE = "rate"
+LEAKS_VOLUME = "volume"
+LEAKS_DAYS_ACTIVE = "days_active"
 TS_SUMMARY_FP = "timeseries_summary.csv"
 
 TS_EMISSIONS = 'daily_emissions_kg'
@@ -41,6 +46,41 @@ def get_sites_summary(site_df, prog_name):
     site_summary.update(
         [("95th_percentile_leaks_per_site", np.percentile(site_df[SITE_LEAKS], 95))])
     return site_summary
+
+
+def write_leakss_summary(leaks_df, summary_path, prog_name):
+    leaks_summary = get_leaks_summary(leaks_df, prog_name)
+
+    with open(summary_path / LEAKS_SUMMARY_FP, mode='a', newline='') as leaks_sum_file:
+        fieldnames = leaks_summary.keys()
+        writer = csv.DictWriter(leaks_sum_file, fieldnames=fieldnames)
+
+        if leaks_sum_file.tell() == 0:
+            writer.writeheader()
+
+        writer.writerow(leaks_summary)
+
+
+def get_leaks_summary(leak_df, prog_name):
+    leaks_summary = {}
+    leaks_summary.update([("Program", prog_name)])
+    leaks_summary.update([("Volume_mean", leak_df[LEAKS_VOLUME].mean())])
+    leaks_summary.update([("5th_percentile_Volume",
+                           np.percentile(leak_df[LEAKS_VOLUME], 5))])
+    leaks_summary.update([("95th_percentile_Volume",
+                           np.percentile(leak_df[LEAKS_VOLUME], 95))])
+    leaks_summary.update([("Mean_leak_rate", leak_df[LEAKS_RATE].mean())])
+    leaks_summary.update([("5th_percentile_Rate",
+                           np.percentile(leak_df[LEAKS_RATE], 5))])
+    leaks_summary.update([("95th_percentile_Rate",
+                           np.percentile(leak_df[LEAKS_RATE], 95))])
+    leaks_summary.update([("Mean_Days_Active", leak_df[LEAKS_DAYS_ACTIVE].mean())])
+    leaks_summary.update([("5th_percentile_Days_Active",
+                           np.percentile(leak_df[LEAKS_DAYS_ACTIVE], 5))])
+    leaks_summary.update([("95th_percentile_Days_Active",
+                           np.percentile(leak_df[LEAKS_DAYS_ACTIVE], 95))])
+
+    return leaks_summary
 
 
 def get_ts_summary(ts_df, prog_name):
