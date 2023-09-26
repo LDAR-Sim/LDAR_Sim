@@ -526,7 +526,7 @@ class LdarSim:
 
         leak_df = pd.concat([leaks_active, leaks_repaired])
 
-        if simulation_settings['batch_run']:
+        if BATCH_SIMULATIONS in simulation_settings and simulation_settings[BATCH_SIMULATIONS]:
             site_df = site_df.drop(
                 ['active_leaks', 'repaired_leaks', 'last_component_survey',
                  'historic_t_since_LDAR', 'tags', 'currently_flagged', 'flagged_by',
@@ -580,7 +580,7 @@ class LdarSim:
 
         # Make plots
         if self.simulation_settings[OUTPUTS][PLOTS] and \
-                not simulation_settings['batch_run']:
+                not simulation_settings[BATCH_SIMULATIONS]:
             make_plots(
                 leak_df, time_df, site_df, virtual_world['simulation'],
                 self.output_dir

@@ -25,6 +25,7 @@ from copy import deepcopy
 
 from initialization.preseed import gen_seed_timeseries
 from initialization.sites import generate_sites, regenerate_sites
+from batch.batch_summary_funcs import BATCH_SIMULATIONS
 
 
 def create_sims(sim_params, programs, virtual_world, generator_dir, in_dir, out_dir, batch=False):
@@ -90,6 +91,6 @@ def create_sims(sim_params, programs, virtual_world, generator_dir, in_dir, out_
                   'leak_timeseries': leak_timeseries,
                   'initial_leaks': initial_leaks,
                   'seed_timeseries': seed_timeseries,
-                  'batch_run': batch
+                  BATCH_SIMULATIONS: batch
                   }])
     return simulations

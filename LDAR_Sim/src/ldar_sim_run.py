@@ -30,7 +30,7 @@ from stdout_redirect import stdout_redirect
 from time_counter import TimeCounter
 from weather.weather_lookup import WeatherLookup as WL
 from weather.weather_lookup_hourly import WeatherLookup as WL_h
-
+from batch.batch_summary_funcs import BATCH_SIMULATIONS
 from ldar_sim import LdarSim
 
 
@@ -52,7 +52,7 @@ def ldar_sim_run(simulation):
     virtual_world['seed_timeseries'] = simulation['seed_timeseries']
     virtual_world['sites'] = simulation['sites']
     simulation_settings = simulation['simulation_settings']
-    simulation_settings['batch_run'] = simulation['batch_run']
+    simulation_settings[BATCH_SIMULATIONS] = simulation[BATCH_SIMULATIONS]
 
     if not os.path.exists(output_directory):
         try:

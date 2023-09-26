@@ -17,8 +17,7 @@
 # along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 #
 # ------------------------------------------------------------------------------
-import datetime
-import json
+
 import multiprocessing as mp
 import os
 import sys
@@ -113,3 +112,4 @@ if __name__ == '__main__':
         # --- Run simulations (in parallel) --
         with mp.Pool(processes=sim_params['n_processes']) as p:
             sim_outputs = p.starmap(ldar_sim_run, simulations)
+        print(f'Batch Rep Done: {rep}')
