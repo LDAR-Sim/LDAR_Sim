@@ -34,6 +34,7 @@ from ldar_sim_run import ldar_sim_run
 from out_processing.batch_reporting import BatchReporting
 from out_processing.prog_table import generate as gen_prog_table
 from utils.generic_functions import check_ERA5_file
+from batch.funcs import all_sites_used
 
 opening_msg = """
 You are running LDAR-Sim version 3.0.0 an open sourced software (MIT) license.
@@ -90,6 +91,7 @@ if __name__ == '__main__':
         shutil.rmtree(out_dir)
     os.makedirs(out_dir)
     input_manager.write_parameters(out_dir / 'parameters.yaml')
+    all_sites_used_bool = True
 
     for rep in range(args.n_rep):
         # If leak generator is used and there are generated files, user is prompted
@@ -98,6 +100,8 @@ if __name__ == '__main__':
             generator_dir = in_dir / "generator"
             init_generator_files(
                 generator_dir, input_manager.simulation_parameters, in_dir, virtual_world)
+            # check to see if all sites are used
+            all_sites_used_bool = all_sites_used(in_dir, virtual_world)
         elif sim_params['pregenerate_leaks'] and rep != 0:
             generator_dir = in_dir / "generator"
             shutil.rmtree(generator_dir)
@@ -105,6 +109,8 @@ if __name__ == '__main__':
                 generator_dir, input_manager.simulation_parameters, in_dir, virtual_world)
         else:
             generator_dir = None
+        if not all_sites_used_bool:
+            sim_params[OUTPUTS][SITES] = False
         # --- Create simulations ---
         simulations = create_sims(sim_params, programs, virtual_world,
                                   generator_dir, in_dir, out_dir, batch=True)

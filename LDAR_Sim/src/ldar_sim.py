@@ -39,6 +39,7 @@ from numpy.random import binomial, choice
 from out_processing.plotter import make_plots
 from utils.attribution import update_tag
 from batch.batch_summary_funcs import write_sites_summary, write_leaks_summary, BATCH_SIMULATIONS, write_ts_summary
+from batch.sites_concat import concat_sites_files
 
 warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning)
 
@@ -560,6 +561,10 @@ class LdarSim:
                 'sites_output_{}_{}.csv'.format(
                     virtual_world['simulation'], program_parameters['program_name']),
                 index=False)
+            concat_sites_files(self.output_dir.parent / 'sites_output_{}.csv'.format(program_parameters['program_name']),
+                               self.output_dir / 'sites_output_{}_{}.csv'.format(
+                virtual_world['simulation'], program_parameters['program_name']),
+                self.output_dir.parent / 'sites_output_{}.csv'.format(program_parameters['program_name']))
 
         if simulation_settings[OUTPUTS][SITE_VISITS]:
             for meth, meth_vis_df in site_visits.items():
