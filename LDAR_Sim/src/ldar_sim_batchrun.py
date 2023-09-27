@@ -35,7 +35,7 @@ from out_processing.batch_reporting import BatchReporting
 from out_processing.prog_table import generate as gen_prog_table
 from utils.generic_functions import check_ERA5_file
 from batch.funcs import all_sites_used
-from batch.sites_concat import concat_sites_files
+from batch.sites_concat import concat_sites_files, sites_files_output
 
 opening_msg = """
 You are running LDAR-Sim version 3.0.0 an open sourced software (MIT) license.
@@ -145,8 +145,8 @@ if __name__ == '__main__':
                                            out_dir / 'sites_output_{}_concat.csv'.format(subdirectory_name))
                         x = x + 1
                 else:
-                    # TODO fill out later
-                    x = 1
+                    sites_files_output(out_dir / subdirectory_name / 'sites_output_{}_{}.csv'.format(0, subdirectory_name),
+                                       out_dir / 'sites_output_{}_concat.csv'.format(subdirectory_name))
         else:
             # turn off sites output if not used after the first rep
             sim_params[OUTPUTS][SITES] = False
