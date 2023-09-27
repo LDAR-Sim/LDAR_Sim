@@ -9,6 +9,7 @@
 **/outputs/
 *.nc
 *.p
+*.hypothesis
 # Include
 !weather_alberta.nc
 !weather_marcellus.nc
