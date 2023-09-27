@@ -19,6 +19,9 @@ TS_ACTIVE_LEAKS = 'active_leaks'
 TS_NEW_LEAKS = 'new_leaks'
 TS_N_TAGS = 'n_tags'
 
+TS_SITE_VISITS = "sites_visited"
+TS_EFFECTIVE_FLAGS = "eff_flags"
+
 
 def write_sites_summary(site_df, summary_path, prog_name):
     site_summary = get_sites_summary(site_df, prog_name)
@@ -87,11 +90,20 @@ def get_ts_summary(ts_df, prog_name):
     ts_summary = {}
     ts_summary_cols = [TS_EMISSIONS, TS_COST, TS_REPAIR_COST,
                        TS_ACTIVE_LEAKS, TS_NEW_LEAKS, TS_N_TAGS]
+    ts_partial_cols_to_sum = [TS_SITE_VISITS, TS_EFFECTIVE_FLAGS, TS_N_TAGS]
     ts_summary.update([("Program", prog_name)])
+    ts_summary.update([("Total Emissions", ts_df[TS_EMISSIONS].sum())])
     for col in ts_summary_cols:
         ts_summary.update([(f"Mean_{col}_per_day", ts_df[col].mean())])
         ts_summary.update([(f"5th_percentile_{col}_per_day", np.percentile(ts_df[col], 5))])
         ts_summary.update([(f"95th_percentile_{col}_per_day", np.percentile(ts_df[col], 95))])
+
+    extra_stats = {}
+    for df_col in ts_df.columns:
+        for col in ts_partial_cols_to_sum:
+            if col in df_col:
+                extra_stats.update([(f"Sum_{df_col}_overall", ts_df[df_col].sum())])
+    ts_summary.update([("Additional Statistics", extra_stats)])
     return ts_summary
 
 
