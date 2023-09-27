@@ -35,6 +35,7 @@ from out_processing.batch_reporting import BatchReporting
 from out_processing.prog_table import generate as gen_prog_table
 from utils.generic_functions import check_ERA5_file
 from batch.funcs import all_sites_used
+from batch.sites_concat import concat_sites_files
 
 opening_msg = """
 You are running LDAR-Sim version 3.0.0 an open sourced software (MIT) license.
@@ -109,8 +110,6 @@ if __name__ == '__main__':
                 generator_dir, input_manager.simulation_parameters, in_dir, virtual_world)
         else:
             generator_dir = None
-        if not all_sites_used_bool:
-            sim_params[OUTPUTS][SITES] = False
         # --- Create simulations ---
         simulations = create_sims(sim_params, programs, virtual_world,
                                   generator_dir, in_dir, out_dir, batch=True)
@@ -118,4 +117,42 @@ if __name__ == '__main__':
         # --- Run simulations (in parallel) --
         with mp.Pool(processes=sim_params['n_processes']) as p:
             sim_outputs = p.starmap(ldar_sim_run, simulations)
-        print(f'Batch Rep Done: {rep}')
+
+        # concat sites
+        if all_sites_used_bool and sim_params[OUTPUTS][SITES]:
+            # Get a list of directories in out_dir
+            subdirectories = [f.path for f in os.scandir(out_dir) if f.is_dir()]
+            # Iterate through each subdirectory
+            for subdirectory in subdirectories:
+                # Extract the folder name without the full path
+                subdirectory_name = os.path.basename(subdirectory)
+                if os.path.exists(out_dir / 'sites_output_{}_concat.csv'.format(subdirectory_name)):
+                    for x in range(sim_params['n_simulations']):
+                        concat_sites_files(out_dir / 'sites_output_{}_concat.csv'.format(subdirectory_name),
+                                           out_dir / subdirectory_name /
+                                           'sites_output_{}_{}.csv'.format(x, subdirectory_name),
+                                           out_dir / 'sites_output_{}_concat.csv'.format(subdirectory_name))
+                elif sim_params['n_simulations'] > 1:
+                    concat_sites_files(out_dir / subdirectory_name / 'sites_output_{}_{}.csv'.format(0, subdirectory_name),
+                                       out_dir / subdirectory_name /
+                                       'sites_output_{}_{}.csv'.format(1, subdirectory_name),
+                                       out_dir / 'sites_output_{}_concat.csv'.format(subdirectory_name))
+                    x = 2
+                    while x < sim_params['n_simulations']:
+                        concat_sites_files(out_dir / 'sites_output_{}_concat.csv'.format(subdirectory_name),
+                                           out_dir / subdirectory_name /
+                                           'sites_output_{}_{}.csv'.format(x, subdirectory_name),
+                                           out_dir / 'sites_output_{}_concat.csv'.format(subdirectory_name))
+                        x = x + 1
+                else:
+                    # TODO fill out later
+                    x = 1
+        else:
+            # turn off sites output if not used after the first rep
+            sim_params[OUTPUTS][SITES] = False
+        # after first rep, turn off outputs
+        if rep == 0:
+            sim_params[OUTPUTS][TIMESERIES] = False
+            sim_params[OUTPUTS][LEAKS] = False
+
+        print(f'Batch Rep Done: {rep+1}')
