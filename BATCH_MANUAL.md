@@ -4,7 +4,7 @@ The batch runner offers an alternative method for executing LDAR-Sim. With this 
 
 ## How to use
 
-To utilize the batch script, follow these steps to configure LDAR-Sim with all parameters in a designated directory. Then, employ the following command line structure:
+To utilize the batch script, configuring LDAR-Sim with all parameters in a designated directory. Then, employ the following command:
 ```ldar_sim_batchrun.py --n_rep {number_of_repetitions} -P {directory_path}```
 
 Example command to run 100 batch simulations contained in the folder simulations would be:
@@ -14,11 +14,9 @@ Example command to run 100 batch simulations contained in the folder simulations
 
 ### Regular Outputs
 
-The following files are maintained for each of programs of the first batch of simulations
+The following files are maintained for each of programs of the last batch of simulations.
 ```timeseries_output_{simulation}_{Program name}.csv```
 ```leaks_output_{simulation}_{Program name}.csv```
-
-The following file will be kept for the very last batch of simulations that are run.
 ```sites_output_{simulation}_{Program name}.csv```
 
 ### Sites
@@ -39,36 +37,42 @@ The following file will be kept for the very last batch of simulations that are 
 
 ```sites_summary.csv```
 
+For this file, each individual row is representing the summary statistics of a single program of a single simulation run.
+
 |Column Names                       |Unit       |Description                |
 |-----------------------------------|-----------|---------------------------|
 |Program                            | N/A       |Name of the program             |
-|Mean_emissions_per_site            |per site   |Mean emissions per site in kg|
-|5th_percentile_Emissions_per_site  |per site   |5th percentile of emissions per site in kilograms|
-|95th_percentile_Emissions_per_site |per site   |95th percentile of emissions per site in kilograms|
-|Mean_leaks_per_site                | # per site|Mean number of leaks per site|
-|5th_percentile_leaks_per_site      | # per site|5th percentile of the number of leaks per site at a given site|
-|95th_percentile_leaks_per_site     | # per site|95th percentile of the number of leaks per site at a given site|
+|Mean_emissions_per_site            |per site   |Mean emissions per site in kg for a single site, calculated for each simulation set|
+|5th_percentile_Emissions_per_site  |per site   |5th percentile of emissions per site in kilograms, calculated for each simulation set|
+|95th_percentile_Emissions_per_site |per site   |95th percentile of emissions per site in kilograms, calculated across for each simulation set|
+|Mean_leaks_per_site                | # per site|Mean number of leaks per site, calculated across all simulation sets|
+|5th_percentile_leaks_per_site      | # per site|5th percentile of the number of leaks per site at a given site, calculated for each simulation set|
+|95th_percentile_leaks_per_site     | # per site|95th percentile of the number of leaks per site at a given , calculated for each simulation set|
 
 ### Leaks
 
 ```leaks_summary.csv```
 
+For this file, each individual row is representing the summary statistics of a single program of a single simulation run.
+
 |Column Names                |Unit   |Description                |
 |----------------------------|-------|---------------------------|
 |Program                     | N/A   |Name of the program|
-|Volume_mean                 |kg     |Mean emissions volume in kilograms of leaks in the simulation|
-|5th_percentile_Volume       |kg     |5th percentile emissions volume in kilograms of leaks in the simulation|
-|95th_percentile_Volume      |kg     |95th percentile emissions volume in kilograms of leaks in the simulation|
-|Mean_leak_rate              |g/sec  |Overall mean leak rate for all leaks in the simulation|
-|5th_percentile_leak_rate    |g/sec  |5th percentile leak rates for all leaks in the simulation|
-|95th_percentile_leak_rate   |g/sec  |95th percentile leak rates for all leaks in the simulation|
-|Mean_Days_Active            |days   |Mean number of days active for all leaks in the simulation|
-|5th_percentile_Days_active  |days   |5th percentile of days active for all leaks in the simulation|
-|95th_percentile_days_active |days   |95th percentile of days active for all leaks in the simulation|
+|Volume_mean                 |kg     |Mean emissions volume in kilograms of leaks, calculated for a run of the simulation|
+|5th_percentile_Volume       |kg     |5th percentile emissions volume in kilograms of leaks, calculated for a run of the simulation|
+|95th_percentile_Volume      |kg     |95th percentile emissions volume in kilograms of leaks, calculated for a run of the simulation|
+|Mean_leak_rate              |g/sec  |Overall mean leak rate for all leaks in a simulation|
+|5th_percentile_leak_rate    |g/sec  |5th percentile leak rates for all leaks in a simulation|
+|95th_percentile_leak_rate   |g/sec  |95th percentile leak rates for all leaks in a simulation|
+|Mean_Days_Active            |days   |Mean number of days active for all leaks in a simulation|
+|5th_percentile_Days_active  |days   |5th percentile of days active for all leaks in a simulation|
+|95th_percentile_days_active |days   |95th percentile of days active for all leaks in a simulation|
 
 ### Time Series
 
 ```timeseries_summary.csv```
+
+For this file, each individual row is representing the summary statistics of a single program of a single simulation run.
 
 |Column Names                              |Unit      |Description|
 |------------------------------------------|----------|------------|
@@ -91,3 +95,4 @@ The following file will be kept for the very last batch of simulations that are 
 |Mean_n_tags_per_day                       |tags/day  |Mean number of new tags per day for the program|
 |5th_percentile_n_tags_per_day             |tags/day  |5th percentile of new tags per day for the program|
 |95th_percentile_n_tags_per_day            |tags/day  |95th percentile of new tags per day for the program|
+|Additional Statistics                     |N/A       |Contains a dictionary of additional statistics that are program specific. This column will provide additional information on the number of site visits, and effective flags and tags of a given method of a program. |
