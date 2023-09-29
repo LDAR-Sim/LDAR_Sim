@@ -19,9 +19,25 @@
 # ------------------------------------------------------------------------------
 
 import copy
+from tkinter import S
 
 import matplotlib.pyplot as plt
 import yaml
+import numpy as np
+
+SENS_STRATEGIES = "sensitivity_analysis_strategy"
+COMPARE_PROGRAMS = "compare_programs"
+SENS_PARAM_FOR_ANALYSIS = "parameter_for_analysis"
+PARAM_LEVEL = "parameter_level"
+PARAM_IDENTIFIER = "parameter_identifier"
+PARAMETER = "parameter"
+PROG_METHOD_ACCESSOR = "methods"
+METHOD_LABEL_ACCESSOR = "label"
+PARAMETER_SENS_ANALYSIS = "parameter_sensitivity_analysis"
+SENS_ANALYSIS_VALUES = "values"
+SENS_ANALYSIS_BOUNDS = "bounds"
+SENS_ANALYSIS_STEPS = "steps"
+SENS_ANALYSIS_RANGE = "range"
 
 
 def yaml_to_dict(y_file):
@@ -141,3 +157,28 @@ def generate_violin(grouped_ts, val_col, y_label, output_dir):
     fig.tight_layout()
     fig.savefig(output_dir/"violin_{}".format(val_col), dpi=fig.dpi)
     plt.close(fig)
+
+    def generate_sens_sim_sets(sens_params, programs, virtual_world):
+        if sens_params[SENS_STRATEGIES][COMPARE_PROGRAMS]:
+            return None
+        else:
+            sens_param_level = sens_params[SENS_PARAM_FOR_ANALYSIS][PARAM_LEVEL]
+            sens_param_identifier = sens_params[SENS_PARAM_FOR_ANALYSIS][PARAM_IDENTIFIER]
+            sens_parameter = sens_params[SENS_PARAM_FOR_ANALYSIS][PARAMETER]
+            if sens_params[PARAMETER_SENS_ANALYSIS][SENS_ANALYSIS_VALUES] is not None:
+                sens_vals = sens_params[PARAMETER_SENS_ANALYSIS][SENS_ANALYSIS_VALUES]
+                sens_len = len(sens_vals)
+            else:
+                sens_len = sens_params[PARAMETER_SENS_ANALYSIS][SENS_ANALYSIS_RANGE][SENS_ANALYSIS_STEPS]
+                sens_bounds = sens_params[PARAMETER_SENS_ANALYSIS][SENS_ANALYSIS_RANGE][SENS_ANALYSIS_BOUNDS]
+                sens_vals = np.linespace(sens_bounds[0], sens_bounds[1], sens_len)
+            if sens_param_level == "method":
+                sens_program_sets = {}
+                for program in programs:
+                    for method in program[PROG_METHOD_ACCESSOR]:
+                        if method[METHOD_LABEL_ACCESSOR] == sens_param_identifier:
+
+
+
+            elif sens_param_level == "program":
+            else:

@@ -1,0 +1,13 @@
+version: "3.3"
+parameter_level: "sensitivity_analysis"
+parameter_for_analysis:
+  parameter_level: "_placeholder_string_"
+  parameter_identifier: "_placeholder_string_"
+  parameter: "_placeholder_string_"
+parameter_sensitivity_analysis:
+  values: ["_placeholder_float_"]
+  range:
+    bounds: ["_placeholder_float_", "_placeholder_float_"]
+    steps: "_placeholder_int_"
+sensitivity_analysis_strategy:
+  compare_programs: False # Whether or not to compare programs against each other in addition to against themselves when doing sensitivity analysis.
