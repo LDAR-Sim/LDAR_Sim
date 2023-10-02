@@ -17,6 +17,7 @@ import copy
 import multiprocessing as mp
 import os
 import shutil
+import sys
 # You should have received a copy of the MIT License
 # along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 #
@@ -99,11 +100,21 @@ def run_programs(programs, n_simulations, output_directory):
 
 # ------- Run Program --------
 if __name__ == '__main__':
+    # Get route directory, which is parent folder of ldar_sim_main file
+    # Set current working directory directory to root directory
+    root_dir = Path(__file__).resolve().parent.parent
+    os.chdir(root_dir)
+
+    src_dir = root_dir / 'src'
+    sys.path.insert(1, str(src_dir))
+    ext_sens_dir = root_dir / 'external_sensors'
+    sys.path.append(str(ext_sens_dir))
+
     # Initialize programs and variables
     root_dir = Path(os.path.dirname(os.path.realpath(__file__))).parent
     parameter_filenames = files_from_args(root_dir)
     print('LDAR-Sim using parameters supplied as arguments')
-    input_manager = InputManager(root_dir)
+    input_manager = InputManager()
     simulation_parameters = input_manager.read_and_validate_parameters(parameter_filenames)
 
     input_directory = simulation_parameters['input_directory']

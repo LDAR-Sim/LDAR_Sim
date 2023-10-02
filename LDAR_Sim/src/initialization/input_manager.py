@@ -241,6 +241,19 @@ class InputManager:
                 # self.retain_update(method_pool[method_label], new_parameters)
                 method_pool.update({method_label: new_parameters})
 
+            elif new_parameters['parameter_level'] == "sensitivity_analysis":
+                if 'default_parameters' not in new_parameters:
+                    def_file = 'sensitivity_analysis.yml'
+                else:
+                    def_file = new_parameters['default_parameters']
+                sens_param_file = './src/default_parameters/{}'.format(def_file)
+                with open(sens_param_file, 'r') as f:
+                    default_sens_parameters = yaml.load(f.read(), Loader=yaml.SafeLoader)
+                check_types(default_sens_parameters, new_parameters)
+                new_sens = copy.deepcopy(default_sens_parameters)
+                self.retain_update(new_sens, new_parameters)
+                self.simulation_parameters["sens_params"] = new_sens
+
             else:
                 sys.exit('Parameter_level of ' + str(new_parameters['parameter_level']) +
                          ' is not possible to parse')

@@ -37,6 +37,7 @@ from utils.generic_functions import check_ERA5_file
 from batch.funcs import all_sites_used
 from batch.sites_concat import concat_sites_files, sites_files_output
 from initialization.versioning import CURRENT_FULL_VERSION
+from utils.sensitivity import generate_sens_sim_sets
 
 opening_msg = f"""
 You are running LDAR-Sim version {CURRENT_FULL_VERSION} an open sourced software (MIT) license.
@@ -48,8 +49,6 @@ if __name__ == '__main__':
     print(opening_msg)
 
     parser = argparse.ArgumentParser(description="Run LDAR-Sim")
-    parser.add_argument('--n_rep', type=int, required=True,
-                        help="Number of times to repeat the simulation")
     parser.add_argument('-P', type=str, required=True, help="Input file path")
     args = parser.parse_args()
 
@@ -81,10 +80,12 @@ if __name__ == '__main__':
     in_dir = get_abs_path(sim_params['input_directory'])
     programs = sim_params.pop('programs')
     virtual_world = sim_params.pop('virtual_world')
+    sens_params = sim_params.pop('sens_params')
 
     # --- Run Checks ----
     check_ERA5_file(in_dir, virtual_world)
     has_ref = ref_program in programs
     has_base = base_program in programs
 
-    sim_sets = generate_sens_sim_sets(sens_params, programs, virtual_world)
+    prog_sets, vw_sets = generate_sens_sim_sets(sens_params, programs, virtual_world)
+    print("test placeholder")
