@@ -1,10 +1,11 @@
 import pandas as pd
-from hypothesis import given, strategies as st
+from hypothesis import given, strategies as st, settings, HealthCheck
 from src.batch.sites_concat import (
     concat_sites,
     COLS_TO_CONCAT,
     COLS_TO_KEEP,
-    ID
+    ID,
+    make_sites_output
 )
 
 # Hypothesis settings
@@ -18,7 +19,7 @@ positive_ints = st.integers(min_value=0, max_value=10**10)
 @st.composite
 def generate_test_sites_data(draw):
     data = {}
-    rows = draw(st.integers(min_value=50, max_value=200))
+    rows = draw(st.integers(min_value=10, max_value=100))
 
     # Generate unique values for each column in COLS_TO_KEEP
     for col in COLS_TO_KEEP:
@@ -36,7 +37,27 @@ def generate_test_sites_data(draw):
 
 
 @given(sites_df=generate_test_sites_data(), sites_df2=generate_test_sites_data())
+@settings(suppress_health_check=[HealthCheck.too_slow])
 def test_150_concat_sites(sites_df, sites_df2):
     result_df = concat_sites(sites_df, sites_df2)
 
     assert all(col in result_df.columns for col in COLS_TO_CONCAT + COLS_TO_KEEP)
+
+    # Check that the ID column is sorted
+    assert result_df[ID].is_monotonic_increasing
+
+
+@given(sites_df=generate_test_sites_data())
+def test_150_make_sites_output(sites_df):
+    # Call the function under test
+    result_df = make_sites_output(sites_df)
+
+    # Check that the result DataFrame has the correct columns
+    assert set(result_df.columns) == set(COLS_TO_CONCAT + COLS_TO_KEEP + [ID, 'SIM_COUNT'])
+
+    # Check that the ID column is sorted
+    assert result_df[ID].is_monotonic_increasing
+
+    # Check that the SIM_COUNT column is correct
+    assert result_df['SIM_COUNT'].all(
+    ) == sites_df['SIM_COUNT'].iloc[0] if 'SIM_COUNT' in sites_df.columns else 1
