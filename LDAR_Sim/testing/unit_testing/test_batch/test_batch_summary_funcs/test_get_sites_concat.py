@@ -5,7 +5,10 @@ from src.batch.sites_concat import (
     COLS_TO_CONCAT,
     COLS_TO_KEEP,
     ID,
-    make_sites_output
+    SIM_COUNT,
+    make_sites_output,
+    CUM_LEAKS, INITIAL_LEAKS, EMISSIONS,
+    SUBTYPE_CODE, LAT, LON, EQUIP_GROUPS
 )
 
 # Hypothesis settings
@@ -46,6 +49,53 @@ def test_150_concat_sites(sites_df, sites_df2):
     # Check that the ID column is sorted
     assert result_df[ID].is_monotonic_increasing
 
+    # Check if SIM_COUNT is greater than 1 in the result DataFrame
+    assert (result_df[SIM_COUNT] > 1).all()
+
+
+def test_150_concatenation():
+    # Create two DataFrames for testing
+    site_df1 = pd.DataFrame({
+        ID: [1, 2, 3],
+        SUBTYPE_CODE: [1, 2, 3],
+        LAT: [100, 100, 100],
+        LON: [-90, -91, -92],
+        EQUIP_GROUPS: [1, 1, 1],
+        CUM_LEAKS: [1.0, 2.0, 3.0],
+        INITIAL_LEAKS: [4.0, 5.0, 6.0],
+        EMISSIONS: [3, 4, 5],
+    })
+
+    site_df2 = pd.DataFrame({
+        ID: [1, 2, 3],
+        SUBTYPE_CODE: [1, 2, 3],
+        LAT: [100, 100, 100],
+        LON: [-90, -91, -92],
+        EQUIP_GROUPS: [1, 1, 1],
+        CUM_LEAKS: [7.0, 8.0, 9.0],
+        INITIAL_LEAKS: [10.0, 11.0, 12.0],
+        EMISSIONS: [3, 4, 5],
+    })
+
+    # Call the function under test
+    result_df = concat_sites(site_df1, site_df2)
+
+    # Define the expected concatenated DataFrame
+    expected_df = pd.DataFrame({
+        ID: [1, 2, 3],
+        CUM_LEAKS: [4.0, 5.0, 6.0],
+        INITIAL_LEAKS: [7.0, 8.0, 9.0],
+        EMISSIONS: [3.0, 4.0, 5.0],
+        SUBTYPE_CODE: [1, 2, 3],
+        LAT: [100, 100, 100],
+        LON: [-90, -91, -92],
+        EQUIP_GROUPS: [1, 1, 1],
+        SIM_COUNT: [2, 2, 2]
+    })
+
+    # Check if the result DataFrame matches the expected DataFrame
+    pd.testing.assert_frame_equal(result_df, expected_df)
+
 
 @given(sites_df=generate_test_sites_data())
 def test_150_make_sites_output(sites_df):
@@ -53,11 +103,11 @@ def test_150_make_sites_output(sites_df):
     result_df = make_sites_output(sites_df)
 
     # Check that the result DataFrame has the correct columns
-    assert set(result_df.columns) == set(COLS_TO_CONCAT + COLS_TO_KEEP + [ID, 'SIM_COUNT'])
+    assert set(result_df.columns) == set(COLS_TO_CONCAT + COLS_TO_KEEP + [SIM_COUNT])
 
     # Check that the ID column is sorted
     assert result_df[ID].is_monotonic_increasing
 
     # Check that the SIM_COUNT column is correct
-    assert result_df['SIM_COUNT'].all(
-    ) == sites_df['SIM_COUNT'].iloc[0] if 'SIM_COUNT' in sites_df.columns else 1
+    assert result_df[SIM_COUNT].all(
+    ) == sites_df[SIM_COUNT].iloc[0] if SIM_COUNT in sites_df.columns else 1

@@ -65,11 +65,11 @@ def make_sites_output(sites_df):
 
     # Copy over columns to concatenate, considering SIM_COUNT if present
     for col in COLS_TO_CONCAT:
-        n_sims_df1 = sorted_site_df1['SIM_COUNT'].iloc[0] if 'SIM_COUNT' in sorted_site_df1.columns else 1
+        n_sims_df1 = sorted_site_df1[SIM_COUNT].iloc[0] if SIM_COUNT in sorted_site_df1.columns else 1
         combined_df[col] = sorted_site_df1[col]
 
     # Add the SIM_COUNT column to the combined DataFrame
-    combined_df['SIM_COUNT'] = n_sims_df1
+    combined_df[SIM_COUNT] = n_sims_df1
 
     # Reset the index of the combined DataFrame to include IDs in the CSV
     combined_df.reset_index(inplace=True)
