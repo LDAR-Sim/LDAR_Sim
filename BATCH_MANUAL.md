@@ -23,12 +23,15 @@ The following files are maintained for each of programs of the last batch of sim
 
 `sites_output_{program}_concat.csv`
 
+The output file will only be created if all the sites from the infrastructure file are utilized in a single simulation, and if the sites output feature is enabled. The `sites_output_{program}_concat.csv` takes the individual sites output files and summarizes the values.
+
+
 |Column Names      |Unit   |Description                |
 |------------------|-------|---------------------------|
-|facility_ID       |N/A    |Facility ID of the site|
+|facility_ID       |N/A    |Unique ID of the site/locations simulated|
 |Cum_leaks         |N/A    |Average cumulative number of leaks at the site|
 |init_leaks        |N/A    |Average number of initial leaks found at the site|
-|total_emissions_kg|kg     |Average total emissions per site (in kilograms)|
+|total_emissions_kg|kg     |Average total emissions at the site(in kilograms)|
 |subtype_code      |N/A    |The subtype code of the site|
 |lat               |Degrees|Latitude of the site|
 |lon               |Degrees|Longitude of the site|
@@ -45,28 +48,28 @@ For this file, each individual row is representing the summary statistics of a s
 |Mean_emissions_per_site            |per site   |Mean emissions per site in kg for a single site, calculated for each simulation set|
 |5th_percentile_Emissions_per_site  |per site   |5th percentile of emissions per site in kilograms, calculated for each simulation set|
 |95th_percentile_Emissions_per_site |per site   |95th percentile of emissions per site in kilograms, calculated across for each simulation set|
-|Mean_leaks_per_site                | # per site|Mean number of leaks per site, calculated across all simulation sets|
-|5th_percentile_leaks_per_site      | # per site|5th percentile of the number of leaks per site at a given site, calculated for each simulation set|
-|95th_percentile_leaks_per_site     | # per site|95th percentile of the number of leaks per site at a given , calculated for each simulation set|
+|Mean_leaks_per_site                | # per site|Mean number of leaks per site, calculated for each simulation set|
+|5th_percentile_leaks_per_site      | # per site|5th percentile of the number of leaks per site, calculated for each simulation set|
+|95th_percentile_leaks_per_site     | # per site|95th percentile of the number of leaks per site, calculated for each simulation set|
 
 ### Leaks
 
 ```leaks_summary.csv```
 
-For this file, each individual row is representing the summary statistics of a single program of a single simulation run.
+In this file, each row represents summary statistics for an individual program during each simulation run, focusing on a per-leak basis.
 
 |Column Names                |Unit   |Description                |
 |----------------------------|-------|---------------------------|
 |Program                     | N/A   |Name of the program|
-|Volume_mean                 |kg     |Mean emissions volume in kilograms of leaks, calculated for a run of the simulation|
-|5th_percentile_Volume       |kg     |5th percentile emissions volume in kilograms of leaks, calculated for a run of the simulation|
-|95th_percentile_Volume      |kg     |95th percentile emissions volume in kilograms of leaks, calculated for a run of the simulation|
-|Mean_leak_rate              |g/sec  |Overall mean leak rate for all leaks in a simulation|
-|5th_percentile_leak_rate    |g/sec  |5th percentile leak rates for all leaks in a simulation|
-|95th_percentile_leak_rate   |g/sec  |95th percentile leak rates for all leaks in a simulation|
-|Mean_Days_Active            |days   |Mean number of days active for all leaks in a simulation|
-|5th_percentile_Days_active  |days   |5th percentile of days active for all leaks in a simulation|
-|95th_percentile_days_active |days   |95th percentile of days active for all leaks in a simulation|
+|Volume_mean                 |kg     |Mean emissions volume in kilograms per leak, calculated for a run of the simulation|
+|5th_percentile_Volume       |kg     |5th percentile emissions volume in kilograms per leak, calculated for a run of the simulation|
+|95th_percentile_Volume      |kg     |95th percentile emissions volume in kilograms per leak, calculated for a run of the simulation|
+|Mean_leak_rate              |g/sec  |Overall mean leak rate per leak in a simulation|
+|5th_percentile_leak_rate    |g/sec  |5th percentile leak rates per leak in a simulation|
+|95th_percentile_leak_rate   |g/sec  |95th percentile leak rates per leak in a simulation|
+|Mean_Days_Active            |days   |Mean number of days active per leak in a simulation|
+|5th_percentile_Days_active  |days   |5th percentile of days active per leak in a simulation|
+|95th_percentile_days_active |days   |95th percentile of days active per leak in a simulation|
 
 ### Time Series
 
