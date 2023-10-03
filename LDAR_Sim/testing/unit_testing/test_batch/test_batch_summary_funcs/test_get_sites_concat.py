@@ -56,7 +56,7 @@ def test_150_concat_sites(sites_df, sites_df2):
 def test_150_concatenation():
     # Create two DataFrames for testing
     site_df1 = pd.DataFrame({
-        ID: [1, 2, 3],
+        ID: [0, 1, 2],
         SUBTYPE_CODE: [1, 2, 3],
         LAT: [100, 100, 100],
         LON: [-90, -91, -92],
@@ -67,7 +67,7 @@ def test_150_concatenation():
     })
 
     site_df2 = pd.DataFrame({
-        ID: [1, 2, 3],
+        ID: [0, 1, 2],
         SUBTYPE_CODE: [1, 2, 3],
         LAT: [100, 100, 100],
         LON: [-90, -91, -92],
@@ -82,7 +82,7 @@ def test_150_concatenation():
 
     # Define the expected concatenated DataFrame
     expected_df = pd.DataFrame({
-        ID: [1, 2, 3],
+        ID: [0, 1, 2],
         CUM_LEAKS: [4.0, 5.0, 6.0],
         INITIAL_LEAKS: [7.0, 8.0, 9.0],
         EMISSIONS: [3.0, 4.0, 5.0],
@@ -91,6 +91,51 @@ def test_150_concatenation():
         LON: [-90, -91, -92],
         EQUIP_GROUPS: [1, 1, 1],
         SIM_COUNT: [2, 2, 2]
+    })
+
+    # Check if the result DataFrame matches the expected DataFrame
+    pd.testing.assert_frame_equal(result_df, expected_df)
+
+
+def test_150_concatenation2():
+    # Create two DataFrames for testing
+    site_df2 = pd.DataFrame({
+        ID: [0, 1, 2],
+        SUBTYPE_CODE: [1, 2, 3],
+        LAT: [100, 100, 100],
+        LON: [-90, -91, -92],
+        EQUIP_GROUPS: [1, 1, 1],
+        CUM_LEAKS: [1.0, 2.0, 3.0],
+        INITIAL_LEAKS: [4.0, 5.0, 6.0],
+        EMISSIONS: [3, 4, 5],
+    })
+
+    site_df1 = pd.DataFrame({
+        ID: [0, 1, 2],
+        CUM_LEAKS: [4.0, 5.0, 6.0],
+        INITIAL_LEAKS: [7.0, 8.0, 9.0],
+        EMISSIONS: [3.0, 4.0, 5.0],
+        SUBTYPE_CODE: [1, 2, 3],
+        LAT: [100, 100, 100],
+        LON: [-90, -91, -92],
+        EQUIP_GROUPS: [1, 1, 1],
+        SIM_COUNT: [2, 2, 2]
+    })
+
+    # Call the function under test
+    result_df = concat_sites(site_df1, site_df2)
+
+    # Define the expected concatenated DataFrame
+    expected_df = pd.DataFrame({
+        ID: [0, 1, 2],
+        CUM_LEAKS: [3.0, 4.0, 5.0],
+        INITIAL_LEAKS: [6.0, 7.0, 8.0],
+        EMISSIONS: [3.0, 4.0, 5.0],
+        SUBTYPE_CODE: [1, 2, 3],
+        LAT: [100, 100, 100],
+        LON: [-90, -91, -92],
+        EQUIP_GROUPS: [1, 1, 1],
+        SIM_COUNT: [3, 3, 3]
     })
 
     # Check if the result DataFrame matches the expected DataFrame
