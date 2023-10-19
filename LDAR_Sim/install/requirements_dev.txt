@@ -15,6 +15,7 @@ cycler==0.11.0
 dask== 2023.4.1
 ephem==4.1.4
 fonttools==4.39.3
+hypothesis==6.87.0
 idna==3.4
 jmespath==1.0.1
 joblib==1.2.0
@@ -30,7 +31,7 @@ packaging==23.1
 pandas==2.0.1
 patsy==0.5.3
 Pillow==9.5.0
-pip==23.3.0
+pip==23.1.2
 platformdirs==3.5.0
 plotnine==0.10.1
 pluggy==1.0.0
@@ -42,8 +43,11 @@ pyOpenSSL==23.1.1
 pyparsing
 # PyQt5-sip==12.11.0
 # PySocks==1.7.1
-#python==3.11.0
+python==3.11.3
 python-dateutil==2.8.2
+pytest==7.3.1
+pytest-cov==4.1.0
+pytest-mock==3.10.0
 pytz==2023.3
 PyYAML==6.0
 requests==2.29.0

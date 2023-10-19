@@ -23,11 +23,13 @@ From Conda Shell:
     conda create -n ldar_sim --file requirements.txt
     ```
 
+    Note: Please note that the ``requirements.txt`` file exclusively includes the essential dependencies needed to run LDAR-Sim as a regular user. If you are in a development role, refer to `requirements_dev.txt` for the additional requirements specific to the development environment.
+
     ```cmd
     conda activate ldar_sim_env
     ```
 
-if you are using satellite modules orbit predictor needs to be added to environment
+If you are using satellite modules orbit predictor needs to be added to environment
 
 Run the following command:
 
