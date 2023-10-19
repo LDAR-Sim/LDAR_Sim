@@ -30,7 +30,8 @@ def make_crews(
         virtual_world,
         simulation_settings,
         timeseries,
-        deployment_days
+        deployment_days,
+        rollover
 ):
     """ Generate crews using BaseCrew class.
 
@@ -56,7 +57,8 @@ def make_crews(
                 config,
                 timeseries,
                 deployment_days,
-                id=i + 1
+                id=i + 1,
+                rollover=rollover
             )
         )
 

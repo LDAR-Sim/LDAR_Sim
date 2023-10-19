@@ -119,6 +119,7 @@ class BaseCompany:
             site.update({'{}_surveys_done_this_year'.format(self.name): 0})
             site.update({'{}_missed_leaks'.format(self.name): 0})
 
+        rollover = []
         make_crew_loc = import_module('methods.deployment.{}_company'.format(
             self.config['deployment_type'].lower()))
         make_crews = getattr(make_crew_loc, 'make_crews')
@@ -130,7 +131,8 @@ class BaseCompany:
             virtual_world,
             simulation_settings,
             timeseries,
-            self.deployment_days
+            self.deployment_days,
+            rollover
         )
         for idx, cnt in enumerate(self.crews):
             self.timeseries['{}_cost'.format(self.name)][self.state['t'].current_timestep] += \

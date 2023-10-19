@@ -29,7 +29,6 @@ from methods.deployment.generic_funcs import get_work_hours
 
 
 class Schedule():
-    rollover = []
 
     def __init__(
             self,
@@ -41,6 +40,7 @@ class Schedule():
             virtual_world,
             simulation_settings,
             deployment_days,
+            rollover,
             home_bases=None
     ):
         self.config = config
@@ -55,7 +55,7 @@ class Schedule():
         self.end_hour = None
         self.allowed_end_time = None
         self.last_site_travel_home_min = None
-        # self.rollover = None  # (rollover_site_plan)
+        self.rollover = rollover  # (rollover_site_plan)
         self.travel_all_day = False
         self.scheduling = self.config['scheduling']
         # define a list of home bases for crew and redefine the initial location of crew
@@ -163,7 +163,7 @@ class Schedule():
         # add a site to the rollover list if there are still remaining mins in survey
         if len(site_plans_today) > 0:
             if site_plans_today[-1]['remaining_mins'] > 0:
-                Schedule.rollover.append(site_plans_today[-1])
+                self.rollover.append(site_plans_today[-1])
         else:
             self.travel_all_day = True
         # The crew does not actually travel this is only done for planning purposes
@@ -213,12 +213,12 @@ class Schedule():
                                          self.state['t'].current_timestep]:
             return None
 
-        if len(Schedule.rollover) > 0:
-            for s in Schedule.rollover:
+        if len(self.rollover) > 0:
+            for s in self.rollover:
                 if site['facility_ID'] == s['site']['facility_ID']:
                     # Remove facility from rollover list, and retrieve remaining survey minutes
                     LDAR_mins = s['remaining_mins']
-                    Schedule.rollover.remove(s)
+                    self.rollover.remove(s)
                     break
                 else:
                     LDAR_mins = int(site['{}_time'.format(name)])
@@ -338,8 +338,8 @@ class Schedule():
         Returns:
             A dictionary (travel plan) of the selected site
         """
-        if len(Schedule.rollover) > 0:
-            site_plan = Schedule.rollover
+        if len(self.rollover) > 0:
+            site_plan = self.rollover
 
         # route planning -> find the nearest site
         if self.config['scheduling']['route_planning']:

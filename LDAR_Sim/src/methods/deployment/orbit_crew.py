@@ -43,6 +43,7 @@ class Schedule():
             virtual_world,
             simulation_settings,
             deployment_days,
+            rollover,
             home_bases=None
     ):
         self.config = config
