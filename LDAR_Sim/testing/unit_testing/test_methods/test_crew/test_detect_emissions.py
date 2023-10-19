@@ -42,6 +42,7 @@ def test_051_detect_emissions_simple(
         mock_config_for_crew_testing_1,
         None,
         None,
+        None,
         None
     )
     result: Any = crew.detect_emissions(mock_site_for_crew_testing_1)
@@ -73,6 +74,7 @@ def test_051_detect_emissions_simple_w_static_vents(
         mock_vw_for_crew_testing_2,
         mock_settings_for_crew_testing_1,
         mock_config_for_crew_testing_2,
+        None,
         None,
         None,
         None
