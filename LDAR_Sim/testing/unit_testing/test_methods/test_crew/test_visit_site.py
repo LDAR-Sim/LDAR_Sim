@@ -126,6 +126,7 @@ def test_053_visit_site_gives_expected_behavior(
         request.getfixturevalue(test_input[1]),
         request.getfixturevalue(test_input[3]),
         None,
+        None,
         None
     )
     mocker.patch.object(BaseCrew, 'detect_emissions',

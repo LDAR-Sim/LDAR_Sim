@@ -45,6 +45,7 @@ class BaseCrew:
             timeseries,
             deployment_days,
             id,
+            rollover,
             site=None
     ):
         """
@@ -80,7 +81,8 @@ class BaseCrew:
             config,
             virtual_world,
             simulation_settings,
-            deployment_days
+            deployment_days,
+            rollover
         )
 
         if self.config['deployment_type'] == 'mobile':

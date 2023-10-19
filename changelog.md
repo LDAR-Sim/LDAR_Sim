@@ -1,5 +1,9 @@
 # Change Log
 
+## 2023-10-19 - Version 3.3.2
+
+1. **Bugfix for concurrent mobile method survey times** Resolved a bug where previously survey time for concurrent mobile methods would be incorrect.
+
 ## 2023-09-21 - Version 3.3.1
 
 1. **Follow-up Watchlist sorting toggle** Sorting on the follow-up watch list can be turned off.
