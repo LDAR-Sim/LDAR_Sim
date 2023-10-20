@@ -1526,9 +1526,9 @@ Method weather envelopes
 
 **Description:** Specifies the name of the text file that contains orbit information of satellites. TLE stands for a two-line element set, which is a data format encoding a list of orbital elements of an Earth-orbiting object for a given point in time, the epoch. By using TLE of a satellite, LDAR-Sim can estimate the position of satellite above earth at specific time.
 
-**Notes on acquisition:** It is only required for satellite.
+**Notes on acquisition:** Current information can be obtained from CelesTrak or similar online databases.
 
-**Notes of caution:** Please be sure the satellite is included in the TLE file
+**Notes of caution:** Please be sure the satellite is included in the TLE file. Prediction accuracy decreases away from the epoch.
 
 ### &lt;TLE_label (satellite only)&gt; - Work in progress
 
@@ -1541,7 +1541,7 @@ Method weather envelopes
 - default
 - GHGSAT-D
 - GOSAT (IBUKI)
-- SENTINEL-5(TROPOMI)
+- SENTINEL-5P(TROPOMI)
 - TANSAT(CarbonSat)
 
 **Notes on acquisition:** It is only required for satellite.
