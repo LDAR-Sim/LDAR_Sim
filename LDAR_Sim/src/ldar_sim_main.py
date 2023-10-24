@@ -20,7 +20,6 @@
 
 
 import datetime
-import json
 import multiprocessing as mp
 import os
 import sys
@@ -35,7 +34,6 @@ from initialization.sims import create_sims
 from initialization.sites import init_generator_files
 from ldar_sim_run import ldar_sim_run
 from out_processing.batch_reporting import BatchReporting
-from out_processing.prog_table import generate as gen_prog_table
 from utils.generic_functions import check_ERA5_file
 
 opening_msg = """
@@ -128,13 +126,6 @@ if __name__ == '__main__':
         else:
             print(
                 'No reference or base program input...skipping batch reporting and economics.')
-
-    # Generate output table
-    print("....Exporting summary statistic tables")
-    out_prog_table = gen_prog_table(sim_outputs, base_program, programs)
-
-    with open(out_dir / 'prog_table.json', 'w') as fp:
-        json.dump(out_prog_table, fp)
 
     # Write program metadata
     metadata = open(out_dir / '_metadata.txt', 'w')
