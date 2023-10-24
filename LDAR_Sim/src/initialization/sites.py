@@ -211,3 +211,101 @@ def regenerate_sites(virtual_world, prog_0_sites, in_dir):
             new_site.update({"empirical_vent_rates": site_or["empirical_vent_rates"]})
         out_sites.append(new_site)
     return out_sites
+
+class Site:
+    def __init__(self, 
+                 id : str, 
+                 lat : float, 
+                 long : float, 
+                 site_type : str = None 
+                ) -> None:
+        self._site_ID : str = id
+        self._lat : float = lat
+        self._long : float = long
+        
+        self._site_type : str = site_type
+        self._RS : dict = {}
+        self.create_EquipementGroups()
+
+    def add_RS(self,
+             method,
+             survey_frequency
+            ):
+        self._RS[method] = survey_frequency
+
+    # def create_EquipementGroups(self, ):
+    #     eq_grp_list = []
+    #     for eq_grp in eq_grps:
+    #         eq_grp_list.append(Equipment_Group())
+    #     self._equipment_groups = eq_grp_list
+
+        
+class Equipment_Group:
+    def __init__(self):
+        id : str
+
+    def report_func():
+        # some reporting agregate function? 
+        return 
+class Equipment:
+    def __init__(self,
+                 id, 
+                 repair_delay) -> None:
+        self._equipment_ID : str = id
+        self._site_ID : Site = None
+        self._repair_delay = repair_delay
+        self._surveytime : dict = {}
+        self._spatialcoverage : dict = {}
+
+    def add_surveytime(self, 
+                       method, 
+                       surveytime):
+        # Create a parameter dictionary for the given method
+        self._surveytime[method]  = surveytime  # Store the parameters in the dictionary
+
+    def add_spatialcoverage(self, 
+                       method, 
+                       spatialcoverage):
+        # Create a parameter dictionary for the given method
+
+        self._spatialcoverage[method] = spatialcoverage  # Store the parameters in the dictionary
+
+    def get_spatialcoverage(self, method):
+        # Retrieve parameters for the given method, or return an empty dictionary if not found
+        return self._spatialcoverage.get(method, {})
+
+    def list_methods(self):
+        # List all methods for which parameters are defined
+        return list(self._parameters.keys())
+class Source:
+    def __init__(self, id : str, 
+                emiss_prob : float, 
+                duration : int, 
+                repairable : bool, 
+                emiss_source, 
+                emiss_type : str,
+                equipment_ID:str,
+                ) -> None:
+        self._source_ID : str = id
+
+        self._emiss_prob : float = emiss_prob
+        self._duration : int = duration
+        self._repairable : bool = repairable
+        self._equipment_ID : str = equipment_ID
+        
+        self._emiss_source = emiss_source
+        self._emiss_type : str = emiss_type
+
+    def create_emission(self):
+        if type(self._emiss_source) == str and emiss_type.lower() == 'sample':
+            # add in code to deal with source file
+        elif type(self._emiss_source) == str and emiss_type.lower() == 'fit':
+            # add in code to deal with source file and fitting to distribution
+        elif type(self._emiss_source) == list and emiss_type.lower() == 'sample':
+            emiss_val = emiss_source
+        elif type(self._emiss_source) == float or type(emiss_source) == int:
+            emiss_val = [emiss_source]
+        elif type(self._emiss_source) == list and emiss_type.lower() == 'dist':
+            # add in code to deal with handling a distribution
+    
+    # the above may be required to be moved to the emissions object.
