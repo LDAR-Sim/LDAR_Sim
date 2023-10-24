@@ -17,8 +17,9 @@
 # along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 #
 # ------------------------------------------------------------------------------
+from initialization.emissions import FugitiveEmission
 from methods.funcs import measured_rate as get_measured_rate
-from utils.attribution import update_tag
+from utils.attribution import tag_leak
 
 
 def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered_site_rate,
@@ -53,10 +54,12 @@ def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered
     elif self.config["measurement_scale"] == "component":
         # If measurement scale is a leak, all leaks will be tagged
         for leak in covered_leaks:
-            if (leak['rate'] > self.config['sensor']['MDL'][0]):
+            leak: FugitiveEmission
+            leak_rate = leak.get_rate()
+            if (leak_rate > self.config['sensor']['MDL'][0]):
                 found_leak = True
-                measured_rate = get_measured_rate(leak['rate'], self.config['sensor']['QE'])
-                is_new_leak = update_tag(
+                measured_rate = get_measured_rate(leak_rate, self.config['sensor']['QE'])
+                is_new_leak = tag_leak(
                     leak,
                     measured_rate,
                     site,

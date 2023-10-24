@@ -31,6 +31,7 @@ from initialization.leaks import (generate_initial_leaks,
 from utils.distributions import fit_dist, unpackage_dist
 from utils.emis_inputs import (assign_vents)
 from methods.init_func.repair_delay import determine_delay
+from initialization.emissions import FugitiveEmission
 
 
 def init_generator_files(generator_dir, sim_params, in_dir, virtual_world):
@@ -136,7 +137,7 @@ def generate_sites(virtual_world, in_dir, pregen_leaks, start_date, end_date):
     get_subtype_file(virtual_world, in_dir)
 
     leak_timeseries = {}
-    initial_leaks = {}
+    initial_leaks: dict[str, list[FugitiveEmission]] = {}
     # Additional variable(s) for each site
     for site in sites:
         # Add a distribution and unit for each leak
@@ -151,9 +152,11 @@ def generate_sites(virtual_world, in_dir, pregen_leaks, start_date, end_date):
         site['repair_delay'] = determine_delay(virtual_world)
 
         if pregen_leaks:
-            initial_site_leaks = generate_initial_leaks(virtual_world, site, start_date)
+            initial_site_leaks: list[FugitiveEmission] = generate_initial_leaks(
+                virtual_world, site, start_date)
             initial_leaks.update({site['facility_ID']: initial_site_leaks})
-            site_timeseries = generate_leak_timeseries(virtual_world, site, start_date, end_date)
+            site_timeseries: list[FugitiveEmission] = generate_leak_timeseries(
+                virtual_world, site, start_date, end_date)
             leak_timeseries.update({site['facility_ID']: site_timeseries})
             if 'leak_rate_dist' in site:
                 del site['leak_rate_dist']

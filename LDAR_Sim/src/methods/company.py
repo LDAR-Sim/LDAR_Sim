@@ -24,7 +24,7 @@ from importlib import import_module
 
 import numpy as np
 from methods.deployment.generic_funcs import get_deployment_dates
-from utils.attribution import update_flag
+from utils.attribution import flag_site
 from utils.generic_functions import get_prop_rate
 
 
@@ -276,8 +276,8 @@ class BaseCompany:
                          vent rate
         """
         self.site_watchlist.pop(site['site']['facility_ID'], None)
-        update_flag(self.config, site, self.timeseries, self.state['t'], self.state['campaigns'],
-                    self.name, self.consider_venting)
+        flag_site(self.config, site, self.timeseries, self.state['t'], self.state['campaigns'],
+                  self.name, self.consider_venting)
 
     def flag_sites(self):
         """

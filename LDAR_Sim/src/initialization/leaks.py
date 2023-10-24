@@ -22,9 +22,17 @@ from datetime import datetime, timedelta
 
 from numpy import random
 from utils.distributions import leak_rvs
+from initialization.emissions import FugitiveEmission
 
 
-def generate_leak(program, site, start_date, leak_count, days_active=0, day_ts_began=0):
+def generate_leak(
+        virtual_world,
+        site,
+        start_date,
+        sim_start_date,
+        leak_count,
+        nrd
+) -> FugitiveEmission:
     """ Generate a single leak at a site
 
     Args:
@@ -35,48 +43,39 @@ def generate_leak(program, site, start_date, leak_count, days_active=0, day_ts_b
         days_active (int, optional): Days the leak has been active. Defaults to 0.
 
     Returns:
-        dict: Leak object
+        Emissions: Emissions object
     """
-    if program['emissions']['leak_file'] \
-            and program['emissions']['leak_file_use'] == 'sample':
-        leak_rate = random.choice(program['emissions']['empirical_leaks'])
+    if virtual_world['emissions']['leak_file'] \
+            and virtual_world['emissions']['leak_file_use'] == 'sample':
+        leak_rate = random.choice(virtual_world['emissions']['empirical_leaks'])
     elif 'leak_rate_source' in site and site['leak_rate_source'] == 'sample':
         leak_rate = random.choice(site['empirical_leak_rates'])
     else:
         leak_rate = leak_rvs(
             site['leak_rate_dist'],
-            program['emissions']['max_leak_rate'],
+            virtual_world['emissions']['max_leak_rate'],
             site['leak_rate_units'])
-    return {
-        'leak_ID': '{}_{}'.format(site['facility_ID'], str(leak_count).zfill(10)),
-        'facility_ID': str(site['facility_ID']),
-        'equipment_group': random.randint(1, int(site['equipment_groups'])+1),
-        'rate': leak_rate,
-        'lat': float(site['lat']),
-        'lon': float(site['lon']),
-        'status': 'active',
-        'days_active': days_active,
-        'volume': None,
-        'estimated_volume': None,
-        'estimated_volume_b': None,
-        'measured_rate': None,
-        'tagged': False,
-        'component': 'unknown',
-        'date_began': start_date,
-        'day_ts_began': day_ts_began,
-        'estimated_date_began': None,
-        'date_tagged': None,
-        'tagged_by_company': None,
-        'tagged_by_crew': None,
-        'init_detect_by': None,
-        'init_detect_date': None,
-        'requires_shutdown': False,
-        'date_repaired': None,
-        'repair_delay': None,
-    }
+    return FugitiveEmission(
+        emission_n=leak_count,
+        site_id=str(site['facility_ID']),
+        rate=leak_rate,
+        start_date=start_date,
+        simulation_sd=sim_start_date,
+        repairable=True,
+        equipment_group=random.randint(1, int(site["equipment_groups"]) + 1),
+        repair_delay=site['repair_delay'],
+        repair_cost=200,
+        nrd=nrd
+    )
 
 
-def generate_leak_timeseries(virtual_world, site, start_date, end_date, leak_count=0):
+def generate_leak_timeseries(
+    virtual_world,
+    site,
+    start_date,
+    end_date,
+    leak_count=0
+) -> list[FugitiveEmission]:
     """ Generate a time series of leaks for a single site
     Args:
         virtual_world (dict): Virtual world parameter dictionary
@@ -86,10 +85,13 @@ def generate_leak_timeseries(virtual_world, site, start_date, end_date, leak_cou
         list: Timeseries of leaks at a site. None is a placeholder for days without leaks
     """
     LPR = None
+    nrd = None
     if virtual_world['subtype_file'] is not None:
         LPR = site['LPR']
+        nrd = site['NRd']
     else:
         LPR = virtual_world['emissions']['LPR']
+        nrd = virtual_world['NRd']
     # Get leak timeseries
     start_date = datetime(*start_date)
     n_timesteps = (datetime(*end_date)-start_date).days
@@ -98,14 +100,26 @@ def generate_leak_timeseries(virtual_world, site, start_date, end_date, leak_cou
         if random.binomial(1, LPR):
             cur_dt = start_date + timedelta(days=t)
             site['cum_leaks'] += 1
-            site_timeseries.append(generate_leak(
-                virtual_world, site, cur_dt, site['cum_leaks'], day_ts_began=t))
+            site_timeseries.append(
+                generate_leak(
+                    virtual_world,
+                    site,
+                    cur_dt,
+                    start_date,
+                    site['cum_leaks'],
+                    nrd
+                )
+            )
         else:
             site_timeseries.append(None)
     return site_timeseries
 
 
-def generate_initial_leaks(virtual_world, site, start_date):
+def generate_initial_leaks(
+    virtual_world,
+    site,
+    start_date,
+) -> list[FugitiveEmission]:
     """ Generate initial leaks at a site
     Args:
         virtual_world (dict): Virtual world parameters dictionary
@@ -136,11 +150,17 @@ def generate_initial_leaks(virtual_world, site, start_date):
 
     initial_site_leaks = []
     site.update({'initial_leaks': n_leaks, 'cum_leaks': n_leaks})
-    leak_count = 0
     for leak in range(n_leaks):
-        leak_count += 1
         days_active = random.randint(0, high=init_max_days_active)
         leak_start_date = prog_start_date - timedelta(days=days_active)
         initial_site_leaks.append(
-            generate_leak(virtual_world, site, leak_start_date, leak_count, days_active))
+            generate_leak(
+                virtual_world,
+                site,
+                leak_start_date,
+                prog_start_date,
+                leak,
+                NRd
+            )
+        )
     return initial_site_leaks

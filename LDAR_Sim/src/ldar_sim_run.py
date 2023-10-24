@@ -30,6 +30,7 @@ from stdout_redirect import stdout_redirect
 from time_counter import TimeCounter
 from weather.weather_lookup import WeatherLookup as WL
 from weather.weather_lookup_hourly import WeatherLookup as WL_h
+from initialization.emissions import Emission
 
 from ldar_sim import LdarSim
 
@@ -47,8 +48,8 @@ def ldar_sim_run(simulation):
     output_directory = simulation['output_directory'] / \
         program_parameters['program_name']
     virtual_world['pregenerate_leaks'] = simulation['pregenerate_leaks']
-    virtual_world['leak_timeseries'] = simulation['leak_timeseries']
-    virtual_world['initial_leaks'] = simulation['initial_leaks']
+    virtual_world['leak_timeseries']: dict[str, list[Emission]] = simulation['leak_timeseries']
+    virtual_world['initial_leaks']: dict[str, list[Emission]] = simulation['initial_leaks']
     virtual_world['seed_timeseries'] = simulation['seed_timeseries']
     virtual_world['sites'] = simulation['sites']
     simulation_settings = simulation['simulation_settings']
@@ -91,7 +92,7 @@ def ldar_sim_run(simulation):
 
     # ------------------------Initialize timeseries data----------------------------
 
-    timeseries = {
+    timeseries: dict[str, list] = {
         'datetime': [],
         'active_leaks': [],
         'new_leaks': [],

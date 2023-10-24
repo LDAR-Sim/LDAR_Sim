@@ -26,6 +26,7 @@ import warnings
 from math import floor
 import numpy as np
 import pandas as pd
+from initialization.emissions import FugitiveEmission
 from weather.daylight_calculator import DaylightCalculatorAve
 from config.output_flag_mapping import OUTPUTS, SITE_VISITS, SITES, LEAKS, TIMESERIES, PLOTS
 from geography.vector import grid_contains_point
@@ -35,9 +36,8 @@ from initialization.update_methods import (est_n_crews, est_site_p_day,
                                            est_t_bw_sites, est_min_time_bt_surveys)
 from campaigns.methods import update_campaigns, setup_campaigns
 from methods.company import BaseCompany
-from numpy.random import binomial, choice
+from numpy.random import binomial
 from out_processing.plotter import make_plots
-from utils.attribution import update_tag
 
 warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning)
 
@@ -277,45 +277,85 @@ class LdarSim:
         returns nothing
         """
 
-        self.update_state()  # Update state of sites and leaks
         self.add_leaks()  # Add leaks to the leak pool
         self.deploy_crews()  # Find leaks
-        self.repair_leaks()  # Repair leaks
-        self.report()  # Assemble any reporting about model state
-
-        # After reporting update campaign
-
+        self.update_state()  # Update state of sites and leaks
         return
 
     def update_state(self):
         """
         update the state of active leaks
         """
+        timeseries = self.timeseries
+        cur_ts = self.state['t'].current_timestep
+        cur_date = self.state['t'].current_date
+        program_economics = self.program_parameters["economics"]
+
         if len(self.state['campaigns']) > 0:
             update_campaigns(
                 self.state['campaigns'],
                 self.state['sites'],
-                self.state['t'].current_timestep,
-                self.state['t'].current_date
+                cur_ts,
+                cur_date
             )
-        self.active_leaks = []
-        for site in self.state['sites']:
-            for leak in site['active_leaks']:
-                leak['days_active'] += 1
-                self.active_leaks.append(leak)
-                # Tag by natural if leak is due for NR
-                if self.virtual_world['subtype_file'] is not None:
-                    if leak['days_active'] == self.state['subtypes']['NRd'][site['subtype_code']]:
-                        update_tag(leak, None, site, self.timeseries,
-                                   self.state['t'], 'natural')
-                else:
-                    if leak['days_active'] == self.virtual_world['NRd']:
-                        update_tag(leak, None, site, self.timeseries,
-                                   self.state['t'], 'natural')
 
-        self.timeseries['active_leaks'].append(len(self.active_leaks))
-        self.timeseries['datetime'].append(self.state['t'].current_date)
-        #
+        new_leaks = 0
+        daily_emissions_kg = 0
+        n_tags = 0
+        cum_repaired_leaks = 0
+        active_leaks = 0
+
+        for site in self.state['sites']:
+            new_leaks += site['n_new_leaks']
+
+            has_repairs = False
+            for leak in site['active_leaks']:
+                leak: FugitiveEmission
+
+                active_leaks += 1
+
+                daily_emissions_kg += leak.get_daily_emissions()
+
+                if leak.tagged_today():
+                    n_tags += 1
+
+                leak_status = leak.update_emissions()
+                if "repaired" in leak_status:
+                    cum_repaired_leaks += 1
+                    repair_cost: float = leak.get_repair_cost()
+                    timeseries['total_daily_cost'][cur_ts] += repair_cost
+                    has_repairs = True
+
+                    if leak_status == "nat_repaired":
+                        timeseries['nat_repair_cost'][cur_ts] += repair_cost
+                        timeseries['natural_n_tags'][cur_ts] += 1
+                    elif leak_status == "repaired":
+                        verification_cost = program_economics['verification_cost']
+                        timeseries['verification_cost'][cur_ts] += verification_cost
+                        timeseries['total_daily_cost'][cur_ts] += verification_cost
+                        timeseries['repair_cost'][cur_ts] += repair_cost
+            if has_repairs:
+                site['repaired_leaks'] += [
+                    lk for lk in site['active_leaks']
+                    if lk.get_status() == 'repaired'
+                ]
+                site['active_leaks'] = [
+                    lk for lk in site['active_leaks']
+                    if lk.get_status() != 'repaired'
+                ]
+
+        timeseries['new_leaks'][cur_ts] = new_leaks
+        timeseries['daily_emissions_kg'][cur_ts] = daily_emissions_kg
+        timeseries['n_tags'][cur_ts] = n_tags
+        timeseries['cum_repaired_leaks'][cur_ts] = cum_repaired_leaks
+
+        timeseries['rolling_cost_estimate'][cur_ts] = sum(timeseries['total_daily_cost']) \
+            / (len(timeseries['rolling_cost_estimate']) + 1) * 365 / 200
+
+        timeseries['datetime'].append(cur_date)
+        timeseries['active_leaks'].append(active_leaks)
+
+        return
 
     def add_leaks(self):
         """
@@ -324,17 +364,19 @@ class LdarSim:
         # First, determine whether each site gets a new leak or not
         virtual_world = self.virtual_world
         for site in self.state['sites']:
-            new_leak = None
+            new_leaks = None
             sidx = site['facility_ID']
             if virtual_world['pregenerate_leaks']:
-                new_leak = virtual_world['leak_timeseries'][sidx][self.state['t'].current_timestep]
+                new_leaks: FugitiveEmission = virtual_world['leak_timeseries'][sidx][
+                    self.state['t'].current_timestep]
             elif binomial(1, self.virtual_world['emissions']['LPR']):
-                new_leak = generate_leak(
+                new_leaks: FugitiveEmission = generate_leak(
                     virtual_world, site, self.state['t'].current_date, site['cum_leaks'])
-            if new_leak is not None:
+            if new_leaks is not None:
                 site.update({'n_new_leaks': 1})
                 site['cum_leaks'] += 1
-                site['active_leaks'].append(new_leak)
+                new_leaks.activate()
+                site['active_leaks'].append(new_leaks)
             else:
                 site.update({'n_new_leaks': 0})
         return
@@ -349,111 +391,6 @@ class LdarSim:
 
         return
 
-    def repair_leaks(self):
-        """
-        Repair tagged leaks and remove from tag pool.
-        """
-        cur_date = self.state['t'].current_date
-        cur_ts = self.state['t'].current_timestep
-        virtual_world = self.virtual_world
-        program_parameters = self.program_parameters
-        timeseries = self.timeseries
-        state = self.state
-        for site in state['sites']:
-            has_repairs = False
-            for lidx, lk in enumerate(site['active_leaks']):
-                repair = False
-                if lk['tagged']:
-                    # if company is natural then repair immediately
-                    if lk['tagged_by_company'] == 'natural':
-                        repair = True
-                    elif (
-                            (cur_date - lk['date_tagged']).days
-                            >= (site['repair_delay']
-                                + program_parameters['methods']
-                                [lk['tagged_by_company']]['reporting_delay']
-                                )
-                    ):
-                        repair = True
-
-                # Repair Leaks
-                if repair:
-                    has_repairs = True
-                    lk['status'] = 'repaired'
-                    lk['date_repaired'] = state['t'].current_date
-                    lk['repair_delay'] = (
-                        lk['date_repaired'] - lk['date_tagged']).days
-
-                    if lk['day_ts_began'] < 0:
-                        duration = cur_ts
-                    else:
-                        duration = cur_ts - lk['day_ts_began']
-
-                    lk['volume'] = duration*lk['rate']*86.4
-                    repair_cost = int(
-                        choice(program_parameters['economics']['repair_costs']['vals']))
-
-                    if lk['tagged_by_company'] != 'natural':
-                        timeseries['repair_cost'][state['t'].current_timestep] += repair_cost
-                        timeseries['verification_cost'][state['t'].current_timestep] \
-                            += program_parameters['economics']['verification_cost']
-                        timeseries['total_daily_cost'][state['t'].current_timestep] \
-                            += repair_cost + program_parameters['economics']['verification_cost']
-
-                        est_duration = cur_ts - lk['estimated_date_began']
-                        # check if estimate is needed to be kept track of
-                        if 'estimate_A' in site.keys():
-                            if site['estimate_A']:
-                                # Estimated volume in kg. g/s => kg/day is 86.4
-                                lk['estimated_volume'] = est_duration * \
-                                    lk['measured_rate']*86.4
-                            elif site['estimate_B']:
-                                # Estimated volume in kg. g/s => kg/day is 86.4
-                                lk['estimated_volume_b'] = est_duration * \
-                                    lk['measured_rate']*86.4
-                        else:
-                            lk['estimated_volume_b'] = 0
-                            lk['estimated_volume_a'] = 0
-                    else:
-                        timeseries['nat_repair_cost'][state['t'].current_timestep] += repair_cost
-                        timeseries['total_daily_cost'][state['t'].current_timestep] += repair_cost
-
-            # Update site leaks
-            if has_repairs:
-                site['repaired_leaks'] += [lk for lk in site['active_leaks']
-                                           if lk['status'] == 'repaired']
-                site['active_leaks'] = [lk for lk in site['active_leaks']
-                                        if lk['status'] != 'repaired']
-
-        return
-
-    def report(self):
-        """
-        Daily reporting of leaks, repairs, and emissions.
-        """
-        timeseries = self.timeseries
-        state = self.state
-        new_leaks = 0
-        n_tags = 0
-        cum_repaired_leaks = 0
-        daily_emissions_kg = 0
-        # Update timeseries
-        for site in state['sites']:
-            new_leaks += site['n_new_leaks']
-            cum_repaired_leaks += len(site['repaired_leaks'])
-            n_tags += site['n_new_leaks']
-            # convert g/s to kg/day
-            daily_emissions_kg += sum([lk['rate']
-                                      for lk in site['active_leaks']]) * 86.4
-        cur_ts = [state['t'].current_timestep]
-        timeseries['new_leaks'][cur_ts] = new_leaks
-        timeseries['cum_repaired_leaks'][cur_ts] = cum_repaired_leaks
-        timeseries['daily_emissions_kg'][cur_ts] = daily_emissions_kg
-        timeseries['rolling_cost_estimate'][cur_ts] = sum(timeseries['total_daily_cost']) \
-            / (len(timeseries['rolling_cost_estimate']) + 1) * 365 / 200
-        timeseries['n_tags'][state['t'].current_timestep] = n_tags
-        return
-
     def finalize(self):
         """
         Compile and write output files.
@@ -461,31 +398,32 @@ class LdarSim:
         virtual_world = self.virtual_world
         simulation_settings = self.simulation_settings
         program_parameters = self.program_parameters
-        leaks = []
-        cur_ts = self.state['t'].current_timestep
+        leaks: list[FugitiveEmission] = []
 
         # Attribute individual leak emissions to site totals
         for site in self.state['sites']:
+            active_leak_emis = 0
+            repaired_leak_emis = 0
+
             for lk in site['active_leaks']:
-                if lk['day_ts_began'] < 0:
-                    duration = cur_ts
-                else:
-                    duration = cur_ts - lk['day_ts_began']
-                lk['volume'] = duration * lk['rate'] * 86.4
+                lk: FugitiveEmission
+                active_leak_emis += lk.get_emis_vol()
+
+            for lk in site["repaired_leaks"]:
+                lk: FugitiveEmission
+                repaired_leak_emis += lk.get_emis_vol()
+
             site['active_leak_cnt'] = len(site['active_leaks'])
             site['repaired_leak_cnt'] = len(site['repaired_leaks'])
-            site['active_leak_emis'] = sum([
-                lk['volume']
-                for lk in site['active_leaks']])
-            site['repaired_leak_emis'] = sum([
-                lk['volume']
-                for lk in site['repaired_leaks']])
+            site['active_leak_emis'] = active_leak_emis
+            site['repaired_leak_emis'] = repaired_leak_emis
             site['total_emissions_kg'] = site['active_leak_emis'] + \
                 site['repaired_leak_emis']
             leaks += site['active_leaks'] + site['repaired_leaks']
             del site['n_new_leaks']
 
-        leak_df = pd.DataFrame(leaks)
+        leaks_data = [leak.get_summary_dict() for leak in leaks]
+        leak_df = pd.DataFrame(leaks_data)
         time_df = pd.DataFrame(self.timeseries)
         site_df = pd.DataFrame(self.state['sites'])
 
@@ -504,26 +442,6 @@ class LdarSim:
             / max(site_df['cum_frac_emissions'])
         site_df['mean_rate_kg_day'] = site_df['total_emissions_kg'] / \
             virtual_world['timesteps']
-        leaks_active = leak_df[leak_df.status != 'repaired'] \
-            .sort_values('rate', ascending=False)
-        leaks_repaired = leak_df[leak_df.status == 'repaired'] \
-            .sort_values('rate', ascending=False)
-
-        if len(leaks_active) > 0:
-            leaks_active['cum_frac_leaks'] = list(
-                np.linspace(0, 1, len(leaks_active)))
-            leaks_active['cum_rate'] = np.cumsum(leaks_active['rate'])
-            leaks_active['cum_frac_rate'] = leaks_active['cum_rate'] / \
-                max(leaks_active['cum_rate'])
-
-        if len(leaks_repaired) > 0:
-            leaks_repaired['cum_frac_leaks'] = list(
-                np.linspace(0, 1, len(leaks_repaired)))
-            leaks_repaired['cum_rate'] = np.cumsum(leaks_repaired['rate'])
-            leaks_repaired['cum_frac_rate'] = leaks_repaired['cum_rate'] \
-                / max(leaks_repaired['cum_rate'])
-
-        leak_df = pd.concat([leaks_active, leaks_repaired])
 
         # Write csv files
         if simulation_settings[OUTPUTS][LEAKS]:
