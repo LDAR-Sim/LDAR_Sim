@@ -22,7 +22,7 @@ An alternative sensor, specifically built to replicate the probability of detect
 #
 # ------------------------------------------------------------------------------
 import numpy as np
-from utils.attribution import update_tag
+from utils.attribution import tag_leak
 from methods.funcs import measured_rate
 
 
@@ -124,7 +124,7 @@ def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered
                 found_leak = True
                 meas_rate = measured_rate(
                     leak['rate'], self.config['sensor']['QE'])
-                is_new_leak = update_tag(
+                is_new_leak = tag_leak(
                     leak,
                     meas_rate,
                     site,

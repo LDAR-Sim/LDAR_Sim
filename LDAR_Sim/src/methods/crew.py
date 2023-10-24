@@ -26,6 +26,7 @@ from typing import Any, Dict
 import numpy as np
 
 from config.output_flag_mapping import OUTPUTS, SITE_VISITS
+from initialization.emissions import FugitiveEmission
 
 
 class BaseCrew:
@@ -181,24 +182,22 @@ class BaseCrew:
         """
         m_name = self.config['label']
         covered_leaks = []
-        is_sp_covered = True
-        covered_site_rate = 0
-        site_rate = 0
+        covered_site_rate: float = 0
+        site_rate: float = 0
         covered_equipment_rates = [0] * int(site['equipment_groups'])
         equipment_rates = [0] * int(site['equipment_groups'])
         for leak in site['active_leaks']:
+            leak: FugitiveEmission
+            leak_rate: float = leak.get_rate()
             # Check to see if leak is spatially covered
-            if '{}_sp_covered'.format(m_name) not in leak:
-                is_sp_covered = np.random.binomial(1, self.config['coverage']['spatial'])
-                leak['{}_sp_covered'.format(m_name)] = is_sp_covered
-            if leak['{}_sp_covered'.format(m_name)]:
+            if leak.check_spatial_cov(m_name, self.config['coverage']['spatial']):
                 # Check to see if leak is temporally covered
                 if np.random.binomial(1, self.config['coverage']['temporal']):
                     covered_leaks.append(leak)
-                    covered_site_rate += leak['rate']
-                    covered_equipment_rates[leak['equipment_group'] - 1] += leak['rate']
-            site_rate += leak['rate']
-            equipment_rates[leak['equipment_group']-1] += leak['rate']
+                    covered_site_rate += leak_rate
+                    covered_equipment_rates[leak.get_equip_grp() - 1] += leak_rate
+            site_rate += leak_rate
+            equipment_rates[leak.get_equip_grp() - 1] += leak_rate
             # Get the type of sensor, and call the detect emissions function for sensor
             # Aggregate true emissions to equipment and site level; get list of leaks present
 
