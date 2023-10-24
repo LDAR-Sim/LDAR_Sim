@@ -430,6 +430,8 @@ class LdarSim:
 
         leaks_data = [leak.get_summary_dict() for leak in leaks]
         leak_df = pd.DataFrame(leaks_data)
+        leaks_data = [leak.get_summary_dict() for leak in leaks]
+        leak_df = pd.DataFrame(leaks_data)
         time_df = pd.DataFrame(self.timeseries)
         site_df = pd.DataFrame(self.state["sites"])
 
