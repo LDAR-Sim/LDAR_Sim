@@ -19,7 +19,7 @@
 # ------------------------------------------------------------------------------
 import numpy as np
 from methods.funcs import measured_rate as get_measured_rate
-from utils.attribution import update_tag
+from utils.attribution import tag_leak
 
 
 def detect_emissions(
@@ -73,7 +73,7 @@ def detect_emissions(
         if np.random.binomial(1, prob_detect):
             found_leak = True
             measured_rate = get_measured_rate(leak["rate"], self.config["sensor"]["QE"])
-            is_new_leak = update_tag(
+            is_new_leak = tag_leak(
                 leak,
                 measured_rate,
                 site,

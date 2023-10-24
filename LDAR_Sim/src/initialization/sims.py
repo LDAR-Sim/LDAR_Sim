@@ -25,6 +25,7 @@ from copy import deepcopy
 
 from initialization.preseed import gen_seed_timeseries
 from initialization.sites import generate_sites, regenerate_sites
+from initialization.emissions import FugitiveEmission
 
 
 def create_sims(sim_params, programs, virtual_world, generator_dir, in_dir, out_dir):
@@ -46,6 +47,9 @@ def create_sims(sim_params, programs, virtual_world, generator_dir, in_dir, out_
                     sim_params["start_date"],
                     sim_params["end_date"],
                 )
+                sites: dict
+                leak_timeseries: dict
+                initial_leaks: dict[str, list[FugitiveEmission]]
         else:
             sites, leak_timeseries, initial_leaks = [], [], []
         if preseed_random:
