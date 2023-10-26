@@ -411,9 +411,15 @@ class LdarSim:
                                 # Estimated volume in kg. g/s => kg/day is 86.4
                                 lk['estimated_volume_b'] = est_duration * \
                                     lk['measured_rate']*86.4
+                            elif site['estimate_C']:
+                                # Estimated volume in kg. g/s => kg/day is 86.4
+                                lk['estimated_volume_c'] = est_duration * \
+                                    lk['measured_rate']*86.4
+
                         else:
                             lk['estimated_volume_b'] = 0
                             lk['estimated_volume_a'] = 0
+                            lk['estimated_volume_c'] = 0
                     else:
                         timeseries['nat_repair_cost'][state['t'].current_timestep] += repair_cost
                         timeseries['total_daily_cost'][state['t'].current_timestep] += repair_cost

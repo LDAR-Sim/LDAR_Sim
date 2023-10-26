@@ -59,6 +59,7 @@ def generate_leak(program, site, start_date, leak_count, days_active=0, day_ts_b
         'volume': None,
         'estimated_volume': None,
         'estimated_volume_b': None,
+        'estimated_volume_c': None,
         'measured_rate': None,
         'tagged': False,
         'component': 'unknown',
