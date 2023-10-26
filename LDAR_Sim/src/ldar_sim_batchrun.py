@@ -95,6 +95,13 @@ if __name__ == '__main__':
     all_sites_used_bool = True
 
     for rep in range(args.n_rep):
+        # Turn off outputs, turn it back on for the last rep
+        if rep == 0:
+            sim_params[OUTPUTS][TIMESERIES] = False
+            sim_params[OUTPUTS][LEAKS] = False
+        elif rep + 1 == args.n_rep:
+            sim_params[OUTPUTS][TIMESERIES] = True
+            sim_params[OUTPUTS][LEAKS] = True
         # If leak generator is used and there are generated files, user is prompted
         # to use files, If they say no, the files will be removed
         if sim_params['pregenerate_leaks'] and rep == 0:
@@ -147,12 +154,9 @@ if __name__ == '__main__':
                 else:
                     sites_files_output(out_dir / subdirectory_name / 'sites_output_{}_{}.csv'.format(0, subdirectory_name),
                                        out_dir / 'sites_output_{}_concat.csv'.format(subdirectory_name))
-        else:
-            # turn off sites output if not used after the first rep
+        elif not all_sites_used_bool and rep == 0:
             sim_params[OUTPUTS][SITES] = False
-        # after first rep, turn off outputs
-        if rep == 0:
-            sim_params[OUTPUTS][TIMESERIES] = False
-            sim_params[OUTPUTS][LEAKS] = False
+        elif not all_sites_used_bool and rep+2 == args.n_rep:
+            sim_params[OUTPUTS][SITES] = True
 
         print(f'Batch Rep Done: {rep+1}')
