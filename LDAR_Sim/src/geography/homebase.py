@@ -21,7 +21,7 @@ from geography.distance import get_distance
 
 
 def find_homebase(lon, lat, homebase_locs):
-    '''
+    """
     Find the nearest home base from home bases list
     Parameters
     ----------
@@ -31,7 +31,7 @@ def find_homebase(lon, lat, homebase_locs):
     Returns
     -------
     The latitude and longitude of nearest home base and the distance to that home base in km.
-    '''
+    """
     distances = []
     for lonlat in homebase_locs:
         hb_lon = lonlat[0]
@@ -44,7 +44,7 @@ def find_homebase(lon, lat, homebase_locs):
 
 
 def find_homebase_opt(lon1, lat1, lon2, lat2, homebase_locs):
-    '''
+    """
     Find the home base that nearest to both LDAR team and next visit facility.
     Parameters
     ----------
@@ -55,7 +55,7 @@ def find_homebase_opt(lon1, lat1, lon2, lat2, homebase_locs):
     Returns
     -------
     The latitude and longitude of nearest home base and the distance to that home base in km.
-    '''
+    """
     xy2 = (lon2, lat2)
     if xy2 in homebase_locs:
         ind = homebase_locs.index(xy2)

@@ -23,17 +23,17 @@ from methods.crew import BaseCrew
 
 
 def make_crews(
-        crews,
-        config,
-        state,
-        program_parameters,
-        virtual_world,
-        simulation_settings,
-        timeseries,
-        deployment_days,
-        rollover
+    crews,
+    config,
+    state,
+    program_parameters,
+    virtual_world,
+    simulation_settings,
+    timeseries,
+    deployment_days,
+    rollover,
 ):
-    """ Generate crews using BaseCrew class.
+    """Generate crews using BaseCrew class.
 
     Args:
         crews (list): List of crews
@@ -47,7 +47,7 @@ def make_crews(
 
     --- Required in module.company.BaseCompany ---
     """
-    for i in range(config['n_crews']):
+    for i in range(config["n_crews"]):
         crews.append(
             BaseCrew(
                 state,
@@ -58,24 +58,24 @@ def make_crews(
                 timeseries,
                 deployment_days,
                 id=i + 1,
-                rollover=rollover
+                rollover=rollover,
             )
         )
 
 
-class Schedule():
+class Schedule:
     def __init__(self, config, program_parameters, state):
         self.program_parameters = program_parameters
         self.config = config
         self.state = state
 
     def assign_agents(self):
-        """ assign agents to sites.
-            --- Required in module.company.BaseCompany ---
+        """assign agents to sites.
+        --- Required in module.company.BaseCompany ---
         """
 
     def get_due_sites(self, site_pool):
-        """ Retrieve a site list of sites due for screen / survey
+        """Retrieve a site list of sites due for screen / survey
         Args:
             site_pool (dict): List of sites
         Returns:
@@ -84,7 +84,7 @@ class Schedule():
         return site_pool
 
     def get_working_crews(self, site_pool, n_crews):
-        """ Get number of working crews that day. Based on estimate
+        """Get number of working crews that day. Based on estimate
             that a crew can do 3 sites per day.
         Args:
             site_pool (dict): List of sites
@@ -97,8 +97,8 @@ class Schedule():
         """
         return n_crews
 
-    def get_crew_site_list(self, site_pool, crew_ID, n_crews,  crews=None):
-        """ Allocates site pool among all crews. Ordering
+    def get_crew_site_list(self, site_pool, crew_ID, n_crews, crews=None):
+        """Allocates site pool among all crews. Ordering
             of sites is not changed by function.
         Args:
             site_pool (dict): List of sites

@@ -27,7 +27,8 @@ def assign_vents(program, wd) -> None:
         program (dict): The program dictionary storing all the program specific information
         wd (Path): The path to the current working directory
     """
-    for st_idx, subtype in program['subtypes'].items():
-        if 'vent_rates_file' in subtype:
-            subtype['empirical_vent_rates'] = np.array(
-                pd.read_csv(wd / subtype['vent_rates_file']).iloc[:, 0])
+    for st_idx, subtype in program["subtypes"].items():
+        if "vent_rates_file" in subtype:
+            subtype["empirical_vent_rates"] = np.array(
+                pd.read_csv(wd / subtype["vent_rates_file"]).iloc[:, 0]
+            )

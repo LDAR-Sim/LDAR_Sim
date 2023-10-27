@@ -29,10 +29,10 @@ from initialization.sites import generate_sites, regenerate_sites
 
 def create_sims(sim_params, programs, virtual_world, generator_dir, in_dir, out_dir):
     # Store params used to generate the pickle files for change detection
-    n_simulations = sim_params['n_simulations']
-    pregen_leaks = sim_params['pregenerate_leaks']
-    preseed_random = sim_params['preseed_random']
-    base_prog = sim_params['baseline_program']
+    n_simulations = sim_params["n_simulations"]
+    pregen_leaks = sim_params["pregenerate_leaks"]
+    preseed_random = sim_params["preseed_random"]
+    base_prog = sim_params["baseline_program"]
     simulations = []
     for i in range(n_simulations):
         if pregen_leaks:
@@ -43,8 +43,8 @@ def create_sims(sim_params, programs, virtual_world, generator_dir, in_dir, out_
                     virtual_world,
                     in_dir,
                     pregen_leaks,
-                    sim_params['start_date'],
-                    sim_params['end_date']
+                    sim_params["start_date"],
+                    sim_params["end_date"],
                 )
         else:
             sites, leak_timeseries, initial_leaks = [], [], []
@@ -58,16 +58,21 @@ def create_sims(sim_params, programs, virtual_world, generator_dir, in_dir, out_
                 if os.path.isfile(file_loc):
                     # If there is a pregenerated file for the virtual world
                     generated_data = pickle.load(open(file_loc, "rb"))
-                    sites = generated_data['sites']
-                    leak_timeseries = generated_data['leak_timeseries']
-                    initial_leaks = generated_data['initial_leaks']
-                    seed_timeseries = generated_data['seed_timeseries']
+                    sites = generated_data["sites"]
+                    leak_timeseries = generated_data["leak_timeseries"]
+                    initial_leaks = generated_data["initial_leaks"]
+                    seed_timeseries = generated_data["seed_timeseries"]
                 else:
                     sites = regenerate_sites(virtual_world, sites, in_dir)
-                    pickle.dump({
-                        'sites': sites, 'leak_timeseries': leak_timeseries,
-                        'initial_leaks': initial_leaks, 'seed_timeseries': seed_timeseries},
-                        open(file_loc, "wb"))
+                    pickle.dump(
+                        {
+                            "sites": sites,
+                            "leak_timeseries": leak_timeseries,
+                            "initial_leaks": initial_leaks,
+                            "seed_timeseries": seed_timeseries,
+                        },
+                        open(file_loc, "wb"),
+                    )
             else:
                 sites = []
 
@@ -75,20 +80,26 @@ def create_sims(sim_params, programs, virtual_world, generator_dir, in_dir, out_
                 pidx, i + 1, n_simulations
             )
             closing_message = "Finished simulating program {} ; simulation {} of {} ".format(
-                pidx, i + 1, n_simulations)
+                pidx, i + 1, n_simulations
+            )
             simulations.append(
-                [{'i': i, 'program': deepcopy(programs[pidx]),
-                  'simulation_settings':sim_params,
-                  'virtual_world': virtual_world,
-                  'input_directory': in_dir,
-                  'output_directory':out_dir,
-                  'opening_message': opening_message,
-                  'closing_message': closing_message,
-                  'pregenerate_leaks': pregen_leaks,
-                  'print_from_simulation': sim_params['print_from_simulations'],
-                  'sites': sites,
-                  'leak_timeseries': leak_timeseries,
-                  'initial_leaks': initial_leaks,
-                  'seed_timeseries': seed_timeseries,
-                  }])
+                [
+                    {
+                        "i": i,
+                        "program": deepcopy(programs[pidx]),
+                        "simulation_settings": sim_params,
+                        "virtual_world": virtual_world,
+                        "input_directory": in_dir,
+                        "output_directory": out_dir,
+                        "opening_message": opening_message,
+                        "closing_message": closing_message,
+                        "pregenerate_leaks": pregen_leaks,
+                        "print_from_simulation": sim_params["print_from_simulations"],
+                        "sites": sites,
+                        "leak_timeseries": leak_timeseries,
+                        "initial_leaks": initial_leaks,
+                        "seed_timeseries": seed_timeseries,
+                    }
+                ]
+            )
     return simulations

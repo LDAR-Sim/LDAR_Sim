@@ -21,8 +21,8 @@
 from pandas import concat, DataFrame
 
 
-def clean_sim_df(sim_results, df,  index='index', params=[], aggregate=True, add_meta_cols=[]):
-    """ Cleans the raw sim results to create a single datatable containing all data for all programs
+def clean_sim_df(sim_results, df, index="index", params=[], aggregate=True, add_meta_cols=[]):
+    """Cleans the raw sim results to create a single datatable containing all data for all programs
         and simulations (unless aggregate is set to true then values will be averaged for all sims).
         This function can be used to rename columns, set output column types, and scale values.
 
@@ -51,11 +51,11 @@ def clean_sim_df(sim_results, df,  index='index', params=[], aggregate=True, add
     """
     p_arr = []
     meta_cols = [
-        {'in': 'simulation', 'out': 'sim', 'type': int},
-        {'in': 'program_name', 'out': 'program_name', 'type': str},
+        {"in": "simulation", "out": "sim", "type": int},
+        {"in": "program_name", "out": "program_name", "type": str},
     ] + add_meta_cols
     if len(params) > 0:
-        p_cols = [c['in'] for c in params]
+        p_cols = [c["in"] for c in params]
     # in_cols = [m['in'] for m in params]
     for sim in sim_results:
         if len(params) > 0:
@@ -68,26 +68,33 @@ def clean_sim_df(sim_results, df,  index='index', params=[], aggregate=True, add
         p_obj = p_obj.set_index(index)
         # --- Add metadata --
         for col in meta_cols:
-            p_obj[col['out']] = col['type'](sim['meta'][col['in']])
+            p_obj[col["out"]] = col["type"](sim["meta"][col["in"]])
 
         p_arr.append(p_obj)
     # combine and condition all simulation outputs
     prog_objs = concat(p_arr).reset_index()
-    prog_objs = prog_objs.astype({obj['in']: obj['type'] for obj in params if 'type' in obj})
-    prog_objs = prog_objs.rename(columns={obj['in']: obj['out'] for obj in params})
+    prog_objs = prog_objs.astype({obj["in"]: obj["type"] for obj in params if "type" in obj})
+    prog_objs = prog_objs.rename(columns={obj["in"]: obj["out"] for obj in params})
     for m in params:
-        if 'xfac' in m and m['xfac'] != 1:
-            prog_objs[m['out']] = prog_objs[m['out']]*m['xfac']
-    prog_objs = prog_objs.astype({obj['out']: obj['type'] for obj in params if 'type' in obj})
+        if "xfac" in m and m["xfac"] != 1:
+            prog_objs[m["out"]] = prog_objs[m["out"]] * m["xfac"]
+    prog_objs = prog_objs.astype({obj["out"]: obj["type"] for obj in params if "type" in obj})
     if aggregate:
         # This will average values from different sims
-        prog_objs = prog_objs.groupby([index, 'program_name']).mean().reset_index()
+        prog_objs = prog_objs.groupby([index, "program_name"]).mean().reset_index()
     # split up dataframe into list of dataframs by program name
     return prog_objs
 
 
-def agg_flatten(df, group_by, agg_cols=None, agg_types=["mean"],
-                prefix=None, include_col_name=True, include_agg_name=False):
+def agg_flatten(
+    df,
+    group_by,
+    agg_cols=None,
+    agg_types=["mean"],
+    prefix=None,
+    include_col_name=True,
+    include_agg_name=False,
+):
     """Aggregate and flatten a dataframe. Flattening will handle the indexes
        and column names when this function is called with multipe agg_types
        and with multiple agg columns. Allows multiple aggregation methods defined
@@ -132,15 +139,13 @@ def agg_flatten(df, group_by, agg_cols=None, agg_types=["mean"],
         Pandas Dataframe: aggregated and flattened df.
     """
     if agg_cols is not None:
-        out_df = DataFrame(df[group_by+agg_cols]) \
-            .groupby(group_by) \
-            .aggregate(agg_types)
+        out_df = DataFrame(df[group_by + agg_cols]).groupby(group_by).aggregate(agg_types)
     else:
         out_df = df.groupby(group_by).aggregate(agg_types)
     if include_col_name and not include_agg_name:
         out_df.columns = [col[0] for col in out_df.columns]
     elif include_col_name and include_agg_name:
-        out_df.columns = ['_'.join(col) for col in out_df.columns]
+        out_df.columns = ["_".join(col) for col in out_df.columns]
     elif not include_col_name and include_agg_name:
         out_df.columns = out_df.columns.droplevel(0)
     tmp_cols = []

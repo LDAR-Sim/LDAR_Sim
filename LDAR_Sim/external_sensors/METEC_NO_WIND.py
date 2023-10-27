@@ -26,19 +26,27 @@ from utils.attribution import update_tag
 from methods.funcs import measured_rate
 
 
-def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered_site_rate,
-                     site_rate, venting, equipment_rates):  # pylint: disable=unused-argument
-    """ 
+def detect_emissions(
+    self,
+    site,
+    covered_leaks,
+    covered_equipment_rates,
+    covered_site_rate,
+    site_rate,
+    venting,
+    equipment_rates,
+):  # pylint: disable=unused-argument
+    """
     An alternative sensor, specifically built to replicate the probability of detection
     curves provided by a METEC report, which does not factor in wind speeds
 
     Utilizes 3 values set as the MDL:
         mdl = [a, b, c]
-        where 
-        a and b : are the PoD curve variables 
+        where
+        a and b : are the PoD curve variables
         c : represents the floor/minimum cutoff value of the leak rates that the sensor can detect
 
-    PoD = 1 / (1 + e ^ (a - b * r )) 
+    PoD = 1 / (1 + e ^ (a - b * r ))
 
     a = first MDL value
     b = second MDL value
@@ -68,38 +76,36 @@ def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered
 
     """
 
-    missed_leaks_str = '{}_missed_leaks'.format(self.config['label'])
+    missed_leaks_str = "{}_missed_leaks".format(self.config["label"])
     equip_measured_rates = []
     site_measured_rate = 0
     found_leak = False
     n_leaks = len(covered_leaks)
-    mdl = self.config['sensor']['MDL']
+    mdl = self.config["sensor"]["MDL"]
 
     if self.config["measurement_scale"] == "site":
         # factor of 3.6 converts g/s to kg/h
         rate = covered_site_rate * 3.6
-        prob_detect = 1/(1+np.exp(mdl[0]-mdl[1]*rate))
+        prob_detect = 1 / (1 + np.exp(mdl[0] - mdl[1] * rate))
         if prob_detect >= 1:
             prob_detect = 1
-        if rate < (mdl[2]*3.6):
+        if rate < (mdl[2] * 3.6):
             site[missed_leaks_str] += n_leaks
-            self.timeseries[missed_leaks_str][self.state['t'].current_timestep] += n_leaks
+            self.timeseries[missed_leaks_str][self.state["t"].current_timestep] += n_leaks
         elif np.random.binomial(1, prob_detect):
             found_leak = True
-            site_measured_rate = measured_rate(
-                covered_site_rate, self.config['sensor']['QE'])
+            site_measured_rate = measured_rate(covered_site_rate, self.config["sensor"]["QE"])
         else:
             site[missed_leaks_str] += n_leaks
-            self.timeseries[missed_leaks_str][self.state['t'].current_timestep] += n_leaks
+            self.timeseries[missed_leaks_str][self.state["t"].current_timestep] += n_leaks
     elif self.config["measurement_scale"] == "equipment":
         for rate in covered_equipment_rates:
-            m_rate = measured_rate(rate, self.config['sensor']['QE'])
+            m_rate = measured_rate(rate, self.config["sensor"]["QE"])
             rate = m_rate * 3.6
-            prob_detect = 1 / \
-                (1+np.exp(mdl[0]-mdl[1]*rate))
+            prob_detect = 1 / (1 + np.exp(mdl[0] - mdl[1] * rate))
             if prob_detect >= 1:
                 prob_detect = 1
-            if rate < (mdl[2]*3.6):
+            if rate < (mdl[2] * 3.6):
                 m_rate = 0
             elif np.random.binomial(1, prob_detect):
                 found_leak = True
@@ -109,43 +115,41 @@ def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered
             site_measured_rate += m_rate
         if not found_leak:
             site[missed_leaks_str] += n_leaks
-            self.timeseries[missed_leaks_str][self.state['t'].current_timestep] += n_leaks
-    elif self.config['measurement_scale'] == 'component':
+            self.timeseries[missed_leaks_str][self.state["t"].current_timestep] += n_leaks
+    elif self.config["measurement_scale"] == "component":
         for leak in covered_leaks:
-            rate = leak['rate'] * 3.6
-            prob_detect = 1 / \
-                (1+np.exp(mdl[0]-mdl[1]*rate))
+            rate = leak["rate"] * 3.6
+            prob_detect = 1 / (1 + np.exp(mdl[0] - mdl[1] * rate))
             if prob_detect >= 1:
                 prob_detect = 1
-            if rate < (mdl[2]*3.6):
+            if rate < (mdl[2] * 3.6):
                 site[missed_leaks_str] += 1
-                self.timeseries[missed_leaks_str][self.state['t'].current_timestep] += 1
+                self.timeseries[missed_leaks_str][self.state["t"].current_timestep] += 1
             elif np.random.binomial(1, prob_detect):
                 found_leak = True
-                meas_rate = measured_rate(
-                    leak['rate'], self.config['sensor']['QE'])
+                meas_rate = measured_rate(leak["rate"], self.config["sensor"]["QE"])
                 is_new_leak = update_tag(
                     leak,
                     meas_rate,
                     site,
                     self.timeseries,
-                    self.state['t'],
-                    self.config['label'],
+                    self.state["t"],
+                    self.config["label"],
                     self.id,
-                    self.program_parameters
+                    self.program_parameters,
                 )
                 if is_new_leak:
                     site_measured_rate += meas_rate
             else:
                 site[missed_leaks_str] += 1
-                self.timeseries[missed_leaks_str][self.state['t'].current_timestep] += 1
+                self.timeseries[missed_leaks_str][self.state["t"].current_timestep] += 1
     site_dict = {
-        'site': site,
-        'leaks_present': covered_leaks,
-        'site_true_rate': site_rate,
-        'site_measured_rate': site_measured_rate,
-        'equip_measured_rates': equip_measured_rates,
-        'vent_rate': venting,
-        'found_leak': found_leak,
+        "site": site,
+        "leaks_present": covered_leaks,
+        "site_true_rate": site_rate,
+        "site_measured_rate": site_measured_rate,
+        "equip_measured_rates": equip_measured_rates,
+        "vent_rate": venting,
+        "found_leak": found_leak,
     }
     return site_dict

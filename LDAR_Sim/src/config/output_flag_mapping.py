@@ -18,8 +18,8 @@
 #
 # ------------------------------------------------------------------------------
 
-OUTPUTS = 'outputs'
-SITE_VISITS = 'site_visits'
+OUTPUTS = "outputs"
+SITE_VISITS = "site_visits"
 LEAKS = "leaks"
 SITES = "sites"
 TIMESERIES = "timeseries"

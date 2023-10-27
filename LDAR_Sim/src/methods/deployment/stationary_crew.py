@@ -20,7 +20,7 @@
 # ------------------------------------------------------------------------------
 
 
-class Schedule():
+class Schedule:
     def __init__(
         self,
         id,
@@ -32,7 +32,7 @@ class Schedule():
         simulation_settings,
         deployment_days,
         rollover,
-        home_bases=None
+        home_bases=None,
     ):
         self.config = config
         self.state = state
@@ -42,10 +42,10 @@ class Schedule():
         self.work_hours = 24
         self.start_hour = 0
         self.end_hour = 23
-        self.scheduling = self.config['scheduling']
+        self.scheduling = self.config["scheduling"]
 
     def start_day(self, site_pool):
-        """ Start day method. Get daily itinerary for crew.
+        """Start day method. Get daily itinerary for crew.
 
         Args:
             site_pool (list): List of sites ready for survey.
@@ -58,27 +58,30 @@ class Schedule():
                 'remaining_mins':(int)  Always zero for Stationary
                 }
         """
-        name = self.config['label']
+        name = self.config["label"]
         itinerary = []
         for site in site_pool:
-            site['{}_attempted_today?'.format(name)] = True
+            site["{}_attempted_today?".format(name)] = True
             # Check weather conditions
-            if not self.consider_weather \
-                or self.deployment_days[site['lon_index'], site['lat_index'],
-                                        self.state['t'].current_timestep]:
+            if (
+                not self.consider_weather
+                or self.deployment_days[
+                    site["lon_index"],
+                    site["lat_index"],
+                    self.state["t"].current_timestep,
+                ]
+            ):
                 site_plan = {
-                    'site': site,
-                    'go_to_site': True,
+                    "site": site,
+                    "go_to_site": True,
                     # Stationary has no set LDAR minutes
-                    'LDAR_mins': 0,
-                    'remaining_mins': 0,
+                    "LDAR_mins": 0,
+                    "remaining_mins": 0,
                 }
                 itinerary.append(site_plan)
         return itinerary
 
     def end_day(self, site_pool, itinerary):
-        """ End day function
-        """
-        self.state['t'].current_date = self.state['t'].current_date.replace(
-            hour=int(self.end_hour))
+        """End day function"""
+        self.state["t"].current_date = self.state["t"].current_date.replace(hour=int(self.end_hour))
         return

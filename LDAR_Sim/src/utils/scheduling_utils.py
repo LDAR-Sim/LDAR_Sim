@@ -18,6 +18,7 @@
 #
 # ------------------------------------------------------------------------------
 
+
 def is_leap_year(year):
     """Checks if a given year is a leap year"""
 

@@ -8,17 +8,12 @@ from src.time_counter import TimeCounter
 
 @pytest.fixture(name="mock_leak_for_update_tag_testing_1")
 def mock_leak_for_update_tag_testing_1_fix():
-    return {
-        'tagged': True,
-        'date_tagged': datetime.datetime(2017, 1, 1, 8, 0)
-    }
+    return {"tagged": True, "date_tagged": datetime.datetime(2017, 1, 1, 8, 0)}
 
 
 @pytest.fixture(name="mock_leak_for_update_tag_testing_2")
 def mock_leak_for_update_tag_testing_2_fix():
-    return {
-        'tagged': False
-    }
+    return {"tagged": False}
 
 
 @pytest.fixture(name="mock_company_for_update_tag_testing_1")
@@ -36,14 +31,9 @@ def mock_TimeCounter_for_update_tag_testing_1_fix(mocker):
 
 @pytest.fixture(name="mock_timeseries_for_update_tag_testing_1")
 def mock_timeseries_for_update_tag_testing_1_fix():
-    return {
-        'natural_n_tags': [0, 0]
-    }
+    return {"natural_n_tags": [0, 0]}
 
 
 @pytest.fixture(name="mock_site_for_update_tag_testing_1")
 def mock_site_for_update_tag_testing_1_fix():
-    return {
-        'currently_flagged': False,
-        'flagged_by': None
-    }
+    return {"currently_flagged": False, "flagged_by": None}

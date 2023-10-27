@@ -18,6 +18,7 @@
 #
 # ------------------------------------------------------------------------------
 
+
 def check_major_version(version_string, major_version):
     try:
         major_part, minor_part = map(str, version_string.split("."))

@@ -18,6 +18,7 @@
 #
 # ------------------------------------------------------------------------------
 
+
 def input_mapper_v1(parameters):
     """Function to perform all input mapping from version 1.0 parameter files to presently compliant
     parameter files. This is necessary to ensure reverse compatibility - to allow older parameter

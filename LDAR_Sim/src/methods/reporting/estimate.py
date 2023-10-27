@@ -22,21 +22,21 @@ from math import ceil
 
 
 def estimate_start_date(leak, cur_ts, site, company, init_detect_company):
-    """ Estimate The start day based on calculation type.
+    """Estimate The start day based on calculation type.
 
     Args:
         crews (list): List of crews
 
     """
 
-    if site['historic_t_since_LDAR'] is None:
-        if '{}_RS'.format(init_detect_company['label']) in site:
-            RS = site['{}_RS'.format(init_detect_company['label'])]
+    if site["historic_t_since_LDAR"] is None:
+        if "{}_RS".format(init_detect_company["label"]) in site:
+            RS = site["{}_RS".format(init_detect_company["label"])]
         else:
             RS = 1
-        t_since_last_LDAR = ceil(365/RS)
+        t_since_last_LDAR = ceil(365 / RS)
     else:
-        t_since_last_LDAR = site['historic_t_since_LDAR']
+        t_since_last_LDAR = site["historic_t_since_LDAR"]
     estimated_start_date = cur_ts - t_since_last_LDAR / 2
     if estimated_start_date < 0:
         estimated_start_date = 0

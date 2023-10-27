@@ -19,20 +19,19 @@
 # ------------------------------------------------------------------------------
 
 
-class Schedule():
-
+class Schedule:
     def __init__(
-            self,
-            id,
-            lat,
-            lon,
-            state,
-            config,
-            virtual_world,
-            simulation_settings,
-            deployment_days,
-            rollover,
-            home_bases=None
+        self,
+        id,
+        lat,
+        lon,
+        state,
+        config,
+        virtual_world,
+        simulation_settings,
+        deployment_days,
+        rollover,
+        home_bases=None,
     ):
         self.config = config
         self.state = state
@@ -45,11 +44,11 @@ class Schedule():
         self.start_hour = None
         self.end_hour = None
         self.allowed_end_time = None
-        self.scheduling = self.config['scheduling']
+        self.scheduling = self.config["scheduling"]
         # define a list of home bases for crew and redefine the initial location of crew
 
     def start_day(self, site_pool):
-        """ Start day method. Get daily itinerary for crew. Can include other functions
+        """Start day method. Get daily itinerary for crew. Can include other functions
             i.e. initialize time to account for work hours, and set the crews location.
         Args:
             site_pool (list): List of sites ready for survey.
@@ -65,6 +64,5 @@ class Schedule():
         return  # itinerary
 
     def end_day(self, site_pool):
-        """ End day function
-        """
+        """End day function"""
         self.update_schedule(self.last_site_travel_home_min)

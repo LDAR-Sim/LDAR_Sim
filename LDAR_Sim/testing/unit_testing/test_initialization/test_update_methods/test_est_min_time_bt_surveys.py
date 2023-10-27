@@ -6,13 +6,7 @@ from typing import Any, Dict
 
 @pytest.fixture
 def site_and_M_RS_for_testing() -> Dict[str, Any]:
-    return {
-        "M_RS": "OGI_RS",
-        "site":
-        {
-            "OGI_RS": 4
-        }
-    }
+    return {"M_RS": "OGI_RS", "site": {"OGI_RS": 4}}
 
 
 def test_041_est_min_time_bt_surveys_basic_case(site_and_M_RS_for_testing):
@@ -23,8 +17,12 @@ def test_041_est_min_time_bt_surveys_basic_case(site_and_M_RS_for_testing):
         site_and_M_RS_for_testing (dict[str, Any]):
         Pytest fixture providing paired M_RS and fake site
     """
-    assert est_min_time_bt_surveys(
-        site_and_M_RS_for_testing["M_RS"], 12, site_and_M_RS_for_testing["site"]) == 45
+    assert (
+        est_min_time_bt_surveys(
+            site_and_M_RS_for_testing["M_RS"], 12, site_and_M_RS_for_testing["site"]
+        )
+        == 45
+    )
 
 
 def test_041_est_min_time_bt_surveys_half_months(site_and_M_RS_for_testing):
@@ -35,5 +33,9 @@ def test_041_est_min_time_bt_surveys_half_months(site_and_M_RS_for_testing):
         site_and_M_RS_for_testing (dict[str, Any]):
         Pytest fixture providing paired M_RS and fake site
     """
-    assert est_min_time_bt_surveys(
-        site_and_M_RS_for_testing["M_RS"], 6, site_and_M_RS_for_testing["site"]) == 22
+    assert (
+        est_min_time_bt_surveys(
+            site_and_M_RS_for_testing["M_RS"], 6, site_and_M_RS_for_testing["site"]
+        )
+        == 22
+    )

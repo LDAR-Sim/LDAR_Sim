@@ -23,17 +23,17 @@ import threading
 
 class stdout_redirect:
     def __init__(self, redirects):
-        '''
+        """
         constructor takes a redirect stream
         redirects = a list of file like objects to push to
-        '''
+        """
         self.redirects = redirects
         return
 
     def write(self, text):
-        '''
+        """
         text is the text to push to the stdout
-        '''
+        """
         for w in self.redirects:
             try:
                 with threading.Lock():
@@ -44,9 +44,9 @@ class stdout_redirect:
         return
 
     def flush(self):
-        '''
+        """
         flush method
-        '''
+        """
         for w in self.redirects:
             try:
                 w.flush()
