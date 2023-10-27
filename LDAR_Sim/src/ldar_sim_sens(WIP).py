@@ -17,6 +17,7 @@ import copy
 import multiprocessing as mp
 import os
 import shutil
+
 # You should have received a copy of the MIT License
 # along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 #
@@ -32,13 +33,17 @@ from ldar_sim_run import ldar_sim_run
 from scipy.stats import ks_2samp
 from utils.generic_functions import check_ERA5_file
 from utils.result_processing import get_referenced_dataframe
-from utils.sensitivity import (generate_sens_prog_set, generate_violin,
-                               group_timeseries, set_from_keylist,
-                               yaml_to_dict)
+from utils.sensitivity import (
+    generate_sens_prog_set,
+    generate_violin,
+    group_timeseries,
+    set_from_keylist,
+    yaml_to_dict,
+)
 
 
 def run_programs(programs, n_simulations, output_directory):
-    """ Setup and run simulations
+    """Setup and run simulations
 
     Args:
         programs (list): list of program objects
@@ -53,7 +58,8 @@ def run_programs(programs, n_simulations, output_directory):
     for i in range(n_simulations):
         if pregen_leaks:
             sites, leak_timeseries, initial_leaks = generate_sites(
-                programs[0], input_directory, pregen_leaks)
+                programs[0], input_directory, pregen_leaks
+            )
         else:
             sites = [], leak_timeseries = [], initial_leaks = []
         if preseed_random:
@@ -70,21 +76,27 @@ def run_programs(programs, n_simulations, output_directory):
                 j + 1, len(programs), i + 1, n_simulations
             )
             closing_message = "Finished simulating program {} of {} ; simulation {} of {} ".format(
-                j + 1, len(programs), i + 1, n_simulations)
+                j + 1, len(programs), i + 1, n_simulations
+            )
             simulations.append(
-                [{'i': i, 'program': copy.deepcopy(programs[j]),
-                    'globals':simulation_parameters,
-                    'input_directory': input_directory,
-                    'output_directory':output_directory,
-                    'opening_message': opening_message,
-                    'closing_message': closing_message,
-                    'pregenerate_leaks': pregen_leaks,
-                    'print_from_simulation': print_from_simulations,
-                    'sites': sites,
-                    'leak_timeseries': leak_timeseries,
-                    'initial_leaks': initial_leaks,
-                    'seed_timeseries': seed_timeseries,
-                  }])
+                [
+                    {
+                        "i": i,
+                        "program": copy.deepcopy(programs[j]),
+                        "globals": simulation_parameters,
+                        "input_directory": input_directory,
+                        "output_directory": output_directory,
+                        "opening_message": opening_message,
+                        "closing_message": closing_message,
+                        "pregenerate_leaks": pregen_leaks,
+                        "print_from_simulation": print_from_simulations,
+                        "sites": sites,
+                        "leak_timeseries": leak_timeseries,
+                        "initial_leaks": initial_leaks,
+                        "seed_timeseries": seed_timeseries,
+                    }
+                ]
+            )
 
     # Perform simulations in parallel
     with mp.Pool(processes=n_processes) as p:
@@ -98,37 +110,37 @@ def run_programs(programs, n_simulations, output_directory):
 
 
 # ------- Run Program --------
-if __name__ == '__main__':
+if __name__ == "__main__":
     # Initialize programs and variables
     root_dir = Path(os.path.dirname(os.path.realpath(__file__))).parent
     parameter_filenames = files_from_args(root_dir)
-    print('LDAR-Sim using parameters supplied as arguments')
+    print("LDAR-Sim using parameters supplied as arguments")
     input_manager = InputManager(root_dir)
     simulation_parameters = input_manager.read_and_validate_parameters(parameter_filenames)
 
-    input_directory = simulation_parameters['input_directory']
-    output_directory = simulation_parameters['output_directory']
-    programs = simulation_parameters.pop('programs')
-    n_processes = simulation_parameters['n_processes']
-    print_from_simulations = simulation_parameters['print_from_simulations']
-    n_simulations = simulation_parameters['n_simulations']
-    ref_program = simulation_parameters['reference_program']
-    write_data = simulation_parameters['write_data']
-    start_date = simulation_parameters['start_date']
-    pregen_leaks = simulation_parameters['pregenerate_leaks']
-    preseed_random = simulation_parameters['preseed_random']
+    input_directory = simulation_parameters["input_directory"]
+    output_directory = simulation_parameters["output_directory"]
+    programs = simulation_parameters.pop("programs")
+    n_processes = simulation_parameters["n_processes"]
+    print_from_simulations = simulation_parameters["print_from_simulations"]
+    n_simulations = simulation_parameters["n_simulations"]
+    ref_program = simulation_parameters["reference_program"]
+    write_data = simulation_parameters["write_data"]
+    start_date = simulation_parameters["start_date"]
+    pregen_leaks = simulation_parameters["pregenerate_leaks"]
+    preseed_random = simulation_parameters["preseed_random"]
 
     # Check whether ERA5 data is already in the working directory and download data if not
     for p in programs:
-        check_ERA5_file(input_directory, p['weather_file'])
+        check_ERA5_file(input_directory, p["weather_file"])
     # Initialize Sensitivity Parameters
-    sens_parameters = yaml_to_dict(input_directory / 'sens_vars.yaml')
+    sens_parameters = yaml_to_dict(input_directory / "sens_vars.yaml")
     # Z vars add new sets of programs to each group of programs
     # X vars will run new sets of programs
-    sens_z_var = sens_parameters['sens_z_var']
+    sens_z_var = sens_parameters["sens_z_var"]
     programs = generate_sens_prog_set(sens_z_var, programs)
-    sens_x_vars = sens_parameters['sens_x_vars']
-    stat_columns = sens_parameters['stat_columns']
+    sens_x_vars = sens_parameters["sens_x_vars"]
+    stat_columns = sens_parameters["stat_columns"]
 
     if not os.path.exists(output_directory):
         os.makedirs(output_directory)
@@ -139,71 +151,81 @@ if __name__ == '__main__':
         # If prog_var_manip is unused run program with parameters in Program Files
         programs, n_simulations, output_directory,
         sites = [], leak_timeseries = [], initial_leaks = []
-        all_progs['base'] = run_programs(
-            programs, ref_program, n_simulations, write_data, output_directory)
+        all_progs["base"] = run_programs(
+            programs, ref_program, n_simulations, write_data, output_directory
+        )
     else:
         #
         for x_var in sens_x_vars:
             sim_progs = []
-            var_paths = [path.split(".") for path in x_var['paths']]
+            var_paths = [path.split(".") for path in x_var["paths"]]
             # Get program names and their associated index in programs object
             key = var_paths[0][-1]
             # Create output folder for the sensitivity variable
-            pset_output_dir = output_directory/'sens'/'{}'.format(key)
+            pset_output_dir = output_directory / "sens" / "{}".format(key)
             if pset_output_dir.exists() and pset_output_dir.is_dir():
                 shutil.rmtree(pset_output_dir)
             os.makedirs(pset_output_dir)
             # Run the program sets with each value of sens_x_var
-            for val in x_var['vals']:
+            for val in x_var["vals"]:
                 munip_progs = copy.deepcopy(programs)
                 for path in var_paths:
-                    for (idx, p) in enumerate(munip_progs):
+                    for idx, p in enumerate(munip_progs):
                         # Update the x_var value for each program __all can also be used to
                         # refer to all programs.
-                        if p["orig_program_name"] == path[0] or path[0].lower() == '__all':
+                        if p["orig_program_name"] == path[0] or path[0].lower() == "__all":
                             set_from_keylist(munip_progs[idx], path[1:], val)
 
                 # Generate output folder if it does not exist
-                prog_outdir = output_directory / '{}/{}/'.format(key, val)
+                prog_outdir = output_directory / "{}/{}/".format(key, val)
                 if not os.path.exists(prog_outdir):
                     os.makedirs(prog_outdir)
 
                 # Run Program
-                print('------ running {} : {} --------'.format(path, val))
+                print("------ running {} : {} --------".format(path, val))
                 prog_results = run_programs(munip_progs, n_simulations, prog_outdir)
                 for prog in prog_results:
-                    prog.update({'key_x': key, 'value_x': val})
+                    prog.update({"key_x": key, "value_x": val})
                 sim_progs += prog_results
 
             # This will calculate the emissions ratio and the cost difference
             # and generate pandas data frames that include those added columns
             alt_ts = get_referenced_dataframe(
                 sim_progs,
-                [['daily_emissions_kg', 'emis_rat', 'rat'],
-                 ['total_daily_cost', 'cost_diff', 'diff']],
-                ref_program)
+                [
+                    ["daily_emissions_kg", "emis_rat", "rat"],
+                    ["total_daily_cost", "cost_diff", "diff"],
+                ],
+                ref_program,
+            )
 
             # Split up dataframe into multiple frames, by the sensitivity variable
             # this is required for plotting and estimating the KS p_vals
-            group_ts = group_timeseries(alt_ts, 'value_x')
+            group_ts = group_timeseries(alt_ts, "value_x")
             # Group the time series
-            group_prog = alt_ts.groupby(['program_name', 'key_x', 'value_x'])
+            group_prog = alt_ts.groupby(["program_name", "key_x", "value_x"])
             for col in stat_columns:
-                generate_violin(group_ts, col['column'], col['description'], pset_output_dir)
+                generate_violin(group_ts, col["column"], col["description"], pset_output_dir)
                 # Generate descriptive statistics on each input column and save to file
-                pgroup_desc_stats = group_prog[col['column']].describe().reset_index()
+                pgroup_desc_stats = group_prog[col["column"]].describe().reset_index()
                 pgroup_desc_stats = pgroup_desc_stats.merge(
-                    group_prog[col['column']].quantile(0.95).reset_index().rename(
-                        columns={col['column']: "95%"}))
+                    group_prog[col["column"]]
+                    .quantile(0.95)
+                    .reset_index()
+                    .rename(columns={col["column"]: "95%"})
+                )
                 pgroup_desc_stats.to_csv(
-                    pset_output_dir / 'desc_{}.csv'.format(col['column']), index=False)
+                    pset_output_dir / "desc_{}.csv".format(col["column"]), index=False
+                )
                 # Run a Kolmogorov–Smirnov test between each distribution
                 ks_mat = {
                     k_x: {
                         k_y: ks_2samp(
-                            group_ts[k_x][col['column']],
-                            group_ts[k_y][col['column']]).pvalue
-                        for k_y, _ in group_ts.items()}
-                    for k_x, _ in group_ts.items()}
+                            group_ts[k_x][col["column"]], group_ts[k_y][col["column"]]
+                        ).pvalue
+                        for k_y, _ in group_ts.items()
+                    }
+                    for k_x, _ in group_ts.items()
+                }
                 ks_df = pd.DataFrame(ks_mat)
-                ks_df.to_csv(pset_output_dir/'ks_pval_mat_{}.csv'.format(col['column']))
+                ks_df.to_csv(pset_output_dir / "ks_pval_mat_{}.csv".format(col["column"]))

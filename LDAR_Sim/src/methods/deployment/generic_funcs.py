@@ -18,18 +18,17 @@
 #
 # ------------------------------------------------------------------------------
 
+
 def get_work_hours(config, state):
-    """ Get hours in day the crew is able to work
-    """
-    if config['consider_daylight']:
-        daylight_hours = state['daylight'].get_daylight(
-            state['t'].current_timestep)
-        if daylight_hours <= config['max_workday']:
+    """Get hours in day the crew is able to work"""
+    if config["consider_daylight"]:
+        daylight_hours = state["daylight"].get_daylight(state["t"].current_timestep)
+        if daylight_hours <= config["max_workday"]:
             work_hours = daylight_hours
-        elif daylight_hours > config['max_workday']:
-            work_hours = config['max_workday']
+        elif daylight_hours > config["max_workday"]:
+            work_hours = config["max_workday"]
     else:
-        work_hours = config['max_workday']
+        work_hours = config["max_workday"]
 
     if work_hours < 24 and work_hours != 0:
         start_hour = (24 - work_hours) / 2
@@ -39,19 +38,18 @@ def get_work_hours(config, state):
 
 
 def get_deployment_dates(config, state):
-    """ Using input parameters get the range of years and months available
-        for company/ crew deployment. If none are specified, set to the
-        number of years within simulation and all months.
+    """Using input parameters get the range of years and months available
+    for company/ crew deployment. If none are specified, set to the
+    number of years within simulation and all months.
     """
     # if user does not specify deployment interval, set to all months/years
-    if len(config['scheduling']['deployment_years']) > 0:
-        deployment_years = config['scheduling']['deployment_years']
+    if len(config["scheduling"]["deployment_years"]) > 0:
+        deployment_years = config["scheduling"]["deployment_years"]
     else:
-        deployment_years = list(
-            range(state['t'].start_date.year, state['t'].end_date.year+1))
+        deployment_years = list(range(state["t"].start_date.year, state["t"].end_date.year + 1))
 
-    if len(config['scheduling']['deployment_months']) > 0:
-        deployment_months = config['scheduling']['deployment_months']
+    if len(config["scheduling"]["deployment_months"]) > 0:
+        deployment_months = config["scheduling"]["deployment_months"]
     else:
         deployment_months = list(range(1, 13))
     return deployment_years, deployment_months

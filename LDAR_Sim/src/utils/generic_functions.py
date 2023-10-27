@@ -54,8 +54,7 @@ def gap_calculator(condition_vector):
     # If there are multiple condition days, calculate longest gap
     elif len(indices[0] > 1):
         start_gap = indices[0][0]
-        mid_gap = max(abs(x - y)
-                      for (x, y) in zip(indices[0][1:], indices[0][:-1]))
+        mid_gap = max(abs(x - y) for (x, y) in zip(indices[0][1:], indices[0][:-1]))
         end_gap = len(condition_vector) - indices[0][-1]
         max_gap = max(start_gap, mid_gap, end_gap)
 
@@ -64,17 +63,17 @@ def gap_calculator(condition_vector):
 
 def get_prop_rate(proportion, rates):
     """
-     The purpose of this function is to calculate the emission rate(s) that
-     correspond(s) with a desired proportion total emissions for a given emission
-     size distribution. It estimates the MDL needed to find the top X percent
-     of sources for a given leak size distribution.
+    The purpose of this function is to calculate the emission rate(s) that
+    correspond(s) with a desired proportion total emissions for a given emission
+    size distribution. It estimates the MDL needed to find the top X percent
+    of sources for a given leak size distribution.
 
-     Inputs are: (1) a proportion value (or list a list of values) that represents
-     top emitting sources, and (2) a distribution of emission rates (either leaks or sites).
+    Inputs are: (1) a proportion value (or list a list of values) that represents
+    top emitting sources, and (2) a distribution of emission rates (either leaks or sites).
 
-     For example, given a proportion of 0.01 and a leak-size distribution,
-     this function will return an estimate of the detection limit that will
-     ensure that all leaks in the top 1% of leak sizes are found.
+    For example, given a proportion of 0.01 and a leak-size distribution,
+    this function will return an estimate of the detection limit that will
+    ensure that all leaks in the top 1% of leak sizes are found.
 
     """
 
@@ -84,11 +83,13 @@ def get_prop_rate(proportion, rates):
     cum_rates_prop = cum_rates / max(cum_rates)
 
     # Get relative position of each element in emissions distribution
-    p = 1. * np.arange(len(rates)) / (len(rates) - 1)
+    p = 1.0 * np.arange(len(rates)) / (len(rates) - 1)
 
     # Estimate proportion of emissions that correspond with a given proportion of top emitters.
     # 100% of sites account for 100% of emissions. 0% of sites account for 0% of emissions.
-    def f(x): return np.interp(x, xp=p, fp=cum_rates_prop)
+    def f(x):
+        return np.interp(x, xp=p, fp=cum_rates_prop)
+
     prop_rate = f(1 - proportion)
     # prop_above = 1 - prop_rate
 
@@ -96,7 +97,9 @@ def get_prop_rate(proportion, rates):
     cum_rate = prop_rate * max(cum_rates)
 
     # Estimate emission rate that corresponds with cumulative rate
-    def f2(x): return np.interp(x, cum_rates, rates_sorted)
+    def f2(x):
+        return np.interp(x, cum_rates, rates_sorted)
+
     rate = f2(cum_rate)
 
     # A dataframe of all the useful info, if ever needed for a list of thresholds
@@ -104,28 +107,31 @@ def get_prop_rate(proportion, rates):
     # df = pd.DataFrame(
     #     {'Proportion': proportion, 'Prop Emissions': prop_above, 'follow_up_thresh': rate})
 
-    return (rate)
+    return rate
 
 
 def check_ERA5_file(dir, v_world):
-    my_file = Path(dir / v_world['weather_file'])
+    my_file = Path(dir / v_world["weather_file"])
     if my_file.is_file():
         print("Weather data checked. Continuing simulation.")
     else:
         print("Weather data not found. Downloading from AWS now ...")
         try:
-            access_key = os.getenv('AWS_KEY')
-            secret_key = os.getenv('AWS_SEC')
+            access_key = os.getenv("AWS_KEY")
+            secret_key = os.getenv("AWS_SEC")
         except Exception:
             print(
-                "AWS_KEY and AWS_SEC environment variables have not been set," +
-                "refer to model documentation for configuration instructions.")
+                "AWS_KEY and AWS_SEC environment variables have not been set,"
+                + "refer to model documentation for configuration instructions."
+            )
 
         try:
-            s3 = boto3.client('s3', aws_access_key_id=access_key,
-                              aws_secret_access_key=secret_key)
-            s3.download_file('im3sweather', v_world['weather_file'],
-                             r'{}/{}'.format(dir, v_world['weather_file']))
+            s3 = boto3.client("s3", aws_access_key_id=access_key, aws_secret_access_key=secret_key)
+            s3.download_file(
+                "im3sweather",
+                v_world["weather_file"],
+                r"{}/{}".format(dir, v_world["weather_file"]),
+            )
         except ClientError:
             print("Authentication Failed or Server Unavailable. Exiting")
             sys.exit()
@@ -134,24 +140,23 @@ def check_ERA5_file(dir, v_world):
 
 def geo_idx(dd, dd_array):
     """
-     - dd - the decimal degree (latitude or longitude)
-     - dd_array - the list of decimal degrees to search As a Numpy Array.
-     search for nearest decimal degree in an array of decimal degrees and return the index.
-     np.argmin returns the indices of minimum value along an axis.
-     so subtract dd from all values in dd_array, take absolute value and find index of minimum.
-   """
+    - dd - the decimal degree (latitude or longitude)
+    - dd_array - the list of decimal degrees to search As a Numpy Array.
+    search for nearest decimal degree in an array of decimal degrees and return the index.
+    np.argmin returns the indices of minimum value along an axis.
+    so subtract dd from all values in dd_array, take absolute value and find index of minimum.
+    """
     geo_idx = (np.abs(dd_array - dd)).argmin()
     return geo_idx
 
 
 def quick_cal_daylight(date, lat, lon):
-
     # Create ephem object
     obs = ephem.Observer()
     # turn off PyEphem’s native mechanism for computing atmospheric refraction
     # near the horizon
     obs.pressure = 0
-    obs.horizon = '-6'  # -6=civil twilight, -12=nautical, -18=astronomical
+    obs.horizon = "-6"  # -6=civil twilight, -12=nautical, -18=astronomical
     # set the time
     obs.date = date
     # set the latitude and longitude for object
@@ -193,12 +198,11 @@ def ecef_to_llh(ecef_km):
     esq = 1.0 - (b / a) ** 2
     epsq = (a / b) ** 2 - 1.0
     # calculate latitude
-    lat = atan((ecef_km[2] + epsq * b * sin(thet) ** 3) /
-               (p - esq * a * cos(thet) ** 3))
+    lat = atan((ecef_km[2] + epsq * b * sin(thet) ** 3) / (p - esq * a * cos(thet) ** 3))
     # calculate longitude
     lon = atan2(ecef_km[1], ecef_km[0])
     # Calculate prime vertical radius of curvature at latitude
-    n = a * a / sqrt(a * a * cos(lat) ** 2 + b ** 2 * sin(lat) ** 2)
+    n = a * a / sqrt(a * a * cos(lat) ** 2 + b**2 * sin(lat) ** 2)
     # Calculate altitude
     h = p / cos(lat) - n
     lat = degrees(lat)
@@ -236,10 +240,10 @@ def init_orbit_poly(predictor, T1, T2, interval):
         lat2, lon2, h2 = ecef_to_llh(ecef2)
 
         # get the bounding box of the coverage of satellite between the two time steps
-        pt1 = (lon1, lat1+0.1)
-        pt2 = (lon1+0.1, lat1)
-        pt3 = (lon2, lat2-0.1)
-        pt4 = (lon2-0.1, lat2)
+        pt1 = (lon1, lat1 + 0.1)
+        pt2 = (lon1 + 0.1, lat1)
+        pt3 = (lon2, lat2 - 0.1)
+        pt4 = (lon2 - 0.1, lat2)
 
         # create that coverage area polygon
         polygon3 = Polygon([pt1, pt2, pt3, pt4])

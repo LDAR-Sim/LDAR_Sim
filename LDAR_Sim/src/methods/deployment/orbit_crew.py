@@ -1,4 +1,3 @@
-
 # ------------------------------------------------------------------------------
 # Program:     The LDAR Simulator (LDAR-Sim)
 # File:        methods.deployment.orbit_crew
@@ -26,25 +25,24 @@ import numpy as np
 from orbit_predictor.sources import get_predictor_from_tle_lines
 from shapely import speedups
 from shapely.geometry import Point
-from utils.generic_functions import (geo_idx, init_orbit_poly,
-                                     quick_cal_daylight)
+from utils.generic_functions import geo_idx, init_orbit_poly, quick_cal_daylight
 
 speedups.disable()
 
 
-class Schedule():
+class Schedule:
     def __init__(
-            self,
-            id,
-            lat,
-            lon,
-            state,
-            config,
-            virtual_world,
-            simulation_settings,
-            deployment_days,
-            rollover,
-            home_bases=None
+        self,
+        id,
+        lat,
+        lon,
+        state,
+        config,
+        virtual_world,
+        simulation_settings,
+        deployment_days,
+        rollover,
+        home_bases=None,
     ):
         self.config = config
         self.state = state
@@ -59,26 +57,25 @@ class Schedule():
         self.allowed_end_time = None
 
         # extract cloud cover data
-        cloud = virtual_world['weather_file']
-        Dataset = nc.Dataset(self.in_dir / cloud, 'r')
-        self.cloudcover = Dataset.variables['tcc'][:]
+        cloud = virtual_world["weather_file"]
+        Dataset = nc.Dataset(self.in_dir / cloud, "r")
+        self.cloudcover = Dataset.variables["tcc"][:]
         Dataset.close()
         # obtain TLE file path
-        self.sat = self.config['TLE_label']
-        self.tlefile = self.config['TLE_file']
+        self.sat = self.config["TLE_label"]
+        self.tlefile = self.config["TLE_file"]
 
         self.get_orbit_predictor()
         self.get_orbit_path()
 
     def start_day(self, site_pool):
-        '''Start day method. Initialize time to account for work hours. The
-           site pool that are ready for survey are passed from the company to
-           the satellite to filter out sites that are not viewable, covered
-           by cloud, and don't have daylight.
-        '''
+        """Start day method. Initialize time to account for work hours. The
+        site pool that are ready for survey are passed from the company to
+        the satellite to filter out sites that are not viewable, covered
+        by cloud, and don't have daylight.
+        """
         # Set start of work, satellite can work 24 hours per day
-        self.state['t'].current_date = self.state['t'].current_date.replace(
-            hour=int(1))
+        self.state["t"].current_date = self.state["t"].current_date.replace(hour=int(1))
 
         # find out the site that can be seen by satellite
         viewable_sites = self.calc_viewable_sites(site_pool)
@@ -97,46 +94,46 @@ class Schedule():
         return daily_site_plans
 
     def plan_visit(self, site):
-        '''create a visit plan for satellite, the go_to_site
-           are always true if site passed from start_day.
-           We assume the survey time and travel time for Satellite is 0 mins
-           Args:
-               site: a site
-           Returns:
-               list: Daily itinerary:
-                   {'site':(dict),
-                    'go_to_site': (boolean),
-                    'LDAR_mins': (int) travel to and work-onsite mins,
-                    'remaining_mins':(int) minutes remaining in survey at site,
-                    }
-        '''
+        """create a visit plan for satellite, the go_to_site
+        are always true if site passed from start_day.
+        We assume the survey time and travel time for Satellite is 0 mins
+        Args:
+            site: a site
+        Returns:
+            list: Daily itinerary:
+                {'site':(dict),
+                 'go_to_site': (boolean),
+                 'LDAR_mins': (int) travel to and work-onsite mins,
+                 'remaining_mins':(int) minutes remaining in survey at site,
+                 }
+        """
         return {
-            'site': site,
-            'go_to_site': True,
-            'LDAR_mins': 0,
-            'remaining_mins': 0,
+            "site": site,
+            "go_to_site": True,
+            "LDAR_mins": 0,
+            "remaining_mins": 0,
         }
 
     def calc_viewable_sites(self, site_pool):
         """Generic utility function to check whether a satellite can see
-           a given patch of ground. Returns True to denote the satellite
-           can see the location and False otherwise.
-           Args:
-               site: a site
+        a given patch of ground. Returns True to denote the satellite
+        can see the location and False otherwise.
+        Args:
+            site: a site
 
-           Returns:
-               valid_site: boolean
+        Returns:
+            valid_site: boolean
         """
         valid_site = []
         # ind = 0
         sat_date = self.sat_date
         path = self.orbit_path
-        date = self.state['t'].current_date.date()
+        date = self.state["t"].current_date.date()
         # find daily pathes
         DP = path[sat_date == date]
         for s in site_pool:
-            fac_lat = np.float16(s['lat'])
-            fac_lon = np.float16(s['lon'])
+            fac_lat = np.float16(s["lat"])
+            fac_lon = np.float16(s["lon"])
             PT = Point(fac_lon, fac_lat)
             for dp in DP:
                 if dp.contains(PT):
@@ -146,25 +143,25 @@ class Schedule():
 
     def assess_weather(self, site):
         """Check whether the site is covered by cloud or have enough daylight
-            Args:
-             site: a site
+        Args:
+         site: a site
 
-            Returns:
-                valid_site: boolean
+        Returns:
+            valid_site: boolean
         """
 
-        site_lat = np.float16(site['lat'])
-        site_lon = np.float16(site['lon'])
+        site_lat = np.float16(site["lat"])
+        site_lon = np.float16(site["lon"])
 
-        lat_idx = geo_idx(site_lat, self.state['weather'].latitude)
-        lon_idx = geo_idx(site_lon, self.state['weather'].longitude)
-        ti = self.state['t'].current_timestep
+        lat_idx = geo_idx(site_lat, self.state["weather"].latitude)
+        lon_idx = geo_idx(site_lon, self.state["weather"].longitude)
+        ti = self.state["t"].current_timestep
 
         # check daylight
-        date = self.state['t'].current_date
+        date = self.state["t"].current_date
         sr, ss = quick_cal_daylight(date, site_lat, site_lon)
 
-        if sr <= self.state['t'].current_date.hour <= ss:
+        if sr <= self.state["t"].current_date.hour <= ss:
             sat_daylight = True
         else:
             sat_daylight = False
@@ -184,8 +181,8 @@ class Schedule():
         return (sat_daylight, sat_cc)
 
     def get_orbit_predictor(self):
-        """ Get the orbit predictor of satellite based on
-            TLE file and satellite name specified in the input parameter.
+        """Get the orbit predictor of satellite based on
+        TLE file and satellite name specified in the input parameter.
         """
         # build a satellite orbit object
         input_directory = self.in_dir
@@ -198,20 +195,19 @@ class Schedule():
             if x == self.sat:
                 break
             i += 1
-        TLE_LINES = (TLEs[i+1], TLEs[i+2])
+        TLE_LINES = (TLEs[i + 1], TLEs[i + 2])
         self.predictor = get_predictor_from_tle_lines(TLE_LINES)
         return
 
     def get_orbit_path(self):
-        '''Get the orbit path polygon for a time interval based on
-           orbit predictor of a satellite.
-        '''
+        """Get the orbit path polygon for a time interval based on
+        orbit predictor of a satellite.
+        """
         # initiate the orbit path
-        T1 = self.state['t'].start_date
-        T2 = self.state['t'].end_date
+        T1 = self.state["t"].start_date
+        T2 = self.state["t"].end_date
         # calculate the orbit path polygon for satellite
-        self.sat_datetime, self.orbit_path = init_orbit_poly(
-            self.predictor, T1, T2, 15)
+        self.sat_datetime, self.orbit_path = init_orbit_poly(self.predictor, T1, T2, 15)
         self.sat_date = [d.date() for d in self.sat_datetime]
 
         self.sat_date = np.array(self.sat_date)
@@ -220,9 +216,8 @@ class Schedule():
         return
 
     def update_schedule(self, work_mins):
-        '''Update the time
-        '''
-        self.state['t'].current_date += timedelta(minutes=int(work_mins))
+        """Update the time"""
+        self.state["t"].current_date += timedelta(minutes=int(work_mins))
 
     def end_day(self, site_pool, itinerary):
         return

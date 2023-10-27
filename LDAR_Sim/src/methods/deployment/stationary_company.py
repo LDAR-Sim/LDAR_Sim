@@ -32,9 +32,9 @@ def make_crews(
     simulation_settings,
     timeseries,
     deployment_days,
-    rollover
+    rollover,
 ):
-    """ Generate crews using BaseCrew class.
+    """Generate crews using BaseCrew class.
 
     Args:
         crews (list): List of crews
@@ -48,8 +48,8 @@ def make_crews(
 
     --- Required in module.company.BaseCompany ---
     """
-    for site in state['sites']:
-        if config['measurement_scale'] == "equipment":  # This may change in the future
+    for site in state["sites"]:
+        if config["measurement_scale"] == "equipment":  # This may change in the future
             # n_fixed = int(site['fixed_sensors'])
             pass
         else:
@@ -58,11 +58,11 @@ def make_crews(
         # HBD right now this can only handle one crew per site
         n_fixed = 1
         for i in range(n_fixed):
-            crew_ID = str(site['facility_ID']) + '-' + str(i + 1)
+            crew_ID = str(site["facility_ID"]) + "-" + str(i + 1)
             # Will only accept the first crew assigned to site
-            if not site['crew_ID']:
+            if not site["crew_ID"]:
                 # assign agents
-                site.update({'crew_ID': crew_ID})
+                site.update({"crew_ID": crew_ID})
             crews.append(
                 BaseCrew(
                     state,
@@ -74,19 +74,19 @@ def make_crews(
                     deployment_days,
                     id=crew_ID,
                     site=site,
-                    rollover=rollover
-                ))
+                    rollover=rollover,
+                )
+            )
 
 
-class Schedule():
-
+class Schedule:
     def __init__(self, config, program_parameters, state):
         self.program_parameters = program_parameters
         self.config = config
         self.state = state
 
     def assign_agents(self):
-        """ assign agents to sites.
+        """assign agents to sites.
             Stationary agents are assigned in make crew function
 
         --- Required in module.company.BaseCompany ---
@@ -94,7 +94,7 @@ class Schedule():
         pass
 
     def get_due_sites(self, site_pool):
-        """ Retrieve a site list of sites due for screen / survey.
+        """Retrieve a site list of sites due for screen / survey.
             Stationary companies
         Args:
             site_pool (dict): List of sites
@@ -106,7 +106,7 @@ class Schedule():
         return site_pool
 
     def get_crew_site_list(self, site_pool, crew_idx, n_crews, crews=None):
-        """ Allocates site pool among all crews. Ordering of sites is not
+        """Allocates site pool among all crews. Ordering of sites is not
             changed by function. Stationary sites return only sites that
             have are assigned the crew id.
         Args:

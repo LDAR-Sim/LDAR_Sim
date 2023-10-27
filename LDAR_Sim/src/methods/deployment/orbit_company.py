@@ -1,4 +1,3 @@
-
 # ------------------------------------------------------------------------------
 # Program:     The LDAR Simulator (LDAR-Sim)
 # File:        methods.deployment.orbit_company
@@ -22,17 +21,17 @@ from methods.crew import BaseCrew
 
 
 def make_crews(
-        crews,
-        config,
-        state,
-        program_parameters,
-        virtual_world,
-        simulation_settings,
-        timeseries,
-        deployment_days,
-        rollover
+    crews,
+    config,
+    state,
+    program_parameters,
+    virtual_world,
+    simulation_settings,
+    timeseries,
+    deployment_days,
+    rollover,
 ):
-    """ Generate crews using BaseCrew class.
+    """Generate crews using BaseCrew class.
 
     Args:
         crews (list): List of crews
@@ -46,7 +45,7 @@ def make_crews(
 
     --- Required in module.company.BaseCompany ---
     """
-    for i in range(config['n_crews']):
+    for i in range(config["n_crews"]):
         crews.append(
             BaseCrew(
                 state,
@@ -57,12 +56,12 @@ def make_crews(
                 timeseries,
                 deployment_days,
                 id=i + 1,
-                rollover=rollover
+                rollover=rollover,
             )
         )
 
 
-class Schedule():
+class Schedule:
     def __init__(self, config, program_parameters, state):
         self.program_parameters = program_parameters
         self.config = config
@@ -72,10 +71,10 @@ class Schedule():
         return site_pool
 
     def assign_agents(self):
-        '''
+        """
         can be used to assign sites to two different satellites in the future
         for exmaple, GHG-Sat1 and GHG-Sat2 work together
-        '''
+        """
         return
 
     def get_working_crews(self, site_pool, n_crews):

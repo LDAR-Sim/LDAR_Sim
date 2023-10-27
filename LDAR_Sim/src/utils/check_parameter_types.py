@@ -38,11 +38,11 @@ def check_types(default, test, omit_keys=None, fatal=False):
         type_ok = True
     elif type(default) is float and type(test) is int:
         type_ok = True
-    elif default == '_placeholder_int_' and (type(test) is int):
+    elif default == "_placeholder_int_" and (type(test) is int):
         type_ok = True
-    elif default == '_placeholder_float_' and (type(test) is int or type(test) is float):
+    elif default == "_placeholder_float_" and (type(test) is int or type(test) is float):
         type_ok = True
-    elif default == '_placeholder_str_' and type(test) is str:
+    elif default == "_placeholder_str_" and type(test) is str:
         type_ok = True
     else:
         type_ok = False
@@ -54,8 +54,10 @@ def check_types(default, test, omit_keys=None, fatal=False):
                 if i not in omit_keys:
                     if i not in default:
                         print(
-                            'Key ' + i +
-                            ' present in test parameters, but not in default parameters')
+                            "Key "
+                            + i
+                            + " present in test parameters, but not in default parameters"
+                        )
                         if fatal:
                             sys.exit()
 
@@ -68,8 +70,8 @@ def check_types(default, test, omit_keys=None, fatal=False):
                     check_types(default[0], test[i], omit_keys=omit_keys, fatal=fatal)
 
     else:
-        print('Parameter type mismatch')
-        print('Default parameter: ' + str(default) + ' is ' + str(type(default)))
-        print('Test parameter: ' + str(test) + ' is ' + str(type(test)))
+        print("Parameter type mismatch")
+        print("Default parameter: " + str(default) + " is " + str(type(default)))
+        print("Test parameter: " + str(test) + " is " + str(type(test)))
         if fatal:
             sys.exit()

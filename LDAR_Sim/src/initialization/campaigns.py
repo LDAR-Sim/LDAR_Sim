@@ -20,29 +20,31 @@
 
 from math import floor
 from numpy import zeros
+
 # --- initialize Campaigns ---
 
 
 def _add_method_campaign(campaign_s_t, d_per_campaign, timesteps, n_sites, m_name):
-    n_campaigns = floor(timesteps/d_per_campaign)
+    n_campaigns = floor(timesteps / d_per_campaign)
     return campaign_s_t.update(
         {
             m_name: {
-                'current_campaign': 0,
-                'n_campaigns': n_campaigns,
-                'ts_start': [c*d_per_campaign for c in range(0, n_campaigns)],
-                'n_sites': n_sites,
-                'n_sites_screened': zeros(n_campaigns, dtype=int),
-                'n_sites_surveyed': zeros(n_campaigns, dtype=int),
-                'n_flags': zeros(n_campaigns, dtype=int),
-                'n_tags': zeros(n_campaigns, dtype=int),
-                'n_repairs': zeros(n_campaigns, dtype=int)
+                "current_campaign": 0,
+                "n_campaigns": n_campaigns,
+                "ts_start": [c * d_per_campaign for c in range(0, n_campaigns)],
+                "n_sites": n_sites,
+                "n_sites_screened": zeros(n_campaigns, dtype=int),
+                "n_sites_surveyed": zeros(n_campaigns, dtype=int),
+                "n_flags": zeros(n_campaigns, dtype=int),
+                "n_tags": zeros(n_campaigns, dtype=int),
+                "n_repairs": zeros(n_campaigns, dtype=int),
             }
-        })
+        }
+    )
 
 
 def init_campaigns(n_subtype_rs, sites_per_subtype, timesteps):
-    """ Initialize campaigns by going through all site subtypes, and all
+    """Initialize campaigns by going through all site subtypes, and all
         methods, and setting up campaign periods for each. IF subtypes have
         one or more scheduled method with a single rs value, all unscheduled
         methods ie. OGI_FU and natural will have the same schedule.
@@ -78,7 +80,7 @@ def init_campaigns(n_subtype_rs, sites_per_subtype, timesteps):
         for m_idx, m_rs in s_vals.items():
             if m_rs != -1:
                 if m_rs is not None and m_rs != 0:
-                    d_per_campaign = int(floor(365/m_rs))
+                    d_per_campaign = int(floor(365 / m_rs))
                     if has_one_campaign is True:
                         if ref_day_per_campaign is None:
                             ref_day_per_campaign = d_per_campaign
@@ -88,8 +90,13 @@ def init_campaigns(n_subtype_rs, sites_per_subtype, timesteps):
                     # If campaign lengths are not set or vary, set the n of campaigns to annual
                     has_one_campaign = False
                     d_per_campaign = 365
-                _add_method_campaign(campaigns[s_t], d_per_campaign, timesteps,
-                                     sites_per_subtype[s_t], m_idx)
+                _add_method_campaign(
+                    campaigns[s_t],
+                    d_per_campaign,
+                    timesteps,
+                    sites_per_subtype[s_t],
+                    m_idx,
+                )
             else:
                 non_sched_meths.append(m_idx)
 
@@ -101,7 +108,8 @@ def init_campaigns(n_subtype_rs, sites_per_subtype, timesteps):
                 d_per_campaign = ref_day_per_campaign
             else:
                 d_per_campaign = 365
-            _add_method_campaign(campaigns[s_t], d_per_campaign, timesteps,
-                                 sites_per_subtype[s_t], m)
+            _add_method_campaign(
+                campaigns[s_t], d_per_campaign, timesteps, sites_per_subtype[s_t], m
+            )
 
     return campaigns

@@ -26,7 +26,6 @@ import numpy as np
 
 # Calculate the study area average daylight for each day of the simulation
 class DaylightCalculatorAve:
-
     def __init__(self, state, parameters):
         self.state = state
         self.parameters = parameters
@@ -34,15 +33,17 @@ class DaylightCalculatorAve:
         # Get average lat and lon values for the sites in your study area
         lat_list = []
         lon_list = []
-        for site in self.state['sites']:
-            lat_list.append(float(site['lat']))
-            lon_list.append(float(site['lon']))
+        for site in self.state["sites"]:
+            lat_list.append(float(site["lat"]))
+            lon_list.append(float(site["lon"]))
         self.lat_ave = np.mean(lat_list)
         self.lon_ave = np.mean(lon_list)
 
         # Build vector of dates spanning timeseries with format "yyyy/mm/dd"
-        self.date_list = [self.state['t'].start_date + datetime.timedelta(days=x) for x in
-                          range(0, self.parameters['timesteps'])]
+        self.date_list = [
+            self.state["t"].start_date + datetime.timedelta(days=x)
+            for x in range(0, self.parameters["timesteps"])
+        ]
 
         # Create an empty list to store the daylight hours - rounding down.
         self.daylight_hours = []
@@ -53,7 +54,7 @@ class DaylightCalculatorAve:
             # Turn off PyEphem’s native mechanism for computing atmospheric refraction
             # near the horizon
             obs.pressure = 0
-            obs.horizon = '-6'  # -6 = civil twilight, -12 = nautical, -18 = astronomical
+            obs.horizon = "-6"  # -6 = civil twilight, -12 = nautical, -18 = astronomical
             # Set the time
             obs.date = self.date_list[day]
             # set the latitude and longitude for object
@@ -68,7 +69,6 @@ class DaylightCalculatorAve:
         return
 
     def get_daylight(self, timestep):
-
         daylight = self.daylight_hours[timestep]
         return daylight
 
@@ -76,7 +76,6 @@ class DaylightCalculatorAve:
 # -----------------------------------------------------------------------------#
 class DaylightCalculatorAll:
     def __init__(self, latitude, longitude, date):
-
         self.time = date
         self.lat = latitude
         self.lon = longitude
@@ -91,7 +90,7 @@ class DaylightCalculatorAll:
             # turn off PyEphem’s native mechanism for computing atmospheric refraction
             # near the horizon
             obs.pressure = 0
-            obs.horizon = '-6'  # -6=civil twilight, -12=nautical, -18=astronomical
+            obs.horizon = "-6"  # -6=civil twilight, -12=nautical, -18=astronomical
             # set the time
             obs.date = self.time[i]
             # set the latitude and longitude for object

@@ -17,6 +17,7 @@ import json
 
 import numpy as np
 import pandas as pd
+
 # You should have received a copy of the MIT License
 # along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 #
@@ -44,10 +45,10 @@ def fit_dist(samples=None, dist_type="lognorm", loc=0, shape=None, scale=None):
         try:
             param = dist.fit(samples, floc=loc)
         except:  # noqa: E722 - scipy custom error, needs to be imported
-            'some distributions cannot take 0 values'
+            "some distributions cannot take 0 values"
             samples = [s for s in samples if s > 0]
             param = dist.fit(samples, floc=loc)
-        loc = param[-2],
+        loc = (param[-2],)
         scale = param[-1]
         shape = param[:-2]
     if isinstance(shape, str):
@@ -60,7 +61,7 @@ def fit_dist(samples=None, dist_type="lognorm", loc=0, shape=None, scale=None):
 
 
 def leak_rvs(distribution, max_size=None, gpsec_conversion=None):
-    """ Generate A random Leak, convert to g/s then check it against
+    """Generate A random Leak, convert to g/s then check it against
         leaks size, run until leak is smaller than max size
     Args:
         distribution (A scipy Distribution): Distribution of leak sizes
@@ -72,34 +73,41 @@ def leak_rvs(distribution, max_size=None, gpsec_conversion=None):
 
     while True:
         leaksize = distribution.rvs()  # Get Random Value from Distribution
-        if gpsec_conversion and  \
-                gpsec_conversion[0].lower() != 'gram' and \
-                gpsec_conversion[1].lower() != "second":
-            leaksize = gas_convert(leaksize, input_metric=gpsec_conversion[0],
-                                   input_increment=gpsec_conversion[1])
+        if (
+            gpsec_conversion
+            and gpsec_conversion[0].lower() != "gram"
+            and gpsec_conversion[1].lower() != "second"
+        ):
+            leaksize = gas_convert(
+                leaksize,
+                input_metric=gpsec_conversion[0],
+                input_increment=gpsec_conversion[1],
+            )
         if not max_size or leaksize < max_size:
             break  # Rerun if value is larger than maximum
     return leaksize
 
 
 def unpackage_dist(program, wd):
-    """ Create scipy like leak distributions based on input dists or leak files
+    """Create scipy like leak distributions based on input dists or leak files
 
     Args:
         program (dict): Program parameter dictionary
         in_dir (pathlib type): input directory of file. Defaults to None.
     """
     # --------- Leak distributions -------------
-    for st_idx, subtype in program['subtypes'].items():
-        if 'leak_rate_source' not in subtype or subtype['leak_rate_source'] == 'dist':
-            if subtype['dist_type'] == 'lognorm':
-                subtype['dist_scale'] = np.exp(subtype['dist_scale'])
-            if 'dist_sigma' in subtype:
-                subtype['dist_shape'] = [subtype['dist_sigma']]
-            subtype['leak_rate_dist'] = fit_dist(
-                dist_type=subtype['dist_type'],
-                shape=subtype['dist_shape'],
-                scale=subtype['dist_scale'])
-        elif subtype['leak_rate_source'] == 'sample':
-            subtype['empirical_leak_rates'] = np.array(
-                pd.read_csv(wd / subtype['leak_rates_file']).iloc[:, 0])
+    for st_idx, subtype in program["subtypes"].items():
+        if "leak_rate_source" not in subtype or subtype["leak_rate_source"] == "dist":
+            if subtype["dist_type"] == "lognorm":
+                subtype["dist_scale"] = np.exp(subtype["dist_scale"])
+            if "dist_sigma" in subtype:
+                subtype["dist_shape"] = [subtype["dist_sigma"]]
+            subtype["leak_rate_dist"] = fit_dist(
+                dist_type=subtype["dist_type"],
+                shape=subtype["dist_shape"],
+                scale=subtype["dist_scale"],
+            )
+        elif subtype["leak_rate_source"] == "sample":
+            subtype["empirical_leak_rates"] = np.array(
+                pd.read_csv(wd / subtype["leak_rates_file"]).iloc[:, 0]
+            )

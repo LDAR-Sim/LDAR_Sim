@@ -21,26 +21,33 @@ from methods.funcs import measured_rate as get_measured_rate
 from utils.attribution import update_tag
 
 
-def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered_site_rate,
-                     site_rate, venting, equipment_rates):
-
+def detect_emissions(
+    self,
+    site,
+    covered_leaks,
+    covered_equipment_rates,
+    covered_site_rate,
+    site_rate,
+    venting,
+    equipment_rates,
+):
     equip_measured_rates = []
     site_measured_rate = 0
     found_leak = False
     n_leaks = len(covered_leaks)
-    missed_leaks_str = '{}_missed_leaks'.format(self.config['label'])
+    missed_leaks_str = "{}_missed_leaks".format(self.config["label"])
 
     if self.config["measurement_scale"] == "site":
-        if (covered_site_rate > self.config['sensor']['MDL'][0]):
+        if covered_site_rate > self.config["sensor"]["MDL"][0]:
             found_leak = True
-            site_measured_rate = get_measured_rate(covered_site_rate, self.config['sensor']['QE'])
+            site_measured_rate = get_measured_rate(covered_site_rate, self.config["sensor"]["QE"])
         else:
             site[missed_leaks_str] += n_leaks
-            self.timeseries[missed_leaks_str][self.state['t'].current_timestep] += n_leaks
+            self.timeseries[missed_leaks_str][self.state["t"].current_timestep] += n_leaks
     elif self.config["measurement_scale"] == "equipment":
         for rate in covered_equipment_rates:
-            m_rate = get_measured_rate(rate, self.config['sensor']['QE'])
-            if (m_rate > self.config['sensor']['MDL'][0]):
+            m_rate = get_measured_rate(rate, self.config["sensor"]["QE"])
+            if m_rate > self.config["sensor"]["MDL"][0]:
                 found_leak = True
             else:
                 m_rate = 0
@@ -48,23 +55,23 @@ def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered
             site_measured_rate += m_rate
         if not found_leak:
             site[missed_leaks_str] += n_leaks
-            self.timeseries[missed_leaks_str][self.state['t'].current_timestep] += n_leaks
+            self.timeseries[missed_leaks_str][self.state["t"].current_timestep] += n_leaks
 
     elif self.config["measurement_scale"] == "component":
         # If measurement scale is a leak, all leaks will be tagged
         for leak in covered_leaks:
-            if (leak['rate'] > self.config['sensor']['MDL'][0]):
+            if leak["rate"] > self.config["sensor"]["MDL"][0]:
                 found_leak = True
-                measured_rate = get_measured_rate(leak['rate'], self.config['sensor']['QE'])
+                measured_rate = get_measured_rate(leak["rate"], self.config["sensor"]["QE"])
                 is_new_leak = update_tag(
                     leak,
                     measured_rate,
                     site,
                     self.timeseries,
-                    self.state['t'],
-                    self.config['label'],
+                    self.state["t"],
+                    self.config["label"],
                     self.id,
-                    self.program_parameters
+                    self.program_parameters,
                 )
                 # Add these leaks to the 'tag pool'
                 if is_new_leak:
@@ -74,12 +81,12 @@ def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered
 
     # Put all necessary information in a dictionary to be assessed at end of day
     site_dict = {
-        'site': site,
-        'leaks_present': covered_leaks,
-        'site_true_rate': site_rate,
-        'site_measured_rate': site_measured_rate,
-        'equip_measured_rates': equip_measured_rates,
-        'vent_rate': venting,
-        'found_leak': found_leak,
+        "site": site,
+        "leaks_present": covered_leaks,
+        "site_true_rate": site_rate,
+        "site_measured_rate": site_measured_rate,
+        "equip_measured_rates": equip_measured_rates,
+        "vent_rate": venting,
+        "found_leak": found_leak,
     }
     return site_dict

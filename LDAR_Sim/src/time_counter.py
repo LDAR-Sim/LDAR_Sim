@@ -48,13 +48,13 @@ class TimeCounter:
         return
 
     def set_UTC_offset(self, sites):
-        '''
+        """
         set UTC offset based on average site lat longs
 
         Uses current (now()) offset
-        '''
-        avg_lat = mean([float(site['lat']) for site in sites])
-        avg_lon = mean([float(site['lon']) for site in sites])
+        """
+        avg_lat = mean([float(site["lat"]) for site in sites])
+        avg_lon = mean([float(site["lon"]) for site in sites])
         tf = TimezoneFinder()
         timezone_str = tf.timezone_at(lng=avg_lon, lat=avg_lat)
         # This uses the current time to estimate offset, so if running
@@ -62,4 +62,4 @@ class TimeCounter:
         # someday, by keeping timezone as a site variable and localizing
         # every year.
         tz_now = datetime.now(pytz.timezone(timezone_str))
-        self.UTC_offset = tz_now.utcoffset().total_seconds()/60/60
+        self.UTC_offset = tz_now.utcoffset().total_seconds() / 60 / 60

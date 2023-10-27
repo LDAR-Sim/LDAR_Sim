@@ -22,9 +22,17 @@ from methods.funcs import measured_rate as get_measured_rate
 from utils.attribution import update_tag
 
 
-def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered_site_rate,
-                     site_rate, venting, equipment_rates):
-    """ OGI camera method based on Zimmerle 2020 DOI 10.1021/acs.est.0c01285
+def detect_emissions(
+    self,
+    site,
+    covered_leaks,
+    covered_equipment_rates,
+    covered_site_rate,
+    site_rate,
+    venting,
+    equipment_rates,
+):
+    """OGI camera method based on Zimmerle 2020 DOI 10.1021/acs.est.0c01285
         uses power function as shown in figure 2 to calculate probability of
         detection using leak size, and two mdl parameters are set based on camera
         crew experience.
@@ -52,42 +60,42 @@ def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered
 
 
     """
-    missed_leaks_str = '{}_missed_leaks'.format(self.config['label'])
+    missed_leaks_str = "{}_missed_leaks".format(self.config["label"])
     equip_measured_rates = []
     site_measured_rate = 0
     found_leak = False
-    mdl = self.config['sensor']['MDL']
+    mdl = self.config["sensor"]["MDL"]
     for leak in covered_leaks:
         # factor of 187 converts g/s to scf/h
-        prob_detect = mdl[0] * (187*leak['rate'])**mdl[1]
+        prob_detect = mdl[0] * (187 * leak["rate"]) ** mdl[1]
         if prob_detect >= 1:
             prob_detect = 1
         if np.random.binomial(1, prob_detect):
             found_leak = True
-            measured_rate = get_measured_rate(leak['rate'], self.config['sensor']['QE'])
+            measured_rate = get_measured_rate(leak["rate"], self.config["sensor"]["QE"])
             is_new_leak = update_tag(
                 leak,
                 measured_rate,
                 site,
                 self.timeseries,
-                self.state['t'],
-                self.config['label'],
+                self.state["t"],
+                self.config["label"],
                 self.id,
-                self.program_parameters
+                self.program_parameters,
             )
             if is_new_leak:
                 site_measured_rate += measured_rate
         else:
             site[missed_leaks_str] += 1
-            self.timeseries[missed_leaks_str][self.state['t'].current_timestep] += 1
+            self.timeseries[missed_leaks_str][self.state["t"].current_timestep] += 1
 
     site_dict = {
-        'site': site,
-        'leaks_present': covered_leaks,
-        'site_true_rate': site_rate,
-        'site_measured_rate': site_measured_rate,
-        'equip_measured_rates': equip_measured_rates,
-        'vent_rate': venting,
-        'found_leak': found_leak,
+        "site": site,
+        "leaks_present": covered_leaks,
+        "site_true_rate": site_rate,
+        "site_measured_rate": site_measured_rate,
+        "equip_measured_rates": equip_measured_rates,
+        "vent_rate": venting,
+        "found_leak": found_leak,
     }
     return site_dict
