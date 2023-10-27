@@ -38,7 +38,7 @@ from config.output_flag_mapping import (
 )
 from geography.vector import grid_contains_point
 from initialization.leaks import generate_initial_leaks, generate_leak
-from initialization.sites import generate_sites
+from initialization.sites import generate_infrastructure
 from initialization.update_methods import (
     est_n_crews,
     est_site_p_day,
@@ -90,7 +90,7 @@ class LdarSim:
             )
             # Read in the sites as a list of dictionaries
         if len(state["sites"]) < 1:
-            state["sites"], _, _ = generate_sites(
+            state["sites"], _, _ = generate_infrastructure(
                 virtual_world, input_dir, virtual_world["pregenerate_leaks"]
             )
         state["max_leak_rate"] = virtual_world["emissions"]["max_leak_rate"]

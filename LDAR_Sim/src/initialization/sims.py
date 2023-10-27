@@ -24,7 +24,7 @@ import pickle
 from copy import deepcopy
 
 from initialization.preseed import gen_seed_timeseries
-from initialization.sites import generate_sites, regenerate_sites
+from initialization.sites import generate_infrastructure, regenerate_sites
 from initialization.emissions import FugitiveEmission
 
 
@@ -40,7 +40,7 @@ def create_sims(sim_params, programs, virtual_world, generator_dir, in_dir, out_
             file_loc = generator_dir / "pregen_{}_{}.p".format(i, base_prog)
             # If there is no pregenerated file for the virtual world
             if not os.path.isfile(file_loc):
-                sites, leak_timeseries, initial_leaks = generate_sites(
+                sites, leak_timeseries, initial_leaks = generate_infrastructure(
                     virtual_world,
                     in_dir,
                     pregen_leaks,

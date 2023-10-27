@@ -28,7 +28,7 @@ import pandas as pd
 from initialization.args import files_from_args
 from initialization.input_manager import InputManager
 from initialization.preseed import gen_seed_timeseries
-from initialization.sites import generate_sites, regenerate_sites
+from initialization.sites import generate_infrastructure, regenerate_sites
 from ldar_sim_run import ldar_sim_run
 from scipy.stats import ks_2samp
 from utils.generic_functions import check_ERA5_file
@@ -57,7 +57,7 @@ def run_programs(programs, n_simulations, output_directory):
     simulations = []
     for i in range(n_simulations):
         if pregen_leaks:
-            sites, leak_timeseries, initial_leaks = generate_sites(
+            sites, leak_timeseries, initial_leaks = generate_infrastructure(
                 programs[0], input_directory, pregen_leaks
             )
         else:

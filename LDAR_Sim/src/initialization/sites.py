@@ -22,10 +22,11 @@ import copy
 import fnmatch
 import os
 import pickle
-import random
 
 import numpy as np
 import pandas as pd
+
+from initialization.infrastructure_const import Infrastructure_Constants
 from initialization.leaks import generate_initial_leaks, generate_leak_timeseries
 from utils.distributions import fit_dist, unpackage_dist
 from utils.emis_inputs import assign_vents
@@ -85,7 +86,7 @@ def get_subtype_dist(program, wd):
         unpackage_dist(program, wd)
 
 
-def get_subtype_file(program, wd):
+def get_site_type_file(program, wd):
     if program["subtype_file"]:
         subtypes = pd.read_csv(wd / program["subtype_file"], index_col="subtype_code")
         program["subtypes"] = subtypes.to_dict("index")
@@ -112,7 +113,30 @@ def get_subtype_file(program, wd):
         unpackage_dist(program, wd)
 
 
-def generate_sites(virtual_world, in_dir, pregen_leaks, start_date, end_date):
+def read_in_files(virtual_world, in_dir):
+    input_dict = {}
+
+    input_dict["sites"] = pd.read_csv(in_dir / virtual_world["infrastructure"]["sites_file"])
+
+    if virtual_world["infrastructure"]["subtype_file"]:
+        input_dict["subtypes"] = pd.read_csv(
+            in_dir / virtual_world["infrastructure"]["subtype_file"]
+        )
+
+    if virtual_world["infrastructure"]["equipment_group_file"]:
+        input_dict["equipment_groups"] = pd.read_csv(
+            in_dir / virtual_world["infrastructure"]["equipment_group_file"]
+        )
+
+    if virtual_world["infrastructure"]["sources_file"]:
+        input_dict["sources"] = pd.read_csv(
+            in_dir / virtual_world["infrastructure"]["sources_file"]
+        )
+
+    return input_dict
+
+
+def generate_infrastructure(virtual_world, in_dir, pregen_leaks, start_date, end_date):
     """[summary]
 
     Args:
@@ -123,16 +147,39 @@ def generate_sites(virtual_world, in_dir, pregen_leaks, start_date, end_date):
     Returns:
         [dict]: sites, Union[dict, None]: leak_timeseries, Union[dict, None]: initial_leaks
     """
-    # Read in the sites as a list of dictionaries
-    sites_in = pd.read_csv(in_dir / virtual_world["infrastructure_file"])
-    sites = sites_in.to_dict("records")
+    infrastructure_inputs: dict[str, pd.DataFrame] = read_in_files(virtual_world, in_dir)
+
+    sites_in: pd.DataFrame = infrastructure_inputs["sites"]
 
     # Sample sites and shuffle
     n_samples = virtual_world["site_samples"]
     if n_samples is None:
-        n_samples = len(sites)
+        n_samples = len(sites_in)
     # even if n_samples is None, the sample function is still used to shuffle
-    sites = random.sample(sites, n_samples)
+    sites_to_make = sites_in.sample(n_samples)
+
+    sites: list[Site] = []
+    methods = None  # TODO Update this placeholder with logic to get actual methods
+
+    for sidx, srow in sites_to_make.iterrows():
+        new_site = Site(
+            srow[Infrastructure_Constants.Sites_File_Constants.ID],
+            srow[Infrastructure_Constants.Sites_File_Constants.LAT],
+            srow[Infrastructure_Constants.Sites_File_Constants.LON],
+            srow[Infrastructure_Constants.Sites_File_Constants.EQG],
+            srow[Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ERS],
+            srow[Infrastructure_Constants.Sites_File_Constants.REP_EMIS_EPR],
+            srow[Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ED],
+            srow[Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RD],
+            srow[Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RC],
+            srow[Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_ERS],
+            infrastructure_inputs,
+        )
+        for method in methods:
+            new_site.add_RS()  # TODO get method RS from sites_file csv if it exists and update
+            # TODO do the same for survey time, survey cost, and spatial coverage
+
+        sites.append(new_site)
 
     # Get leaks from file
     if virtual_world["emissions"]["leak_file"] is not None:
@@ -141,7 +188,7 @@ def generate_sites(virtual_world, in_dir, pregen_leaks, start_date, end_date):
         )
 
     # get_subtype_dist(program, in_dir)
-    get_subtype_file(virtual_world, in_dir)
+    get_site_type_file(virtual_world, infrastructure_inputs)
 
     leak_timeseries = {}
     initial_leaks: dict[str, list[FugitiveEmission]] = {}
@@ -170,10 +217,7 @@ def generate_sites(virtual_world, in_dir, pregen_leaks, start_date, end_date):
             if "leak_rate_dist" in site:
                 del site["leak_rate_dist"]
 
-    if pregen_leaks:
-        return sites, leak_timeseries, initial_leaks
-    else:
-        return sites, None, None
+    return sites
 
 
 def regenerate_sites(virtual_world, prog_0_sites, in_dir):
@@ -212,60 +256,125 @@ def regenerate_sites(virtual_world, prog_0_sites, in_dir):
         out_sites.append(new_site)
     return out_sites
 
-class Site:
-    def __init__(self, 
-                 id : str, 
-                 lat : float, 
-                 long : float, 
-                 site_type : str = None 
-                ) -> None:
-        self._site_ID : str = id
-        self._lat : float = lat
-        self._long : float = long
-        
-        self._site_type : str = site_type
-        self._RS : dict = {}
-        self.create_EquipementGroups()
 
-    def add_RS(self,
-             method,
-             survey_frequency
-            ):
+class Site_Type:
+    def __init__(
+        self, equipment_groups: list, infrastructure_inputs: dict, site_type: str = None
+    ) -> None:
+        self._site_type: str = site_type
+        self._RS: dict = {}
+        self._spatial_coverage: dict = {}
+        self._survey_time: dict = {}
+        self._survey_cost: dict = {}
+        self.create_equipment_groups(equipment_groups, infrastructure_inputs)
+
+    def create_Sites(self, infrastructure_inputs):
+        return
+
+    def add_RS(self, method, survey_frequency):
         self._RS[method] = survey_frequency
 
-    # def create_EquipementGroups(self, ):
-    #     eq_grp_list = []
-    #     for eq_grp in eq_grps:
-    #         eq_grp_list.append(Equipment_Group())
-    #     self._equipment_groups = eq_grp_list
+    def add_spatial_coverage(self, method, spatial_coverage):
+        self._spatial_coverage[method] = spatial_coverage
 
-        
+    def add_survey_time(self, method, survey_time):
+        self._survey_time[method] = survey_time
+
+    def add_survey_cost(self, method, survey_cost):
+        self._survey_cost[method] = survey_cost
+
+
+class Site:
+    def __init__(
+        self,
+        id: str,
+        lat: float,
+        long: float,
+        repairable_ERS,
+        repairable_EPR,
+        repairable_ED,
+        repairable_RD,
+        repairable_RC,
+        non_repairable_ERS,
+        equipment_groups: list,
+        infrastructure_inputs: dict,
+        site_type: str = None,
+    ) -> None:
+        self._site_ID: str = id
+        self._lat: float = lat
+        self._long: float = long
+
+        self._site_type: str = site_type
+        self._RS: dict = {}
+        self._spatial_coverage: dict = {}
+        self._survey_time: dict = {}
+        self._survey_cost: dict = {}
+        self.create_equipment_groups(
+            equipment_groups,
+            infrastructure_inputs,
+            repairable_ERS,
+            repairable_EPR,
+            repairable_ED,
+            repairable_RD,
+            repairable_RC,
+            repairable_ERS,
+        )
+
+    def add_RS(self, method, survey_frequency):
+        self._RS[method] = survey_frequency
+
+    def add_spatial_coverage(self, method, spatial_coverage):
+        self._spatial_coverage[method] = spatial_coverage
+
+    def add_survey_time(self, method, survey_time):
+        self._survey_time[method] = survey_time
+
+    def add_survey_cost(self, method, survey_cost):
+        self._survey_cost[method] = survey_cost
+
+    def create_equipment_groups(self, equipment_groups, infrastructure_inputs) -> None:
+        self._equipment_groups = []
+        if len(equipment_groups) > 0:
+            equip_groups_in: pd.DataFrame = infrastructure_inputs["equipment_groups"]
+            for equipment_group in equipment_groups:
+                site_equipment_group = equip_groups_in.loc[
+                    equip_groups_in[
+                        Infrastructure_Constants.Equipment_Group_File_Constants.EQUIPMENT_GROUP
+                    ]
+                    == equipment_group
+                ].iloc[0]
+                self._equipment_groups.append(
+                    Equipment_Group(
+                        site_equipment_group,
+                    )
+                )
+        else:
+            # TODO Implement logic for when a site has no equipment groups
+            return
+
+
 class Equipment_Group:
     def __init__(self):
-        id : str
+        id: str
 
     def report_func():
-        # some reporting agregate function? 
-        return 
+        # some reporting agregate function?
+        return
+
+
 class Equipment:
-    def __init__(self,
-                 id, 
-                 repair_delay) -> None:
-        self._equipment_ID : str = id
-        self._site_ID : Site = None
+    def __init__(self, id, repair_delay) -> None:
+        self._equipment_ID: str = id
+        self._site_ID: Site = None
         self._repair_delay = repair_delay
-        self._surveytime : dict = {}
-        self._spatialcoverage : dict = {}
+        self._surveytime: dict = {}
+        self._spatialcoverage: dict = {}
 
-    def add_surveytime(self, 
-                       method, 
-                       surveytime):
+    def add_surveytime(self, method, surveytime):
         # Create a parameter dictionary for the given method
-        self._surveytime[method]  = surveytime  # Store the parameters in the dictionary
+        self._surveytime[method] = surveytime  # Store the parameters in the dictionary
 
-    def add_spatialcoverage(self, 
-                       method, 
-                       spatialcoverage):
+    def add_spatialcoverage(self, method, spatialcoverage):
         # Create a parameter dictionary for the given method
 
         self._spatialcoverage[method] = spatialcoverage  # Store the parameters in the dictionary
@@ -277,35 +386,40 @@ class Equipment:
     def list_methods(self):
         # List all methods for which parameters are defined
         return list(self._parameters.keys())
+
+
 class Source:
-    def __init__(self, id : str, 
-                emiss_prob : float, 
-                duration : int, 
-                repairable : bool, 
-                emiss_source, 
-                emiss_type : str,
-                equipment_ID:str,
-                ) -> None:
-        self._source_ID : str = id
+    def __init__(
+        self,
+        id: str,
+        emiss_prob: float,
+        duration: int,
+        repairable: bool,
+        emiss_source,
+        emiss_type: str,
+        equipment_ID: str,
+    ) -> None:
+        self._source_ID: str = id
 
-        self._emiss_prob : float = emiss_prob
-        self._duration : int = duration
-        self._repairable : bool = repairable
-        self._equipment_ID : str = equipment_ID
-        
+        self._emiss_prob: float = emiss_prob
+        self._duration: int = duration
+        self._repairable: bool = repairable
+        self._equipment_ID: str = equipment_ID
+
         self._emiss_source = emiss_source
-        self._emiss_type : str = emiss_type
+        self._emiss_type: str = emiss_type
 
-    def create_emission(self):
-        if type(self._emiss_source) == str and emiss_type.lower() == 'sample':
-            # add in code to deal with source file
-        elif type(self._emiss_source) == str and emiss_type.lower() == 'fit':
-            # add in code to deal with source file and fitting to distribution
-        elif type(self._emiss_source) == list and emiss_type.lower() == 'sample':
-            emiss_val = emiss_source
-        elif type(self._emiss_source) == float or type(emiss_source) == int:
-            emiss_val = [emiss_source]
-        elif type(self._emiss_source) == list and emiss_type.lower() == 'dist':
-            # add in code to deal with handling a distribution
-    
+    # def create_emission(self):
+    #     if type(self._emiss_source) == str and emiss_type.lower() == 'sample':
+
+    #         # add in code to deal with source file
+    #     elif type(self._emiss_source) == str and emiss_type.lower() == 'fit':
+    #         # add in code to deal with source file and fitting to distribution
+    #     elif type(self._emiss_source) == list and emiss_type.lower() == 'sample':
+    #         emiss_val = emiss_source
+    #     elif type(self._emiss_source) == float or type(emiss_source) == int:
+    #         emiss_val = [emiss_source]
+    #     elif type(self._emiss_source) == list and emiss_type.lower() == 'dist':
+    #         # add in code to deal with handling a distribution
+
     # the above may be required to be moved to the emissions object.
