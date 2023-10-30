@@ -1,6 +1,6 @@
 """
 An alternative sensor, specifically built to replicate the probability of detection
-    curves provided by a METEC report, which does not factor in wind speeds
+    curves provided by a METEC report, which factor in wind speeds
 """
 # ------------------------------------------------------------------------------
 # Program:     The LDAR Simulator (LDAR-Sim)
@@ -26,22 +26,35 @@ from methods.funcs import measured_rate
 from utils.attribution import update_tag
 from utils.unit_converter import gas_convert
 
-# expects a 3rd value in MDL that is the cutoff point.
+# Constants
+# g/s to kg/hr conversion factor
+GsTOKGh = 3.6
+# m/s to km/hr conversion factor
+MsTOKMh = 3.6
 
 
-def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered_site_rate,
-                     site_rate, venting, equipment_rates):
-    """ 
-    An alternative sensor, specifically built to replicate the probability of detection
-    curves provided by a METEC report, which factors in wind speeds
+def detect_emissions(
+    self,
+    site,
+    covered_leaks,
+    covered_equipment_rates,
+    covered_site_rate,
+    site_rate,
+    venting,
+    equipment_rates,
+):
+    """
+    An alternative sensor module, specifically built to replicate the probability of detection
+    curve of technology whose detection capabilities are reflective of a METEC wind dependent
+    probability of detection curve.
 
     Utilizes 3 values set as the MDL:
         mdl = [a, b, c]
-        where 
-        a and b : are the PoD curve variables 
+        where
+        a and b : are the PoD curve variables
         c : represents the floor/minimum cutoff value of the leak rates that the sensor can detect
 
-    PoD = 1 / (1 + e ^ (a - b * r )) 
+    PoD = 1 / (1 + e ^ (a - b * r ))
 
     a = first MDL value
     b = second MDL value
@@ -68,41 +81,37 @@ def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered
                 venting (float): same as input
                 found_leak (boolean): Did the crew find at least one leak at the site
     """
-    missed_leaks_str = '{}_missed_leaks'.format(self.config['label'])
+    missed_leaks_str = "{}_missed_leaks".format(self.config["label"])
     equip_measured_rates = []
     site_measured_rate = 0
     found_leak = False
     n_leaks = len(covered_leaks)
-    mdl = self.config['sensor']['MDL']
+    mdl = self.config["sensor"]["MDL"]
 
-    hourly_weather = self.state['weather'].get_hourly_weather(
-        ['winds'],
-        self.state['t'].current_date,
-        number_of_hours=1,
-        site=site)
-    average_wind = np.average(hourly_weather['winds']) * 3.6  # m/s to km/hr
+    hourly_windspeed = self.state["weather"].get_hourly_weather(
+        ["winds"], self.state["t"].current_date, number_of_hours=1, site=site
+    )
+    average_wind = np.average(hourly_windspeed["winds"]) * MsTOKMh  # m/s to km/hr
 
     if self.config["measurement_scale"] == "site":
         # factor of 3.6 converts g/s to kg/h
-        rate_per_wind = covered_site_rate * 3.6 / average_wind
-        prob_detect = 1/(1+np.exp(mdl[0]-mdl[1]*rate_per_wind))
-        if rate_per_wind <= (mdl[2]*3.6):
+        rate_per_wind = covered_site_rate * GsTOKGh / average_wind
+        prob_detect = 1 / (1 + np.exp(mdl[0] - mdl[1] * rate_per_wind))
+        if rate_per_wind <= (mdl[2] * GsTOKGh):
             site[missed_leaks_str] += n_leaks
-            self.timeseries[missed_leaks_str][self.state['t'].current_timestep] += n_leaks
+            self.timeseries[missed_leaks_str][self.state["t"].current_timestep] += n_leaks
         elif np.random.binomial(1, prob_detect):
             found_leak = True
-            site_measured_rate = measured_rate(
-                covered_site_rate, self.config['sensor']['QE'])
+            site_measured_rate = measured_rate(covered_site_rate, self.config["sensor"]["QE"])
         else:
             site[missed_leaks_str] += n_leaks
-            self.timeseries[missed_leaks_str][self.state['t'].current_timestep] += n_leaks
+            self.timeseries[missed_leaks_str][self.state["t"].current_timestep] += n_leaks
     elif self.config["measurement_scale"] == "equipment":
         for rate in covered_equipment_rates:
-            m_rate = measured_rate(rate, self.config['sensor']['QE'])
-            rate_per_wind = m_rate * 3.6 / average_wind
-            prob_detect = 1 / \
-                (1+np.exp(mdl[0]-mdl[1]*m_rate))
-            if rate_per_wind <= (mdl[2]*3.6):
+            m_rate = measured_rate(rate, self.config["sensor"]["QE"])
+            rate_per_wind = m_rate * GsTOKGh / average_wind
+            prob_detect = 1 / (1 + np.exp(mdl[0] - mdl[1] * m_rate))
+            if rate_per_wind <= (mdl[2] * GsTOKGh):
                 m_rate = 0
             elif np.random.binomial(1, prob_detect):
                 found_leak = True
@@ -112,43 +121,41 @@ def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered
             site_measured_rate += m_rate
         if not found_leak:
             site[missed_leaks_str] += n_leaks
-            self.timeseries[missed_leaks_str][self.state['t'].current_timestep] += n_leaks
-    elif self.config['measurement_scale'] == 'component':
+            self.timeseries[missed_leaks_str][self.state["t"].current_timestep] += n_leaks
+    elif self.config["measurement_scale"] == "component":
         for leak in covered_leaks:
-            rate_per_wind = leak['rate'] * 3.6 / average_wind
-            prob_detect = 1 / \
-                (1+np.exp(mdl[0]-mdl[1]*rate_per_wind))
+            rate_per_wind = leak["rate"] * GsTOKGh / average_wind
+            prob_detect = 1 / (1 + np.exp(mdl[0] - mdl[1] * rate_per_wind))
             if prob_detect >= 1:
                 prob_detect = 1
-            if rate_per_wind <= (mdl[2]*3.6):
+            if rate_per_wind <= (mdl[2] * GsTOKGh):
                 site[missed_leaks_str] += 1
-                self.timeseries[missed_leaks_str][self.state['t'].current_timestep] += 1
+                self.timeseries[missed_leaks_str][self.state["t"].current_timestep] += 1
             elif np.random.binomial(1, prob_detect):
                 found_leak = True
-                meas_rate = measured_rate(
-                    leak['rate'], self.config['sensor']['QE'])
+                meas_rate = measured_rate(leak["rate"], self.config["sensor"]["QE"])
                 is_new_leak = update_tag(
                     leak,
                     meas_rate,
                     site,
                     self.timeseries,
-                    self.state['t'],
-                    self.config['label'],
+                    self.state["t"],
+                    self.config["label"],
                     self.id,
-                    self.parameters
+                    self.parameters,
                 )
                 if is_new_leak:
                     site_measured_rate += meas_rate
             else:
                 site[missed_leaks_str] += 1
-                self.timeseries[missed_leaks_str][self.state['t'].current_timestep] += 1
+                self.timeseries[missed_leaks_str][self.state["t"].current_timestep] += 1
     site_dict = {
-        'site': site,
-        'leaks_present': covered_leaks,
-        'site_true_rate': site_rate,
-        'site_measured_rate': site_measured_rate,
-        'equip_measured_rates': equip_measured_rates,
-        'vent_rate': venting,
-        'found_leak': found_leak,
+        "site": site,
+        "leaks_present": covered_leaks,
+        "site_true_rate": site_rate,
+        "site_measured_rate": site_measured_rate,
+        "equip_measured_rates": equip_measured_rates,
+        "vent_rate": venting,
+        "found_leak": found_leak,
     }
     return site_dict
