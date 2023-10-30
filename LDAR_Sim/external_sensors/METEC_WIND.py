@@ -31,7 +31,7 @@ from utils.unit_converter import gas_convert
 
 def detect_emissions(self, site, covered_leaks, covered_equipment_rates, covered_site_rate,
                      site_rate, venting, equipment_rates):
-     """ 
+    """ 
     An alternative sensor, specifically built to replicate the probability of detection
     curves provided by a METEC report, which factors in wind speeds
 
