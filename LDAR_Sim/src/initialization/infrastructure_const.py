@@ -36,11 +36,11 @@ class Infrastructure_Constants:
     class Sources_File_Constants:
         EQUIPMENT = "equipment"
         SOURCE = "source"
-        EMIS_EPR = "production rate"
+        EMIS_EPR = "EPR"
         EMIS_ERS = "ERS"  # Emission rate source
-        EMISS_DUR = "emiss_dur"  # Emission Duration
-        REPAIR_DELAY = "rep_delay"  # Repair Delay
-        REPAIR_COST = "rep_cost"  # Repair Cost
+        EMISS_DUR = "ED"  # Emission Duration
+        REPAIR_DELAY = "RD"  # Repair Delay
+        REPAIR_COST = "RC"  # Repair Cost
         PERSISTENT = "persistent"  # Persistent (Y/N)
         REPAIRABLE = "repairable"  # Repairable (Y/N)
         ACTIVE_DUR = "active_dur"  # Active Duration

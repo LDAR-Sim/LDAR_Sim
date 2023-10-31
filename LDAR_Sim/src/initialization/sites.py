@@ -22,6 +22,8 @@ import copy
 import fnmatch
 import os
 import pickle
+import re
+from typing import Literal
 
 import numpy as np
 import pandas as pd
@@ -118,9 +120,9 @@ def read_in_files(virtual_world, in_dir):
 
     input_dict["sites"] = pd.read_csv(in_dir / virtual_world["infrastructure"]["sites_file"])
 
-    if virtual_world["infrastructure"]["subtype_file"]:
-        input_dict["subtypes"] = pd.read_csv(
-            in_dir / virtual_world["infrastructure"]["subtype_file"]
+    if virtual_world["infrastructure"]["site_type_file"]:
+        input_dict["site_types"] = pd.read_csv(
+            in_dir / virtual_world["infrastructure"]["site_type_file"]
         )
 
     if virtual_world["infrastructure"]["equipment_group_file"]:
@@ -361,7 +363,9 @@ class Site:
         self._long: float = long
 
         self._site_type: str = site_type
-        self._RS: dict = propagating_params.pop("Method_Survey_Frequencies")
+        self._RS: dict = propagating_params["Method_Specific_Params"].pop(
+            "Method_Survey_Frequencies"
+        )
         self.create_equipment_groups(equipment_groups, infrastructure_inputs, propagating_params)
 
     def add_RS(self, method, survey_frequency):
@@ -394,7 +398,8 @@ class Site:
                     Equipment_Group(
                         site_equipment_group[
                             Infrastructure_Constants.Equipment_Group_File_Constants.EQUIPMENT_GROUP
-                        ],
+                        ]
+                        + self._site_ID,
                         infrastructure_inputs,
                         prop_params,
                         site_equipment_group,
@@ -415,16 +420,15 @@ class Equipment_Group:
 
     def update_prop_params(self, info, prop_params) -> None:
         meth_specific_params = prop_params.pop("Method_Specific_Params")
-        eqg_info = info["equipment_groups"]
 
         for param in meth_specific_params.keys():
             for method in meth_specific_params[param].keys():
-                eqg_val = eqg_info.get(param + method, None)
+                eqg_val = info.get(method + param, None)
                 if eqg_val is not None:
                     meth_specific_params[param][method] = eqg_val
 
         for param in prop_params.keys():
-            eqg_val = eqg_info.get(param, None)
+            eqg_val = info.get(param, None)
             if eqg_val is not None:
                 prop_params[param] = eqg_val
 
@@ -435,7 +439,9 @@ class Equipment_Group:
         for col, val in info.iteritems():
             if "equipment" in col:
                 for count in range(0, val):
-                    self._equipment.append(Equipment(col, count))
+                    self._equipment.append(
+                        Equipment(col, count, infrastructure_inputs, prop_params)
+                    )
 
     def report_func(self):
         # some reporting agregate function?
@@ -443,54 +449,92 @@ class Equipment_Group:
 
 
 class Equipment:
-    def __init__(self, id, repair_delay) -> None:
-        self._equipment_ID: str = id
-        self._site_ID: Site = None
-        self._repair_delay = repair_delay
-        self._surveytime: dict = {}
-        self._spatialcoverage: dict = {}
+    def __init__(self, equip_type, equip_id, infrastructure_inputs, prop_params) -> None:
+        STR_FILTER = r"equipment"
+        self._equip_type = re.sub(STR_FILTER, "", equip_type)
+        self._equipment_ID: str = self._equip_type + "_" + equip_id
+        self.create_sources(infrastructure_inputs=infrastructure_inputs, prop_params=prop_params)
 
-    def add_surveytime(self, method, surveytime):
-        # Create a parameter dictionary for the given method
-        self._surveytime[method] = surveytime  # Store the parameters in the dictionary
-
-    def add_spatialcoverage(self, method, spatialcoverage):
-        # Create a parameter dictionary for the given method
-
-        self._spatialcoverage[method] = spatialcoverage  # Store the parameters in the dictionary
-
-    def get_spatialcoverage(self, method):
-        # Retrieve parameters for the given method, or return an empty dictionary if not found
-        return self._spatialcoverage.get(method, {})
-
-    def list_methods(self):
-        # List all methods for which parameters are defined
-        return list(self._parameters.keys())
+    def create_sources(self, infrastructure_inputs, prop_params) -> None:
+        self._sources = []
+        sources_info = infrastructure_inputs["sources"]
+        sources = sources_info.loc[
+            sources_info[Infrastructure_Constants.Sources_File_Constants.EQUIPMENT]
+            == self._equip_type
+        ]
+        for source in sources:
+            src_prop_params = copy.deepcopy(prop_params)
+            src_id = source[Infrastructure_Constants.Sources_File_Constants.SOURCE]
+            self._sources.append(Source(src_id, source, src_prop_params))
 
 
 class Source:
-    def __init__(
-        self,
-        id: str,
-        emiss_prob: float,
-        duration: int,
-        repairable: bool,
-        emiss_source,
-        emiss_type: str,
-        equipment_ID: str,
-    ) -> None:
+    REP_PREFIX = "repairable_"
+    NON_REP_PREFIX = "non_repairable_"
+
+    def __init__(self, id: str, info, prop_params) -> None:
         self._source_ID: str = id
+        self._repairable = info[Infrastructure_Constants.Sources_File_Constants.REPAIRABLE]
+        self._persistent = info[Infrastructure_Constants.Sources_File_Constants.PERSISTENT]
+        self._active_duration = info[Infrastructure_Constants.Sources_File_Constants.ACTIVE_DUR]
+        self._inactive_duration = info[Infrastructure_Constants.Sources_File_Constants.INACTIVE_DUR]
+        self.update_prop_params(info=info, prop_params=prop_params)
+        self.set_source_properties(prop_params=prop_params)
 
-        self._emiss_prob: float = emiss_prob
-        self._duration: int = duration
-        self._repairable: bool = repairable
-        self._equipment_ID: str = equipment_ID
+    def update_prop_params(self, info, prop_params) -> None:
+        meth_specific_params = prop_params.pop("Method_Specific_Params")
 
-        self._emiss_source = emiss_source
-        self._emiss_type: str = emiss_type
+        prefix: Literal["repairable", "non_repairable"] = (
+            Source.REP_PREFIX if self._repairable else Source.NON_REP_PREFIX
+        )
+
+        for param in meth_specific_params.keys():
+            for method in meth_specific_params[param].keys():
+                src_val = info.get(method + param, None)
+                if src_val is not None:
+                    meth_specific_params[param][method] = src_val
+
+        for param in prop_params.keys():
+            if prefix in param:
+                src_param = re.sub(prefix, "", param)
+                src_val = info.get(src_param, None)
+                if src_val is not None:
+                    del prop_params[param]
+                    prop_params[src_param] = src_val
+            else:
+                del prop_params[param]
+
+        prop_params["Method_Specific_Params"] = meth_specific_params
+
+    def set_source_properties(self, prop_params) -> None:
+        self._emis_rate_source = prop_params[
+            Infrastructure_Constants.Sources_File_Constants.EMIS_ERS
+        ]
+        self._emis_prod_rate = prop_params[Infrastructure_Constants.Sources_File_Constants.EMIS_EPR]
+        self._emis_duration = prop_params[Infrastructure_Constants.Sources_File_Constants.EMIS_DUR]
+
+        self._meth_spat_covs = prop_params["Method_Specific_Params"][
+            Infrastructure_Constants.Sources_File_Constants.SPATIAL_PLACEHOLDER
+        ]
+
+        self._meth_surv_times = prop_params["Method_Specific_Params"][
+            Infrastructure_Constants.Sources_File_Constants.SURVEY_TIME_PLACEHOLDER
+        ]
+
+        self._meth_surv_costs = prop_params["Method_Specific_Params"][
+            Infrastructure_Constants.Sources_File_Constants.SURVEY_COST_PLACEHOLDER
+        ]
+
+        if self._repairable:
+            self._emis_rep_delay = prop_params[
+                Infrastructure_Constants.Sources_File_Constants.REPAIR_DELAY
+            ]
+            self._emis_rep_cost = prop_params[
+                Infrastructure_Constants.Sources_File_Constants.REPAIR_COST
+            ]
 
     # def create_emission(self):
-    #     if type(self._emiss_source) == str and emiss_type.lower() == 'sample':
+    #     if type(self._emis_rate_source) == str and emiss_type.lower() == 'sample':
 
     #         # add in code to deal with source file
     #     elif type(self._emiss_source) == str and emiss_type.lower() == 'fit':
