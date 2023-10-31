@@ -22,13 +22,13 @@ class Infrastructure_Constants:
         SURVEY_COST_PLACEHOLDER = "_surveycost"  # Survey Cost - Method specific
 
     class Equipment_Group_File_Constants:
-        EQUIPMENT_GROUP = "equip_group"  # Equipment Group
-        REP_EMIS_ERS_PLACEHOLDER = "_repairable_ERS"  # Repairable Emissions Rate Source
-        REP_EMIS_EPR_PLACEHOLDER = "_repairable_EPR"  # Repairable Emissions Production Rate
-        REP_EMIS_RD_PLACEHOLDER = "_repairable_RD"  # Repairable Emissions Repair Delay
-        REP_EMIS_RC_PLACEHOLDER = "_repairable_RC"  # Repairable Emissions Repair Cost
-        REP_EMIS_ED_PLACEHOLDER = "_repairable_ED"  # Repairable Emissions Emissions Duration
-        NON_REP_EMIS_ERS_PLACEHOLDER = "_non_repairable_ERS"  # Non-Repairable Emissions Rate Source
+        EQUIPMENT_GROUP = "equipment_group"  # Equipment Group
+        REP_EMIS_ERS = "repairable_ERS"  # Repairable Emissions Rate Source
+        REP_EMIS_EPR = "repairable_EPR"  # Repairable Emissions Production Rate
+        REP_EMIS_RD = "repairable_RD"  # Repairable Emissions Repair Delay
+        REP_EMIS_RC = "repairable_RC"  # Repairable Emissions Repair Cost
+        REP_EMIS_ED = "repairable_ED"  # Repairable Emissions Emissions Duration
+        NON_REP_EMIS_ERS = "non_repairable_ERS"  # Non-Repairable Emissions Rate Source
         SURVEY_TIME_PLACEHOLDER = "_surveytime"  # Survey Time - Method specific
         SURVEY_COST_PLACEHOLDER = "_surveycost"  # Survey Cost - Method specific
         SPATIAL_PLACEHOLDER = "_spatial"  # Spatial coverage - Method specific

@@ -136,6 +136,74 @@ def read_in_files(virtual_world, in_dir):
     return input_dict
 
 
+def generate_propagating_params(
+    site_row_df_info,
+    methods,
+):
+    prop_params_dict = {}
+    prop_params_dict[Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ERS] = site_row_df_info[
+        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ERS
+    ]
+    prop_params_dict[Infrastructure_Constants.Sites_File_Constants.REP_EMIS_EPR] = site_row_df_info[
+        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_EPR
+    ]
+    prop_params_dict[Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ED] = site_row_df_info[
+        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ED
+    ]
+
+    prop_params_dict[Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RD] = site_row_df_info[
+        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RD
+    ]
+    prop_params_dict[Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RC] = site_row_df_info[
+        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RC
+    ]
+    prop_params_dict[
+        Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_ERS
+    ] = site_row_df_info[Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_ERS]
+
+    prop_params_dict["Method_Specific_Params"] = {}
+    prop_params_dict["Method_Specific_Params"][
+        Infrastructure_Constants.Sites_File_Constants.SURVEY_FREQUENCY_PLACEHOLDER
+    ] = {}
+    prop_params_dict["Method_Specific_Params"][
+        Infrastructure_Constants.Sites_File_Constants.SPATIAL_PLACEHOLDER
+    ] = {}
+    prop_params_dict["Method_Specific_Params"][
+        Infrastructure_Constants.Sites_File_Constants.SURVEY_TIME_PLACEHOLDER
+    ] = {}
+    prop_params_dict["Method_Specific_Params"][
+        Infrastructure_Constants.Sites_File_Constants.SURVEY_COST_PLACEHOLDER
+    ] = {}
+
+    for method in methods:
+        prop_params_dict["Method_Specific_Params"][
+            Infrastructure_Constants.Sites_File_Constants.SURVEY_FREQUENCY_PLACEHOLDER
+        ][method] = site_row_df_info.get(
+            method + Infrastructure_Constants.Sites_File_Constants.SURVEY_FREQUENCY_PLACEHOLDER,
+            None,
+        )
+        prop_params_dict["Method_Specific_Params"][
+            Infrastructure_Constants.Sites_File_Constants.SPATIAL_PLACEHOLDER
+        ][method] = site_row_df_info.get(
+            method + Infrastructure_Constants.Sites_File_Constants.SPATIAL_PLACEHOLDER,
+            None,
+        )
+        prop_params_dict["Method_Specific_Params"][
+            Infrastructure_Constants.Sites_File_Constants.SURVEY_TIME_PLACEHOLDER
+        ][method] = site_row_df_info.get(
+            method + Infrastructure_Constants.Sites_File_Constants.SURVEY_TIME_PLACEHOLDER,
+            None,
+        )
+        prop_params_dict["Method_Specific_Params"][
+            Infrastructure_Constants.Sites_File_Constants.SURVEY_COST_PLACEHOLDER
+        ][method] = site_row_df_info.get(
+            method + Infrastructure_Constants.Sites_File_Constants.SURVEY_COST_PLACEHOLDER,
+            None,
+        )
+
+    return prop_params_dict
+
+
 def generate_infrastructure(virtual_world, in_dir, pregen_leaks, start_date, end_date):
     """[summary]
 
@@ -162,22 +230,15 @@ def generate_infrastructure(virtual_world, in_dir, pregen_leaks, start_date, end
     methods = None  # TODO Update this placeholder with logic to get actual methods
 
     for sidx, srow in sites_to_make.iterrows():
+        propagating_params = generate_propagating_params(srow, methods)
         new_site = Site(
-            srow[Infrastructure_Constants.Sites_File_Constants.ID],
-            srow[Infrastructure_Constants.Sites_File_Constants.LAT],
-            srow[Infrastructure_Constants.Sites_File_Constants.LON],
-            srow[Infrastructure_Constants.Sites_File_Constants.EQG],
-            srow[Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ERS],
-            srow[Infrastructure_Constants.Sites_File_Constants.REP_EMIS_EPR],
-            srow[Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ED],
-            srow[Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RD],
-            srow[Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RC],
-            srow[Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_ERS],
-            infrastructure_inputs,
+            id=srow[Infrastructure_Constants.Sites_File_Constants.ID],
+            lat=srow[Infrastructure_Constants.Sites_File_Constants.LAT],
+            long=srow[Infrastructure_Constants.Sites_File_Constants.LON],
+            equipment_groups=srow[Infrastructure_Constants.Sites_File_Constants.EQG],
+            propagating_params=propagating_params,
+            infrastructure_inputs=infrastructure_inputs,
         )
-        for method in methods:
-            new_site.add_RS()  # TODO get method RS from sites_file csv if it exists and update
-            # TODO do the same for survey time, survey cost, and spatial coverage
 
         sites.append(new_site)
 
@@ -290,13 +351,8 @@ class Site:
         id: str,
         lat: float,
         long: float,
-        repairable_ERS,
-        repairable_EPR,
-        repairable_ED,
-        repairable_RD,
-        repairable_RC,
-        non_repairable_ERS,
         equipment_groups: list,
+        propagating_params: dict,
         infrastructure_inputs: dict,
         site_type: str = None,
     ) -> None:
@@ -305,20 +361,8 @@ class Site:
         self._long: float = long
 
         self._site_type: str = site_type
-        self._RS: dict = {}
-        self._spatial_coverage: dict = {}
-        self._survey_time: dict = {}
-        self._survey_cost: dict = {}
-        self.create_equipment_groups(
-            equipment_groups,
-            infrastructure_inputs,
-            repairable_ERS,
-            repairable_EPR,
-            repairable_ED,
-            repairable_RD,
-            repairable_RC,
-            repairable_ERS,
-        )
+        self._RS: dict = propagating_params.pop("Method_Survey_Frequencies")
+        self.create_equipment_groups(equipment_groups, infrastructure_inputs, propagating_params)
 
     def add_RS(self, method, survey_frequency):
         self._RS[method] = survey_frequency
@@ -332,7 +376,9 @@ class Site:
     def add_survey_cost(self, method, survey_cost):
         self._survey_cost[method] = survey_cost
 
-    def create_equipment_groups(self, equipment_groups, infrastructure_inputs) -> None:
+    def create_equipment_groups(
+        self, equipment_groups, infrastructure_inputs, propagating_params, methods
+    ) -> None:
         self._equipment_groups = []
         if len(equipment_groups) > 0:
             equip_groups_in: pd.DataFrame = infrastructure_inputs["equipment_groups"]
@@ -343,8 +389,14 @@ class Site:
                     ]
                     == equipment_group
                 ].iloc[0]
+                prop_params = copy.deepcopy(propagating_params)
                 self._equipment_groups.append(
                     Equipment_Group(
+                        site_equipment_group[
+                            Infrastructure_Constants.Equipment_Group_File_Constants.EQUIPMENT_GROUP
+                        ],
+                        infrastructure_inputs,
+                        prop_params,
                         site_equipment_group,
                     )
                 )
@@ -354,10 +406,38 @@ class Site:
 
 
 class Equipment_Group:
-    def __init__(self):
-        id: str
+    def __init__(self, id, infrastructure_inputs, prop_params, info):
+        self._id: str = id
+        self.update_prop_params(info, prop_params)
+        self.create_equipment(
+            infrastructure_inputs=infrastructure_inputs, prop_params=prop_params, info=info
+        )
 
-    def report_func():
+    def update_prop_params(self, info, prop_params) -> None:
+        meth_specific_params = prop_params.pop("Method_Specific_Params")
+        eqg_info = info["equipment_groups"]
+
+        for param in meth_specific_params.keys():
+            for method in meth_specific_params[param].keys():
+                eqg_val = eqg_info.get(param + method, None)
+                if eqg_val is not None:
+                    meth_specific_params[param][method] = eqg_val
+
+        for param in prop_params.keys():
+            eqg_val = eqg_info.get(param, None)
+            if eqg_val is not None:
+                prop_params[param] = eqg_val
+
+        prop_params["Method_Specific_Params"] = meth_specific_params
+
+    def create_equipment(self, infrastructure_inputs, prop_params, info) -> None:
+        self._equipment = []
+        for col, val in info.iteritems():
+            if "equipment" in col:
+                for count in range(0, val):
+                    self._equipment.append(Equipment(col, count))
+
+    def report_func(self):
         # some reporting agregate function?
         return
 
