@@ -145,7 +145,7 @@ def detect_emissions(
                     self.state["t"],
                     self.config["label"],
                     self.id,
-                    self.parameters,
+                    self.program_parameters,
                 )
                 if is_new_leak:
                     site_measured_rate += meas_rate

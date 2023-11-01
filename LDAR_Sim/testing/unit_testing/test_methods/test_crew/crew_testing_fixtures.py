@@ -29,6 +29,15 @@ def mock_site_for_crew_testing_1_fix() -> "dict[str, Any]":
     }
 
 
+@pytest.fixture(name="mock_site_for_crew_testing_3")
+def mock_site_for_crew_testing_3_fix() -> "dict[str, Any]":
+    return {
+        "equipment_groups": 1,
+        "active_leaks": [{"leak_ID": 1, "rate": 3, "equipment_group": 1, "tagged": False}],
+        "currently_flagged": [],
+    }
+
+
 @pytest.fixture(name="mock_vw_for_crew_testing_1")
 def mock_vw_for_crew_testing_1_fix() -> "dict[str, Any]":
     return {"emissions": {"consider_venting": False}, "consider_weather": False}
@@ -524,3 +533,16 @@ def mock_results_for_site_level_non_FU_visit_site_testing_small_leak_fix() -> tu
             "M_cl_FU_sites_visited": [0, 1],
         },
     )
+
+
+@pytest.fixture(name="mock_parameters_for_crew_testing")
+def mock_parameters_for_crew_testing_fix() -> "dict[str, Any]":
+    return {
+        "sensor": {
+            "mod_loc": "external_sensors.METEC_WIND",
+            "type": "default",
+            "MDL": [1.0, 1.0, 100],
+            "QE": 0,
+        },
+        "measurement_scale": "component",
+    }
