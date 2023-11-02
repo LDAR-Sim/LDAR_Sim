@@ -58,7 +58,7 @@ Contains parameters used to inform the LDAR-Sim virtual world. These parameters 
 
 ### 2. Creating the Virtual World parameter file
 
-1. Locate the program parameter file associated with the baseline program for your simulation. The program name name will match the value set for the baseline_program parameter in the Simulation_settings (Your transformed global parameters file). This will often be set to P_none.
+1. Locate the program parameter file associated with the baseline program for your simulation. The program name parameter will match the value set for the baseline_program parameter in the Simulation_settings (Your transformed global parameters file). This will often be set to P_none.
 
     For Example:
 
