@@ -17,6 +17,7 @@ from testing.unit_testing.test_external_sensors.external_sensor_testing_fixtures
     mock_site_dict_for_sensor_return_2_fix,
     mock_site_for_sensor_testing_2_fix,
     mock_state_for_sensor_testing_1_fix,
+    mock_prog_param_for_testing_1_fix,
 )
 from external_sensors.METEC_NO_WIND import detect_emissions
 
@@ -68,6 +69,7 @@ def test_092_detect_emissions_simple_fail(
     mock_site_dict_for_sensor_return_2,
     mock_site_for_sensor_testing_2,
     mock_state_for_sensor_testing_1,
+    mock_prog_param_for_testing_1,
 ) -> None:
     """
     Simple test for checking METEC_NO_WIND for successful detection
@@ -77,7 +79,7 @@ def test_092_detect_emissions_simple_fail(
 
     crew = BaseCrew(
         mock_state_for_sensor_testing_1,
-        None,
+        mock_prog_param_for_testing_1,
         mock_vw_for_crew_testing_1,
         mock_settings_for_crew_testing_1,
         mock_config_for_sensor_testing_2,
