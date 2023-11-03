@@ -21,6 +21,11 @@ import numpy as np
 from methods.funcs import measured_rate as get_measured_rate
 from utils.attribution import update_tag
 
+# factor of 187 converts g/s to scf/h
+GStoSCFH = 187
+# factor of 3.6 converts g/s to kg/h
+GStoKGHR = 3.6
+
 
 def detect_emissions(
     self,
@@ -65,12 +70,17 @@ def detect_emissions(
     site_measured_rate = 0
     found_leak = False
     mdl = self.config["sensor"]["MDL"]
+    if len(mdl) < 3:
+        mdl.append(0)
     for leak in covered_leaks:
-        # factor of 187 converts g/s to scf/h
-        prob_detect = mdl[0] * (187 * leak["rate"]) ** mdl[1]
+        prob_detect = mdl[0] * (GStoSCFH * leak["rate"]) ** mdl[1]
         if prob_detect >= 1:
             prob_detect = 1
-        if np.random.binomial(1, prob_detect):
+        if leak["rate"] < (mdl[2] * GStoKGHR):
+            # Add a check if leak rate is below the threshold
+            site[missed_leaks_str] += 1
+            self.timeseries[missed_leaks_str][self.state["t"].current_timestep] += 1
+        elif np.random.binomial(1, prob_detect):
             found_leak = True
             measured_rate = get_measured_rate(leak["rate"], self.config["sensor"]["QE"])
             is_new_leak = update_tag(
