@@ -26,6 +26,10 @@ from utils.attribution import update_tag
 from methods.funcs import measured_rate
 
 
+# factor of 3.6 converts g/s to kg/h
+GStoKGHR = 3.6
+
+
 def detect_emissions(
     self,
     site,
@@ -82,14 +86,16 @@ def detect_emissions(
     found_leak = False
     n_leaks = len(covered_leaks)
     mdl = self.config["sensor"]["MDL"]
+    # if cutoff was not provided by user, add in 0 to prevent errors.
+    if len(mdl) < 3:
+        mdl.append(0)
 
     if self.config["measurement_scale"] == "site":
-        # factor of 3.6 converts g/s to kg/h
-        rate = covered_site_rate * 3.6
+        rate = covered_site_rate * GStoKGHR
         prob_detect = 1 / (1 + np.exp(mdl[0] - mdl[1] * rate))
         if prob_detect >= 1:
             prob_detect = 1
-        if rate < (mdl[2] * 3.6):
+        if rate < (mdl[2] * GStoKGHR):
             site[missed_leaks_str] += n_leaks
             self.timeseries[missed_leaks_str][self.state["t"].current_timestep] += n_leaks
         elif np.random.binomial(1, prob_detect):
@@ -101,11 +107,11 @@ def detect_emissions(
     elif self.config["measurement_scale"] == "equipment":
         for rate in covered_equipment_rates:
             m_rate = measured_rate(rate, self.config["sensor"]["QE"])
-            rate = m_rate * 3.6
+            rate = m_rate * GStoKGHR
             prob_detect = 1 / (1 + np.exp(mdl[0] - mdl[1] * rate))
             if prob_detect >= 1:
                 prob_detect = 1
-            if rate < (mdl[2] * 3.6):
+            if rate < (mdl[2] * GStoKGHR):
                 m_rate = 0
             elif np.random.binomial(1, prob_detect):
                 found_leak = True
@@ -113,16 +119,16 @@ def detect_emissions(
                 m_rate = 0
             equip_measured_rates.append(m_rate)
             site_measured_rate += m_rate
-        if not found_leak:
-            site[missed_leaks_str] += n_leaks
-            self.timeseries[missed_leaks_str][self.state["t"].current_timestep] += n_leaks
+            if not found_leak:
+                site[missed_leaks_str] += n_leaks
+                self.timeseries[missed_leaks_str][self.state["t"].current_timestep] += n_leaks
     elif self.config["measurement_scale"] == "component":
         for leak in covered_leaks:
-            rate = leak["rate"] * 3.6
+            rate = leak["rate"] * GStoKGHR
             prob_detect = 1 / (1 + np.exp(mdl[0] - mdl[1] * rate))
             if prob_detect >= 1:
                 prob_detect = 1
-            if rate < (mdl[2] * 3.6):
+            if rate < (mdl[2] * GStoKGHR):
                 site[missed_leaks_str] += 1
                 self.timeseries[missed_leaks_str][self.state["t"].current_timestep] += 1
             elif np.random.binomial(1, prob_detect):
