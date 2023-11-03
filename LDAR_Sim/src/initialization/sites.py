@@ -18,333 +18,19 @@
 #
 # ------------------------------------------------------------------------------
 
+import array
 import copy
 import fnmatch
 import os
 import pickle
 import re
 from typing import Literal
-
 import numpy as np
+
 import pandas as pd
 
 from initialization.infrastructure_const import Infrastructure_Constants
-from initialization.leaks import generate_initial_leaks, generate_leak_timeseries
-from utils.distributions import fit_dist, unpackage_dist
-from utils.emis_inputs import assign_vents
-from methods.init_func.repair_delay import determine_delay
-from initialization.emissions import FugitiveEmission
-
-
-def init_generator_files(generator_dir, sim_params, in_dir, virtual_world):
-    sites_file = virtual_world["infrastructure_file"]
-    sites_in = pd.read_csv(in_dir / sites_file)
-    sim_sites = sites_in.to_dict("records")
-    if not os.path.exists(generator_dir):
-        os.mkdir(generator_dir)
-    gen_files = fnmatch.filter(os.listdir(generator_dir), "*.p")
-    if len(gen_files) > 0:
-        try:
-            old_sites = pickle.load(open(generator_dir / "sites.p", "rb"))
-            old_params = pickle.load(open(generator_dir / "params.p", "rb"))
-        except FileNotFoundError:
-            old_sites = None
-            old_params = None
-            # Check to see if params used to generate the pickle files have changed
-        if old_params != sim_params or old_sites != sim_sites:
-            for file in gen_files:
-                os.remove(generator_dir / file)
-    pickle.dump(sim_sites, open(generator_dir / "sites.p", "wb"))
-    pickle.dump(sim_params, open(generator_dir / "params.p", "wb"))
-
-
-def get_subtype_dist(program, wd):
-    # Get Sub_type data
-    if program["emissions"]["subtype_leak_dist_file"]:
-        subtypes = pd.read_csv(
-            wd / program["emissions"]["subtype_leak_dist_file"],
-            index_col="subtype_code",
-        )
-        program["subtypes"] = subtypes.to_dict("index")
-        for st in program["subtypes"]:
-            program["subtypes"][st]["leak_rate_units"] = program["emissions"]["units"]
-        unpackage_dist(program, wd)
-    elif program["emissions"]["leak_file_use"] == "fit":
-        program["subtypes"] = {
-            0: {
-                "leak_rate_dist": fit_dist(samples=program["empirical_leaks"], dist_type="lognorm"),
-                "leak_rate_units": ["gram", "second"],
-            }
-        }
-    elif not program["emissions"]["subtype_leak_dist_file"]:
-        program["subtypes"] = {
-            0: {
-                "dist_type": program["emissions"]["leak_dist_type"],
-                "dist_scale": program["emissions"]["leak_dist_params"][0],
-                "dist_shape": program["emissions"]["leak_dist_params"][1:],
-                "leak_rate_units": program["emissions"]["units"],
-            }
-        }
-        unpackage_dist(program, wd)
-
-
-def get_site_type_file(program, wd):
-    if program["subtype_file"]:
-        subtypes = pd.read_csv(wd / program["subtype_file"], index_col="subtype_code")
-        program["subtypes"] = subtypes.to_dict("index")
-        for st in program["subtypes"]:
-            program["subtypes"][st]["leak_rate_units"] = program["emissions"]["units"]
-        unpackage_dist(program, wd)
-        assign_vents(program, wd)
-    elif program["emissions"]["leak_file_use"] == "fit":
-        program["subtypes"] = {
-            0: {
-                "leak_rate_dist": fit_dist(samples=program["empirical_leaks"], dist_type="lognorm"),
-                "leak_rate_units": ["gram", "second"],
-            }
-        }
-    elif not program["subtype_file"]:
-        program["subtypes"] = {
-            0: {
-                "dist_type": program["emissions"]["leak_dist_type"],
-                "dist_scale": program["emissions"]["leak_dist_params"][0],
-                "dist_shape": program["emissions"]["leak_dist_params"][1:],
-                "leak_rate_units": program["emissions"]["units"],
-            }
-        }
-        unpackage_dist(program, wd)
-
-
-def read_in_files(virtual_world, in_dir):
-    input_dict = {}
-
-    input_dict["sites"] = pd.read_csv(in_dir / virtual_world["infrastructure"]["sites_file"])
-
-    if virtual_world["infrastructure"]["site_type_file"]:
-        input_dict["site_types"] = pd.read_csv(
-            in_dir / virtual_world["infrastructure"]["site_type_file"]
-        )
-
-    if virtual_world["infrastructure"]["equipment_group_file"]:
-        input_dict["equipment_groups"] = pd.read_csv(
-            in_dir / virtual_world["infrastructure"]["equipment_group_file"]
-        )
-
-    if virtual_world["infrastructure"]["sources_file"]:
-        input_dict["sources"] = pd.read_csv(
-            in_dir / virtual_world["infrastructure"]["sources_file"]
-        )
-
-    return input_dict
-
-
-def generate_propagating_params(
-    site_row_df_info,
-    methods,
-):
-    prop_params_dict = {}
-    prop_params_dict[Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ERS] = site_row_df_info[
-        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ERS
-    ]
-    prop_params_dict[Infrastructure_Constants.Sites_File_Constants.REP_EMIS_EPR] = site_row_df_info[
-        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_EPR
-    ]
-    prop_params_dict[Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ED] = site_row_df_info[
-        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ED
-    ]
-
-    prop_params_dict[Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RD] = site_row_df_info[
-        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RD
-    ]
-    prop_params_dict[Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RC] = site_row_df_info[
-        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RC
-    ]
-    prop_params_dict[
-        Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_ERS
-    ] = site_row_df_info[Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_ERS]
-
-    prop_params_dict["Method_Specific_Params"] = {}
-    prop_params_dict["Method_Specific_Params"][
-        Infrastructure_Constants.Sites_File_Constants.SURVEY_FREQUENCY_PLACEHOLDER
-    ] = {}
-    prop_params_dict["Method_Specific_Params"][
-        Infrastructure_Constants.Sites_File_Constants.SPATIAL_PLACEHOLDER
-    ] = {}
-    prop_params_dict["Method_Specific_Params"][
-        Infrastructure_Constants.Sites_File_Constants.SURVEY_TIME_PLACEHOLDER
-    ] = {}
-    prop_params_dict["Method_Specific_Params"][
-        Infrastructure_Constants.Sites_File_Constants.SURVEY_COST_PLACEHOLDER
-    ] = {}
-
-    for method in methods:
-        prop_params_dict["Method_Specific_Params"][
-            Infrastructure_Constants.Sites_File_Constants.SURVEY_FREQUENCY_PLACEHOLDER
-        ][method] = site_row_df_info.get(
-            method + Infrastructure_Constants.Sites_File_Constants.SURVEY_FREQUENCY_PLACEHOLDER,
-            None,
-        )
-        prop_params_dict["Method_Specific_Params"][
-            Infrastructure_Constants.Sites_File_Constants.SPATIAL_PLACEHOLDER
-        ][method] = site_row_df_info.get(
-            method + Infrastructure_Constants.Sites_File_Constants.SPATIAL_PLACEHOLDER,
-            None,
-        )
-        prop_params_dict["Method_Specific_Params"][
-            Infrastructure_Constants.Sites_File_Constants.SURVEY_TIME_PLACEHOLDER
-        ][method] = site_row_df_info.get(
-            method + Infrastructure_Constants.Sites_File_Constants.SURVEY_TIME_PLACEHOLDER,
-            None,
-        )
-        prop_params_dict["Method_Specific_Params"][
-            Infrastructure_Constants.Sites_File_Constants.SURVEY_COST_PLACEHOLDER
-        ][method] = site_row_df_info.get(
-            method + Infrastructure_Constants.Sites_File_Constants.SURVEY_COST_PLACEHOLDER,
-            None,
-        )
-
-    return prop_params_dict
-
-
-def generate_infrastructure(virtual_world, in_dir, pregen_leaks, start_date, end_date):
-    """[summary]
-
-    Args:
-        virtual_world (dict): The virtual world parameters informing site generation.
-        in_dir (Path): The path to the inputs directory
-        pregen_leaks (boolean): Boolean indicating whether or not to pregenerate leaks.
-
-    Returns:
-        [dict]: sites, Union[dict, None]: leak_timeseries, Union[dict, None]: initial_leaks
-    """
-    infrastructure_inputs: dict[str, pd.DataFrame] = read_in_files(virtual_world, in_dir)
-
-    sites_in: pd.DataFrame = infrastructure_inputs["sites"]
-
-    # Sample sites and shuffle
-    n_samples = virtual_world["site_samples"]
-    if n_samples is None:
-        n_samples = len(sites_in)
-    # even if n_samples is None, the sample function is still used to shuffle
-    sites_to_make = sites_in.sample(n_samples)
-
-    sites: list[Site] = []
-    methods = None  # TODO Update this placeholder with logic to get actual methods
-
-    for sidx, srow in sites_to_make.iterrows():
-        propagating_params = generate_propagating_params(srow, methods)
-        new_site = Site(
-            id=srow[Infrastructure_Constants.Sites_File_Constants.ID],
-            lat=srow[Infrastructure_Constants.Sites_File_Constants.LAT],
-            long=srow[Infrastructure_Constants.Sites_File_Constants.LON],
-            equipment_groups=srow[Infrastructure_Constants.Sites_File_Constants.EQG],
-            propagating_params=propagating_params,
-            infrastructure_inputs=infrastructure_inputs,
-        )
-
-        sites.append(new_site)
-
-    # Get leaks from file
-    if virtual_world["emissions"]["leak_file"] is not None:
-        virtual_world["emissions"]["empirical_leaks"] = np.array(
-            pd.read_csv(in_dir / virtual_world["emissions"]["leak_file"]).iloc[:, 0]
-        )
-
-    # get_subtype_dist(program, in_dir)
-    get_site_type_file(virtual_world, infrastructure_inputs)
-
-    leak_timeseries = {}
-    initial_leaks: dict[str, list[FugitiveEmission]] = {}
-    # Additional variable(s) for each site
-    for site in sites:
-        # Add a distribution and unit for each leak
-        if len(virtual_world["subtypes"]) > 1:
-            # Get all keys from subtypes
-            for col in virtual_world["subtypes"][next(iter(virtual_world["subtypes"]))]:
-                site[col] = virtual_world["subtypes"][site["subtype_code"]][col]
-        elif len(virtual_world["subtypes"]) > 0:
-            site.update(virtual_world["subtypes"][0])
-
-        # Determine repair delay for each site
-        site["repair_delay"] = determine_delay(virtual_world)
-
-        if pregen_leaks:
-            initial_site_leaks: list[FugitiveEmission] = generate_initial_leaks(
-                virtual_world, site, start_date
-            )
-            initial_leaks.update({site["facility_ID"]: initial_site_leaks})
-            site_timeseries: list[FugitiveEmission] = generate_leak_timeseries(
-                virtual_world, site, start_date, end_date
-            )
-            leak_timeseries.update({site["facility_ID"]: site_timeseries})
-            if "leak_rate_dist" in site:
-                del site["leak_rate_dist"]
-
-    return sites
-
-
-def regenerate_sites(virtual_world, prog_0_sites, in_dir):
-    """
-    Regenerate sites allows site level parameters to update on pregenerated
-    sites. This is necessary when programs have different site level params
-    for example, the survey frequency or survey time could be different.
-    """
-    # Read in the sites as a list of dictionaries
-    sites_in = pd.read_csv(in_dir / virtual_world["infrastructure_file"], index_col="facility_ID")
-    # Add facility ID back into object
-    sites_in["facility_ID"] = sites_in.index
-    sites = sites_in.to_dict("index")
-    out_sites = []
-    for site_or in prog_0_sites:
-        s_idx = site_or["facility_ID"]
-        new_site = copy.deepcopy(sites[s_idx])
-        new_site.update(
-            {
-                "cum_leaks": site_or["cum_leaks"],
-                "initial_leaks": site_or["initial_leaks"],
-                "leak_rate_units": site_or["leak_rate_units"],
-                "repair_delay": site_or["repair_delay"],
-            }
-        )
-        if "empirical_leak_rates" in site_or:
-            new_site.update({"empirical_leak_rates": site_or["empirical_leak_rates"]})
-        if "leak_rate_dist" in site_or:
-            new_site.update(
-                {
-                    "leak_rate_dist": site_or["leak_rate_dist"],
-                }
-            )
-        if "empirical_vent_rates" in site_or:
-            new_site.update({"empirical_vent_rates": site_or["empirical_vent_rates"]})
-        out_sites.append(new_site)
-    return out_sites
-
-
-class Site_Type:
-    def __init__(
-        self, equipment_groups: list, infrastructure_inputs: dict, site_type: str = None
-    ) -> None:
-        self._site_type: str = site_type
-        self._RS: dict = {}
-        self._spatial_coverage: dict = {}
-        self._survey_time: dict = {}
-        self._survey_cost: dict = {}
-        self.create_equipment_groups(equipment_groups, infrastructure_inputs)
-
-    def create_Sites(self, infrastructure_inputs):
-        return
-
-    def add_RS(self, method, survey_frequency):
-        self._RS[method] = survey_frequency
-
-    def add_spatial_coverage(self, method, spatial_coverage):
-        self._spatial_coverage[method] = spatial_coverage
-
-    def add_survey_time(self, method, survey_time):
-        self._survey_time[method] = survey_time
-
-    def add_survey_cost(self, method, survey_cost):
-        self._survey_cost[method] = survey_cost
+from initialization.emissions import Emission
 
 
 class Site:
@@ -367,18 +53,6 @@ class Site:
             "Method_Survey_Frequencies"
         )
         self.create_equipment_groups(equipment_groups, infrastructure_inputs, propagating_params)
-
-    def add_RS(self, method, survey_frequency):
-        self._RS[method] = survey_frequency
-
-    def add_spatial_coverage(self, method, spatial_coverage):
-        self._spatial_coverage[method] = spatial_coverage
-
-    def add_survey_time(self, method, survey_time):
-        self._survey_time[method] = survey_time
-
-    def add_survey_cost(self, method, survey_cost):
-        self._survey_cost[method] = survey_cost
 
     def create_equipment_groups(
         self, equipment_groups, infrastructure_inputs, propagating_params, methods
@@ -408,6 +82,10 @@ class Site:
         else:
             # TODO Implement logic for when a site has no equipment groups
             return
+
+    def generate_emissions(self) -> None:
+        for eqg in self._equipment_groups:
+            eqg.generate_emissions()
 
 
 class Equipment_Group:
@@ -443,6 +121,10 @@ class Equipment_Group:
                         Equipment(col, count, infrastructure_inputs, prop_params)
                     )
 
+    def generate_emissions(self) -> None:
+        for eqmt in self._equipment:
+            eqmt.generate_emissions()
+
     def report_func(self):
         # some reporting agregate function?
         return
@@ -466,6 +148,10 @@ class Equipment:
             src_prop_params = copy.deepcopy(prop_params)
             src_id = source[Infrastructure_Constants.Sources_File_Constants.SOURCE]
             self._sources.append(Source(src_id, source, src_prop_params))
+
+    def generate_emissions(self) -> None:
+        for src in self._sources:
+            src.generate_emissions()
 
 
 class Source:
@@ -533,6 +219,19 @@ class Source:
                 Infrastructure_Constants.Sources_File_Constants.REPAIR_COST
             ]
 
+    def generate_emissions(self) -> None:
+        sim_dur = 365
+        self._emis_ts = array.array(Emission)
+        for day in range(0, sim_dur + self._emis_duration):
+            emission = None
+            create_emis: int = np.random.binomial(1, self._emis_prod_rate)
+            if create_emis:
+                emission = self.create_emission()
+            self._emis_ts.append(emission)
+
+    def create_emissions(self) -> None:
+        return None
+
     # def create_emission(self):
     #     if type(self._emis_rate_source) == str and emiss_type.lower() == 'sample':
 
@@ -547,3 +246,195 @@ class Source:
     #         # add in code to deal with handling a distribution
 
     # the above may be required to be moved to the emissions object.
+
+
+def init_generator_files(generator_dir, sim_params, in_dir, virtual_world):
+    sites_file = virtual_world["infrastructure"]["sites_file"]
+    sites_in = pd.read_csv(in_dir / sites_file)
+    sim_sites = sites_in.to_dict("records")
+    if not os.path.exists(generator_dir):
+        os.mkdir(generator_dir)
+    gen_files = fnmatch.filter(os.listdir(generator_dir), "*.p")
+    if len(gen_files) > 0:
+        try:
+            old_sites = pickle.load(open(generator_dir / "sites.p", "rb"))
+            old_params = pickle.load(open(generator_dir / "params.p", "rb"))
+        except FileNotFoundError:
+            old_sites = None
+            old_params = None
+            # Check to see if params used to generate the pickle files have changed
+        if old_params != sim_params or old_sites != sim_sites:
+            for file in gen_files:
+                os.remove(generator_dir / file)
+    pickle.dump(sim_sites, open(generator_dir / "sites.p", "wb"))
+    pickle.dump(sim_params, open(generator_dir / "params.p", "wb"))
+
+
+def read_in_files(virtual_world, in_dir):
+    input_dict = {}
+
+    input_dict["sites"] = pd.read_csv(in_dir / virtual_world["infrastructure"]["sites_file"])
+
+    if virtual_world["infrastructure"]["site_type_file"]:
+        input_dict["site_types"] = pd.read_csv(
+            in_dir / virtual_world["infrastructure"]["site_type_file"]
+        )
+
+    if virtual_world["infrastructure"]["equipment_group_file"]:
+        input_dict["equipment_groups"] = pd.read_csv(
+            in_dir / virtual_world["infrastructure"]["equipment_group_file"]
+        )
+
+    if virtual_world["infrastructure"]["sources_file"]:
+        input_dict["sources"] = pd.read_csv(
+            in_dir / virtual_world["infrastructure"]["sources_file"]
+        )
+
+    return input_dict
+
+
+def generate_propagating_params(
+    site_row_df_info,
+    site_type_info,
+    methods,
+):
+    prop_params_dict = {}
+    if site_type_info is not None:
+        # Updating propagating parameters with site type info
+        for param in Infrastructure_Constants.Site_Type_File_Constants.PROPAGATING_PARAMS:
+            site_type_val = site_type_info.get(param, None)
+            prop_params_dict[param] = site_type_val
+
+        # Update method specific propagating params with site type info
+        prop_params_dict["Method_Specific_Params"] = {}
+        for param in Infrastructure_Constants.Site_Type_File_Constants.METH_SPEC_PROP_PARAMS:
+            prop_params_dict["Method_Specific_Params"][param] = {}
+
+        for method in methods:
+            for param in Infrastructure_Constants.Site_Type_File_Constants.METH_SPEC_PROP_PARAMS:
+                site_type_val = site_type_info.get(method + param, None)
+                prop_params_dict["Method_Specific_Params"][param][method] = site_type_val
+
+        # Updating propagating parameters with site info
+        for param in Infrastructure_Constants.Sites_File_Constants.PROPAGATING_PARAMS:
+            site_val = site_row_df_info.get(param, None)
+            if site_val is not None:
+                prop_params_dict[param] = site_val
+
+        # Update method specific propagating params with site info
+        for method in methods:
+            for param in Infrastructure_Constants.Sites_File_Constants.METH_SPEC_PROP_PARAMS:
+                site_val = site_row_df_info.get(method + param, None)
+                if site_val is not None:
+                    prop_params_dict["Method_Specific_Params"][param][method] = site_val
+
+    else:
+        # Updating propagating parameters with site info
+        for param in Infrastructure_Constants.Sites_File_Constants.PROPAGATING_PARAMS:
+            site_val = site_row_df_info.get(param, None)
+            prop_params_dict[param] = site_val
+
+        # Update method specific propagating params with site info
+        prop_params_dict["Method_Specific_Params"] = {}
+
+        for param in Infrastructure_Constants.Sites_File_Constants.METH_SPEC_PROP_PARAMS:
+            prop_params_dict["Method_Specific_Params"][param] = {}
+
+        for method in methods:
+            for param in Infrastructure_Constants.Sites_File_Constants.METH_SPEC_PROP_PARAMS:
+                site_val = site_row_df_info.get(method + param, None)
+                if site_val is not None:
+                    prop_params_dict["Method_Specific_Params"][param][method] = site_val
+
+    return prop_params_dict
+
+
+def generate_infrastructure(virtual_world, in_dir, start_date, end_date) -> list[Site]:
+    """[summary]
+
+    Args:
+        virtual_world (dict): The virtual world parameters informing site generation.
+        in_dir (Path): The path to the inputs directory
+
+    Returns:
+        [dict]: sites, Union[dict, None]: leak_timeseries, Union[dict, None]: initial_leaks
+    """
+    infrastructure_inputs: dict[str, pd.DataFrame] = read_in_files(virtual_world, in_dir)
+    sites_types_provided: bool = "site_types" in infrastructure_inputs
+
+    sites_in: pd.DataFrame = infrastructure_inputs["sites"]
+
+    # Sample sites and shuffle
+    n_samples = virtual_world["site_samples"]
+    if n_samples is None:
+        n_samples = len(sites_in)
+    # even if n_samples is None, the sample function is still used to shuffle
+    sites_to_make = sites_in.sample(n_samples)
+
+    sites: list[Site] = []
+    methods = None  # TODO Update this placeholder with logic to get actual methods
+
+    for sidx, srow in sites_to_make.iterrows():
+        site_type_info = None
+        if sites_types_provided:
+            site_types_info = infrastructure_inputs["site_types"]
+            site_type = srow[Infrastructure_Constants.Sites_File_Constants.ID]
+            site_types_info = site_types_info.loc[
+                site_types_info[Infrastructure_Constants.Site_Type_File_Constants.TYPE] == site_type
+            ].iloc[0]
+        propagating_params = generate_propagating_params(
+            site_row_df_info=srow, site_type_info=site_type_info, methods=methods
+        )
+        new_site = Site(
+            id=srow[Infrastructure_Constants.Sites_File_Constants.ID],
+            lat=srow[Infrastructure_Constants.Sites_File_Constants.LAT],
+            long=srow[Infrastructure_Constants.Sites_File_Constants.LON],
+            equipment_groups=srow[Infrastructure_Constants.Sites_File_Constants.EQG],
+            propagating_params=propagating_params,
+            infrastructure_inputs=infrastructure_inputs,
+        )
+
+        sites.append(new_site)
+
+    # Generate Emissions for all infrastructure
+    for site in sites:
+        site.generate_emissions()
+
+    return sites
+
+
+def regenerate_sites(virtual_world, prog_0_sites, in_dir):
+    """
+    Regenerate sites allows site level parameters to update on pregenerated
+    sites. This is necessary when programs have different site level params
+    for example, the survey frequency or survey time could be different.
+    """
+    # Read in the sites as a list of dictionaries
+    sites_in = pd.read_csv(in_dir / virtual_world["infrastructure_file"], index_col="facility_ID")
+    # Add facility ID back into object
+    sites_in["facility_ID"] = sites_in.index
+    sites = sites_in.to_dict("index")
+    out_sites = []
+    for site_or in prog_0_sites:
+        s_idx = site_or["facility_ID"]
+        new_site = copy.deepcopy(sites[s_idx])
+        new_site.update(
+            {
+                "cum_leaks": site_or["cum_leaks"],
+                "initial_leaks": site_or["initial_leaks"],
+                "leak_rate_units": site_or["leak_rate_units"],
+                "repair_delay": site_or["repair_delay"],
+            }
+        )
+        if "empirical_leak_rates" in site_or:
+            new_site.update({"empirical_leak_rates": site_or["empirical_leak_rates"]})
+        if "leak_rate_dist" in site_or:
+            new_site.update(
+                {
+                    "leak_rate_dist": site_or["leak_rate_dist"],
+                }
+            )
+        if "empirical_vent_rates" in site_or:
+            new_site.update({"empirical_vent_rates": site_or["empirical_vent_rates"]})
+        out_sites.append(new_site)
+    return out_sites

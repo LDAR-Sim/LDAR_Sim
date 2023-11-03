@@ -21,6 +21,22 @@ class Infrastructure_Constants:
         SURVEY_TIME_PLACEHOLDER = "_surveytime"  # Survey Time - Method specific
         SURVEY_COST_PLACEHOLDER = "_surveycost"  # Survey Cost - Method specific
 
+        PROPAGATING_PARAMS: list[str] = [
+            REP_EMIS_ERS,
+            REP_EMIS_EPR,
+            REP_EMIS_RD,
+            REP_EMIS_RC,
+            REP_EMIS_ED,
+            NON_REP_EMIS_ERS,
+        ]
+
+        METH_SPEC_PROP_PARAMS: list[str] = [
+            SPATIAL_PLACEHOLDER,
+            SURVEY_FREQUENCY_PLACEHOLDER,
+            SURVEY_COST_PLACEHOLDER,
+            SURVEY_TIME_PLACEHOLDER,
+        ]
+
     class Equipment_Group_File_Constants:
         EQUIPMENT_GROUP = "equipment_group"  # Equipment Group
         REP_EMIS_ERS = "repairable_ERS"  # Repairable Emissions Rate Source
@@ -38,7 +54,7 @@ class Infrastructure_Constants:
         SOURCE = "source"
         EMIS_EPR = "EPR"
         EMIS_ERS = "ERS"  # Emission rate source
-        EMISS_DUR = "ED"  # Emission Duration
+        EMIS_DUR = "ED"  # Emission Duration
         REPAIR_DELAY = "RD"  # Repair Delay
         REPAIR_COST = "RC"  # Repair Cost
         PERSISTENT = "persistent"  # Persistent (Y/N)
@@ -62,3 +78,19 @@ class Infrastructure_Constants:
         SPATIAL_PLACEHOLDER = "_spatial"  # Spatial coverage - Method specific
         SURVEY_TIME_PLACEHOLDER = "_surveytime"  # Survey Time - Method specific
         SURVEY_COST_PLACEHOLDER = "_surveycost"  # Survey Cost - Method specific
+
+        PROPAGATING_PARAMS: list[str] = [
+            REP_EMIS_ERS,
+            REP_EMIS_EPR,
+            REP_EMIS_RD,
+            REP_EMIS_RC,
+            REP_EMIS_ED,
+            NON_REP_EMIS_ERS,
+        ]
+
+        METH_SPEC_PROP_PARAMS: list[str] = [
+            SPATIAL_PLACEHOLDER,
+            SURVEY_FREQUENCY_PLACEHOLDER,
+            SURVEY_COST_PLACEHOLDER,
+            SURVEY_TIME_PLACEHOLDER,
+        ]

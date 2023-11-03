@@ -38,7 +38,6 @@ from config.output_flag_mapping import (
 )
 from geography.vector import grid_contains_point
 from initialization.leaks import generate_initial_leaks, generate_leak
-from initialization.sites import generate_infrastructure
 from initialization.update_methods import (
     est_n_crews,
     est_site_p_day,
@@ -87,11 +86,6 @@ class LdarSim:
         if program_parameters["economics"]["repair_costs"]["file"] is not None:
             virtual_world["economics"]["repair_costs"]["vals"] = np.array(
                 pd.read_csv(input_dir / virtual_world["economics"]["repair_costs"]["file"])
-            )
-            # Read in the sites as a list of dictionaries
-        if len(state["sites"]) < 1:
-            state["sites"], _, _ = generate_infrastructure(
-                virtual_world, input_dir, virtual_world["pregenerate_leaks"]
             )
         state["max_leak_rate"] = virtual_world["emissions"]["max_leak_rate"]
         state["t"].set_UTC_offset(state["sites"])
