@@ -23,6 +23,11 @@ import numpy as np
 from methods.funcs import measured_rate as get_measured_rate
 from utils.attribution import update_tag
 
+# Convert from g/s to g/h
+GStoGHR = 3600
+# factor of 3.6 converts g/s to kg/h
+GStoKGHR = 3.6
+
 
 def detect_emissions(
     self,
@@ -63,16 +68,22 @@ def detect_emissions(
     equip_measured_rates = []
     site_measured_rate = 0
     found_leak = False
+    mdl = self.config["sensor"]["MDL"]
+    if len(mdl) < 3:
+        while len(mdl) < 3:
+            mdl.append(0)
 
     for leak in covered_leaks:
         k = np.random.normal(4.9, 0.3)
-        x0 = np.random.normal(self.config["sensor"]["MDL"][0], self.config["sensor"]["MDL"][1])
-        x0 = math.log10(x0 * 3600)  # Convert from g/s to g/h and take log
+        x0 = np.random.normal(mdl[0], mdl[1])
+        x0 = math.log10(x0 * GStoGHR)  # Convert from g/s to g/h and take log
 
         if leak["rate"] == 0:
             prob_detect = 0
+        elif leak["rate"] < (mdl[2] * GStoKGHR):
+            prob_detect = 0
         else:
-            x = math.log10(leak["rate"] * 3600)  # Convert from g/s to g/h
+            x = math.log10(leak["rate"] * GStoGHR)
             prob_detect = 1 / (1 + math.exp(-k * (x - x0)))
 
         if np.random.binomial(1, prob_detect):
