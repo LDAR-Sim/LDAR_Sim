@@ -25,7 +25,6 @@ import random as rand
 import sys
 from datetime import datetime, timedelta
 
-from initialization.sites import get_subtype_dist
 from numpy import random as np_rand
 from stdout_redirect import stdout_redirect
 from time_counter import TimeCounter

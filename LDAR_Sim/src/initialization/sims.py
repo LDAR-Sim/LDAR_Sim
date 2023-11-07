@@ -34,6 +34,9 @@ def create_sims(sim_params, programs, virtual_world, generator_dir, in_dir, out_
     pregen_leaks = sim_params["pregenerate_leaks"]
     preseed_random = sim_params["preseed_random"]
     base_prog = sim_params["baseline_program"]
+    methods: list[str] = list(
+        {method for program in programs for method in programs[program]["method_labels"]}
+    )
     simulations = []
     for i in range(n_simulations):
         if pregen_leaks:
@@ -41,11 +44,11 @@ def create_sims(sim_params, programs, virtual_world, generator_dir, in_dir, out_
             # If there is no pregenerated file for the virtual world
             if not os.path.isfile(file_loc):
                 sites, leak_timeseries, initial_leaks = generate_infrastructure(
-                    virtual_world,
-                    in_dir,
-                    pregen_leaks,
-                    sim_params["start_date"],
-                    sim_params["end_date"],
+                    virtual_world=virtual_world,
+                    in_dir=in_dir,
+                    methods=methods,
+                    start_date=sim_params["start_date"],
+                    end_date=sim_params["end_date"],
                 )
                 sites: dict
                 leak_timeseries: dict

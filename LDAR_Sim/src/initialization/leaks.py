@@ -55,7 +55,7 @@ def generate_leak(
         )
     return FugitiveEmission(
         emission_n=leak_count,
-        site_id=str(site["facility_ID"]),
+        source_id=str(site["facility_ID"]),
         rate=leak_rate,
         start_date=start_date,
         simulation_sd=sim_start_date,

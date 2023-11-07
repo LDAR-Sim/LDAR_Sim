@@ -29,8 +29,11 @@ import numpy as np
 
 import pandas as pd
 
-from initialization.infrastructure_const import Infrastructure_Constants
-from initialization.emissions import Emission
+from initialization.infrastructure_const import (
+    Infrastructure_Constants,
+    Virtual_World_To_Prop_Params_Mapping,
+)
+from initialization.emissions import Emission, FugitiveEmission
 
 
 class Site:
@@ -49,7 +52,7 @@ class Site:
         self._long: float = long
 
         self._site_type: str = site_type
-        self._RS: dict = propagating_params["Method_Specific_Params"].pop(
+        self._survey_frequencies: dict = propagating_params["Method_Specific_Params"].pop(
             "Method_Survey_Frequencies"
         )
         self.create_equipment_groups(equipment_groups, infrastructure_inputs, propagating_params)
@@ -72,8 +75,7 @@ class Site:
                     Equipment_Group(
                         site_equipment_group[
                             Infrastructure_Constants.Equipment_Group_File_Constants.EQUIPMENT_GROUP
-                        ]
-                        + self._site_ID,
+                        ],
                         infrastructure_inputs,
                         prop_params,
                         site_equipment_group,
@@ -83,9 +85,9 @@ class Site:
             # TODO Implement logic for when a site has no equipment groups
             return
 
-    def generate_emissions(self) -> None:
+    def generate_emissions(self, sim_dur) -> None:
         for eqg in self._equipment_groups:
-            eqg.generate_emissions()
+            eqg.generate_emissions(sim_dur)
 
 
 class Equipment_Group:
@@ -121,9 +123,9 @@ class Equipment_Group:
                         Equipment(col, count, infrastructure_inputs, prop_params)
                     )
 
-    def generate_emissions(self) -> None:
+    def generate_emissions(self, sim_dur) -> None:
         for eqmt in self._equipment:
-            eqmt.generate_emissions()
+            eqmt.generate_emissions(sim_dur)
 
     def report_func(self):
         # some reporting agregate function?
@@ -149,9 +151,9 @@ class Equipment:
             src_id = source[Infrastructure_Constants.Sources_File_Constants.SOURCE]
             self._sources.append(Source(src_id, source, src_prop_params))
 
-    def generate_emissions(self) -> None:
+    def generate_emissions(self, sim_dur) -> None:
         for src in self._sources:
-            src.generate_emissions()
+            src.generate_emissions(sim_dur)
 
 
 class Source:
@@ -219,18 +221,43 @@ class Source:
                 Infrastructure_Constants.Sources_File_Constants.REPAIR_COST
             ]
 
-    def generate_emissions(self) -> None:
-        sim_dur = 365
+    def _get_rate(self):
+        return self._emis_rate_source
+
+    def _get_repairable(self):
+        return self._repairable
+
+    def _get_rep_delay(self):
+        return self._emis_rep_delay
+
+    def _get_rep_cost(self):
+        return self._emis_rep_cost
+
+    def _get_emis_duration(self):
+        return self._emis_duration
+
+    def _create_emission(self, leak_count, start_date, sim_start_date) -> None:
+        return FugitiveEmission(
+            emission_n=leak_count,
+            rate=self._get_rate(),
+            start_date=start_date,
+            simulation_sd=sim_start_date,
+            repairable=self._get_repairable(),
+            repair_delay=self._get_rep_delay(),
+            repair_cost=self._get_rep_cost(),
+            nrd=self._get_emis_duration(),
+        )
+
+    def generate_emissions(self, sim_dur) -> None:
         self._emis_ts = array.array(Emission)
+        leak_count = 0
         for day in range(0, sim_dur + self._emis_duration):
             emission = None
             create_emis: int = np.random.binomial(1, self._emis_prod_rate)
             if create_emis:
-                emission = self.create_emission()
+                emission = self._create_emission(leak_count)
+                leak_count += 1
             self._emis_ts.append(emission)
-
-    def create_emissions(self) -> None:
-        return None
 
     # def create_emission(self):
     #     if type(self._emis_rate_source) == str and emiss_type.lower() == 'sample':
@@ -293,12 +320,30 @@ def read_in_files(virtual_world, in_dir):
     return input_dict
 
 
-def generate_propagating_params(
+def generate_propagating_params(virtual_world, programs, methods) -> dict:
+    prop_params_dict: dict = {}
+    for param, mapping in Virtual_World_To_Prop_Params_Mapping.PROPAGATING_PARAMS.items():
+        mapping: str
+        access_path = mapping.split(".")
+        val = None
+        for path in access_path:
+            val = virtual_world[path]
+        prop_params_dict[param] = val
+
+    prop_params_dict["Method_Specific_Params"] = {}
+    for param, mapping in Virtual_World_To_Prop_Params_Mapping.METH_SPEC_PROP_PARAMS.items():
+        prop_params_dict["Method_Specific_Params"][param] = {}
+        for method in methods:
+            access_path: list[str] = mapping.split(".")
+            val = None
+
+
+def update_propagating_params(
     site_row_df_info,
     site_type_info,
     methods,
 ):
-    prop_params_dict = {}
+    prop_params_dict: dict = {}
     if site_type_info is not None:
         # Updating propagating parameters with site type info
         for param in Infrastructure_Constants.Site_Type_File_Constants.PROPAGATING_PARAMS:
@@ -349,7 +394,7 @@ def generate_propagating_params(
     return prop_params_dict
 
 
-def generate_infrastructure(virtual_world, in_dir, start_date, end_date) -> list[Site]:
+def generate_infrastructure(virtual_world, in_dir, methods, start_date, end_date) -> list[Site]:
     """[summary]
 
     Args:
@@ -372,7 +417,6 @@ def generate_infrastructure(virtual_world, in_dir, start_date, end_date) -> list
     sites_to_make = sites_in.sample(n_samples)
 
     sites: list[Site] = []
-    methods = None  # TODO Update this placeholder with logic to get actual methods
 
     for sidx, srow in sites_to_make.iterrows():
         site_type_info = None
@@ -382,7 +426,7 @@ def generate_infrastructure(virtual_world, in_dir, start_date, end_date) -> list
             site_types_info = site_types_info.loc[
                 site_types_info[Infrastructure_Constants.Site_Type_File_Constants.TYPE] == site_type
             ].iloc[0]
-        propagating_params = generate_propagating_params(
+        propagating_params = update_propagating_params(
             site_row_df_info=srow, site_type_info=site_type_info, methods=methods
         )
         new_site = Site(

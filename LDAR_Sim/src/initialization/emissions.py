@@ -9,25 +9,15 @@ class Emission:
     def __init__(
         self,
         emission_n,
-        site_id,
         rate,
         start_date,
         simulation_sd,
         repairable,
-        equipment_group,
-        source_id,
     ):
-        self._emissions_id: str = (
-            f"{site_id}_{str(emission_n).zfill(10)}"
-            if source_id is None
-            else f"{site_id}_{source_id}_{str(emission_n).zfill(10)}"
-        )
-        self._site_id: str = site_id
-        self._source_id: str = source_id
+        self._emissions_id: str = f"{str(emission_n).zfill(10)}"
         self._rate: float = rate
         self._start_date: datetime = start_date
         self._repairable: bool = repairable
-        self._equipment_group: int = equipment_group
 
         self._estimate_date_began: datetime = None
         self._estimated_days_active: int = 0
@@ -104,15 +94,13 @@ class Emission:
 
 
 class NonRepairableEmission(Emission):
-    def __init__(self, emission_n, site_id, rate, start_date, simulation_sd, repairable, source_id):
+    def __init__(self, emission_n, source_id, rate, start_date, simulation_sd, repairable):
         super().__init__(
             emission_n,
-            site_id,
             rate,
             start_date,
             simulation_sd,
             repairable,
-            source_id,
         )
 
 
@@ -120,26 +108,20 @@ class FugitiveEmission(Emission):
     def __init__(
         self,
         emission_n,
-        site_id,
         rate,
         start_date,
         simulation_sd,
         repairable,
-        equipment_group,
         repair_delay,
         repair_cost,
         nrd,
-        source_id=None,
     ):
         super().__init__(
             emission_n,
-            site_id,
             rate,
             start_date,
             simulation_sd,
             repairable,
-            equipment_group,
-            source_id,
         )
         self._repair_delay: int = repair_delay
         self._repair_cost: float = repair_cost
@@ -226,9 +208,6 @@ class FugitiveEmission(Emission):
             self.check_if_repaired()
             return "repaired"
         return "no_status_change"
-
-    def get_equip_grp(self) -> int:
-        return self._equipment_group
 
     @override
     def get_summary_dict(self) -> dict[str, Any]:
