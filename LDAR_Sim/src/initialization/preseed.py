@@ -22,7 +22,6 @@ import random
 from datetime import datetime
 
 
-def gen_seed_timeseries(params):
-    start_date = datetime(*params["start_date"])
-    n_timesteps = (datetime(*params["end_date"]) - start_date).days
+def gen_seed_timeseries(sim_start_date: datetime, sim_end_date: datetime) -> list[int]:
+    n_timesteps: int = (sim_end_date - sim_start_date).days
     return [random.randrange(1, 50, 1) for i in range(n_timesteps)]

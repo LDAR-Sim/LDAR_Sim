@@ -18,9 +18,10 @@
 #
 # ------------------------------------------------------------------------------
 
-import array
 import copy
+from datetime import datetime, timedelta
 import fnmatch
+import math
 import os
 import pickle
 import re
@@ -35,125 +36,11 @@ from initialization.infrastructure_const import (
 )
 from initialization.emissions import Emission, FugitiveEmission
 
-
-class Site:
-    def __init__(
-        self,
-        id: str,
-        lat: float,
-        long: float,
-        equipment_groups: list,
-        propagating_params: dict,
-        infrastructure_inputs: dict,
-        site_type: str = None,
-    ) -> None:
-        self._site_ID: str = id
-        self._lat: float = lat
-        self._long: float = long
-
-        self._site_type: str = site_type
-        self._survey_frequencies: dict = propagating_params["Method_Specific_Params"].pop(
-            "Method_Survey_Frequencies"
-        )
-        self.create_equipment_groups(equipment_groups, infrastructure_inputs, propagating_params)
-
-    def create_equipment_groups(
-        self, equipment_groups, infrastructure_inputs, propagating_params, methods
-    ) -> None:
-        self._equipment_groups = []
-        if len(equipment_groups) > 0:
-            equip_groups_in: pd.DataFrame = infrastructure_inputs["equipment_groups"]
-            for equipment_group in equipment_groups:
-                site_equipment_group = equip_groups_in.loc[
-                    equip_groups_in[
-                        Infrastructure_Constants.Equipment_Group_File_Constants.EQUIPMENT_GROUP
-                    ]
-                    == equipment_group
-                ].iloc[0]
-                prop_params = copy.deepcopy(propagating_params)
-                self._equipment_groups.append(
-                    Equipment_Group(
-                        site_equipment_group[
-                            Infrastructure_Constants.Equipment_Group_File_Constants.EQUIPMENT_GROUP
-                        ],
-                        infrastructure_inputs,
-                        prop_params,
-                        site_equipment_group,
-                    )
-                )
-        else:
-            # TODO Implement logic for when a site has no equipment groups
-            return
-
-    def generate_emissions(self, sim_dur) -> None:
-        for eqg in self._equipment_groups:
-            eqg.generate_emissions(sim_dur)
-
-
-class Equipment_Group:
-    def __init__(self, id, infrastructure_inputs, prop_params, info):
-        self._id: str = id
-        self.update_prop_params(info, prop_params)
-        self.create_equipment(
-            infrastructure_inputs=infrastructure_inputs, prop_params=prop_params, info=info
-        )
-
-    def update_prop_params(self, info, prop_params) -> None:
-        meth_specific_params = prop_params.pop("Method_Specific_Params")
-
-        for param in meth_specific_params.keys():
-            for method in meth_specific_params[param].keys():
-                eqg_val = info.get(method + param, None)
-                if eqg_val is not None:
-                    meth_specific_params[param][method] = eqg_val
-
-        for param in prop_params.keys():
-            eqg_val = info.get(param, None)
-            if eqg_val is not None:
-                prop_params[param] = eqg_val
-
-        prop_params["Method_Specific_Params"] = meth_specific_params
-
-    def create_equipment(self, infrastructure_inputs, prop_params, info) -> None:
-        self._equipment = []
-        for col, val in info.iteritems():
-            if "equipment" in col:
-                for count in range(0, val):
-                    self._equipment.append(
-                        Equipment(col, count, infrastructure_inputs, prop_params)
-                    )
-
-    def generate_emissions(self, sim_dur) -> None:
-        for eqmt in self._equipment:
-            eqmt.generate_emissions(sim_dur)
-
-    def report_func(self):
-        # some reporting agregate function?
-        return
-
-
-class Equipment:
-    def __init__(self, equip_type, equip_id, infrastructure_inputs, prop_params) -> None:
-        STR_FILTER = r"equipment"
-        self._equip_type = re.sub(STR_FILTER, "", equip_type)
-        self._equipment_ID: str = self._equip_type + "_" + equip_id
-        self.create_sources(infrastructure_inputs=infrastructure_inputs, prop_params=prop_params)
-
-    def create_sources(self, infrastructure_inputs, prop_params) -> None:
-        self._sources = []
-        sources_info = infrastructure_inputs["sources"]
-        sources = sources_info.loc[
-            sources_info[Infrastructure_Constants.Sources_File_Constants.EQUIPMENT]
-            == self._equip_type
-        ]
-        for source in sources:
-            src_prop_params = copy.deepcopy(prop_params)
-            src_id = source[Infrastructure_Constants.Sources_File_Constants.SOURCE]
-            self._sources.append(Source(src_id, source, src_prop_params))
-
-    def generate_emissions(self, sim_dur) -> None:
-        for src in self._sources:
-            src.generate_emissions(sim_dur)
+PLACEHOLDER_EQUIPMENT_COUNT = 100
+PLACEHOLDER_EQUIPMENT = "Placeholder_Equipment"
+SOURCE_CREATION_ERROR_MESSAGE = (
+    "Invalid LDAR-Sim infrastructure inputs: Failure to read in sources infrastructure input"
+)
 
 
 class Source:
@@ -166,6 +53,7 @@ class Source:
         self._persistent = info[Infrastructure_Constants.Sources_File_Constants.PERSISTENT]
         self._active_duration = info[Infrastructure_Constants.Sources_File_Constants.ACTIVE_DUR]
         self._inactive_duration = info[Infrastructure_Constants.Sources_File_Constants.INACTIVE_DUR]
+        self._generated_emissions: dict[str, list[Emission]] = {}
         self.update_prop_params(info=info, prop_params=prop_params)
         self.set_source_properties(prop_params=prop_params)
 
@@ -182,15 +70,16 @@ class Source:
                 if src_val is not None:
                     meth_specific_params[param][method] = src_val
 
-        for param in prop_params.keys():
+        prop_params_keys = list(prop_params.keys())
+        for param in prop_params_keys:
             if prefix in param:
                 src_param = re.sub(prefix, "", param)
                 src_val = info.get(src_param, None)
                 if src_val is not None:
-                    del prop_params[param]
                     prop_params[src_param] = src_val
-            else:
-                del prop_params[param]
+                else:
+                    prop_val = prop_params[param]
+                    prop_params[src_param] = prop_val
 
         prop_params["Method_Specific_Params"] = meth_specific_params
 
@@ -236,28 +125,60 @@ class Source:
     def _get_emis_duration(self):
         return self._emis_duration
 
-    def _create_emission(self, leak_count, start_date, sim_start_date) -> None:
-        return FugitiveEmission(
-            emission_n=leak_count,
-            rate=self._get_rate(),
-            start_date=start_date,
-            simulation_sd=sim_start_date,
-            repairable=self._get_repairable(),
-            repair_delay=self._get_rep_delay(),
-            repair_cost=self._get_rep_cost(),
-            nrd=self._get_emis_duration(),
-        )
+    def _create_emission(self, leak_count, start_date, sim_start_date) -> Emission:
+        if self._repairable:
+            return FugitiveEmission(
+                emission_n=leak_count,
+                rate=self._get_rate(),
+                start_date=start_date,
+                simulation_sd=sim_start_date,
+                repairable=self._get_repairable(),
+                repair_delay=self._get_rep_delay(),
+                repair_cost=self._get_rep_cost(),
+                nrd=self._get_emis_duration(),
+            )
 
-    def generate_emissions(self, sim_dur) -> None:
-        self._emis_ts = array.array(Emission)
-        leak_count = 0
-        for day in range(0, sim_dur + self._emis_duration):
-            emission = None
+    def generate_emissions(
+        self, sim_start_date: datetime, sim_end_date: datetime, sim_number: int
+    ) -> dict[str, list[Emission]]:
+        emissions: list[Emission] = []
+
+        # Initialize a counter to give all leaks for the source a unique "ID"
+        leak_count: int = 0
+
+        # Generate Pre-Existing Emissions to exist at the start of simulation
+        # The loop is working backwards in time, starting from 1 day before simulation start
+        for day in range(1, self._emis_duration + 1):
             create_emis: int = np.random.binomial(1, self._emis_prod_rate)
             if create_emis:
-                emission = self._create_emission(leak_count)
+                emis_start_date: datetime = sim_start_date - timedelta(days=day)
+                emission: Emission = self._create_emission(
+                    leak_count=leak_count, start_date=emis_start_date, sim_start_date=sim_start_date
+                )
                 leak_count += 1
-            self._emis_ts.append(emission)
+                emissions.append(emission)
+
+        # Generate Emissions for the course of the simulation
+        date_diff: timedelta = sim_end_date - sim_start_date
+        sim_dur: int = date_diff.days
+
+        for day in range(0, sim_dur):
+            create_emis: int = np.random.binomial(1, self._emis_prod_rate)
+            if create_emis:
+                emis_start_date: datetime = sim_start_date + timedelta(days=day)
+                emission: Emission = self._create_emission(
+                    leak_count=leak_count, start_date=emis_start_date, sim_start_date=sim_start_date
+                )
+                leak_count += 1
+                emissions.append(emission)
+        self._generated_emissions[sim_number] = emissions
+        return {self._source_ID: emissions}
+
+    def set_pregen_emissions(self, src_emissions, sim_number) -> None:
+        self._generated_emissions[sim_number] = src_emissions
+
+    def get_id(self) -> str:
+        return self._source_ID
 
     # def create_emission(self):
     #     if type(self._emis_rate_source) == str and emiss_type.lower() == 'sample':
@@ -273,6 +194,186 @@ class Source:
     #         # add in code to deal with handling a distribution
 
     # the above may be required to be moved to the emissions object.
+
+
+class Equipment:
+    def __init__(self, equip_type, equip_id, infrastructure_inputs, prop_params) -> None:
+        STR_FILTER = r"_equipment"
+        pattern: re.Pattern[str] = re.compile(re.escape(STR_FILTER), re.IGNORECASE)
+        self._equip_type: str = re.sub(pattern, "", equip_type)
+        self._equipment_ID: str = self._equip_type + "_" + str(equip_id)
+        self.create_sources(infrastructure_inputs=infrastructure_inputs, prop_params=prop_params)
+
+    def create_sources(self, infrastructure_inputs, prop_params) -> None:
+        self._sources: list[Source] = []
+        if self._equip_type != "Placeholder" and "sources" in infrastructure_inputs:
+            sources_info = infrastructure_inputs["sources"]
+            sources = sources_info.loc[
+                sources_info[Infrastructure_Constants.Sources_File_Constants.EQUIPMENT]
+                == self._equip_type
+            ]
+            for source in sources:
+                src_prop_params = copy.deepcopy(prop_params)
+                src_id = source[Infrastructure_Constants.Sources_File_Constants.SOURCE]
+                self._sources.append(Source(src_id, source, src_prop_params))
+        elif self._equip_type == "Placeholder":
+            src_id = "Placeholder_Non_Rep"
+            placeholder_source_info = {
+                Infrastructure_Constants.Sources_File_Constants.REPAIRABLE: True,
+                Infrastructure_Constants.Sources_File_Constants.PERSISTENT: True,
+                Infrastructure_Constants.Sources_File_Constants.ACTIVE_DUR: 1,
+                Infrastructure_Constants.Sources_File_Constants.INACTIVE_DUR: 0,
+            }
+            self._sources.append(Source(src_id, placeholder_source_info, prop_params))
+        else:
+            print(SOURCE_CREATION_ERROR_MESSAGE)
+
+    def generate_emissions(self, sim_start_date, sim_end_date, sim_number) -> dict:
+        equip_emissions = {}
+        for src in self._sources:
+            equip_emissions.update(src.generate_emissions(sim_start_date, sim_end_date, sim_number))
+
+        return {self._equipment_ID: equip_emissions}
+
+    def set_pregen_emissions(self, equipment_emissions, sim_number) -> None:
+        for src in self._sources:
+            src.set_pregen_emissions(equipment_emissions[src.get_id()], sim_number)
+
+    def get_id(self) -> str:
+        return self._equipment_ID
+
+
+class Equipment_Group:
+    def __init__(self, id, infrastructure_inputs, prop_params, info) -> None:
+        self._id: str = id
+        self.update_prop_params(info, prop_params)
+        self.create_equipment(
+            infrastructure_inputs=infrastructure_inputs, prop_params=prop_params, info=info
+        )
+
+    def update_prop_params(self, info, prop_params) -> None:
+        meth_specific_params = prop_params.pop("Method_Specific_Params")
+
+        for param in meth_specific_params.keys():
+            for method in meth_specific_params[param].keys():
+                eqg_val = info.get(method + param, None)
+                if eqg_val is not None:
+                    meth_specific_params[param][method] = eqg_val
+
+        for param in prop_params.keys():
+            eqg_val = info.get(param, None)
+            if eqg_val is not None:
+                prop_params[param] = eqg_val
+
+        prop_params["Method_Specific_Params"] = meth_specific_params
+
+    def create_equipment(self, infrastructure_inputs, prop_params, info) -> None:
+        self._equipment: list[Equipment] = []
+        for col, val in info.items():
+            if "equipment" in col.lower():
+                for count in range(0, val):
+                    self._equipment.append(
+                        Equipment(col, count, infrastructure_inputs, prop_params)
+                    )
+
+    def generate_emissions(self, sim_start_date, sim_end_date, sim_number) -> dict:
+        eqg_emissions = {}
+        for eqmt in self._equipment:
+            eqg_emissions.update(eqmt.generate_emissions(sim_start_date, sim_end_date, sim_number))
+
+        return {self._id: eqg_emissions}
+
+    def set_pregen_emissions(self, eqg_emissions, sim_number) -> None:
+        for equipment in self._equipment:
+            equipment.set_pregen_emissions(eqg_emissions[equipment.get_id()], sim_number)
+
+    def report_func(self):
+        # some reporting agregate function?
+        return
+
+    def get_id(self) -> str:
+        return self._id
+
+
+class Site:
+    def __init__(
+        self,
+        id: str,
+        lat: float,
+        long: float,
+        equipment_groups: list,
+        propagating_params: dict,
+        infrastructure_inputs: dict,
+        site_type: str = None,
+    ) -> None:
+        self._site_ID: str = id
+        self._lat: float = lat
+        self._long: float = long
+
+        self._site_type: str = site_type
+        self._survey_frequencies: dict = propagating_params["Method_Specific_Params"].pop(
+            Infrastructure_Constants.Sites_File_Constants.SURVEY_FREQUENCY_PLACEHOLDER
+        )
+        self.create_equipment_groups(equipment_groups, infrastructure_inputs, propagating_params)
+
+    def create_equipment_groups(
+        self, equipment_groups, infrastructure_inputs, propagating_params
+    ) -> None:
+        self._equipment_groups: list[Equipment_Group] = []
+        if isinstance(equipment_groups, list) and len(equipment_groups) > 0:
+            equip_groups_in: pd.DataFrame = infrastructure_inputs["equipment_groups"]
+            for equipment_group in equipment_groups:
+                site_equipment_group = equip_groups_in.loc[
+                    equip_groups_in[
+                        Infrastructure_Constants.Equipment_Group_File_Constants.EQUIPMENT_GROUP
+                    ]
+                    == equipment_group
+                ].iloc[0]
+                prop_params = copy.deepcopy(propagating_params)
+                self._equipment_groups.append(
+                    Equipment_Group(
+                        site_equipment_group[
+                            Infrastructure_Constants.Equipment_Group_File_Constants.EQUIPMENT_GROUP
+                        ],
+                        infrastructure_inputs,
+                        prop_params,
+                        site_equipment_group,
+                    )
+                )
+        elif isinstance(equipment_groups, (int, float)):
+            for i in range(0, equipment_groups):
+                equip_group_info = pd.Series(
+                    {
+                        PLACEHOLDER_EQUIPMENT: math.ceil(
+                            PLACEHOLDER_EQUIPMENT_COUNT / equipment_groups
+                        )
+                    }
+                )
+                self._equipment_groups.append(
+                    Equipment_Group(i, infrastructure_inputs, propagating_params, equip_group_info)
+                )
+        else:
+            equip_group_info = pd.Series(
+                {PLACEHOLDER_EQUIPMENT: math.ceil(PLACEHOLDER_EQUIPMENT_COUNT)}
+            )
+            self._equipment_groups.append(
+                Equipment_Group(i, infrastructure_inputs, propagating_params, equip_group_info)
+            )
+
+    def generate_emissions(self, sim_start_date, sim_end_date, sim_number) -> dict:
+        site_emissions: dict = {}
+        for eqg in self._equipment_groups:
+            eqg: Equipment_Group
+            site_emissions.update(eqg.generate_emissions(sim_start_date, sim_end_date, sim_number))
+
+        return {self._site_ID: site_emissions}
+
+    def set_pregen_emissions(self, site_emissions, sim_number) -> None:
+        for eqg in self._equipment_groups:
+            eqg.set_pregen_emissions(site_emissions[eqg.get_id()], sim_number)
+
+    def get_id(self) -> str:
+        return self._site_ID
 
 
 def init_generator_files(generator_dir, sim_params, in_dir, virtual_world):
@@ -320,14 +421,14 @@ def read_in_files(virtual_world, in_dir):
     return input_dict
 
 
-def generate_propagating_params(virtual_world, programs, methods) -> dict:
+def generate_propagating_params(virtual_world, methods) -> dict:
     prop_params_dict: dict = {}
     for param, mapping in Virtual_World_To_Prop_Params_Mapping.PROPAGATING_PARAMS.items():
         mapping: str
         access_path = mapping.split(".")
-        val = None
+        val = virtual_world
         for path in access_path:
-            val = virtual_world[path]
+            val = val[path]
         prop_params_dict[param] = val
 
     prop_params_dict["Method_Specific_Params"] = {}
@@ -336,149 +437,117 @@ def generate_propagating_params(virtual_world, programs, methods) -> dict:
         for method in methods:
             access_path: list[str] = mapping.split(".")
             val = None
+            val = methods[method]
+            for path in access_path:
+                val = val[path]
+            prop_params_dict["Method_Specific_Params"][param][method] = val
+
+    return prop_params_dict
 
 
 def update_propagating_params(
+    prop_params,
     site_row_df_info,
     site_type_info,
     methods,
 ):
-    prop_params_dict: dict = {}
     if site_type_info is not None:
         # Updating propagating parameters with site type info
         for param in Infrastructure_Constants.Site_Type_File_Constants.PROPAGATING_PARAMS:
             site_type_val = site_type_info.get(param, None)
-            prop_params_dict[param] = site_type_val
-
-        # Update method specific propagating params with site type info
-        prop_params_dict["Method_Specific_Params"] = {}
-        for param in Infrastructure_Constants.Site_Type_File_Constants.METH_SPEC_PROP_PARAMS:
-            prop_params_dict["Method_Specific_Params"][param] = {}
+            if site_type_val is not None:
+                prop_params[param] = site_type_val
 
         for method in methods:
             for param in Infrastructure_Constants.Site_Type_File_Constants.METH_SPEC_PROP_PARAMS:
                 site_type_val = site_type_info.get(method + param, None)
-                prop_params_dict["Method_Specific_Params"][param][method] = site_type_val
+                if site_type_val is not None:
+                    prop_params["Method_Specific_Params"][param][method] = site_type_val
 
         # Updating propagating parameters with site info
         for param in Infrastructure_Constants.Sites_File_Constants.PROPAGATING_PARAMS:
             site_val = site_row_df_info.get(param, None)
             if site_val is not None:
-                prop_params_dict[param] = site_val
+                prop_params[param] = site_val
 
         # Update method specific propagating params with site info
         for method in methods:
             for param in Infrastructure_Constants.Sites_File_Constants.METH_SPEC_PROP_PARAMS:
                 site_val = site_row_df_info.get(method + param, None)
                 if site_val is not None:
-                    prop_params_dict["Method_Specific_Params"][param][method] = site_val
-
-    else:
-        # Updating propagating parameters with site info
-        for param in Infrastructure_Constants.Sites_File_Constants.PROPAGATING_PARAMS:
-            site_val = site_row_df_info.get(param, None)
-            prop_params_dict[param] = site_val
-
-        # Update method specific propagating params with site info
-        prop_params_dict["Method_Specific_Params"] = {}
-
-        for param in Infrastructure_Constants.Sites_File_Constants.METH_SPEC_PROP_PARAMS:
-            prop_params_dict["Method_Specific_Params"][param] = {}
-
-        for method in methods:
-            for param in Infrastructure_Constants.Sites_File_Constants.METH_SPEC_PROP_PARAMS:
-                site_val = site_row_df_info.get(method + param, None)
-                if site_val is not None:
-                    prop_params_dict["Method_Specific_Params"][param][method] = site_val
-
-    return prop_params_dict
+                    prop_params["Method_Specific_Params"][param][method] = site_val
 
 
-def generate_infrastructure(virtual_world, in_dir, methods, start_date, end_date) -> list[Site]:
-    """[summary]
+class Infrastructure:
+    def __init__(self, virtual_world, methods, in_dir) -> None:
+        self.generate_infrastructure(virtual_world=virtual_world, methods=methods, in_dir=in_dir)
 
-    Args:
-        virtual_world (dict): The virtual world parameters informing site generation.
-        in_dir (Path): The path to the inputs directory
-
-    Returns:
-        [dict]: sites, Union[dict, None]: leak_timeseries, Union[dict, None]: initial_leaks
-    """
-    infrastructure_inputs: dict[str, pd.DataFrame] = read_in_files(virtual_world, in_dir)
-    sites_types_provided: bool = "site_types" in infrastructure_inputs
-
-    sites_in: pd.DataFrame = infrastructure_inputs["sites"]
-
-    # Sample sites and shuffle
-    n_samples = virtual_world["site_samples"]
-    if n_samples is None:
-        n_samples = len(sites_in)
-    # even if n_samples is None, the sample function is still used to shuffle
-    sites_to_make = sites_in.sample(n_samples)
-
-    sites: list[Site] = []
-
-    for sidx, srow in sites_to_make.iterrows():
-        site_type_info = None
-        if sites_types_provided:
-            site_types_info = infrastructure_inputs["site_types"]
-            site_type = srow[Infrastructure_Constants.Sites_File_Constants.ID]
-            site_types_info = site_types_info.loc[
-                site_types_info[Infrastructure_Constants.Site_Type_File_Constants.TYPE] == site_type
-            ].iloc[0]
-        propagating_params = update_propagating_params(
-            site_row_df_info=srow, site_type_info=site_type_info, methods=methods
-        )
-        new_site = Site(
-            id=srow[Infrastructure_Constants.Sites_File_Constants.ID],
-            lat=srow[Infrastructure_Constants.Sites_File_Constants.LAT],
-            long=srow[Infrastructure_Constants.Sites_File_Constants.LON],
-            equipment_groups=srow[Infrastructure_Constants.Sites_File_Constants.EQG],
-            propagating_params=propagating_params,
-            infrastructure_inputs=infrastructure_inputs,
-        )
-
-        sites.append(new_site)
+    def set_pregen_emissions(self, emissions, sim_number) -> None:
+        for site in self._sites:
+            site.set_pregen_emissions(emissions[site.get_id()], sim_number)
 
     # Generate Emissions for all infrastructure
-    for site in sites:
-        site.generate_emissions()
-
-    return sites
-
-
-def regenerate_sites(virtual_world, prog_0_sites, in_dir):
-    """
-    Regenerate sites allows site level parameters to update on pregenerated
-    sites. This is necessary when programs have different site level params
-    for example, the survey frequency or survey time could be different.
-    """
-    # Read in the sites as a list of dictionaries
-    sites_in = pd.read_csv(in_dir / virtual_world["infrastructure_file"], index_col="facility_ID")
-    # Add facility ID back into object
-    sites_in["facility_ID"] = sites_in.index
-    sites = sites_in.to_dict("index")
-    out_sites = []
-    for site_or in prog_0_sites:
-        s_idx = site_or["facility_ID"]
-        new_site = copy.deepcopy(sites[s_idx])
-        new_site.update(
-            {
-                "cum_leaks": site_or["cum_leaks"],
-                "initial_leaks": site_or["initial_leaks"],
-                "leak_rate_units": site_or["leak_rate_units"],
-                "repair_delay": site_or["repair_delay"],
-            }
-        )
-        if "empirical_leak_rates" in site_or:
-            new_site.update({"empirical_leak_rates": site_or["empirical_leak_rates"]})
-        if "leak_rate_dist" in site_or:
-            new_site.update(
-                {
-                    "leak_rate_dist": site_or["leak_rate_dist"],
-                }
+    def generate_emissions(self, sim_start_date, sim_end_date, sim_number) -> dict:
+        sim_start_date = datetime(*sim_start_date)
+        sim_end_date = datetime(*sim_end_date)
+        infrastructure_emissions: dict = {}
+        for site in self._sites:
+            infrastructure_emissions.update(
+                site.generate_emissions(sim_start_date, sim_end_date, sim_number)
             )
-        if "empirical_vent_rates" in site_or:
-            new_site.update({"empirical_vent_rates": site_or["empirical_vent_rates"]})
-        out_sites.append(new_site)
-    return out_sites
+        return {sim_number: infrastructure_emissions}
+
+    def generate_infrastructure(self, virtual_world, methods, in_dir) -> list[Site]:
+        """[summary]
+
+        Args:
+            virtual_world (dict): The virtual world parameters informing site generation.
+            in_dir (Path): The path to the inputs directory
+
+        Returns:
+            [dict]: sites, Union[dict, None]: leak_timeseries, Union[dict, None]: initial_leaks
+        """
+        infrastructure_inputs: dict[str, pd.DataFrame] = read_in_files(virtual_world, in_dir)
+        sites_types_provided: bool = "site_types" in infrastructure_inputs
+
+        sites_in: pd.DataFrame = infrastructure_inputs["sites"]
+
+        # Sample sites and shuffle
+        n_samples = virtual_world["site_samples"]
+        if n_samples is None:
+            n_samples = len(sites_in)
+        # even if n_samples is None, the sample function is still used to shuffle
+        sites_to_make = sites_in.sample(n_samples)
+
+        sites: list[Site] = []
+
+        for sidx, srow in sites_to_make.iterrows():
+            site_type_info = None
+            if sites_types_provided:
+                site_types_info = infrastructure_inputs["site_types"]
+                site_type = srow[Infrastructure_Constants.Sites_File_Constants.ID]
+                site_types_info = site_types_info.loc[
+                    site_types_info[Infrastructure_Constants.Site_Type_File_Constants.TYPE]
+                    == site_type
+                ].iloc[0]
+            propagating_params = generate_propagating_params(
+                virtual_world=virtual_world, methods=methods
+            )
+            update_propagating_params(
+                propagating_params,
+                site_row_df_info=srow,
+                site_type_info=site_type_info,
+                methods=methods,
+            )
+            new_site = Site(
+                id=srow[Infrastructure_Constants.Sites_File_Constants.ID],
+                lat=srow[Infrastructure_Constants.Sites_File_Constants.LAT],
+                long=srow[Infrastructure_Constants.Sites_File_Constants.LON],
+                equipment_groups=srow[Infrastructure_Constants.Sites_File_Constants.EQG],
+                propagating_params=propagating_params,
+                infrastructure_inputs=infrastructure_inputs,
+            )
+
+            sites.append(new_site)
+
+        self._sites: list[Site] = sites

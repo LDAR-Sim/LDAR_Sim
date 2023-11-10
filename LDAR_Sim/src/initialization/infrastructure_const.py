@@ -98,17 +98,17 @@ class Infrastructure_Constants:
 
 class Virtual_World_To_Prop_Params_Mapping:
     PROPAGATING_PARAMS: dict[str, str] = {
-        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ERS: "virtual_world.ERS",
-        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_EPR: "virtual_world.LPR",
-        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RD: "virtual_world.repair_delay",
-        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RC: "virtual_world.repair_cost",
-        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ED: "virtual_world.NRd",
-        Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_ERS: None,
+        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ERS: "emissions.ERS",
+        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_EPR: "emissions.LPR",
+        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RD: "repairs.delay",
+        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RC: "repairs.cost",
+        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ED: "NRd",
+        Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_ERS: "emissions.non_rep_ERS",
     }
 
     METH_SPEC_PROP_PARAMS: dict[str, str] = {
-        Infrastructure_Constants.Sites_File_Constants.SPATIAL_PLACEHOLDER: "method.coverage.spatial",  # noqa
-        Infrastructure_Constants.Sites_File_Constants.SURVEY_FREQUENCY_PLACEHOLDER: "method.RS",
-        Infrastructure_Constants.Sites_File_Constants.SURVEY_COST_PLACEHOLDER: "method.cost",
-        Infrastructure_Constants.Sites_File_Constants.SURVEY_TIME_PLACEHOLDER: "method.time",
+        Infrastructure_Constants.Sites_File_Constants.SPATIAL_PLACEHOLDER: "coverage.spatial",  # noqa
+        Infrastructure_Constants.Sites_File_Constants.SURVEY_FREQUENCY_PLACEHOLDER: "RS",
+        Infrastructure_Constants.Sites_File_Constants.SURVEY_COST_PLACEHOLDER: "cost",
+        Infrastructure_Constants.Sites_File_Constants.SURVEY_TIME_PLACEHOLDER: "time",
     }

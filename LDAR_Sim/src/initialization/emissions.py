@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime, timedelta
 from math import floor
 from typing import Any
 from typing_extensions import override
@@ -8,11 +8,11 @@ from numpy.random import binomial
 class Emission:
     def __init__(
         self,
-        emission_n,
-        rate,
-        start_date,
-        simulation_sd,
-        repairable,
+        emission_n: int,
+        rate: float,
+        start_date: datetime,
+        simulation_sd: datetime,
+        repairable: bool,
     ):
         self._emissions_id: str = f"{str(emission_n).zfill(10)}"
         self._rate: float = rate
@@ -107,14 +107,14 @@ class NonRepairableEmission(Emission):
 class FugitiveEmission(Emission):
     def __init__(
         self,
-        emission_n,
-        rate,
-        start_date,
-        simulation_sd,
-        repairable,
-        repair_delay,
-        repair_cost,
-        nrd,
+        emission_n: int,
+        rate: float,
+        start_date: datetime,
+        simulation_sd: datetime,
+        repairable: bool,
+        repair_delay: int,
+        repair_cost: float,
+        nrd: int,
     ):
         super().__init__(
             emission_n,
@@ -126,9 +126,9 @@ class FugitiveEmission(Emission):
         self._repair_delay: int = repair_delay
         self._repair_cost: float = repair_cost
         self._tagging_rep_delay: int = 0
-        self._nrd = nrd
-        self._repair_date = None
-        days_active_b4_sim = (simulation_sd - start_date).days
+        self._nrd: int = nrd
+        self._repair_date: datetime = None
+        days_active_b4_sim: int = (simulation_sd - start_date).days
         self._days_active_b4_sim = days_active_b4_sim if days_active_b4_sim > 0 else 0
 
     def check_if_repaired(self):
@@ -139,7 +139,7 @@ class FugitiveEmission(Emission):
         if self._repairable:
             if self._days_since_tagged >= self._repair_delay + self._tagging_rep_delay:
                 self._status = "repaired"
-                self._repair_date = self._start_date + datetime.timedelta(days=(self._active_days))
+                self._repair_date = self._start_date + timedelta(days=(self._active_days))
 
     def get_init_detect_company(self):
         return self._init_detect_by
@@ -164,7 +164,7 @@ class FugitiveEmission(Emission):
         self._tagged = True
         self._tagged_by_company = "natural"
         self._status = "repaired"
-        self._repair_date = self._start_date + datetime.timedelta(days=(self._active_days))
+        self._repair_date = self._start_date + timedelta(days=(self._active_days))
 
     # TODO potentially move this into company later
     def estimate_start_date(self, cur_ts, t_since_ldar):

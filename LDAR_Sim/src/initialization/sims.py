@@ -19,13 +19,39 @@
 # ------------------------------------------------------------------------------
 
 
+import json
 import os
 import pickle
 from copy import deepcopy
 
 from initialization.preseed import gen_seed_timeseries
-from initialization.sites import generate_infrastructure, regenerate_sites
-from initialization.emissions import FugitiveEmission
+from initialization.sites import Infrastructure
+import hashlib
+
+
+def hash_file(file_path) -> str:
+    # Construct the hasher object
+    hasher: hashlib._Hash = hashlib.md5()
+
+    # Open the file to hash
+    with open(file_path, "rb") as f:
+        # Add bytes from the file to the hasher chunk by chunk
+        for chunk in iter(lambda: f.read(4096), b""):
+            hasher.update(chunk)
+    # Return the string containing the hex representation of the hash
+    return hasher.hexdigest()
+
+
+def hash_dict(in_dict) -> str:
+    # Convert the dictionary to a string after sorting it by keys.
+    # This ensure the same dictionary will produce the same string
+    json_str = json.dumps(in_dict, sort_keys=True)
+    # Construct the hasher object
+    hasher: hashlib._Hash = hashlib.md5()
+    # Add the bytes of the string to the hasher
+    hasher.update(json_str.encode("utf-8"))
+    # Return the string containing the hex representation of the hash
+    return hasher.hexdigest()
 
 
 def create_sims(sim_params, programs, virtual_world, generator_dir, in_dir, out_dir):
@@ -33,55 +59,179 @@ def create_sims(sim_params, programs, virtual_world, generator_dir, in_dir, out_
     n_simulations = sim_params["n_simulations"]
     pregen_leaks = sim_params["pregenerate_leaks"]
     preseed_random = sim_params["preseed_random"]
-    base_prog = sim_params["baseline_program"]
-    methods: list[str] = list(
-        {method for program in programs for method in programs[program]["method_labels"]}
-    )
+    METHODS_ACCESSOR = "methods"
+    METHOD_LABELS_ACCESSOR = "method_labels"
+    methods = {
+        method: programs[program][METHODS_ACCESSOR][method]
+        for program in programs
+        for method in programs[program][METHOD_LABELS_ACCESSOR]
+    }
     simulations = []
-    for i in range(n_simulations):
-        if pregen_leaks:
-            file_loc = generator_dir / "pregen_{}_{}.p".format(i, base_prog)
-            # If there is no pregenerated file for the virtual world
-            if not os.path.isfile(file_loc):
-                sites, leak_timeseries, initial_leaks = generate_infrastructure(
-                    virtual_world=virtual_world,
-                    in_dir=in_dir,
-                    methods=methods,
-                    start_date=sim_params["start_date"],
-                    end_date=sim_params["end_date"],
+
+    # Generate Infrastructure for all simulations.
+    # If previously generated infrastructure exists, use it instead.
+    hash_file_loc = generator_dir / "gen_infrastructure_hashes.p"
+    infra_file_loc = generator_dir / "gen_infrastructure.p"
+    emis_file_loc = generator_dir / "gen_infrastructure_emissions.p"
+
+    # Generate md5 hashes for files that can contain infrastructure defining information.
+    # A md5 hash is a unique* number
+    # (Different files can get the same hash with md5 hashing but it is very uncommon)
+    # representing a set of bytes (The contents of any file).
+    # By Saving these and comparing them to previously saved values,
+    # this allows us to know if the inputs that influence infrastructure have changed so that
+    # we can generate new Infrastructure instead of using the old one in that case.
+    sites_file_hash: str = hash_file(virtual_world["infrastructure"]["sites_file"])
+    site_type_file_hash: str = hash_file(virtual_world["infrastructure"]["site_type_file"])
+    equip_group_file_hash: str = hash_file(virtual_world["infrastructure"]["equipment_group_file"])
+    sources_file_hash: str = hash_file(virtual_world["infrastructure"]["sources_file"])
+    virtual_world_hash: str = hash_dict(virtual_world)
+
+    if not os.path.isfile(hash_file_loc) or not os.path.isfile(infra_file_loc):
+        # No previously generated Infrastructure found, generate new Infrastructure
+        infrastructure: Infrastructure = Infrastructure(
+            virtual_world=virtual_world, methods=methods, in_dir=in_dir
+        )
+
+        # Save the generated Infrastructure and the input file hashes and the virtual world hash.
+        pickle.dump(
+            {
+                "sites_file": sites_file_hash,
+                "site_type_file": site_type_file_hash,
+                "equipment_group_file": equip_group_file_hash,
+                "sources_file": sources_file_hash,
+                "virtual_world": virtual_world_hash,
+                "n_simulations": n_simulations,
+            },
+            open(hash_file_loc, "wb"),
+        )
+        pickle.dump({"infrastructure": infrastructure}, open(infra_file_loc, "wb"))
+
+        # Generate emissions for all simulation sets
+        emissions: dict = {}
+        for i in range(n_simulations):
+            print(f"Generating emissions for Set_{i} simulations")
+            emissions.update(
+                infrastructure.generate_emissions(
+                    sim_start_date=virtual_world["start_date"],
+                    sim_end_date=virtual_world["end_date"],
+                    sim_number=i,
                 )
-                sites: dict
-                leak_timeseries: dict
-                initial_leaks: dict[str, list[FugitiveEmission]]
-        else:
-            sites, leak_timeseries, initial_leaks = [], [], []
-        if preseed_random:
-            seed_timeseries = gen_seed_timeseries(sim_params)
-        else:
-            seed_timeseries = None
-        for pidx, p in programs.items():
-            if pregen_leaks:
-                file_loc = generator_dir / "pregen_{}_{}.p".format(i, pidx)
-                if os.path.isfile(file_loc):
-                    # If there is a pregenerated file for the virtual world
-                    generated_data = pickle.load(open(file_loc, "rb"))
-                    sites = generated_data["sites"]
-                    leak_timeseries = generated_data["leak_timeseries"]
-                    initial_leaks = generated_data["initial_leaks"]
-                    seed_timeseries = generated_data["seed_timeseries"]
-                else:
-                    sites = regenerate_sites(virtual_world, sites, in_dir)
-                    pickle.dump(
-                        {
-                            "sites": sites,
-                            "leak_timeseries": leak_timeseries,
-                            "initial_leaks": initial_leaks,
-                            "seed_timeseries": seed_timeseries,
-                        },
-                        open(file_loc, "wb"),
-                    )
+            )
+
+        pickle.dump(emissions, open(emis_file_loc, "wb"))
+    else:
+        # Read in all the saved hashes from the infrastructure used to generate
+        # the previously generated sites.
+        gen_infra_hash_dict = pickle.load(open(hash_file_loc, "rb"))
+        gen_sites_file_hash: str = gen_infra_hash_dict["sites_file"]
+        gen_site_type_file_hash: str = gen_infra_hash_dict["site_type_file"]
+        gen_equip_group_file_hash: str = gen_infra_hash_dict["equipment_group_file"]
+        gen_sources_file_hash: str = gen_infra_hash_dict["sources_file"]
+        gen_virtual_world_hash: str = gen_infra_hash_dict["virtual_world"]
+
+        # Read the previous number of simulations
+        gen_n_simulations = gen_infra_hash_dict["n_simulations"]
+
+        # Check if all previous hashes match current hashes
+        hashes_match: bool = (
+            gen_sites_file_hash == sites_file_hash
+            and gen_site_type_file_hash == site_type_file_hash
+            and gen_equip_group_file_hash == equip_group_file_hash
+            and gen_sources_file_hash == sources_file_hash
+            and gen_virtual_world_hash == virtual_world_hash
+        )
+
+        # Check if the same number of simulations or less simulations are required.
+        n_sims_match: bool = gen_n_simulations >= n_simulations
+
+        # Determine what to do next based on if all current hashes match previous hashes
+        if hashes_match:
+            # The hashes match, meaning it's okay to reuse the previously generated infrastructure,
+            # and the previously generated emissions
+            infrastructure = pickle.load(open(infra_file_loc, "rb"))["infrastructure"]
+            emissions: dict = pickle.load(open(emis_file_loc, "rb"))
+
+            # Check if the same amount of simulations are required
+            if n_sims_match:
+                # Load Previously Generated Emissions back into Previously Generated infrastructure
+                for i in range(n_simulations):
+                    infrastructure.set_pregen_emissions(emissions[i], i)
             else:
-                sites = []
+                # More simulations are required. Generated emissions can still be re-used,
+                # but it is necessary to generate more emissions scenarios for the extra simulations
+
+                # Load Emissions back into pregenerated infrastructure
+                for i in range(gen_n_simulations):
+                    infrastructure.set_pregen_emissions(emissions[i], i)
+
+                # Generate emissions for remaining simulation sets
+                for i in range(gen_n_simulations, n_simulations):
+                    print(f"Generating emissions for Set_{i} simulations")
+                    emissions.update(
+                        infrastructure.generate_emissions(
+                            sim_start_date=virtual_world["start_date"],
+                            sim_end_date=virtual_world["end_date"],
+                            sim_number=i,
+                        )
+                    )
+
+                pickle.dump(emissions, open(emis_file_loc, "wb"))
+
+        else:
+            # The hashes do not match,
+            # meaning something has changed with the infrastructure or virtual world.
+            # Either way, the sites need to be generated anew.
+            infrastructure: Infrastructure = Infrastructure(
+                virtual_world=virtual_world, methods=methods, in_dir=in_dir
+            )
+
+            # Save the generated Infrastructure,
+            # the input file hashes and the virtual world hash.
+            pickle.dump(
+                {
+                    "sites_file": sites_file_hash,
+                    "site_type_file": site_type_file_hash,
+                    "equipment_group_file": equip_group_file_hash,
+                    "sources_file": sources_file_hash,
+                    "virtual_world": virtual_world_hash,
+                    "n_simulations": n_simulations,
+                },
+                open(hash_file_loc, "wb"),
+            )
+            pickle.dump({"infrastructure": infrastructure}, open(infra_file_loc, "wb"))
+
+            # Generate emissions for all simulation sets
+            emissions: dict = {}
+            for i in range(n_simulations):
+                print(f"Generating emissions for Set_{i} simulations")
+                emissions.update(
+                    infrastructure.generate_emissions(
+                        sim_start_date=virtual_world["start_date"],
+                        sim_end_date=virtual_world["end_date"],
+                        sim_number=i,
+                    )
+                )
+
+            pickle.dump(emissions, open(emis_file_loc, "wb"))
+
+    for i in range(n_simulations):
+        for pidx, p in programs.items():
+            if preseed_random:
+                rand_seed_file_loc = generator_dir / f"pregen_rand_seed_{i}_{pidx}.p"
+                if os.path.isfile(rand_seed_file_loc):
+                    seed_timeseries = pickle.load(open(rand_seed_file_loc, "rb"))
+                else:
+                    print(
+                        (
+                            "No pre-seeding found to control randomness. "
+                            f"Now generating pre-seeding for randomness in P_{pidx}_sim_{i}"
+                        )
+                    )
+                    seed_timeseries = gen_seed_timeseries(sim_params)
+                    pickle.dump(seed_timeseries, open(rand_seed_file_loc, "wb"))
+            else:
+                seed_timeseries = None
 
             opening_message = "Simulating program: {} ; simulation {} of {}".format(
                 pidx, i + 1, n_simulations
@@ -102,9 +252,7 @@ def create_sims(sim_params, programs, virtual_world, generator_dir, in_dir, out_
                         "closing_message": closing_message,
                         "pregenerate_leaks": pregen_leaks,
                         "print_from_simulation": sim_params["print_from_simulations"],
-                        "sites": sites,
-                        "leak_timeseries": leak_timeseries,
-                        "initial_leaks": initial_leaks,
+                        "Infrastructure": infrastructure,
                         "seed_timeseries": seed_timeseries,
                     }
                 ]
