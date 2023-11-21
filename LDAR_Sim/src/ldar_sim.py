@@ -27,6 +27,8 @@ from math import floor
 import numpy as np
 import pandas as pd
 from initialization.emissions import FugitiveEmission
+from initialization.sites import Infrastructure
+from time_counter import TimeCounter
 from weather.daylight_calculator import DaylightCalculatorAve
 from config.output_flag_mapping import (
     OUTPUTS,
@@ -55,10 +57,12 @@ warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning)
 class LdarSim:
     def __init__(
         self,
+        sim_number,
         simulation_settings,
         state,
         program_parameters,
         virtual_world,
+        infrastructure: Infrastructure,
         timeseries,
         input_dir,
         output_dir,
@@ -66,7 +70,9 @@ class LdarSim:
         """
         Construct the simulation.
         """
+        self.sim_number: int = sim_number
         self.state = state
+        self.infrastructure: Infrastructure = infrastructure
         self.simulation_settings = simulation_settings
         self.virtual_world = virtual_world
         self.program_parameters = program_parameters
@@ -78,138 +84,7 @@ class LdarSim:
         #  --- state variables ---
         self.state["campaigns"] = {}
         state["candidate_flags"] = {}
-        # Read in data files
-        if virtual_world["emissions"]["leak_file"] is not None:
-            state["empirical_leaks"] = np.array(
-                pd.read_csv(input_dir / virtual_world["emissions"]["leak_file"])
-            )
-        if program_parameters["economics"]["repair_costs"]["file"] is not None:
-            virtual_world["economics"]["repair_costs"]["vals"] = np.array(
-                pd.read_csv(input_dir / virtual_world["economics"]["repair_costs"]["file"])
-            )
         state["max_leak_rate"] = virtual_world["emissions"]["max_leak_rate"]
-        state["t"].set_UTC_offset(state["sites"])
-        if virtual_world["subtype_file"] is not None:
-            state["subtypes"] = pd.read_csv(
-                input_dir / virtual_world["subtype_file"], index_col="subtype_code"
-            ).to_dict()
-        # Sample sites if they have not been provided from pregeneration step
-        if not virtual_world["pregenerate_leaks"]:
-            if virtual_world["site_samples"] is not None:
-                state["sites"] = random.sample(state["sites"], virtual_world["site_samples"])
-            # Shuffle all the entries to randomize order for identical 't_Since_last_LDAR' values
-            random.shuffle(state["sites"])
-
-        n_subtype_rs = {}
-        n_screening_rs_sets = {}
-        sites_per_subtype = {}
-        # Additional variable(s) for each site
-        for site in state["sites"]:
-            if site["subtype_code"] not in n_subtype_rs:
-                n_subtype_rs.update({site["subtype_code"]: {"natural": -1}})
-                sites_per_subtype.update({site["subtype_code"]: 0})
-                add_subtype = True
-            else:
-                add_subtype = False
-            sites_per_subtype[site["subtype_code"]] += 1
-            n_rs = n_subtype_rs[site["subtype_code"]]
-            for m_label, m_obj in program_parameters["methods"].items():
-                # Site parameter overwrite of RS and Time (used for sensitivity analysis)
-                m_RS = "{}_RS".format(m_label)
-                if m_obj["RS"] is not None:
-                    site[m_RS] = m_obj["RS"]
-
-                m_min_time_bt_surveys = "{}_min_time_bt_surveys".format(m_label)
-                # when provided by user in method
-                if m_obj["scheduling"]["min_time_bt_surveys"] is not None:
-                    site[m_min_time_bt_surveys] = m_obj["scheduling"]["min_time_bt_surveys"]
-                # when not provided
-                if (
-                    not m_obj["is_follow_up"]
-                    and m_obj["deployment_type"] == "mobile"
-                    and site[m_RS] > 0
-                ):
-                    if not (m_min_time_bt_surveys in site):
-                        site[m_min_time_bt_surveys] = est_min_time_bt_surveys(
-                            m_RS, len(m_obj["scheduling"]["deployment_months"]), site
-                        )
-
-                if m_RS in site and m_obj["measurement_scale"] != "component":
-                    if m_label not in n_screening_rs_sets:
-                        n_screening_rs_sets.update({m_label: site[m_RS]})
-                    elif n_screening_rs_sets[m_label] != site[m_RS]:
-                        n_screening_rs_sets.update({m_label: "varies"})
-
-                m_time = "{}_time".format(m_label)
-                if m_obj["time"] is not None:
-                    site[m_time] = m_obj["time"]
-                if add_subtype:
-                    if m_RS in site:
-                        # if scheduled capture the RS value
-                        n_subtype_rs[site["subtype_code"]].update({m_label: site[m_RS]})
-                    else:
-                        # If set rs value to -1 (used for tracking later)
-                        n_subtype_rs[site["subtype_code"]].update({m_label: -1})
-                        # If the value changes set to None
-                elif m_RS in site and (n_rs[m_label] != site[m_RS] or n_rs[m_label] is None):
-                    n_subtype_rs[site["subtype_code"]].update({m_label: None})
-                # Calculate the site minimum interval
-                if m_RS in site and site[m_RS] != 0:
-                    n_months = len(
-                        program_parameters["methods"][m_label]["scheduling"]["deployment_months"]
-                    )
-                    n_days = 30.4167 * n_months
-                    site["{}_min_int".format(m_label)] = floor(n_days / site[m_RS])
-                # Automatically assign 1 crew to followup if left unspecified
-                elif m_obj["n_crews"] is None:
-                    m_obj["n_crews"] = 1
-
-            if virtual_world["pregenerate_leaks"]:
-                initial_leaks = virtual_world["initial_leaks"][site["facility_ID"]]
-                n_leaks = len(virtual_world["initial_leaks"][site["facility_ID"]])
-            else:
-                initial_leaks = generate_initial_leaks(virtual_world, site)
-                n_leaks = len(initial_leaks)
-            site.update(
-                {
-                    "total_emissions_kg": 0,
-                    "active_leaks": initial_leaks,
-                    "repaired_leaks": [],
-                    "last_component_survey": None,
-                    "historic_t_since_LDAR": None,
-                    "tags": [],
-                    "initial_leak_cnt": n_leaks,
-                    "currently_flagged": False,
-                    "flagged_by": None,
-                    "date_flagged": None,
-                    "crew_ID": None,
-                    "lat_index": min(
-                        range(len(state["weather"].latitude)),
-                        key=lambda i: abs(state["weather"].latitude[i] - float(site["lat"])),
-                    ),
-                    "lon_index": min(
-                        range(len(state["weather"].longitude)),
-                        key=lambda i: abs(state["weather"].longitude[i] - float(site["lon"]) % 360),
-                    ),
-                }
-            )
-
-            in_grid, exit_msg = grid_contains_point(
-                [site["lat"], site["lon"]],
-                [state["weather"].latitude, state["weather"].longitude],
-            )
-            if not in_grid:
-                sys.exit(exit_msg)
-        n_sites = len(state["sites"])
-
-        # Setup Campaigns
-        setup_campaigns(
-            self.state["campaigns"],
-            program_parameters,
-            virtual_world,
-            n_sites,
-            n_screening_rs_sets,
-        )
 
         #  --- timeseries variables ---
         timeseries["total_daily_cost"] = np.zeros(virtual_world["timesteps"])
@@ -227,16 +102,16 @@ class LdarSim:
 
         # Initialize method(s) to be used; append to state
         calculate_daylight = False
+        method_est_crews: dict = infrastructure.estimate_method_crews_required(
+            program_parameters["methods"].items()
+        )
         for m_label, m_obj in program_parameters["methods"].items():
             # Initialize method site_visit tracking
             state["site_visits"][m_label] = []
             # Update method parameters
             m_obj_wr = program_parameters["methods"][m_label]
-            if m_obj["scheduling"]["route_planning"]:
-                m_obj_wr["t_bw_sites"]["vals"] = est_t_bw_sites(m_obj, state["sites"])
             if m_obj["n_crews"] is None:
-                m_obj_wr["n_crews"] = est_n_crews(m_obj, state["sites"])
-            m_obj_wr["est_site_p_day"] = est_site_p_day(m_obj, state["sites"])
+                m_obj_wr["n_crews"] = method_est_crews[m_label]
             if m_obj["t_bw_sites"]["file"] is not None:
                 m_obj_wr["t_bw_sites"]["vals"] = np.array(
                     pd.read_csv(input_dir / m_obj["t_bw_sites"]["file"]).iloc[:, 0]
@@ -262,15 +137,6 @@ class LdarSim:
         if calculate_daylight:
             state["daylight"] = DaylightCalculatorAve(state, virtual_world)
 
-        # If working without methods (operator only), need to get the first day going
-        if not bool(program_parameters["methods"]):
-            state["t"].current_date = state["t"].current_date.replace(hour=1)
-
-        # HBD this is sooooo hacky Repair time seems like its wrong
-        if len(self.state["campaigns"]) > 0:
-            self.program_parameters["methods"].update(
-                {"makeup": {"reporting_delay": 0, "label": "makeup"}}
-            )
         return
 
     def update(self):
@@ -279,7 +145,7 @@ class LdarSim:
         returns nothing
         """
 
-        self.add_leaks()  # Add leaks to the leak pool
+        self.add_emissions()  # Add leaks to the leak pool
         self.deploy_crews()  # Find leaks
         self.update_state()  # Update state of sites and leaks
         return
@@ -356,30 +222,14 @@ class LdarSim:
 
         return
 
-    def add_leaks(self):
+    def add_emissions(self):
         """
-        add new leaks to the leak pool
+        add new emissions to infrastructure in the simulation
         """
-        # First, determine whether each site gets a new leak or not
-        virtual_world = self.virtual_world
-        for site in self.state["sites"]:
-            new_leaks = None
-            sidx = site["facility_ID"]
-            if virtual_world["pregenerate_leaks"]:
-                new_leaks: FugitiveEmission = virtual_world["leak_timeseries"][sidx][
-                    self.state["t"].current_timestep
-                ]
-            elif binomial(1, self.virtual_world["emissions"]["LPR"]):
-                new_leaks: FugitiveEmission = generate_leak(
-                    virtual_world, site, self.state["t"].current_date, site["cum_leaks"]
-                )
-            if new_leaks is not None:
-                site.update({"n_new_leaks": 1})
-                site["cum_leaks"] += 1
-                new_leaks.activate()
-                site["active_leaks"].append(new_leaks)
-            else:
-                site.update({"n_new_leaks": 0})
+        time_counter: TimeCounter = self.state["t"]
+        cur_date: datetime = time_counter.current_date
+        infrastructure: Infrastructure = self.infrastructure
+        infrastructure.activate_emissions(cur_date, self.sim_number)
         return
 
     def deploy_crews(self):

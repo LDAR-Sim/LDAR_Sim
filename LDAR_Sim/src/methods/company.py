@@ -111,18 +111,6 @@ class BaseCompany:
         )
 
         # --- init site specific variables ---
-        for site in self.state["sites"]:
-            survey_min_interval = "{}_min_int".format(self.name)
-            if survey_min_interval in site:
-                t_since_last_LDAR = site[survey_min_interval]
-            else:
-                t_since_last_LDAR = 0
-            site.update({"{}_t_since_last_LDAR".format(self.name): t_since_last_LDAR})
-            site.update({"{}_surveys_conducted".format(self.name): 0})
-            site.update({"{}_attempted_today?".format(self.name): False})
-            site.update({"{}_surveys_done_this_year".format(self.name): 0})
-            site.update({"{}_missed_leaks".format(self.name): 0})
-
         rollover = []
         make_crew_loc = import_module(
             "methods.deployment.{}_company".format(self.config["deployment_type"].lower())

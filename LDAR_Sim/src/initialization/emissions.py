@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from math import floor
-from typing import Any
+from typing import Any, Literal
 from typing_extensions import override
 from numpy.random import binomial
 
@@ -51,6 +51,9 @@ class Emission:
         if method not in self._tech_spat_covs:
             self._tech_spat_covs[method] = binomial(1, cov)
         return self._tech_spat_covs[method]
+
+    def activate() -> str:
+        return ""
 
     def get_emis_vol(self) -> float:
         return self._active_days * self._rate * 86.4
@@ -215,5 +218,12 @@ class FugitiveEmission(Emission):
         summary_dict.update({("Date Repaired", self._repair_date)})
         return summary_dict
 
-    def activate(self) -> None:
-        self._status = "Active"
+    @override
+    def activate(self, date: datetime) -> Literal["Already_Active", "Newly_Active", "Inactive"]:
+        activated: str = "Inactive"
+        if self._status == "Active":
+            activated = "Already_Active"
+        elif self._start_date <= date:
+            self._status = "Active"
+            activated = "Newly_Active"
+        return activated

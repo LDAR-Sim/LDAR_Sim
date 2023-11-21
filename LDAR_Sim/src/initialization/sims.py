@@ -81,14 +81,29 @@ def create_sims(sim_params, programs, virtual_world, generator_dir, in_dir, out_
     # By Saving these and comparing them to previously saved values,
     # this allows us to know if the inputs that influence infrastructure have changed so that
     # we can generate new Infrastructure instead of using the old one in that case.
-    sites_file_hash: str = hash_file(virtual_world["infrastructure"]["sites_file"])
-    site_type_file_hash: str = hash_file(virtual_world["infrastructure"]["site_type_file"])
-    equip_group_file_hash: str = hash_file(virtual_world["infrastructure"]["equipment_group_file"])
-    sources_file_hash: str = hash_file(virtual_world["infrastructure"]["sources_file"])
+    print("Hashing files")
+    sites_file_hash: str = hash_file(in_dir / virtual_world["infrastructure"]["sites_file"])
+    site_type_file_hash: str = (
+        hash_file(in_dir / virtual_world["infrastructure"]["site_type_file"])
+        if virtual_world["infrastructure"]["site_type_file"] is not None
+        else None
+    )
+    equip_group_file_hash: str = (
+        hash_file(in_dir / virtual_world["infrastructure"]["equipment_group_file"])
+        if virtual_world["infrastructure"]["equipment_group_file"] is not None
+        else None
+    )
+    sources_file_hash: str = (
+        hash_file(in_dir / virtual_world["infrastructure"]["sources_file"])
+        if virtual_world["infrastructure"]["sources_file"] is not None
+        else None
+    )
     virtual_world_hash: str = hash_dict(virtual_world)
+    print("Done hashing files")
 
     if not os.path.isfile(hash_file_loc) or not os.path.isfile(infra_file_loc):
         # No previously generated Infrastructure found, generate new Infrastructure
+        print("Generating Infrastructure")
         infrastructure: Infrastructure = Infrastructure(
             virtual_world=virtual_world, methods=methods, in_dir=in_dir
         )
@@ -182,6 +197,7 @@ def create_sims(sim_params, programs, virtual_world, generator_dir, in_dir, out_
             # The hashes do not match,
             # meaning something has changed with the infrastructure or virtual world.
             # Either way, the sites need to be generated anew.
+            print("Generating Infrastructure")
             infrastructure: Infrastructure = Infrastructure(
                 virtual_world=virtual_world, methods=methods, in_dir=in_dir
             )

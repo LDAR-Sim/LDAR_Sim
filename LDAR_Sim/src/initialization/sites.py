@@ -36,7 +36,7 @@ from initialization.infrastructure_const import (
 )
 from initialization.emissions import Emission, FugitiveEmission
 
-PLACEHOLDER_EQUIPMENT_COUNT = 100
+PLACEHOLDER_EQUIPMENT_COUNT = 10
 PLACEHOLDER_EQUIPMENT = "Placeholder_Equipment"
 SOURCE_CREATION_ERROR_MESSAGE = (
     "Invalid LDAR-Sim infrastructure inputs: Failure to read in sources infrastructure input"
@@ -53,7 +53,7 @@ class Source:
         self._persistent = info[Infrastructure_Constants.Sources_File_Constants.PERSISTENT]
         self._active_duration = info[Infrastructure_Constants.Sources_File_Constants.ACTIVE_DUR]
         self._inactive_duration = info[Infrastructure_Constants.Sources_File_Constants.INACTIVE_DUR]
-        self._generated_emissions: dict[str, list[Emission]] = {}
+        self._generated_emissions: dict[int, list[Emission]] = {}
         self.update_prop_params(info=info, prop_params=prop_params)
         self.set_source_properties(prop_params=prop_params)
 
@@ -92,14 +92,6 @@ class Source:
 
         self._meth_spat_covs = prop_params["Method_Specific_Params"][
             Infrastructure_Constants.Sources_File_Constants.SPATIAL_PLACEHOLDER
-        ]
-
-        self._meth_surv_times = prop_params["Method_Specific_Params"][
-            Infrastructure_Constants.Sources_File_Constants.SURVEY_TIME_PLACEHOLDER
-        ]
-
-        self._meth_surv_costs = prop_params["Method_Specific_Params"][
-            Infrastructure_Constants.Sources_File_Constants.SURVEY_COST_PLACEHOLDER
         ]
 
         if self._repairable:
@@ -174,6 +166,28 @@ class Source:
         self._generated_emissions[sim_number] = emissions
         return {self._source_ID: emissions}
 
+    def activate_emissions(self, date: datetime, sim_number: int) -> list[Emission]:
+        """Activate any emissions produced by the source that are due to begin on the current date
+        for the given simulation and return them in a list.
+
+        Args:
+            date (datetime): The current date in simulation.
+            sim_number (int): The simulation number.
+            Used to interact with the correct set of emissions.
+
+        Returns:
+            list[Emission]: The list of emissions that are newly active on the current date
+        """
+        newly_activated_emissions: list[Emission] = []
+        sim_emissions: list[Emission] = self._generated_emissions[sim_number]
+        for emission in sim_emissions:
+            activate_status: str = emission.activate(date)
+            if activate_status == "Inactive":
+                break
+            elif activate_status == "Newly_Active":
+                newly_activated_emissions.append[emission]
+        return newly_activated_emissions
+
     def set_pregen_emissions(self, src_emissions, sim_number) -> None:
         self._generated_emissions[sim_number] = src_emissions
 
@@ -235,6 +249,18 @@ class Equipment:
 
         return {self._equipment_ID: equip_emissions}
 
+    def activate_emissions(self, date: datetime, sim_number: int) -> None:
+        """Activate any emissions that are due to begin on the current date for the given simulation
+        and add them to the active emissions list for the equipment at which they occur.
+
+        Args:
+            date (datetime): The current date in simulation.
+            sim_number (int): The simulation number.
+            Used to interact with the correct set of emissions.
+        """
+        for source in self._sources:
+            active_emissions: list[Emission] = source.activate_emissions(date, sim_number)
+
     def set_pregen_emissions(self, equipment_emissions, sim_number) -> None:
         for src in self._sources:
             src.set_pregen_emissions(equipment_emissions[src.get_id()], sim_number)
@@ -247,6 +273,7 @@ class Equipment_Group:
     def __init__(self, id, infrastructure_inputs, prop_params, info) -> None:
         self._id: str = id
         self.update_prop_params(info, prop_params)
+        self.set_method_specific_params(prop_params)
         self.create_equipment(
             infrastructure_inputs=infrastructure_inputs, prop_params=prop_params, info=info
         )
@@ -276,6 +303,14 @@ class Equipment_Group:
                         Equipment(col, count, infrastructure_inputs, prop_params)
                     )
 
+    def set_method_specific_params(self, prop_params):
+        self._meth_survey_times = prop_params["Method_Specific_Params"].pop(
+            Infrastructure_Constants.Equipment_Group_File_Constants.SURVEY_TIME_PLACEHOLDER
+        )
+        self._meth_survey_costs = prop_params["Method_Specific_Params"].pop(
+            Infrastructure_Constants.Equipment_Group_File_Constants.SURVEY_COST_PLACEHOLDER
+        )
+
     def generate_emissions(self, sim_start_date, sim_end_date, sim_number) -> dict:
         eqg_emissions = {}
         for eqmt in self._equipment:
@@ -283,9 +318,25 @@ class Equipment_Group:
 
         return {self._id: eqg_emissions}
 
+    def activate_emissions(self, date: datetime, sim_number: int) -> None:
+        """Activate any emissions that are due to begin on the current date for the given simulation
+        and add them to the active emissions list for the equipment at which they occur.
+
+        Args:
+            date (datetime): The current date in simulation.
+            sim_number (int): The simulation number.
+            Used to interact with the correct set of emissions.
+        """
+        for equipment in self._equipment:
+            equipment.activate_emissions(date, sim_number)
+
     def set_pregen_emissions(self, eqg_emissions, sim_number) -> None:
         for equipment in self._equipment:
             equipment.set_pregen_emissions(eqg_emissions[equipment.get_id()], sim_number)
+
+    def get_survey_time(self, method_name) -> float:
+        survey_time: float = self._meth_survey_times[method_name]
+        return survey_time
 
     def report_func(self):
         # some reporting agregate function?
@@ -349,15 +400,17 @@ class Site:
                         )
                     }
                 )
+                prop_params = copy.deepcopy(propagating_params)
                 self._equipment_groups.append(
-                    Equipment_Group(i, infrastructure_inputs, propagating_params, equip_group_info)
+                    Equipment_Group(i, infrastructure_inputs, prop_params, equip_group_info)
                 )
         else:
             equip_group_info = pd.Series(
                 {PLACEHOLDER_EQUIPMENT: math.ceil(PLACEHOLDER_EQUIPMENT_COUNT)}
             )
+            prop_params = copy.deepcopy(propagating_params)
             self._equipment_groups.append(
-                Equipment_Group(i, infrastructure_inputs, propagating_params, equip_group_info)
+                Equipment_Group(i, infrastructure_inputs, prop_params, equip_group_info)
             )
 
     def generate_emissions(self, sim_start_date, sim_end_date, sim_number) -> dict:
@@ -368,9 +421,30 @@ class Site:
 
         return {self._site_ID: site_emissions}
 
+    def activate_emissions(self, date: datetime, sim_number: int) -> None:
+        """Activate any emissions that are due to begin on the current date for the given simulation
+        and add them to the active emissions list for the equipment at which they occur.
+
+        Args:
+            date (datetime): The current date in simulation.
+            sim_number (int): The simulation number.
+            Used to interact with the correct set of emissions.
+        """
+        for eqg in self._equipment_groups:
+            eqg.activate_emissions(date, sim_number)
+
     def set_pregen_emissions(self, site_emissions, sim_number) -> None:
         for eqg in self._equipment_groups:
             eqg.set_pregen_emissions(site_emissions[eqg.get_id()], sim_number)
+
+    def get_required_surveys(self, method_name) -> int:
+        return self._survey_frequencies[method_name]
+
+    def get_method_survey_time(self, method_name) -> float:
+        survey_time: float = 0
+        for eqg in self._equipment_groups:
+            survey_time += eqg.get_survey_time(method_name=method_name)
+        return survey_time
 
     def get_id(self) -> str:
         return self._site_ID
@@ -496,6 +570,51 @@ class Infrastructure:
                 site.generate_emissions(sim_start_date, sim_end_date, sim_number)
             )
         return {sim_number: infrastructure_emissions}
+
+    def get_average_method_survey_time(self, method_name, avg_travel_time) -> float:
+        return np.average(
+            [(site.get_method_survey_time(method_name) + avg_travel_time) for site in self._sites]
+        )
+
+    def get_average_method_surveys_required(self, method_name) -> float:
+        return np.average([site.get_required_surveys(method_name) for site in self._sites])
+
+    def estimate_method_crews_required(self, methods) -> dict:
+        method_req_crews_dict: dict = {}
+        for method in methods:
+            method_name: str = method[0]
+            if not method[1]["is_follow_up"]:
+                avg_travel_time: float = np.average(method[1]["t_bw_sites"]["vals"])
+                avg_method_s_time: float = self.get_average_method_survey_time(
+                    method_name, avg_travel_time
+                )
+                average_req_surveys: float = self.get_average_method_surveys_required(method_name)
+                # Subtract average travel time here to account the method needing to return
+                # at the end of the day
+                daily_work_time: float = (method[1]["max_workday"] * 60) - avg_travel_time
+                est_avg_sites_p_day: float = daily_work_time / avg_method_s_time
+                avg_days_for_surveys: float = 365 / average_req_surveys
+                estimate_req_n_crews: int = math.ceil(
+                    len(self._sites) / (est_avg_sites_p_day * avg_days_for_surveys)
+                )
+                method_req_crews_dict[method_name] = estimate_req_n_crews
+
+            else:
+                method_req_crews_dict[method_name] = 1
+
+        return method_req_crews_dict
+
+    def activate_emissions(self, date: datetime, sim_number: int) -> None:
+        """Activate any emissions that are due to begin on the current date for the given simulation
+        and add them to the active emissions list for the equipment at which they occur.
+
+        Args:
+            date (datetime): The current date in simulation.
+            sim_number (int): The simulation number.
+            Used to interact with the correct set of emissions.
+        """
+        for site in self._sites:
+            site.activate_emissions(date, sim_number)
 
     def generate_infrastructure(self, virtual_world, methods, in_dir) -> list[Site]:
         """[summary]

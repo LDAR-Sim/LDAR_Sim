@@ -26,11 +26,11 @@ import sys
 from datetime import datetime, timedelta
 
 from numpy import random as np_rand
+from initialization.sites import Infrastructure
 from stdout_redirect import stdout_redirect
 from time_counter import TimeCounter
 from weather.weather_lookup import WeatherLookup as WL
 from weather.weather_lookup_hourly import WeatherLookup as WL_h
-from initialization.emissions import Emission
 
 from ldar_sim import LdarSim
 
@@ -40,17 +40,16 @@ def ldar_sim_run(simulation):
     The ldar sim run function takes a simulation dictionary
     simulation = a dictionary of simulation parameters necessary to run LDAR-Sim
     """
-    # i = simulation['i']
+
     simulation = copy.deepcopy(simulation)
+    i = simulation["i"]
     virtual_world = simulation["virtual_world"]
     program_parameters = simulation["program"]
     input_directory = simulation["input_directory"]
     output_directory = simulation["output_directory"] / program_parameters["program_name"]
     virtual_world["pregenerate_leaks"] = simulation["pregenerate_leaks"]
-    virtual_world["leak_timeseries"]: dict[str, list[Emission]] = simulation["leak_timeseries"]
-    virtual_world["initial_leaks"]: dict[str, list[Emission]] = simulation["initial_leaks"]
     virtual_world["seed_timeseries"] = simulation["seed_timeseries"]
-    virtual_world["sites"] = simulation["sites"]
+    infrastructure: Infrastructure = simulation["Infrastructure"]
     simulation_settings = simulation["simulation_settings"]
 
     if not os.path.exists(output_directory):
@@ -68,17 +67,12 @@ def ldar_sim_run(simulation):
     print(simulation["opening_message"])
     virtual_world["simulation"] = str(simulation["i"])
 
-    # --------- Leak distributions -------------
-    if len(virtual_world["leak_timeseries"]) < 1:
-        get_subtype_dist(virtual_world, input_directory)
-
     # --------------------------------------
     # --- Initialize dynamic model state ---
     state = {
         "t": None,
         "operator": None,  # operator gets assigned during initialization
         "methods": [],  # list of methods in action
-        "sites": virtual_world["sites"],  # sites in the simulation
         "flags": [],  # list of sites flagged for follow-up
         # 'leaks': [],  # list of all current leaks
         "tags": [],  # leaks that have been tagged for repair
@@ -109,18 +103,20 @@ def ldar_sim_run(simulation):
         state["weather"] = WL_h(state, virtual_world, input_directory)
     else:
         state["weather"] = WL(state, virtual_world, input_directory)
-    state["t"] = TimeCounter(simulation_settings["start_date"], simulation_settings["end_date"])
+    state["t"] = TimeCounter(virtual_world["start_date"], virtual_world["end_date"])
     virtual_world.update({"timesteps": state["t"].timesteps})
     sim = LdarSim(
+        i,
         simulation_settings,
         state,
         program_parameters,
         virtual_world,
+        infrastructure,
         timeseries,
         input_directory,
         output_directory,
     )
-    start_date = datetime(*simulation_settings["start_date"])
+    start_date = datetime(*virtual_world["start_date"])
     # Loop through timeseries
     for ts in range(state["t"].timesteps):
         state["t"].current_timestep = ts
