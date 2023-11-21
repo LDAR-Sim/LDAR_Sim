@@ -85,9 +85,12 @@ class LdarSim:
                 pd.read_csv(input_dir / virtual_world["emissions"]["leak_file"])
             )
         if program_parameters["economics"]["repair_costs"]["file"] is not None:
-            virtual_world["economics"]["repair_costs"]["vals"] = np.array(
-                pd.read_csv(input_dir / virtual_world["economics"]["repair_costs"]["file"])
+            repair_cost_df = pd.read_csv(
+                input_dir / program_parameters["economics"]["repair_costs"]["file"]
             )
+            program_parameters["economics"]["repair_costs"]["vals"] = repair_cost_df[
+                repair_cost_df.columns[0]
+            ].tolist()
             # Read in the sites as a list of dictionaries
         if len(state["sites"]) < 1:
             state["sites"], _, _ = generate_sites(
