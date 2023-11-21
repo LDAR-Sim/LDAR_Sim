@@ -1,5 +1,9 @@
 # Change Log
 
+## 2023-11-21 - Version 3.3.3
+
+1. **Bugfix for file input for repair cost** Resolved a bug where repair cost input as file was not working.
+
 ## 2023-10-19 - Version 3.3.2
 
 1. **Bugfix for concurrent mobile method survey times** Resolved a bug where previously survey time for concurrent mobile methods would be incorrect.
