@@ -1,17 +1,10 @@
 """ Module for testing the external sensor METEC_WIND"""
 
 from src.methods.crew import BaseCrew
-import datetime
 import numpy as np
-import os
-from pathlib import Path
-import sys
 from testing.unit_testing.test_methods.test_crew.crew_testing_fixtures import (  # Noqa: 401
     mock_site_for_crew_testing_1_fix,
     mock_vw_for_crew_testing_1_fix,
-    mock_config_for_crew_testing_2_fix,
-    mock_vw_for_crew_testing_2_fix,
-    mock_site_for_crew_testing_2_fix,
     mock_settings_for_crew_testing_1_fix,
 )
 from testing.unit_testing.test_external_sensors.external_sensor_testing_fixtures import (  # Noqa: 401
@@ -83,7 +76,7 @@ def test_093_detect_emissions_simple_fail(
     mock_state_for_sensor_testing_1,
 ) -> None:
     """
-    Simple test for checking METEC_WIND for successful detection
+    Simple test for checking METEC_WIND for un-successful detection
 
     """
     np.random.seed(0)  # Setting a seed for reproducibility
@@ -123,7 +116,7 @@ def test_093_detect_emissions_cutoff_fail(
     mock_state_for_sensor_testing_1,
 ) -> None:
     """
-    Simple test for checking METEC_WIND for successful detection
+    Simple test for checking METEC_WIND for threshold
 
     """
     np.random.seed(0)  # Setting a seed for reproducibility
@@ -163,7 +156,7 @@ def test_093_detect_emissions_simple_equip(
     mock_state_for_sensor_testing_1,
 ) -> None:
     """
-    Simple test for checking METEC_WIND for successful detection
+    Simple test for checking METEC_WIND for successful detection at equipment level
 
     """
     np.random.seed(0)  # Setting a seed for reproducibility
@@ -202,10 +195,9 @@ def test_093_detect_emissions_simple_component(
     mock_site_dict_for_sensor_return_5,
     mock_state_for_sensor_testing_2,
     mock_prog_param_for_testing_1,
-    mocker,
 ) -> None:
     """
-    Simple test for checking METEC_WIND for successful detection
+    Simple test for checking METEC_WIND for successful component level detection
 
     """
     np.random.seed(0)  # Setting a seed for reproducibility
