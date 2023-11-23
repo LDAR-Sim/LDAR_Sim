@@ -1,5 +1,9 @@
 # Change Log
 
+## 2023-11-23 - Version 3.3.4
+
+1. **New External Sensor** Added new external sensor - METEC Wind normalized curve
+
 ## 2023-11-21 - Version 3.3.3
 
 1. **Bugfix for file input for repair cost** Resolved a bug where repair cost input as file was not working.
