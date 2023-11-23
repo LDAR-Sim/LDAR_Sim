@@ -94,7 +94,6 @@ def update_propagating_params(
 class Infrastructure:
     def __init__(self, virtual_world, methods, in_dir) -> None:
         self.generate_infrastructure(virtual_world=virtual_world, methods=methods, in_dir=in_dir)
-        self.initialize_survey_schedules(methods)
 
     def set_pregen_emissions(self, emissions, sim_number) -> None:
         for site in self._sites:

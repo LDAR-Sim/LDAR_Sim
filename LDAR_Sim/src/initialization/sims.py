@@ -68,6 +68,9 @@ def create_sims(sim_params, programs, virtual_world, generator_dir, in_dir, out_
     }
     simulations = []
 
+    if not os.path.exists(generator_dir):
+        os.mkdir(generator_dir)
+
     # Generate Infrastructure for all simulations.
     # If previously generated infrastructure exists, use it instead.
     hash_file_loc = generator_dir / "gen_infrastructure_hashes.p"

@@ -102,6 +102,7 @@ class LdarSim:
 
         # Initialize method(s) to be used; append to state
         calculate_daylight = False
+        infrastructure.initialize_survey_schedules(program_parameters["methods"])
         method_est_crews: dict = infrastructure.estimate_method_crews_required(
             program_parameters["methods"].items()
         )

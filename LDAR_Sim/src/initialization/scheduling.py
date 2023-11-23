@@ -25,7 +25,7 @@ class MobileSchedule(GenericSchedule):
     DEPLOY_TYPE_CODE = "mobile"
 
     def __init__(self, method_name: str) -> None:
-        super.__init__(method_name)
+        super().__init__(method_name)
         return
 
 
@@ -33,7 +33,7 @@ class StationarySchedule(GenericSchedule):
     DEPLOY_TYPE_CODE = "stationary"
 
     def __init__(self, method_name: str) -> None:
-        super.__init__(method_name)
+        super().__init__(method_name)
         return
 
 

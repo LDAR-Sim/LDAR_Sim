@@ -9,12 +9,14 @@ class SurveyPlanner:
         site_annual_rs: int,
         site_survey_min_int: int,
         site_min_time_bt_surveys: int,
-        deployment_years: int,
+        deployment_years: list[int],
+        deployment_months: list[int],
     ) -> None:
         sim_years: list[int] = self.get_simulation_years(
             sim_start_date=sim_start_date, sim_end_date=sim_end_date
         )
-        self._deployment_years = deployment_years
+        self._deployment_months: list[int] = deployment_months
+        self._deployment_years: list[int] = deployment_years
         self._gen_survey_plan(
             sim_years, site_annual_rs, site_survey_min_int, site_min_time_bt_surveys
         )
@@ -38,7 +40,11 @@ class SurveyPlanner:
         self._survey_plan: dict[str, dict[str, datetime]] = {}
         for year in sim_years:
             if year in self._deployment_years:
-                self._survey_plan[year] = self._gen_yearly_survey_plan()
+                self._survey_plan[year] = self._gen_yearly_survey_plan(
+                    site_annual_rs=site_annual_rs,
+                    site_survey_min_int=site_survey_min_int,
+                    site_min_time_bt_surveys=site_min_time_bt_surveys,
+                )
 
     def _gen_yearly_survey_plan(
         self,
