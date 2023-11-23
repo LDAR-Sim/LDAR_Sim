@@ -524,3 +524,16 @@ def mock_results_for_site_level_non_FU_visit_site_testing_small_leak_fix() -> tu
             "M_cl_FU_sites_visited": [0, 1],
         },
     )
+
+
+@pytest.fixture(name="mock_parameters_for_crew_testing")
+def mock_parameters_for_crew_testing_fix() -> "dict[str, Any]":
+    return {
+        "sensor": {
+            "mod_loc": "external_sensors.METEC_WIND",
+            "type": "default",
+            "MDL": [1.0, 1.0, 100],
+            "QE": 0,
+        },
+        "measurement_scale": "component",
+    }
