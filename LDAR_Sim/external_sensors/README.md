@@ -14,6 +14,9 @@ This document provides coding guidelines and best practices for developing exter
   - [Error Handling](#error-handling)
   - [Testing](#testing)
   - [Detect Emissions Function Requirement](#detect-emissions-function-requirement)
+  - [Curve Formulas](#curve-formulas)
+    - [METEC Wind Dependant](#metec-wind-dependant)
+    - [METEC Non-Wind normalized](#metec-non-wind-normalized)
 
 ## General Guidelines
 
@@ -117,4 +120,42 @@ def detect_emissions(site, covered_leaks, covered_equipment_rates, covered_site_
     # Return the site report
 ```
 
-**Note:** Rates provided by LDAR-Sim are in g/s, however resulting rate should be in kg/hr. 
+**Note:** Rates provided by LDAR-Sim are in g/s, however resulting rate should be in kg/hr.
+
+## Curve Formulas
+
+### METEC Wind Dependant
+
+  An alternative sensor module, specifically built to replicate the probability of detection
+  curve of technology whose detection capabilities are reflective of a METEC wind dependent
+  probability of detection curve.
+
+  Utilizes 3 values set as the MDL:
+      mdl = [a, b, c]
+      where
+      a and b : are the PoD curve variables
+      c : represents the floor/minimum cutoff value of the leak rates that the sensor can detect.
+      The cutoff value will be compared to a non-wind normalized rate.
+
+  PoD = 1 / (1 + e ^ (a - b * r ))
+
+  a = first MDL value
+  b = second MDL value
+  r = emission rate normalized by wind speed
+
+### METEC Non-Wind normalized
+
+  An alternative sensor, specifically built to replicate the probability of detection
+  curves provided by a METEC report, which does not factor in wind speeds
+
+  Utilizes 3 values set as the MDL:
+      mdl = [a, b, c]
+      where
+      a and b : are the PoD curve variables
+      c : represents the floor/minimum cutoff value of the leak rates that the sensor can detect
+
+  PoD = 1 / (1 + e ^ (a - b * r ))
+
+  a = first MDL value
+  b = second MDL value
+  r = emission rate
