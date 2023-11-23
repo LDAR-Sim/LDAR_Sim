@@ -196,13 +196,16 @@ class Schedule:
                         s
                         for s in site_pool
                         if (
-                            (s[survey_done_this_year] < int(s[survey_frequency]))
+                            (
+                                s.get_current_yearly_surveys()
+                                < int(s.get_required_survey_frequencies())
+                            )
                             and (
                                 (
                                     (
-                                        s[days_since_LDAR]
+                                        s.get_days_since_last_survey()
                                         + math.floor(
-                                            s[survey_time] / 60 / self.config["max_workday"]
+                                            s.get_survey_time() / 60 / self.config["max_workday"]
                                         )
                                         - np.sum(
                                             missing_days_array[
@@ -210,7 +213,7 @@ class Schedule:
                                                     (
                                                         (
                                                             self.state["t"].current_timestep
-                                                            - s[days_since_LDAR]
+                                                            - s.get_days_since_last_survey()
                                                         )
                                                         % 365
                                                     )
@@ -221,21 +224,21 @@ class Schedule:
                                     )
                                     >= max(
                                         [
-                                            int(s[survey_min_interval]),
-                                            s["{}_min_time_bt_surveys".format(name)],
+                                            s.get_survey_min_interval(),
+                                            s.get_min_time_between_surveys(),
                                         ]
                                     )
                                 )
                                 or (
-                                    s[survey_done_this_year]
+                                    s.get_current_yearly_surveys()
                                     * max(
                                         [
-                                            int(s[survey_min_interval]),
-                                            s["{}_min_time_bt_surveys".format(name)],
+                                            s.get_survey_min_interval(),
+                                            s.get_min_time_between_surveys(),
                                         ]
                                     )
                                     + missing_days
-                                    + s["{}_min_time_bt_surveys".format(name)]
+                                    + s.get_min_time_between_surveys()
                                     < self.state["t"].current_timestep % 365
                                 )
                             )

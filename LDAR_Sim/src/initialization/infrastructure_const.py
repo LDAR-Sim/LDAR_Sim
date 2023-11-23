@@ -20,6 +20,9 @@ class Infrastructure_Constants:
         SPATIAL_PLACEHOLDER = "_spatial"  # Spatial coverage - Method specific
         SURVEY_TIME_PLACEHOLDER = "_surveytime"  # Survey Time - Method specific
         SURVEY_COST_PLACEHOLDER = "_surveycost"  # Survey Cost - Method specific
+        MIN_TIME_BT_SURVEYS_PLACEHOLDER = (
+            "_min_time_bt_surveys"  # Minimum days between LDAR surveys - Method specific
+        )
 
         PROPAGATING_PARAMS: list[str] = [
             REP_EMIS_ERS,
@@ -78,6 +81,9 @@ class Infrastructure_Constants:
         SPATIAL_PLACEHOLDER = "_spatial"  # Spatial coverage - Method specific
         SURVEY_TIME_PLACEHOLDER = "_surveytime"  # Survey Time - Method specific
         SURVEY_COST_PLACEHOLDER = "_surveycost"  # Survey Cost - Method specific
+        MIN_TIME_BT_SURVEYS_PLACEHOLDER = (
+            "_min_time_bt_surveys"  # Minimum days between LDAR surveys - Method specific
+        )
 
         PROPAGATING_PARAMS: list[str] = [
             REP_EMIS_ERS,
@@ -111,4 +117,6 @@ class Virtual_World_To_Prop_Params_Mapping:
         Infrastructure_Constants.Sites_File_Constants.SURVEY_FREQUENCY_PLACEHOLDER: "RS",
         Infrastructure_Constants.Sites_File_Constants.SURVEY_COST_PLACEHOLDER: "cost",
         Infrastructure_Constants.Sites_File_Constants.SURVEY_TIME_PLACEHOLDER: "time",
+        Infrastructure_Constants.Sites_File_Constants.MIN_TIME_BT_SURVEYS_PLACEHOLDER: "scheduling.min_time_bt_surveys",  # noqa
+        Infrastructure_Constants.Sites_File_Constants.MIN_TIME_BT_SURVEYS_PLACEHOLDER: "scheduling.min_time_bt_surveys",  # noqa
     }

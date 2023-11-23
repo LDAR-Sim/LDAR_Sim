@@ -27,7 +27,7 @@ from math import floor
 import numpy as np
 import pandas as pd
 from initialization.emissions import FugitiveEmission
-from initialization.sites import Infrastructure
+from initialization.infrastructure import Infrastructure
 from time_counter import TimeCounter
 from weather.daylight_calculator import DaylightCalculatorAve
 from config.output_flag_mapping import (
@@ -122,6 +122,7 @@ class LdarSim:
                 state["methods"].append(
                     BaseCompany(
                         state,
+                        infrastructure,
                         program_parameters,
                         virtual_world,
                         simulation_settings,

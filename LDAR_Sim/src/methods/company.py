@@ -23,6 +23,7 @@ from datetime import timedelta
 from importlib import import_module
 
 import numpy as np
+from initialization.infrastructure import Infrastructure
 from methods.deployment.generic_funcs import get_deployment_dates
 from utils.attribution import flag_site
 from utils.generic_functions import get_prop_rate
@@ -36,6 +37,7 @@ class BaseCompany:
     def __init__(
         self,
         state,
+        infrastructure: Infrastructure,
         program_parameters,
         virtual_world,
         simulation_settings,
@@ -54,6 +56,7 @@ class BaseCompany:
             config["label"],
             state,
         )
+        self.infrastructure: Infrastructure = infrastructure
         self.program_parameters = program_parameters
         self.consider_venting = virtual_world["emissions"]["consider_venting"]
         self.config = config
@@ -143,9 +146,9 @@ class BaseCompany:
         if c_date.month in self.deployment_months and c_date.year in self.deployment_years:
             self.candidate_flags = []
             if self.config["is_follow_up"]:
-                site_pool = self.state["flags"]
+                site_pool = self.infrastructure.get_flagged_sites()
             else:
-                site_pool = self.state["sites"]
+                site_pool = self.infrastructure.get_all_sites()
             # Get sites that are ready for survey
             site_pool = self.schedule.get_due_sites(site_pool)
             # Get number of crews working that day based on number of sites ready for visit

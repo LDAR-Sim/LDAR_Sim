@@ -26,7 +26,7 @@ import sys
 from datetime import datetime, timedelta
 
 from numpy import random as np_rand
-from initialization.sites import Infrastructure
+from initialization.infrastructure import Infrastructure
 from stdout_redirect import stdout_redirect
 from time_counter import TimeCounter
 from weather.weather_lookup import WeatherLookup as WL

@@ -25,7 +25,7 @@ import pickle
 from copy import deepcopy
 
 from initialization.preseed import gen_seed_timeseries
-from initialization.sites import Infrastructure
+from initialization.infrastructure import Infrastructure
 import hashlib
 
 

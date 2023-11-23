@@ -37,7 +37,6 @@ from economics.cost_mitigation import cost_mitigation
 from initialization.args import files_from_args, get_abs_path
 from initialization.input_manager import InputManager
 from initialization.sims import create_sims
-from initialization.sites import init_generator_files
 from ldar_sim_run import ldar_sim_run
 from out_processing.batch_reporting import BatchReporting
 from utils.generic_functions import check_ERA5_file
@@ -94,13 +93,7 @@ if __name__ == "__main__":
 
     # If leak generator is used and there are generated files, user is prompted
     # to use files, If they say no, the files will be removed
-    if sim_params["pregenerate_leaks"]:
-        generator_dir = in_dir / "generator"
-        init_generator_files(
-            generator_dir, input_manager.simulation_parameters, in_dir, virtual_world
-        )
-    else:
-        generator_dir = None
+    generator_dir = in_dir / "generator"
     # --- Create simulations ---
     simulations = create_sims(sim_params, programs, virtual_world, generator_dir, in_dir, out_dir)
 
