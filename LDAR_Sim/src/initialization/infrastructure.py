@@ -100,6 +100,8 @@ class Infrastructure:
         return np.average([site.get_required_surveys(method_name) for site in self._sites])
 
     def estimate_method_crews_required(self, methods) -> dict:
+        # TODO: Review the math that was used to update this
+        # TODO: to move this function over to scheduling
         method_req_crews_dict: dict = {}
         for method in methods:
             method_name: str = method[0]

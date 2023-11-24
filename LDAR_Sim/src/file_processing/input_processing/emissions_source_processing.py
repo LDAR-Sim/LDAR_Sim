@@ -20,6 +20,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 from typing import Any
 from pandas import DataFrame
+from scipy.stats import lognorm
 
 
 def read_in_emissions_sources_file(virtual_world: dict) -> DataFrame:
@@ -48,5 +49,19 @@ def process_emission_source_file(emiss_source: DataFrame) -> dict[str, Any]:
 
     Returns:
         dict[str, (List or scipy dist obj)]: _description_
+    """
+    return None
+
+
+def process_emiss_samples_as_dist(emiss_source: DataFrame) -> lognorm:
+    """
+    Process the given emission source sample DataFrame and fit into
+    a scipy distribution object
+
+    Args:
+        emiss_source (DataFrame): the emissions DataFrame
+
+    Returns:
+        scipy object
     """
     return None

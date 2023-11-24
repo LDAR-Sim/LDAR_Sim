@@ -18,8 +18,42 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 ------------------------------------------------------------------------------
 """
 
-# TODO:
+
+def save_repair_cost(virtual_world: dict) -> list[float]:
+    """
+    Function to parse out repair cost if values are provided in file
+
+    Arg:
+        File location
+
+    Returns:
+        list[floats]: a list of repair cost values as floats
+    """
+    return None
 
 
-def save_repair_cost():
+def save_time_between_sites(params: dict) -> list[float]:
+    """
+    Function to parse out possible time between site values, if provided as file
+
+    Arg:
+        File location
+
+    Returns:
+        list[floats]: a list of possible time between site values
+    """
+    return None
+
+
+def save_home_base_location(params: dict) -> list[tuple[float, float]]:
+    """
+    Function to parse out potential home base locations, when provided
+
+    Arg:
+        File location
+
+    Returns:
+        list[tuple[float,float]]: a list of lat,lon home base locations
+    """
+    # TODO: to fill out and use when routing is implemented.
     return None
