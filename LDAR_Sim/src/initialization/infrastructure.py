@@ -11,27 +11,8 @@ from initialization.scheduling import GenericSchedule, create_schedule
 from initialization.sites import Site
 
 
-def read_in_files(virtual_world, in_dir):
-    input_dict = {}
-
-    input_dict["sites"] = pd.read_csv(in_dir / virtual_world["infrastructure"]["sites_file"])
-
-    if virtual_world["infrastructure"]["site_type_file"]:
-        input_dict["site_types"] = pd.read_csv(
-            in_dir / virtual_world["infrastructure"]["site_type_file"]
-        )
-
-    if virtual_world["infrastructure"]["equipment_group_file"]:
-        input_dict["equipment_groups"] = pd.read_csv(
-            in_dir / virtual_world["infrastructure"]["equipment_group_file"]
-        )
-
-    if virtual_world["infrastructure"]["sources_file"]:
-        input_dict["sources"] = pd.read_csv(
-            in_dir / virtual_world["infrastructure"]["sources_file"]
-        )
-
-    return input_dict
+# TODO: create logic for wrapping up the emissions into a dictionary
+# TODO: create logic for unwrapping the emissions dictionary
 
 
 def generate_propagating_params(virtual_world, methods) -> dict:

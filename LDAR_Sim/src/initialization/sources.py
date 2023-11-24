@@ -102,6 +102,9 @@ class Source:
         # Initialize a counter to give all leaks for the source a unique "ID"
         leak_count: int = 0
 
+        # TODO: re-do this logic to reflect the brainstorming session
+        #  RNG the number of emissions to create and RNG the date for each emission
+
         # Generate Pre-Existing Emissions to exist at the start of simulation
         # The loop is working backwards in time, starting from 1 day before simulation start
         for day in range(1, self._emis_duration + 1):
@@ -172,3 +175,7 @@ class Source:
     #         # add in code to deal with handling a distribution
 
     # the above may be required to be moved to the emissions object.
+
+
+# TODO : make an if/else function to determine emission sample from list or distribution
+# TODO: make function that is called by above function to get single value for emission

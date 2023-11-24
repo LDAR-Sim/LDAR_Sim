@@ -29,6 +29,10 @@ from initialization.infrastructure import Infrastructure
 import hashlib
 
 
+# TODO Move all logic to do with saving pregenerated infrastructure and emissions
+# into pregen_processing and cleanup
+
+
 def hash_file(file_path) -> str:
     # Construct the hasher object
     hasher: hashlib._Hash = hashlib.md5()
