@@ -193,17 +193,5 @@ class Infrastructure:
 
         self._sites: list[Site] = sites
 
-    def initialize_survey_schedules(self, methods: dict) -> None:
-        self._survey_schedule: dict[str, GenericSchedule] = {}
-        for method, method_params in methods.items():
-            self._survey_schedule[method] = create_schedule(
-                method_name=method, method_details=method_params
-            )
-
     def get_flagged_sites(self, company_id) -> list[Site]:
         return [site for site in self._sites if site.flagged_for_follow_up(company_id)]
-
-    def update_survey_schedule(self, method_name: str) -> None:
-        for site in self._sites:
-            if site.needs_method_survey(method_name, self._survey_schedule[method_name]):
-                self._survey_schedule[method_name].add_to_survey_queue(site)

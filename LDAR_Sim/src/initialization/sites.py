@@ -145,15 +145,6 @@ class Site:
     def get_id(self) -> str:
         return self._site_ID
 
-    def update_survey_planner(self, method_name: str) -> bool:
-        day_since_survey = self._get_days_since_last_survey(method_name=method_name)
-        surveys_done_this_year = self._get_current_yearly_surveys(method_name=method_name)
-        return
-
-    def needs_method_survey(self, method_name: str) -> bool:
-        needs_survey: bool = self.update_survey_planner(method_name)
-        return needs_survey
-
     def _get_days_since_last_survey(self, method_name: str, current_date: datetime) -> int:
         return (self._last_survey_dates[method_name] - current_date).days
 

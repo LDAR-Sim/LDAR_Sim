@@ -80,6 +80,8 @@ def create_sims(sim_params, programs, virtual_world, generator_dir, in_dir, out_
     hash_file_loc = generator_dir / "gen_infrastructure_hashes.p"
     infra_file_loc = generator_dir / "gen_infrastructure.p"
     emis_file_loc = generator_dir / "gen_infrastructure_emissions.p"
+    # TODO Also add logic to hash the emissions rate sources file. Add logic elsewhere to make
+    # that a standard input.
 
     # Generate md5 hashes for files that can contain infrastructure defining information.
     # A md5 hash is a unique* number
@@ -262,6 +264,7 @@ def create_sims(sim_params, programs, virtual_world, generator_dir, in_dir, out_
             closing_message = "Finished simulating program {} ; simulation {} of {} ".format(
                 pidx, i + 1, n_simulations
             )
+            # TODO Think about riping out this big dictionary
             simulations.append(
                 [
                     {
