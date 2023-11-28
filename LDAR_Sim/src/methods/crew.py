@@ -71,6 +71,7 @@ class BaseCrew:
         sched_mod = import_module(
             "methods.deployment.{}_crew".format(self.config["deployment_type"].lower())
         )
+        # TODO review if we need these schedules anymore
         # Get schedule based on deployment type
         Schedule = getattr(sched_mod, "Schedule")
         self.schedule = Schedule(

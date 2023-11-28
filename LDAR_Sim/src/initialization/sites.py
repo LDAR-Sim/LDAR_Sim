@@ -19,7 +19,7 @@
 # ------------------------------------------------------------------------------
 
 import copy
-from datetime import datetime, timedelta
+from datetime import datetime
 import math
 
 
@@ -54,14 +54,6 @@ class Site:
             Infrastructure_Constants.Sites_File_Constants.SURVEY_FREQUENCY_PLACEHOLDER
         )
         self.create_equipment_groups(equipment_groups, infrastructure_inputs, propagating_params)
-        self._flags: list[str] = []
-        self._surveys_this_year: dict[str, int] = {}
-        self._last_survey_dates: dict[str, datetime] = {}
-
-    def flagged_for_follow_up(self, method_id) -> bool:
-        if method_id in self._flags:
-            return True
-        return False
 
     def create_equipment_groups(
         self, equipment_groups, infrastructure_inputs, propagating_params

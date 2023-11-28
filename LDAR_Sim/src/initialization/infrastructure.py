@@ -7,7 +7,6 @@ from initialization.infrastructure_const import (
     Infrastructure_Constants,
     Virtual_World_To_Prop_Params_Mapping,
 )
-from initialization.scheduling import GenericSchedule, create_schedule
 from initialization.sites import Site
 
 
