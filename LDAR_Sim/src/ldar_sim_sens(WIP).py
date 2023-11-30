@@ -26,7 +26,7 @@ from pathlib import Path
 
 import pandas as pd
 from initialization.args import files_from_args
-from initialization.input_manager import InputManager
+from file_processing.input_processing.input_manager import InputManager
 from initialization.preseed import gen_seed_timeseries
 from initialization.sites import generate_infrastructure, regenerate_sites
 from ldar_sim_run import ldar_sim_run

@@ -1,8 +1,8 @@
 """
 ------------------------------------------------------------------------------
 Program:     The LDAR Simulator (LDAR-Sim)
-File:        pregen_outputs
-Purpose: Module for generating pregenerated emission outputs
+File:        test_create_csv
+Purpose: Module for creating output files
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the MIT License as published
@@ -19,21 +19,13 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 """
 
 
-# TODO: create logic to create the generated emission file
-# TODO move over and cleanup all logic to save
-# generated infrastructure and emissions
+def test_000_throw_invalid_file_path_to_create():
+    assert 0 == 0
 
 
-def pregen_emiss_output():
-    """Function takes in the pregenerated emissions data and
-    dumps to a pickle file for future simulation reference/run
+def test_000_throw_file_creation_error():
+    assert 0 == 0
 
-    Args:
-        Emissions dict?
 
-    Returns:
-        None
-
-    """
-    # TODO
-    return None
+def test_000_valid_file_creation():
+    assert 0 == 0

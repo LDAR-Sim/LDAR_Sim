@@ -35,7 +35,7 @@ from config.output_flag_mapping import (
 )
 from economics.cost_mitigation import cost_mitigation
 from initialization.args import files_from_args, get_abs_path
-from initialization.input_manager import InputManager
+from file_processing.input_processing.input_manager import InputManager
 from initialization.sims import create_sims
 from ldar_sim_run import ldar_sim_run
 from out_processing.batch_reporting import BatchReporting
@@ -63,6 +63,7 @@ if __name__ == "__main__":
 
     # --- Retrieve input parameters and parse ---
     parameter_filenames = files_from_args(root_dir)
+    # TODO move to input processing
     input_manager = InputManager()
     if "out_dir" in parameter_filenames:
         sim_params = input_manager.read_and_validate_parameters(

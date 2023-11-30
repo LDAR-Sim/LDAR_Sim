@@ -56,7 +56,7 @@ sys.path.append(str(ext_sens_dir))
 if __name__ == "__main__":
     from economics.cost_mitigation import cost_mitigation
     from initialization.args import files_from_path, get_abs_path
-    from initialization.input_manager import InputManager
+    from file_processing.input_processing.input_manager import InputManager
     from initialization.sims import create_sims
     from initialization.sites import init_generator_files
     from ldar_sim_run import ldar_sim_run

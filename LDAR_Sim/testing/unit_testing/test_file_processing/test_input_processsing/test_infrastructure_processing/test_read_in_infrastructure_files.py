@@ -33,3 +33,7 @@ def test_000_source_file_as_valid_input():
 
 def test_000_no_valid_input_parameters():
     assert 0 == 0
+
+
+def test_000_returns_valid_formatted_dictionary():
+    assert 0 == 0

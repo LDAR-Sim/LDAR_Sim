@@ -1,8 +1,8 @@
 """
 ------------------------------------------------------------------------------
 Program:     The LDAR Simulator (LDAR-Sim)
-File:        pregen_outputs
-Purpose: Module for generating pregenerated emission outputs
+File:        test_cleanup_data
+Purpose: Module for cleaning up data structures
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the MIT License as published
@@ -19,21 +19,5 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 """
 
 
-# TODO: create logic to create the generated emission file
-# TODO move over and cleanup all logic to save
-# generated infrastructure and emissions
-
-
-def pregen_emiss_output():
-    """Function takes in the pregenerated emissions data and
-    dumps to a pickle file for future simulation reference/run
-
-    Args:
-        Emissions dict?
-
-    Returns:
-        None
-
-    """
-    # TODO
-    return None
+def test_000_valid_data_as_input():
+    assert 9 == 9

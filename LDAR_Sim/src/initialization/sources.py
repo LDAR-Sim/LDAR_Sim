@@ -99,7 +99,7 @@ class Source:
     ) -> dict[str, list[Emission]]:
         emissions: list[Emission] = []
 
-        # Initialize a counter to give all leaks for the source a unique "ID"
+        # Initialize a counter to give all emissions for the source a unique "ID"
         leak_count: int = 0
 
         # TODO: re-do this logic to reflect the brainstorming session
