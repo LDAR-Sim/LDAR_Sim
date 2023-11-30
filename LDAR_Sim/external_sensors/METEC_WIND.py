@@ -92,7 +92,7 @@ def detect_emissions(
     hourly_windspeed = self.state["weather"].get_hourly_weather(
         ["winds"], self.state["t"].current_date, number_of_hours=1, site=site
     )
-    average_wind = np.average(hourly_windspeed["winds"]) * MsTOKMh  # m/s to km/hr
+    average_wind = np.average(hourly_windspeed["winds"])
 
     if self.config["measurement_scale"] == "site":
         # Calculate the rate per wind based on the overall site rate
