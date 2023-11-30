@@ -22,6 +22,7 @@ class SurveyPlanner:
         sim_years: list[int] = self.get_simulation_years(
             sim_start_date=sim_start_date, sim_end_date=sim_end_date
         )
+        self.site: Site = site
         self._deployment_months: list[int] = deployment_months
         self._deployment_years: list[int] = deployment_years
         self._gen_survey_plan(sim_years, site_annual_rs)
@@ -95,3 +96,43 @@ class SurveyPlanner:
             True if the site should be queued to be surveyed, False otherwise.
         """
         return False
+
+
+class MobileSurveyPlanner(SurveyPlanner):
+    def __init__(
+        self,
+        site: Site,
+        site_annual_rs: int,
+        sim_start_date: datetime,
+        sim_end_date: datetime,
+        deployment_years: list[int],
+        deployment_months: list[int],
+    ):
+        super().__init__(
+            site=site,
+            site_annual_rs=site_annual_rs,
+            sim_start_date=sim_start_date,
+            sim_end_date=sim_end_date,
+            deployment_years=deployment_years,
+            deployment_months=deployment_months,
+        )
+
+
+class StationarySurveyPlanner(SurveyPlanner):
+    def __init__(
+        self,
+        site: Site,
+        site_annual_rs: int,
+        sim_start_date: datetime,
+        sim_end_date: datetime,
+        deployment_years: list[int],
+        deployment_months: list[int],
+    ):
+        super().__init__(
+            site=site,
+            site_annual_rs=site_annual_rs,
+            sim_start_date=sim_start_date,
+            sim_end_date=sim_end_date,
+            deployment_years=deployment_years,
+            deployment_months=deployment_months,
+        )

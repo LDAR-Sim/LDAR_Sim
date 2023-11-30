@@ -1,36 +1,26 @@
 from initialization.sites import Site
+from programs.method import Method
 from scheduling.schedules import GenericSchedule, create_schedule
-from scheduling.survey_planner import SurveyPlanner
+from scheduling.workplan import Workplan
 
 
-class Scheduler:
+class Program:
     """An object responsible for scheduling surveys for all sites in the infrastructure.
     Uses other lower level objects to plan and schedule survey times and determine actual
     dynamic schedules based on weather and other impacting variables."""
 
     def __init__(self, methods: dict, sites: list[Site]) -> None:
-        self._methods: list[str] = [method for method in methods]
+        self._methods: list[Method] = [
+            Method(method, properties) for method, properties in methods.items()
+        ]
         self._survey_schedules: dict[str, GenericSchedule] = {}
-        for method, method_params in methods.items():
-            self._survey_schedules[method] = create_schedule(
-                method_name=method, method_details=method_params
-            )
-        self._survey_planners: dict[str, list[SurveyPlanner]] = {}
-        for method in methods:
-            method_survey_plans: list[SurveyPlanner] = []
-            for site in sites:
-                # TODO flush out what survey planner needs as inputs for the constructor
-                method_survey_plans.append(SurveyPlanner(site))
-            self._survey_planners[method] = method_survey_plans
+        self.init_method_scheduling(methods=methods, sites=sites)
 
     def update_scheduling(self) -> None:
         """Update the state of all survey plans and queue sites to the surveyed as
         required by survey planner determinations"""
-        for method in self._methods:
-            for survey_planner in self._survey_planners[method]:
-                survey_planner.update()
-                if survey_planner.queue_site_for_survey():
-                    self._survey_schedules[method].add_to_survey_queue(survey_planner.get_site())
+        for survey_schedule in self._survey_schedules:
+            survey_schedule.update_schedule()
 
     # TODO define a method workplan object that they can use to track progress on
     # surveying sites for a day
@@ -44,7 +34,7 @@ class Scheduler:
         """
         return
 
-    def init_method_scheduling(self, methods: dict) -> None:
+    def init_method_scheduling(self, methods: dict, sites: list[Site]) -> None:
         """Initialize method scheduling for all methods to be simulated.
         This will setup logic to schedule methods to go survey sites based
         on their number of available crews, time to sites, time to survey, etc.
@@ -52,4 +42,12 @@ class Scheduler:
         Args:
             methods (dict): A dictionary of all the methods to initialize for survey scheduling.
         """
+        for method, method_params in methods.items():
+            self._survey_schedules[method] = create_schedule(
+                method_name=method, method_details=method_params, sites=sites
+            )
+
+    def do_daily_method_deployment(self) -> None:
+        """Deploy all methods that are part of the program to
+        do their scheduled surveys for the day"""
         return

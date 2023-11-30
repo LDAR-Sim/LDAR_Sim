@@ -22,6 +22,8 @@ from random import sample
 from math import floor, ceil
 from numpy import zeros, ones, tile, array
 
+# TODO to remake this and remove
+
 
 def setup_campaigns(campaigns, prog_params, virtual_world, n_sites, n_screening_rs_sets):
     """Setup Campaigns

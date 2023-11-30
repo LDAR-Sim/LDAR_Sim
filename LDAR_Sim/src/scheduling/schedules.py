@@ -1,6 +1,7 @@
 import queue
 
 from initialization.sites import Site
+from scheduling.survey_planner import SurveyPlanner
 
 
 DEPLOY_TYPE_ACCESSOR = "deployment_type"
@@ -19,9 +20,13 @@ class GenericSchedule:
     # TODO what are the different priority cases
     DEFAULT_SURVEY_PRIORITY = 3
 
-    def __init__(self, method_name: str) -> None:
+    def __init__(self, method_name: str, sites: list[Site]) -> None:
         self._method: str = method_name
         self._survey_queue = queue.PriorityQueue()
+        self._survey_plans: list[SurveyPlanner] = []
+        for site in sites:
+            # TODO flush out what survey planner needs as inputs for the constructor
+            self._survey_plans.append(SurveyPlanner(site))
         return
 
     def add_to_survey_queue(self, site: Site) -> None:
@@ -32,11 +37,17 @@ class GenericSchedule:
         """
         self._survey_queue.put((GenericSchedule.DEFAULT_SURVEY_PRIORITY, site))
 
-    def get_daily_sites_to_survey() -> None:
+    def get_daily_sites_to_survey(self) -> None:
         """This method will go through the method survey queue and return
         the daily sites that are planned to be surveyed by the given method."""
         # TODO Implement
         return
+
+    def update_schedule(self):
+        for survey_plan in self._survey_plans:
+            survey_plan.update()
+            if survey_plan.queue_site_for_survey():
+                self.add_to_survey_queue(survey_plan)
 
 
 class MobileSchedule(GenericSchedule):
@@ -46,8 +57,8 @@ class MobileSchedule(GenericSchedule):
 
     DEPLOY_TYPE_CODE = "mobile"
 
-    def __init__(self, method_name: str) -> None:
-        super().__init__(method_name)
+    def __init__(self, method_name: str, sites: list[Site]) -> None:
+        super().__init__(method_name, sites)
         return
 
 
@@ -58,8 +69,8 @@ class StationarySchedule(GenericSchedule):
 
     DEPLOY_TYPE_CODE = "stationary"
 
-    def __init__(self, method_name: str) -> None:
-        super().__init__(method_name)
+    def __init__(self, method_name: str, sites: list[Site]) -> None:
+        super().__init__(method_name, sites)
         return
 
 
@@ -70,12 +81,12 @@ class FollowUpMobileSchedule(GenericSchedule):
 
     DEPLOY_TYPE_CODE = "mobile"
 
-    def __init__(self, method_name: str) -> None:
-        super().__init__(method_name)
+    def __init__(self, method_name: str, sites: list[Site]) -> None:
+        super().__init__(method_name, sites)
         return
 
 
-def create_schedule(method_name: str, method_details: dict) -> GenericSchedule:
+def create_schedule(method_name: str, method_details: dict, sites) -> GenericSchedule:
     """Will create and return  schedule with the schedule type based on
     the provided method and it's parameters. All schedules inherit from generic schedule
     class and will overwrite it's method with method type specific behavior where required.
@@ -94,9 +105,9 @@ def create_schedule(method_name: str, method_details: dict) -> GenericSchedule:
     method_deployment_type: str = method_details[DEPLOY_TYPE_ACCESSOR]
     if not method_follow_up:
         if method_deployment_type == MobileSchedule.DEPLOY_TYPE_CODE:
-            schedule: GenericSchedule = MobileSchedule(method_name)
+            schedule: GenericSchedule = MobileSchedule(method_name, sites)
         elif method_deployment_type == StationarySchedule.DEPLOY_TYPE_CODE:
-            schedule: GenericSchedule = StationarySchedule(method_name)
+            schedule: GenericSchedule = StationarySchedule(method_name, sites)
         else:
             print(
                 INVALID_DEPLOYMENT_TYPE_ERROR_MESSAGE.format(
@@ -106,7 +117,7 @@ def create_schedule(method_name: str, method_details: dict) -> GenericSchedule:
             exit()
     else:
         if method_deployment_type == FollowUpMobileSchedule.DEPLOY_TYPE_CODE:
-            schedule: GenericSchedule = FollowUpMobileSchedule(method_name)
+            schedule: GenericSchedule = FollowUpMobileSchedule(method_name, sites)
         else:
             print(
                 INVALID_DEPLOYMENT_TYPE_ERROR_MESSAGE.format(
