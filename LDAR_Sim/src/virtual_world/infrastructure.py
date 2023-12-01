@@ -8,7 +8,7 @@ from virtual_world.infrastructure_const import (
     Virtual_World_To_Prop_Params_Mapping,
 )
 from virtual_world.sites import Site
-
+from file_processing.input_processing.infrastructure_processing import read_in_infrastructure_files
 
 # TODO: create logic for wrapping up the emissions into a dictionary
 # TODO: create logic for unwrapping the emissions dictionary
@@ -147,7 +147,9 @@ class Infrastructure:
         Returns:
             [dict]: sites, Union[dict, None]: leak_timeseries, Union[dict, None]: initial_leaks
         """
-        infrastructure_inputs: dict[str, pd.DataFrame] = read_in_files(virtual_world, in_dir)
+        infrastructure_inputs: dict[str, pd.DataFrame] = read_in_infrastructure_files(
+            virtual_world, in_dir
+        )
         sites_types_provided: bool = "site_types" in infrastructure_inputs
 
         sites_in: pd.DataFrame = infrastructure_inputs["sites"]

@@ -22,27 +22,25 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 from pathlib import Path
 
 from pandas import DataFrame
-from src.file_processing.input_processing.file_reader import csv_reader
+from src.file_processing.input_processing.file_reader import file_reader
 
 
 def read_in_infrastructure_files(virtual_world, in_dir: Path) -> dict[str, DataFrame]:
     input_dict = {}
-    # TODO change the calls to pd.read_csv to our csv reader method
-
-    input_dict["sites"] = pd.read_csv(in_dir / virtual_world["infrastructure"]["sites_file"])
+    input_dict["sites"] = file_reader(in_dir / virtual_world["infrastructure"]["sites_file"])
 
     if virtual_world["infrastructure"]["site_type_file"]:
-        input_dict["site_types"] = pd.read_csv(
+        input_dict["site_types"] = file_reader(
             in_dir / virtual_world["infrastructure"]["site_type_file"]
         )
 
     if virtual_world["infrastructure"]["equipment_group_file"]:
-        input_dict["equipment_groups"] = pd.read_csv(
+        input_dict["equipment_groups"] = file_reader(
             in_dir / virtual_world["infrastructure"]["equipment_group_file"]
         )
 
     if virtual_world["infrastructure"]["sources_file"]:
-        input_dict["sources"] = pd.read_csv(
+        input_dict["sources"] = file_reader(
             in_dir / virtual_world["infrastructure"]["sources_file"]
         )
 

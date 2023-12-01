@@ -17,7 +17,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 ------------------------------------------------------------------------------
 """
-from src.initialization.sources import Source
+from virtual_world.sources import Source
 import numpy as np
 from datetime import datetime, timedelta
 
