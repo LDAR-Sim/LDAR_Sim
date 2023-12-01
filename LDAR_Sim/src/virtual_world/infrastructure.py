@@ -42,10 +42,10 @@ class Infrastructure:
         return prop_params_dict
 
     def update_propagating_params(
-        prop_params,
-        site_row_df_info,
-        site_type_info,
-        methods,
+        prop_params: dict,
+        site_row_df_info: pd.Series,
+        site_type_info: pd.Series,
+        methods: list[str],
     ) -> None:
         if site_type_info is not None:
             # Updating propagating parameters with site type info
