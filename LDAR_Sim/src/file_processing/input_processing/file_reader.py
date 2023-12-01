@@ -22,6 +22,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 from pathlib import Path
 from typing import Any
 from pandas import DataFrame
+import logging
 
 
 def file_reader(input_file_path: Path) -> dict or DataFrame:
@@ -35,12 +36,20 @@ def file_reader(input_file_path: Path) -> dict or DataFrame:
         elif ".json" in input_file_path:
             data = json_reader(input_file_path)
         elif ".p" in input_file_path:
-            data = pickle_reader()(input_file_path)
-        elif ".yml" or ".yaml" in input_file_path:
+            data = pickle_reader(input_file_path)
+        elif ".yml" in input_file_path or ".yaml" in input_file_path:
             data = yaml_reader(input_file_path)
-    except Exception as e:
-        print(f"Error reading in file: {e}")
+        else:
+            raise FileNotFoundError
+    except FileNotFoundError as e:
+        print(f"FileNotFoundError reading in file: {e}")
+        logging.error(f"FileNotFoundError reading in file: {e}")
+        raise
         # TODO: add better exception catching later
+    except Exception as e:
+        logging.error(f"Error reading in file: {e}")
+        print(f"Error reading in file: {e}")
+        raise
     return data
 
 
