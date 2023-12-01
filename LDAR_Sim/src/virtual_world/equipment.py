@@ -1,10 +1,10 @@
 import copy
 import datetime
 import re
-from initialization.emissions import Emission
-from initialization.infrastructure_const import Infrastructure_Constants
+from virtual_world.emissions import Emission
+from virtual_world.infrastructure_const import Infrastructure_Constants
 
-from initialization.sources import Source
+from virtual_world.sources import Source
 
 SOURCE_CREATION_ERROR_MESSAGE = (
     "Invalid LDAR-Sim infrastructure inputs: Failure to read in sources infrastructure input"

@@ -1,6 +1,6 @@
 from datetime import datetime
-from initialization.infrastructure_const import Infrastructure_Constants
-from initialization.equipment import Equipment
+from virtual_world.infrastructure_const import Infrastructure_Constants
+from virtual_world.equipment import Equipment
 
 
 class Equipment_Group:

@@ -24,9 +24,9 @@ import math
 
 
 import pandas as pd
-from initialization.equipment_groups import Equipment_Group
+from virtual_world.equipment_groups import Equipment_Group
 
-from initialization.infrastructure_const import (
+from virtual_world.infrastructure_const import (
     Infrastructure_Constants,
 )
 

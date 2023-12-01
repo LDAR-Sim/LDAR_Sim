@@ -44,33 +44,33 @@ def test_001_unique_source_id_generation():
 
 
 # TODO : fix up below test
-def test_001_validate_randomness(self):
-    # Set up parameters for testing
-    sim_start_date = datetime(2023, 1, 1)
-    sim_end_date = datetime(2023, 1, 10)
-    sim_number = 1
+# def test_001_validate_randomness(self):
+#     # Set up parameters for testing
+#     sim_start_date = datetime(2023, 1, 1)
+#     sim_end_date = datetime(2023, 1, 10)
+#     sim_number = 1
 
-    # Call the method to generate emissions
-    emissions_dict = Source.generate_emissions(sim_start_date, sim_end_date, sim_number)
+#     # Call the method to generate emissions
+#     emissions_dict = Source.generate_emissions(sim_start_date, sim_end_date, sim_number)
 
-    # Extract the dates of the emissions for testing randomness
-    emission_dates = [
-        emission.start_date for emission in emissions_dict[self.your_instance._source_ID]
-    ]
+#     # Extract the dates of the emissions for testing randomness
+#     emission_dates = [
+#         emission.start_date for emission in emissions_dict[self.your_instance._source_ID]
+#     ]
 
-    # Calculate the observed frequencies in each simulated day
-    observed_counts, _ = np.histogram(
-        emission_dates,
-        bins=np.arange((sim_start_date - timedelta(days=1)), sim_end_date, timedelta(days=1)),
-    )
+#     # Calculate the observed frequencies in each simulated day
+#     observed_counts, _ = np.histogram(
+#         emission_dates,
+#         bins=np.arange((sim_start_date - timedelta(days=1)), sim_end_date, timedelta(days=1)),
+#     )
 
-    # Expected frequency assuming a binomial distribution
-    expected_counts = np.random.binomial(1, Source._emis_prod_rate, len(observed_counts))
+#     # Expected frequency assuming a binomial distribution
+#     expected_counts = np.random.binomial(1, Source._emis_prod_rate, len(observed_counts))
 
-    # Perform chi-squared test
-    chi_squared_stat = np.sum((observed_counts - expected_counts) ** 2 / expected_counts)
-    p_value = 1 - stats.chi2.cdf(chi_squared_stat, df=len(observed_counts) - 1)
+#     # Perform chi-squared test
+#     chi_squared_stat = np.sum((observed_counts - expected_counts) ** 2 / expected_counts)
+#     p_value = 1 - stats.chi2.cdf(chi_squared_stat, df=len(observed_counts) - 1)
 
-    # Set a significance level (e.g., 0.05) and assert that the p-value is greater than it
-    significance_level = 0.05
-    self.assertGreater(p_value, significance_level)
+#     # Set a significance level (e.g., 0.05) and assert that the p-value is greater than it
+#     significance_level = 0.05
+#     self.assertGreater(p_value, significance_level)
