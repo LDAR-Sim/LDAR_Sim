@@ -13,7 +13,8 @@ class Emission:
         start_date: datetime,
         simulation_sd: datetime,
         repairable: bool,
-    ):
+        tech_spat_cov_probs: dict[str, float],
+    ) -> None:
         self._emissions_id: str = f"{str(emission_n).zfill(10)}"
         self._rate: float = rate
         self._start_date: datetime = start_date
@@ -30,6 +31,7 @@ class Emission:
         self._flagged_by: str = None
         self._init_detect_by: str = None
         self._init_detect_date: datetime = None
+        self._tech_spat_cov_probs: dict[str, float] = tech_spat_cov_probs
         self._tech_spat_covs: dict[str, int] = {}
 
         if simulation_sd >= start_date:
@@ -37,7 +39,7 @@ class Emission:
         else:
             self._status = "Inactive"
 
-    def update_emissions(self):
+    def update(self):
         """
         Increments duration values
         """
@@ -47,9 +49,10 @@ class Emission:
         if self._tagged:
             self._days_since_tagged += 1
 
-    def check_spatial_cov(self, method, cov) -> int:
+    def check_spatial_cov(self, method) -> int:
         if method not in self._tech_spat_covs:
-            self._tech_spat_covs[method] = binomial(1, cov)
+            cov_prob = self._tech_spat_cov_probs[method]
+            self._tech_spat_covs[method] = binomial(1, cov_prob)
         return self._tech_spat_covs[method]
 
     def activate() -> str:
@@ -202,8 +205,8 @@ class FugitiveEmission(Emission):
         return True
 
     @override
-    def update_emissions(self):
-        super().update_emissions()
+    def update(self):
+        super().update()
         if self._active_days + self._days_active_b4_sim >= self._nrd:
             self.natural_repair()
             return "nat_repaired"
