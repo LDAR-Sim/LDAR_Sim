@@ -17,9 +17,6 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 ------------------------------------------------------------------------------
 """
-from virtual_world.sources import Source
-import numpy as np
-from datetime import datetime, timedelta
 
 
 # TODO : renumber/name the tests

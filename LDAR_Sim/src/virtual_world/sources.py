@@ -3,7 +3,8 @@ import re
 from typing import Literal
 
 import numpy as np
-from virtual_world.emissions import Emission, FugitiveEmission
+from virtual_world.emissions import Emission
+from virtual_world.fugitive_emission import FugitiveEmission
 from virtual_world.infrastructure_const import Infrastructure_Constants
 
 

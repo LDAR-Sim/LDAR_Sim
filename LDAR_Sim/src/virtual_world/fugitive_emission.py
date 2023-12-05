@@ -84,16 +84,18 @@ class FugitiveEmission(Emission):
         self._estimated_days_active = half_duration
         self._estimated_date_began = cur_date - timedelta(days=half_duration)
 
-    def tag_leak(self, measured_rate, cur_ts, t_since_ldar, company, crew_id, tagging_rep_delay):
+    def tag_leak(
+        self,
+        measured_rate: float,
+        cur_date: datetime,
+        t_since_ldar: int,
+        company: str,
+        crew_id: str,
+        tagging_rep_delay: int,
+    ):
         """Attempts to tag a leak. If a leak is not tagged
             This function will tag. If it is already tagged, the
             function will return false.
-
-        Args:
-            measured_rate (int): Rate of leak in g/s
-            est_start_date (int): estimated time series start date of the leak
-            company (str): Company responsible for detecting leak
-            crew_id (int, optional): [int]. Defaults to 1. crew responsible for detecting
 
         Returns:
             [bool]: Is the leak new?
@@ -105,7 +107,7 @@ class FugitiveEmission(Emission):
         self._tagged = True
 
         self._measured_rate = measured_rate
-        self.estimate_start_date(cur_ts, t_since_ldar)
+        self.estimate_start_date(cur_date, t_since_ldar)
 
         self._tagged_by_company = company
         self._tagged_by_crew = crew_id
@@ -120,7 +122,8 @@ class FugitiveEmission(Emission):
             return "nat_repaired"
         if self._tagged:
             self.check_if_repaired()
-            return "repaired"
+            if self._status == "repaired":
+                return "repaired"
         return "no_status_change"
 
     @override

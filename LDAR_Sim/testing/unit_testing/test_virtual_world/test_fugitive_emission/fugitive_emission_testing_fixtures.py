@@ -1,7 +1,5 @@
 from datetime import datetime
 from typing import Tuple
-
-# from typing import Tuple
 import pytest
 
 from virtual_world.fugitive_emission import FugitiveEmission
@@ -75,9 +73,139 @@ def mock_simple_fugitive_emission_for_natural_repair_testing_1_fix() -> (
 
 
 @pytest.fixture(name="mock_simple_fugitive_emission_for_tag_leak_testing_1")
-def mock_simple_fugitive_emission_for_tag_leak_testing_1_fix() -> Tuple[FugitiveEmission, datetime]:
+def mock_simple_fugitive_emission_for_tag_leak_testing_1_fix() -> (
+    Tuple[
+        FugitiveEmission,
+        Tuple[float, datetime, int, str, str, int],
+    ]
+):
     to_ret = FugitiveEmission(
         1, 1, datetime(*[2018, 1, 1]), datetime(*[2017, 1, 1]), True, {}, 14, 200, 365
     )
     to_ret._active_days = 60
-    return to_ret, datetime(*[2018, 3, 2])
+    return to_ret, (1, datetime(*[2017, 6, 1]), 1, "test", "test", 1)
+
+
+@pytest.fixture(name="mock_simple_fugitive_emission_for_tag_leak_testing_already_tagged")
+def mock_simple_fugitive_emission_for_tag_leak_testing_already_tagged_fix() -> (
+    Tuple[
+        FugitiveEmission,
+        Tuple[float, datetime, int, str, str, int],
+    ]
+):
+    to_ret = FugitiveEmission(
+        1, 1, datetime(*[2018, 1, 1]), datetime(*[2017, 1, 1]), True, {}, 14, 200, 365
+    )
+    to_ret._active_days = 60
+    to_ret._tagged = True
+    return to_ret, (1.0, datetime(*[2017, 6, 1]), 1, "test", "test", 1)
+
+
+@pytest.fixture(name="mock_simple_fugitive_emission_for_tagged_today_testing_just_tagged")
+def mock_simple_fugitive_emission_for_tagged_today_testing_just_tagged_fix() -> FugitiveEmission:
+    to_ret = FugitiveEmission(
+        1, 1, datetime(*[2018, 1, 1]), datetime(*[2017, 1, 1]), True, {}, 14, 200, 365
+    )
+    to_ret._days_since_tagged = 0
+    to_ret._tagged = True
+    to_ret._tagged_by_company = "Test"
+    return to_ret
+
+
+@pytest.fixture(name="mock_simple_fugitive_emission_for_tagged_today_testing_not_tagged")
+def mock_simple_fugitive_emission_for_tagged_today_testing_not_tagged_fix() -> FugitiveEmission:
+    to_ret = FugitiveEmission(
+        1, 1, datetime(*[2018, 1, 1]), datetime(*[2017, 1, 1]), True, {}, 14, 200, 365
+    )
+    to_ret._tagged = False
+    return to_ret
+
+
+@pytest.fixture(name="mock_simple_fugitive_emission_for_tagged_today_testing_tagged_previously")
+def mock_simple_fugitive_emission_for_tagged_today_testing_tagged_previously_fix() -> (
+    FugitiveEmission
+):
+    to_ret = FugitiveEmission(
+        1, 1, datetime(*[2018, 1, 1]), datetime(*[2017, 1, 1]), True, {}, 14, 200, 365
+    )
+    to_ret._days_since_tagged = 60
+    to_ret._tagged = True
+    to_ret._tagged_by_company = "Test"
+    return to_ret
+
+
+@pytest.fixture(name="mock_simple_fugitive_emission_for_tagged_today_testing_tagged_by_natural")
+def mock_simple_fugitive_emission_for_tagged_today_testing_tagged_by_natural_fix() -> (
+    FugitiveEmission
+):
+    to_ret = FugitiveEmission(
+        1, 1, datetime(*[2018, 1, 1]), datetime(*[2017, 1, 1]), True, {}, 14, 200, 365
+    )
+    to_ret._days_since_tagged = 0
+    to_ret._tagged = True
+    to_ret._tagged_by_company = "natural"
+    return to_ret
+
+
+@pytest.fixture(name="mock_fugitive_emission_for_update_detection_records_no_prior_detection")
+def mock_fugitive_emission_for_update_detection_records_no_prior_detection_fix() -> (
+    FugitiveEmission
+):
+    to_ret = FugitiveEmission(
+        1, 1, datetime(*[2018, 1, 1]), datetime(*[2017, 1, 1]), True, {}, 14, 200, 365
+    )
+    return to_ret
+
+
+@pytest.fixture(name="mock_fugitive_emission_for_update_detection_records_w_prior_detection")
+def mock_fugitive_emission_for_update_detection_records_w_prior_detection_fix() -> FugitiveEmission:
+    to_ret = FugitiveEmission(
+        1, 1, datetime(*[2018, 1, 1]), datetime(*[2017, 1, 1]), True, {}, 14, 200, 365
+    )
+    to_ret._init_detect_by = "test"
+    to_ret._init_detect_date = datetime(*[2018, 1, 2])
+    return to_ret
+
+
+@pytest.fixture(name="mock_fugitive_emission_for_update_ready_for_nat_repair")
+def mock_fugitive_emission_for_update_ready_for_nat_repair_fix() -> FugitiveEmission:
+    to_ret = FugitiveEmission(
+        1, 1, datetime(*[2018, 1, 1]), datetime(*[2017, 1, 1]), True, {}, 14, 200, 365
+    )
+    to_ret._active_days = 364
+    to_ret._status = "Active"
+    return to_ret
+
+
+@pytest.fixture(name="mock_fugitive_emission_for_update_no_status_change")
+def mock_fugitive_emission_for_update_no_status_change_fix() -> FugitiveEmission:
+    to_ret = FugitiveEmission(
+        1, 1, datetime(*[2018, 1, 1]), datetime(*[2017, 1, 1]), True, {}, 14, 200, 365
+    )
+    to_ret._active_days = 60
+    to_ret._status = "Active"
+    return to_ret
+
+
+@pytest.fixture(name="mock_fugitive_emission_for_update_no_status_change_emission_tagged")
+def mock_fugitive_emission_for_update_no_status_change_emission_tagged_fix() -> FugitiveEmission:
+    to_ret = FugitiveEmission(
+        1, 1, datetime(*[2018, 1, 1]), datetime(*[2017, 1, 1]), True, {}, 14, 200, 365
+    )
+    to_ret._active_days = 60
+    to_ret._status = "Active"
+    to_ret._tagged = True
+    to_ret._days_since_tagged = 1
+    return to_ret
+
+
+@pytest.fixture(name="mock_fugitive_emission_for_update_newly_repaired")
+def mock_fugitive_emission_for_update_newly_repaired_fix() -> FugitiveEmission:
+    to_ret = FugitiveEmission(
+        1, 1, datetime(*[2018, 1, 1]), datetime(*[2017, 1, 1]), True, {}, 14, 200, 365
+    )
+    to_ret._active_days = 60
+    to_ret._status = "Active"
+    to_ret._tagged = True
+    to_ret._days_since_tagged = 13
+    return to_ret
