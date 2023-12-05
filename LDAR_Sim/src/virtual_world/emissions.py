@@ -1,7 +1,6 @@
-from datetime import datetime, timedelta
-from math import floor
-from typing import Any, Literal
-from typing_extensions import override
+from datetime import datetime
+from typing import Any
+
 from numpy.random import binomial
 
 
@@ -20,7 +19,7 @@ class Emission:
         self._start_date: datetime = start_date
         self._repairable: bool = repairable
 
-        self._estimate_date_began: datetime = None
+        self._estimated_date_began: datetime = None
         self._estimated_days_active: int = 0
         self._active_days: int = 0
         self._measured_rate: float = None
@@ -51,7 +50,7 @@ class Emission:
 
     def check_spatial_cov(self, method) -> int:
         if method not in self._tech_spat_covs:
-            cov_prob = self._tech_spat_cov_probs[method]
+            cov_prob: float = self._tech_spat_cov_probs[method]
             self._tech_spat_covs[method] = binomial(1, cov_prob)
         return self._tech_spat_covs[method]
 
@@ -108,125 +107,3 @@ class NonRepairableEmission(Emission):
             simulation_sd,
             repairable,
         )
-
-
-class FugitiveEmission(Emission):
-    def __init__(
-        self,
-        emission_n: int,
-        rate: float,
-        start_date: datetime,
-        simulation_sd: datetime,
-        repairable: bool,
-        repair_delay: int,
-        repair_cost: float,
-        nrd: int,
-    ):
-        super().__init__(
-            emission_n,
-            rate,
-            start_date,
-            simulation_sd,
-            repairable,
-        )
-        self._repair_delay: int = repair_delay
-        self._repair_cost: float = repair_cost
-        self._tagging_rep_delay: int = 0
-        self._nrd: int = nrd
-        self._repair_date: datetime = None
-        days_active_b4_sim: int = (simulation_sd - start_date).days
-        self._days_active_b4_sim = days_active_b4_sim if days_active_b4_sim > 0 else 0
-
-    def check_if_repaired(self):
-        """
-        Checks the days since tagged against the repair delay
-        Repairs the emission if possible
-        """
-        if self._repairable:
-            if self._days_since_tagged >= self._repair_delay + self._tagging_rep_delay:
-                self._status = "repaired"
-                self._repair_date = self._start_date + timedelta(days=(self._active_days))
-
-    def get_init_detect_company(self):
-        return self._init_detect_by
-
-    def tagged_today(self) -> bool:
-        return (
-            self._tagged and (self._days_since_tagged == 0)
-        ) and self._tagged_by_company != "natural"
-
-    def update_detection_records(self, company, detect_date):
-        if self._init_detect_by is None:
-            self._init_detect_by = company
-            self._init_detect_date = detect_date
-
-    def get_repair_cost(self) -> float:
-        return self._repair_cost
-
-    def get_daily_emissions(self) -> float:
-        return self._rate * 86.4
-
-    def natural_repair(self):
-        self._tagged = True
-        self._tagged_by_company = "natural"
-        self._status = "repaired"
-        self._repair_date = self._start_date + timedelta(days=(self._active_days))
-
-    # TODO potentially move this into company later
-    def estimate_start_date(self, cur_ts, t_since_ldar):
-        self._estimated_date_began = floor(cur_ts - (t_since_ldar / 2))
-
-    def tag_leak(self, measured_rate, cur_ts, t_since_ldar, company, crew_id, tagging_rep_delay):
-        """Attempts to tag a leak. If a leak is not tagged
-            This function will tag. If it is already tagged, the
-            function will return false.
-
-        Args:
-            measured_rate (int): Rate of leak in g/s
-            est_start_date (int): estimated time series start date of the leak
-            company (str): Company responsible for detecting leak
-            crew_id (int, optional): [int]. Defaults to 1. crew responsible for detecting
-
-        Returns:
-            [bool]: Is the leak new?
-        """
-        if self._tagged:
-            return False
-
-        # Add these leaks to the 'tag pool'
-        self._tagged = True
-
-        self._measured_rate = measured_rate
-        self.estimate_start_date(cur_ts, t_since_ldar)
-
-        self._tagged_by_company = company
-        self._tagged_by_crew = crew_id
-        self._tagging_rep_delay = tagging_rep_delay
-        return True
-
-    @override
-    def update(self):
-        super().update()
-        if self._active_days + self._days_active_b4_sim >= self._nrd:
-            self.natural_repair()
-            return "nat_repaired"
-        if self._tagged:
-            self.check_if_repaired()
-            return "repaired"
-        return "no_status_change"
-
-    @override
-    def get_summary_dict(self) -> dict[str, Any]:
-        summary_dict: dict[str, Any] = super().get_summary_dict()
-        summary_dict.update({("Date Repaired", self._repair_date)})
-        return summary_dict
-
-    @override
-    def activate(self, date: datetime) -> Literal["Already_Active", "Newly_Active", "Inactive"]:
-        activated: str = "Inactive"
-        if self._status == "Active":
-            activated = "Already_Active"
-        elif self._start_date <= date:
-            self._status = "Active"
-            activated = "Newly_Active"
-        return activated
