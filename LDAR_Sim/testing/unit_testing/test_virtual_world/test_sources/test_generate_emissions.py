@@ -17,27 +17,68 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 ------------------------------------------------------------------------------
 """
+from datetime import datetime
+from typing import Tuple
+
+from numpy import average, random as rd
+import pytest
+from virtual_world.sources import Source
+from testing.unit_testing.test_virtual_world.test_sources.souces_testing_fixtures import (  # noqa
+    mock_source_and_args_for_generate_emissions_fix,
+    mock_simple_source_constructor_params_fix,
+    mock_source_and_args_for_generate_emissions_same_st_ed_fix,
+)
 
 
 # TODO : renumber/name the tests
-def test_001_generation_of_emissions_dict():
-    assert 0 == 0
+def test_001_generation_of_emissions_dict(
+    mock_source_and_args_for_generate_emissions: Tuple[Source, int, datetime, datetime]
+) -> None:
+    # Set a random seed for reproducibility
+    rd.seed(0)
+
+    src: Source = mock_source_and_args_for_generate_emissions[0]
+    sim_sd, sim_ed, n_sims = mock_source_and_args_for_generate_emissions[1]
+    expected_res: datetime = mock_source_and_args_for_generate_emissions[2]
+    for sim in range(n_sims):
+        src.generate_emissions(sim_start_date=sim_sd, sim_end_date=sim_ed, sim_number=sim)
+    emis_counts: list[int] = []
+    for sim, emissions in src._generated_emissions.items():
+        emis_counts.append(len(emissions))
+    assert average(emis_counts) == pytest.approx(expected_res, rel=0.01)
 
 
-def test_001_gen_emiss_is_unique_for_each_sim_run():
-    assert 9 == 9
+def test_001_gen_emiss_is_unique_for_each_sim_run(
+    mock_source_and_args_for_generate_emissions: Tuple[Source, int, datetime, datetime]
+) -> None:
+    # Set a random seed for reproducibility
+    rd.seed(0)
+
+    src: Source = mock_source_and_args_for_generate_emissions[0]
+    sim_sd, sim_ed, n_sims = mock_source_and_args_for_generate_emissions[1]
+    for sim in range(n_sims):
+        src.generate_emissions(sim_start_date=sim_sd, sim_end_date=sim_ed, sim_number=sim)
+    emis_counts: list[int] = []
+    for sim, emissions in src._generated_emissions.items():
+        emis_counts.append(len(emissions))
+    unique_elements = len(set(emis_counts))
+    assert unique_elements > 1
 
 
-def test_001_same_start_end_date_behavior():
-    assert 0 == 0
+def test_001_same_start_end_date_behavior(
+    mock_source_and_args_for_generate_emissions_same_st_ed: Tuple[Source, int, datetime, datetime]
+) -> None:
+    rd.seed(0)
 
-
-def test_001_negative_duration():
-    assert 0 == 0
-
-
-def test_001_unique_source_id_generation():
-    assert 9 == 9
+    src: Source = mock_source_and_args_for_generate_emissions_same_st_ed[0]
+    sim_sd, sim_ed, n_sims = mock_source_and_args_for_generate_emissions_same_st_ed[1]
+    expected_res: datetime = mock_source_and_args_for_generate_emissions_same_st_ed[2]
+    for sim in range(n_sims):
+        src.generate_emissions(sim_start_date=sim_sd, sim_end_date=sim_ed, sim_number=sim)
+    emis_counts: list[int] = []
+    for sim, emissions in src._generated_emissions.items():
+        emis_counts.append(len(emissions))
+    assert average(emis_counts) == pytest.approx(expected_res, rel=0.1)
 
 
 # TODO : fix up below test
