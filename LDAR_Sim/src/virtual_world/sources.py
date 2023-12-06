@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 import re
+import sys
 from typing import Literal
 
 import numpy as np
@@ -9,6 +10,10 @@ from virtual_world.infrastructure_const import Infrastructure_Constants
 
 
 class Source:
+    WIP_NON_FUG_EMIS_GENERATION_MSG = (
+        "Error: Non-Fugitive Emissions generation is still in development."
+        " Please remove these sources for now"
+    )
     REP_PREFIX = "repairable_"
     NON_REP_PREFIX = "non_repairable_"
 
@@ -90,10 +95,14 @@ class Source:
                 start_date=start_date,
                 simulation_sd=sim_start_date,
                 repairable=self._get_repairable(),
+                tech_spat_cov_probs=self._meth_spat_covs,
                 repair_delay=self._get_rep_delay(),
                 repair_cost=self._get_rep_cost(),
                 nrd=self._get_emis_duration(),
             )
+        else:
+            print(Source.WIP_NON_FUG_EMIS_GENERATION_MSG)
+            sys.exit()
 
     def generate_emissions(
         self, sim_start_date: datetime, sim_end_date: datetime, sim_number: int
