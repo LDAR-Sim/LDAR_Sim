@@ -17,13 +17,13 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 ------------------------------------------------------------------------------
 """
-from datetime import datetime
+from datetime import date
 from typing import Tuple
 
 from numpy import average, random as rd
 import pytest
 from virtual_world.sources import Source
-from testing.unit_testing.test_virtual_world.test_sources.souces_testing_fixtures import (  # noqa
+from testing.unit_testing.test_virtual_world.test_sources.sources_testing_fixtures import (  # noqa
     mock_source_and_args_for_generate_emissions_fix,
     mock_simple_source_constructor_params_fix,
     mock_source_and_args_for_generate_emissions_same_st_ed_fix,
@@ -32,14 +32,14 @@ from testing.unit_testing.test_virtual_world.test_sources.souces_testing_fixture
 
 # TODO : renumber/name the tests
 def test_001_generation_of_emissions_dict(
-    mock_source_and_args_for_generate_emissions: Tuple[Source, int, datetime, datetime]
+    mock_source_and_args_for_generate_emissions: Tuple[Source, int, date, date]
 ) -> None:
     # Set a random seed for reproducibility
     rd.seed(0)
 
     src: Source = mock_source_and_args_for_generate_emissions[0]
     sim_sd, sim_ed, n_sims = mock_source_and_args_for_generate_emissions[1]
-    expected_res: datetime = mock_source_and_args_for_generate_emissions[2]
+    expected_res: date = mock_source_and_args_for_generate_emissions[2]
     for sim in range(n_sims):
         src.generate_emissions(sim_start_date=sim_sd, sim_end_date=sim_ed, sim_number=sim)
     emis_counts: list[int] = []
@@ -49,7 +49,7 @@ def test_001_generation_of_emissions_dict(
 
 
 def test_001_gen_emiss_is_unique_for_each_sim_run(
-    mock_source_and_args_for_generate_emissions: Tuple[Source, int, datetime, datetime]
+    mock_source_and_args_for_generate_emissions: Tuple[Source, int, date, date]
 ) -> None:
     # Set a random seed for reproducibility
     rd.seed(0)
@@ -66,13 +66,13 @@ def test_001_gen_emiss_is_unique_for_each_sim_run(
 
 
 def test_001_same_start_end_date_behavior(
-    mock_source_and_args_for_generate_emissions_same_st_ed: Tuple[Source, int, datetime, datetime]
+    mock_source_and_args_for_generate_emissions_same_st_ed: Tuple[Source, int, date, date]
 ) -> None:
     rd.seed(0)
 
     src: Source = mock_source_and_args_for_generate_emissions_same_st_ed[0]
     sim_sd, sim_ed, n_sims = mock_source_and_args_for_generate_emissions_same_st_ed[1]
-    expected_res: datetime = mock_source_and_args_for_generate_emissions_same_st_ed[2]
+    expected_res: date = mock_source_and_args_for_generate_emissions_same_st_ed[2]
     for sim in range(n_sims):
         src.generate_emissions(sim_start_date=sim_sd, sim_end_date=sim_ed, sim_number=sim)
     emis_counts: list[int] = []

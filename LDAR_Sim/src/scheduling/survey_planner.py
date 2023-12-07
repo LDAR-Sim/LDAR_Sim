@@ -1,7 +1,7 @@
-from datetime import date, timedelta, date, datetime
+from datetime import date, timedelta
 import pandas as pd
 import calendar
-import copy
+import math
 from virtual_world.sites import Site
 
 
@@ -83,50 +83,63 @@ class SurveyPlanner:
         """
         survey_plan = []
 
-        def generate_evenly_spaced_dates(active_months, frequency):
-            """
-            Will generate evenly spaced dates
-            """
-            # Ensure active months are sorted
-            active_months.sort()
-
-            num_active = (
-                len(active_months) - 1
-            )  # the -1 is because we're assuming the given month is always included
-            first_month = active_months[0]
-            start_date = date(2023, first_month, 1)
-
-            # get number of days in the given month
-            num_days = calendar.monthrange(2023, first_month + num_active)[1]
-            end_date = date(2023, first_month + num_active, num_days)
-
-            evenly_spaced_dates = pd.date_range(
-                start=start_date, end=end_date, periods=frequency + 1, inclusive="left"
-            )
-
-            evenly_spaced_dates = evenly_spaced_dates.to_pydatetime()
-            inactive_months = get_inactive_months(active_months)
-
-            # Iterate over inactive months
-            for inactive_month in inactive_months:
-                # Iterate over evenly spaced dates
-                for i, survey_date in enumerate(evenly_spaced_dates):
-                    if survey_date.month == inactive_month:
-                        # Calculate days to add based on the last day of the inactive month
-                        days_to_add = calendar.monthrange(survey_date.year, inactive_month)[1]
-
-                        # Add days_to_add to all dates at and after the current index
-                        for j in range(i, len(evenly_spaced_dates)):
-                            evenly_spaced_dates[j] += timedelta(days=days_to_add)
-                        break
-                    if inactive_month < survey_date.month:
-                        break
-
-            return evenly_spaced_dates
-
-        datetime_list = generate_evenly_spaced_dates(self._deployment_months, site_annual_rs)
+        datetime_list = self._generate_evenly_spaced_dates(self._deployment_months, site_annual_rs)
         survey_plan = [date.date() for date in datetime_list]
         return survey_plan
+
+    def _generate_evenly_spaced_dates(self, active_months, frequency):
+        """
+        Will generate evenly spaced dates
+        """
+        # Ensure active months are sorted
+        active_months.sort()
+
+        num_active = (
+            len(active_months) - 1
+        )  # the -1 is because we're assuming the given month is always included
+        first_month = active_months[0]
+        start_date = date(2023, first_month, 1)
+
+        # get number of days in the given month
+        num_days = calendar.monthrange(2023, first_month + num_active)[1]
+        end_date = date(2023, first_month + num_active, num_days)
+
+        evenly_spaced_dates = pd.date_range(
+            start=start_date, end=end_date, periods=frequency + 1, inclusive="left"
+        )
+
+        evenly_spaced_dates = evenly_spaced_dates.to_pydatetime()
+        inactive_months = get_inactive_months(active_months)
+        post_sd_inactive_months = [month for month in inactive_months if month > start_date.month]
+        prev_inactive_count: int = 0
+        for i, survey_date in enumerate(evenly_spaced_dates):
+            inactive_counts: int = len(
+                [month for month in post_sd_inactive_months if month <= survey_date.month]
+            )
+            inactive_counts += prev_inactive_count
+            while survey_date.month + inactive_counts in inactive_months:
+                inactive_counts += 1
+                prev_inactive_count += 1
+            days_to_add: int = math.floor(
+                30.437 * inactive_counts
+            )  # TODO : calculate the actual days instead of using placeholder 30
+            evenly_spaced_dates[i] += timedelta(days=days_to_add)
+        # # Iterate over inactive months
+        # for inactive_month in inactive_months:
+        #     # Iterate over evenly spaced dates
+        #     for i, survey_date in enumerate(evenly_spaced_dates):
+        #         if survey_date.month == inactive_month:
+        #             # Calculate days to add based on the last day of the inactive month
+        #             days_to_add = calendar.monthrange(survey_date.year, inactive_month)[1]
+
+        #             # Add days_to_add to all dates at and after the current index
+        #             for j in range(i, len(evenly_spaced_dates)):
+        #                 evenly_spaced_dates[j] += timedelta(days=days_to_add)
+        #             break
+        #         if inactive_month < survey_date.month:
+        #             break
+
+        return evenly_spaced_dates
 
     def get_survey_plan(self) -> list[date]:
         """Returns the survey_plan"""

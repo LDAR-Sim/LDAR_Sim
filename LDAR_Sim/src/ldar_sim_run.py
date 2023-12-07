@@ -23,10 +23,10 @@ import gc
 import os
 import random as rand
 import sys
-from datetime import datetime, timedelta
+from datetime import timedelta, date
 
 from numpy import random as np_rand
-from initialization.infrastructure import Infrastructure
+from virtual_world.infrastructure import Infrastructure
 from stdout_redirect import stdout_redirect
 from time_counter import TimeCounter
 from weather.weather_lookup import WeatherLookup as WL
@@ -116,7 +116,7 @@ def ldar_sim_run(simulation):
         input_directory,
         output_directory,
     )
-    start_date = datetime(*virtual_world["start_date"])
+    start_date = date(*virtual_world["start_date"])
     # Loop through timeseries
     for ts in range(state["t"].timesteps):
         state["t"].current_timestep = ts

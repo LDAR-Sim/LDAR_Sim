@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import date, timedelta
 from math import ceil
 from typing import Tuple
 from hypothesis import given, strategies as st
@@ -6,17 +6,13 @@ from virtual_world.fugitive_emission import FugitiveEmission
 
 
 def mock_simple_fugitive_emission_for_est_start_date_testing_1() -> FugitiveEmission:
-    return FugitiveEmission(
-        1, 1, datetime(*[2018, 1, 1]), datetime(*[2017, 1, 1]), False, {}, 14, 200, 365
-    )
+    return FugitiveEmission(1, 1, date(*[2018, 1, 1]), date(*[2017, 1, 1]), False, {}, 14, 200, 365)
 
 
 @st.composite
 def gen_valid_est_start_date_testing_data(draw):
     t_since_ldar: int = draw(st.integers(min_value=1, max_value=365))
-    current_date = draw(
-        st.datetimes(min_value=datetime(2000, 1, 1), max_value=datetime(2023, 12, 31))
-    )
+    current_date = draw(st.dates(min_value=date(2000, 1, 1), max_value=date(2023, 12, 31)))
     expected_est_sd = current_date - timedelta(days=ceil(t_since_ldar / 2))
     expected_est_days_active = ceil(t_since_ldar / 2)
     return t_since_ldar, current_date, (expected_est_sd, expected_est_days_active)
@@ -24,7 +20,7 @@ def gen_valid_est_start_date_testing_data(draw):
 
 @given(test_data=gen_valid_est_start_date_testing_data())
 def test_000_estimate_start_date_estimates_correct_with_with_valid_t_since_ldar(
-    test_data: Tuple[int, datetime, datetime],
+    test_data: Tuple[int, date, date],
 ) -> None:
     fug_emis: FugitiveEmission = mock_simple_fugitive_emission_for_est_start_date_testing_1()
     time_since_ldar, cur_dt, ans = test_data

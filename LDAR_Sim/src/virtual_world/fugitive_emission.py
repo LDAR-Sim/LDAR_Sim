@@ -87,7 +87,7 @@ class FugitiveEmission(Emission):
     def tag_leak(
         self,
         measured_rate: float,
-        cur_date: datetime,
+        cur_date: date,
         t_since_ldar: int,
         company: str,
         crew_id: str,

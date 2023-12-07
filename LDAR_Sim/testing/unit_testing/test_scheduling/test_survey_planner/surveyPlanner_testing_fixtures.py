@@ -121,9 +121,9 @@ def gen_survey_plan_simple_case_12_fix():
     return RS, valid_months, expected_outcome
 
 
-@pytest.fixture(name="gen_survey_plan_complex_2")
-def gen_survey_plan_complex_2_fix():
-    """Simple case for testing generate survey plan
+@pytest.fixture(name="gen_survey_plan_simple_split_2")
+def gen_survey_plan_simple_split_2_fix():
+    """Simple case for testing generate survey plan where months are split
     RS: 2
     Deployment_months: [5,8]
     """
@@ -135,7 +135,7 @@ def gen_survey_plan_complex_2_fix():
 
 @pytest.fixture(name="gen_survey_plan_split_2")
 def gen_survey_plan_split_2_fix():
-    """Simple case for testing generate survey plan
+    """More complex case for testing generate survey plan where months are split
     RS: 2
     Deployment_months: [3,4,5,8,9,10]
     """
@@ -147,7 +147,7 @@ def gen_survey_plan_split_2_fix():
 
 @pytest.fixture(name="gen_survey_plan_complex_4")
 def gen_survey_plan_complex_4_fix():
-    """Simple case for testing generate survey plan
+    """Complex case for testing generate survey plan, with non-consecutive deployment months
     RS: 4
     Deployment_months: [2,4,6,8,10,11]
     """
@@ -155,9 +155,9 @@ def gen_survey_plan_complex_4_fix():
     valid_months: list[int] = [2, 4, 6, 8, 10, 11]
     expected_outcome: list[date] = [
         date(2023, 2, 1),
-        date(2023, 4, 18),
-        date(2023, 8, 3),
-        date(2023, 10, 17),
+        date(2023, 4, 17),
+        date(2023, 8, 1),
+        date(2023, 10, 15),
     ]
     return RS, valid_months, expected_outcome
 
@@ -171,13 +171,13 @@ def gen_survey_plan_consecutive_2_fix():
     valid_months: list[int] = [4, 5, 6, 7, 8, 9]
     expected_outcome: list[date] = [
         date(2023, 4, 1),
-        date(2023, 6, 30),
+        date(2023, 7, 1),
     ]
     return RS, valid_months, expected_outcome
 
 
 @pytest.fixture(name="gen_survey_plan_consecutive_3")
-def gen_survey_plan_consecutive_2_fix():
+def gen_survey_plan_consecutive_3_fix():
     """Complex case for testing consecutive months
     RS: 3
     Deployment months: [4,5,6,7,8,9]"""
@@ -185,14 +185,14 @@ def gen_survey_plan_consecutive_2_fix():
     valid_months: list[int] = [4, 5, 6, 7, 8, 9]
     expected_outcome: list[date] = [
         date(2023, 4, 1),
-        date(2023, 5, 30),
-        date(2023, 7, 30),
+        date(2023, 5, 31),
+        date(2023, 7, 31),
     ]
     return RS, valid_months, expected_outcome
 
 
-@pytest.fixture(name="gen_survey_plan_split_complex_4")
-def gen_survey_plan_split_complex_4_fix():
+@pytest.fixture(name="gen_survey_plan_split_4")
+def gen_survey_plan_split_4_fix():
     """Simple case for testing generate survey plan
     RS: 4
     Deployment_months: [3, 4, 5, 8, 10, 11]
@@ -201,15 +201,15 @@ def gen_survey_plan_split_complex_4_fix():
     valid_months: list[int] = [3, 4, 5, 9, 10, 11]
     expected_outcome: list[date] = [
         date(2023, 3, 1),
+        date(2023, 4, 15),
         date(2023, 5, 31),
-        date(2023, 9, 1),
-        date(2023, 11, 30),
+        date(2023, 10, 14),
     ]
     return RS, valid_months, expected_outcome
 
 
 @pytest.fixture(name="gen_survey_plan_split_complex_2")
-def gen_survey_plan_split_complex__fix():
+def gen_survey_plan_split_complex_2_fix():
     """Simple case for testing generate survey plan
     RS: 2
     Deployment_months: [1,2,3,10,11,12]
@@ -217,7 +217,7 @@ def gen_survey_plan_split_complex__fix():
     RS: int = 2
     valid_months: list[int] = [1, 2, 3, 10, 11, 12]
     expected_outcome: list[date] = [
-        date(2023, 3, 1),
-        date(2023, 5, 31),
+        date(2023, 1, 1),
+        date(2023, 10, 1),
     ]
     return RS, valid_months, expected_outcome

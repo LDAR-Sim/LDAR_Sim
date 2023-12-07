@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date
 from virtual_world.fugitive_emission import FugitiveEmission
 
 from testing.unit_testing.test_virtual_world.test_fugitive_emission.fugitive_emission_testing_fixtures import (  # noqa
@@ -10,7 +10,7 @@ def test_000_activate_returns_inactive_when_fugitive_emissions_start_date_not_ye
     mock_simple_fugitive_emission_for_activate_testing_1: FugitiveEmission,
 ):
     assert (
-        mock_simple_fugitive_emission_for_activate_testing_1.activate(datetime(*[2017, 1, 1]))
+        mock_simple_fugitive_emission_for_activate_testing_1.activate(date(*[2017, 1, 1]))
         == "Inactive"
     )
 
@@ -20,7 +20,7 @@ def test_000_activate_returns_already_active_when_fugitive_emissions_status_acti
 ):
     mock_simple_fugitive_emission_for_activate_testing_1._status = "Active"
     assert (
-        mock_simple_fugitive_emission_for_activate_testing_1.activate(datetime(*[2017, 1, 1]))
+        mock_simple_fugitive_emission_for_activate_testing_1.activate(date(*[2017, 1, 1]))
         == "Already_Active"
     )
 
@@ -29,6 +29,6 @@ def test_000_activate_returns_newly_active_when_fugitive_emissions_start_date_pa
     mock_simple_fugitive_emission_for_activate_testing_1: FugitiveEmission,
 ):
     assert (
-        mock_simple_fugitive_emission_for_activate_testing_1.activate(datetime(*[2018, 1, 1]))
+        mock_simple_fugitive_emission_for_activate_testing_1.activate(date(*[2018, 1, 1]))
         == "Newly_Active"
     )
