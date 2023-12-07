@@ -1,7 +1,21 @@
-from datetime import datetime, timedelta
+from datetime import date, timedelta, date, datetime
+import pandas as pd
+import calendar
+import copy
+from virtual_world.sites import Site
 
 
-from initialization.sites import Site
+def get_inactive_months(active):
+    """
+    Get inactive months
+    """
+
+    # months range from 1 to 12
+    all_months = set(range(1, 13))
+
+    # Calculate inactive months
+    inactive_months = [month for month in all_months if month not in active]
+    return inactive_months
 
 
 class SurveyPlanner:
@@ -14,8 +28,8 @@ class SurveyPlanner:
         self,
         site: Site,
         site_annual_rs: int,
-        sim_start_date: datetime,
-        sim_end_date: datetime,
+        sim_start_date: date,
+        sim_end_date: date,
         deployment_years: list[int],
         deployment_months: list[int],
     ) -> None:
@@ -25,36 +39,37 @@ class SurveyPlanner:
         self.site: Site = site
         self._deployment_months: list[int] = deployment_months
         self._deployment_years: list[int] = deployment_years
-        self._gen_survey_plan(sim_years, site_annual_rs)
-        self._current_date: datetime = sim_start_date
+        self._survey_plan: dict[int, date] = self._gen_survey_plan(site_annual_rs)
+        self._current_date: date = sim_start_date
         self._surveys_this_year: dict[str, int] = {}
-        self._last_survey_dates: dict[str, datetime] = {}
+        self._last_survey_dates: dict[str, date] = {}
 
-    def get_simulation_years(self, sim_start_date: datetime, sim_end_date: datetime) -> list[int]:
+    def get_simulation_years(self, sim_start_date: date, sim_end_date: date) -> list[int]:
         """Takes a start and end date and returns a list of all years between the two dates.
 
         Args:
-            sim_start_date (datetime): The start date.
+            sim_start_date (date): The start date.
             Expected to be earlier (chronologically) than the end date.
-            sim_end_date (datetime): The end date.
+            sim_end_date (date): The end date.
             Expected to be later (chronologically) than the start date.
 
         Returns:
             list[int]: The list of years between the provided start and end date.
         """
-        sim_years: list[int] = []
-        curr_date: datetime = sim_start_date
-        while curr_date <= sim_end_date:
-            sim_years.append(curr_date.year)
-            curr_date += timedelta(days=365)
-        return sim_years
+        start_year = sim_start_date.year
+        end_year = sim_end_date.year
+
+        # If start_date is later in the year than end_date, adjust the range
+        if sim_start_date.month > sim_end_date.month or (
+            sim_start_date.month == sim_end_date.month and sim_start_date.day > sim_end_date.day
+        ):
+            end_year -= 1
+
+        return list(range(start_year, end_year + 1))
 
     def _gen_survey_plan(
         self,
-        sim_years: list[int],
         site_annual_rs: int,
-        site_survey_min_int: int,
-        site_min_time_bt_surveys: int,
     ) -> None:
         """Will generate an surveyed plan for the given site details in the form of
         a dictionary of years, and a nested dictionaries of survey numbers and dates
@@ -63,20 +78,59 @@ class SurveyPlanner:
         and the site survey minimum interval.
 
         Args:
-            sim_years (list[int]): The list of active years to generate the survey plan for.
             site_annual_rs (int): Annual required surveys at the site,
             for the method this survey plan is for.
-            site_survey_min_int (int): The minimum interval between surveys.
-            site_min_time_bt_surveys (int): The minimum time between surveys in days.
         """
-        self._survey_plan: dict[str, dict[str, datetime]] = {}
-        for year in sim_years:
-            if year in self._deployment_years:
-                self._survey_plan[year] = self._gen_yearly_survey_plan(
-                    site_annual_rs=site_annual_rs,
-                    site_survey_min_int=site_survey_min_int,
-                    site_min_time_bt_surveys=site_min_time_bt_surveys,
-                )
+        survey_plan = []
+
+        def generate_evenly_spaced_dates(active_months, frequency):
+            """
+            Will generate evenly spaced dates
+            """
+            # Ensure active months are sorted
+            active_months.sort()
+
+            num_active = (
+                len(active_months) - 1
+            )  # the -1 is because we're assuming the given month is always included
+            first_month = active_months[0]
+            start_date = date(2023, first_month, 1)
+
+            # get number of days in the given month
+            num_days = calendar.monthrange(2023, first_month + num_active)[1]
+            end_date = date(2023, first_month + num_active, num_days)
+
+            evenly_spaced_dates = pd.date_range(
+                start=start_date, end=end_date, periods=frequency + 1, inclusive="left"
+            )
+
+            evenly_spaced_dates = evenly_spaced_dates.to_pydatetime()
+            inactive_months = get_inactive_months(active_months)
+
+            # Iterate over inactive months
+            for inactive_month in inactive_months:
+                # Iterate over evenly spaced dates
+                for i, survey_date in enumerate(evenly_spaced_dates):
+                    if survey_date.month == inactive_month:
+                        # Calculate days to add based on the last day of the inactive month
+                        days_to_add = calendar.monthrange(survey_date.year, inactive_month)[1]
+
+                        # Add days_to_add to all dates at and after the current index
+                        for j in range(i, len(evenly_spaced_dates)):
+                            evenly_spaced_dates[j] += timedelta(days=days_to_add)
+                        break
+                    if inactive_month < survey_date.month:
+                        break
+
+            return evenly_spaced_dates
+
+        datetime_list = generate_evenly_spaced_dates(self._deployment_months, site_annual_rs)
+        survey_plan = [date.date() for date in datetime_list]
+        return survey_plan
+
+    def get_survey_plan(self) -> list[date]:
+        """Returns the survey_plan"""
+        return self._survey_plan
 
     def update(self) -> None:
         """This method will update the internal current date of the survey plan,
@@ -86,7 +140,7 @@ class SurveyPlanner:
         """
         self._current_date += timedelta(days=1)
 
-    def queue_site_for_survey() -> bool:
+    def queue_site_for_survey(self) -> bool:
         """Method to determine if the site for which this survey plan was generated
         should be queued to be surveyed. Will return True if the site should be
         queued to be surveyed, False otherwise.
@@ -95,6 +149,23 @@ class SurveyPlanner:
             bool: Boolean indicating if the site should be queued to be surveyed.
             True if the site should be queued to be surveyed, False otherwise.
         """
+
+        def check_deployable_year(self) -> bool:
+            """Checks to make sure current date is a valid year to send out crews"""
+            if self._current_date.year in self._deployment_years:
+                return True
+            return False
+
+        (
+            num_of_surveys_done,
+            need_survey,
+        ) = (
+            self.site.check_number_of_surveys()  # TODO: move to survey planner
+        )  # should site have a method to check how mnay surveys it's recieved and if it's less than RS?
+        if need_survey:
+            if check_deployable_year():
+                if self._current_date >= self._survey_plan[num_of_surveys_done]:
+                    return True
         return False
 
 
@@ -103,8 +174,8 @@ class MobileSurveyPlanner(SurveyPlanner):
         self,
         site: Site,
         site_annual_rs: int,
-        sim_start_date: datetime,
-        sim_end_date: datetime,
+        sim_start_date: date,
+        sim_end_date: date,
         deployment_years: list[int],
         deployment_months: list[int],
     ):
@@ -123,8 +194,8 @@ class StationarySurveyPlanner(SurveyPlanner):
         self,
         site: Site,
         site_annual_rs: int,
-        sim_start_date: datetime,
-        sim_end_date: datetime,
+        sim_start_date: date,
+        sim_end_date: date,
         deployment_years: list[int],
         deployment_months: list[int],
     ):

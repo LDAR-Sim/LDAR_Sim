@@ -1,7 +1,7 @@
 """ Fixtures for testing leaks"""
 
 import pytest
-from datetime import datetime
+from datetime import date
 from typing import Any, Dict
 
 
@@ -67,7 +67,7 @@ def mock_site_return_test_fix() -> list[Dict[str, Any]]:
             "measured_rate": None,
             "tagged": False,
             "component": "unknown",
-            "date_began": datetime(2022, 1, 1, 0, 0),
+            "date_began": date(2022, 1, 1),
             "day_ts_began": 0,
             "estimated_date_began": None,
             "date_tagged": None,

@@ -18,7 +18,7 @@
 #
 # ------------------------------------------------------------------------------
 
-from datetime import datetime, timedelta
+from datetime import date, timedelta
 from statistics import mean
 
 import pytz
@@ -31,8 +31,8 @@ class TimeCounter:
         Initialize a calendar and clock to count through the simulation.
 
         """
-        self.start_date = datetime(*start_date)
-        self.end_date = datetime(*end_date)
+        self.start_date = date(*start_date)
+        self.end_date = date(*end_date)
         self.timesteps = (self.end_date - self.start_date).days
         self.current_date = self.start_date
         self.current_timestep = 0
@@ -61,5 +61,5 @@ class TimeCounter:
         # software during DST, then the offset will include DST. Fix this
         # someday, by keeping timezone as a site variable and localizing
         # every year.
-        tz_now = datetime.now(pytz.timezone(timezone_str))
+        tz_now = date.now(pytz.timezone(timezone_str))
         self.UTC_offset = tz_now.utcoffset().total_seconds() / 60 / 60

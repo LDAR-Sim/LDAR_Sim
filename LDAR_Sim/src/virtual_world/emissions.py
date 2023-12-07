@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date
 from typing import Any
 
 from numpy.random import binomial
@@ -9,17 +9,17 @@ class Emission:
         self,
         emission_n: int,
         rate: float,
-        start_date: datetime,
-        simulation_sd: datetime,
+        start_date: date,
+        simulation_sd: date,
         repairable: bool,
         tech_spat_cov_probs: dict[str, float],
     ) -> None:
         self._emissions_id: str = f"{str(emission_n).zfill(10)}"
         self._rate: float = rate
-        self._start_date: datetime = start_date
+        self._start_date: date = start_date
         self._repairable: bool = repairable
 
-        self._estimated_date_began: datetime = None
+        self._estimated_date_began: date = None
         self._estimated_days_active: int = 0
         self._active_days: int = 0
         self._measured_rate: float = None
@@ -29,7 +29,7 @@ class Emission:
         self._tagged_by_crew: str = None
         self._flagged_by: str = None
         self._init_detect_by: str = None
-        self._init_detect_date: datetime = None
+        self._init_detect_date: date = None
         self._tech_spat_cov_probs: dict[str, float] = tech_spat_cov_probs
         self._tech_spat_covs: dict[str, int] = {}
 

@@ -6,7 +6,7 @@ import numbers
 
 # import pickle
 import subprocess
-from datetime import datetime
+from datetime import date
 from typing import Any, Literal
 
 import yaml
@@ -155,7 +155,7 @@ def compare_outputs(
     logger.addHandler(file_handler)
 
     # Log timestamp
-    cur_time: datetime = datetime.now()
+    cur_time: date = date.now()
     logger.info(f"E2E test initialization time: {cur_time}")
 
     # Check Parameter match expected - CURRENTLY DISABLED

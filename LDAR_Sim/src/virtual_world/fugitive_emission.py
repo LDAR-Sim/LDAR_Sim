@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import date, timedelta
 from math import ceil
 from typing import Any, Literal
 from typing_extensions import override
@@ -11,8 +11,8 @@ class FugitiveEmission(Emission):
         self,
         emission_n: int,
         rate: float,
-        start_date: datetime,
-        simulation_sd: datetime,
+        start_date: date,
+        simulation_sd: date,
         repairable: bool,
         tech_spat_cov_probs: dict[str, float],
         repair_delay: int,
@@ -31,7 +31,7 @@ class FugitiveEmission(Emission):
         self._repair_cost: float = repair_cost
         self._tagging_rep_delay: int = 0
         self._nrd: int = nrd
-        self._repair_date: datetime = None
+        self._repair_date: date = None
         days_active_b4_sim: int = (simulation_sd - start_date).days
         self._days_active_b4_sim = days_active_b4_sim if days_active_b4_sim > 0 else 0
 
@@ -71,12 +71,12 @@ class FugitiveEmission(Emission):
         self._repair_date = self._start_date + timedelta(days=(self._active_days))
 
     # TODO potentially move this into company later
-    def estimate_start_date(self, cur_date: datetime, t_since_ldar: int) -> None:
+    def estimate_start_date(self, cur_date: date, t_since_ldar: int) -> None:
         """Estimates the start date and days activate of the fugitive emission based on
         the time since the last LDAR-SIm and the current date (discovery date)
 
         Args:
-            cur_date (datetime): The current date in the simulation
+            cur_date (date): The current date in the simulation
             t_since_ldar (int): THe time in days since the site at which the emissions
             was discovered last received LDAR
         """
@@ -133,7 +133,7 @@ class FugitiveEmission(Emission):
         return summary_dict
 
     @override
-    def activate(self, date: datetime) -> Literal["Already_Active", "Newly_Active", "Inactive"]:
+    def activate(self, date: date) -> Literal["Already_Active", "Newly_Active", "Inactive"]:
         activated: str = "Inactive"
         if self._status == "Active":
             activated = "Already_Active"

@@ -1,6 +1,6 @@
 import queue
 
-from initialization.sites import Site
+from virtual_world.sites import Site
 from scheduling.survey_planner import SurveyPlanner
 
 
