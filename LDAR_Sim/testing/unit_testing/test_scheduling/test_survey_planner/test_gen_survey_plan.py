@@ -17,9 +17,9 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 ------------------------------------------------------------------------------
 """
+import pytest
 from datetime import date
 from src.scheduling.survey_planner import SurveyPlanner
-from src.virtual_world.sites import Site
 from testing.unit_testing.test_scheduling.test_survey_planner.surveyPlanner_testing_fixtures import (
     gen_survey_plan_simple_case_1_fix,
     gen_survey_plan_simple_case_3_fix,
@@ -33,73 +33,65 @@ from testing.unit_testing.test_scheduling.test_survey_planner.surveyPlanner_test
     gen_survey_plan_simple_split_2_fix,
     gen_survey_plan_split_4_fix,
     gen_survey_plan_split_complex_2_fix,
+    mocker_fixture,
 )
 
 
+@pytest.mark.parametrize(
+    "test_input, mocker_fix",
+    [
+        ("gen_survey_plan_simple_case_1", "mocker_fixture"),
+        ("gen_survey_plan_simple_case_3", "mocker_fixture"),
+        ("gen_survey_plan_simple_case_5", "mocker_fixture"),
+        ("gen_survey_plan_simple_case_11", "mocker_fixture"),
+        ("gen_survey_plan_simple_case_12", "mocker_fixture"),
+    ],
+)
 def test_000_gen_survey_plan_gens_logical_survey_plans_with_full_deployment_months(
-    gen_survey_plan_simple_case_1,
-    gen_survey_plan_simple_case_3,
-    gen_survey_plan_simple_case_5,
-    gen_survey_plan_simple_case_11,
-    gen_survey_plan_simple_case_12,
-    mocker,
+    test_input, mocker_fix, request
 ):
-    fixtures = [
-        gen_survey_plan_simple_case_1,
-        gen_survey_plan_simple_case_3,
-        gen_survey_plan_simple_case_5,
-        gen_survey_plan_simple_case_11,
-        gen_survey_plan_simple_case_12,
-    ]
-    mocker.patch.object(Site, "__init__", lambda self, *args, **kwargs: setattr(self, "id", 1))
+    """Unit test for testing simple deployment for scheduling"""
     start_year, end_year = 2020, 2025
     deploy_years = list(range(start_year, end_year + 1))
-
-    for fixture in fixtures:
-        deploy_months = fixture[1]
-        planner = SurveyPlanner(
-            mocker,
-            fixture[0],
-            date(start_year, 1, 1),
-            date(end_year, 12, 31),
-            deploy_years,
-            deploy_months,
-        )
-        result = planner.get_survey_plan()
-        assert result == fixture[2]
+    deploy_months = request.getfixturevalue(test_input)[1]
+    planner = SurveyPlanner(
+        request.getfixturevalue(mocker_fix),
+        request.getfixturevalue(test_input)[0],
+        date(start_year, 1, 1),
+        date(end_year, 12, 31),
+        deploy_years,
+        deploy_months,
+    )
+    result = planner.get_survey_plan()
+    assert result == request.getfixturevalue(test_input)[2]
 
 
+@pytest.mark.parametrize(
+    "test_input, mocker_fix",
+    [
+        ("gen_survey_plan_split_2", "mocker_fixture"),
+        ("gen_survey_plan_complex_4", "mocker_fixture"),
+        ("gen_survey_plan_consecutive_2", "mocker_fixture"),
+        ("gen_survey_plan_consecutive_3", "mocker_fixture"),
+        ("gen_survey_plan_simple_split_2", "mocker_fixture"),
+        ("gen_survey_plan_split_4", "mocker_fixture"),
+        ("gen_survey_plan_split_complex_2", "mocker_fixture"),
+    ],
+)
 def test_000_gen_survey_plans_gens_logical_survey_plans_with_partial_deployment_months(
-    gen_survey_plan_split_2,
-    gen_survey_plan_complex_4,
-    gen_survey_plan_consecutive_2,
-    gen_survey_plan_consecutive_3,
-    gen_survey_plan_simple_split_2,
-    gen_survey_plan_split_4,
-    gen_survey_plan_split_complex_2,
-    mocker,
-):  # TODO: change this to use parameterize...
-    fixtures = [
-        gen_survey_plan_split_2,
-        gen_survey_plan_complex_4,
-        gen_survey_plan_consecutive_2,
-        gen_survey_plan_consecutive_3,
-        gen_survey_plan_simple_split_2,
-        gen_survey_plan_split_4,
-        gen_survey_plan_split_complex_2,
-    ]
-    mocker.patch.object(Site, "__init__", lambda self, *args, **kwargs: setattr(self, "id", 1))
+    test_input, mocker_fix, request
+):
+    """Unit test for testing more complex deployment for scheduling"""
     start_year, end_year = 2020, 2025
     deploy_years = list(range(start_year, end_year + 1))
-    for fixture in fixtures:
-        deploy_months = fixture[1]
-        planner = SurveyPlanner(
-            mocker,
-            fixture[0],
-            date(start_year, 1, 1),
-            date(end_year, 12, 31),
-            deploy_years,
-            deploy_months,
-        )
-        result = planner.get_survey_plan()
-        assert result == fixture[2]
+    deploy_months = request.getfixturevalue(test_input)[1]
+    planner = SurveyPlanner(
+        request.getfixturevalue(mocker_fix),
+        request.getfixturevalue(test_input)[0],
+        date(start_year, 1, 1),
+        date(end_year, 12, 31),
+        deploy_years,
+        deploy_months,
+    )
+    result = planner.get_survey_plan()
+    assert result == request.getfixturevalue(test_input)[2]
