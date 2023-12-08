@@ -203,7 +203,7 @@ def gen_survey_plan_split_4_fix():
         date(2023, 3, 1),
         date(2023, 4, 15),
         date(2023, 5, 31),
-        date(2023, 10, 14),
+        date(2023, 10, 16),
     ]
     return RS, valid_months, expected_outcome
 

@@ -2,6 +2,7 @@ from datetime import date, timedelta
 import pandas as pd
 import calendar
 import math
+import copy
 from virtual_world.sites import Site
 
 
@@ -116,10 +117,20 @@ class SurveyPlanner:
             inactive_counts: int = len(
                 [month for month in post_sd_inactive_months if month <= survey_date.month]
             )
+            original_month = copy.deepcopy(survey_date.month)
+            diff = 0
+            # check and add if theres any inactive months that are between current month and the active month
+            for x, a_month in enumerate(active_months):
+                if a_month == original_month:
+                    break
+                elif a_month > original_month:
+                    diff = original_month - active_months[x - 1] - 1
+                    break
             inactive_counts += prev_inactive_count
             while survey_date.month + inactive_counts in inactive_months:
                 inactive_counts += 1
                 prev_inactive_count += 1
+            inactive_counts += diff
             days_to_add: int = math.ceil(
                 30.437 * inactive_counts
             )  # TODO : calculate the actual days instead of using placeholder 30
