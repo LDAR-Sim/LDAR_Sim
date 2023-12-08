@@ -120,24 +120,10 @@ class SurveyPlanner:
             while survey_date.month + inactive_counts in inactive_months:
                 inactive_counts += 1
                 prev_inactive_count += 1
-            days_to_add: int = math.floor(
+            days_to_add: int = math.ceil(
                 30.437 * inactive_counts
             )  # TODO : calculate the actual days instead of using placeholder 30
             evenly_spaced_dates[i] += timedelta(days=days_to_add)
-        # # Iterate over inactive months
-        # for inactive_month in inactive_months:
-        #     # Iterate over evenly spaced dates
-        #     for i, survey_date in enumerate(evenly_spaced_dates):
-        #         if survey_date.month == inactive_month:
-        #             # Calculate days to add based on the last day of the inactive month
-        #             days_to_add = calendar.monthrange(survey_date.year, inactive_month)[1]
-
-        #             # Add days_to_add to all dates at and after the current index
-        #             for j in range(i, len(evenly_spaced_dates)):
-        #                 evenly_spaced_dates[j] += timedelta(days=days_to_add)
-        #             break
-        #         if inactive_month < survey_date.month:
-        #             break
 
         return evenly_spaced_dates
 

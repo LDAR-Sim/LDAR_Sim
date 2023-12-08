@@ -155,9 +155,9 @@ def gen_survey_plan_complex_4_fix():
     valid_months: list[int] = [2, 4, 6, 8, 10, 11]
     expected_outcome: list[date] = [
         date(2023, 2, 1),
-        date(2023, 4, 17),
-        date(2023, 8, 1),
-        date(2023, 10, 15),
+        date(2023, 4, 18),
+        date(2023, 8, 2),
+        date(2023, 10, 16),
     ]
     return RS, valid_months, expected_outcome
 
