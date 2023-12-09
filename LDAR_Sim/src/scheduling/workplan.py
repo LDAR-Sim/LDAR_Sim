@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
-from initialization.sites import Site
+from virtual_world.sites import Site
 
 
 @dataclass
