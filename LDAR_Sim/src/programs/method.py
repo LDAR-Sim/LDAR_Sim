@@ -5,11 +5,12 @@ from scheduling.workplan import Workplan
 class Method:
     SURVEY_TIME_ACCESSOR = "time"
     TRAVEL_TIME_ACCESSOR = "t_bw_sites"
+    DETEC_ACCESSOR = "sensor"
 
     # TODO ensure survey times aren't needed for methods
-    def __init__(self, name, properties):
-        self._name = name
-        self._detection_capabilities = properties[Method.DETEC_ACCESSOR]
+    def __init__(self, name: str, properties: dict):
+        self._name: str = name
+        self._initialize_sensor(properties[Method.DETEC_ACCESSOR])
 
     def deploy_crews(self, workplan: Workplan):
         """Deploy crews will send crews out to survey sites based on the provided workplan"""
@@ -31,5 +32,14 @@ class Method:
 
         Args:
             site (Site): The site for which to generate the emissions report.
+        """
+        return
+
+    def _initialize_sensor(sensor_info: dict) -> None:
+        """Will initialize a sensor of the correct type based
+        on the sensor info provided to the method
+
+        Args:
+            sensor_into (dict): _description_
         """
         return

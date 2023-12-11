@@ -121,6 +121,18 @@ class Site:
         for eqg in self._equipment_groups:
             eqg.activate_emissions(date, sim_number)
 
+    def get_detectable_emissions(self, method_name: str, survey_level: str):
+        detectable_emissions: dict = {}
+        for eqg in self._equipment_groups:
+            detectable_emissions[eqg.get_id()] = eqg.get_detectable_emissions(
+                method_name, survey_level
+            )
+
+        if survey_level == "site_level":
+            return [val for val in detectable_emissions]
+        else:
+            return detectable_emissions
+
     def set_pregen_emissions(self, site_emissions, sim_number) -> None:
         for eqg in self._equipment_groups:
             eqg.set_pregen_emissions(site_emissions[eqg.get_id()], sim_number)
