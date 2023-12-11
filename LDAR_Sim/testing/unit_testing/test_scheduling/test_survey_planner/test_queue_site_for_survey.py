@@ -22,7 +22,7 @@ from src.virtual_world.sites import Site
 from src.scheduling.survey_planner import SurveyPlanner
 
 
-def test_000_queue_site_for_survey_returns_true_when_site_is_due_to_be_queued_for_survey(mocker):
+def test_000_queue_site_for_survey_returns_true_first_survey(mocker):
     mocker.patch.object(Site, "__init__", lambda self, *args, **kwargs: setattr(self, "id", 1))
     start_year, end_year = 2020, 2025
     deploy_years = list(range(start_year, end_year + 1))
@@ -36,14 +36,49 @@ def test_000_queue_site_for_survey_returns_true_when_site_is_due_to_be_queued_fo
         deploy_years,
         deploy_months,
     )
-    planner.set_current_date(date(2020, 1, 10))
     result = planner.queue_site_for_survey()
-    assert result == True
+    assert result is True
 
 
-def test_000_queue_site_for_survey_returns_false_when_site_is_not_due_to_be_queued_for_survey():
-    return
+# def test_000_queue_site_for_survey_returns_true_when_site_is_due_to_be_queued_for_survey(mocker):
+#     mocker.patch.object(Site, "__init__", lambda self, *args, **kwargs: setattr(self, "id", 1))
+#     start_year, end_year = 2020, 2025
+#     deploy_years = list(range(start_year, end_year + 1))
+#     RS = 5
+#     deploy_months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+#     planner = SurveyPlanner(
+#         mocker,
+#         RS,
+#         date(start_year, 1, 1),
+#         date(end_year, 12, 31),
+#         deploy_years,
+#         deploy_months,
+#     )
+#     planner.set_current_date(date(2020, 1, 10))
+#     result = planner.queue_site_for_survey()
+#     assert result == True
 
 
-def test_000_queue_site_for_survey_returns_false_when_site_has_already_been_queued_for_survey():
-    return
+def test_000_queue_site_for_survey_returns_false_when_site_is_not_due_to_be_queued_for_survey(
+    mocker,
+):
+    mocker.patch.object(Site, "__init__", lambda self, *args, **kwargs: setattr(self, "id", 1))
+    start_year, end_year = 2020, 2023
+    deploy_years = [2021, 2022, 2023]
+    RS = 5
+    deploy_months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+    planner = SurveyPlanner(
+        mocker,
+        RS,
+        date(start_year, 1, 1),
+        date(end_year, 12, 31),
+        deploy_years,
+        deploy_months,
+    )
+    result = planner.queue_site_for_survey()
+    assert result is False
+
+
+# def test_000_queue_site_for_survey_returns_false_when_site_has_already_been_queued_for_survey():
+#     return
+# TODO : the above test should be done in the surveys not in survey Planner

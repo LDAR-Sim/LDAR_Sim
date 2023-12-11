@@ -37,13 +37,16 @@ class SurveyPlanner:
         sim_years: list[int] = self.get_simulation_years(
             sim_start_date=sim_start_date, sim_end_date=sim_end_date
         )
+        self._site_annual_rs: int = site_annual_rs
         self.site: Site = site
         self._deployment_months: list[int] = deployment_months
         self._deployment_years: list[int] = deployment_years
         self._survey_plan: dict[int, date] = self._gen_survey_plan(site_annual_rs)
         self._current_date: date = sim_start_date
-        self._surveys_this_year: dict[str, int] = {}
-        self._last_survey_dates: dict[str, date] = {}
+        self._surveys_this_year: dict[
+            int, list[int]
+        ] = self._set_survey_per_year()  # {Year: [RS, SurveysDone]}
+        self._last_survey_dates: [date] = []
 
     def get_simulation_years(self, sim_start_date: date, sim_end_date: date) -> list[int]:
         """Takes a start and end date and returns a list of all years between the two dates.
@@ -142,6 +145,20 @@ class SurveyPlanner:
         """Returns the survey_plan"""
         return self._survey_plan
 
+    def _set_survey_per_year(self) -> dict[int, list[int]]:
+        """Creates the dictionary used to check for number of surveys done each year
+        Returns:
+            dict[int, list[int]] : Year : [Survey Frequency, # Surveys Done]
+        """
+        _surveys_this_year: dict[int, list[int]] = {}
+        for year in self._deployment_years:
+            if year in self._deployment_years:
+                _surveys_this_year[year] = [self._site_annual_rs, 0]
+            else:
+                _surveys_this_year[year] = [0, 0]
+
+        return _surveys_this_year
+
     def update(self) -> None:
         """This method will update the internal current date of the survey plan,
         and then adjust the values of internal state variables tracking if the site
@@ -149,6 +166,12 @@ class SurveyPlanner:
         and if the site has already been queued to be surveyed.
         """
         self._current_date += timedelta(days=1)
+
+    def _check_deployable_year(self) -> bool:
+        """Checks to make sure current date is a valid year to send out crews"""
+        if self._current_date.year in self._deployment_years:
+            return True
+        return False
 
     def queue_site_for_survey(self) -> bool:
         """Method to determine if the site for which this survey plan was generated
@@ -159,23 +182,13 @@ class SurveyPlanner:
             bool: Boolean indicating if the site should be queued to be surveyed.
             True if the site should be queued to be surveyed, False otherwise.
         """
-
-        def check_deployable_year(self) -> bool:
-            """Checks to make sure current date is a valid year to send out crews"""
-            if self._current_date.year in self._deployment_years:
-                return True
+        if self._check_deployable_year() is False:
             return False
-
-        (
-            num_of_surveys_done,
-            need_survey,
-        ) = (
-            self.site.check_number_of_surveys()  # TODO: move to survey planner
-        )  # should site have a method to check how mnay surveys it's recieved and if it's less than RS?
-        if need_survey:
-            if check_deployable_year():
-                if self._current_date >= self._survey_plan[num_of_surveys_done]:
-                    return True
+        elif (
+            self._surveys_this_year[self._current_date.year][0]
+            > self._surveys_this_year[self._current_date.year][1]
+        ):
+            return True
         return False
 
 
