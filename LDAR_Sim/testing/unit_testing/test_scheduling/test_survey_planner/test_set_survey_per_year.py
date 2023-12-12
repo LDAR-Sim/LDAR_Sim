@@ -17,13 +17,19 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 ------------------------------------------------------------------------------
 """
-
+import pytest
 from datetime import date
 from src.virtual_world.sites import Site
 from src.scheduling.survey_planner import SurveyPlanner
+from testing.unit_testing.test_scheduling.test_survey_planner.surveyPlanner_testing_fixtures import (
+    mocker_fixture,
+    gen_set_survey_per_year_tests_1_fix,
+    gen_set_survey_per_year_tests_2_fix,
+    gen_set_survey_per_year_tests_3_fix,
+)
 
 
-def test_000_set_survey_per_year_dictionary(mocker):
+def test_000_set_survey_per_year_dictionary_simple(mocker):
     mocker.patch.object(Site, "__init__", lambda self, *args, **kwargs: setattr(self, "id", 1))
     start_year, end_year = 2020, 2025
     deploy_years = list(range(start_year, end_year + 1))
@@ -47,3 +53,24 @@ def test_000_set_survey_per_year_dictionary(mocker):
         2025: [5, 0],
     }
     assert result == expected
+
+
+@pytest.mark.parametrize(
+    "test_input, mocker_fix",
+    [
+        ("gen_set_survey_per_year_tests_1", "mocker_fixture"),
+        ("gen_set_survey_per_year_tests_2", "mocker_fixture"),
+        ("gen_set_survey_per_year_tests_3", "mocker_fixture"),
+    ],
+)
+def test_000_set_not_full_deployment_year_surveys(test_input, mocker_fix, request):
+    planner = SurveyPlanner(
+        request.getfixturevalue(mocker_fix),
+        request.getfixturevalue(test_input)[3],
+        request.getfixturevalue(test_input)[0],
+        request.getfixturevalue(test_input)[1],
+        request.getfixturevalue(test_input)[2],
+        [1, 2, 3, 4, 5],
+    )
+    result = planner._surveys_this_year  # TODO: may need to make this an accessor instead..?
+    assert result == request.getfixturevalue(test_input)[4]

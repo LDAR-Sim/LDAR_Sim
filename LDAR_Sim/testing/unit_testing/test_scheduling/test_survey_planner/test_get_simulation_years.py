@@ -59,7 +59,7 @@ def test_000_get_simulation_years(date_range: Tuple[date, date, int, int], mocke
     deploy_years = list(range(start_year, end_year + 1))
     deploy_months = list(range(1, 13))
     planner = SurveyPlanner(mocker, 1, start_date, end_date, deploy_years, deploy_months)
-    result = planner.get_simulation_years(start_date, end_date)
+    result = planner._get_simulation_years(start_date, end_date)
 
     # Ensure that the result is a list of integers
     assert isinstance(result, list)

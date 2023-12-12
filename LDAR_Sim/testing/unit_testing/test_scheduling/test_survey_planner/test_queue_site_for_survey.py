@@ -40,23 +40,22 @@ def test_000_queue_site_for_survey_returns_true_first_survey(mocker):
     assert result is True
 
 
-# def test_000_queue_site_for_survey_returns_true_when_site_is_due_to_be_queued_for_survey(mocker):
-#     mocker.patch.object(Site, "__init__", lambda self, *args, **kwargs: setattr(self, "id", 1))
-#     start_year, end_year = 2020, 2025
-#     deploy_years = list(range(start_year, end_year + 1))
-#     RS = 5
-#     deploy_months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
-#     planner = SurveyPlanner(
-#         mocker,
-#         RS,
-#         date(start_year, 1, 1),
-#         date(end_year, 12, 31),
-#         deploy_years,
-#         deploy_months,
-#     )
-#     planner.set_current_date(date(2020, 1, 10))
-#     result = planner.queue_site_for_survey()
-#     assert result == True
+def test_000_queue_site_for_survey_returns_false_when_site_it_has_yet_to_reach_survey_date(mocker):
+    mocker.patch.object(Site, "__init__", lambda self, *args, **kwargs: setattr(self, "id", 1))
+    start_year, end_year = 2020, 2025
+    deploy_years = list(range(start_year, end_year + 1))
+    RS = 5
+    deploy_months = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+    planner = SurveyPlanner(
+        mocker,
+        RS,
+        date(start_year, 1, 1),
+        date(end_year, 12, 31),
+        deploy_years,
+        deploy_months,
+    )
+    result = planner.queue_site_for_survey()
+    assert result == False
 
 
 def test_000_queue_site_for_survey_returns_false_when_site_is_not_due_to_be_queued_for_survey(

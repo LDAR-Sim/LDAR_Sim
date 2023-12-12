@@ -1,3 +1,22 @@
+"""
+------------------------------------------------------------------------------
+Program:     The LDAR Simulator (LDAR-Sim)
+File:        survey_planner
+Purpose: Module for survey planner
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the MIT License as published
+by the Free Software Foundation, version 3.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+MIT License for more details.
+You should have received a copy of the MIT License
+along with this program.  If not, see <https://opensource.org/licenses/MIT>.
+
+------------------------------------------------------------------------------
+"""
 from datetime import date, timedelta
 import pandas as pd
 import calendar
@@ -34,7 +53,7 @@ class SurveyPlanner:
         deployment_years: list[int],
         deployment_months: list[int],
     ) -> None:
-        sim_years: list[int] = self.get_simulation_years(
+        self._sim_years: list[int] = self._get_simulation_years(
             sim_start_date=sim_start_date, sim_end_date=sim_end_date
         )
         self._site_annual_rs: int = site_annual_rs
@@ -45,10 +64,12 @@ class SurveyPlanner:
         self._current_date: date = sim_start_date
         self._surveys_this_year: dict[
             int, list[int]
-        ] = self._set_survey_per_year()  # {Year: [RS, SurveysDone]}
+        ] = (
+            self._set_survey_per_year()
+        )  # {Year: [RS, SurveysDone]} # TODO : set as a dataclass later
         self._last_survey_dates: [date] = []
 
-    def get_simulation_years(self, sim_start_date: date, sim_end_date: date) -> list[int]:
+    def _get_simulation_years(self, sim_start_date: date, sim_end_date: date) -> list[int]:
         """Takes a start and end date and returns a list of all years between the two dates.
 
         Args:
@@ -64,6 +85,7 @@ class SurveyPlanner:
         end_year = sim_end_date.year
 
         # If start_date is later in the year than end_date, adjust the range
+        # TODO : this should throw an error?
         if sim_start_date.month > sim_end_date.month or (
             sim_start_date.month == sim_end_date.month and sim_start_date.day > sim_end_date.day
         ):
@@ -147,11 +169,14 @@ class SurveyPlanner:
 
     def _set_survey_per_year(self) -> dict[int, list[int]]:
         """Creates the dictionary used to check for number of surveys done each year
+        Args:
+            date : Simulation start date
+            date : Simulation end date
         Returns:
             dict[int, list[int]] : Year : [Survey Frequency, # Surveys Done]
         """
         _surveys_this_year: dict[int, list[int]] = {}
-        for year in self._deployment_years:
+        for year in self._sim_years:
             if year in self._deployment_years:
                 _surveys_this_year[year] = [self._site_annual_rs, 0]
             else:
@@ -188,8 +213,21 @@ class SurveyPlanner:
             self._surveys_this_year[self._current_date.year][0]
             > self._surveys_this_year[self._current_date.year][1]
         ):
-            return True
+            index_num = self._surveys_this_year[self._current_date.year][1]
+            if (
+                self._survey_plan[index_num].month,
+                self._survey_plan[index_num].day,
+            ) <= (self._current_date.month, self._current_date.day):
+                return True
         return False
+
+    # def set_current_date(self, set_date: date) -> None:
+    #     """Method used for testing, sets the current date to the given date
+    #     Args:
+    #         date: the date to set the current date to
+    #     """
+    #     self._current_date = set_date
+    #     return None
 
 
 class MobileSurveyPlanner(SurveyPlanner):

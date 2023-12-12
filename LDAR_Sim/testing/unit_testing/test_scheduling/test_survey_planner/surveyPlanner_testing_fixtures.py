@@ -223,3 +223,57 @@ def gen_survey_plan_split_complex_2_fix():
         date(2023, 10, 1),
     ]
     return RS, valid_months, expected_outcome
+
+
+@pytest.fixture(name="gen_set_survey_per_year_tests_1")
+def gen_set_survey_per_year_tests_1_fix():
+    """Case where beginning years are missing"""
+    valid_years: list[int] = [2024, 2025]
+    start_year: date = date(2020, 1, 1)
+    end_year: date = date(2025, 12, 31)
+    surveys: int = 5
+    expected_outcome: dict[int, list[int]] = {
+        2020: [0, 0],
+        2021: [0, 0],
+        2022: [0, 0],
+        2023: [0, 0],
+        2024: [5, 0],
+        2025: [5, 0],
+    }
+    return start_year, end_year, valid_years, surveys, expected_outcome
+
+
+@pytest.fixture(name="gen_set_survey_per_year_tests_2")
+def gen_set_survey_per_year_tests_2_fix():
+    """Case where ending years are missing"""
+    valid_years: list[int] = [2020, 2021, 2022]
+    start_year: date = date(2020, 1, 1)
+    end_year: date = date(2025, 12, 31)
+    surveys: int = 5
+    expected_outcome: dict[int, list[int]] = {
+        2020: [5, 0],
+        2021: [5, 0],
+        2022: [5, 0],
+        2023: [0, 0],
+        2024: [0, 0],
+        2025: [0, 0],
+    }
+    return start_year, end_year, valid_years, surveys, expected_outcome
+
+
+@pytest.fixture(name="gen_set_survey_per_year_tests_3")
+def gen_set_survey_per_year_tests_3_fix():
+    """Case where the middle years are missing"""
+    valid_years: list[int] = [2020, 2023, 2025]
+    start_year: date = date(2020, 1, 1)
+    end_year: date = date(2025, 12, 31)
+    surveys: int = 5
+    expected_outcome: dict[int, list[int]] = {
+        2020: [5, 0],
+        2021: [0, 0],
+        2022: [0, 0],
+        2023: [5, 0],
+        2024: [0, 0],
+        2025: [5, 0],
+    }
+    return start_year, end_year, valid_years, surveys, expected_outcome
