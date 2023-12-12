@@ -14,9 +14,7 @@ class SiteLevelMethod(Method):
 
     def survey_site(self, site: Site):
         # TODO complete this method
-        site.get_detectable_emissions(
-            site,
-        )
+        self._sensor.detect_emissions(site, self._name)
         # if detection and will_followup:
         #     self.flag_site(site)
 

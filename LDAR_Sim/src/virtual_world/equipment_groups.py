@@ -64,6 +64,16 @@ class Equipment_Group:
         for equipment in self._equipment:
             equipment.activate_emissions(date, sim_number)
 
+    def get_detectable_emissions(self, method_name: str, survey_level: str):
+        detectable_emissions: dict = {}
+        for equip in self._equipment:
+            detectable_emissions[equip.get_id()] = equip.get_detectable_emissions(method_name)
+
+        if survey_level == "equipment_group_level":
+            return [val for val in detectable_emissions]
+        else:
+            return detectable_emissions
+
     def set_pregen_emissions(self, eqg_emissions, sim_number) -> None:
         for equipment in self._equipment:
             equipment.set_pregen_emissions(eqg_emissions[equipment.get_id()], sim_number)

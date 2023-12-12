@@ -1,8 +1,10 @@
+from datetime import date
 from typing import Tuple
 import pytest
 from programs.method import Method
 
 from programs.site_level_method import SiteLevelMethod
+from virtual_world.infrastructure_const import Infrastructure_Constants
 from virtual_world.sites import Site
 from sensors.sensor_constant_mapping import SENS_TYPE, SENS_MDL
 
@@ -15,13 +17,48 @@ def mock_values_for_simple_site_level_method_construction_fix() -> Tuple[str, di
 
 
 @pytest.fixture(name="mock_simple_site_level_method_for_survey_site_testing")
-def mock_simple_site_level_method_for_survey_site_testing_fix() -> Tuple[SiteLevelMethod, dict]:
-    slm = SiteLevelMethod()
-    expected_survey_site_res = {}
+def mock_simple_site_level_method_for_survey_site_testing_fix(
+    mock_values_for_simple_site_level_method_construction: Tuple[str, dict],
+) -> Tuple[SiteLevelMethod, dict]:
+    name, info = mock_values_for_simple_site_level_method_construction
+    slm = SiteLevelMethod(name, info)
+    expected_survey_site_res: dict = {}
     return slm, expected_survey_site_res
 
 
-@pytest.fixture(name="mock_simple_site_survey_site_testing")
+@pytest.fixture(name="mock_simple_site_for_survey_site_testing")
 def mock_simple_site_for_survey_site_testing_fix() -> Site:
-    site = Site()
-    return site
+    id: str = "test"
+    lat: float = 34.56
+    lon: float = -44.56
+    equipment_groups: int = 1
+    prop_params: dict = {
+        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ERS: None,
+        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_EPR: 1,
+        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ED: 1,
+        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RD: 0,
+        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RC: 100,
+        "Method_Specific_Params": {
+            Infrastructure_Constants.Sites_File_Constants.SURVEY_FREQUENCY_PLACEHOLDER: {},
+            Infrastructure_Constants.Sites_File_Constants.SPATIAL_PLACEHOLDER: {"Test": 1},
+            Infrastructure_Constants.Equipment_Group_File_Constants.SURVEY_TIME_PLACEHOLDER: {},
+            Infrastructure_Constants.Equipment_Group_File_Constants.SURVEY_COST_PLACEHOLDER: {},
+        },
+    }
+    infra_inputs: dict = {}
+    test_site = Site(
+        id=id,
+        lat=lat,
+        long=lon,
+        equipment_groups=equipment_groups,
+        propagating_params=prop_params,
+        infrastructure_inputs=infra_inputs,
+    )
+    simulation_start_date: date = date(*[2017, 1, 1])
+    simulation_end_date: date = date(*[2017, 1, 5])
+    test_site.generate_emissions(
+        sim_start_date=simulation_start_date, sim_end_date=simulation_end_date, sim_number=1
+    )
+    activate_date: date = date(*[2017, 1, 1])
+    test_site.activate_emissions(activate_date, 1)
+    return test_site

@@ -3,7 +3,13 @@ from programs.site_level_method import SiteLevelMethod
 from testing.unit_testing.test_programs.method_testing_fixtures import (  # noqa
     mock_simple_site_level_method_for_survey_site_testing_fix,
     mock_simple_site_for_survey_site_testing_fix,
+    mock_values_for_simple_site_level_method_construction_fix,
 )
+
+from testing.unit_testing.test_virtual_world.test_sites.sites_testing_fixtures import (  # noqa
+    mock_values_for_simple_site_construction_fix,
+)
+
 from virtual_world.sites import Site
 
 

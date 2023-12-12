@@ -1,6 +1,7 @@
 import copy
 import datetime
 import re
+
 from virtual_world.emissions import Emission
 from virtual_world.infrastructure_const import Infrastructure_Constants
 
@@ -59,8 +60,18 @@ class Equipment:
             sim_number (int): The simulation number.
             Used to interact with the correct set of emissions.
         """
+        self._active_emissions: list[Emission] = []
         for source in self._sources:
-            active_emissions: list[Emission] = source.activate_emissions(date, sim_number)
+            new_emissions: list[Emission] = source.activate_emissions(date, sim_number)
+            self._active_emissions.extend(new_emissions)
+
+    def get_detectable_emissions(self, method_name: str) -> list:
+        detectable_emissions: list = []
+        for emis in self._active_emissions:
+            if emis.check_spatial_cov(method_name):
+                detectable_emissions.append(emis)
+
+        return detectable_emissions
 
     def set_pregen_emissions(self, equipment_emissions, sim_number) -> None:
         for src in self._sources:

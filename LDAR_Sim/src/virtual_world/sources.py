@@ -162,7 +162,7 @@ class Source:
             if activate_status == "Inactive":
                 break
             elif activate_status == "Newly_Active":
-                newly_activated_emissions.append[emission]
+                newly_activated_emissions.append(emission)
         return newly_activated_emissions
 
     def set_pregen_emissions(self, src_emissions, sim_number) -> None:
