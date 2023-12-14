@@ -1,5 +1,7 @@
 import queue
-
+import numpy as np
+import math
+from datetime import date
 from virtual_world.sites import Site
 from scheduling.survey_planner import SurveyPlanner
 
@@ -18,15 +20,39 @@ class GenericSchedule:
     """
 
     # TODO what are the different priority cases
+    # Default = 3 - where everything initially starts out
+    # 2 - Sites which have been popped for the day but were not attended to
+    # 1 - Sites that have surveys which have been started but not finished.
     DEFAULT_SURVEY_PRIORITY = 3
+    QUEUED_SURVEY_PRIORITY = 2
+    UNFINISHED_SURVEY_HIGHEST_PRIORITY = 1
 
-    def __init__(self, method_name: str, sites: list[Site]) -> None:
+    def __init__(
+        self,
+        method_name: str,
+        sites: list[Site],
+        sim_start_date: date,
+        sim_end_date: date,
+        method_follow_up: bool,
+        methods_t_btw_sites: list[int],
+        method_max_work_hours: int,
+    ) -> None:
         self._method: str = method_name
         self._survey_queue = queue.PriorityQueue()
         self._survey_plans: list[SurveyPlanner] = []
+        self._crews_for_method: int = self._estimate_method_crews_required(
+            method_follow_up, methods_t_btw_sites, method_max_work_hours, sites
+        )
         for site in sites:
             # TODO flush out what survey planner needs as inputs for the constructor
-            self._survey_plans.append(SurveyPlanner(site))
+            survey_freq: int = site._survey_frequencies[method_name]
+            deploy_year: int = site._deployment_years[method_name]
+            deploy_month: int = site._deployment_months[method_name]
+            self._survey_plans.append(
+                SurveyPlanner(
+                    site, survey_freq, sim_start_date, sim_end_date, deploy_year, deploy_month
+                )
+            )
         return
 
     def add_to_survey_queue(self, site: Site) -> None:
@@ -37,17 +63,81 @@ class GenericSchedule:
         """
         self._survey_queue.put((GenericSchedule.DEFAULT_SURVEY_PRIORITY, site))
 
+    def add_unfinished_to_survey_queue(self, site: Site) -> None:
+        """Add the supplied, partial surveyed site to queue
+
+        Args:
+            site (Site) : the Site to be added to the survey queue"""
+        self._survey_queue.put((GenericSchedule.UNFINISHED_SURVEY_HIGHEST_PRIORITY, site))
+
+    def add_previous_queued_to_survey_queue(self, site: Site) -> None:
+        """Add the supplied, unattended site back to queue
+
+        Args:
+            site (Site) : the Site to be added to the survey queue"""
+        self._survey_queue.put((GenericSchedule.QUEUED_SURVEY_PRIORITY, site))
+
     def get_daily_sites_to_survey(self) -> None:
         """This method will go through the method survey queue and return
         the daily sites that are planned to be surveyed by the given method."""
         # TODO Implement
-        return
+        # # Go through method survey queue
+        # Go through number of crews available
+        """
+        The logic should be to pop the sites that are in the top priority queue and do those first
+        and then repeat for each priority tier below"""
+        daily_sites: list[Site] = []
+        if not self._survey_queue.empty():
+            for crew in range(self._crews_for_method):
+                daily_sites.append(self._survey_queue.get())
+
+        return daily_sites
 
     def update_schedule(self):
         for survey_plan in self._survey_plans:
             survey_plan.update()
             if survey_plan.queue_site_for_survey():
                 self.add_to_survey_queue(survey_plan)
+        # TODO : should this also increment to the next day?
+
+    def get_average_method_survey_time(self, method_name, avg_travel_time, sites) -> float:
+        """
+        Return:
+            Average time in minutes
+        """
+        return np.average(
+            [(site.get_method_survey_time(method_name) + avg_travel_time) for site in sites]
+        )
+
+    def get_average_method_surveys_required(self, method_name, sites) -> float:
+        return np.average([site.get_required_surveys(method_name) for site in sites])
+
+    def _estimate_method_crews_required(
+        self, method_follow_up, methods_t_btw_sites, method_max_work_hours, sites
+    ) -> int:
+        # TODO: Review the math that was used to update this
+        estimate_req_n_crews: int = 0
+        if not method_follow_up:
+            avg_travel_time: float = np.average(methods_t_btw_sites)
+            avg_method_s_time: float = self.get_average_method_survey_time(
+                self._method, avg_travel_time, sites
+            )
+            average_req_surveys: float = self.get_average_method_surveys_required(
+                self._method, sites
+            )
+            # Subtract average travel time here to account the method needing to return
+            # at the end of the day
+            daily_work_time: float = (method_max_work_hours * 60) - avg_travel_time
+            est_avg_sites_p_day: float = daily_work_time / avg_method_s_time
+            avg_days_for_surveys: float = 365 / average_req_surveys
+            estimate_req_n_crews = math.ceil(
+                len(sites) / (est_avg_sites_p_day * avg_days_for_surveys)
+            )
+
+        else:
+            estimate_req_n_crews = 1
+        # TODO: add in logic to make sure estimate_req_n_crew is not over the n_crew supplied (if supplied)
+        return estimate_req_n_crews
 
 
 class MobileSchedule(GenericSchedule):

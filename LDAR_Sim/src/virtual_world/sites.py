@@ -53,6 +53,12 @@ class Site:
         self._survey_frequencies: dict = propagating_params["Method_Specific_Params"].pop(
             Infrastructure_Constants.Sites_File_Constants.SURVEY_FREQUENCY_PLACEHOLDER
         )
+        self._deployment_months = propagating_params["Method_Specific_Params"].pop(
+            Infrastructure_Constants.Sites_File_Constants.DEPLOYMENT_MONTHS_PLACEHOLDER
+        )
+        self._deployment_years = propagating_params["Method_Specific_Params"].pop(
+            Infrastructure_Constants.Sites_File_Constants.DEPLOYMENT_YEARS_PLACEHOLDER
+        )
         self.create_equipment_groups(equipment_groups, infrastructure_inputs, propagating_params)
 
     def create_equipment_groups(

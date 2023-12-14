@@ -90,41 +90,6 @@ class Infrastructure:
             )
         return {sim_number: infrastructure_emissions}
 
-    def get_average_method_survey_time(self, method_name, avg_travel_time) -> float:
-        return np.average(
-            [(site.get_method_survey_time(method_name) + avg_travel_time) for site in self._sites]
-        )
-
-    def get_average_method_surveys_required(self, method_name) -> float:
-        return np.average([site.get_required_surveys(method_name) for site in self._sites])
-
-    def estimate_method_crews_required(self, methods) -> dict:
-        # TODO: Review the math that was used to update this
-        # TODO: to move this function over to scheduling
-        method_req_crews_dict: dict = {}
-        for method in methods:
-            method_name: str = method[0]
-            if not method[1]["is_follow_up"]:
-                avg_travel_time: float = np.average(method[1]["t_bw_sites"]["vals"])
-                avg_method_s_time: float = self.get_average_method_survey_time(
-                    method_name, avg_travel_time
-                )
-                average_req_surveys: float = self.get_average_method_surveys_required(method_name)
-                # Subtract average travel time here to account the method needing to return
-                # at the end of the day
-                daily_work_time: float = (method[1]["max_workday"] * 60) - avg_travel_time
-                est_avg_sites_p_day: float = daily_work_time / avg_method_s_time
-                avg_days_for_surveys: float = 365 / average_req_surveys
-                estimate_req_n_crews: int = math.ceil(
-                    len(self._sites) / (est_avg_sites_p_day * avg_days_for_surveys)
-                )
-                method_req_crews_dict[method_name] = estimate_req_n_crews
-
-            else:
-                method_req_crews_dict[method_name] = 1
-
-        return method_req_crews_dict
-
     def activate_emissions(self, date: datetime, sim_number: int) -> None:
         """Activate any emissions that are due to begin on the current date for the given simulation
         and add them to the active emissions list for the equipment at which they occur.

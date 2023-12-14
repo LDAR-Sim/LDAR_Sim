@@ -17,6 +17,8 @@ class Infrastructure_Constants:
         REP_EMIS_ED = "repairable_ED"  # Repairable Emissions : Emissions Duration
         NON_REP_EMIS_ERS = "non_repairable_ERS"  # Non-Repairable Emissions: Emissions Rate Source
         SURVEY_FREQUENCY_PLACEHOLDER = "_surveyfreq"  # Survey Frequency - Method specific
+        DEPLOYMENT_YEARS_PLACEHOLDER = "_deploy_year"  # Deployment Year - Method specific
+        DEPLOYMENT_MONTHS_PLACEHOLDER = "_deploy_month"  # Deployment Month - Method specific
         SPATIAL_PLACEHOLDER = "_spatial"  # Spatial coverage - Method specific
         SURVEY_TIME_PLACEHOLDER = "_surveytime"  # Survey Time - Method specific
         SURVEY_COST_PLACEHOLDER = "_surveycost"  # Survey Cost - Method specific

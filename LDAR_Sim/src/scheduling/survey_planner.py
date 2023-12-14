@@ -63,11 +63,7 @@ class SurveyPlanner:
         self._deployment_years: list[int] = deployment_years
         self._survey_plan: dict[int, date] = self._gen_survey_plan(site_annual_rs)
         self._current_date: date = sim_start_date
-        self._surveys_this_year: dict[
-            int, Survey_Counter
-        ] = (
-            self._set_survey_per_year()
-        )  # {Year: [RS, SurveysDone]} # TODO : set as a dataclass later
+        self._surveys_this_year: dict[int, Survey_Counter] = self._set_survey_per_year()
         self._last_survey_dates: [date] = []
         self._queued: bool = False
 
@@ -169,7 +165,7 @@ class SurveyPlanner:
         """Returns the survey_plan"""
         return self._survey_plan
 
-    def _set_survey_per_year(self) -> dict[int, list[int]]:
+    def _set_survey_per_year(self) -> dict[int, dataclass]:
         """Creates the dictionary used to check for number of surveys done each year
         Args:
             date : Simulation start date

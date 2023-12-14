@@ -1,4 +1,4 @@
-from initialization.sites import Site
+from virtual_world.sites import Site
 from scheduling.schedules import GenericSchedule
 
 

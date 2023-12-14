@@ -1,8 +1,8 @@
 """
 ------------------------------------------------------------------------------
 Program:     The LDAR Simulator (LDAR-Sim)
-File:        test_add_to_survey_queue
-Purpose: Contains unit tests to test the function that is adding surveys to the queue
+File:        test_get_daily_sites_to_survey
+Purpose: Contains unit tests to test the function that obtains daily sites to survey
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the MIT License as published
@@ -19,9 +19,5 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 """
 
 
-def test_000_add_site_to_survey_queue_properly_queues_site_in_survey_queue():
-    return
-
-
-def test_000_add_site_to_survey_queue_throws_exception_on_non_site_input():
+def test_000_get_daily_sites_to_survey_returns_expected_sites_for_survey():
     return

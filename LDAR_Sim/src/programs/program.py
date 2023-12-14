@@ -1,4 +1,4 @@
-from initialization.sites import Site
+from virtual_world.sites import Site
 from programs.method import Method
 from scheduling.schedules import GenericSchedule, create_schedule
 from scheduling.workplan import Workplan
