@@ -45,7 +45,7 @@ def mock_simple_emission_for_get_summary_dict_1_fix() -> Tuple[FugitiveEmission,
             365,
         ),
         {
-            "Date Began": date(2018, 1, 1, 0, 0),
+            "Date Began": date(2018, 1, 1),
             "Days Active": 0,
             "Emissions ID": "0000000001",
             "Initially Detected By": None,

@@ -44,3 +44,23 @@ def mocker_fixture(mocker):
     )
 
     return mocker
+
+
+@pytest.fixture
+def mocker_fixture2(mocker):
+    def mock_get_average_method_surveys_required(self, method_name, sites):
+        return 5
+
+    def mock_get_average_method_survey_time(self, method_name, avg_travel_time, sites):
+        return 120
+
+    mocker.patch.object(
+        GenericSchedule,
+        "get_average_method_surveys_required",
+        mock_get_average_method_surveys_required,
+    )
+    mocker.patch.object(
+        GenericSchedule, "get_average_method_survey_time", mock_get_average_method_survey_time
+    )
+
+    return mocker

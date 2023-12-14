@@ -25,10 +25,11 @@ from src.scheduling.schedules import GenericSchedule
 from src.virtual_world.sites import Site
 from testing.unit_testing.test_scheduling.test_schedule.schedule_fixtures import (
     mocker_fixture,
+    mocker_fixture2,
 )
 
 
-def test_000_return_estimate_not_followup(mocker_fixture):
+def test_000_return_estimate_not_followup_simple(mocker_fixture):
     mocker = mocker_fixture
 
     # Set up mock data for the test
@@ -52,6 +53,33 @@ def test_000_return_estimate_not_followup(mocker_fixture):
         method_max_work_hours=method_max_work_hours,
     )
     expected_crews_required = 1
+    assert instance._crews_for_method == expected_crews_required
+
+
+def test_000_return_estimate_not_followup(mocker_fixture2):
+    mocker = mocker_fixture2
+
+    # Set up mock data for the test
+    method_follow_up = False
+    methods_t_btw_sites = [60, 60, 60]
+    method_max_work_hours = 8
+    # Create a Mock object for Site with the required attributes
+    site_mock = mocker.Mock(spec=Site)
+    site_mock._survey_frequencies = {"test": 5}
+    site_mock._deployment_years = {"test": [2022]}
+    site_mock._deployment_months = {"test": [1]}
+    sites = [site_mock for _ in range(1050)]
+
+    instance = GenericSchedule(
+        method_name="test",
+        sites=sites,
+        sim_start_date=date(2020, 1, 1),
+        sim_end_date=date(2025, 12, 31),
+        method_follow_up=method_follow_up,
+        methods_t_btw_sites=methods_t_btw_sites,
+        method_max_work_hours=method_max_work_hours,
+    )
+    expected_crews_required = 5
     assert instance._crews_for_method == expected_crews_required
 
 

@@ -52,7 +52,7 @@ def mock_simple_emission_for_get_summary_dict_fix() -> Tuple[Emission, dict[str,
             {"M_OGI1": 1, "M_AIR1": 1, "M_OGI2": 0, "M_AIR2": 0},
         ),
         {
-            "Date Began": date(2018, 1, 1, 0, 0),
+            "Date Began": date(2018, 1, 1),
             "Days Active": 0,
             "Emissions ID": "0000000001",
             "Initially Detected By": None,
