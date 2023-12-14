@@ -20,6 +20,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 import pytest
 from datetime import date
 from src.virtual_world.sites import Site
+from src.scheduling.survey_planner import Survey_Counter
 
 
 @pytest.fixture()
@@ -232,13 +233,13 @@ def gen_set_survey_per_year_tests_1_fix():
     start_year: date = date(2020, 1, 1)
     end_year: date = date(2025, 12, 31)
     surveys: int = 5
-    expected_outcome: dict[int, list[int]] = {
-        2020: [0, 0],
-        2021: [0, 0],
-        2022: [0, 0],
-        2023: [0, 0],
-        2024: [5, 0],
-        2025: [5, 0],
+    expected_outcome: dict[int, Survey_Counter] = {
+        2020: Survey_Counter(Required_surveys=0, Surveys_done=0),
+        2021: Survey_Counter(Required_surveys=0, Surveys_done=0),
+        2022: Survey_Counter(Required_surveys=0, Surveys_done=0),
+        2023: Survey_Counter(Required_surveys=0, Surveys_done=0),
+        2024: Survey_Counter(Required_surveys=5, Surveys_done=0),
+        2025: Survey_Counter(Required_surveys=5, Surveys_done=0),
     }
     return start_year, end_year, valid_years, surveys, expected_outcome
 
@@ -250,13 +251,13 @@ def gen_set_survey_per_year_tests_2_fix():
     start_year: date = date(2020, 1, 1)
     end_year: date = date(2025, 12, 31)
     surveys: int = 5
-    expected_outcome: dict[int, list[int]] = {
-        2020: [5, 0],
-        2021: [5, 0],
-        2022: [5, 0],
-        2023: [0, 0],
-        2024: [0, 0],
-        2025: [0, 0],
+    expected_outcome: dict[int, Survey_Counter] = {
+        2020: Survey_Counter(Required_surveys=5, Surveys_done=0),
+        2021: Survey_Counter(Required_surveys=5, Surveys_done=0),
+        2022: Survey_Counter(Required_surveys=5, Surveys_done=0),
+        2023: Survey_Counter(Required_surveys=0, Surveys_done=0),
+        2024: Survey_Counter(Required_surveys=0, Surveys_done=0),
+        2025: Survey_Counter(Required_surveys=0, Surveys_done=0),
     }
     return start_year, end_year, valid_years, surveys, expected_outcome
 
@@ -268,12 +269,12 @@ def gen_set_survey_per_year_tests_3_fix():
     start_year: date = date(2020, 1, 1)
     end_year: date = date(2025, 12, 31)
     surveys: int = 5
-    expected_outcome: dict[int, list[int]] = {
-        2020: [5, 0],
-        2021: [0, 0],
-        2022: [0, 0],
-        2023: [5, 0],
-        2024: [0, 0],
-        2025: [5, 0],
+    expected_outcome: dict[int, Survey_Counter] = {
+        2020: Survey_Counter(Required_surveys=5, Surveys_done=0),
+        2021: Survey_Counter(Required_surveys=0, Surveys_done=0),
+        2022: Survey_Counter(Required_surveys=0, Surveys_done=0),
+        2023: Survey_Counter(Required_surveys=5, Surveys_done=0),
+        2024: Survey_Counter(Required_surveys=0, Surveys_done=0),
+        2025: Survey_Counter(Required_surveys=5, Surveys_done=0),
     }
     return start_year, end_year, valid_years, surveys, expected_outcome

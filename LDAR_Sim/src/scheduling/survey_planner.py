@@ -17,6 +17,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 ------------------------------------------------------------------------------
 """
+from dataclasses import dataclass
 from datetime import date, timedelta
 import pandas as pd
 import calendar
@@ -63,11 +64,12 @@ class SurveyPlanner:
         self._survey_plan: dict[int, date] = self._gen_survey_plan(site_annual_rs)
         self._current_date: date = sim_start_date
         self._surveys_this_year: dict[
-            int, list[int]
+            int, Survey_Counter
         ] = (
             self._set_survey_per_year()
         )  # {Year: [RS, SurveysDone]} # TODO : set as a dataclass later
         self._last_survey_dates: [date] = []
+        self._queued: bool = False
 
     def _get_simulation_years(self, sim_start_date: date, sim_end_date: date) -> list[int]:
         """Takes a start and end date and returns a list of all years between the two dates.
@@ -175,12 +177,14 @@ class SurveyPlanner:
         Returns:
             dict[int, list[int]] : Year : [Survey Frequency, # Surveys Done]
         """
-        _surveys_this_year: dict[int, list[int]] = {}
+        _surveys_this_year: dict[int, Survey_Counter] = {}
         for year in self._sim_years:
             if year in self._deployment_years:
-                _surveys_this_year[year] = [self._site_annual_rs, 0]
+                _surveys_this_year[year] = Survey_Counter(
+                    Required_surveys=self._site_annual_rs, Surveys_done=0
+                )
             else:
-                _surveys_this_year[year] = [0, 0]
+                _surveys_this_year[year] = Survey_Counter(Required_surveys=0, Surveys_done=0)
 
         return _surveys_this_year
 
@@ -209,17 +213,32 @@ class SurveyPlanner:
         """
         if self._check_deployable_year() is False:
             return False
-        elif (
-            self._surveys_this_year[self._current_date.year][0]
-            > self._surveys_this_year[self._current_date.year][1]
+        elif self._queued is False and (
+            self._surveys_this_year[self._current_date.year].Required_surveys
+            > self._surveys_this_year[self._current_date.year].Surveys_done
         ):
-            index_num = self._surveys_this_year[self._current_date.year][1]
+            index_num = self._surveys_this_year[self._current_date.year].Surveys_done
             if (
                 self._survey_plan[index_num].month,
                 self._survey_plan[index_num].day,
             ) <= (self._current_date.month, self._current_date.day):
+                self._queued = True
                 return True
         return False
+
+    def unflag_for_queue(self) -> None:
+        """Sets the queued flagged to false, use case is for when surveys are
+        done and site is no longer a part of a queue
+        """
+        self._queued = False
+        return None
+
+    def add_to_surveys_done(self) -> None:
+        """Adds to the counter keeping track of the number of surveys done"""
+        self._surveys_this_year[
+            self._current_date.year
+        ].Surveys_done += 1  # TODO : update when data
+        return None
 
     # def set_current_date(self, set_date: date) -> None:
     #     """Method used for testing, sets the current date to the given date
@@ -268,3 +287,9 @@ class StationarySurveyPlanner(SurveyPlanner):
             deployment_years=deployment_years,
             deployment_months=deployment_months,
         )
+
+
+@dataclass
+class Survey_Counter:
+    Required_surveys: int
+    Surveys_done: int

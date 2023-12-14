@@ -20,7 +20,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 import pytest
 from datetime import date
 from src.virtual_world.sites import Site
-from src.scheduling.survey_planner import SurveyPlanner
+from src.scheduling.survey_planner import SurveyPlanner, Survey_Counter
 from testing.unit_testing.test_scheduling.test_survey_planner.surveyPlanner_testing_fixtures import (
     mocker_fixture,
     gen_set_survey_per_year_tests_1_fix,
@@ -44,13 +44,13 @@ def test_000_set_survey_per_year_dictionary_simple(mocker):
         deploy_months,
     )
     result = planner._surveys_this_year  # TODO: may need to make this an accessor instead..?
-    expected: dict[int, list[int]] = {
-        2020: [5, 0],
-        2021: [5, 0],
-        2022: [5, 0],
-        2023: [5, 0],
-        2024: [5, 0],
-        2025: [5, 0],
+    expected: dict[int, Survey_Counter] = {
+        2020: Survey_Counter(Required_surveys=5, Surveys_done=0),
+        2021: Survey_Counter(Required_surveys=5, Surveys_done=0),
+        2022: Survey_Counter(Required_surveys=5, Surveys_done=0),
+        2023: Survey_Counter(Required_surveys=5, Surveys_done=0),
+        2024: Survey_Counter(Required_surveys=5, Surveys_done=0),
+        2025: Survey_Counter(Required_surveys=5, Surveys_done=0),
     }
     assert result == expected
 
