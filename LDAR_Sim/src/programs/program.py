@@ -32,6 +32,7 @@ class Program:
             Workplan: An object containing the list of sites to attempt to survey for the day
             that can be updated to report survey progress and discovered leaks.
         """
+
         return
 
     def init_method_scheduling(self, methods: dict, sites: list[Site]) -> None:
@@ -50,4 +51,9 @@ class Program:
     def do_daily_method_deployment(self) -> None:
         """Deploy all methods that are part of the program to
         do their scheduled surveys for the day"""
+        for method in self._methods:
+            method.deploy_crews
+
+        self.update_scheduling()
+
         return

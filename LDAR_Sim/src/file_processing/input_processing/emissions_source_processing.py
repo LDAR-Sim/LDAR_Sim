@@ -20,10 +20,13 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 from typing import Any
 from pandas import DataFrame
-from scipy.stats import lognorm
+import scipy.stats
+import json
 
 
-def read_in_emissions_sources_file(virtual_world: dict) -> DataFrame:
+def read_in_emissions_sources_file(
+    virtual_world: dict,
+) -> DataFrame:  # TODO: this should also allow from subtype file...
     """Get the location for the emissions sources file and read the file into a pandas DataFrame
 
     Args
@@ -31,6 +34,7 @@ def read_in_emissions_sources_file(virtual_world: dict) -> DataFrame:
     Returns
 
     """
+    virtual_world["emissions"]["emissions_file"]
     return None
 
 
@@ -50,18 +54,46 @@ def process_emission_source_file(emiss_source: DataFrame) -> dict[str, Any]:
     Returns:
         dict[str, (List or scipy dist obj)]: _description_
     """
+
     return None
 
 
-def process_emiss_samples_as_dist(emiss_source: DataFrame) -> lognorm:
+def process_emiss_samples_as_dist(emiss_source: list[float]) -> scipy.stats.rv_continuous:
     """
-    Process the given emission source sample DataFrame and fit into
+    Process the given emission source sample List and fit into
     a scipy distribution object
 
     Args:
-        emiss_source (DataFrame): the emissions DataFrame
+        emiss_source (list): the emissions DataFrame
 
     Returns:
         scipy object
     """
-    return None
+    if emiss_source is None or not emiss_source:
+        raise ValueError("emiss_source must be a non-empty list of samples")
+
+    # Initialize a lognormal distribution
+    dist = scipy.stats.lognorm()
+
+    try:
+        # Attempt to fit the samples to the distribution
+        param = dist.fit(emiss_source, floc=0)
+    except Exception as e:
+        # Handle exceptions during fitting
+        print(f"Error fitting distribution: {e}")
+        return None
+
+    loc = param[-2]
+    scale = param[-1]
+    shape = param[:-2]
+
+    if isinstance(shape, str):
+        # If shape is a string, convert it to a Python object (int or list)
+        shape = json.loads(shape)
+
+    if not isinstance(shape, list):
+        # If the shape is not a list, convert it to a list
+        shape = [shape]
+
+    # Return a distribution object with the fitted parameters
+    return dist(*shape, loc=loc, scale=scale)

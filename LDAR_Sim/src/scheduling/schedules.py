@@ -36,12 +36,16 @@ class GenericSchedule:
         method_follow_up: bool,
         methods_t_btw_sites: list[int],
         method_max_work_hours: int,
+        method_avail_crews: int = -1,  # TODO : change default n_crew to  -1
     ) -> None:
         self._method: str = method_name
         self._survey_queue = queue.PriorityQueue()
         self._survey_plans: list[SurveyPlanner] = []
         self._crews_for_method: int = self._estimate_method_crews_required(
-            method_follow_up, methods_t_btw_sites, method_max_work_hours, sites
+            method_follow_up, methods_t_btw_sites, method_max_work_hours, sites, method_avail_crews
+        )
+        self._pot_daily_surveys: int = self._estimate_average_daily_surveys(
+            method_name, methods_t_btw_sites, sites
         )
         for site in sites:
             # TODO flush out what survey planner needs as inputs for the constructor
@@ -79,17 +83,26 @@ class GenericSchedule:
 
     def get_daily_sites_to_survey(self) -> None:
         """This method will go through the method survey queue and return
-        the daily sites that are planned to be surveyed by the given method."""
-        # TODO Implement
-        # # Go through method survey queue
-        # Go through number of crews available
-        """
+        the daily sites that are planned to be surveyed by the given method
+
         The logic should be to pop the sites that are in the top priority queue and do those first
-        and then repeat for each priority tier below"""
+        and then repeat for each priority tier below
+
+        queue.get automatically pops from lowest tier first
+
+        Returns the list of highest priority sites, based on the number of crews available
+        and the number of sites the average crew can do in a day
+        """
         daily_sites: list[Site] = []
-        if not self._survey_queue.empty():
-            for crew in range(self._crews_for_method):
-                daily_sites.append(self._survey_queue.get())
+
+        for crew in range(self._crews_for_method):
+            site_count: int = 0
+            for site_count in range(self._pot_daily_surveys):
+                if not self._survey_queue.empty():
+                    prio, site = self._survey_queue.get()
+                    daily_sites.append(site)
+                else:
+                    break
 
         return daily_sites
 
@@ -97,7 +110,7 @@ class GenericSchedule:
         for survey_plan in self._survey_plans:
             survey_plan.update()
             if survey_plan.queue_site_for_survey():
-                self.add_to_survey_queue(survey_plan)
+                self.add_to_survey_queue(survey_plan.site)
         # TODO : should this also increment to the next day?
 
     def get_average_method_survey_time(self, method_name, avg_travel_time, sites) -> float:
@@ -112,8 +125,23 @@ class GenericSchedule:
     def get_average_method_surveys_required(self, method_name, sites) -> float:
         return np.average([site.get_required_surveys(method_name) for site in sites])
 
+    def _estimate_average_daily_surveys(self, method_name, avg_travel_time, sites) -> int:
+        """
+        Return:
+            Average maximum daily sites a single crew can survey
+        """
+        daily_work_time = 8  # TODO : change later to max work hours instead of 8
+        survey_time = self.get_average_method_survey_time(method_name, avg_travel_time, sites)
+
+        return math.ceil(daily_work_time / survey_time)
+
     def _estimate_method_crews_required(
-        self, method_follow_up, methods_t_btw_sites, method_max_work_hours, sites
+        self,
+        method_follow_up,
+        methods_t_btw_sites,
+        method_max_work_hours,
+        sites,
+        method_avail_crews: int = -1,
     ) -> int:
         # TODO: Review the math that was used to update this
         estimate_req_n_crews: int = 0
@@ -137,6 +165,8 @@ class GenericSchedule:
         else:
             estimate_req_n_crews = 1
         # TODO: add in logic to make sure estimate_req_n_crew is not over the n_crew supplied (if supplied)
+        if method_avail_crews > 0 and estimate_req_n_crews > method_avail_crews:
+            estimate_req_n_crews = method_avail_crews
         return estimate_req_n_crews
 
 

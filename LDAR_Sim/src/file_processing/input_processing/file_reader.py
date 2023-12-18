@@ -18,18 +18,25 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 ------------------------------------------------------------------------------
 """
 
-
+import pandas as pd
+import json
+import pickle
+import yaml
+import sys
+import os
 from pathlib import Path
 from typing import Any
-from pandas import DataFrame
 import logging
 
 
-def file_reader(input_file_path: Path) -> dict or DataFrame:
+def file_reader(input_file_path: Path) -> Any:
     """
     Calls the proper file reader
     """
     data = None
+    if not os.path.exists(input_file_path):
+        print(f"File {str(input_file_path)} does not exist")
+        sys.exit()
     try:
         if ".csv" in input_file_path:
             data = csv_reader(input_file_path)
@@ -53,13 +60,24 @@ def file_reader(input_file_path: Path) -> dict or DataFrame:
     return data
 
 
-def csv_reader(input_file_path: Path) -> DataFrame:
+def csv_reader(input_file_path: Path) -> pd.DataFrame:
     """
     Reads in csv input files
     The expected file extension of the file passed to this file reader is .csv
     """
 
-    return None
+    # Check if the file has a .csv extension
+    if input_file_path.suffix.lower() != ".csv":
+        raise ValueError("Expected a .csv file.")
+
+    # Read the CSV file into a DataFrame
+    try:
+        df = pd.read_csv(input_file_path)
+        return df
+    except Exception as e:
+        # Handle any exceptions that may occur during reading
+        print(f"Error reading CSV file: {e}")
+        return pd.DataFrame()
 
 
 def json_reader(input_file_path: Path) -> dict:
@@ -67,7 +85,19 @@ def json_reader(input_file_path: Path) -> dict:
     Reads in json input files
     The expected file extension of the file passed to this file reader is .json
     """
-    return None
+    # Check if the file has a .json extension
+    if input_file_path.suffix.lower() != ".json":
+        raise ValueError("Expected a .json file.")
+
+    # Read the JSON file into a dictionary
+    try:
+        with open(input_file_path, "r") as file:
+            data = json.load(file)
+        return data
+    except Exception as e:
+        # Handle any exceptions that may occur during reading
+        print(f"Error reading JSON file: {e}")
+        return {}
 
 
 def pickle_reader(input_file_path: Path) -> Any:
@@ -78,7 +108,19 @@ def pickle_reader(input_file_path: Path) -> Any:
     We recommend that this is used ONLY to read in file where the contents of the file is known.
     """
 
-    return None
+    # Check if the file has a .p extension
+    if input_file_path.suffix.lower() != ".p":
+        raise ValueError("Expected a .p file.")
+
+    # Read the pickle file
+    try:
+        with open(input_file_path, "rb") as file:
+            data = pickle.load(file)
+        return data
+    except Exception as e:
+        # Handle any exceptions that may occur during reading
+        print(f"Error reading pickle file: {e}")
+        return None
 
 
 def yaml_reader(input_file_path: Path) -> dict:
@@ -86,5 +128,16 @@ def yaml_reader(input_file_path: Path) -> dict:
     Reads in yaml input files
     The expected file extension of the file passed to this file reader is .yml or .yaml
     """
+    # Check if the file has a .yml or .yaml extension
+    if input_file_path.suffix.lower() not in {".yml", ".yaml"}:
+        raise ValueError("Expected a .yml or .yaml file.")
 
-    return None
+    # Read the YAML file
+    try:
+        with open(input_file_path, "r") as file:
+            data = yaml.safe_load(file)
+        return data
+    except Exception as e:
+        # Handle any exceptions that may occur during reading
+        print(f"Error reading YAML file: {e}")
+        return None

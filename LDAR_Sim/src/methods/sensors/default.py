@@ -17,7 +17,7 @@
 # along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 #
 # ------------------------------------------------------------------------------
-from initialization.emissions import FugitiveEmission
+from virtual_world.fugitive_emission import FugitiveEmission
 from methods.funcs import measured_rate as get_measured_rate
 from utils.attribution import tag_leak
 

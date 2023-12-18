@@ -43,6 +43,25 @@ def mock_simple_site_for_survey_site_testing_fix() -> Site:
             Infrastructure_Constants.Sites_File_Constants.SPATIAL_PLACEHOLDER: {"Test": 1},
             Infrastructure_Constants.Equipment_Group_File_Constants.SURVEY_TIME_PLACEHOLDER: {},
             Infrastructure_Constants.Equipment_Group_File_Constants.SURVEY_COST_PLACEHOLDER: {},
+            Infrastructure_Constants.Sites_File_Constants.DEPLOYMENT_MONTHS_PLACEHOLDER: {
+                "Test": [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8,
+                    9,
+                    10,
+                    11,
+                    12,
+                ]
+            },
+            Infrastructure_Constants.Sites_File_Constants.DEPLOYMENT_YEARS_PLACEHOLDER: {
+                "Test": [2020, 2021, 2022, 2023, 2024, 2025]
+            },
         },
     }
     infra_inputs: dict = {}
