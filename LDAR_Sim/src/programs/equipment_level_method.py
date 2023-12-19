@@ -1,5 +1,5 @@
 import queue
-from initialization.sites import Site
+from virtual_world.sites import Site
 
 
 class EquipmentLevelMethod:

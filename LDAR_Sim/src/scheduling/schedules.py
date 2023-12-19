@@ -45,7 +45,7 @@ class GenericSchedule:
             method_follow_up, methods_t_btw_sites, method_max_work_hours, sites, method_avail_crews
         )
         self._pot_daily_surveys: int = self._estimate_average_daily_surveys(
-            method_name, methods_t_btw_sites, sites
+            method_name, methods_t_btw_sites, sites, method_max_work_hours
         )
         for site in sites:
             # TODO flush out what survey planner needs as inputs for the constructor
@@ -100,7 +100,9 @@ class GenericSchedule:
             for site_count in range(self._pot_daily_surveys):
                 if not self._survey_queue.empty():
                     prio, site = self._survey_queue.get()
-                    daily_sites.append(site)
+                    daily_sites.append(
+                        site
+                    )  # TODO: potentially change to survey planner instead of queuing sites.
                 else:
                     break
 
@@ -125,12 +127,15 @@ class GenericSchedule:
     def get_average_method_surveys_required(self, method_name, sites) -> float:
         return np.average([site.get_required_surveys(method_name) for site in sites])
 
-    def _estimate_average_daily_surveys(self, method_name, avg_travel_time, sites) -> int:
+    def _estimate_average_daily_surveys(
+        self, method_name, avg_travel_time, sites, method_max_work_hours
+    ) -> int:
         """
         Return:
             Average maximum daily sites a single crew can survey
         """
-        daily_work_time = 8  # TODO : change later to max work hours instead of 8
+        HOUR_TO_MIN: int = 60
+        daily_work_time = method_max_work_hours * HOUR_TO_MIN
         survey_time = self.get_average_method_survey_time(method_name, avg_travel_time, sites)
 
         return math.ceil(daily_work_time / survey_time)
@@ -164,9 +169,10 @@ class GenericSchedule:
 
         else:
             estimate_req_n_crews = 1
-        # TODO: add in logic to make sure estimate_req_n_crew is not over the n_crew supplied (if supplied)
+        # TODO: add in logic to make sure estimate_req_n_crew is not over the n_crew supplied (if supplied) - check
         if method_avail_crews > 0 and estimate_req_n_crews > method_avail_crews:
             estimate_req_n_crews = method_avail_crews
+            # TODO : add an error message if it enters this if statement, warning about potential labor shortage.
         return estimate_req_n_crews
 
 

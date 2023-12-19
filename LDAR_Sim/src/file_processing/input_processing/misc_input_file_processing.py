@@ -18,8 +18,11 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 ------------------------------------------------------------------------------
 """
 
+from pathlib import Path
+from src.file_processing.input_processing.file_reader import file_reader
 
-def save_repair_cost(virtual_world: dict) -> list[float]:
+
+def save_repair_cost(file_loc: Path) -> list[float]:
     """
     Function to parse out repair cost if values are provided in file
 
@@ -29,19 +32,21 @@ def save_repair_cost(virtual_world: dict) -> list[float]:
     Returns:
         list[floats]: a list of repair cost values as floats
     """
+    repair_costs = file_reader(file_loc)
     return None
 
 
-def save_time_between_sites(params: dict) -> list[float]:
+def save_time_between_sites(file_loc: Path) -> list[float]:
     """
     Function to parse out possible time between site values, if provided as file
 
     Arg:
-        File location
+        File location :
 
     Returns:
         list[floats]: a list of possible time between site values
     """
+    t_btw_sites = file_reader(file_loc)
     return None
 
 

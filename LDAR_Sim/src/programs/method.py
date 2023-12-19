@@ -1,5 +1,6 @@
 from virtual_world.sites import Site
 from scheduling.workplan import Workplan
+from src.scheduling.workplan import EmissionDetectionReport, SiteSurveyReport
 
 
 class Method:
@@ -11,8 +12,9 @@ class Method:
     def __init__(self, name: str, properties: dict):
         self._name: str = name
         self._initialize_sensor(properties[Method.DETEC_ACCESSOR])
+        self._method_workplan: Workplan = Workplan([])
 
-    def deploy_crews(self, workplan: Workplan):
+    def deploy_crews(self):
         """Deploy crews will send crews out to survey sites based on the provided workplan"""
         return
 
@@ -24,6 +26,7 @@ class Method:
         Args:
             site (Site): The site to survey
         """
+
         return
 
     def gen_emissions_report(site: Site):
@@ -33,6 +36,7 @@ class Method:
         Args:
             site (Site): The site for which to generate the emissions report.
         """
+
         return
 
     def _initialize_sensor(sensor_info: dict) -> None:
