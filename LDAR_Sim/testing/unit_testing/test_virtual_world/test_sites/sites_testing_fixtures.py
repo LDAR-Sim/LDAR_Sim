@@ -100,7 +100,7 @@ def mock_site_for_simple_activate_emissions_fix() -> Tuple[Site, date, int]:
 
 
 @pytest.fixture(name="mock_site_for_simple_get_detectable_emissions")
-def mock_site_for_simple_get_detectable_emissions_fix() -> Tuple[Site, str, str]:
+def mock_site_for_simple_get_detectable_emissions_fix() -> Tuple[Site, str]:
     id: str = "test"
     lat: float = 34.56
     lon: float = -44.56
@@ -128,7 +128,6 @@ def mock_site_for_simple_get_detectable_emissions_fix() -> Tuple[Site, str, str]
         infrastructure_inputs=infra_inputs,
     )
     test_method: str = "test"
-    test_survey_level: str = "site_level"
     simulation_start_date: date = date(*[2017, 1, 1])
     simulation_end_date: date = date(*[2017, 1, 5])
     test_site.generate_emissions(
@@ -136,4 +135,4 @@ def mock_site_for_simple_get_detectable_emissions_fix() -> Tuple[Site, str, str]
     )
     activate_date: date = date(*[2017, 1, 1])
     test_site.activate_emissions(activate_date, 1)
-    return test_site, test_method, test_survey_level
+    return test_site, test_method

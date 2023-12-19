@@ -65,8 +65,8 @@ class Equipment:
             new_emissions: list[Emission] = source.activate_emissions(date, sim_number)
             self._active_emissions.extend(new_emissions)
 
-    def get_detectable_emissions(self, method_name: str) -> list:
-        detectable_emissions: list = []
+    def get_detectable_emissions(self, method_name: str) -> Emission:
+        detectable_emissions: list[Emission] = []
         for emis in self._active_emissions:
             if emis.check_spatial_cov(method_name):
                 detectable_emissions.append(emis)

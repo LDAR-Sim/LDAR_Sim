@@ -33,7 +33,7 @@ def mock_simple_site_for_survey_site_testing_fix() -> Site:
     lon: float = -44.56
     equipment_groups: int = 1
     prop_params: dict = {
-        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ERS: None,
+        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ERS: 1,
         Infrastructure_Constants.Sites_File_Constants.REP_EMIS_EPR: 1,
         Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ED: 1,
         Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RD: 0,

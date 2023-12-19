@@ -24,6 +24,7 @@ import math
 
 
 import pandas as pd
+from virtual_world.emissions import Emission
 from virtual_world.equipment_groups import Equipment_Group
 
 from virtual_world.infrastructure_const import (
@@ -127,17 +128,12 @@ class Site:
         for eqg in self._equipment_groups:
             eqg.activate_emissions(date, sim_number)
 
-    def get_detectable_emissions(self, method_name: str, survey_level: str):
-        detectable_emissions: dict = {}
+    def get_detectable_emissions(self, method_name: str) -> dict[str, dict[str, list[Emission]]]:
+        detectable_emissions: dict[str, dict[str, Emission]] = {}
         for eqg in self._equipment_groups:
-            detectable_emissions[eqg.get_id()] = eqg.get_detectable_emissions(
-                method_name, survey_level
-            )
+            detectable_emissions[eqg.get_id()] = eqg.get_detectable_emissions(method_name)
 
-        if survey_level == "site_level":
-            return [val for val in detectable_emissions]
-        else:
-            return detectable_emissions
+        return detectable_emissions
 
     def set_pregen_emissions(self, site_emissions, sim_number) -> None:
         for eqg in self._equipment_groups:

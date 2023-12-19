@@ -6,12 +6,16 @@ from testing.unit_testing.test_virtual_world.test_sites.sites_testing_fixtures i
 
 
 def test_000_get_detectable_emissions_returns_expected_emissions(
-    mock_site_for_simple_get_detectable_emissions: Tuple[Site, str, str],
+    mock_site_for_simple_get_detectable_emissions: Tuple[Site, str],
 ) -> None:
     site: Site = mock_site_for_simple_get_detectable_emissions[0]
-    method = mock_site_for_simple_get_detectable_emissions[1]
-    survey_level = mock_site_for_simple_get_detectable_emissions[2]
-    detectable_emissions = site.get_detectable_emissions(
-        method_name=method, survey_level=survey_level
+    method: str = mock_site_for_simple_get_detectable_emissions[1]
+    detectable_emissions: dict[str, dict[str, list]] = site.get_detectable_emissions(
+        method_name=method
     )
-    assert detectable_emissions is not None
+    for key, val in detectable_emissions.items():
+        assert isinstance(key, (str, int))
+        assert isinstance(val, dict)
+        for key2, val2 in val.items():
+            assert isinstance(key2, (str, int))
+            assert isinstance(val2, list)

@@ -1,4 +1,5 @@
 from datetime import datetime
+from virtual_world.emissions import Emission
 from virtual_world.infrastructure_const import Infrastructure_Constants
 from virtual_world.equipment import Equipment
 
@@ -64,15 +65,12 @@ class Equipment_Group:
         for equipment in self._equipment:
             equipment.activate_emissions(date, sim_number)
 
-    def get_detectable_emissions(self, method_name: str, survey_level: str):
-        detectable_emissions: dict = {}
+    def get_detectable_emissions(self, method_name: str) -> dict[str, list[Emission]]:
+        detectable_emissions: dict[str, Emission] = {}
         for equip in self._equipment:
             detectable_emissions[equip.get_id()] = equip.get_detectable_emissions(method_name)
 
-        if survey_level == "equipment_group_level":
-            return [val for val in detectable_emissions]
-        else:
-            return detectable_emissions
+        return detectable_emissions
 
     def set_pregen_emissions(self, eqg_emissions, sim_number) -> None:
         for equipment in self._equipment:
