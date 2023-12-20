@@ -1,3 +1,4 @@
+from scheduling.workplan import SiteSurveyReport
 from sensors.default_sensor import DefaultSensor
 from virtual_world.emissions import Emission
 from virtual_world.sites import Site
@@ -6,10 +7,10 @@ from virtual_world.sites import Site
 class DefaultSiteLevelSensor(DefaultSensor):
     SURVEY_LEVEL = "site_level"
 
-    def __init__(self, mdl: float) -> None:
-        super().__init__(mdl)
+    def __init__(self, mdl: float, quantification_error: float) -> None:
+        super().__init__(mdl, quantification_error)
 
-    def detect_emissions(self, site: Site, meth_name: str):
+    def detect_emissions(self, site: Site, meth_name: str, survey_report: SiteSurveyReport) -> bool:
         # TODO update and test this functionality
         detectable_emissions: dict[str, dict[str, list[Emission]]] = site.get_detectable_emissions(
             method_name=meth_name
@@ -23,9 +24,21 @@ class DefaultSiteLevelSensor(DefaultSensor):
             ]
         )
 
-        if self._emission_detected(site_level_emission_rate):
-            emissions_detected: bool = True
-        else:
-            emissions_detected: bool = False
+        emissions_detected: bool = self._rate_detected(site_level_emission_rate)
 
-        return self._gen_detection_report(site_level_emission_rate, emissions_detected)
+        site_level_measured_rate: float = self._measure_site_rate(site_level_emission_rate)
+
+        self._fill_detection_report(
+            survey_report, site_level_emission_rate, site_level_measured_rate
+        )
+        return emissions_detected
+
+    def _fill_detection_report(
+        self,
+        survey_report: SiteSurveyReport,
+        true_site_rate: float,
+        measured_site_rate: float,
+    ) -> None:
+        survey_report.site_true_rate = true_site_rate
+        survey_report.site_measured_rate = measured_site_rate
+        survey_report.emissions_detected = []

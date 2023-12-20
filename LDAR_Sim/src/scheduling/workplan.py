@@ -21,9 +21,11 @@ class SiteSurveyReport:
     time_spent_to_travel: int
     survey_complete: bool
     survey_in_progress: bool
-    net_site_emissions_rate: float
     emissions_detected: list[EmissionDetectionReport]
     survey_level: str
+    site_measured_rate: float
+    site_true_rate: float
+    site_flagged: bool
 
 
 class Workplan:
