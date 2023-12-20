@@ -62,7 +62,7 @@ class SurveyPlanner:
         self._deployment_months: list[int] = deployment_months
         self._deployment_years: list[int] = deployment_years
         self._survey_plan: dict[int, date] = self._gen_survey_plan(site_annual_rs)
-        self._current_date: date = sim_start_date
+        self._current_date: date = sim_start_date - timedelta(days=1)
         self._surveys_this_year: dict[int, Survey_Counter] = self._set_survey_per_year()
         self._last_survey_dates: [date] = []
         self._queued: bool = False
@@ -184,13 +184,13 @@ class SurveyPlanner:
 
         return _surveys_this_year
 
-    def update(self) -> None:
+    def update_date(self, current_date: date) -> None:
         """This method will update the internal current date of the survey plan,
         and then adjust the values of internal state variables tracking if the site
         should be queued to surveyed based on the current date, the planned survey dates
         and if the site has already been queued to be surveyed.
         """
-        self._current_date += timedelta(days=1)
+        self._current_date = current_date
 
     def _check_deployable_year(self) -> bool:
         """Checks to make sure current date is a valid year to send out crews"""
@@ -235,14 +235,6 @@ class SurveyPlanner:
             self._current_date.year
         ].Surveys_done += 1  # TODO : update when data
         return None
-
-    # def set_current_date(self, set_date: date) -> None:
-    #     """Method used for testing, sets the current date to the given date
-    #     Args:
-    #         date: the date to set the current date to
-    #     """
-    #     self._current_date = set_date
-    #     return None
 
 
 class MobileSurveyPlanner(SurveyPlanner):

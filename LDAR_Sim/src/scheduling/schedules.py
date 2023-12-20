@@ -1,10 +1,9 @@
-import queue
 import numpy as np
 import math
 from datetime import date
 from virtual_world.sites import Site
 from scheduling.survey_planner import SurveyPlanner
-
+from utils.queue import PriorityQueueWithFIFO
 
 DEPLOY_TYPE_ACCESSOR = "deployment_type"
 FOLLOWUP_ACCSSOR = "is_follow_up"
@@ -39,81 +38,87 @@ class GenericSchedule:
         method_avail_crews: int = -1,  # TODO : change default n_crew to  -1
     ) -> None:
         self._method: str = method_name
-        self._survey_queue = queue.PriorityQueue()
-        self._survey_plans: list[SurveyPlanner] = []
+        self._survey_queue = PriorityQueueWithFIFO()
+        self._survey_plans: list[SurveyPlanner] = self._set_survey_plans(
+            sim_start_date, sim_end_date, sites
+        )
         self._crews_for_method: int = self._estimate_method_crews_required(
             method_follow_up, methods_t_btw_sites, method_max_work_hours, sites, method_avail_crews
         )
         self._pot_daily_surveys: int = self._estimate_average_daily_surveys(
             method_name, methods_t_btw_sites, sites, method_max_work_hours
         )
+
+        return
+
+    def _set_survey_plans(self, sim_start_date, sim_end_date, sites):
+        survey_plans: list[SurveyPlanner] = []
         for site in sites:
             # TODO flush out what survey planner needs as inputs for the constructor
-            survey_freq: int = site._survey_frequencies[method_name]
-            deploy_year: int = site._deployment_years[method_name]
-            deploy_month: int = site._deployment_months[method_name]
-            self._survey_plans.append(
+            survey_freq: int = site._survey_frequencies[self._method]
+            deploy_year: int = site._deployment_years[self._method]
+            deploy_month: int = site._deployment_months[self._method]
+            survey_plans.append(
                 SurveyPlanner(
                     site, survey_freq, sim_start_date, sim_end_date, deploy_year, deploy_month
                 )
             )
-        return
+        return survey_plans
 
-    def add_to_survey_queue(self, site: Site) -> None:
+    def add_to_survey_queue(self, survey_plan: SurveyPlanner) -> None:
         """Add the supplied site to the survey queue to surveyed
 
         Args:
             site (Site): The site to be added to the survey queue
         """
-        self._survey_queue.put((GenericSchedule.DEFAULT_SURVEY_PRIORITY, site))
+        self._survey_queue.put(GenericSchedule.DEFAULT_SURVEY_PRIORITY, survey_plan)
 
-    def add_unfinished_to_survey_queue(self, site: Site) -> None:
+    def add_unfinished_to_survey_queue(self, survey_plan: SurveyPlanner) -> None:
         """Add the supplied, partial surveyed site to queue
 
         Args:
             site (Site) : the Site to be added to the survey queue"""
-        self._survey_queue.put((GenericSchedule.UNFINISHED_SURVEY_HIGHEST_PRIORITY, site))
+        self._survey_queue.put(GenericSchedule.UNFINISHED_SURVEY_HIGHEST_PRIORITY, survey_plan)
 
-    def add_previous_queued_to_survey_queue(self, site: Site) -> None:
+    def add_previous_queued_to_survey_queue(self, survey_plan: SurveyPlanner) -> None:
         """Add the supplied, unattended site back to queue
 
         Args:
             site (Site) : the Site to be added to the survey queue"""
-        self._survey_queue.put((GenericSchedule.QUEUED_SURVEY_PRIORITY, site))
+        self._survey_queue.put(GenericSchedule.QUEUED_SURVEY_PRIORITY, survey_plan)
 
-    def get_daily_sites_to_survey(self) -> None:
+    def get_daily_sites_to_survey(self) -> list[SurveyPlanner]:
         """This method will go through the method survey queue and return
         the daily sites that are planned to be surveyed by the given method
 
-        The logic should be to pop the sites that are in the top priority queue and do those first
-        and then repeat for each priority tier below
-
-        queue.get automatically pops from lowest tier first
-
-        Returns the list of highest priority sites, based on the number of crews available
+        Returns the list of highest priority survey plans, based on the number of crews available
         and the number of sites the average crew can do in a day
         """
-        daily_sites: list[Site] = []
+        daily_plan: list[SurveyPlanner] = []
 
         for crew in range(self._crews_for_method):
             site_count: int = 0
             for site_count in range(self._pot_daily_surveys):
                 if not self._survey_queue.empty():
-                    prio, site = self._survey_queue.get()
-                    daily_sites.append(
-                        site
-                    )  # TODO: potentially change to survey planner instead of queuing sites.
+                    prio, _, survey_plan = self._survey_queue.get()
+                    daily_plan.append(survey_plan)
                 else:
                     break
 
-        return daily_sites
+        return daily_plan
 
-    def update_schedule(self):
+    def update_schedule(self, current_date) -> list[Site]:
+        """
+        Updates the survey plans,
+        Adds necessary sites to the queue
+        Returns:
+            The list sites that the method should do on the given day
+        """
         for survey_plan in self._survey_plans:
-            survey_plan.update()
+            survey_plan.update_date(current_date)
             if survey_plan.queue_site_for_survey():
-                self.add_to_survey_queue(survey_plan.site)
-        # TODO : should this also increment to the next day?
+                self.add_to_survey_queue(survey_plan)
+        return self.get_daily_sites_to_survey()
 
     def get_average_method_survey_time(self, method_name, avg_travel_time, sites) -> float:
         """

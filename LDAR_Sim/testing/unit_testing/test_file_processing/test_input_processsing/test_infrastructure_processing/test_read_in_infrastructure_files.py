@@ -24,9 +24,10 @@ from testing.unit_testing.test_file_processing.test_input_processsing.test_infra
     virtual_world_fix,
     in_dir_fix,
 )
-from file_processing.input_processing.infrastructure_processing import (
+from src.file_processing.input_processing.infrastructure_processing import (
     read_in_infrastructure_files,
 )
+from src.file_processing.input_processing.file_reader import file_reader
 
 
 def test_read_in_infrastructure_files_with_all_files(virtual_world, in_dir):
@@ -34,9 +35,7 @@ def test_read_in_infrastructure_files_with_all_files(virtual_world, in_dir):
     mock_file_reader = Mock(return_value=DataFrame({"col1": [1, 2], "col2": [3, 4]}))
 
     with pytest.MonkeyPatch().context() as m:
-        m.setattr(
-            "src.file_processing.input_processing.file_reader", "file_reader", mock_file_reader
-        )
+        m.setattr("src.file_processing.input_processing.file_reader", mock_file_reader)
 
         result = read_in_infrastructure_files(virtual_world, in_dir)
 
@@ -62,9 +61,7 @@ def test_read_in_infrastructure_files_with_optional_files(virtual_world, in_dir)
     mock_file_reader = Mock(return_value=DataFrame({"col1": [1, 2], "col2": [3, 4]}))
 
     with pytest.MonkeyPatch().context() as m:
-        m.setattr(
-            "src.file_processing.input_processing.file_reader", "file_reader", mock_file_reader
-        )
+        m.setattr("src.file_processing.input_processing.file_reader", mock_file_reader)
 
         # Set optional files to None
         virtual_world["infrastructure"]["site_type_file"] = None

@@ -29,6 +29,13 @@ class Method:
 
         return
 
+    def _change_workplan(self, survey_list: list[Site]) -> None:
+        self._method_workplan._site_survey_list = survey_list
+        return
+
+    def return_workplan(self) -> Workplan:
+        return self._method_workplan
+
     def gen_emissions_report(site: Site):
         """Will generate an emissions report of detections at the site.
         If no emissions are detected,will generate a report indicating that was the case.

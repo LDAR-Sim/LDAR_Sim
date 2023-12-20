@@ -36,6 +36,7 @@ def test_000_queue_site_for_survey_returns_true_first_survey(mocker):
         deploy_years,
         deploy_months,
     )
+    planner.update_date(date(2020, 1, 2))
     result = planner.queue_site_for_survey()
     assert result is True
 
