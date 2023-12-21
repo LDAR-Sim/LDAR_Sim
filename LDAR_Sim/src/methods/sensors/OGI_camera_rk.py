@@ -23,6 +23,8 @@ import numpy as np
 from methods.funcs import measured_rate as get_measured_rate
 from utils.attribution import tag_leak
 
+# TODO: DELETE THIS FILE LATER - OLD VERSION
+
 
 def detect_emissions(
     self,

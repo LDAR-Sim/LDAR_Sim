@@ -23,6 +23,8 @@ import random
 import numpy as np
 from utils.generic_functions import geo_idx
 
+# TODO: DELETE THIS FILE LATER - OLD VERSION
+
 
 def detect_emissions(
     self,

@@ -28,6 +28,12 @@ class SiteSurveyReport:
     site_flagged: bool = False
 
 
+@dataclass
+class CrewDailyReport:
+    crew_id: int
+    day_time_remaining: int
+
+
 class Workplan:
     def __init__(self, site_survey_list: list[Site]):
         self._site_survey_list: list[Site] = site_survey_list
