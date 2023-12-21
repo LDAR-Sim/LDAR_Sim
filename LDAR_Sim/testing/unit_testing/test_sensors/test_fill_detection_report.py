@@ -2,9 +2,12 @@ from typing import Any, Tuple
 from hypothesis import given, strategies as st
 from scheduling.workplan import SiteSurveyReport
 from sensors.default_site_level_sensor import DefaultSiteLevelSensor
-from testing.unit_testing.test_sensors.sensors_testing_fixtures import (  # noqa
-    sensor_for_default_site_level_sensor_testing_fix,
-)
+
+
+def get_sensor_for_default_site_level_sensor_testing() -> DefaultSiteLevelSensor:
+    mdl: float = 1.0
+    QE: float = 0.0
+    return DefaultSiteLevelSensor(mdl=mdl, quantification_error=QE)
 
 
 @st.composite
@@ -16,13 +19,12 @@ def gen_measured_and_true_rates(draw) -> Tuple[Any | float, Any | int]:
 
 @given(gen_data=gen_measured_and_true_rates())
 def test_000_default_sl_sensor_fill_detection_report_with_successful_detection_correctly_fills_values(  # noqa
-    sensor_for_default_site_level_sensor_testing: DefaultSiteLevelSensor, gen_data
+    gen_data,
 ) -> None:
-    report: SiteSurveyReport = SiteSurveyReport()
+    sensor: DefaultSiteLevelSensor = get_sensor_for_default_site_level_sensor_testing()
+    report: SiteSurveyReport = SiteSurveyReport(1)
     site_true_rate: float = gen_data[0]
     site_measured_rate: float = gen_data[1]
-    sensor_for_default_site_level_sensor_testing._fill_detection_report(
-        report, site_true_rate, site_measured_rate
-    )
+    sensor._fill_detection_report(report, site_true_rate, site_measured_rate)
     assert report.site_measured_rate == site_measured_rate
     assert report.site_true_rate == site_true_rate

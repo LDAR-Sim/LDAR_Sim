@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 from virtual_world.sites import Site
 
@@ -17,15 +17,15 @@ class EmissionDetectionReport:
 @dataclass
 class SiteSurveyReport:
     site_id: int
-    time_surveyed: int
-    time_spent_to_travel: int
-    survey_complete: bool
-    survey_in_progress: bool
-    emissions_detected: list[EmissionDetectionReport]
-    survey_level: str
-    site_measured_rate: float
-    site_true_rate: float
-    site_flagged: bool
+    time_surveyed: int = 0
+    time_spent_to_travel: int = 0
+    survey_complete: bool = False
+    survey_in_progress: bool = False
+    emissions_detected: list[EmissionDetectionReport] = field(default_factory=list)
+    survey_level: str = None
+    site_measured_rate: float = 0.0
+    site_true_rate: float = 0.0
+    site_flagged: bool = False
 
 
 class Workplan:

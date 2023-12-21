@@ -8,6 +8,7 @@ def test_000_simple_default_site_level_constructor_properly_initializes_as_defau
     sensor_info_for_default_site_level_sensor_construction_testing: dict[str, int],
 ) -> None:
     sl_sensor = DefaultSiteLevelSensor(
-        sensor_info_for_default_site_level_sensor_construction_testing["mdl"]
+        sensor_info_for_default_site_level_sensor_construction_testing["mdl"],
+        sensor_info_for_default_site_level_sensor_construction_testing["QE"],
     )
     assert isinstance(sl_sensor, DefaultSiteLevelSensor)

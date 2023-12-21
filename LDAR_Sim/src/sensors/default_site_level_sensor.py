@@ -41,4 +41,4 @@ class DefaultSiteLevelSensor(DefaultSensor):
     ) -> None:
         survey_report.site_true_rate = true_site_rate
         survey_report.site_measured_rate = measured_site_rate
-        survey_report.emissions_detected = []
+        survey_report.survey_level = self.SURVEY_LEVEL
