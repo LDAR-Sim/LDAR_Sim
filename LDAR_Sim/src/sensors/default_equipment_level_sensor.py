@@ -4,13 +4,14 @@ from virtual_world.emissions import Emission
 from virtual_world.sites import Site
 
 
-class DefaultSiteLevelSensor(DefaultSensor):
-    SURVEY_LEVEL = "site_level"
+class DefaultEquipmentLevelSensor(DefaultSensor):
+    SURVEY_LEVEL = "equipment_level"
 
     def __init__(self, mdl: float, quantification_error: float) -> None:
         super().__init__(mdl, quantification_error)
 
     def detect_emissions(self, site: Site, meth_name: str, survey_report: SiteSurveyReport) -> bool:
+        # TODO update and test this functionality
         detectable_emissions: dict[str, dict[str, list[Emission]]] = site.get_detectable_emissions(
             method_name=meth_name
         )

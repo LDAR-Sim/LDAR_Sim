@@ -1,6 +1,6 @@
 from sensors.default_site_level_sensor import DefaultSiteLevelSensor
-from testing.unit_testing.test_sensors.sensors_testing_fixtures import (  # noqa
-    sensor_info_for_default_site_level_sensor_construction_testing_fix,
+from LDAR_Sim.LDAR_Sim.testing.unit_testing.test_sensors.test_site_level_sensors.site_level_sensors_testing_fixtures import (  # noqa
+    sensor_info_for_default_equipment_group_level_sensor_construction_testing_fix,
 )
 
 

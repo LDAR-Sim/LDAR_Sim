@@ -13,14 +13,14 @@ class DefaultSensor:
     def detect_emissions(self, site: Site, meth_name: str):
         return
 
-    def _measure_site_rate(self, true_site_rate: float) -> float:
+    def _measure_rate(self, true_rate: float) -> float:
         quant_error: float = np.random.normal(0, self._quantification_error)
 
         measured_rate = None
         if quant_error >= 0:
-            measured_rate: float = true_site_rate + true_site_rate * quant_error
+            measured_rate: float = true_rate + true_rate * quant_error
         if quant_error < 0:
             denom: float = abs(quant_error - 1)
-            measured_rate: float = true_site_rate / denom
+            measured_rate: float = true_rate / denom
 
         return measured_rate

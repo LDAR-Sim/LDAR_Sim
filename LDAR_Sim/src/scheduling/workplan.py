@@ -1,31 +1,43 @@
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import date
 from virtual_world.sites import Site
 
 
 @dataclass
 class EmissionDetectionReport:
-    site: int
+    site: str
     equipment_group: str
     equipment: str
     measured_rate: float
     true_rate: float
-    start_date: datetime
-    estimated_start_date: datetime
+    current_date: date
+    emis_start_date: date
+    estimated_start_date: date
+
+
+@dataclass
+class EquipmentGroupSurveyReport:
+    site: str
+    equipment_group: str
+    measured_rate: float
+    true_rate: float
+    survey_date: date = None
+    emissions_detected: list[EmissionDetectionReport] = field(default_factory=list)
 
 
 @dataclass
 class SiteSurveyReport:
-    site_id: int
+    site_id: str
     time_surveyed: int = 0
     time_spent_to_travel: int = 0
     survey_complete: bool = False
     survey_in_progress: bool = False
-    emissions_detected: list[EmissionDetectionReport] = field(default_factory=list)
+    equipment_groups_surveyed: list[EquipmentGroupSurveyReport] = field(default_factory=list)
     survey_level: str = None
     site_measured_rate: float = 0.0
     site_true_rate: float = 0.0
     site_flagged: bool = False
+    survey_completion_date: date = None
 
 
 @dataclass
