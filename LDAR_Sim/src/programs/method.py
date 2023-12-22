@@ -1,4 +1,4 @@
-from queue import Queue
+from queue import PriorityQueue
 from virtual_world.sites import Site
 from src.scheduling.workplan import Workplan, CrewDailyReport
 from src.scheduling.workplan import EmissionDetectionReport, SiteSurveyReport
@@ -16,62 +16,57 @@ class Method:
         self._name: str = name
         self._initialize_sensor(properties[Method.DETEC_ACCESSOR])
         self._method_workplan: Workplan = Workplan([])
-        self._crew_reports: list[CrewDailyReport] = self.initialize_daily_crews(
+        self._crew_reports: list[CrewDailyReport] = self.initialize_crews(
             properties[Method.CREW_COUNT]
         )
         self.max_work_hours = properties[Method.MAX_WORK_HOURS]
 
-    def initialize_daily_crews(self, n_crew) -> None:
+    def initialize_crews(self, n_crew) -> None:
         """Initialize the daily crew reports that the method will use
-        This will represent the number of crews available
+        This will represent the number of crews available for the given method
+
         """
-        if n_crew == -1:
-            # TODO: figure out how to get estimate n_crew here if n_crew is not set
-            crew_reports.append
-        else:
-            crew_reports: list[CrewDailyReport] = []
-            for crew in range(n_crew):
-                crew_reports.append(CrewDailyReport(crew, 0))
+        crew_reports: list[CrewDailyReport] = []
+        for crew in range(n_crew):
+            crew_reports.append(CrewDailyReport(crew, 0))
         self._crew_reports = crew_reports
         return
 
     def deploy_crews(self):
-        """Deploy crews will send crews out to survey sites based on the provided workplan
+        """Deploy crews will send crews out to survey sites based on the provided workplan"""
 
-        Assumes that the weather will be"""
-        # TODO: need to know how many crews are available for the method,
-        # if n_crews = -1 then use estimate crews unless followup
+        priority_queue = PriorityQueue()
+        # Initialize the daily available survey time for existing crews
         for crew in self._crew_reports:
-            crew.day_time_remaining = self.max_work_hours
-            # TODO : check for daily weather
             # TODO : if method is daylight sensitive, check for max daylight
-            # TODO: create temporary queues for each of the "crews"
-            # assign the given site to the queue of a single crew
+            priority_queue.put((-crew.day_time_remaining, crew.crew_id, crew))
 
-        daily_queue: dict[int, Queue] = {}
-        # Assign the sites evenly to each crew
-        for i, site_survey in enumerate(self._method_workplan._site_survey_list):
-            assigned_crew = i % len(self._crew_reports)
-            daily_queue[assigned_crew] = Queue()
-            daily_queue[assigned_crew].put(site_survey)
-
-        for crew_id, crew_queue in daily_queue.items:
-            while self._crew_reports[crew_id].day_time_remaining > 0:
-                # survey as many sites as day time remaining
-                self.survey_site()
-                # TODO: need ot make sure if survey time remaining of the last site here gets an updated workplan
-            if not crew_queue.empty():
-                # if the daily queue still has sites need to return updated workplan back to programs
+        # pop the site with the longest remaining hours to assign the next site
+        for site_survey in self._method_workplan._site_survey_list:
+            # while there are crews that can work
+            if not priority_queue.empty():
+                _, _, assigned_crew = priority_queue.get()
+                self.survey_site(assigned_crew, site_survey)
+                if assigned_crew.day_time_remaining > 0:
+                    # Put the crew back into the queue if there's remaining work hours
+                    priority_queue.put(
+                        (-assigned_crew.day_time_remaining, assigned_crew.crew_id, assigned_crew)
+                    )
+            # if there are no crews available for work
+            else:
+                # Update the site_survey
                 # to indicate that these particular sites need to be requeued with higher priority
-                self._method_workplan  # TODO: update this
+                site_survey.update
         return
 
-    def survey_site(self, daily_report: CrewDailyReport, site: Site):
+    def survey_site(self, daily_report: CrewDailyReport, site: SurveyPlanner):
         """The method will attempt to survey the site provided as an argument, detecting emissions
         at it's detection level, either tagging sites for follow-up or flagging leaks,
         and generating an emissions report
 
         Will also update the CrewDailyReport
+        TODO: need to check for weather if crew can survey this site.
+        TODO: if weather does not permit, need to return the survey plan to say it wasn't surveyed.
         Args:
             daily_report (CrewDailyReport): the associated crew's daily report (of available work hours)
             site (Site): The site to survey
