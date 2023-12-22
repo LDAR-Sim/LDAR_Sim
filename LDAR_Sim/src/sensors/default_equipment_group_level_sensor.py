@@ -15,26 +15,43 @@ class DefaultEquipmentGroupLevelSensor(DefaultSensor):
         detectable_emissions: dict[str, dict[str, list[Emission]]] = site.get_detectable_emissions(
             method_name=meth_name
         )
-        site_level_emission_rate: float = sum(
-            [
-                emission.get_rate()
-                for eq_emis_list in detectable_emissions.values()
-                for emis_list in eq_emis_list.values()
-                for emission in emis_list
-            ]
-        )
+        eqg_survey_reports: list[EquipmentGroupSurveyReport] = []
+        site_level_emission_rate: float = 0.0
+        site_level_measured_rate: float = 0.0
 
-        emissions_detected: bool = self._rate_detected(site_level_emission_rate)
+        for eqg, eq_emis_list in detectable_emissions.items():
+            eqg_level_emis_rate: float = sum(
+                [
+                    emission.get_rate()
+                    for emis_list in eq_emis_list.values()
+                    for emission in emis_list
+                ]
+            )
 
-        if emissions_detected:
-            site_level_measured_rate: float = self._measure_rate(site_level_emission_rate)
-        else:
-            site_level_measured_rate: float = 0.0
+            eqg_emissions_detected: bool = self._rate_detected(eqg_level_emis_rate)
+
+            if eqg_emissions_detected:
+                eqg_level_measured_rate: float = self._measure_rate(eqg_level_emis_rate)
+            else:
+                eqg_level_measured_rate: float = 0.0
+
+            eqg_survey_reports.append(
+                self._gen_eqg_survey_report(
+                    site_id=site.get_id(),
+                    eqg_id=eqg,
+                    true_rate=eqg_level_emis_rate,
+                    measured_rate=eqg_level_measured_rate,
+                )
+            )
+
+            site_level_emission_rate += eqg_level_emis_rate
+            site_level_measured_rate += eqg_level_measured_rate
 
         self._fill_detection_report(
-            survey_report, site_level_emission_rate, site_level_measured_rate
+            survey_report, site_level_emission_rate, site_level_measured_rate, eqg_survey_reports
         )
-        return emissions_detected
+
+        return site_level_measured_rate != 0
 
     def _fill_detection_report(
         self,
