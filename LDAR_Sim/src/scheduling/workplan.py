@@ -10,9 +10,9 @@ class EmissionDetectionReport:
     equipment: str
     measured_rate: float
     true_rate: float
-    current_date: date
-    emis_start_date: date
-    estimated_start_date: date
+    current_date: date = None
+    emis_start_date: date = None
+    estimated_start_date: date = None
 
 
 @dataclass
