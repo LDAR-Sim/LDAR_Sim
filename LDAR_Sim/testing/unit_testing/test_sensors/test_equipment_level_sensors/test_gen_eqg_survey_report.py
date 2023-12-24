@@ -1,12 +1,12 @@
 from hypothesis import given, strategies as st
 from scheduling.workplan import EquipmentGroupSurveyReport
-from sensors.default_equipment_group_level_sensor import DefaultEquipmentGroupLevelSensor
+from sensors.default_equipment_level_sensor import DefaultEquipmentLevelSensor
 
 
-def get_sensor_for_default_eqg_level_sensor_testing() -> DefaultEquipmentGroupLevelSensor:
+def get_sensor_for_default_equipment_level_sensor_testing() -> DefaultEquipmentLevelSensor:
     mdl: float = 1.0
     QE: float = 0.0
-    return DefaultEquipmentGroupLevelSensor(mdl=mdl, quantification_error=QE)
+    return DefaultEquipmentLevelSensor(mdl=mdl, quantification_error=QE)
 
 
 @st.composite
@@ -19,8 +19,8 @@ def gen_test_data(draw):
 
 
 @given(test_data=gen_test_data())
-def test_000_gen_eqg_survey_report_return_expected_report(test_data):
-    sensor: DefaultEquipmentGroupLevelSensor = get_sensor_for_default_eqg_level_sensor_testing()
+def test_000_gen_equipment_survey_report_return_expected_report(test_data):
+    sensor: DefaultEquipmentLevelSensor = get_sensor_for_default_equipment_level_sensor_testing()
     site_id: str = test_data[0]
     eqg_id: str = test_data[1]
     meas_rate: float = test_data[3]

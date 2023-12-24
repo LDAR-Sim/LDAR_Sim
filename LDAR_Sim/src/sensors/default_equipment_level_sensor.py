@@ -45,7 +45,7 @@ class DefaultEquipmentLevelSensor(DefaultSensor):
                 )
 
                 eqg_level_emis_rate += equip_rate
-                eqg_level_measured_rate += eqg_level_measured_rate
+                eqg_level_measured_rate += equip_measured_rate
 
             eqg_survey_reports.append(
                 self._gen_eqg_survey_report(
@@ -86,7 +86,7 @@ class DefaultEquipmentLevelSensor(DefaultSensor):
         return eqg_survey_report
 
     def _gen_emissions_detection_report(
-        site_id: str, eqg_id: str, equip_id: str, measured_rate: float, true_rate: float
+        self, site_id: str, eqg_id: str, equip_id: str, measured_rate: float, true_rate: float
     ) -> EmissionDetectionReport:
         emis_detect_report = EmissionDetectionReport(
             site=site_id,
