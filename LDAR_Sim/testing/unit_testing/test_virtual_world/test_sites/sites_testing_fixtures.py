@@ -21,6 +21,9 @@ def mock_values_for_simple_site_construction_fix() -> Tuple[str, float, float, i
         "Method_Specific_Params": {
             Infrastructure_Constants.Sites_File_Constants.SURVEY_FREQUENCY_PLACEHOLDER: {},
             Infrastructure_Constants.Sites_File_Constants.SPATIAL_PLACEHOLDER: {},
+            Infrastructure_Constants.Sites_File_Constants.DEPLOYMENT_MONTHS_PLACEHOLDER: {},
+            Infrastructure_Constants.Sites_File_Constants.DEPLOYMENT_YEARS_PLACEHOLDER: {},
+            Infrastructure_Constants.Sites_File_Constants.SURVEY_FREQUENCY_PLACEHOLDER: {},
             Infrastructure_Constants.Equipment_Group_File_Constants.SURVEY_TIME_PLACEHOLDER: {},
             Infrastructure_Constants.Equipment_Group_File_Constants.SURVEY_COST_PLACEHOLDER: {},
         },
@@ -44,6 +47,9 @@ def mock_site_for_simple_generate_emissions_fix() -> Tuple[Site, date, date]:
         "Method_Specific_Params": {
             Infrastructure_Constants.Sites_File_Constants.SURVEY_FREQUENCY_PLACEHOLDER: {},
             Infrastructure_Constants.Sites_File_Constants.SPATIAL_PLACEHOLDER: {},
+            Infrastructure_Constants.Sites_File_Constants.DEPLOYMENT_MONTHS_PLACEHOLDER: {},
+            Infrastructure_Constants.Sites_File_Constants.DEPLOYMENT_YEARS_PLACEHOLDER: {},
+            Infrastructure_Constants.Sites_File_Constants.SURVEY_FREQUENCY_PLACEHOLDER: {},
             Infrastructure_Constants.Equipment_Group_File_Constants.SURVEY_TIME_PLACEHOLDER: {},
             Infrastructure_Constants.Equipment_Group_File_Constants.SURVEY_COST_PLACEHOLDER: {},
         },
@@ -77,6 +83,9 @@ def mock_site_for_simple_activate_emissions_fix() -> Tuple[Site, date, int]:
         "Method_Specific_Params": {
             Infrastructure_Constants.Sites_File_Constants.SURVEY_FREQUENCY_PLACEHOLDER: {},
             Infrastructure_Constants.Sites_File_Constants.SPATIAL_PLACEHOLDER: {},
+            Infrastructure_Constants.Sites_File_Constants.DEPLOYMENT_MONTHS_PLACEHOLDER: {},
+            Infrastructure_Constants.Sites_File_Constants.DEPLOYMENT_YEARS_PLACEHOLDER: {},
+            Infrastructure_Constants.Sites_File_Constants.SURVEY_FREQUENCY_PLACEHOLDER: {},
             Infrastructure_Constants.Equipment_Group_File_Constants.SURVEY_TIME_PLACEHOLDER: {},
             Infrastructure_Constants.Equipment_Group_File_Constants.SURVEY_COST_PLACEHOLDER: {},
         },
@@ -112,6 +121,9 @@ def mock_site_for_simple_get_detectable_emissions_fix() -> Tuple[Site, str]:
         Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RD: 0,
         Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RC: 100,
         "Method_Specific_Params": {
+            Infrastructure_Constants.Sites_File_Constants.SURVEY_FREQUENCY_PLACEHOLDER: {},
+            Infrastructure_Constants.Sites_File_Constants.DEPLOYMENT_MONTHS_PLACEHOLDER: {},
+            Infrastructure_Constants.Sites_File_Constants.DEPLOYMENT_YEARS_PLACEHOLDER: {},
             Infrastructure_Constants.Sites_File_Constants.SURVEY_FREQUENCY_PLACEHOLDER: {},
             Infrastructure_Constants.Sites_File_Constants.SPATIAL_PLACEHOLDER: {"test": 1},
             Infrastructure_Constants.Equipment_Group_File_Constants.SURVEY_TIME_PLACEHOLDER: {},
