@@ -7,8 +7,10 @@ from utils.queue import PriorityQueueWithFIFO
 
 DEPLOY_TYPE_ACCESSOR = "deployment_type"
 FOLLOWUP_ACCSSOR = "is_follow_up"
-INVALID_DEPLOYMENT_TYPE_ERROR_MESSAGE = (
-    "LDAR-Sim has detected an invalid method deployment type of: {deploy_type} for method: {method}"
+INVALID_DEPLOYMENT_TYPE_ERROR_MESSAGE = "Error: LDAR-Sim has detected an invalid method deployment type of: {deploy_type} for method: {method}"
+
+POTENTIAL_CREW_SHORTAGE_MESSAGE = (
+    "Warning: LDAR-Sim has detected a potential for crew shortage for the method: {method}"
 )
 
 
@@ -18,7 +20,6 @@ class GenericSchedule:
     from this class and overwrite it's default behavior where necessary.
     """
 
-    # TODO what are the different priority cases
     # Default = 3 - where everything initially starts out
     # 2 - Sites which have been popped for the day but were not attended to
     # 1 - Sites that have surveys which have been started but not finished.
@@ -174,10 +175,9 @@ class GenericSchedule:
 
         else:
             estimate_req_n_crews = 1
-        # TODO: add in logic to make sure estimate_req_n_crew is not over the n_crew supplied (if supplied) - check
         if method_avail_crews > 0 and estimate_req_n_crews > method_avail_crews:
             estimate_req_n_crews = method_avail_crews
-            # TODO : add an error message if it enters this if statement, warning about potential labor shortage.
+            print(POTENTIAL_CREW_SHORTAGE_MESSAGE)
         return estimate_req_n_crews
 
 
