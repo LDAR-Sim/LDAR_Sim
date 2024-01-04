@@ -18,7 +18,10 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 ------------------------------------------------------------------------------
 """
 
+import math
 from queue import PriorityQueue
+
+import numpy as np
 from virtual_world.sites import Site
 from src.scheduling.workplan import Workplan, CrewDailyReport
 from src.scheduling.workplan import EmissionDetectionReport, SiteSurveyReport
@@ -33,39 +36,109 @@ class Method:
     MAX_WORK_HOURS = "max_workday"
     DAYLIGHT = "consider_daylight"
     WEATHER = "weather_envs"
+    FOLLOW_UP_ACCESSOR = "is_follow_up"
+
+    POTENTIAL_CREW_SHORTAGE_MESSAGE = (
+        "Warning: LDAR-Sim has detected a potential for crew shortage for the method: {method}"
+    )
 
     # TODO ensure survey times aren't needed for methods
-    def __init__(self, name: str, properties: dict, consider_weather: bool):
+    def __init__(self, name: str, properties: dict, consider_weather: bool, sites: "list[Site]"):
         self._name: str = name
-        self._initialize_sensor(properties[Method.DETEC_ACCESSOR])
+        self._initialize_sensor(properties[self.DETEC_ACCESSOR])
         self._method_workplan: Workplan = Workplan([])
-        self._crew_reports: list[CrewDailyReport] = self.initialize_crews(
-            properties[Method.CREW_COUNT]
-        )
-        self.max_work_hours = properties[Method.MAX_WORK_HOURS]
-        self.daylight_sensitive = properties[Method.DAYLIGHT]
-        self.weather: bool = consider_weather
-        self.weather_envs: dict = properties[Method.WEATHER]
+        self._max_work_hours: int = properties[self.MAX_WORK_HOURS]
+        self._daylight_sensitive = properties[self.DAYLIGHT]
+        self._weather: bool = consider_weather
+        self._weather_envs: dict = properties[self.WEATHER]
+        self._is_follow_up: bool = properties[self.FOLLOW_UP_ACCESSOR]
+        self._travel_times = properties[self.TRAVEL_TIME_ACCESSOR]
+        crews: int = properties[self.CREW_COUNT]
+        self.initialize_crews(crews, sites)
 
-    def initialize_crews(self, n_crew) -> None:
+    def initialize_crews(self, crews, sites: "list[Site]") -> None:
         """Initialize the daily crew reports that the method will use
         This will represent the number of crews available for the given method
 
         """
+
+        self._crews: int = self._estimate_method_crews_required(crews, sites)
+
         crew_reports: list[CrewDailyReport] = []
-        for crew in range(n_crew):
+        for crew in range(self._crews):
             crew_reports.append(CrewDailyReport(crew, 0))
-        self._crew_reports = crew_reports
+        self._crew_reports: list[CrewDailyReport] = crew_reports
         return
+
+    def get_average_method_surveys_required(self, sites: "list[Site]") -> float:
+        return np.average([site.get_required_surveys(self._name) for site in sites])
+
+    def _get_average_survey_time_for_method(
+        method_name: str, avg_travel_time: float, sites: "list[Site]"
+    ) -> float:
+        """
+        Return:
+            Average time in minutes
+        """
+        return np.average(
+            [(site.get_method_survey_time(method_name) + avg_travel_time) for site in sites]
+        )
+
+    def _estimate_method_crews_required(
+        self,
+        crews: int,
+        sites: "list[Site]",
+    ) -> int:
+        # TODO: Review the math that was used to update this
+        estimate_req_n_crews: int = 0
+        if not self._is_follow_up:
+            avg_travel_time: float = self._get_avg_t_bt_sites()
+            self._avg_s_time: float = self._get_average_survey_time_for_method(
+                self._name, avg_travel_time, sites
+            )
+            self._average_req_surveys: float = self.get_average_method_surveys_required(
+                self._name, sites
+            )
+            # Subtract average travel time here to account the method needing to return
+            # at the end of the day
+            daily_work_time: float = (self._max_work_hours * 60) - avg_travel_time
+            est_avg_sites_p_day: float = daily_work_time / self._avg_s_time
+            avg_days_for_surveys: float = 365 / self._average_req_surveys
+            estimate_req_n_crews = math.ceil(
+                len(sites) / (est_avg_sites_p_day * avg_days_for_surveys)
+            )
+
+        else:
+            estimate_req_n_crews = 1
+        if crews > 0 and estimate_req_n_crews > crews:
+            estimate_req_n_crews = crews
+            print(self.POTENTIAL_CREW_SHORTAGE_MESSAGE)
+        return estimate_req_n_crews
+
+    def _estimate_average_daily_surveys(
+        self,
+    ) -> int:
+        """
+        Return:
+            Average maximum daily sites a single crew can survey
+        """
+        HOUR_TO_MIN: int = 60
+        daily_work_time: int = self._max_work_hours * HOUR_TO_MIN
+        survey_time: float = self._avg_s_time
+
+        return math.ceil(daily_work_time / survey_time)
+
+    def get_crew_count(self) -> int:
+        return self._crews
 
     def deploy_crews(self, curr_date, state):
         """Deploy crews will send crews out to survey sites based on the provided workplan"""
 
         priority_queue = PriorityQueue()
-        day_time_remaining = self.max_work_hours
+        day_time_remaining = self._max_work_hours
         # Initialize the daily available survey time for existing crews
-        if self.daylight_sensitive:
-            day_time_remaining = self.get_daylight_hours(state, self.max_work_hours, curr_date)
+        if self._daylight_sensitive:
+            day_time_remaining = self.get_daylight_hours(state, self._max_work_hours, curr_date)
         for crew in self._crew_reports:
             # TODO : if method is daylight sensitive, check for max daylight
 
@@ -107,12 +180,13 @@ class Method:
         TODO: need to figure out how to get time between sites
         TODO: if weather does not permit, need to return the survey plan to say it wasn't surveyed.
         Args:
-            daily_report (CrewDailyReport): the associated crew's daily report (of available work hours)
+            daily_report (CrewDailyReport): the associated crew's daily report
+            (of available work hours)
             site (Site): The site to survey
             state : Dictionary containing information about weather and
         """
 
-        if self.weather:
+        if self._weather:
             # if weather is considered
             workable = self.check_weather(state, curr_date, site.site)
             if workable:
@@ -148,7 +222,7 @@ class Method:
                 daily_report.day_time_remaining = 0
         return survey_report, daily_report
 
-    def _change_workplan(self, survey_list: list[Site]) -> None:
+    def _change_workplan(self, survey_list: "list[Site]") -> None:
         self._method_workplan._site_survey_list = survey_list
         return
 
@@ -187,7 +261,7 @@ class Method:
             work_hours = max_hours
         return work_hours
 
-    def check_weather(self, state, curr_date, site) -> bool:
+    def check_weather(self, state, curr_date, site: Site) -> bool:
         """
         Check the weather conditions for the given site on the given day
 
@@ -197,28 +271,29 @@ class Method:
         WIND = "wind"
         PREICIP = "precip"
 
-        lat = site.lat
-        long = site.long
+        # TODO change to getters
+        lat = site._lat
+        long = site._long
         bool_temp: bool = False
         bool_wind: bool = False
         bool_precip: bool = False
 
         if (
-            self.weather_envs[TEMP][0]
+            self._weather_envs[TEMP][0]
             <= state["weather"].temps[curr_date, lat, long]
-            <= self.weather_envs[TEMP][1]
+            <= self._weather_envs[TEMP][1]
         ):
             bool_temp = True
         if (
-            self.weather_envs[WIND][0]
+            self._weather_envs[WIND][0]
             <= state["weather"].winds[curr_date, lat, long]
-            <= self.weather_envs[WIND][1]
+            <= self._weather_envs[WIND][1]
         ):
             bool_wind = True
         if (
-            self.weather_envs[PREICIP][0]
+            self._weather_envs[PREICIP][0]
             <= state["weather"].precip[curr_date, lat, long]
-            <= self.weather_envs[PREICIP][1]
+            <= self._weather_envs[PREICIP][1]
         ):
             bool_precip = True
 
