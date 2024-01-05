@@ -48,7 +48,7 @@ def test_000_get_daily_sites_to_survey_returns_expected_sites_for_survey(mocker_
         methods_t_btw_sites=methods_t_btw_sites,
         method_max_work_hours=method_max_work_hours,
     )
-    result = instance.update_schedule(date(2020, 1, 1))
+    result = instance.get_workplan(date(2020, 1, 1))
     expected = instance._survey_plans[:8]
     assert expected == result
 
@@ -76,7 +76,7 @@ def test_000_get_daily_sites_to_survey_returns_expected_sites_for_survey2(mocker
         methods_t_btw_sites=methods_t_btw_sites,
         method_max_work_hours=method_max_work_hours,
     )
-    instance.update_schedule(date(2020, 1, 1))
+    instance.get_workplan(date(2020, 1, 1))
     result = instance.get_daily_sites_to_survey()
     expected = []
     assert expected == result

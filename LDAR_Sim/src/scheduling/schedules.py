@@ -1,11 +1,15 @@
 from datetime import date
+from scheduling.workplan import Workplan
 from virtual_world.sites import Site
 from scheduling.survey_planner import SurveyPlanner
 from utils.queue import PriorityQueueWithFIFO
 
 DEPLOY_TYPE_ACCESSOR = "deployment_type"
 FOLLOWUP_ACCSSOR = "is_follow_up"
-INVALID_DEPLOYMENT_TYPE_ERROR_MESSAGE = "Error: LDAR-Sim has detected an invalid method deployment type of: {deploy_type} for method: {method}"
+INVALID_DEPLOYMENT_TYPE_ERROR_MESSAGE = (
+    "Error: LDAR-Sim has detected an invalid method deployment type of:"
+    "{deploy_type} for method: {method}"
+)
 
 
 class GenericSchedule:
@@ -96,7 +100,7 @@ class GenericSchedule:
 
         return daily_plan
 
-    def update_schedule(self, current_date) -> "list[Site]":
+    def get_workplan(self, current_date) -> "list[Site]":
         """
         Updates the survey plans,
         Adds necessary sites to the queue
@@ -107,7 +111,8 @@ class GenericSchedule:
             survey_plan.update_date(current_date)
             if survey_plan.queue_site_for_survey():
                 self.add_to_survey_queue(survey_plan)
-        return self.get_daily_sites_to_survey()
+        sites_to_survey: list[SurveyPlanner] = self.get_daily_sites_to_survey()
+        return Workplan(site_survey_list=sites_to_survey, date=current_date)
 
 
 class MobileSchedule(GenericSchedule):
@@ -117,8 +122,23 @@ class MobileSchedule(GenericSchedule):
 
     DEPLOY_TYPE_CODE = "mobile"
 
-    def __init__(self, method_name: str, sites: "list[Site]") -> None:
-        super().__init__(method_name, sites)
+    def __init__(
+        self,
+        method_name: str,
+        sites: "list[Site]",
+        sim_start_date: date,
+        sim_end_date: date,
+        est_meth_daily_surveys: int,
+        method_avail_crews: int,
+    ) -> None:
+        super().__init__(
+            method_name,
+            sites,
+            sim_start_date,
+            sim_end_date,
+            est_meth_daily_surveys,
+            method_avail_crews,
+        )
         return
 
 
@@ -129,8 +149,23 @@ class StationarySchedule(GenericSchedule):
 
     DEPLOY_TYPE_CODE = "stationary"
 
-    def __init__(self, method_name: str, sites: "list[Site]") -> None:
-        super().__init__(method_name, sites)
+    def __init__(
+        self,
+        method_name: str,
+        sites: "list[Site]",
+        sim_start_date: date,
+        sim_end_date: date,
+        est_meth_daily_surveys: int,
+        method_avail_crews: int,
+    ) -> None:
+        super().__init__(
+            method_name,
+            sites,
+            sim_start_date,
+            sim_end_date,
+            est_meth_daily_surveys,
+            method_avail_crews,
+        )
         return
 
 
@@ -141,12 +176,35 @@ class FollowUpMobileSchedule(GenericSchedule):
 
     DEPLOY_TYPE_CODE = "mobile"
 
-    def __init__(self, method_name: str, sites: "list[Site]") -> None:
-        super().__init__(method_name, sites)
+    def __init__(
+        self,
+        method_name: str,
+        sites: "list[Site]",
+        sim_start_date: date,
+        sim_end_date: date,
+        est_meth_daily_surveys: int,
+        method_avail_crews: int,
+    ) -> None:
+        super().__init__(
+            method_name,
+            sites,
+            sim_start_date,
+            sim_end_date,
+            est_meth_daily_surveys,
+            method_avail_crews,
+        )
         return
 
 
-def create_schedule(method_name: str, method_details: dict, sites) -> GenericSchedule:
+def create_schedule(
+    method_name: str,
+    method_details: dict,
+    sites: list[Site],
+    sim_start_date: date,
+    sim_end_date: date,
+    est_meth_daily_surveys: int,
+    method_avail_crews: int,
+) -> GenericSchedule:
     """Will create and return  schedule with the schedule type based on
     the provided method and it's parameters. All schedules inherit from generic schedule
     class and will overwrite it's method with method type specific behavior where required.
@@ -165,9 +223,23 @@ def create_schedule(method_name: str, method_details: dict, sites) -> GenericSch
     method_deployment_type: str = method_details[DEPLOY_TYPE_ACCESSOR]
     if not method_follow_up:
         if method_deployment_type == MobileSchedule.DEPLOY_TYPE_CODE:
-            schedule: GenericSchedule = MobileSchedule(method_name, sites)
+            schedule: GenericSchedule = MobileSchedule(
+                method_name,
+                sites,
+                sim_start_date,
+                sim_end_date,
+                est_meth_daily_surveys,
+                method_avail_crews,
+            )
         elif method_deployment_type == StationarySchedule.DEPLOY_TYPE_CODE:
-            schedule: GenericSchedule = StationarySchedule(method_name, sites)
+            schedule: GenericSchedule = StationarySchedule(
+                method_name,
+                sites,
+                sim_start_date,
+                sim_end_date,
+                est_meth_daily_surveys,
+                method_avail_crews,
+            )
         else:
             print(
                 INVALID_DEPLOYMENT_TYPE_ERROR_MESSAGE.format(
@@ -177,7 +249,16 @@ def create_schedule(method_name: str, method_details: dict, sites) -> GenericSch
             exit()
     else:
         if method_deployment_type == FollowUpMobileSchedule.DEPLOY_TYPE_CODE:
-            schedule: GenericSchedule = FollowUpMobileSchedule(method_name, sites)
+            schedule: GenericSchedule = (
+                FollowUpMobileSchedule(
+                    method_name,
+                    sites,
+                    sim_start_date,
+                    sim_end_date,
+                    est_meth_daily_surveys,
+                    method_avail_crews,
+                ),
+            )
         else:
             print(
                 INVALID_DEPLOYMENT_TYPE_ERROR_MESSAGE.format(

@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 from datetime import date
-from virtual_world.sites import Site
+from scheduling.survey_planner import SurveyPlanner
 
 
 @dataclass
@@ -47,11 +47,12 @@ class CrewDailyReport:
 
 
 class Workplan:
-    def __init__(self, site_survey_list: list[Site]):
-        self._site_survey_list: list[Site] = site_survey_list
+    def __init__(self, site_survey_plan_list: list[SurveyPlanner], date: date):
+        self.site_survey_plan_list: list[SurveyPlanner] = site_survey_plan_list
+        self.date = date
         self._init_site_survey_report_placeholder_list()
 
     def _init_site_survey_report_placeholder_list(self):
         self._site_survey_reports: dict = {}
-        for site in self._site_survey_list:
-            self._site_survey_list[site.get_id()] = None
+        for survey_plan in self.site_survey_plan_list:
+            self._site_survey_reports[survey_plan.get_site().get_id()] = None

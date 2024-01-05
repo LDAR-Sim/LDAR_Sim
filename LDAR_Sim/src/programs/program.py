@@ -21,7 +21,6 @@ from datetime import date, timedelta
 
 from virtual_world.sites import Site
 from programs.method import Method
-from scheduling.survey_planner import SurveyPlanner
 from scheduling.schedules import GenericSchedule, create_schedule
 from scheduling.workplan import Workplan
 
@@ -33,6 +32,9 @@ class Program:
 
     def __init__(
         self,
+        # TODO do away with state and just track anything we need from state separately.
+        # From a quick look, the only things we need from it are weather are daylight hours,
+        # which should be tracked on their own
         state,
         methods: dict,
         sites: "list[Site]",
@@ -40,15 +42,21 @@ class Program:
         sim_end_date: date,
         consider_weather: bool,
     ) -> None:
-        self._init_methods_and_schedules(methods, consider_weather, sites)
+        self._init_methods_and_schedules(
+            methods, consider_weather, sites, sim_start_date, sim_end_date
+        )
         self._survey_schedules: dict[str, GenericSchedule] = {}
         self._current_date: date = sim_start_date
-        self.init_method_scheduling(methods=methods, sites=sites)
         self.state = state
 
     def _init_methods_and_schedules(
-        self, methods: dict, consider_weather: bool, sites: "list[Site]"
-    ):
+        self,
+        methods: dict,
+        consider_weather: bool,
+        sites: list[Site],
+        sim_start_date: date,
+        sim_end_date: date,
+    ) -> None:
         self._methods: list[Method] = []
         for method_name, properties in methods.items():
             method_name: str
@@ -58,28 +66,24 @@ class Program:
 
             self._methods.append(method)
 
-            self._survey_schedules[method] = create_schedule(
-                method_name=method, method_details=properties, sites=sites
+            self._survey_schedules[method_name] = create_schedule(
+                method_name=method_name,
+                method_details=properties,
+                sites=sites,
+                sim_start_date=sim_start_date,
+                sim_end_date=sim_end_date,
+                est_meth_daily_surveys=method.estimate_average_daily_surveys(),
+                method_avail_crews=method.get_crew_count(),
             )
 
-    def do_daily_method_deployment(self) -> None:
-        """Deploy all methods that are part of the program to
-        do their scheduled surveys for the day"""
+    def do_daily_program_deployment(self) -> None:
         for method in self._methods:
-            method.deploy_crews(self.state)
+            method_schedule: GenericSchedule = self._survey_schedules[method.get_name()]
+            method_workplan: Workplan = method_schedule.get_workplan(self._current_date)
+            method.deploy_crews(method_workplan)
+            method_schedule.update(method_workplan)
 
-        self.update_scheduling()
-
-        return
-
-    def update_scheduling(self) -> None:
-        """Update the state of all survey plans and queue sites to the surveyed as
-        required by survey planner determinations"""
         self.update_date()
-        for survey_schedule in self._survey_schedules:
-            daily_sites: list[Workplan] = survey_schedule.update_schedule(self._current_date)
-            # TODO: update the workplan object with the new daily site list
-        self.update_schedule_based_on_workplan_results()
 
     # # TODO define a method workplan object that they can use to track progress on
     # # surveying sites for a day

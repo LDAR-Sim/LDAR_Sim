@@ -18,8 +18,11 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 ------------------------------------------------------------------------------
 """
 
+from datetime import date
 import math
 from queue import PriorityQueue
+from random import choice
+import sys
 
 import numpy as np
 from virtual_world.sites import Site
@@ -70,7 +73,7 @@ class Method:
         self._crew_reports: list[CrewDailyReport] = crew_reports
         return
 
-    def get_average_method_surveys_required(self, sites: "list[Site]") -> float:
+    def _get_average_method_surveys_required(self, sites: "list[Site]") -> float:
         return np.average([site.get_required_surveys(self._name) for site in sites])
 
     def _get_average_survey_time_for_method(
@@ -96,7 +99,7 @@ class Method:
             self._avg_s_time: float = self._get_average_survey_time_for_method(
                 self._name, avg_travel_time, sites
             )
-            self._average_req_surveys: float = self.get_average_method_surveys_required(
+            self._average_req_surveys: float = self._get_average_method_surveys_required(
                 self._name, sites
             )
             # Subtract average travel time here to account the method needing to return
@@ -115,7 +118,7 @@ class Method:
             print(self.POTENTIAL_CREW_SHORTAGE_MESSAGE)
         return estimate_req_n_crews
 
-    def _estimate_average_daily_surveys(
+    def estimate_average_daily_surveys(
         self,
     ) -> int:
         """
@@ -131,25 +134,26 @@ class Method:
     def get_crew_count(self) -> int:
         return self._crews
 
-    def deploy_crews(self, curr_date, state):
+    def deploy_crews(self, workplan: Workplan, state):
         """Deploy crews will send crews out to survey sites based on the provided workplan"""
 
         priority_queue = PriorityQueue()
         day_time_remaining = self._max_work_hours
         # Initialize the daily available survey time for existing crews
         if self._daylight_sensitive:
-            day_time_remaining = self.get_daylight_hours(state, self._max_work_hours, curr_date)
+            day_time_remaining = self.get_daylight_hours(state, self._max_work_hours, workplan.date)
         for crew in self._crew_reports:
             # TODO : if method is daylight sensitive, check for max daylight
-
+            crew.day_time_remaining = day_time_remaining
             priority_queue.put((-crew.day_time_remaining, crew.crew_id, crew))
 
         # pop the site with the longest remaining hours to assign the next site
-        for site_survey in self._method_workplan._site_survey_list:
+        for survey_plan in self._method_workplan.site_survey_plan_list:
             # while there are crews that can work
             if not priority_queue.empty():
                 _, _, assigned_crew = priority_queue.get()
-                self.survey_site(assigned_crew, site_survey, state, curr_date)
+                assigned_crew: CrewDailyReport
+                survey_report = self.survey_site(assigned_crew, survey_plan, state, workplan.date)
                 if assigned_crew.day_time_remaining > 0:
                     # Put the crew back into the queue if there's remaining work hours
                     priority_queue.put(
@@ -164,12 +168,11 @@ class Method:
 
     def survey_site(
         self,
-        daily_report: CrewDailyReport,
-        site: SurveyPlanner,
-        survey_report: SiteSurveyReport,
+        crew: CrewDailyReport,
+        survey_plan: SurveyPlanner,
         state,
-        curr_date,
-    ):
+        curr_date: date,
+    ) -> SiteSurveyReport:
         """The method will attempt to survey the site provided as an argument, detecting emissions
         at it's detection level, either tagging sites for follow-up or flagging leaks,
         and generating an emissions report
@@ -185,49 +188,56 @@ class Method:
             site (Site): The site to survey
             state : Dictionary containing information about weather and
         """
+        workable: bool = True
 
         if self._weather:
             # if weather is considered
-            workable = self.check_weather(state, curr_date, site.site)
-            if workable:
-                # TODO: survey site
-                survey_time = site.site.get_method_survey_time(self._name)
-                # Can finish the whole site
-                if daily_report.day_time_remaining - survey_time >= 0:
-                    daily_report.day_time_remaining -= survey_time
-                    survey_report.survey_complete = True
-                    survey_report.survey_in_progress = False
-                    survey_report.time_surveyed = survey_time
-                # Cannot finish the whole site
-                else:
-                    survey_report.survey_in_progress = True
-                    survey_report.time_surveyed += daily_report.day_time_remaining
-                    daily_report.day_time_remaining = 0
+            workable: bool = self.check_weather(state, curr_date, survey_plan._site)
 
-            # else:
-            # Return the survey report unchanged because no survey was done
-        else:
-            # TODO: copy same logic from above.
-            survey_time = site.site.get_method_survey_time(self._name)
+        if workable:
+            # TODO: survey site
+            site_to_survey: Site = survey_plan.get_site()
+            survey_report: SiteSurveyReport = survey_plan.get_current_survey_report()
+            site_survey_time: float = survey_plan._site.get_method_survey_time(self._name)
+            site_travel_time: float = self._get_travel_time()
+
             # Can finish the whole site
-            if daily_report.day_time_remaining - survey_time >= 0:
-                daily_report.day_time_remaining -= survey_time
+            if crew.day_time_remaining - site_survey_time >= 0:
+                crew.day_time_remaining -= site_survey_time
                 survey_report.survey_complete = True
                 survey_report.survey_in_progress = False
-                survey_report.time_surveyed = survey_time
+                survey_report.time_surveyed = site_survey_time
             # Cannot finish the whole site
             else:
                 survey_report.survey_in_progress = True
-                survey_report.time_surveyed += daily_report.day_time_remaining
-                daily_report.day_time_remaining = 0
-        return survey_report, daily_report
+                survey_report.time_surveyed += crew.day_time_remaining
+                crew.day_time_remaining = 0
 
-    def _change_workplan(self, survey_list: "list[Site]") -> None:
-        self._method_workplan._site_survey_list = survey_list
-        return
+        return survey_report
 
-    def return_workplan(self) -> Workplan:
-        return self._method_workplan
+    def _determine_if_site_survey_can_be_completed(
+        self,
+        survey_report: SiteSurveyReport,
+        site_survey_time: float,
+        site_travel_time: float,
+        crew_time_remaining: float,
+    ):
+        # Account for the possibility of the crew needing to return when considering if the
+        # Site can be surveyed in a day.
+        survey_required_time: float = site_survey_time + (site_travel_time * 2)
+        actual_required_time: float = survey_required_time - survey_report.time_surveyed
+        survey_can_be_completed: bool = crew_time_remaining >= actual_required_time
+
+        return survey_can_be_completed
+
+    def _get_travel_time(self) -> float:
+        if isinstance(self._travel_times, (int, float)):
+            return self._travel_times
+        elif isinstance(self._travel_times, list):
+            choice(self._travel_times)
+        else:
+            print(f"Error: Unrecognized travel time format for method {self._name}")
+            sys.exit()
 
     def gen_emissions_report(site: Site, curr_date):
         """Will generate an emissions report of detections at the site.
@@ -303,3 +313,6 @@ class Method:
         # if weather conditions are not good
         else:
             return False
+
+    def get_name(self) -> str:
+        return self._name

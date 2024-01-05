@@ -23,6 +23,7 @@ import pandas as pd
 import calendar
 import math
 import copy
+from scheduling.workplan import SiteSurveyReport
 from virtual_world.sites import Site
 
 
@@ -58,7 +59,7 @@ class SurveyPlanner:
             sim_start_date=sim_start_date, sim_end_date=sim_end_date
         )
         self._site_annual_rs: int = site_annual_rs
-        self.site: Site = site
+        self._site: Site = site
         self._deployment_months: list[int] = deployment_months
         self._deployment_years: list[int] = deployment_years
         self._survey_plan: dict[int, date] = self._gen_survey_plan(site_annual_rs)
@@ -66,6 +67,7 @@ class SurveyPlanner:
         self._surveys_this_year: dict[int, Survey_Counter] = self._set_survey_per_year()
         self._last_survey_dates: [date] = []
         self._queued: bool = False
+        self._active_survey_report: SiteSurveyReport = None
 
     def _get_simulation_years(self, sim_start_date: date, sim_end_date: date) -> list[int]:
         """Takes a start and end date and returns a list of all years between the two dates.
@@ -142,7 +144,8 @@ class SurveyPlanner:
             )
             original_month = copy.deepcopy(survey_date.month)
             diff = 0
-            # check and add if theres any inactive months that are between current month and the active month
+            # check and add if theres any inactive months that are between
+            # the current month and the active month
             for x, a_month in enumerate(active_months):
                 if a_month == original_month:
                     break
@@ -235,6 +238,16 @@ class SurveyPlanner:
             self._current_date.year
         ].Surveys_done += 1  # TODO : update when data
         return None
+
+    def get_site(self) -> Site:
+        return self._site
+
+    def get_current_survey_report(self) -> SiteSurveyReport:
+        if self._active_survey_report is None:
+            self._active_survey_report = SiteSurveyReport(self._site.get_id())
+            return self._active_survey_report
+        else:
+            return self._active_survey_report
 
 
 class MobileSurveyPlanner(SurveyPlanner):
