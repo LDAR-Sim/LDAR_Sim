@@ -23,12 +23,14 @@ import math
 from queue import PriorityQueue
 from random import choice
 import sys
+from typing import Tuple
 
 import numpy as np
+from sensors.default_site_level_sensor import DefaultSiteLevelSensor
 from virtual_world.sites import Site
 from src.scheduling.workplan import Workplan, CrewDailyReport
 from src.scheduling.workplan import EmissionDetectionReport, SiteSurveyReport
-from src.scheduling.survey_planner import SurveyPlanner
+from sensors.sensor_constant_mapping import SENS_TYPE, SENS_MDL, ERR_MSG_UNKNOWN_SENS_TYPE
 
 
 class Method:
@@ -49,7 +51,6 @@ class Method:
     def __init__(self, name: str, properties: dict, consider_weather: bool, sites: "list[Site]"):
         self._name: str = name
         self._initialize_sensor(properties[self.DETEC_ACCESSOR])
-        self._method_workplan: Workplan = Workplan([])
         self._max_work_hours: int = properties[self.MAX_WORK_HOURS]
         self._daylight_sensitive = properties[self.DAYLIGHT]
         self._weather: bool = consider_weather
@@ -58,6 +59,7 @@ class Method:
         self._travel_times = properties[self.TRAVEL_TIME_ACCESSOR]
         crews: int = properties[self.CREW_COUNT]
         self.initialize_crews(crews, sites)
+        self._survey_reports: list[SiteSurveyReport] = []
 
     def initialize_crews(self, crews, sites: "list[Site]") -> None:
         """Initialize the daily crew reports that the method will use
@@ -93,6 +95,7 @@ class Method:
         sites: "list[Site]",
     ) -> int:
         # TODO: Review the math that was used to update this
+        # TODO don't use if follow-up and instead move this into the child classes to handle it
         estimate_req_n_crews: int = 0
         if not self._is_follow_up:
             avg_travel_time: float = self._get_avg_t_bt_sites()
@@ -147,32 +150,57 @@ class Method:
             crew.day_time_remaining = day_time_remaining
             priority_queue.put((-crew.day_time_remaining, crew.crew_id, crew))
 
-        # pop the site with the longest remaining hours to assign the next site
-        for survey_plan in self._method_workplan.site_survey_plan_list:
-            # while there are crews that can work
+        # pop the site with the longest remaining hours to assign the next crew
+        # while there are crews that can work
+        for survey_plan in workplan.site_survey_plan_list:
+            # Get the survey report
+            survey_report: SiteSurveyReport = survey_plan.get_current_survey_report()
             if not priority_queue.empty():
+                # Get the crew with the most time remaining to work
                 _, _, assigned_crew = priority_queue.get()
                 assigned_crew: CrewDailyReport
-                survey_report = self.survey_site(assigned_crew, survey_plan, state, workplan.date)
+                site_to_survey: Site = survey_plan.get_site()
+                # Send the crew to attempt to survey the site
+                survey_report, travel_time, last_site_survey = self.survey_site(
+                    crew=assigned_crew,
+                    survey_report=survey_report,
+                    site_to_survey=site_to_survey,
+                    state=state,
+                    curr_date=workplan.date,
+                )
+                survey_report: SiteSurveyReport
+                travel_time: float
+                last_site_survey: bool
+
+                # If the survey is completed attach the survey report
+                # to internal list of survey reports
+                if survey_report.survey_complete:
+                    self._survey_reports.append(survey_report)
+                # If this will be last survey of the day, set remaining time
+                # to 0 and track travel home time
+                if last_site_survey:
+                    crew.day_time_remaining = 0
+                    workplan.total_travel_time += travel_time
+                # If the crew still has time left, requeue it to go survey another site
                 if assigned_crew.day_time_remaining > 0:
                     # Put the crew back into the queue if there's remaining work hours
                     priority_queue.put(
                         (-assigned_crew.day_time_remaining, assigned_crew.crew_id, assigned_crew)
                     )
-            # if there are no crews available for work
-            else:
-                # Update the site_survey
-                # to indicate that these particular sites need to be requeued with higher priority
-                site_survey.update
+            # Update the survey planner. If the survey was not finished, the update will
+            # indicate that the particular site needs to be requeued with higher priority
+            workplan.add_survey_report(survey_report, survey_plan)
+
         return
 
     def survey_site(
         self,
         crew: CrewDailyReport,
-        survey_plan: SurveyPlanner,
+        survey_report: SiteSurveyReport,
+        site_to_survey: Site,
         state,
         curr_date: date,
-    ) -> SiteSurveyReport:
+    ) -> Tuple[SiteSurveyReport, float]:
         """The method will attempt to survey the site provided as an argument, detecting emissions
         at it's detection level, either tagging sites for follow-up or flagging leaks,
         and generating an emissions report
@@ -180,8 +208,6 @@ class Method:
         Will also update the CrewDailyReport
 
         TODO: defaulting this to site level survey
-        TODO: need to figure out how to get time between sites
-        TODO: if weather does not permit, need to return the survey plan to say it wasn't surveyed.
         Args:
             daily_report (CrewDailyReport): the associated crew's daily report
             (of available work hours)
@@ -189,31 +215,61 @@ class Method:
             state : Dictionary containing information about weather and
         """
         workable: bool = True
+        last_site_survey = False
 
         if self._weather:
             # if weather is considered
-            workable: bool = self.check_weather(state, curr_date, survey_plan._site)
+            workable: bool = self.check_weather(state, curr_date, site_to_survey)
 
         if workable:
-            # TODO: survey site
-            site_to_survey: Site = survey_plan.get_site()
-            survey_report: SiteSurveyReport = survey_plan.get_current_survey_report()
-            site_survey_time: float = survey_plan._site.get_method_survey_time(self._name)
+            site_survey_time: float = site_to_survey.get_method_survey_time(self._name)
             site_travel_time: float = self._get_travel_time()
 
+            # Check if the site survey can be completed
+            can_complete_survey: bool = self._determine_if_site_survey_can_be_completed(
+                survey_report=survey_report,
+                site_survey_time=site_survey_time,
+                site_travel_time=site_travel_time,
+                crew_time_remaining=crew.day_time_remaining,
+            )
+
             # Can finish the whole site
-            if crew.day_time_remaining - site_survey_time >= 0:
-                crew.day_time_remaining -= site_survey_time
+            if can_complete_survey:
+                # Mark the survey as complete and no longer in progress
                 survey_report.survey_complete = True
                 survey_report.survey_in_progress = False
-                survey_report.time_surveyed = site_survey_time
-            # Cannot finish the whole site
-            else:
+                # Account for travel time in time calculations
+                survey_report.time_spent_to_travel += site_travel_time
+                crew.day_time_remaining -= site_travel_time
+                # Account for survey time in time calculations,
+                # and consider that some of the site may have previously been surveyed
+                survey_report.time_surveyed += site_survey_time - survey_report.time_surveyed
+                crew.day_time_remaining -= site_survey_time - survey_report.time_surveyed
+                if crew.day_time_remaining == site_travel_time:
+                    last_site_survey = True
+                # Set the start and completion data and detect emissions at the site
+                survey_report.survey_start_date = curr_date
+                survey_report.survey_completion_date = curr_date
+                self._sensor.detect_emissions(
+                    site=site_to_survey, meth_name=self._name, survey_report=survey_report
+                )
+            # Cannot finish the whole site but can survey
+            elif crew.day_time_remaining > (2 * site_travel_time):
+                # Mark the survey as in progress
                 survey_report.survey_in_progress = True
-                survey_report.time_surveyed += crew.day_time_remaining
-                crew.day_time_remaining = 0
+                last_site_survey = True
+                # Log Survey and travel time
+                survey_report.time_spent_to_travel += site_travel_time
+                survey_report.time_surveyed += crew.day_time_remaining - (site_travel_time * 2)
+                crew.day_time_remaining = site_travel_time
+                # Log survey start date
+                survey_report.survey_start_date = curr_date
+            # Not enough time left to travel to site
+            else:
+                site_travel_time = 0
+                last_site_survey = True
 
-        return survey_report
+        return survey_report, site_travel_time, last_site_survey
 
     def _determine_if_site_survey_can_be_completed(
         self,
@@ -221,7 +277,7 @@ class Method:
         site_survey_time: float,
         site_travel_time: float,
         crew_time_remaining: float,
-    ):
+    ) -> bool:
         # Account for the possibility of the crew needing to return when considering if the
         # Site can be surveyed in a day.
         survey_required_time: float = site_survey_time + (site_travel_time * 2)
@@ -254,14 +310,18 @@ class Method:
         )
         return report
 
-    def _initialize_sensor(sensor_info: dict) -> None:
+    def _initialize_sensor(self, sensor_info: dict) -> None:
         """Will initialize a sensor of the correct type based
         on the sensor info provided to the method
 
         Args:
             sensor_into (dict): _description_
         """
-        return {}
+        if sensor_info[SENS_TYPE] == "default":
+            self._sensor = DefaultSiteLevelSensor(sensor_info[SENS_MDL])
+        else:
+            print(ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
+            sys.exit()
 
     def get_daylight_hours(state, max_hours: int, curr_date) -> int:
         """Get the amount of daylight hours"""

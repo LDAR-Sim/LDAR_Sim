@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from datetime import date
+from typing import Tuple
 from scheduling.survey_planner import SurveyPlanner
 
 
@@ -38,6 +39,7 @@ class SiteSurveyReport:
     site_true_rate: float = 0.0
     site_flagged: bool = False
     survey_completion_date: date = None
+    survey_start_date: date = None
 
 
 @dataclass
@@ -47,12 +49,24 @@ class CrewDailyReport:
 
 
 class Workplan:
-    def __init__(self, site_survey_plan_list: list[SurveyPlanner], date: date):
+    def __init__(self, site_survey_plan_list: list[SurveyPlanner], date: date) -> None:
         self.site_survey_plan_list: list[SurveyPlanner] = site_survey_plan_list
-        self.date = date
+        self.date: date = date
+        self.total_travel_time: float = 0
         self._init_site_survey_report_placeholder_list()
 
-    def _init_site_survey_report_placeholder_list(self):
-        self._site_survey_reports: dict = {}
+    def _init_site_survey_report_placeholder_list(self) -> None:
+        self._site_survey_reports: dict[str, SiteSurveyReport] = {}
+        self._site_survey_planners: dict[str, SurveyPlanner] = {}
         for survey_plan in self.site_survey_plan_list:
             self._site_survey_reports[survey_plan.get_site().get_id()] = None
+
+    def add_survey_report(
+        self, survey_report: SiteSurveyReport, survey_planner: SurveyPlanner
+    ) -> None:
+        site_id: str = survey_report.site_id
+        self._site_survey_reports.update(site_id, survey_report)
+        self._site_survey_planners[site_id] = survey_planner
+
+    def get_reports(self) -> Tuple[dict[str, SiteSurveyReport], dict[str, SurveyPlanner]]:
+        return self._site_survey_reports, self._site_survey_planners

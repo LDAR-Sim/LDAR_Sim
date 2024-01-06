@@ -1,5 +1,6 @@
 from datetime import date
-from scheduling.workplan import Workplan
+from scheduling.follow_up_survey_planner import FollowUpSurveyPlanner
+from scheduling.workplan import SiteSurveyReport, Workplan
 from virtual_world.sites import Site
 from scheduling.survey_planner import SurveyPlanner
 from utils.queue import PriorityQueueWithFIFO
@@ -44,7 +45,7 @@ class GenericSchedule:
 
         return
 
-    def _set_survey_plans(self, sim_start_date, sim_end_date, sites):
+    def _set_survey_plans(self, sim_start_date, sim_end_date, sites) -> list[SurveyPlanner]:
         survey_plans: list[SurveyPlanner] = []
         for site in sites:
             # TODO flush out what survey planner needs as inputs for the constructor
@@ -100,7 +101,7 @@ class GenericSchedule:
 
         return daily_plan
 
-    def get_workplan(self, current_date) -> "list[Site]":
+    def get_workplan(self, current_date) -> Workplan:
         """
         Updates the survey plans,
         Adds necessary sites to the queue
@@ -113,6 +114,20 @@ class GenericSchedule:
                 self.add_to_survey_queue(survey_plan)
         sites_to_survey: list[SurveyPlanner] = self.get_daily_sites_to_survey()
         return Workplan(site_survey_list=sites_to_survey, date=current_date)
+
+    def update(self, workplan: Workplan) -> None:
+        reports, planners = workplan.get_reports()
+        reports: dict[str, SiteSurveyReport]
+        planners: dict[str, SurveyPlanner]
+
+        for site_id, report in reports.items():
+            planner: SurveyPlanner = planners[site_id]
+
+            if not report.survey_complete:
+                if report.survey_in_progress:
+                    self.add_unfinished_to_survey_queue(planner)
+                else:
+                    self.add_previous_queued_to_survey_queue(planner)
 
 
 class MobileSchedule(GenericSchedule):
@@ -193,7 +208,26 @@ class FollowUpMobileSchedule(GenericSchedule):
             est_meth_daily_surveys,
             method_avail_crews,
         )
+        self._watchlist: list[FollowUpSurveyPlanner] = []
         return
+
+    def add_to_watchlist(self, survey_plans: FollowUpSurveyPlanner):
+        self._watchlist.append(survey_plans)
+
+    def get_workplan(self, current_date) -> Workplan:
+        """
+        Updates the survey plans,
+        Adds necessary sites to the queue
+        Returns:
+            The list sites that the method should do on the given day
+        """
+        # TODO put all the old follow up logic in here
+        for survey_plan in self._survey_plans:
+            survey_plan.update_date(current_date)
+            if survey_plan.queue_site_for_survey():
+                self.add_to_survey_queue(survey_plan)
+        sites_to_survey: list[SurveyPlanner] = self.get_daily_sites_to_survey()
+        return Workplan(site_survey_list=sites_to_survey, date=current_date)
 
 
 def create_schedule(
