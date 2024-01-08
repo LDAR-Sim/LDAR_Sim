@@ -50,23 +50,24 @@ class CrewDailyReport:
 
 class Workplan:
     def __init__(self, site_survey_plan_list: list[SurveyPlanner], date: date) -> None:
-        self.site_survey_plan_list: list[SurveyPlanner] = site_survey_plan_list
         self.date: date = date
         self.total_travel_time: float = 0
-        self._init_site_survey_report_placeholder_list()
+        self._init_site_survey_report_placeholder_list(site_survey_plan_list)
 
-    def _init_site_survey_report_placeholder_list(self) -> None:
+    def _init_site_survey_report_placeholder_list(
+        self, site_survey_plan_list: list[SurveyPlanner]
+    ) -> None:
         self._site_survey_reports: dict[str, SiteSurveyReport] = {}
-        self._site_survey_planners: dict[str, SurveyPlanner] = {}
-        for survey_plan in self.site_survey_plan_list:
-            self._site_survey_reports[survey_plan.get_site().get_id()] = None
+        self.site_survey_planners: dict[str, SurveyPlanner] = {}
+        for survey_plan in site_survey_plan_list:
+            self._site_survey_reports[survey_plan.get_site().get_id()] = survey_plan
 
     def add_survey_report(
         self, survey_report: SiteSurveyReport, survey_planner: SurveyPlanner
     ) -> None:
         site_id: str = survey_report.site_id
         self._site_survey_reports.update(site_id, survey_report)
-        self._site_survey_planners[site_id] = survey_planner
+        self.site_survey_planners[site_id] = survey_planner
 
     def get_reports(self) -> Tuple[dict[str, SiteSurveyReport], dict[str, SurveyPlanner]]:
         return self._site_survey_reports, self._site_survey_planners

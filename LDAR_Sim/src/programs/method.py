@@ -96,6 +96,7 @@ class Method:
     ) -> int:
         # TODO: Review the math that was used to update this
         # TODO don't use if follow-up and instead move this into the child classes to handle it
+        # TODO handle default
         estimate_req_n_crews: int = 0
         if not self._is_follow_up:
             avg_travel_time: float = self._get_avg_t_bt_sites()
@@ -152,7 +153,7 @@ class Method:
 
         # pop the site with the longest remaining hours to assign the next crew
         # while there are crews that can work
-        for survey_plan in workplan.site_survey_plan_list:
+        for survey_plan in workplan.site_survey_planners.values():
             # Get the survey report
             survey_report: SiteSurveyReport = survey_plan.get_current_survey_report()
             if not priority_queue.empty():
@@ -175,12 +176,14 @@ class Method:
                 # If the survey is completed attach the survey report
                 # to internal list of survey reports
                 if survey_report.survey_complete:
+                    # TODO look at putting this into a dataframe
                     self._survey_reports.append(survey_report)
                 # If this will be last survey of the day, set remaining time
                 # to 0 and track travel home time
                 if last_site_survey:
                     crew.day_time_remaining = 0
                     workplan.total_travel_time += travel_time
+                    # TODO Make sure this gets update for other travel times as well
                 # If the crew still has time left, requeue it to go survey another site
                 if assigned_crew.day_time_remaining > 0:
                     # Put the crew back into the queue if there's remaining work hours
@@ -215,7 +218,7 @@ class Method:
             state : Dictionary containing information about weather and
         """
         workable: bool = True
-        last_site_survey = False
+        last_site_survey: bool = False
 
         if self._weather:
             # if weather is considered
@@ -235,6 +238,10 @@ class Method:
 
             # Can finish the whole site
             if can_complete_survey:
+                # Set the start and completion data and detect emissions at the site
+                if not survey_report.survey_in_progress:
+                    survey_report.survey_start_date = curr_date
+                survey_report.survey_completion_date = curr_date
                 # Mark the survey as complete and no longer in progress
                 survey_report.survey_complete = True
                 survey_report.survey_in_progress = False
@@ -243,17 +250,15 @@ class Method:
                 crew.day_time_remaining -= site_travel_time
                 # Account for survey time in time calculations,
                 # and consider that some of the site may have previously been surveyed
-                survey_report.time_surveyed += site_survey_time - survey_report.time_surveyed
+                survey_report.time_surveyed = site_survey_time
                 crew.day_time_remaining -= site_survey_time - survey_report.time_surveyed
-                if crew.day_time_remaining == site_travel_time:
+                if crew.day_time_remaining <= site_travel_time:
                     last_site_survey = True
-                # Set the start and completion data and detect emissions at the site
-                survey_report.survey_start_date = curr_date
-                survey_report.survey_completion_date = curr_date
                 self._sensor.detect_emissions(
                     site=site_to_survey, meth_name=self._name, survey_report=survey_report
                 )
             # Cannot finish the whole site but can survey
+            # TODO determine reasonable fraction of site that can be surveyed to make it worth going
             elif crew.day_time_remaining > (2 * site_travel_time):
                 # Mark the survey as in progress
                 survey_report.survey_in_progress = True
@@ -280,6 +285,7 @@ class Method:
     ) -> bool:
         # Account for the possibility of the crew needing to return when considering if the
         # Site can be surveyed in a day.
+        # TODO review travel home time logic
         survey_required_time: float = site_survey_time + (site_travel_time * 2)
         actual_required_time: float = survey_required_time - survey_report.time_surveyed
         survey_can_be_completed: bool = crew_time_remaining >= actual_required_time
