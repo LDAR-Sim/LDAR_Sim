@@ -1,4 +1,4 @@
-from sensors.default_site_level_sensor import DefaultSiteLevelSensor
+from src.sensors.default_site_level_sensor import DefaultSiteLevelSensor
 from hypothesis import given, strategies as st
 
 

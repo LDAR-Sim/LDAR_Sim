@@ -1,11 +1,13 @@
 from typing import Any, Tuple
 import pytest
-from virtual_world.emissions import Emission
+from src.virtual_world.emissions import Emission
 
-from virtual_world.sites import Site
+from src.virtual_world.sites import Site
 
 
-@pytest.fixture(name="sensor_info_for_default_equipment_group_level_sensor_construction_testing")
+@pytest.fixture(
+    name="sensor_info_for_default_equipment_group_level_sensor_construction_testing"
+)
 def sensor_info_for_default_equipment_group_level_sensor_construction_testing_fix() -> (
     dict[str, int]
 ):
@@ -23,43 +25,61 @@ def mock_site_emis_for_detect_emissions_testing_fix(mocker):
     mock_site_emis: dict[str, dict[str, list[Emission]]] = {
         "test_eqg_1": {
             "test_equip_1": [
-                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
+                mocker.MagicMock(
+                    Emission, get_rate=mocker.MagicMock(return_value=retval)
+                )
                 for retval in ret_vals
             ],
             "test_equip_2": [
-                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
+                mocker.MagicMock(
+                    Emission, get_rate=mocker.MagicMock(return_value=retval)
+                )
                 for retval in ret_vals
             ],
             "test_equip_3": [
-                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
+                mocker.MagicMock(
+                    Emission, get_rate=mocker.MagicMock(return_value=retval)
+                )
                 for retval in ret_vals
             ],
         },
         "test_eqg_2": {
             "test_equip_1": [
-                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
+                mocker.MagicMock(
+                    Emission, get_rate=mocker.MagicMock(return_value=retval)
+                )
                 for retval in ret_vals
             ],
             "test_equip_2": [
-                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
+                mocker.MagicMock(
+                    Emission, get_rate=mocker.MagicMock(return_value=retval)
+                )
                 for retval in ret_vals
             ],
             "test_equip_3": [
-                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
+                mocker.MagicMock(
+                    Emission, get_rate=mocker.MagicMock(return_value=retval)
+                )
                 for retval in ret_vals
             ],
         },
         "test_eqg_3": {
             "test_equip_1": [
-                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
+                mocker.MagicMock(
+                    Emission, get_rate=mocker.MagicMock(return_value=retval)
+                )
                 for retval in ret_vals
             ],
             "test_equip_2": [
-                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
+                mocker.MagicMock(
+                    Emission, get_rate=mocker.MagicMock(return_value=retval)
+                )
                 for retval in ret_vals
             ],
             "test_equip_3": [
-                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
+                mocker.MagicMock(
+                    Emission, get_rate=mocker.MagicMock(return_value=retval)
+                )
                 for retval in ret_vals
             ],
         },
@@ -68,10 +88,16 @@ def mock_site_emis_for_detect_emissions_testing_fix(mocker):
 
 
 @pytest.fixture(name="mock_site_for_detect_emissions_testing")
-def mock_site_for_detect_emissions_testing_fix(mocker, mock_site_emis_for_detect_emissions_testing):
-    mocker.patch.object(Site, "__init__", lambda self, *args, **kwargs: setattr(self, "id", 1))
+def mock_site_for_detect_emissions_testing_fix(
+    mocker, mock_site_emis_for_detect_emissions_testing
+):
     mocker.patch.object(
-        Site, "get_detectable_emissions", return_value=mock_site_emis_for_detect_emissions_testing
+        Site, "__init__", lambda self, *args, **kwargs: setattr(self, "id", 1)
+    )
+    mocker.patch.object(
+        Site,
+        "get_detectable_emissions",
+        return_value=mock_site_emis_for_detect_emissions_testing,
     )
     expected_site_emis = 6 * 9
     return (mocker, expected_site_emis)
@@ -83,43 +109,61 @@ def mock_site_emis_for_detect_emissions_testing_lower_emis_fix(mocker):
     mock_site_emis: dict[str, dict[str, list[Emission]]] = {
         "test_eqg_1": {
             "test_equip_1": [
-                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
+                mocker.MagicMock(
+                    Emission, get_rate=mocker.MagicMock(return_value=retval)
+                )
                 for retval in ret_vals
             ],
             "test_equip_2": [
-                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
+                mocker.MagicMock(
+                    Emission, get_rate=mocker.MagicMock(return_value=retval)
+                )
                 for retval in ret_vals
             ],
             "test_equip_3": [
-                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
+                mocker.MagicMock(
+                    Emission, get_rate=mocker.MagicMock(return_value=retval)
+                )
                 for retval in ret_vals
             ],
         },
         "test_eqg_2": {
             "test_equip_1": [
-                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
+                mocker.MagicMock(
+                    Emission, get_rate=mocker.MagicMock(return_value=retval)
+                )
                 for retval in ret_vals
             ],
             "test_equip_2": [
-                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
+                mocker.MagicMock(
+                    Emission, get_rate=mocker.MagicMock(return_value=retval)
+                )
                 for retval in ret_vals
             ],
             "test_equip_3": [
-                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
+                mocker.MagicMock(
+                    Emission, get_rate=mocker.MagicMock(return_value=retval)
+                )
                 for retval in ret_vals
             ],
         },
         "test_eqg_3": {
             "test_equip_1": [
-                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
+                mocker.MagicMock(
+                    Emission, get_rate=mocker.MagicMock(return_value=retval)
+                )
                 for retval in ret_vals
             ],
             "test_equip_2": [
-                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
+                mocker.MagicMock(
+                    Emission, get_rate=mocker.MagicMock(return_value=retval)
+                )
                 for retval in ret_vals
             ],
             "test_equip_3": [
-                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
+                mocker.MagicMock(
+                    Emission, get_rate=mocker.MagicMock(return_value=retval)
+                )
                 for retval in ret_vals
             ],
         },
@@ -131,7 +175,9 @@ def mock_site_emis_for_detect_emissions_testing_lower_emis_fix(mocker):
 def mock_site_for_detect_emissions_testing_lower_emissions_fix(
     mocker, mock_site_emis_for_detect_emissions_testing_lower_emis
 ) -> Tuple[Any, float, float]:
-    mocker.patch.object(Site, "__init__", lambda self, *args, **kwargs: setattr(self, "id", 1))
+    mocker.patch.object(
+        Site, "__init__", lambda self, *args, **kwargs: setattr(self, "id", 1)
+    )
     mocker.patch.object(
         Site,
         "get_detectable_emissions",

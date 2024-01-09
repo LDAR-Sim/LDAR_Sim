@@ -1,4 +1,4 @@
-from sensors.default_equipment_level_sensor import DefaultEquipmentLevelSensor
+from src.sensors.default_equipment_level_sensor import DefaultEquipmentLevelSensor
 from testing.unit_testing.test_sensors.test_equipment_level_sensors.equipment_level_sensors_testing_fixtures import (  # noqa
     sensor_info_for_default_equipment_level_sensor_construction_testing_fix,
 )
