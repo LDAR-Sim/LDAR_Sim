@@ -37,6 +37,7 @@ from src.scheduling.schedule_dataclasses import (
 from sensors.sensor_constant_mapping import (
     SENS_TYPE,
     SENS_MDL,
+    SENS_QE,
     ERR_MSG_UNKNOWN_SENS_TYPE,
 )
 
@@ -239,14 +240,14 @@ class Method:
         """
         workable: bool = True
         last_site_survey: bool = False
-
+        site_travel_time: float = 0
         if self._weather:
             # if weather is considered
             workable: bool = self.check_weather(state, curr_date, site_to_survey)
 
         if workable:
             site_survey_time: float = site_to_survey.get_method_survey_time(self._name)
-            site_travel_time: float = self._get_travel_time()
+            site_travel_time = self._get_travel_time()
 
             # Check if the site survey can be completed
             can_complete_survey: bool = self._determine_if_site_survey_can_be_completed(
@@ -350,7 +351,9 @@ class Method:
             sensor_into (dict): _description_
         """
         if sensor_info[SENS_TYPE] == "default":
-            self._sensor = DefaultSiteLevelSensor(sensor_info[SENS_MDL])
+            self._sensor = DefaultSiteLevelSensor(
+                sensor_info[SENS_MDL], sensor_info[SENS_QE]
+            )
         else:
             print(ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
             sys.exit()
