@@ -24,7 +24,7 @@ from src.programs.method import Method
 from src.scheduling.survey_planner import SurveyPlanner
 from src.virtual_world.infrastructure import Site
 from collections import defaultdict
-from src.scheduling.workplan import SiteSurveyReport
+from src.sensors.default_site_level_sensor import DefaultSiteLevelSensor
 
 
 @pytest.fixture
@@ -32,7 +32,9 @@ def mocker_fixture(mocker):
     def mock_initialize_sensor(properties):
         return {}
 
-    mocker.patch.object(Site, "__init__", lambda self, *args, **kwargs: setattr(self, "id", 1))
+    mocker.patch.object(
+        Site, "__init__", lambda self, *args, **kwargs: setattr(self, "id", 1)
+    )
     mocker.patch.object(
         Method,
         "_initialize_sensor",
@@ -40,6 +42,10 @@ def mocker_fixture(mocker):
     )
 
     return mocker
+
+
+def mock_average_t_btw_site(self):
+    return 0
 
 
 def mock_initialize_sensor(self, properties):
@@ -58,9 +64,15 @@ def mocker_check_weather_t(self, state, curr_date, site):
     return True
 
 
+def mocker_get_average_method_surveys_required(self, site):
+    return 1
+
+
 @pytest.fixture(name="simple_method_values")
 def simple_method_values_fix(mocker):
-    mocker.patch.object(Site, "__init__", lambda self, *args, **kwargs: setattr(self, "id", 1))
+    mocker.patch.object(
+        Site, "__init__", lambda self, *args, **kwargs: setattr(self, "id", 1)
+    )
     mocker.patch.object(
         Method,
         "_initialize_sensor",
@@ -69,35 +81,41 @@ def simple_method_values_fix(mocker):
 
     mocker.patch.object(
         Method,
+        "_get_average_method_surveys_required",
+        mocker_get_average_method_surveys_required,
+    )
+    mocker.patch.object(
+        Method,
+        "_get_avg_t_bt_sites",
+        mock_average_t_btw_site,
+    )
+    mocker.patch.object(
+        Method,
         "check_weather",
         mocker_check_weather,
+    )
+    mocker.patch.object(
+        Method,
+        "_get_average_survey_time_for_method",
+        mocker_get_method_survey_time,
     )
     properties: dict = {
         "n_crews": 5,
         "sensor": "default",
         "max_workday": 8,
         "consider_daylight": False,
+        "t_bw_sites": [1],
+        "is_follow_up": False,
         "weather_envs": {"wind": [0, 10], "temp": [-30, 30], "precip": [0, 1]},
     }
     current_date: date = date(2023, 1, 2)
-    survey_plan: SurveyPlanner = SurveyPlanner(
-        mocker,
-        1,
-        date(2023, 1, 1),
-        date(2023, 12, 31),
-        [2023],
-        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-    )
     state = {"weather": create_random_state(), "daylight": [], "t": []}
-    survey_report = SiteSurveyReport(site_id=1)
 
     return (
         mocker,
         properties,
         current_date,
-        survey_plan,
         state,
-        survey_report,
     )
 
 
@@ -107,7 +125,9 @@ def simple_method_values2_fix(mocker):
     site_mock = mocker.Mock(spec=Site)
     site_mock.id = 1
 
-    mocker.patch.object(site_mock, "get_method_survey_time", mocker_get_method_survey_time)
+    mocker.patch.object(
+        site_mock, "get_method_survey_time", mocker_get_method_survey_time
+    )
     mocker.patch.object(
         Method,
         "_initialize_sensor",
@@ -116,35 +136,106 @@ def simple_method_values2_fix(mocker):
 
     mocker.patch.object(
         Method,
+        "_get_average_method_surveys_required",
+        mocker_get_average_method_surveys_required,
+    )
+    mocker.patch.object(
+        Method,
+        "_get_avg_t_bt_sites",
+        mock_average_t_btw_site,
+    )
+    mocker.patch.object(
+        Method,
+        "check_weather",
+        mocker_check_weather,
+    )
+    mocker.patch.object(
+        Method,
+        "_get_average_survey_time_for_method",
+        mocker_get_method_survey_time,
+    )
+    mocker.patch.object(
+        Method,
         "check_weather",
         mocker_check_weather_t,
     )
     properties: dict = {
         "n_crews": 5,
         "sensor": "default",
-        "max_workday": 8,
+        "max_workday": 1,
+        "t_bw_sites": [1],
+        "is_follow_up": False,
         "consider_daylight": False,
         "weather_envs": {"wind": [0, 10], "temp": [-30, 30], "precip": [0, 1]},
     }
     current_date: date = date(2023, 1, 2)
-    survey_plan: SurveyPlanner = SurveyPlanner(
-        site_mock,
-        1,
-        date(2023, 1, 1),
-        date(2023, 12, 31),
-        [2023],
-        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-    )
     state = {"weather": create_random_state(), "daylight": [], "t": []}
-    survey_report = SiteSurveyReport(site_id=1)
 
     return (
         mocker,
         properties,
         current_date,
-        survey_plan,
         state,
-        survey_report,
+    )
+
+
+@pytest.fixture(name="simple_method_values3")
+def simple_method_values3_fix(mocker):
+    # Create a mock object for Site
+    site_mock = mocker.Mock(spec=Site)
+    site_mock.id = 1
+
+    mocker.patch.object(
+        site_mock, "get_method_survey_time", mocker_get_method_survey_time
+    )
+    mocker.patch.object(
+        Method,
+        "_initialize_sensor",
+        mock_initialize_sensor,
+    )
+
+    mocker.patch.object(
+        Method,
+        "_get_average_method_surveys_required",
+        mocker_get_average_method_surveys_required,
+    )
+    mocker.patch.object(
+        Method,
+        "_get_avg_t_bt_sites",
+        mock_average_t_btw_site,
+    )
+    mocker.patch.object(
+        Method,
+        "check_weather",
+        mocker_check_weather,
+    )
+    mocker.patch.object(
+        Method,
+        "_get_average_survey_time_for_method",
+        mocker_get_method_survey_time,
+    )
+    mocker.patch.object(
+        Method,
+        "check_weather",
+        mocker_check_weather_t,
+    )
+    properties: dict = {
+        "n_crews": 5,
+        "sensor": "default",
+        "max_workday": 1,
+        "t_bw_sites": [1],
+        "is_follow_up": True,
+        "consider_daylight": False,
+        "weather_envs": {"wind": [0, 10], "temp": [-30, 30], "precip": [0, 1]},
+    }
+    current_date: date = date(2023, 1, 2)
+    state = {"weather": create_random_state(), "daylight": [], "t": []}
+
+    return (
+        mocker,
+        properties,
+        current_date,
+        state,
     )
 
 

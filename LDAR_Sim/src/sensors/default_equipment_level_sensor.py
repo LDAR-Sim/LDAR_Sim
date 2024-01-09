@@ -1,4 +1,4 @@
-from scheduling.workplan import (
+from scheduling.schedule_dataclasses import (
     EmissionDetectionReport,
     EquipmentGroupSurveyReport,
     SiteSurveyReport,

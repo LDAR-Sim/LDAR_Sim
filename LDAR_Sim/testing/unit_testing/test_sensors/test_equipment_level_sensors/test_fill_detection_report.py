@@ -1,7 +1,7 @@
 from typing import Any, Tuple
 from hypothesis import given, strategies as st
-from scheduling.workplan import SiteSurveyReport, EquipmentGroupSurveyReport
-from sensors.default_equipment_level_sensor import DefaultEquipmentLevelSensor
+from src.scheduling.schedule_dataclasses import SiteSurveyReport, EquipmentGroupSurveyReport
+from src.sensors.default_equipment_level_sensor import DefaultEquipmentLevelSensor
 
 
 def get_sensor_for_default_equipment_level_sensor_testing() -> DefaultEquipmentLevelSensor:

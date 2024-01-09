@@ -1,8 +1,8 @@
 from pytest import approx
-from scheduling.workplan import SiteSurveyReport
-from sensors.default_site_level_sensor import DefaultSiteLevelSensor
-from virtual_world.sites import Site
-from LDAR_Sim.LDAR_Sim.testing.unit_testing.test_sensors.test_site_level_sensors.site_level_sensors_testing_fixtures import (  # noqa
+from src.scheduling.schedule_dataclasses import SiteSurveyReport
+from src.sensors.default_site_level_sensor import DefaultSiteLevelSensor
+from src.virtual_world.sites import Site
+from testing.unit_testing.test_sensors.test_site_level_sensors.site_level_sensors_testing_fixtures import (  # noqa
     mock_site_emis_for_detect_emissions_testing_fix,
     mock_site_for_detect_emissions_testing_fix,
     sensor_info_for_default_equipment_group_level_sensor_construction_testing_fix,

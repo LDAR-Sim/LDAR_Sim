@@ -1,4 +1,4 @@
-from scheduling.workplan import SiteSurveyReport
+from scheduling.schedule_dataclasses import SiteSurveyReport
 from sensors.default_sensor import DefaultSensor
 from virtual_world.emissions import Emission
 from virtual_world.sites import Site

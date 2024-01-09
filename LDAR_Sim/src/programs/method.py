@@ -28,9 +28,17 @@ from typing import Tuple
 import numpy as np
 from sensors.default_site_level_sensor import DefaultSiteLevelSensor
 from virtual_world.sites import Site
-from src.scheduling.workplan import Workplan, CrewDailyReport
-from src.scheduling.workplan import EmissionDetectionReport, SiteSurveyReport
-from sensors.sensor_constant_mapping import SENS_TYPE, SENS_MDL, ERR_MSG_UNKNOWN_SENS_TYPE
+from src.scheduling.workplan import Workplan
+from src.scheduling.schedule_dataclasses import (
+    EmissionDetectionReport,
+    SiteSurveyReport,
+    CrewDailyReport,
+)
+from sensors.sensor_constant_mapping import (
+    SENS_TYPE,
+    SENS_MDL,
+    ERR_MSG_UNKNOWN_SENS_TYPE,
+)
 
 
 class Method:
@@ -43,12 +51,12 @@ class Method:
     WEATHER = "weather_envs"
     FOLLOW_UP_ACCESSOR = "is_follow_up"
 
-    POTENTIAL_CREW_SHORTAGE_MESSAGE = (
-        "Warning: LDAR-Sim has detected a potential for crew shortage for the method: {method}"
-    )
+    POTENTIAL_CREW_SHORTAGE_MESSAGE = "Warning: LDAR-Sim has detected a potential for crew shortage for the method: {method}"
 
     # TODO ensure survey times aren't needed for methods
-    def __init__(self, name: str, properties: dict, consider_weather: bool, sites: "list[Site]"):
+    def __init__(
+        self, name: str, properties: dict, consider_weather: bool, sites: "list[Site]"
+    ):
         self._name: str = name
         self._initialize_sensor(properties[self.DETEC_ACCESSOR])
         self._max_work_hours: int = properties[self.MAX_WORK_HOURS]
@@ -79,14 +87,17 @@ class Method:
         return np.average([site.get_required_surveys(self._name) for site in sites])
 
     def _get_average_survey_time_for_method(
-        method_name: str, avg_travel_time: float, sites: "list[Site]"
+        self, method_name: str, avg_travel_time: float, sites: "list[Site]"
     ) -> float:
         """
         Return:
             Average time in minutes
         """
         return np.average(
-            [(site.get_method_survey_time(method_name) + avg_travel_time) for site in sites]
+            [
+                (site.get_method_survey_time(method_name) + avg_travel_time)
+                for site in sites
+            ]
         )
 
     def _estimate_method_crews_required(
@@ -103,8 +114,8 @@ class Method:
             self._avg_s_time: float = self._get_average_survey_time_for_method(
                 self._name, avg_travel_time, sites
             )
-            self._average_req_surveys: float = self._get_average_method_surveys_required(
-                self._name, sites
+            self._average_req_surveys: float = (
+                self._get_average_method_surveys_required(sites)
             )
             # Subtract average travel time here to account the method needing to return
             # at the end of the day
@@ -121,6 +132,9 @@ class Method:
             estimate_req_n_crews = crews
             print(self.POTENTIAL_CREW_SHORTAGE_MESSAGE)
         return estimate_req_n_crews
+
+    def _get_avg_t_bt_sites(self) -> float:
+        return np.average(self._travel_times)
 
     def estimate_average_daily_surveys(
         self,
@@ -145,7 +159,9 @@ class Method:
         day_time_remaining = self._max_work_hours
         # Initialize the daily available survey time for existing crews
         if self._daylight_sensitive:
-            day_time_remaining = self.get_daylight_hours(state, self._max_work_hours, workplan.date)
+            day_time_remaining = self.get_daylight_hours(
+                state, self._max_work_hours, workplan.date
+            )
         for crew in self._crew_reports:
             # TODO : if method is daylight sensitive, check for max daylight
             crew.day_time_remaining = day_time_remaining
@@ -188,7 +204,11 @@ class Method:
                 if assigned_crew.day_time_remaining > 0:
                     # Put the crew back into the queue if there's remaining work hours
                     priority_queue.put(
-                        (-assigned_crew.day_time_remaining, assigned_crew.crew_id, assigned_crew)
+                        (
+                            -assigned_crew.day_time_remaining,
+                            assigned_crew.crew_id,
+                            assigned_crew,
+                        )
                     )
             # Update the survey planner. If the survey was not finished, the update will
             # indicate that the particular site needs to be requeued with higher priority
@@ -251,11 +271,15 @@ class Method:
                 # Account for survey time in time calculations,
                 # and consider that some of the site may have previously been surveyed
                 survey_report.time_surveyed = site_survey_time
-                crew.day_time_remaining -= site_survey_time - survey_report.time_surveyed
+                crew.day_time_remaining -= (
+                    site_survey_time - survey_report.time_surveyed
+                )
                 if crew.day_time_remaining <= site_travel_time:
                     last_site_survey = True
                 self._sensor.detect_emissions(
-                    site=site_to_survey, meth_name=self._name, survey_report=survey_report
+                    site=site_to_survey,
+                    meth_name=self._name,
+                    survey_report=survey_report,
                 )
             # Cannot finish the whole site but can survey
             # TODO determine reasonable fraction of site that can be surveyed to make it worth going
@@ -265,7 +289,9 @@ class Method:
                 last_site_survey = True
                 # Log Survey and travel time
                 survey_report.time_spent_to_travel += site_travel_time
-                survey_report.time_surveyed += crew.day_time_remaining - (site_travel_time * 2)
+                survey_report.time_surveyed += crew.day_time_remaining - (
+                    site_travel_time * 2
+                )
                 crew.day_time_remaining = site_travel_time
                 # Log survey start date
                 survey_report.survey_start_date = curr_date

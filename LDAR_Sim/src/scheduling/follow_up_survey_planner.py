@@ -1,5 +1,5 @@
-from datetime import date
-from scheduling.workplan import SiteSurveyReport
+from datetime import date, timedelta
+from scheduling.schedule_dataclasses import SiteSurveyReport
 from virtual_world.sites import Site
 
 

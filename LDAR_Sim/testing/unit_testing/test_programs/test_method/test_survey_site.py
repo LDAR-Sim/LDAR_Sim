@@ -19,7 +19,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 """
 
 from src.programs.method import Method
-from src.scheduling.workplan import SiteSurveyReport
+from src.scheduling.schedule_dataclasses import SiteSurveyReport
 from testing.unit_testing.test_programs.test_method.method_testing_fixtures import (  # noqa
     simple_method_values_fix,
     simple_method_values2_fix,

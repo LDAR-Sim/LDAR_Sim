@@ -1,7 +1,7 @@
 from pytest import approx
-from scheduling.workplan import SiteSurveyReport
-from sensors.default_equipment_group_level_sensor import DefaultEquipmentGroupLevelSensor
-from virtual_world.sites import Site
+from src.scheduling.schedule_dataclasses import SiteSurveyReport
+from src.sensors.default_equipment_group_level_sensor import DefaultEquipmentGroupLevelSensor
+from src.virtual_world.sites import Site
 from testing.unit_testing.test_sensors.test_equipment_group_level_sensors.equipment_group_level_sensors_testing_fixtures import (  # noqa
     mock_site_emis_for_eqg_level_detect_emissions_testing_fix,
     mock_site_emis_for_eqg_level_detect_emissions_testing_lower_emis_fix,

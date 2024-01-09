@@ -3,8 +3,9 @@ import sys
 
 from sortedcontainers import SortedDict
 from scheduling.follow_up_survey_planner import FollowUpSurveyPlanner
-from scheduling.workplan import SiteSurveyReport, Workplan
+from scheduling.workplan import Workplan
 from virtual_world.sites import Site
+from scheduling.schedule_dataclasses import SiteSurveyReport
 from scheduling.survey_planner import SurveyPlanner
 from utils.queue import PriorityQueueWithFIFO
 

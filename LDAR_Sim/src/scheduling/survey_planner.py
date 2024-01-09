@@ -23,7 +23,7 @@ import pandas as pd
 import calendar
 import math
 import copy
-from scheduling.workplan import SiteSurveyReport
+from scheduling.schedule_dataclasses import SiteSurveyReport
 from virtual_world.sites import Site
 
 
@@ -69,7 +69,9 @@ class SurveyPlanner:
         self._queued: bool = False
         self._active_survey_report: SiteSurveyReport = None
 
-    def _get_simulation_years(self, sim_start_date: date, sim_end_date: date) -> list[int]:
+    def _get_simulation_years(
+        self, sim_start_date: date, sim_end_date: date
+    ) -> list[int]:
         """Takes a start and end date and returns a list of all years between the two dates.
 
         Args:
@@ -87,7 +89,8 @@ class SurveyPlanner:
         # If start_date is later in the year than end_date, adjust the range
         # TODO : this should throw an error?
         if sim_start_date.month > sim_end_date.month or (
-            sim_start_date.month == sim_end_date.month and sim_start_date.day > sim_end_date.day
+            sim_start_date.month == sim_end_date.month
+            and sim_start_date.day > sim_end_date.day
         ):
             end_year -= 1
 
@@ -109,7 +112,9 @@ class SurveyPlanner:
         """
         survey_plan = []
 
-        datetime_list = self._generate_evenly_spaced_dates(self._deployment_months, site_annual_rs)
+        datetime_list = self._generate_evenly_spaced_dates(
+            self._deployment_months, site_annual_rs
+        )
         survey_plan = [date.date() for date in datetime_list]
         return survey_plan
 
@@ -136,11 +141,17 @@ class SurveyPlanner:
 
         evenly_spaced_dates = evenly_spaced_dates.to_pydatetime()
         inactive_months = get_inactive_months(active_months)
-        post_sd_inactive_months = [month for month in inactive_months if month > start_date.month]
+        post_sd_inactive_months = [
+            month for month in inactive_months if month > start_date.month
+        ]
         prev_inactive_count: int = 0
         for i, survey_date in enumerate(evenly_spaced_dates):
             inactive_counts: int = len(
-                [month for month in post_sd_inactive_months if month <= survey_date.month]
+                [
+                    month
+                    for month in post_sd_inactive_months
+                    if month <= survey_date.month
+                ]
             )
             original_month = copy.deepcopy(survey_date.month)
             diff = 0
@@ -183,7 +194,9 @@ class SurveyPlanner:
                     Required_surveys=self._site_annual_rs, Surveys_done=0
                 )
             else:
-                _surveys_this_year[year] = Survey_Counter(Required_surveys=0, Surveys_done=0)
+                _surveys_this_year[year] = Survey_Counter(
+                    Required_surveys=0, Surveys_done=0
+                )
 
         return _surveys_this_year
 
@@ -234,7 +247,9 @@ class SurveyPlanner:
 
     def add_to_surveys_done(self) -> None:
         """Adds to the counter keeping track of the number of surveys done"""
-        self._surveys_this_year[self._current_date.year].Surveys_done += 1  # TODO : update when dat
+        self._surveys_this_year[
+            self._current_date.year
+        ].Surveys_done += 1  # TODO : update when dat
         self._active_survey_report = None  # TODO make sure this makes sense here
         return None
 
