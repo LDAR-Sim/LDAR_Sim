@@ -1,4 +1,7 @@
 from datetime import date
+import sys
+
+from sortedcontainers import SortedDict
 from scheduling.follow_up_survey_planner import FollowUpSurveyPlanner
 from scheduling.workplan import SiteSurveyReport, Workplan
 from virtual_world.sites import Site
@@ -190,6 +193,11 @@ class FollowUpMobileSchedule(GenericSchedule):
     """
 
     DEPLOY_TYPE_CODE = "mobile"
+    THRESHOLD_INT_PRIO = "threshold"
+    PROPORTION_INT_PRIO = "proportion"
+    INVALID_INTERACTION_PRIO_ERROR = (
+        "Error: Invalid interaction_priority of {priority} set for method: {method}"
+    )
 
     def __init__(
         self,
@@ -199,6 +207,10 @@ class FollowUpMobileSchedule(GenericSchedule):
         sim_end_date: date,
         est_meth_daily_surveys: int,
         method_avail_crews: int,
+        interaction_priority: str,
+        delay: int,
+        priority: float,
+        threshold: float,
     ) -> None:
         super().__init__(
             method_name,
@@ -208,13 +220,60 @@ class FollowUpMobileSchedule(GenericSchedule):
             est_meth_daily_surveys,
             method_avail_crews,
         )
-        self._watchlist: list[FollowUpSurveyPlanner] = []
+        if interaction_priority == self.THRESHOLD_INT_PRIO:
+            self._threshold_first: bool = True
+        elif interaction_priority == self.PROPORTION_INT_PRIO:
+            self._threshold_first: bool = False
+        else:
+            print(
+                self.INVALID_INTERACTION_PRIO_ERROR.format(
+                    priority=interaction_priority, method=method_name
+                )
+            )
+            sys.exit()
+        self._pending_reports: set[FollowUpSurveyPlanner] = set()
+        self._candidates_for_flags: SortedDict[float, list[FollowUpSurveyPlanner]] = SortedDict()
+        self._site_IDs_in_consideration = set[str]
+        self._first_candidate_date: date = None
+        self._delay: int = delay
+        self._priority: float = priority
+        self._threshold: float = threshold
         return
 
-    def add_to_watchlist(self, survey_plans: FollowUpSurveyPlanner):
-        self._watchlist.append(survey_plans)
+    def add_survey_plan_to_candidates(
+        self, sort_prio: bool, survey_plan: FollowUpSurveyPlanner
+    ) -> None:
+        if sort_prio in self._candidates_for_flags:
+            existing_val: list[FollowUpSurveyPlanner] = self._candidates_for_flags[sort_prio]
+            existing_val.append(survey_plan)
+        else:
+            self._candidates_for_flags[sort_prio] = [survey_plan]
 
-    def get_workplan(self, current_date) -> Workplan:
+    def update_pending_rep_state(self, current_date: date) -> None:
+        reports_finished_pending: set[FollowUpSurveyPlanner] = set()
+        for survey_plan in self._pending_reports():
+            survey_plan: FollowUpSurveyPlanner
+            survey_plan.update_date(current_date)
+            if survey_plan.deliver_report():
+                self.add_survey_plan_to_candidates(survey_plan)
+                reports_finished_pending.add(survey_plan)
+        self._pending_reports -= reports_finished_pending
+
+    def add_pending_report(
+        self, site: Site, report: SiteSurveyReport, reporting_delay: int
+    ) -> None:
+        site_id: str = report.site_id
+        if site_id not in self._site_IDs_in_consideration:
+            self._site_IDs_in_consideration.add(site_id)
+            survey_plan: FollowUpSurveyPlanner = FollowUpSurveyPlanner(
+                site=site, original_survey_report=report, rep_delay=reporting_delay
+            )
+            self._pending_reports.add(survey_plan)
+        else:
+            return
+            # TODO handle extra reports
+
+    def get_workplan(self, current_date: date) -> Workplan:
         """
         Updates the survey plans,
         Adds necessary sites to the queue
@@ -222,7 +281,23 @@ class FollowUpMobileSchedule(GenericSchedule):
             The list sites that the method should do on the given day
         """
         # TODO put all the old follow up logic in here
-        for survey_plan in self._survey_plans:
+        self.update_pending_rep_state(current_date)
+
+        candidates_empty: bool = bool(self._candidates_for_flags)
+
+        if self._first_candidate_date is None:
+            if not candidates_empty:
+                self._first_candidate_date = current_date
+
+        if (current_date - self._first_candidate_date).days >= self._delay:
+            if self._threshold_first:
+                self._filter_candidates_by_threshold()
+                self._filter_candidates_by_proportion()
+            else:
+                self._filter_candidates_by_proportion()
+                self._filter_candidates_by_threshold()
+
+        for survey_plan in self._get_candidates():
             survey_plan.update_date(current_date)
             if survey_plan.queue_site_for_survey():
                 self.add_to_survey_queue(survey_plan)
