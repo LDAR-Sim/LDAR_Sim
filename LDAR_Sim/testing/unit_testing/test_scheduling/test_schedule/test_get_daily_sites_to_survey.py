@@ -19,19 +19,11 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 """
 from datetime import date
 from src.virtual_world.sites import Site
-from scheduling.generic_schedule import GenericSchedule
-from testing.unit_testing.test_scheduling.test_schedule.schedule_fixtures import (
-    mocker_fixture,
-)
+from src.scheduling.schedules import GenericSchedule
+from src.scheduling.workplan import Workplan
 
 
-def test_000_get_daily_sites_to_survey_returns_expected_sites_for_survey(mocker_fixture):
-    mocker = mocker_fixture
-
-    # Set up mock data for the test
-    method_follow_up = False
-    methods_t_btw_sites = [60, 60, 60]
-    method_max_work_hours = 8
+def test_000_get_daily_sites_to_survey_returns_expected_sites_for_survey(mocker):
     # Create a Mock object for Site with the required attributes
     site_mock = mocker.Mock(spec=Site)
     site_mock._survey_frequencies = {"test": 5}
@@ -44,22 +36,18 @@ def test_000_get_daily_sites_to_survey_returns_expected_sites_for_survey(mocker_
         sites=sites,
         sim_start_date=date(2020, 1, 1),
         sim_end_date=date(2025, 12, 31),
-        method_follow_up=method_follow_up,
-        methods_t_btw_sites=methods_t_btw_sites,
-        method_max_work_hours=method_max_work_hours,
+        est_meth_daily_surveys=5,
+        method_avail_crews=1,
     )
     result = instance.get_workplan(date(2020, 1, 1))
-    expected = instance._survey_plans[:8]
-    assert expected == result
+    expected = Workplan(instance._survey_plans[:8], date(2020, 1, 1))
+    assert expected.date == result.date
+    assert expected.site_survey_planners == result.site_survey_planners
 
 
-def test_000_get_daily_sites_to_survey_returns_expected_sites_for_survey2(mocker_fixture):
-    mocker = mocker_fixture
-
-    # Set up mock data for the test
-    method_follow_up = False
-    methods_t_btw_sites = [60, 60, 60]
-    method_max_work_hours = 8
+def test_000_get_daily_sites_to_survey_returns_expected_sites_for_survey2(
+    mocker,
+):
     # Create a Mock object for Site with the required attributes
     site_mock = mocker.Mock(spec=Site)
     site_mock._survey_frequencies = {"test": 5}
@@ -72,9 +60,8 @@ def test_000_get_daily_sites_to_survey_returns_expected_sites_for_survey2(mocker
         sites=sites,
         sim_start_date=date(2020, 1, 1),
         sim_end_date=date(2025, 12, 31),
-        method_follow_up=method_follow_up,
-        methods_t_btw_sites=methods_t_btw_sites,
-        method_max_work_hours=method_max_work_hours,
+        est_meth_daily_surveys=5,
+        method_avail_crews=1,
     )
     instance.get_workplan(date(2020, 1, 1))
     result = instance.get_daily_sites_to_survey()
