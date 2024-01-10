@@ -19,11 +19,8 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 """
 
 import pytest
-from datetime import date
 
-from src.virtual_world.sites import Site
-from src.scheduling.survey_planner import SurveyPlanner
-from src.scheduling.schedules import GenericSchedule
+from scheduling.generic_schedule import GenericSchedule
 
 
 @pytest.fixture

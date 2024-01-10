@@ -51,13 +51,22 @@ class Method:
     DAYLIGHT = "consider_daylight"
     WEATHER = "weather_envs"
     FOLLOW_UP_ACCESSOR = "is_follow_up"
+    METHOD_FOLLOW_UP_ACCESSOR = "is_follow_up"
+    METHOD_FOLLOW_UP_PROPERTIES_ACCESSOR = "follow_up"
+    METHOD_FOLLOW_UP_PROPERTIES_PREF_FU_ACCESSOR = "preferred_method"
 
-    POTENTIAL_CREW_SHORTAGE_MESSAGE = "Warning: LDAR-Sim has detected a potential for crew shortage for the method: {method}"
+    POTENTIAL_CREW_SHORTAGE_MESSAGE = (
+        "Warning: LDAR-Sim has detected a potential for crew shortage for the method: {method}"
+    )
 
     # TODO ensure survey times aren't needed for methods
     def __init__(
-        self, name: str, properties: dict, consider_weather: bool, sites: "list[Site]"
-    ):
+        self,
+        name: str,
+        properties: dict,
+        consider_weather: bool,
+        sites: "list[Site]",
+    ) -> None:
         self._name: str = name
         self._initialize_sensor(properties[self.DETEC_ACCESSOR])
         self._max_work_hours: int = properties[self.MAX_WORK_HOURS]
@@ -68,7 +77,6 @@ class Method:
         self._travel_times = properties[self.TRAVEL_TIME_ACCESSOR]
         crews: int = properties[self.CREW_COUNT]
         self.initialize_crews(crews, sites)
-        self._survey_reports: list[SiteSurveyReport] = []
 
     def initialize_crews(self, crews, sites: "list[Site]") -> None:
         """Initialize the daily crew reports that the method will use
@@ -95,10 +103,7 @@ class Method:
             Average time in minutes
         """
         return np.average(
-            [
-                (site.get_method_survey_time(method_name) + avg_travel_time)
-                for site in sites
-            ]
+            [(site.get_method_survey_time(method_name) + avg_travel_time) for site in sites]
         )
 
     def _estimate_method_crews_required(
@@ -115,9 +120,7 @@ class Method:
             self._avg_s_time: float = self._get_average_survey_time_for_method(
                 self._name, avg_travel_time, sites
             )
-            self._average_req_surveys: float = (
-                self._get_average_method_surveys_required(sites)
-            )
+            self._average_req_surveys: float = self._get_average_method_surveys_required(sites)
             # Subtract average travel time here to account the method needing to return
             # at the end of the day
             daily_work_time: float = (self._max_work_hours * 60) - avg_travel_time
@@ -160,9 +163,7 @@ class Method:
         day_time_remaining = self._max_work_hours
         # Initialize the daily available survey time for existing crews
         if self._daylight_sensitive:
-            day_time_remaining = self.get_daylight_hours(
-                state, self._max_work_hours, workplan.date
-            )
+            day_time_remaining = self.get_daylight_hours(state, self._max_work_hours, workplan.date)
         for crew in self._crew_reports:
             # TODO : if method is daylight sensitive, check for max daylight
             crew.day_time_remaining = day_time_remaining
@@ -173,11 +174,12 @@ class Method:
         for survey_plan in workplan.site_survey_planners.values():
             # Get the survey report
             survey_report: SiteSurveyReport = survey_plan.get_current_survey_report()
+            site_to_survey: Site = survey_plan.get_site()
             if not priority_queue.empty():
                 # Get the crew with the most time remaining to work
                 _, _, assigned_crew = priority_queue.get()
                 assigned_crew: CrewDailyReport
-                site_to_survey: Site = survey_plan.get_site()
+
                 # Send the crew to attempt to survey the site
                 survey_report, travel_time, last_site_survey = self.survey_site(
                     crew=assigned_crew,
@@ -190,11 +192,6 @@ class Method:
                 travel_time: float
                 last_site_survey: bool
 
-                # If the survey is completed attach the survey report
-                # to internal list of survey reports
-                if survey_report.survey_complete:
-                    # TODO look at putting this into a dataframe
-                    self._survey_reports.append(survey_report)
                 # If this will be last survey of the day, set remaining time
                 # to 0 and track travel home time
                 if last_site_survey:
@@ -262,6 +259,7 @@ class Method:
                 # Set the start and completion data and detect emissions at the site
                 if not survey_report.survey_in_progress:
                     survey_report.survey_start_date = curr_date
+                    survey_report.method = self._name
                 survey_report.survey_completion_date = curr_date
                 # Mark the survey as complete and no longer in progress
                 survey_report.survey_complete = True
@@ -272,9 +270,7 @@ class Method:
                 # Account for survey time in time calculations,
                 # and consider that some of the site may have previously been surveyed
                 survey_report.time_surveyed = site_survey_time
-                crew.day_time_remaining -= (
-                    site_survey_time - survey_report.time_surveyed
-                )
+                crew.day_time_remaining -= site_survey_time - survey_report.time_surveyed
                 if crew.day_time_remaining <= site_travel_time:
                     last_site_survey = True
                 self._sensor.detect_emissions(
@@ -290,9 +286,7 @@ class Method:
                 last_site_survey = True
                 # Log Survey and travel time
                 survey_report.time_spent_to_travel += site_travel_time
-                survey_report.time_surveyed += crew.day_time_remaining - (
-                    site_travel_time * 2
-                )
+                survey_report.time_surveyed += crew.day_time_remaining - (site_travel_time * 2)
                 crew.day_time_remaining = site_travel_time
                 # Log survey start date
                 survey_report.survey_start_date = curr_date

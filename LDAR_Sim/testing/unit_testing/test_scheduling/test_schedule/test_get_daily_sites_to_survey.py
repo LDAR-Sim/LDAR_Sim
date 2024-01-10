@@ -19,7 +19,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 """
 from datetime import date
 from src.virtual_world.sites import Site
-from src.scheduling.schedules import GenericSchedule
+from scheduling.generic_schedule import GenericSchedule
 from testing.unit_testing.test_scheduling.test_schedule.schedule_fixtures import (
     mocker_fixture,
 )

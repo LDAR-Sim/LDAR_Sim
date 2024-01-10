@@ -51,15 +51,14 @@ class SiteSurveyReport:
     time_spent_to_travel: int = 0
     survey_complete: bool = False
     survey_in_progress: bool = False
-    equipment_groups_surveyed: list[EquipmentGroupSurveyReport] = field(
-        default_factory=list
-    )
+    equipment_groups_surveyed: list[EquipmentGroupSurveyReport] = field(default_factory=list)
     survey_level: str = None
     site_measured_rate: float = 0.0
     site_true_rate: float = 0.0
     site_flagged: bool = False
     survey_completion_date: date = None
     survey_start_date: date = None
+    method: str = None
 
 
 @dataclass

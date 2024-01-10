@@ -1,5 +1,5 @@
 from virtual_world.sites import Site
-from scheduling.schedules import GenericSchedule
+from scheduling.generic_schedule import GenericSchedule
 
 
 class EquipmentGroupLevelMethod:

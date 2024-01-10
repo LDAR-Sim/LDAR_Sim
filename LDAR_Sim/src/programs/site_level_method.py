@@ -1,7 +1,7 @@
 from programs.method import Method
 from sensors.default_site_level_sensor import DefaultSiteLevelSensor
 from virtual_world.sites import Site
-from scheduling.schedules import GenericSchedule
+from scheduling.generic_schedule import GenericSchedule
 from sensors.sensor_constant_mapping import SENS_TYPE, SENS_MDL, ERR_MSG_UNKNOWN_SENS_TYPE
 import sys
 

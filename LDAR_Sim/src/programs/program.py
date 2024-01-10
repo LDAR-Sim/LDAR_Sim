@@ -18,10 +18,12 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 ------------------------------------------------------------------------------
 """
 from datetime import date, timedelta
+from typing import Tuple
+from scheduling.scheduling_utils import create_schedule
 
 from virtual_world.sites import Site
 from programs.method import Method
-from scheduling.schedules import GenericSchedule, create_schedule
+from scheduling.generic_schedule import GenericSchedule
 from scheduling.workplan import Workplan
 
 
@@ -58,7 +60,10 @@ class Program:
         sim_end_date: date,
     ) -> None:
         self._methods: list[Method] = []
-        for method_name, properties in methods.items():
+
+        follow_up_methods, non_follow_up_methods = self.split_methods(methods)
+
+        for method_name, properties in follow_up_methods.items():
             method_name: str
             properties: dict
 
@@ -76,52 +81,52 @@ class Program:
                 method_avail_crews=method.get_crew_count(),
             )
 
+        for method_name, properties in non_follow_up_methods.items():
+            method_name: str
+            properties: dict
+
+            method = Method(method_name, properties, consider_weather)
+
+            self._methods.append(method)
+
+            meth_pref_follow_up = properties[Method.METHOD_FOLLOW_UP_PROPERTIES_ACCESSOR][
+                Method.METHOD_FOLLOW_UP_PROPERTIES_PREF_FU_ACCESSOR
+            ]
+
+            if isinstance(meth_pref_follow_up, str) and meth_pref_follow_up != "_placeholder_str_":
+                follow_up_schedule: GenericSchedule = self._survey_schedules[meth_pref_follow_up]
+            else:
+                follow_up_schedule: GenericSchedule = self._init_methods_and_schedules[0]
+
+            self._survey_schedules[method_name] = create_schedule(
+                method_name=method_name,
+                method_details=properties,
+                sites=sites,
+                sim_start_date=sim_start_date,
+                sim_end_date=sim_end_date,
+                est_meth_daily_surveys=method.estimate_average_daily_surveys(),
+                method_avail_crews=method.get_crew_count(),
+                follow_up_schedule=follow_up_schedule,
+            )
+
+    def split_methods(self, methods: dict) -> Tuple[dict, dict]:
+        follow_up_methods: dict = {}
+        other_methods: dict = {}
+        for method, properties in methods:
+            if properties[Method.METHOD_FOLLOW_UP_ACCESSOR]:
+                follow_up_methods[method] = properties
+            else:
+                other_methods[method] = properties
+        return follow_up_methods, other_methods
+
     def do_daily_program_deployment(self) -> None:
+        # TODO may need to split up methods and follow_up methods
         for method in self._methods:
             method_schedule: GenericSchedule = self._survey_schedules[method.get_name()]
             method_workplan: Workplan = method_schedule.get_workplan(self._current_date)
             method.deploy_crews(method_workplan)
-            method_schedule.update(method_workplan)
-
-        self.update_date()
-
-    # # TODO define a method workplan object that they can use to track progress on
-    # # surveying sites for a day
-    # def get_method_workplan(self, method : str) -> Workplan:
-    #     """Determine daily workplans for the given method for the day.
-    #     The workplans will help methods track with sites to survey and report progress.
-
-    #     Returns:
-    #         Workplan: An object containing the list of sites to attempt to survey for the day
-    #         that can be updated to report survey progress and discovered leaks.
-    #     """
-    #     for meth in self._methods:
-    #         if meth._name == method:
-    #             return meth.return_workplan()
-
-    #     return
+            method_schedule.update(method_workplan, self._current_date)
 
     def update_date(self) -> None:
         """Increment the current date counter"""
         self._current_date += timedelta(days=1)
-
-    def update_schedule_based_on_workplan_results(self):
-        """
-        Call updates on the schedules for the next day based on the
-        workplan returned by the method after a days work
-        """
-        for method in self._methods:
-            workplan = method.return_workplan()
-            for site in workplan._site_survey_reports:
-                if site.survey_in_progress:
-                    return
-                    # TODO : add in progress survey with high prio to relevant method schedule
-                elif not site.survey_complete:
-                    return
-                #     # TODO: add just queued survey back to schdule with med prio
-
-                else:
-                    return
-                #     # TODO: adjust the site such that it's no longer flagged as queued
-                #     #self._survey_schedules[method._name].
-                #     # survey_planner.unflag_for_queue()
