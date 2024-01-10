@@ -27,6 +27,8 @@ from src.scheduling.schedule_dataclasses import SiteSurveyReport
 from src.sensors.default_site_level_sensor import DefaultSiteLevelSensor
 from src.sensors.default_sensor import DefaultSensor
 from src.virtual_world.emissions import Emission
+from src.scheduling.workplan import Workplan
+from src.scheduling.survey_planner import SurveyPlanner
 
 
 @pytest.fixture
@@ -362,6 +364,70 @@ def simple_method_values5_fix(mocker):
         state,
         survey_report,
     )
+
+
+@pytest.fixture(name="deploy_crews_testing")
+def deploy_crews_testing_fix(mocker):
+    # Create a mock object for Site
+    site_mock = mocker.Mock(spec=Site)
+    site_mock.id = 1
+
+    mocker.patch.object(
+        site_mock, "get_method_survey_time", mock_get_method_survey_time
+    )
+    mocker.patch.object(DefaultSensor, "detect_emissions", mock_detect_emissions)
+    mocker.patch.object(
+        Method,
+        "_get_average_method_surveys_required",
+        mock_get_average_method_surveys_required,
+    )
+    mocker.patch.object(
+        Method,
+        "_get_avg_t_bt_sites",
+        mock_average_t_btw_site,
+    )
+    mocker.patch.object(
+        Method,
+        "check_weather",
+        mock_check_weather_t,
+    )
+    mocker.patch.object(
+        Method,
+        "_get_average_survey_time_for_method",
+        mock_get_method_survey_time,
+    )
+    mocker.patch.object(Method, "_get_travel_time", mock_get_travel_time)
+    mocker.patch.object(
+        DefaultSiteLevelSensor, "detect_emissions", mock_detect_emissions
+    )
+    mocker.patch.object(
+        site_mock, "get_detectable_emissions", mock_get_detectable_emissions
+    )
+    properties: dict = {
+        "n_crews": 5,
+        "sensor": {"type": "default", "MDL": 1, "QE": 0},
+        "max_workday": 8,
+        "consider_daylight": False,
+        "t_bw_sites": [1],
+        "is_follow_up": False,
+        "weather_envs": {"wind": [0, 10], "temp": [-30, 30], "precip": [0, 1]},
+    }
+    state = {"weather": create_random_state(), "daylight": [], "t": []}
+    sites = [mocker.Mock(spec=Site) for i in range(5)]
+
+    survey_plans = [
+        SurveyPlanner(
+            site,
+            6,
+            date(2023, 1, 1),
+            date(2025, 12, 31),
+            [2023, 2024, 2025],
+            [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+        )
+        for site in sites
+    ]
+    workplan = Workplan(survey_plans, date=date(2023, 1, 2))
+    return (sites, properties, state, workplan)
 
 
 def create_random_state():

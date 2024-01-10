@@ -55,9 +55,7 @@ class Method:
     METHOD_FOLLOW_UP_PROPERTIES_ACCESSOR = "follow_up"
     METHOD_FOLLOW_UP_PROPERTIES_PREF_FU_ACCESSOR = "preferred_method"
 
-    POTENTIAL_CREW_SHORTAGE_MESSAGE = (
-        "Warning: LDAR-Sim has detected a potential for crew shortage for the method: {method}"
-    )
+    POTENTIAL_CREW_SHORTAGE_MESSAGE = "Warning: LDAR-Sim has detected a potential for crew shortage for the method: {method}"
 
     # TODO ensure survey times aren't needed for methods
     def __init__(
@@ -103,7 +101,10 @@ class Method:
             Average time in minutes
         """
         return np.average(
-            [(site.get_method_survey_time(method_name) + avg_travel_time) for site in sites]
+            [
+                (site.get_method_survey_time(method_name) + avg_travel_time)
+                for site in sites
+            ]
         )
 
     def _estimate_method_crews_required(
@@ -120,7 +121,9 @@ class Method:
             self._avg_s_time: float = self._get_average_survey_time_for_method(
                 self._name, avg_travel_time, sites
             )
-            self._average_req_surveys: float = self._get_average_method_surveys_required(sites)
+            self._average_req_surveys: float = (
+                self._get_average_method_surveys_required(sites)
+            )
             # Subtract average travel time here to account the method needing to return
             # at the end of the day
             daily_work_time: float = (self._max_work_hours * 60) - avg_travel_time
@@ -156,14 +159,16 @@ class Method:
     def get_crew_count(self) -> int:
         return self._crews
 
-    def deploy_crews(self, workplan: Workplan, state):
+    def deploy_crews(self, workplan: Workplan, weather):
         """Deploy crews will send crews out to survey sites based on the provided workplan"""
 
         priority_queue = PriorityQueue()
         day_time_remaining = self._max_work_hours
         # Initialize the daily available survey time for existing crews
         if self._daylight_sensitive:
-            day_time_remaining = self.get_daylight_hours(state, self._max_work_hours, workplan.date)
+            day_time_remaining = self.get_daylight_hours(
+                weather, self._max_work_hours, workplan.date
+            )
         for crew in self._crew_reports:
             # TODO : if method is daylight sensitive, check for max daylight
             crew.day_time_remaining = day_time_remaining
@@ -185,7 +190,7 @@ class Method:
                     crew=assigned_crew,
                     survey_report=survey_report,
                     site_to_survey=site_to_survey,
-                    state=state,
+                    state=weather,
                     curr_date=workplan.date,
                 )
                 survey_report: SiteSurveyReport
@@ -270,7 +275,9 @@ class Method:
                 # Account for survey time in time calculations,
                 # and consider that some of the site may have previously been surveyed
                 survey_report.time_surveyed = site_survey_time
-                crew.day_time_remaining -= site_survey_time - survey_report.time_surveyed
+                crew.day_time_remaining -= (
+                    site_survey_time - survey_report.time_surveyed
+                )
                 if crew.day_time_remaining <= site_travel_time:
                     last_site_survey = True
                 self._sensor.detect_emissions(
@@ -286,7 +293,9 @@ class Method:
                 last_site_survey = True
                 # Log Survey and travel time
                 survey_report.time_spent_to_travel += site_travel_time
-                survey_report.time_surveyed += crew.day_time_remaining - (site_travel_time * 2)
+                survey_report.time_surveyed += crew.day_time_remaining - (
+                    site_travel_time * 2
+                )
                 crew.day_time_remaining = site_travel_time
                 # Log survey start date
                 survey_report.survey_start_date = curr_date
