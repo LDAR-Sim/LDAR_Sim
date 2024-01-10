@@ -19,7 +19,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 """
 from datetime import date
 from src.virtual_world.sites import Site
-from src.scheduling.schedules import GenericSchedule
+from src.scheduling.generic_schedule import GenericSchedule
 from src.scheduling.workplan import Workplan
 
 

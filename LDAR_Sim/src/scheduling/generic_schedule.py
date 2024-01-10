@@ -38,7 +38,9 @@ class GenericSchedule:
             sim_start_date, sim_end_date, sites
         )
 
-    def _set_survey_plans(self, sim_start_date, sim_end_date, sites) -> list[SurveyPlanner]:
+    def _set_survey_plans(
+        self, sim_start_date, sim_end_date, sites
+    ) -> list[SurveyPlanner]:
         survey_plans: list[SurveyPlanner] = []
         for site in sites:
             # TODO flush out what survey planner needs as inputs for the constructor
@@ -47,7 +49,12 @@ class GenericSchedule:
             deploy_month: int = site._deployment_months[self._method]
             survey_plans.append(
                 SurveyPlanner(
-                    site, survey_freq, sim_start_date, sim_end_date, deploy_year, deploy_month
+                    site,
+                    survey_freq,
+                    sim_start_date,
+                    sim_end_date,
+                    deploy_year,
+                    deploy_month,
                 )
             )
         return survey_plans
@@ -65,7 +72,9 @@ class GenericSchedule:
 
         Args:
             site (Site) : the Site to be added to the survey queue"""
-        self._survey_queue.put(GenericSchedule.UNFINISHED_SURVEY_HIGHEST_PRIORITY, survey_plan)
+        self._survey_queue.put(
+            GenericSchedule.UNFINISHED_SURVEY_HIGHEST_PRIORITY, survey_plan
+        )
 
     def add_previous_queued_to_survey_queue(self, survey_plan: SurveyPlanner) -> None:
         """Add the supplied, unattended site back to queue
@@ -106,7 +115,7 @@ class GenericSchedule:
             if survey_plan.queue_site_for_survey():
                 self.add_to_survey_queue(survey_plan)
         sites_to_survey: list[SurveyPlanner] = self.get_daily_sites_to_survey()
-        return Workplan(site_survey_list=sites_to_survey, date=current_date)
+        return Workplan(site_survey_plan_list=sites_to_survey, date=current_date)
 
     def update(self, workplan: Workplan, current_date: date) -> None:
         reports, planners = workplan.get_reports()
