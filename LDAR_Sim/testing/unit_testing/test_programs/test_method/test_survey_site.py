@@ -98,10 +98,11 @@ def test_000_simple_weather_finish_site(simple_method_values5):
         time_spent_to_travel=1,
         survey_level="site_level",
         site_measured_rate=1.0,
-        site_true_rate=1.0,
+        site_true_rate=1,
         survey_complete=True,
         survey_start_date=date(2023, 1, 2),
         survey_completion_date=date(2023, 1, 2),
+        method="test_method",
     )
     assert surveyed_report == expected
     assert last_survey == False
