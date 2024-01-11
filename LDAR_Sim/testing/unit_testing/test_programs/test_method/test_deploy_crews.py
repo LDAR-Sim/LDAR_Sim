@@ -25,7 +25,6 @@ from testing.unit_testing.test_programs.test_method.method_testing_fixtures impo
     deploy_crews_testing2_fix,
 )
 from src.scheduling.schedule_dataclasses import (
-    EmissionDetectionReport,
     SiteSurveyReport,
     CrewDailyReport,
 )

@@ -167,6 +167,7 @@ def simple_method_values_fix(mocker):
         "t_bw_sites": [1],
         "is_follow_up": False,
         "weather_envs": {"wind": [0, 10], "temp": [-30, 30], "precip": [0, 1]},
+        "reporting_delay": 0,
     }
     current_date: date = date(2023, 1, 2)
     state = {"weather": create_random_state(), "daylight": [], "t": []}
@@ -222,6 +223,7 @@ def simple_method_values2_fix(mocker):
         "is_follow_up": False,
         "consider_daylight": False,
         "weather_envs": {"wind": [0, 10], "temp": [-30, 30], "precip": [0, 1]},
+        "reporting_delay": 0,
     }
     current_date: date = date(2023, 1, 2)
     state = {"weather": create_random_state(), "daylight": [], "t": []}
@@ -277,6 +279,7 @@ def simple_method_values3_fix(mocker):
         "is_follow_up": True,
         "consider_daylight": False,
         "weather_envs": {"wind": [0, 10], "temp": [-30, 30], "precip": [0, 1]},
+        "reporting_delay": 0,
     }
     current_date: date = date(2023, 1, 2)
     state = {"weather": create_random_state(), "daylight": [], "t": []}
@@ -328,6 +331,7 @@ def simple_method_values4_fix(mocker):
         "t_bw_sites": [1],
         "is_follow_up": False,
         "weather_envs": {"wind": [0, 10], "temp": [-30, 30], "precip": [0, 1]},
+        "reporting_delay": 0,
     }
     survey_report = SiteSurveyReport(site_id=1)
     current_date: date = date(2023, 1, 2)
@@ -387,6 +391,7 @@ def simple_method_values5_fix(mocker):
         "t_bw_sites": [1],
         "is_follow_up": False,
         "weather_envs": {"wind": [0, 10], "temp": [-30, 30], "precip": [0, 1]},
+        "reporting_delay": 0,
     }
     survey_report = SiteSurveyReport(site_id=1)
     current_date: date = date(2023, 1, 2)
@@ -450,6 +455,7 @@ def deploy_crews_testing_fix(mocker):
         "t_bw_sites": [1],
         "is_follow_up": False,
         "weather_envs": {"wind": [0, 10], "temp": [-30, 30], "precip": [0, 1]},
+        "reporting_delay": 0,
     }
     state = {"weather": create_random_state(), "daylight": [], "t": []}
     sites = [site_mock]
@@ -520,6 +526,7 @@ def deploy_crews_testing2_fix(mocker):
         "t_bw_sites": [1],
         "is_follow_up": False,
         "weather_envs": {"wind": [0, 10], "temp": [-30, 30], "precip": [0, 1]},
+        "reporting_delay": 0,
     }
     state = {"weather": create_random_state(), "daylight": [], "t": []}
     sites = [site_mock]
