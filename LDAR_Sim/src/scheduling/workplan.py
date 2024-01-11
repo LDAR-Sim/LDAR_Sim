@@ -16,14 +16,16 @@ class Workplan:
         self._site_survey_reports: dict[str, SiteSurveyReport] = {}
         self.site_survey_planners: dict[str, SurveyPlanner] = {}
         for survey_plan in site_survey_plan_list:
-            self._site_survey_reports[survey_plan.get_site().get_id()] = survey_plan
+            self.site_survey_planners[survey_plan.get_site().get_id()] = survey_plan
 
     def add_survey_report(
         self, survey_report: SiteSurveyReport, survey_planner: SurveyPlanner
     ) -> None:
         site_id: str = survey_report.site_id
-        self._site_survey_reports.update(site_id, survey_report)
+        self._site_survey_reports[site_id] = survey_report
         self.site_survey_planners[site_id] = survey_planner
 
-    def get_reports(self) -> Tuple[dict[str, SiteSurveyReport], dict[str, SurveyPlanner]]:
+    def get_reports(
+        self,
+    ) -> Tuple[dict[str, SiteSurveyReport], dict[str, SurveyPlanner]]:
         return self._site_survey_reports, self._site_survey_planners
