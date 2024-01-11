@@ -19,6 +19,9 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 """
 from datetime import date, timedelta
 from typing import Tuple
+from programs.equipment_group_level_method import EquipmentGroupLevelMethod
+from programs.equipment_level_method import EquipmentLevelMethod
+from programs.site_level_method import SiteLevelMethod
 from scheduling.scheduling_utils import create_schedule
 
 from virtual_world.sites import Site
@@ -83,20 +86,10 @@ class Program:
 
         for method_name, properties in non_follow_up_methods.items():
             method_name: str
-            properties: dict
 
-            method = Method(method_name, properties, consider_weather)
+            method: Method = self._gen_method(method_name, properties, consider_weather)
 
             self._methods.append(method)
-
-            meth_pref_follow_up = properties[Method.METHOD_FOLLOW_UP_PROPERTIES_ACCESSOR][
-                Method.METHOD_FOLLOW_UP_PROPERTIES_PREF_FU_ACCESSOR
-            ]
-
-            if isinstance(meth_pref_follow_up, str) and meth_pref_follow_up != "_placeholder_str_":
-                follow_up_schedule: GenericSchedule = self._survey_schedules[meth_pref_follow_up]
-            else:
-                follow_up_schedule: GenericSchedule = self._init_methods_and_schedules[0]
 
             self._survey_schedules[method_name] = create_schedule(
                 method_name=method_name,
@@ -106,7 +99,6 @@ class Program:
                 sim_end_date=sim_end_date,
                 est_meth_daily_surveys=method.estimate_average_daily_surveys(),
                 method_avail_crews=method.get_crew_count(),
-                follow_up_schedule=follow_up_schedule,
             )
 
     def split_methods(self, methods: dict) -> Tuple[dict, dict]:
@@ -118,6 +110,48 @@ class Program:
             else:
                 other_methods[method] = properties
         return follow_up_methods, other_methods
+
+    def _gen_method(self, method_name: str, properties: dict, consider_weather: bool) -> Method:
+        method_survey_level: str = properties[Method.MEASUREMENT_SCALE_ACCESSOR]
+
+        if method_survey_level == SiteLevelMethod.MEASUREMENT_SCALE:
+            meth_pref_follow_up = properties[Method.METHOD_FOLLOW_UP_PROPERTIES_ACCESSOR][
+                Method.METHOD_FOLLOW_UP_PROPERTIES_PREF_FU_ACCESSOR
+            ]
+
+            if isinstance(meth_pref_follow_up, str) and meth_pref_follow_up != "_placeholder_str_":
+                follow_up_schedule: GenericSchedule = self._survey_schedules[meth_pref_follow_up]
+            else:
+                follow_up_schedule: GenericSchedule = self._init_methods_and_schedules[0]
+
+            return SiteLevelMethod(
+                method_name,
+                properties,
+                consider_weather,
+                follow_up_schedule=follow_up_schedule,
+            )
+        elif method_survey_level == EquipmentGroupLevelMethod.MEASUREMENT_SCALE:
+            meth_pref_follow_up = properties[Method.METHOD_FOLLOW_UP_PROPERTIES_ACCESSOR][
+                Method.METHOD_FOLLOW_UP_PROPERTIES_PREF_FU_ACCESSOR
+            ]
+
+            if isinstance(meth_pref_follow_up, str) and meth_pref_follow_up != "_placeholder_str_":
+                follow_up_schedule: GenericSchedule = self._survey_schedules[meth_pref_follow_up]
+            else:
+                follow_up_schedule: GenericSchedule = self._init_methods_and_schedules[0]
+
+            return EquipmentGroupLevelMethod(
+                method_name,
+                properties,
+                consider_weather,
+                follow_up_schedule=follow_up_schedule,
+            )
+        elif method_survey_level == EquipmentLevelMethod.MEASUREMENT_SCALE:
+            return EquipmentLevelMethod(
+                method_name,
+                properties,
+                consider_weather,
+            )
 
     def do_daily_program_deployment(self) -> None:
         # TODO may need to split up methods and follow_up methods

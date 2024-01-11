@@ -21,7 +21,6 @@ def create_schedule(
     sim_end_date: date,
     est_meth_daily_surveys: int,
     method_avail_crews: int,
-    follow_up_schedule: FollowUpMobileSchedule = None,
 ) -> GenericSchedule:
     """Will create and return  schedule with the schedule type based on
     the provided method and it's parameters. All schedules inherit from generic schedule

@@ -3,6 +3,8 @@ from virtual_world.sites import Site
 
 
 class EquipmentLevelMethod:
+    MEASUREMENT_SCALE = "component"
+
     def __init__(self, name, properties):
         super().__init__(name, properties)
 

@@ -3,6 +3,8 @@ from scheduling.generic_schedule import GenericSchedule
 
 
 class EquipmentGroupLevelMethod:
+    MEASUREMENT_SCALE = "equipment"
+
     def __init__(self, name, properties):
         super().__init__(name, properties)
 
