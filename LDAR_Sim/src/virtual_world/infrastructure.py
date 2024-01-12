@@ -8,7 +8,9 @@ from virtual_world.infrastructure_const import (
     Virtual_World_To_Prop_Params_Mapping,
 )
 from virtual_world.sites import Site
-from file_processing.input_processing.infrastructure_processing import read_in_infrastructure_files
+from file_processing.input_processing.infrastructure_processing import (
+    read_in_infrastructure_files,
+)
 
 # TODO: create logic for wrapping up the emissions into a dictionary
 # TODO: create logic for unwrapping the emissions dictionary
@@ -16,11 +18,16 @@ from file_processing.input_processing.infrastructure_processing import read_in_i
 
 class Infrastructure:
     def __init__(self, virtual_world, methods, in_dir) -> None:
-        self.generate_infrastructure(virtual_world=virtual_world, methods=methods, in_dir=in_dir)
+        self.generate_infrastructure(
+            virtual_world=virtual_world, methods=methods, in_dir=in_dir
+        )
 
-    def generate_propagating_params(virtual_world, methods) -> dict:
+    def generate_propagating_params(self, virtual_world, methods) -> dict:
         prop_params_dict: dict = {}
-        for param, mapping in Virtual_World_To_Prop_Params_Mapping.PROPAGATING_PARAMS.items():
+        for (
+            param,
+            mapping,
+        ) in Virtual_World_To_Prop_Params_Mapping.PROPAGATING_PARAMS.items():
             mapping: str
             access_path = mapping.split(".")
             val = virtual_world
@@ -29,7 +36,10 @@ class Infrastructure:
             prop_params_dict[param] = val
 
         prop_params_dict["Method_Specific_Params"] = {}
-        for param, mapping in Virtual_World_To_Prop_Params_Mapping.METH_SPEC_PROP_PARAMS.items():
+        for (
+            param,
+            mapping,
+        ) in Virtual_World_To_Prop_Params_Mapping.METH_SPEC_PROP_PARAMS.items():
             prop_params_dict["Method_Specific_Params"][param] = {}
             for method in methods:
                 access_path: list[str] = mapping.split(".")
@@ -42,6 +52,7 @@ class Infrastructure:
         return prop_params_dict
 
     def update_propagating_params(
+        self,
         prop_params: dict,
         site_row_df_info: pd.Series,
         site_type_info: pd.Series,
@@ -49,7 +60,9 @@ class Infrastructure:
     ) -> None:
         if site_type_info is not None:
             # Updating propagating parameters with site type info
-            for param in Infrastructure_Constants.Site_Type_File_Constants.PROPAGATING_PARAMS:
+            for (
+                param
+            ) in Infrastructure_Constants.Site_Type_File_Constants.PROPAGATING_PARAMS:
                 site_type_val = site_type_info.get(param, None)
                 if site_type_val is not None:
                     prop_params[param] = site_type_val
@@ -57,20 +70,30 @@ class Infrastructure:
             for method in methods:
                 for (
                     param
-                ) in Infrastructure_Constants.Site_Type_File_Constants.METH_SPEC_PROP_PARAMS:
+                ) in (
+                    Infrastructure_Constants.Site_Type_File_Constants.METH_SPEC_PROP_PARAMS
+                ):
                     site_type_val = site_type_info.get(method + param, None)
                     if site_type_val is not None:
-                        prop_params["Method_Specific_Params"][param][method] = site_type_val
+                        prop_params["Method_Specific_Params"][param][
+                            method
+                        ] = site_type_val
 
             # Updating propagating parameters with site info
-            for param in Infrastructure_Constants.Sites_File_Constants.PROPAGATING_PARAMS:
+            for (
+                param
+            ) in Infrastructure_Constants.Sites_File_Constants.PROPAGATING_PARAMS:
                 site_val = site_row_df_info.get(param, None)
                 if site_val is not None:
                     prop_params[param] = site_val
 
             # Update method specific propagating params with site info
             for method in methods:
-                for param in Infrastructure_Constants.Sites_File_Constants.METH_SPEC_PROP_PARAMS:
+                for (
+                    param
+                ) in (
+                    Infrastructure_Constants.Sites_File_Constants.METH_SPEC_PROP_PARAMS
+                ):
                     site_val = site_row_df_info.get(method + param, None)
                     if site_val is not None:
                         prop_params["Method_Specific_Params"][param][method] = site_val
@@ -134,7 +157,9 @@ class Infrastructure:
                 site_types_info = infrastructure_inputs["site_types"]
                 site_type = srow[Infrastructure_Constants.Sites_File_Constants.ID]
                 site_types_info = site_types_info.loc[
-                    site_types_info[Infrastructure_Constants.Site_Type_File_Constants.TYPE]
+                    site_types_info[
+                        Infrastructure_Constants.Site_Type_File_Constants.TYPE
+                    ]
                     == site_type
                 ].iloc[0]
             propagating_params = self.generate_propagating_params(
@@ -150,7 +175,9 @@ class Infrastructure:
                 id=srow[Infrastructure_Constants.Sites_File_Constants.ID],
                 lat=srow[Infrastructure_Constants.Sites_File_Constants.LAT],
                 long=srow[Infrastructure_Constants.Sites_File_Constants.LON],
-                equipment_groups=srow[Infrastructure_Constants.Sites_File_Constants.EQG],
+                equipment_groups=srow[
+                    Infrastructure_Constants.Sites_File_Constants.EQG
+                ],
                 propagating_params=propagating_params,
                 infrastructure_inputs=infrastructure_inputs,
             )

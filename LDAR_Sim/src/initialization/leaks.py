@@ -22,7 +22,7 @@ from datetime import datetime, timedelta
 
 from numpy import random
 from utils.distributions import leak_rvs
-from initialization.emissions import FugitiveEmission
+from virtual_world.fugitive_emission import FugitiveEmission
 
 
 def generate_leak(
@@ -95,7 +95,9 @@ def generate_leak_timeseries(
             cur_dt = start_date + timedelta(days=t)
             site["cum_leaks"] += 1
             site_timeseries.append(
-                generate_leak(virtual_world, site, cur_dt, start_date, site["cum_leaks"], nrd)
+                generate_leak(
+                    virtual_world, site, cur_dt, start_date, site["cum_leaks"], nrd
+                )
             )
         else:
             site_timeseries.append(None)
@@ -129,7 +131,9 @@ def generate_initial_leaks(
         init_max_days_active = NRd
 
     if virtual_world["n_init_leaks_prob"] is not None:
-        n_leaks = random.binomial(init_max_days_active, virtual_world["n_init_leaks_prob"])
+        n_leaks = random.binomial(
+            init_max_days_active, virtual_world["n_init_leaks_prob"]
+        )
     else:
         n_leaks = random.binomial(init_max_days_active, LPR)
 
@@ -141,6 +145,8 @@ def generate_initial_leaks(
         days_active = random.randint(0, high=init_max_days_active)
         leak_start_date = prog_start_date - timedelta(days=days_active)
         initial_site_leaks.append(
-            generate_leak(virtual_world, site, leak_start_date, prog_start_date, leak, NRd)
+            generate_leak(
+                virtual_world, site, leak_start_date, prog_start_date, leak, NRd
+            )
         )
     return initial_site_leaks

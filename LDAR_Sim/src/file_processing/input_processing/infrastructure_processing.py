@@ -22,12 +22,14 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 from pathlib import Path
 
 from pandas import DataFrame
-from src.file_processing.input_processing.file_reader import file_reader
+from file_processing.input_processing.file_reader import file_reader
 
 
 def read_in_infrastructure_files(virtual_world, in_dir: Path) -> dict[str, DataFrame]:
     input_dict = {}
-    input_dict["sites"] = file_reader(in_dir / virtual_world["infrastructure"]["sites_file"])
+    input_dict["sites"] = file_reader(
+        in_dir / virtual_world["infrastructure"]["sites_file"]
+    )
 
     if virtual_world["infrastructure"]["site_type_file"]:
         input_dict["site_types"] = file_reader(

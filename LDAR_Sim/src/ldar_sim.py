@@ -26,8 +26,8 @@ import warnings
 from math import floor
 import numpy as np
 import pandas as pd
-from initialization.emissions import FugitiveEmission
-from initialization.infrastructure import Infrastructure
+from virtual_world.fugitive_emission import FugitiveEmission
+from virtual_world.infrastructure import Infrastructure
 from time_counter import TimeCounter
 from weather.daylight_calculator import DaylightCalculatorAve
 from config.output_flag_mapping import (
@@ -47,7 +47,8 @@ from initialization.update_methods import (
     est_min_time_bt_surveys,
 )
 from campaigns.methods import update_campaigns, setup_campaigns
-from methods.company import BaseCompany
+
+# from methods.company import BaseCompany
 from numpy.random import binomial
 from out_processing.plotter import make_plots
 
@@ -81,24 +82,26 @@ class LdarSim:
         self.input_dir = input_dir
         self.output_dir = output_dir
 
-        #  --- state variables ---
-        self.state["campaigns"] = {}
-        state["candidate_flags"] = {}
-        state["max_leak_rate"] = virtual_world["emissions"]["max_leak_rate"]
+        # #  --- state variables ---
+        # self.state["campaigns"] = {}
+        # state["candidate_flags"] = {}
+        # state["max_leak_rate"] = virtual_world["emissions"]["max_leak_rate"]
 
-        #  --- timeseries variables ---
-        timeseries["total_daily_cost"] = np.zeros(virtual_world["timesteps"])
-        timeseries["repair_cost"] = np.zeros(virtual_world["timesteps"])
-        timeseries["nat_repair_cost"] = np.zeros(virtual_world["timesteps"])
-        timeseries["verification_cost"] = np.zeros(virtual_world["timesteps"])
-        timeseries["natural_redund_tags"] = np.zeros(self.virtual_world["timesteps"])
-        timeseries["natural_n_tags"] = np.zeros(self.virtual_world["timesteps"])
-        timeseries["new_leaks"] = np.zeros(self.virtual_world["timesteps"])
-        timeseries["cum_repaired_leaks"] = np.zeros(self.virtual_world["timesteps"])
-        timeseries["daily_emissions_kg"] = np.zeros(self.virtual_world["timesteps"])
-        timeseries["n_tags"] = np.zeros(self.virtual_world["timesteps"])
-        timeseries["rolling_cost_estimate"] = np.zeros(self.virtual_world["timesteps"])
-        timeseries["rolling_cost_estimate_b"] = np.zeros(self.virtual_world["timesteps"])
+        # #  --- timeseries variables ---
+        # timeseries["total_daily_cost"] = np.zeros(virtual_world["timesteps"])
+        # timeseries["repair_cost"] = np.zeros(virtual_world["timesteps"])
+        # timeseries["nat_repair_cost"] = np.zeros(virtual_world["timesteps"])
+        # timeseries["verification_cost"] = np.zeros(virtual_world["timesteps"])
+        # timeseries["natural_redund_tags"] = np.zeros(self.virtual_world["timesteps"])
+        # timeseries["natural_n_tags"] = np.zeros(self.virtual_world["timesteps"])
+        # timeseries["new_leaks"] = np.zeros(self.virtual_world["timesteps"])
+        # timeseries["cum_repaired_leaks"] = np.zeros(self.virtual_world["timesteps"])
+        # timeseries["daily_emissions_kg"] = np.zeros(self.virtual_world["timesteps"])
+        # timeseries["n_tags"] = np.zeros(self.virtual_world["timesteps"])
+        # timeseries["rolling_cost_estimate"] = np.zeros(self.virtual_world["timesteps"])
+        # timeseries["rolling_cost_estimate_b"] = np.zeros(
+        #     self.virtual_world["timesteps"]
+        # )
 
         # Initialize method(s) to be used; append to state
         calculate_daylight = False
@@ -119,21 +122,21 @@ class LdarSim:
                 )
             if m_obj["consider_daylight"]:
                 calculate_daylight = True
-            try:
-                state["methods"].append(
-                    BaseCompany(
-                        state,
-                        infrastructure,
-                        program_parameters,
-                        virtual_world,
-                        simulation_settings,
-                        m_obj,
-                        timeseries,
-                        m_label,
-                    )
-                )
-            except AttributeError:
-                print("Cannot add this method: " + m_label)
+            # try:
+            #     state["methods"].append(
+            #         BaseCompany(
+            #             state,
+            #             infrastructure,
+            #             program_parameters,
+            #             virtual_world,
+            #             simulation_settings,
+            #             m_obj,
+            #             timeseries,
+            #             m_label,
+            #         )
+            #     )
+            # except AttributeError:
+            #     print("Cannot add this method: " + m_label)
 
         # Initialize daylight
         if calculate_daylight:
@@ -162,7 +165,9 @@ class LdarSim:
         program_economics = self.program_parameters["economics"]
 
         if len(self.state["campaigns"]) > 0:
-            update_campaigns(self.state["campaigns"], self.state["sites"], cur_ts, cur_date)
+            update_campaigns(
+                self.state["campaigns"], self.state["sites"], cur_ts, cur_date
+            )
 
         new_leaks = 0
         daily_emissions_kg = 0
@@ -270,7 +275,9 @@ class LdarSim:
             site["repaired_leak_cnt"] = len(site["repaired_leaks"])
             site["active_leak_emis"] = active_leak_emis
             site["repaired_leak_emis"] = repaired_leak_emis
-            site["total_emissions_kg"] = site["active_leak_emis"] + site["repaired_leak_emis"]
+            site["total_emissions_kg"] = (
+                site["active_leak_emis"] + site["repaired_leak_emis"]
+            )
             leaks += site["active_leaks"] + site["repaired_leaks"]
             del site["n_new_leaks"]
 
@@ -288,14 +295,18 @@ class LdarSim:
 
         # Create some new variables for plotting
         site_df["cum_frac_sites"] = list(site_df.index)
-        site_df["cum_frac_sites"] = site_df["cum_frac_sites"] / max(site_df["cum_frac_sites"])
+        site_df["cum_frac_sites"] = site_df["cum_frac_sites"] / max(
+            site_df["cum_frac_sites"]
+        )
         site_df["cum_frac_emissions"] = np.cumsum(
             sorted(site_df["total_emissions_kg"], reverse=True)
         )
         site_df["cum_frac_emissions"] = site_df["cum_frac_emissions"] / max(
             site_df["cum_frac_emissions"]
         )
-        site_df["mean_rate_kg_day"] = site_df["total_emissions_kg"] / virtual_world["timesteps"]
+        site_df["mean_rate_kg_day"] = (
+            site_df["total_emissions_kg"] / virtual_world["timesteps"]
+        )
 
         # Write csv files
         if simulation_settings[OUTPUTS][LEAKS]:
@@ -328,7 +339,8 @@ class LdarSim:
         if simulation_settings[OUTPUTS][SITE_VISITS]:
             for meth, meth_vis_df in site_visits.items():
                 meth_vis_df.to_csv(
-                    self.output_dir / f"site_visits_{meth}_{virtual_world['simulation']}.csv",
+                    self.output_dir
+                    / f"site_visits_{meth}_{virtual_world['simulation']}.csv",
                     index=False,
                 )
 
@@ -340,7 +352,9 @@ class LdarSim:
 
         # Make plots
         if self.simulation_settings[OUTPUTS][PLOTS]:
-            make_plots(leak_df, time_df, site_df, virtual_world["simulation"], self.output_dir)
+            make_plots(
+                leak_df, time_df, site_df, virtual_world["simulation"], self.output_dir
+            )
 
         # Extract necessary information from the parameters
         wanted_c_economics = [
@@ -357,13 +371,25 @@ class LdarSim:
 
         # Extract Metadata
         wanted_meta_cols = ["program_name", "simulation", "NRd", "start_date"]
-        metadata = {key: value for key, value in virtual_world.items() if key in wanted_meta_cols}
+        metadata = {
+            key: value
+            for key, value in virtual_world.items()
+            if key in wanted_meta_cols
+        }
 
         metadata.update(
-            {key: value for key, value in program_parameters.items() if key in wanted_meta_cols}
+            {
+                key: value
+                for key, value in program_parameters.items()
+                if key in wanted_meta_cols
+            }
         )
         metadata.update(
-            {key: value for key, value in simulation_settings.items() if key in wanted_meta_cols}
+            {
+                key: value
+                for key, value in simulation_settings.items()
+                if key in wanted_meta_cols
+            }
         )
 
         sim_summary = {

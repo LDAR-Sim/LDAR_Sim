@@ -96,7 +96,9 @@ if __name__ == "__main__":
     # to use files, If they say no, the files will be removed
     generator_dir = in_dir / "generator"
     # --- Create simulations ---
-    simulations = create_sims(sim_params, programs, virtual_world, generator_dir, in_dir, out_dir)
+    simulations = create_sims(
+        sim_params, programs, virtual_world, generator_dir, in_dir, out_dir
+    )
 
     # --- Run simulations (in parallel) --
     with mp.Pool(processes=sim_params["n_processes"]) as p:
@@ -104,31 +106,31 @@ if __name__ == "__main__":
 
     # ---- Generate Outputs ----
 
-    # Do batch reporting
-    print("....Generating output data")
-    if sim_params[OUTPUTS][BATCH_REPORTING] and (
-        sim_params[OUTPUTS][SITES]
-        and sim_params[OUTPUTS][LEAKS]
-        and sim_params[OUTPUTS][TIMESERIES]
-    ):
-        # Create a data object...
-        if has_ref & has_base:
-            print("....Generating cost mitigation outputs")
-            cost_mitigation = cost_mitigation(sim_outputs, ref_program, base_program, out_dir)
-            reporting_data = BatchReporting(
-                out_dir, sim_params["start_date"], ref_program, base_program
-            )
-            if sim_params["n_simulations"] > 1:
-                reporting_data.program_report()
-                if len(programs) > 1:
-                    print("....Generating program comparison plots")
-                    reporting_data.batch_report()
-                    reporting_data.batch_plots()
-        else:
-            print("No reference or base program input...skipping batch reporting and economics.")
+    # # Do batch reporting
+    # print("....Generating output data")
+    # if sim_params[OUTPUTS][BATCH_REPORTING] and (
+    #     sim_params[OUTPUTS][SITES]
+    #     and sim_params[OUTPUTS][LEAKS]
+    #     and sim_params[OUTPUTS][TIMESERIES]
+    # ):
+    #     # Create a data object...
+    #     if has_ref & has_base:
+    #         print("....Generating cost mitigation outputs")
+    #         cost_mitigation = cost_mitigation(sim_outputs, ref_program, base_program, out_dir)
+    #         reporting_data = BatchReporting(
+    #             out_dir, sim_params["start_date"], ref_program, base_program
+    #         )
+    #         if sim_params["n_simulations"] > 1:
+    #             reporting_data.program_report()
+    #             if len(programs) > 1:
+    #                 print("....Generating program comparison plots")
+    #                 reporting_data.batch_report()
+    #                 reporting_data.batch_plots()
+    #     else:
+    #         print("No reference or base program input...skipping batch reporting and economics.")
 
     # Write program metadata
-    metadata = open(out_dir / "_metadata.txt", "w")
-    metadata.write(str(programs) + "\n" + str(datetime.datetime.now()))
+    # metadata = open(out_dir / "_metadata.txt", "w")
+    # metadata.write(str(programs) + "\n" + str(datetime.datetime.now()))
 
-    metadata.close()
+    # metadata.close()

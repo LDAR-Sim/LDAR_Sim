@@ -38,13 +38,13 @@ def file_reader(input_file_path: Path) -> Any:
         print(f"File {str(input_file_path)} does not exist")
         sys.exit()
     try:
-        if ".csv" in input_file_path:
+        if input_file_path.suffix == ".csv":
             data = csv_reader(input_file_path)
-        elif ".json" in input_file_path:
+        elif input_file_path.suffix == ".json":
             data = json_reader(input_file_path)
-        elif ".p" in input_file_path:
+        elif input_file_path.suffix == ".p":
             data = pickle_reader(input_file_path)
-        elif ".yml" in input_file_path or ".yaml" in input_file_path:
+        elif input_file_path.suffix == ".yml" or input_file_path.suffix == ".yaml":
             data = yaml_reader(input_file_path)
         else:
             raise FileNotFoundError

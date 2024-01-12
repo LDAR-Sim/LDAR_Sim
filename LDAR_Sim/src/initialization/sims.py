@@ -25,7 +25,7 @@ import pickle
 from copy import deepcopy
 
 from initialization.preseed import gen_seed_timeseries
-from initialization.infrastructure import Infrastructure
+from virtual_world.infrastructure import Infrastructure
 import hashlib
 
 
@@ -91,7 +91,9 @@ def create_sims(sim_params, programs, virtual_world, generator_dir, in_dir, out_
     # this allows us to know if the inputs that influence infrastructure have changed so that
     # we can generate new Infrastructure instead of using the old one in that case.
     print("Hashing files")
-    sites_file_hash: str = hash_file(in_dir / virtual_world["infrastructure"]["sites_file"])
+    sites_file_hash: str = hash_file(
+        in_dir / virtual_world["infrastructure"]["sites_file"]
+    )
     site_type_file_hash: str = (
         hash_file(in_dir / virtual_world["infrastructure"]["site_type_file"])
         if virtual_world["infrastructure"]["site_type_file"] is not None
@@ -261,8 +263,10 @@ def create_sims(sim_params, programs, virtual_world, generator_dir, in_dir, out_
             opening_message = "Simulating program: {} ; simulation {} of {}".format(
                 pidx, i + 1, n_simulations
             )
-            closing_message = "Finished simulating program {} ; simulation {} of {} ".format(
-                pidx, i + 1, n_simulations
+            closing_message = (
+                "Finished simulating program {} ; simulation {} of {} ".format(
+                    pidx, i + 1, n_simulations
+                )
             )
             # TODO Think about riping out this big dictionary
             simulations.append(
