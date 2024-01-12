@@ -21,34 +21,52 @@ import gc
 #
 # ------------------------------------------------------------------------------
 import os
+import multiprocessing as mp
+import sys
+import shutil
+from pathlib import Path
 import random as rand
 import sys
 from datetime import timedelta, date
+
 
 from numpy import random as np_rand
 from virtual_world.infrastructure import Infrastructure
 from stdout_redirect import stdout_redirect
 from time_counter import TimeCounter
 from weather.weather_lookup import WeatherLookup as WL
-from weather.weather_lookup_hourly import WeatherLookup as WL_h
 
-from ldar_sim import LdarSim
+from utils.generic_functions import check_ERA5_file
+from file_processing.input_processing.input_manager import InputManager
+from initialization.args import (
+    files_from_args,
+    get_abs_path,
+)  # TODO: move this over to input_processing?
+
+from ldar_sim import LdarSim, create_sims
+from programs.program import Program
+
+opening_msg = """
+You are running LDAR-Sim version 4.0.0 an open sourced software (MIT) license.
+Provide any issues, comments, questions, or recommendations by
+adding an issue to https://github.com/LDAR-Sim/LDAR_Sim.git
+"""
 
 
-def ldar_sim_run(simulation):
+def ldar_sim_run(simulation, weather, daylight):
     """
     The ldar sim run function takes a simulation dictionary
     simulation = a dictionary of simulation parameters necessary to run LDAR-Sim
     """
 
     simulation = copy.deepcopy(simulation)
-    i = simulation["i"]
     virtual_world = simulation["virtual_world"]
     program_parameters = simulation["program"]
     input_directory = simulation["input_directory"]
-    output_directory = simulation["output_directory"] / program_parameters["program_name"]
+    output_directory = (
+        simulation["output_directory"] / program_parameters["program_name"]
+    )
     virtual_world["pregenerate_leaks"] = simulation["pregenerate_leaks"]
-    virtual_world["seed_timeseries"] = simulation["seed_timeseries"]
     infrastructure: Infrastructure = simulation["Infrastructure"]
     simulation_settings = simulation["simulation_settings"]
 
@@ -64,70 +82,173 @@ def ldar_sim_run(simulation):
     else:
         sys.stdout = stdout_redirect([logfile])
     gc.collect()
-    print(simulation["opening_message"])
-    virtual_world["simulation"] = str(simulation["i"])
 
     # --------------------------------------
-    # --- Initialize dynamic model state ---
-    state = {
-        "t": None,
-        "operator": None,  # operator gets assigned during initialization
-        "methods": [],  # list of methods in action
-        "flags": [],  # list of sites flagged for follow-up
-        # 'leaks': [],  # list of all current leaks
-        "tags": [],  # leaks that have been tagged for repair
-        "weather": None,  # weather gets assigned during initialization
-        "daylight": None,  # daylight hours calculated during initialization
-        # 'init_leaks': [],  # the initial leaks generated at timestep 1
-        "max_leak_rate": None,  # the largest leak in the input file
-        "site_visits": {},
-    }
-
-    # ------------------------Initialize timeseries data----------------------------
-
-    timeseries: dict[str, list] = {
-        "datetime": [],
-        "active_leaks": [],
-        "new_leaks": [],
-        "n_tags": [],
-        "rolling_cost_estimate": [],
-        "rolling_cost_estimate_b": [],
-        "cum_repaired_leaks": [],
-        "daily_emissions_kg": [],
-    }
-
-    # -----------------------------Run simulations----------------------------------
-
-    # Initialize objects
-    if "weather_is_hourly" in virtual_world and virtual_world["weather_is_hourly"]:
-        state["weather"] = WL_h(state, virtual_world, input_directory)
-    else:
-        state["weather"] = WL(state, virtual_world, input_directory)
-    state["t"] = TimeCounter(virtual_world["start_date"], virtual_world["end_date"])
-    virtual_world.update({"timesteps": state["t"].timesteps})
+    # TODO : probably program?
     sim = LdarSim(
-        i,
         simulation_settings,
         state,
         program_parameters,
         virtual_world,
         infrastructure,
-        timeseries,
         input_directory,
         output_directory,
     )
-    start_date = date(*virtual_world["start_date"])
-    # Loop through timeseries
-    for ts in range(state["t"].timesteps):
-        state["t"].current_timestep = ts
-        state["t"].current_date = start_date + timedelta(days=ts)
-        if virtual_world["seed_timeseries"]:
-            np_rand.seed(virtual_world["seed_timeseries"][state["t"].current_timestep])
-            rand.seed(virtual_world["seed_timeseries"][state["t"].current_timestep])
-        sim.update()
+
+    # start_date = date(*virtual_world["start_date"])
+    # # Loop through timeseries
+    # for ts in range(state["t"].timesteps):
+    #     state["t"].current_timestep = ts
+    #     state["t"].current_date = start_date + timedelta(days=ts)
+    #     if virtual_world["seed_timeseries"]:
+    #         np_rand.seed(virtual_world["seed_timeseries"][state["t"].current_timestep])
+    #         rand.seed(virtual_world["seed_timeseries"][state["t"].current_timestep])
+    #     sim.update()  # TODO: this should be replaced with program
 
     # Clean up and write files
     sim_summary = sim.finalize()
     print(simulation["closing_message"])
     logfile.close()
     return sim_summary
+
+
+def simulate():
+    simulation: LdarSim = LdarSim()
+    LdarSim.run_simulation()
+    return
+
+
+if __name__ == "__main__":
+    print(opening_msg)
+
+    root_dir = Path(__file__).resolve().parent.parent
+    os.chdir(root_dir)
+
+    src_dir = root_dir / "src"
+    sys.path.insert(1, str(src_dir))
+
+    # Add the external sensors directory
+    ext_sens_dir = root_dir / "external_sensors"
+    sys.path.append(str(ext_sens_dir))
+
+    # -- Retrieve input parameters from commandline argument and parse --
+    parameter_filenames = files_from_args(root_dir)
+
+    input_manager = InputManager()
+
+    if "out_dir" in parameter_filenames:
+        sim_params = input_manager.read_and_validate_parameters(
+            parameter_filenames["parameter_files"]
+        )
+        out_dir = get_abs_path(parameter_filenames["out_dir"])
+    else:
+        sim_params = input_manager.read_and_validate_parameters(parameter_filenames)
+        out_dir = get_abs_path(sim_params["output_directory"])
+
+    # --- Assign local variabls
+    ref_program = sim_params["reference_program"]
+    base_program = sim_params["baseline_program"]
+    in_dir = get_abs_path(sim_params["input_directory"])
+    programs = sim_params.pop("programs")
+    virtual_world = sim_params.pop("virtual_world")
+
+    # --- Run Checks ----
+    check_ERA5_file(in_dir, virtual_world)
+    has_ref = ref_program in programs
+    has_base = base_program in programs
+
+    if not (has_ref and has_base):
+        print("No reference or base program input...Exiting sim")
+        sys.exit()
+
+    # -- Setup Output folder --
+    if os.path.exists(out_dir):
+        shutil.rmtree(out_dir)
+    os.makedirs(out_dir)
+    input_manager.write_parameters(out_dir / "parameters.yaml")
+
+    generator_dir = in_dir / "generator"
+    if os.path.exists(generator_dir):
+        print(
+            "Pre-generated initialization files exist. LDAR-Sim may not create new leaks to model with"
+        )
+
+    # Initialize objects
+    print("...Initializing weather")
+    weather = WL(virtual_world, sim_params["input_directory"])
+    print("...Initializing daylight")
+    daylight = None
+    print("...Initializing infrastructure")
+    infrastructure = initialize_infrastructure(
+        sim_params, programs, virtual_world, generator_dir, in_dir, out_dir
+    )
+    print("...Initializing emissions")
+    # pregen emissions
+    emissions = initialize_emissions()
+    for simulation in range(sim_params["n_simulations"]):
+        print("...Simulating set {simulation}")
+        # -- Run simulations --
+        with mp.Pool(processes=sim_params["n_processes"]) as p:
+            sim_outputs = p.starmap(ldar_sim_run, [sim, weather, daylight])
+        print("Finished simulating set {simulation}")
+    # -- Batch Report --
+    # TODO: need to write code to clean up outputs here.
+    print("...Cleaning up output data")
+    """
+    # # Do batch reporting
+    # print("....Generating output data")
+    # if sim_params[OUTPUTS][BATCH_REPORTING] and (
+    #     sim_params[OUTPUTS][SITES]
+    #     and sim_params[OUTPUTS][LEAKS]
+    #     and sim_params[OUTPUTS][TIMESERIES]
+    # ):
+    #     # Create a data object...
+    #     if has_ref & has_base:
+    #         print("....Generating cost mitigation outputs")
+    #         cost_mitigation = cost_mitigation(sim_outputs, ref_program, base_program, out_dir)
+    #         reporting_data = BatchReporting(
+    #             out_dir, sim_params["start_date"], ref_program, base_program
+    #         )
+    #         if sim_params["n_simulations"] > 1:
+    #             reporting_data.program_report()
+    #             if len(programs) > 1:
+    #                 print("....Generating program comparison plots")
+    #                 reporting_data.batch_report()
+    #                 reporting_data.batch_plots()
+    #     else:
+    #         print("No reference or base program input...skipping batch reporting and economics.")
+
+    # Write program metadata
+    # metadata = open(out_dir / "_metadata.txt", "w")
+    # metadata.write(str(programs) + "\n" + str(datetime.datetime.now()))
+
+    # metadata.close()
+    """
+
+"""
+TODO implement this pseudocode
+
+
+main script ------------
+Read in all the inputs and parameters
+intializae infrastructure
+pregen emissions
+intialize weather
+initialize daylight
+
+in a loop ------- for each simulation #
+
+collect info necessary to run a sim for eahc program
+using multiprocessing, create processes for each program
+pass info necessary to create ldar-sim object to each process which will execute a simulate function
+
+
+in simulate function ------
+create ldar-sim object
+call ldar_sim object run simulation
+once that call finishes, interact with LDAR-Sim object through its other methods to generate outputs
+save outputs
+kill process
+
+
+"""
