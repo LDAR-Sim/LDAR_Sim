@@ -1,14 +1,12 @@
-from datetime import date
+from datetime import date, timedelta
 from math import ceil
 
 from sortedcontainers import SortedList
 from programs.method import Method
 from scheduling.follow_up_mobile_schedule import FollowUpMobileSchedule
 from scheduling.follow_up_survey_planner import FollowUpSurveyPlanner
-from scheduling.schedule_dataclasses import SiteSurveyReport
+from scheduling.schedule_dataclasses import DetectionRecord
 from sensors.default_site_level_sensor import DefaultSiteLevelSensor
-from virtual_world.sites import Site
-from scheduling.generic_schedule import GenericSchedule
 from sensors.sensor_constant_mapping import (
     SENS_TYPE,
     SENS_MDL,
@@ -32,11 +30,11 @@ class SiteLevelMethod(Method):
         name,
         properties,
         follow_up_schedule: FollowUpMobileSchedule,
-    ):
+    ) -> None:
         super().__init__(name, properties)
-        interaction_priority: str = properties[
-            Method.METHOD_FOLLOW_UP_PROPERTIES_ACCESSOR
-        ][Method.METHOD_FOLLOW_UP_PROPERTIES_INTERACT_PRIO_ACCESSOR]
+        interaction_priority: str = properties[Method.METHOD_FOLLOW_UP_PROPERTIES_ACCESSOR][
+            Method.METHOD_FOLLOW_UP_PROPERTIES_INTERACT_PRIO_ACCESSOR
+        ]
         if interaction_priority == self.THRESHOLD_INT_PRIO:
             self._threshold_first: bool = True
         elif interaction_priority == self.PROPORTION_INT_PRIO:
@@ -48,7 +46,6 @@ class SiteLevelMethod(Method):
                 )
             )
             sys.exit()
-        self._pending_reports: set[FollowUpSurveyPlanner] = set()
         self._candidates_for_flags: SortedList[FollowUpSurveyPlanner] = SortedList(
             key=lambda x: -x.rate_at_site
         )
@@ -60,68 +57,75 @@ class SiteLevelMethod(Method):
         self._delay: int = properties[Method.METHOD_FOLLOW_UP_PROPERTIES_ACCESSOR][
             Method.METHOD_FOLLOW_UP_PROPERTIES_DELAY_ACCESSOR
         ]
-        self._proportion: float = properties[
-            Method.METHOD_FOLLOW_UP_PROPERTIES_ACCESSOR
-        ][Method.METHOD_FOLLOW_UP_PROPERTIES_PROP_ACCESSOR]
-        self._threshold: float = properties[
-            Method.METHOD_FOLLOW_UP_PROPERTIES_ACCESSOR
-        ][Method.METHOD_FOLLOW_UP_PROPERTIES_THRESH_ACCESSOR]
-        self._inst_threshold: float = properties[
-            Method.METHOD_FOLLOW_UP_PROPERTIES_ACCESSOR
-        ][Method.METHOD_FOLLOW_UP_PROPERTIES_INST_THRESH_ACCESSOR]
-        self._redund_filter: str = properties[
-            Method.METHOD_FOLLOW_UP_PROPERTIES_ACCESSOR
-        ][Method.METHOD_FOLLOW_UP_PROPERTIES_REDUND_FILTER_ACCESSOR]
+        self._proportion: float = properties[Method.METHOD_FOLLOW_UP_PROPERTIES_ACCESSOR][
+            Method.METHOD_FOLLOW_UP_PROPERTIES_PROP_ACCESSOR
+        ]
+        self._threshold: float = properties[Method.METHOD_FOLLOW_UP_PROPERTIES_ACCESSOR][
+            Method.METHOD_FOLLOW_UP_PROPERTIES_THRESH_ACCESSOR
+        ]
+        self._inst_threshold: float = properties[Method.METHOD_FOLLOW_UP_PROPERTIES_ACCESSOR][
+            Method.METHOD_FOLLOW_UP_PROPERTIES_INST_THRESH_ACCESSOR
+        ]
+        self._redund_filter: str = properties[Method.METHOD_FOLLOW_UP_PROPERTIES_ACCESSOR][
+            Method.METHOD_FOLLOW_UP_PROPERTIES_REDUND_FILTER_ACCESSOR
+        ]
         self._follow_up_schedule: FollowUpMobileSchedule = follow_up_schedule
         self._detection_count = 0
 
     def update(self, current_date: date) -> None:
         # TODO add user configurable follow_up parameter to allow
         # for up to a certain % variation between rates
-        for site_id, site_reports in self._site_survey_reports.items():
-            for i in range(len(site_reports - 1), -1, -1):
-                report: SiteSurveyReport = self._site_survey_reports[i]
-
-                in_processing_for_follow_up: bool = (
-                    self._site_IDs_in_consideration_for_flag[report.site_id]
-                    and self._site_IDs_in_follow_up_queue[report.site_id]
-                )
-
-                if not (
-                    report.site_measured_rate
-                    == self._survey_reports[report.site_id][-1].site_measured_rate
-                    and in_processing_for_follow_up
-                ):
-                    if report.site_measured_rate >= self._threshold:
-                        self.add_pending_report(
-                            planner.get_site(), report, self._reporting_delay
+        date_to_check: date = current_date - timedelta(days=self._reporting_delay)
+        new_detections: list[DetectionRecord] = self._detection_records.get(date_to_check, [])
+        for detection_record in new_detections:
+            # Check that the site hasn't gotten a survey with a method
+            # that can tag leaks since the date the detection was made
+            if detection_record.site.get_latest_tagging_survey_date() < date_to_check:
+                # If the site is already in the list for potential flags, pop it from the list,
+                # update it based on the new measurements and the redundancy filter, and either
+                # add it back to the list or bypass the list if it now passes the instant threshold.
+                if self._site_IDs_in_consideration_for_flag(detection_record.site_id):
+                    existing_plan: FollowUpSurveyPlanner = self._get_plan_from_candidates(
+                        detection_record.site_id
+                    )
+                    existing_plan.update_with_latest_survey(
+                        detection_record, self._redund_filter, self._name, date_to_check
+                    )
+                    if existing_plan.rate_at_site >= self._inst_threshold:
+                        self._follow_up_schedule.add_previous_queued_to_survey_queue(existing_plan)
+                    elif existing_plan.rate_at_site >= self._threshold:
+                        self._candidates_for_flags.add(existing_plan)
+                # If the site is already queued to get a follow-up,
+                # update the queue priority based on new results
+                elif self._site_IDs_in_follow_up_queue(detection_record.site_id):
+                    existing_plan: FollowUpSurveyPlanner = (
+                        self._follow_up_schedule.get_plan_from_queue(detection_record.site_id)
+                    )
+                    existing_plan.update_with_latest_survey(
+                        detection_record, self._redund_filter, self._name, date_to_check
+                    )
+                    if existing_plan.rate_at_site >= self._inst_threshold:
+                        self._follow_up_schedule.add_previous_queued_to_survey_queue(existing_plan)
+                    elif existing_plan.rate_at_site >= self._threshold:
+                        self._follow_up_schedule.add_to_survey_queue(existing_plan)
+                # Otherwise, the site is not already in processing for a follow-up,
+                # process as normal
+                else:
+                    if detection_record.rate_detected >= self._inst_threshold:
+                        self._follow_up_schedule.add_previous_queued_to_survey_queue(
+                            FollowUpSurveyPlanner(detection_record, date_to_check)
                         )
-                    elif report.site_measured_rate > 0:
+                    elif existing_plan.rate_at_site >= self._threshold:
+                        self._candidates_for_flags.add(
+                            FollowUpSurveyPlanner(detection_record, date_to_check)
+                        )
+                    elif existing_plan.rate_at_site > 0:
                         self._detection_count += 1
-                        if self._first_candidate_date is None:
-                            self._first_candidate_date = current_date + timedelta(
-                                days=self._reporting_delay
-                            )
-                    self._survey_reports[report.site_id].append(report)
-        # Go through the holding list for reports waiting on their
-        # reporting delay and move them to candidates,
-        # then queue candidates based on follow up work practice specified.
+
+        # Queue candidates based on follow up work practice specified.
         self.update_candidates_for_flags(current_date)
 
-    def add_pending_report(
-        self,
-        site: Site,
-        report: SiteSurveyReport,
-        reporting_delay: int,
-    ) -> None:
-        survey_plan: FollowUpSurveyPlanner = FollowUpSurveyPlanner(
-            site=site, original_survey_report=report, rep_delay=reporting_delay
-        )
-        self._pending_reports.add(survey_plan)
-
     def update_candidates_for_flags(self, current_date: date) -> None:
-        self.update_pending_rep_state(current_date)
-
         candidates_empty: bool = bool(self._candidates_for_flags)
 
         if self._first_candidate_date is None:
@@ -132,63 +136,7 @@ class SiteLevelMethod(Method):
             self._filter_candidates_by_proportion()
 
             for survey_plan in self._get_candidates():
-                self.add_to_survey_queue(survey_plan)
-
-    def update_pending_rep_state(self, current_date: date) -> None:
-        # Save a set of the survey plans that are done the reporting delay
-        # This lets us use set subtraction to remove all of the these
-        # survey plans from the set of survey plans still waiting for their reporting delay
-        reports_finished_pending: set[FollowUpSurveyPlanner] = set()
-        # Go through all the pending reports and update the date of their survey plan
-        # Then check if they should be delivered
-        for survey_plan in self._pending_reports():
-            survey_plan: FollowUpSurveyPlanner
-            survey_plan.update_date(current_date)
-            # If the survey plan report should be delivered, Ie: its reporting delay has passed
-            if survey_plan.deliver_report():
-                # Add the report to the set of ready reports
-                reports_finished_pending.add(survey_plan)
-                # If the site is already in the list for potential flags, pop it from the list,
-                # update it based on the new measurements and the redundancy filter, and either
-                # add it back to the list or bypass the list if it now passes the instant threshold.
-                if self._site_IDs_in_consideration_for_flag(survey_plan.site_id):
-                    existing_plan: FollowUpSurveyPlanner = (
-                        self._get_plan_from_candidates(survey_plan.site_id)
-                    )
-                    existing_plan.update_with_latest_survey(
-                        survey_plan, self._redund_filter
-                    )
-                    if existing_plan.rate_at_site >= self._inst_threshold:
-                        self._follow_up_schedule.add_previous_queued_to_survey_queue(
-                            existing_plan
-                        )
-                    else:
-                        self._candidates_for_flags.add(existing_plan)
-                # If the site is already queued to get a follow-up,
-                # update the queue priority based on new results
-                elif self._site_IDs_in_follow_up_queue(survey_plan.site_id):
-                    existing_plan: FollowUpSurveyPlanner = (
-                        self._follow_up_schedule.get_plan_from_queue(
-                            survey_plan.site_id
-                        )
-                    )
-                    if existing_plan.rate_at_site >= self._inst_threshold:
-                        self._follow_up_schedule.add_previous_queued_to_survey_queue(
-                            existing_plan
-                        )
-                    else:
-                        self._follow_up_schedule.add_to_survey_queue(existing_plan)
-                # Otherwise, the site is not already in processing for a follow-up,
-                # process as normal
-                else:
-                    if survey_plan.rate_at_site >= self._inst_threshold:
-                        self._follow_up_schedule.add_previous_queued_to_survey_queue(
-                            survey_plan
-                        )
-                    else:
-                        self._candidates_for_flags.add(survey_plan)
-
-        self._pending_reports -= reports_finished_pending
+                self._follow_up_schedule.add_to_survey_queue(survey_plan)
 
     def _get_plan_from_candidates(self, site_id: str) -> FollowUpSurveyPlanner:
         survey_plan: FollowUpSurveyPlanner = next(
@@ -237,9 +185,7 @@ class SiteLevelMethod(Method):
             provided to the method about the sensor
         """
         if sensor_info[SENS_TYPE] == "default":
-            self._sensor = DefaultSiteLevelSensor(
-                sensor_info[SENS_MDL], sensor_info[SENS_QE]
-            )
+            self._sensor = DefaultSiteLevelSensor(sensor_info[SENS_MDL], sensor_info[SENS_QE])
         else:
             print(ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
             sys.exit()

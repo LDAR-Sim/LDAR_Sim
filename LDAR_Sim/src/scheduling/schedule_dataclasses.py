@@ -21,6 +21,8 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 from dataclasses import dataclass, field
 from datetime import date
 
+from virtual_world.sites import Site
+
 
 @dataclass
 class EmissionDetectionReport:
@@ -65,3 +67,20 @@ class SiteSurveyReport:
 class CrewDailyReport:
     crew_id: int
     day_time_remaining: int
+
+
+@dataclass
+class DetectionRecord:
+    site_id: str
+    site: Site
+    rate_detected: float
+
+
+@dataclass
+class TaggingInfo:
+    measured_rate: float
+    curr_date: date
+    t_since_LDAR: int
+    company: str
+    crew: str
+    report_delay: int

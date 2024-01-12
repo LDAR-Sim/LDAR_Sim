@@ -1,7 +1,7 @@
 from datetime import date
 from scheduling.schedule_dataclasses import SiteSurveyReport
 from scheduling.generic_schedule import GenericSchedule
-from scheduling.survey_planner import SurveyPlanner
+from scheduling.scheduled_survey_planner import ScheduledSurveyPlanner
 from scheduling.workplan import Workplan
 from virtual_world.sites import Site
 
@@ -35,10 +35,10 @@ class MobileSchedule(GenericSchedule):
     def update(self, workplan: Workplan) -> None:
         reports, planners = workplan.get_reports()
         reports: dict[str, SiteSurveyReport]
-        planners: dict[str, SurveyPlanner]
+        planners: dict[str, ScheduledSurveyPlanner]
 
         for site_id, report in reports.items():
-            planner: SurveyPlanner = planners[site_id]
+            planner: ScheduledSurveyPlanner = planners[site_id]
             # If the survey of the site was not completed,
             # it needs to be queued to be surveyed again
             if not report.survey_complete:

@@ -20,7 +20,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 from typing import Tuple
 from datetime import date
 from hypothesis import given, strategies as st, settings, HealthCheck
-from src.scheduling.survey_planner import SurveyPlanner
+from scheduling.scheduled_survey_planner import ScheduledSurveyPlanner
 from src.virtual_world.sites import Site
 from testing.unit_testing.test_scheduling.test_survey_planner.surveyPlanner_testing_fixtures import (
     mocker_fixture,
@@ -55,10 +55,10 @@ def test_000_get_simulation_years(date_range: Tuple[date, date, int, int], mocke
 
     # Your existing test code here
     mocker.patch.object(Site, "__init__", lambda self, *args, **kwargs: setattr(self, "id", 1))
-    mocker.patch.object(SurveyPlanner, "_gen_survey_plan", return_value=[date(2023, 1, 1)])
+    mocker.patch.object(ScheduledSurveyPlanner, "_gen_survey_plan", return_value=[date(2023, 1, 1)])
     deploy_years = list(range(start_year, end_year + 1))
     deploy_months = list(range(1, 13))
-    planner = SurveyPlanner(mocker, 1, start_date, end_date, deploy_years, deploy_months)
+    planner = ScheduledSurveyPlanner(mocker, 1, start_date, end_date, deploy_years, deploy_months)
     result = planner._get_simulation_years(start_date, end_date)
 
     # Ensure that the result is a list of integers

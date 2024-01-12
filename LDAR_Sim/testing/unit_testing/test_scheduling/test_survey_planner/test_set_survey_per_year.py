@@ -20,7 +20,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 import pytest
 from datetime import date
 from src.virtual_world.sites import Site
-from src.scheduling.survey_planner import SurveyPlanner, Survey_Counter
+from scheduling.scheduled_survey_planner import ScheduledSurveyPlanner, Survey_Counter
 from testing.unit_testing.test_scheduling.test_survey_planner.surveyPlanner_testing_fixtures import (
     mocker_fixture,
     gen_set_survey_per_year_tests_1_fix,
@@ -35,7 +35,7 @@ def test_000_set_survey_per_year_dictionary_simple(mocker):
     deploy_years = list(range(start_year, end_year + 1))
     RS = 5
     deploy_months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
-    planner = SurveyPlanner(
+    planner = ScheduledSurveyPlanner(
         mocker,
         RS,
         date(start_year, 1, 1),
@@ -64,7 +64,7 @@ def test_000_set_survey_per_year_dictionary_simple(mocker):
     ],
 )
 def test_000_set_not_full_deployment_year_surveys(test_input, mocker_fix, request):
-    planner = SurveyPlanner(
+    planner = ScheduledSurveyPlanner(
         request.getfixturevalue(mocker_fix),
         request.getfixturevalue(test_input)[3],
         request.getfixturevalue(test_input)[0],

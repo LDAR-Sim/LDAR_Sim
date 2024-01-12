@@ -28,7 +28,7 @@ from src.sensors.default_site_level_sensor import DefaultSiteLevelSensor
 from src.sensors.default_sensor import DefaultSensor
 from src.virtual_world.emissions import Emission
 from src.scheduling.workplan import Workplan
-from src.scheduling.survey_planner import SurveyPlanner
+from scheduling.scheduled_survey_planner import ScheduledSurveyPlanner
 
 
 @pytest.fixture
@@ -36,9 +36,7 @@ def mocker_fixture(mocker):
     def mock_initialize_sensor(properties):
         return {}
 
-    mocker.patch.object(
-        Site, "__init__", lambda self, *args, **kwargs: setattr(self, "id", 1)
-    )
+    mocker.patch.object(Site, "__init__", lambda self, *args, **kwargs: setattr(self, "id", 1))
     mocker.patch.object(
         Method,
         "_initialize_sensor",
@@ -120,9 +118,7 @@ def mock_get_detectable_emissions(method_name):
     return {
         "test_meth": {
             "test_meth": [
-                Emission(
-                    1, 1, date(2023, 1, 1), date(2023, 1, 2), True, {"test_meth": 1}
-                )
+                Emission(1, 1, date(2023, 1, 1), date(2023, 1, 2), True, {"test_meth": 1})
             ],
         },
     }
@@ -130,9 +126,7 @@ def mock_get_detectable_emissions(method_name):
 
 @pytest.fixture(name="simple_method_values")
 def simple_method_values_fix(mocker):
-    mocker.patch.object(
-        Site, "__init__", lambda self, *args, **kwargs: setattr(self, "id", 1)
-    )
+    mocker.patch.object(Site, "__init__", lambda self, *args, **kwargs: setattr(self, "id", 1))
     mocker.patch.object(
         Method,
         "_initialize_sensor",
@@ -186,9 +180,7 @@ def simple_method_values2_fix(mocker):
     site_mock = mocker.Mock(spec=Site)
     site_mock.id = 1
 
-    mocker.patch.object(
-        site_mock, "get_method_survey_time", mock_get_method_survey_time
-    )
+    mocker.patch.object(site_mock, "get_method_survey_time", mock_get_method_survey_time)
     mocker.patch.object(
         Method,
         "_initialize_sensor",
@@ -242,9 +234,7 @@ def simple_method_values3_fix(mocker):
     site_mock = mocker.Mock(spec=Site)
     site_mock.id = 1
 
-    mocker.patch.object(
-        site_mock, "get_method_survey_time", mock_get_method_survey_time
-    )
+    mocker.patch.object(site_mock, "get_method_survey_time", mock_get_method_survey_time)
     mocker.patch.object(
         Method,
         "_initialize_sensor",
@@ -294,9 +284,7 @@ def simple_method_values3_fix(mocker):
 
 @pytest.fixture(name="simple_method_values4")
 def simple_method_values4_fix(mocker):
-    mocker.patch.object(
-        Site, "__init__", lambda self, *args, **kwargs: setattr(self, "id", 1)
-    )
+    mocker.patch.object(Site, "__init__", lambda self, *args, **kwargs: setattr(self, "id", 1))
     mocker.patch.object(
         Method,
         "_initialize_sensor",
@@ -352,9 +340,7 @@ def simple_method_values5_fix(mocker):
     site_mock = mocker.Mock(spec=Site)
     site_mock.id = 1
 
-    mocker.patch.object(
-        site_mock, "get_method_survey_time", mock_get_method_survey_time
-    )
+    mocker.patch.object(site_mock, "get_method_survey_time", mock_get_method_survey_time)
     mocker.patch.object(DefaultSensor, "detect_emissions", mock_detect_emissions)
     mocker.patch.object(
         Method,
@@ -377,12 +363,8 @@ def simple_method_values5_fix(mocker):
         mock_get_method_survey_time,
     )
     mocker.patch.object(Method, "_get_travel_time", mock_get_travel_time)
-    mocker.patch.object(
-        DefaultSiteLevelSensor, "detect_emissions", mock_detect_emissions
-    )
-    mocker.patch.object(
-        site_mock, "get_detectable_emissions", mock_get_detectable_emissions
-    )
+    mocker.patch.object(DefaultSiteLevelSensor, "detect_emissions", mock_detect_emissions)
+    mocker.patch.object(site_mock, "get_detectable_emissions", mock_get_detectable_emissions)
     properties: dict = {
         "n_crews": 5,
         "sensor": {"type": "default", "MDL": 1, "QE": 0},
@@ -413,9 +395,7 @@ def deploy_crews_testing_fix(mocker):
     site_mock = mocker.Mock(spec=Site)
     site_mock.id = 1
 
-    mocker.patch.object(
-        site_mock, "get_method_survey_time", mock_get_method_survey_time
-    )
+    mocker.patch.object(site_mock, "get_method_survey_time", mock_get_method_survey_time)
     mocker.patch.object(DefaultSensor, "detect_emissions", mock_detect_emissions)
     mocker.patch.object(
         Method,
@@ -440,12 +420,8 @@ def deploy_crews_testing_fix(mocker):
 
     mocker.patch.object(Method, "survey_site", mock_false_survey_site)
     mocker.patch.object(Method, "_get_travel_time", mock_get_travel_time)
-    mocker.patch.object(
-        DefaultSiteLevelSensor, "detect_emissions", mock_detect_emissions
-    )
-    mocker.patch.object(
-        site_mock, "get_detectable_emissions", mock_get_detectable_emissions
-    )
+    mocker.patch.object(DefaultSiteLevelSensor, "detect_emissions", mock_detect_emissions)
+    mocker.patch.object(site_mock, "get_detectable_emissions", mock_get_detectable_emissions)
     mocker.patch.object(site_mock, "get_id", mock_get_ID)
     properties: dict = {
         "n_crews": 5,
@@ -461,7 +437,7 @@ def deploy_crews_testing_fix(mocker):
     sites = [site_mock]
 
     survey_plans = [
-        SurveyPlanner(
+        ScheduledSurveyPlanner(
             site,
             6,
             date(2023, 1, 1),
@@ -481,9 +457,7 @@ def deploy_crews_testing2_fix(mocker):
     site_mock = mocker.Mock(spec=Site)
     site_mock.id = 1
     mocker.patch.object(site_mock, "get_id", mock_get_ID)
-    mocker.patch.object(
-        site_mock, "get_method_survey_time", mock_get_method_survey_time
-    )
+    mocker.patch.object(site_mock, "get_method_survey_time", mock_get_method_survey_time)
     mocker.patch.object(DefaultSensor, "detect_emissions", mock_detect_emissions)
     mocker.patch.object(
         Method,
@@ -511,12 +485,8 @@ def deploy_crews_testing2_fix(mocker):
         mock_get_method_survey_time,
     )
     mocker.patch.object(Method, "_get_travel_time", mock_get_travel_time)
-    mocker.patch.object(
-        DefaultSiteLevelSensor, "detect_emissions", mock_detect_emissions
-    )
-    mocker.patch.object(
-        site_mock, "get_detectable_emissions", mock_get_detectable_emissions
-    )
+    mocker.patch.object(DefaultSiteLevelSensor, "detect_emissions", mock_detect_emissions)
+    mocker.patch.object(site_mock, "get_detectable_emissions", mock_get_detectable_emissions)
     mocker.patch.object(Method, "survey_site", mock_survey_site)
     properties: dict = {
         "n_crews": 5,
@@ -532,7 +502,7 @@ def deploy_crews_testing2_fix(mocker):
     sites = [site_mock]
 
     survey_plans = [
-        SurveyPlanner(
+        ScheduledSurveyPlanner(
             site,
             6,
             date(2023, 1, 1),

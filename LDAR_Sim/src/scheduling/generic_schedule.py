@@ -4,7 +4,7 @@ from datetime import date
 from scheduling.workplan import Workplan
 from virtual_world.sites import Site
 from scheduling.schedule_dataclasses import SiteSurveyReport
-from scheduling.survey_planner import SurveyPlanner
+from scheduling.scheduled_survey_planner import ScheduledSurveyPlanner
 from utils.queue import PriorityQueueWithFIFO
 
 
@@ -34,21 +34,21 @@ class GenericSchedule:
         self._survey_queue = PriorityQueueWithFIFO()
         self._est_meth_daily_surveys: int = est_meth_daily_surveys
         self._method_crews: int = method_avail_crews
-        self._survey_plans: list[SurveyPlanner] = self._set_survey_plans(
+        self._survey_plans: list[ScheduledSurveyPlanner] = self._set_survey_plans(
             sim_start_date, sim_end_date, sites
         )
 
     def _set_survey_plans(
         self, sim_start_date, sim_end_date, sites
-    ) -> list[SurveyPlanner]:
-        survey_plans: list[SurveyPlanner] = []
+    ) -> list[ScheduledSurveyPlanner]:
+        survey_plans: list[ScheduledSurveyPlanner] = []
         for site in sites:
             # TODO flush out what survey planner needs as inputs for the constructor
             survey_freq: int = site._survey_frequencies[self._method]
             deploy_year: int = site._deployment_years[self._method]
             deploy_month: int = site._deployment_months[self._method]
             survey_plans.append(
-                SurveyPlanner(
+                ScheduledSurveyPlanner(
                     site,
                     survey_freq,
                     sim_start_date,
@@ -59,7 +59,7 @@ class GenericSchedule:
             )
         return survey_plans
 
-    def add_to_survey_queue(self, survey_plan: SurveyPlanner) -> None:
+    def add_to_survey_queue(self, survey_plan: ScheduledSurveyPlanner) -> None:
         """Add the supplied site to the survey queue to surveyed
 
         Args:
@@ -67,30 +67,28 @@ class GenericSchedule:
         """
         self._survey_queue.put(GenericSchedule.DEFAULT_SURVEY_PRIORITY, survey_plan)
 
-    def add_unfinished_to_survey_queue(self, survey_plan: SurveyPlanner) -> None:
+    def add_unfinished_to_survey_queue(self, survey_plan: ScheduledSurveyPlanner) -> None:
         """Add the supplied, partial surveyed site to queue
 
         Args:
             site (Site) : the Site to be added to the survey queue"""
-        self._survey_queue.put(
-            GenericSchedule.UNFINISHED_SURVEY_HIGHEST_PRIORITY, survey_plan
-        )
+        self._survey_queue.put(GenericSchedule.UNFINISHED_SURVEY_HIGHEST_PRIORITY, survey_plan)
 
-    def add_previous_queued_to_survey_queue(self, survey_plan: SurveyPlanner) -> None:
+    def add_previous_queued_to_survey_queue(self, survey_plan: ScheduledSurveyPlanner) -> None:
         """Add the supplied, unattended site back to queue
 
         Args:
             site (Site) : the Site to be added to the survey queue"""
         self._survey_queue.put(GenericSchedule.QUEUED_SURVEY_PRIORITY, survey_plan)
 
-    def get_daily_sites_to_survey(self) -> "list[SurveyPlanner]":
+    def get_daily_sites_to_survey(self) -> "list[ScheduledSurveyPlanner]":
         """This method will go through the method survey queue and return
         the daily sites that are planned to be surveyed by the given method
 
         Returns the list of highest priority survey plans, based on the number of crews available
         and the number of sites the average crew can do in a day
         """
-        daily_plan: list[SurveyPlanner] = []
+        daily_plan: list[ScheduledSurveyPlanner] = []
 
         for crew in range(self._method_crews):
             site_count: int = 0
@@ -114,16 +112,16 @@ class GenericSchedule:
             survey_plan.update_date(current_date)
             if survey_plan.queue_site_for_survey():
                 self.add_to_survey_queue(survey_plan)
-        sites_to_survey: list[SurveyPlanner] = self.get_daily_sites_to_survey()
+        sites_to_survey: list[ScheduledSurveyPlanner] = self.get_daily_sites_to_survey()
         return Workplan(site_survey_plan_list=sites_to_survey, date=current_date)
 
     def update(self, workplan: Workplan, current_date: date) -> None:
         reports, planners = workplan.get_reports()
         reports: dict[str, SiteSurveyReport]
-        planners: dict[str, SurveyPlanner]
+        planners: dict[str, ScheduledSurveyPlanner]
 
         for site_id, report in reports.items():
-            planner: SurveyPlanner = planners[site_id]
+            planner: ScheduledSurveyPlanner = planners[site_id]
 
             if not report.survey_complete:
                 if report.survey_in_progress:

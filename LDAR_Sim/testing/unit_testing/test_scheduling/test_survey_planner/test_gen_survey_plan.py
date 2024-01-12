@@ -19,7 +19,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 """
 import pytest
 from datetime import date
-from src.scheduling.survey_planner import SurveyPlanner
+from scheduling.scheduled_survey_planner import ScheduledSurveyPlanner
 from testing.unit_testing.test_scheduling.test_survey_planner.surveyPlanner_testing_fixtures import (
     gen_survey_plan_simple_case_1_fix,
     gen_survey_plan_simple_case_3_fix,
@@ -54,7 +54,7 @@ def test_000_gen_survey_plan_gens_logical_survey_plans_with_full_deployment_mont
     start_year, end_year = 2020, 2025
     deploy_years = list(range(start_year, end_year + 1))
     deploy_months = request.getfixturevalue(test_input)[1]
-    planner = SurveyPlanner(
+    planner = ScheduledSurveyPlanner(
         request.getfixturevalue(mocker_fix),
         request.getfixturevalue(test_input)[0],
         date(start_year, 1, 1),
@@ -85,7 +85,7 @@ def test_000_gen_survey_plans_gens_logical_survey_plans_with_partial_deployment_
     start_year, end_year = 2020, 2025
     deploy_years = list(range(start_year, end_year + 1))
     deploy_months = request.getfixturevalue(test_input)[1]
-    planner = SurveyPlanner(
+    planner = ScheduledSurveyPlanner(
         request.getfixturevalue(mocker_fix),
         request.getfixturevalue(test_input)[0],
         date(start_year, 1, 1),

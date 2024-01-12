@@ -28,4 +28,4 @@ class Workplan:
     def get_reports(
         self,
     ) -> Tuple[dict[str, SiteSurveyReport], dict[str, SurveyPlanner]]:
-        return self._site_survey_reports, self._site_survey_planners
+        return self._site_survey_reports, self.site_survey_planners

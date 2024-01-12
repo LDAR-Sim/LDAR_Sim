@@ -30,6 +30,7 @@ from sensors.default_site_level_sensor import DefaultSiteLevelSensor
 from virtual_world.sites import Site
 from src.scheduling.workplan import Workplan
 from src.scheduling.schedule_dataclasses import (
+    DetectionRecord,
     EmissionDetectionReport,
     SiteSurveyReport,
     CrewDailyReport,
@@ -84,7 +85,8 @@ class Method:
         self._travel_times = properties[self.TRAVEL_TIME_ACCESSOR]
         self._reporting_delay: int = properties[self.REPORTING_DELAY_ACCESSOR]
         crews: int = properties[self.CREW_COUNT]
-        self._site_survey_reports: dict[str, list[SiteSurveyReport]] = {}
+        self._site_survey_reports: list[SiteSurveyReport] = []
+        self._detection_records: dict[date, list[DetectionRecord]] = {}
         self.initialize_crews(crews, sites)
 
     def initialize_crews(self, crews, sites: "list[Site]") -> None:
@@ -165,7 +167,7 @@ class Method:
     def get_crew_count(self) -> int:
         return self._crews
 
-    def deploy_crews(self, workplan: Workplan, weather):
+    def deploy_crews(self, workplan: Workplan, weather) -> None:
         """Deploy crews will send crews out to survey sites based on the provided workplan"""
 
         priority_queue = PriorityQueue()
@@ -222,8 +224,21 @@ class Method:
             # Update the survey planner. If the survey was not finished, the update will
             # indicate that the particular site needs to be requeued with higher priority
             workplan.add_survey_report(survey_report, survey_plan)
+            if survey_report.survey_complete:
+                self._site_survey_reports.append(survey_report)
+                detection_record: DetectionRecord = DetectionRecord(
+                    site_id=survey_report.site_id,
+                    site=survey_plan.get_site(),
+                    rate_detected=survey_report.site_measured_rate,
+                )
+                self._detection_records[workplan.date] = self._detection_records.get(
+                    workplan.date, []
+                ).append(detection_record)
 
         return
+
+    def update(self, current_date: date) -> None:
+        return None
 
     def survey_site(
         self,

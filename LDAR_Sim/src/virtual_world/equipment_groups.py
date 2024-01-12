@@ -1,4 +1,5 @@
 from datetime import datetime
+from scheduling.schedule_dataclasses import TaggingInfo
 from virtual_world.emissions import Emission
 from virtual_world.infrastructure_const import Infrastructure_Constants
 from virtual_world.equipment import Equipment
@@ -64,6 +65,13 @@ class Equipment_Group:
         """
         for equipment in self._equipment:
             equipment.activate_emissions(date, sim_number)
+
+    def tag_emissions_at_equipment(self, equipment: str, tagging_info: TaggingInfo) -> None:
+        target_equip: Equipment | None = next(
+            (equip for equip in self._equipment if equip.get_id() == equipment),
+            None,
+        )
+        target_equip.tag_emissions(tagging_info)
 
     def get_detectable_emissions(self, method_name: str) -> dict[str, list[Emission]]:
         detectable_emissions: dict[str, Emission] = {}

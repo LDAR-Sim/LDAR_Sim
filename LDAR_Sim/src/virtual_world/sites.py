@@ -19,11 +19,12 @@
 # ------------------------------------------------------------------------------
 
 import copy
-from datetime import datetime
+from datetime import date, datetime
 import math
 
 
 import pandas as pd
+from scheduling.schedule_dataclasses import TaggingInfo
 from virtual_world.emissions import Emission
 from virtual_world.equipment_groups import Equipment_Group
 
@@ -61,6 +62,7 @@ class Site:
             Infrastructure_Constants.Sites_File_Constants.DEPLOYMENT_YEARS_PLACEHOLDER
         )
         self.create_equipment_groups(equipment_groups, infrastructure_inputs, propagating_params)
+        self._latest_tagging_survey_date: date = None
 
     def create_equipment_groups(
         self, equipment_groups, infrastructure_inputs, propagating_params
@@ -156,3 +158,22 @@ class Site:
 
     def _get_current_yearly_surveys(self, method_name: str) -> int:
         return self._surveys_this_year[method_name]
+
+    def get_latest_tagging_survey_date(self) -> date:
+        return self._latest_tagging_survey_date
+
+    def set_latest_tagging_survey_date(self, date: date) -> None:
+        self._latest_tagging_survey_date = date
+
+    def tag_emissions_at_equipment(
+        self, equipment_group: str, equipment: str, tagging_info: TaggingInfo
+    ) -> None:
+        target_equip_group: Equipment_Group | None = next(
+            (
+                equip_group
+                for equip_group in self._equipment_groups
+                if equip_group.get_id() == equipment_group
+            ),
+            None,
+        )
+        target_equip_group.tag_emissions_at_equipment(equipment, tagging_info)

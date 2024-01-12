@@ -47,4 +47,36 @@ class FollowUpMobileSchedule(GenericSchedule):
             else:
                 new_queue.put(prio, plan)
         self._survey_queue: PriorityQueueWithFIFO = new_queue
-        return target_plan
+        return prio, target_plan
+
+    def requeue_survey_plan(self, prio: int, survey_plan: FollowUpSurveyPlanner) -> None:
+        self._survey_queue.put(priority=(prio, survey_plan.rate_at_site), item=survey_plan)
+
+    def add_to_survey_queue(self, survey_plan: FollowUpSurveyPlanner) -> None:
+        """Add the supplied site to the survey queue to surveyed
+
+        Args:
+            site (Site): The site to be added to the survey queue
+        """
+        self._survey_queue.put(
+            (GenericSchedule.DEFAULT_SURVEY_PRIORITY, survey_plan.rate_at_site), survey_plan
+        )
+
+    def add_unfinished_to_survey_queue(self, survey_plan: FollowUpSurveyPlanner) -> None:
+        """Add the supplied, partial surveyed site to queue
+
+        Args:
+            site (Site) : the Site to be added to the survey queue"""
+        self._survey_queue.put(
+            (GenericSchedule.UNFINISHED_SURVEY_HIGHEST_PRIORITY, survey_plan.rate_at_site),
+            survey_plan,
+        )
+
+    def add_previous_queued_to_survey_queue(self, survey_plan: FollowUpSurveyPlanner) -> None:
+        """Add the supplied, unattended site back to queue
+
+        Args:
+            site (Site) : the Site to be added to the survey queue"""
+        self._survey_queue.put(
+            (GenericSchedule.QUEUED_SURVEY_PRIORITY, survey_plan.rate_at_site), survey_plan
+        )

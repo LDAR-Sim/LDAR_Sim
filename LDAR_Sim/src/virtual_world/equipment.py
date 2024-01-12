@@ -1,8 +1,10 @@
 import copy
 import datetime
 import re
+from scheduling.schedule_dataclasses import TaggingInfo
 
 from virtual_world.emissions import Emission
+from virtual_world.fugitive_emission import FugitiveEmission
 from virtual_world.infrastructure_const import Infrastructure_Constants
 
 from virtual_world.sources import Source
@@ -64,6 +66,18 @@ class Equipment:
         for source in self._sources:
             new_emissions: list[Emission] = source.activate_emissions(date, sim_number)
             self._active_emissions.extend(new_emissions)
+
+    def tag_emissions(self, tagging_info: TaggingInfo) -> None:
+        for emission in self._active_emissions:
+            if isinstance(emission, FugitiveEmission):
+                emission.tag_leak(
+                    measured_rate=tagging_info.measured_rate,
+                    cur_date=tagging_info.curr_date,
+                    t_since_ldar=tagging_info.t_since_LDAR,
+                    company=tagging_info.company,
+                    crew_id=tagging_info.crew,
+                    tagging_rep_delay=tagging_info.report_delay,
+                )
 
     def get_detectable_emissions(self, method_name: str) -> Emission:
         detectable_emissions: list[Emission] = []
