@@ -11,7 +11,9 @@ class FollowUpSurveyPlanner(SurveyPlanner):
     REDUND_FILTER_MAX = "max"
     REDUND_FILTER_AVERAGE = "average"
 
-    INVALID_REDUND_FILTER_ERROR = "Error: Invalid Redundancy filter: {filter} for method: {method}"
+    INVALID_REDUND_FILTER_ERROR = (
+        "Error: Invalid Redundancy filter: {filter} for method: {method}"
+    )
 
     def __init__(self, detection_record: DetectionRecord, detect_date: date) -> None:
         super().__init__(detection_record.site)
@@ -40,5 +42,9 @@ class FollowUpSurveyPlanner(SurveyPlanner):
             self.rate_at_site = max(self._detected_rates)
             self._latest_detection_date = detect_date
         else:
-            print(self.INVALID_REDUND_FILTER_ERROR.format(filter=redund_filter, method=method_name))
+            print(
+                self.INVALID_REDUND_FILTER_ERROR.format(
+                    filter=redund_filter, method=method_name
+                )
+            )
             sys.exit()

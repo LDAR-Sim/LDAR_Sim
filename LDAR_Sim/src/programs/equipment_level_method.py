@@ -3,7 +3,11 @@ from queue import PriorityQueue
 import sys
 from typing import Tuple
 from programs.method import Method
-from scheduling.schedule_dataclasses import CrewDailyReport, SiteSurveyReport, TaggingInfo
+from scheduling.schedule_dataclasses import (
+    CrewDailyReport,
+    SiteSurveyReport,
+    TaggingInfo,
+)
 from scheduling.workplan import Workplan
 from sensors.default_equipment_level_sensor import DefaultEquipmentLevelSensor
 from virtual_world.sites import Site
@@ -37,11 +41,15 @@ class EquipmentLevelMethod(Method):
             curr_date=curr_date,
         )
         if survey_report.survey_complete:
-            prev_tagging_survey_date: date = site_to_survey.get_latest_tagging_survey_date()
+            prev_tagging_survey_date: date = (
+                site_to_survey.get_latest_tagging_survey_date()
+            )
             days_since_last_survey: int = (curr_date - prev_tagging_survey_date).days
             site_to_survey.set_latest_tagging_survey_date(curr_date)
             for equip_group_survey_report in survey_report.equipment_groups_surveyed:
-                for emission_detection_report in equip_group_survey_report.emissions_detected:
+                for (
+                    emission_detection_report
+                ) in equip_group_survey_report.emissions_detected:
                     tagging_info = TaggingInfo(
                         measured_rate=emission_detection_report.measured_rate,
                         curr_date=curr_date,
@@ -65,7 +73,9 @@ class EquipmentLevelMethod(Method):
             sensor_into (dict): _description_
         """
         if sensor_info[SENS_TYPE] == "default":
-            self._sensor = DefaultEquipmentLevelSensor(sensor_info[SENS_MDL], sensor_info[SENS_QE])
+            self._sensor = DefaultEquipmentLevelSensor(
+                sensor_info[SENS_MDL], sensor_info[SENS_QE]
+            )
         else:
             print(ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
             sys.exit()

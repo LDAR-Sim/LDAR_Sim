@@ -21,8 +21,6 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 from dataclasses import dataclass, field
 from datetime import date
 
-from virtual_world.sites import Site
-
 
 @dataclass
 class EmissionDetectionReport:
@@ -53,7 +51,9 @@ class SiteSurveyReport:
     time_spent_to_travel: int = 0
     survey_complete: bool = False
     survey_in_progress: bool = False
-    equipment_groups_surveyed: list[EquipmentGroupSurveyReport] = field(default_factory=list)
+    equipment_groups_surveyed: list[EquipmentGroupSurveyReport] = field(
+        default_factory=list
+    )
     survey_level: str = None
     site_measured_rate: float = 0.0
     site_true_rate: float = 0.0
@@ -67,13 +67,6 @@ class SiteSurveyReport:
 class CrewDailyReport:
     crew_id: int
     day_time_remaining: int
-
-
-@dataclass
-class DetectionRecord:
-    site_id: str
-    site: Site
-    rate_detected: float
 
 
 @dataclass
