@@ -19,7 +19,6 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 ------------------------------------------------------------------------------
 """
 from dataclasses import dataclass
-from datetime import date
 
 from virtual_world.sites import Site
 

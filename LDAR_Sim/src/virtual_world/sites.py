@@ -89,7 +89,7 @@ class Site:
                     )
                 )
         elif isinstance(equipment_groups, (int, float)):
-            for i in range(0, equipment_groups):
+            for i in range(0, int(equipment_groups)):
                 equip_group_info = pd.Series(
                     {
                         PLACEHOLDER_EQUIPMENT: math.ceil(

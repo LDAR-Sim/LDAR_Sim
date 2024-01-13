@@ -31,9 +31,11 @@ from datetime import timedelta, date
 
 
 from numpy import random as np_rand
+from initialization.initialize_infrastructure import initialize_infrastructure
 from virtual_world.infrastructure import Infrastructure
 from stdout_redirect import stdout_redirect
 from time_counter import TimeCounter
+from weather.daylight_calculator import DaylightCalculatorAve
 from weather.weather_lookup import WeatherLookup as WL
 
 from utils.generic_functions import check_ERA5_file
@@ -43,7 +45,7 @@ from initialization.args import (
     get_abs_path,
 )  # TODO: move this over to input_processing?
 
-from ldar_sim import LdarSim, create_sims
+from ldar_sim import LdarSim
 from programs.program import Program
 
 opening_msg = """
@@ -63,9 +65,7 @@ def ldar_sim_run(simulation, weather, daylight):
     virtual_world = simulation["virtual_world"]
     program_parameters = simulation["program"]
     input_directory = simulation["input_directory"]
-    output_directory = (
-        simulation["output_directory"] / program_parameters["program_name"]
-    )
+    output_directory = simulation["output_directory"] / program_parameters["program_name"]
     virtual_world["pregenerate_leaks"] = simulation["pregenerate_leaks"]
     infrastructure: Infrastructure = simulation["Infrastructure"]
     simulation_settings = simulation["simulation_settings"]
@@ -121,15 +121,16 @@ def simulate():
 if __name__ == "__main__":
     print(opening_msg)
 
-    root_dir = Path(__file__).resolve().parent.parent
+    root_dir: Path = Path(__file__).resolve().parent.parent
     os.chdir(root_dir)
 
-    src_dir = root_dir / "src"
+    src_dir: Path = root_dir / "src"
     sys.path.insert(1, str(src_dir))
 
     # Add the external sensors directory
-    ext_sens_dir = root_dir / "external_sensors"
-    sys.path.append(str(ext_sens_dir))
+    # TODO update external sensors
+    # ext_sens_dir: Path = root_dir / "external_sensors"
+    # sys.path.append(str(ext_sens_dir))
 
     # -- Retrieve input parameters from commandline argument and parse --
     parameter_filenames = files_from_args(root_dir)
@@ -151,11 +152,18 @@ if __name__ == "__main__":
     in_dir = get_abs_path(sim_params["input_directory"])
     programs = sim_params.pop("programs")
     virtual_world = sim_params.pop("virtual_world")
+    METHODS_ACCESSOR = "methods"
+    METHOD_LABELS_ACCESSOR = "method_labels"
+    methods = {
+        method: programs[program][METHODS_ACCESSOR][method]
+        for program in programs
+        for method in programs[program][METHOD_LABELS_ACCESSOR]
+    }
 
     # --- Run Checks ----
     check_ERA5_file(in_dir, virtual_world)
-    has_ref = ref_program in programs
-    has_base = base_program in programs
+    has_ref: bool = ref_program in programs
+    has_base: bool = base_program in programs
 
     if not (has_ref and has_base):
         print("No reference or base program input...Exiting sim")
@@ -175,21 +183,32 @@ if __name__ == "__main__":
 
     # Initialize objects
     print("...Initializing weather")
-    weather = WL(virtual_world, sim_params["input_directory"])
+    weather = WL(virtual_world, in_dir)
     print("...Initializing daylight")
-    daylight = None
+    # TODO remove state and parameters as inputs to daylight calculator and pass only specific inputs
+    # daylight = DaylightCalculatorAve()
     print("...Initializing infrastructure")
-    infrastructure = initialize_infrastructure(
-        sim_params, programs, virtual_world, generator_dir, in_dir, out_dir
+    # TODO split out infrastructure generation from emissions generation somehow so we don't
+    # need all emissions in memory. Could possibly consider generating emissions all and
+    # then only loading the necessary ones into scope?
+    simulation_count: int = sim_params["n_simulations"]
+    infrastructure: Infrastructure = initialize_infrastructure(
+        simulation_count,
+        methods,
+        virtual_world,
+        generator_dir,
+        in_dir,
     )
     print("...Initializing emissions")
     # pregen emissions
-    emissions = initialize_emissions()
-    for simulation in range(sim_params["n_simulations"]):
+    # TODO split emissions generation out from infrastructure
+    # emissions = initialize_emissions()
+    for simulation in range(simulation_count):
         print("...Simulating set {simulation}")
         # -- Run simulations --
         with mp.Pool(processes=sim_params["n_processes"]) as p:
-            sim_outputs = p.starmap(ldar_sim_run, [sim, weather, daylight])
+            # TODO need to pass same infrastructure to simulate, but different programs for a set of simulations
+            sim_outputs = p.starmap(simulate, [simulation_info, weather, daylight])
         print("Finished simulating set {simulation}")
     # -- Batch Report --
     # TODO: need to write code to clean up outputs here.
