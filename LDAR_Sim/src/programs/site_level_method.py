@@ -29,9 +29,11 @@ class SiteLevelMethod(Method):
         self,
         name,
         properties,
+        consider_weather,
+        sites,
         follow_up_schedule: FollowUpMobileSchedule,
     ) -> None:
-        super().__init__(name, properties)
+        super().__init__(name, properties, consider_weather, sites)
         interaction_priority: str = properties[
             Method.METHOD_FOLLOW_UP_PROPERTIES_ACCESSOR
         ][Method.METHOD_FOLLOW_UP_PROPERTIES_INTERACT_PRIO_ACCESSOR]

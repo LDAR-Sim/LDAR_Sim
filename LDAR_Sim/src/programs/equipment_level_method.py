@@ -22,8 +22,8 @@ from sensors.sensor_constant_mapping import (
 class EquipmentLevelMethod(Method):
     MEASUREMENT_SCALE = "component"
 
-    def __init__(self, name, properties):
-        super().__init__(name, properties)
+    def __init__(self, name, properties, consider_weather, sites):
+        super().__init__(name, properties, consider_weather, sites)
 
     def survey_site(
         self,

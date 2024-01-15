@@ -87,7 +87,9 @@ class Program:
         for method_name, properties in non_follow_up_methods.items():
             method_name: str
 
-            method: Method = self._gen_method(method_name, properties, consider_weather)
+            method: Method = self._gen_method(
+                method_name, properties, consider_weather, sites
+            )
 
             self._methods.append(method)
 
@@ -112,7 +114,11 @@ class Program:
         return follow_up_methods, other_methods
 
     def _gen_method(
-        self, method_name: str, properties: dict, consider_weather: bool
+        self,
+        method_name: str,
+        properties: dict,
+        consider_weather: bool,
+        sites: list[Site],
     ) -> Method:
         method_survey_level: str = properties[Method.MEASUREMENT_SCALE_ACCESSOR]
 
@@ -164,9 +170,7 @@ class Program:
             )
         elif method_survey_level == EquipmentLevelMethod.MEASUREMENT_SCALE:
             return EquipmentLevelMethod(
-                method_name,
-                properties,
-                consider_weather,
+                method_name, properties, consider_weather, sites
             )
 
     def do_daily_program_deployment(self) -> None:

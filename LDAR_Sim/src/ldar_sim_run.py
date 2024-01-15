@@ -256,7 +256,7 @@ if __name__ == "__main__":
             )
         with mp.Pool(processes=sim_params["n_processes"]) as p:
             # TODO need to pass same infrastructure to simulate, but different programs for a set of simulations
-            sim_outputs = p.map(
+            sim_outputs = p.starmap(
                 simulate,
                 prog_data,
             )
