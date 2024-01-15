@@ -5,8 +5,8 @@ deployment_type: mobile
 measurement_scale: component
 sensor:
   # mod_loc: 'plugins.alt_sensor'
-  type: OGI_camera_zim
-  MDL: [0.24, 0.39]
+  type: default
+  MDL: [1] #[0.24, 0.39] 
 is_follow_up: True
 cost:
   per_day: 0

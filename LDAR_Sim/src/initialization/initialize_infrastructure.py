@@ -3,6 +3,7 @@ import pickle
 from virtual_world.infrastructure import Infrastructure
 import hashlib
 import json
+from datetime import date
 
 
 def hash_file(file_path) -> str:
@@ -59,7 +60,9 @@ def initialize_infrastructure(
     # this allows us to know if the inputs that influence infrastructure have changed so that
     # we can generate new Infrastructure instead of using the old one in that case.
     print("Hashing files")
-    sites_file_hash: str = hash_file(in_dir / virtual_world["infrastructure"]["sites_file"])
+    sites_file_hash: str = hash_file(
+        in_dir / virtual_world["infrastructure"]["sites_file"]
+    )
     site_type_file_hash: str = (
         hash_file(in_dir / virtual_world["infrastructure"]["site_type_file"])
         if virtual_world["infrastructure"]["site_type_file"] is not None
@@ -105,8 +108,8 @@ def initialize_infrastructure(
             print(f"Generating emissions for Set_{i} simulations")
             emissions.update(
                 infrastructure.generate_emissions(
-                    sim_start_date=virtual_world["start_date"],
-                    sim_end_date=virtual_world["end_date"],
+                    sim_start_date=date(*virtual_world["start_date"]),
+                    sim_end_date=date(*virtual_world["end_date"]),
                     sim_number=i,
                 )
             )
@@ -162,8 +165,8 @@ def initialize_infrastructure(
                     print(f"Generating emissions for Set_{i} simulations")
                     emissions.update(
                         infrastructure.generate_emissions(
-                            sim_start_date=virtual_world["start_date"],
-                            sim_end_date=virtual_world["end_date"],
+                            sim_start_date=date(*virtual_world["start_date"]),
+                            sim_end_date=date(*virtual_world["end_date"]),
                             sim_number=i,
                         )
                     )
@@ -200,8 +203,8 @@ def initialize_infrastructure(
                 print(f"Generating emissions for Set_{i} simulations")
                 emissions.update(
                     infrastructure.generate_emissions(
-                        sim_start_date=virtual_world["start_date"],
-                        sim_end_date=virtual_world["end_date"],
+                        sim_start_date=date(*virtual_world["start_date"]),
+                        sim_end_date=date(*virtual_world["end_date"]),
                         sim_number=i,
                     )
                 )

@@ -45,6 +45,9 @@ class GenericSchedule:
         for site in sites:
             # TODO flush out what survey planner needs as inputs for the constructor
             survey_freq: int = site._survey_frequencies[self._method]
+            # TODO: make sure this is in the correct place....
+            if survey_freq is None:
+                survey_freq = 0
             deploy_year: int = site._deployment_years[self._method]
             deploy_month: int = site._deployment_months[self._method]
             survey_plans.append(
@@ -67,14 +70,20 @@ class GenericSchedule:
         """
         self._survey_queue.put(GenericSchedule.DEFAULT_SURVEY_PRIORITY, survey_plan)
 
-    def add_unfinished_to_survey_queue(self, survey_plan: ScheduledSurveyPlanner) -> None:
+    def add_unfinished_to_survey_queue(
+        self, survey_plan: ScheduledSurveyPlanner
+    ) -> None:
         """Add the supplied, partial surveyed site to queue
 
         Args:
             site (Site) : the Site to be added to the survey queue"""
-        self._survey_queue.put(GenericSchedule.UNFINISHED_SURVEY_HIGHEST_PRIORITY, survey_plan)
+        self._survey_queue.put(
+            GenericSchedule.UNFINISHED_SURVEY_HIGHEST_PRIORITY, survey_plan
+        )
 
-    def add_previous_queued_to_survey_queue(self, survey_plan: ScheduledSurveyPlanner) -> None:
+    def add_previous_queued_to_survey_queue(
+        self, survey_plan: ScheduledSurveyPlanner
+    ) -> None:
         """Add the supplied, unattended site back to queue
 
         Args:

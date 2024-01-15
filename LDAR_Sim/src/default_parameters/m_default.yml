@@ -16,7 +16,7 @@ cost:
   per_hour: 0
   per_site: 0
   upfront: 0
-n_crews: "_placeholder_int_" # whole numbers
+n_crews: 0 # whole numbers
 consider_daylight: False
 RS: "_placeholder_int_"
 time: "_placeholder_int_" # minutes

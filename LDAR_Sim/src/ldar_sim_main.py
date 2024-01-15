@@ -63,7 +63,6 @@ if __name__ == "__main__":
 
     # --- Retrieve input parameters and parse ---
     parameter_filenames = files_from_args(root_dir)
-    # TODO move to input processing
     input_manager = InputManager()
     if "out_dir" in parameter_filenames:
         sim_params = input_manager.read_and_validate_parameters(

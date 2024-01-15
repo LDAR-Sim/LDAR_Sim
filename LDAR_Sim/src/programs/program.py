@@ -47,10 +47,10 @@ class Program:
         sim_end_date: date,
         consider_weather: bool,
     ) -> None:
+        self._survey_schedules: dict[str, GenericSchedule] = {}
         self._init_methods_and_schedules(
             methods, consider_weather, sites, sim_start_date, sim_end_date
         )
-        self._survey_schedules: dict[str, GenericSchedule] = {}
         self._current_date: date = sim_start_date
         self.state = state
 
@@ -70,7 +70,7 @@ class Program:
             method_name: str
             properties: dict
 
-            method = Method(method_name, properties, consider_weather)
+            method = Method(method_name, properties, consider_weather, sites)
 
             self._methods.append(method)
 
@@ -104,25 +104,34 @@ class Program:
     def split_methods(self, methods: dict) -> Tuple[dict, dict]:
         follow_up_methods: dict = {}
         other_methods: dict = {}
-        for method, properties in methods:
-            if properties[Method.METHOD_FOLLOW_UP_ACCESSOR]:
+        for method, properties in methods.items():
+            if properties[Method.FOLLOW_UP_ACCESSOR]:
                 follow_up_methods[method] = properties
             else:
                 other_methods[method] = properties
         return follow_up_methods, other_methods
 
-    def _gen_method(self, method_name: str, properties: dict, consider_weather: bool) -> Method:
+    def _gen_method(
+        self, method_name: str, properties: dict, consider_weather: bool
+    ) -> Method:
         method_survey_level: str = properties[Method.MEASUREMENT_SCALE_ACCESSOR]
 
         if method_survey_level == SiteLevelMethod.MEASUREMENT_SCALE:
-            meth_pref_follow_up = properties[Method.METHOD_FOLLOW_UP_PROPERTIES_ACCESSOR][
-                Method.METHOD_FOLLOW_UP_PROPERTIES_PREF_FU_ACCESSOR
-            ]
+            meth_pref_follow_up = properties[
+                Method.METHOD_FOLLOW_UP_PROPERTIES_ACCESSOR
+            ][Method.METHOD_FOLLOW_UP_PROPERTIES_PREF_FU_ACCESSOR]
 
-            if isinstance(meth_pref_follow_up, str) and meth_pref_follow_up != "_placeholder_str_":
-                follow_up_schedule: GenericSchedule = self._survey_schedules[meth_pref_follow_up]
+            if (
+                isinstance(meth_pref_follow_up, str)
+                and meth_pref_follow_up != "_placeholder_str_"
+            ):
+                follow_up_schedule: GenericSchedule = self._survey_schedules[
+                    meth_pref_follow_up
+                ]
             else:
-                follow_up_schedule: GenericSchedule = self._init_methods_and_schedules[0]
+                follow_up_schedule: GenericSchedule = self._init_methods_and_schedules[
+                    0
+                ]
 
             return SiteLevelMethod(
                 method_name,
@@ -131,14 +140,21 @@ class Program:
                 follow_up_schedule=follow_up_schedule,
             )
         elif method_survey_level == EquipmentGroupLevelMethod.MEASUREMENT_SCALE:
-            meth_pref_follow_up = properties[Method.METHOD_FOLLOW_UP_PROPERTIES_ACCESSOR][
-                Method.METHOD_FOLLOW_UP_PROPERTIES_PREF_FU_ACCESSOR
-            ]
+            meth_pref_follow_up = properties[
+                Method.METHOD_FOLLOW_UP_PROPERTIES_ACCESSOR
+            ][Method.METHOD_FOLLOW_UP_PROPERTIES_PREF_FU_ACCESSOR]
 
-            if isinstance(meth_pref_follow_up, str) and meth_pref_follow_up != "_placeholder_str_":
-                follow_up_schedule: GenericSchedule = self._survey_schedules[meth_pref_follow_up]
+            if (
+                isinstance(meth_pref_follow_up, str)
+                and meth_pref_follow_up != "_placeholder_str_"
+            ):
+                follow_up_schedule: GenericSchedule = self._survey_schedules[
+                    meth_pref_follow_up
+                ]
             else:
-                follow_up_schedule: GenericSchedule = self._init_methods_and_schedules[0]
+                follow_up_schedule: GenericSchedule = self._init_methods_and_schedules[
+                    0
+                ]
 
             return EquipmentGroupLevelMethod(
                 method_name,

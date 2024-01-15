@@ -65,7 +65,9 @@ def ldar_sim_run(simulation, weather, daylight):
     virtual_world = simulation["virtual_world"]
     program_parameters = simulation["program"]
     input_directory = simulation["input_directory"]
-    output_directory = simulation["output_directory"] / program_parameters["program_name"]
+    output_directory = (
+        simulation["output_directory"] / program_parameters["program_name"]
+    )
     virtual_world["pregenerate_leaks"] = simulation["pregenerate_leaks"]
     infrastructure: Infrastructure = simulation["Infrastructure"]
     simulation_settings = simulation["simulation_settings"]
@@ -112,9 +114,25 @@ def ldar_sim_run(simulation, weather, daylight):
     return sim_summary
 
 
-def simulate():
-    simulation: LdarSim = LdarSim()
-    LdarSim.run_simulation()
+def simulate(
+    sim_num,
+    prog,
+    sim_settings,
+    virtual_world,
+    infrastructure,
+    input_dir,
+    output_dir,
+):
+    simulation: LdarSim = LdarSim(
+        sim_num,
+        prog,
+        sim_settings,
+        virtual_world,
+        infrastructure,
+        input_dir,
+        output_dir,
+    )
+    simulation.run_simulation()
     return
 
 
@@ -180,13 +198,6 @@ if __name__ == "__main__":
         print(
             "Pre-generated initialization files exist. LDAR-Sim may not create new leaks to model with"
         )
-
-    # Initialize objects
-    print("...Initializing weather")
-    weather = WL(virtual_world, in_dir)
-    print("...Initializing daylight")
-    # TODO remove state and parameters as inputs to daylight calculator and pass only specific inputs
-    # daylight = DaylightCalculatorAve()
     print("...Initializing infrastructure")
     # TODO split out infrastructure generation from emissions generation somehow so we don't
     # need all emissions in memory. Could possibly consider generating emissions all and
@@ -199,17 +210,57 @@ if __name__ == "__main__":
         generator_dir,
         in_dir,
     )
+    # Initialize objects
+    print("...Initializing weather")
+    weather = WL(virtual_world, in_dir)
+    print("...Initializing daylight")
+    daylight = DaylightCalculatorAve(
+        infrastructure._sites,
+        date(*virtual_world["start_date"]),
+        date(*virtual_world["end_date"]),
+    )
+
     print("...Initializing emissions")
     # pregen emissions
     # TODO split emissions generation out from infrastructure
     # emissions = initialize_emissions()
+    state = {"weather": weather, "daylight": daylight}
     for simulation in range(simulation_count):
-        print("...Simulating set {simulation}")
+        print(f"......Simulating set {simulation}")
         # -- Run simulations --
+        prog_data = []
+        for program in programs:
+            # TODO: get rid of state and split out into weather/daylight
+            sites = infrastructure._sites
+            meth_params = {}
+            for meth in programs[program]["method_labels"]:
+                meth_params[meth] = methods[meth]
+            prog: Program = Program(
+                state,
+                meth_params,
+                sites,
+                date(*virtual_world["start_date"]),
+                date(*virtual_world["end_date"]),
+                virtual_world["consider_weather"],
+            )
+            prog_data.append(
+                (
+                    simulation,
+                    prog,
+                    sim_params,
+                    virtual_world,
+                    infrastructure,
+                    in_dir,
+                    out_dir,
+                )
+            )
         with mp.Pool(processes=sim_params["n_processes"]) as p:
             # TODO need to pass same infrastructure to simulate, but different programs for a set of simulations
-            sim_outputs = p.starmap(simulate, [simulation_info, weather, daylight])
-        print("Finished simulating set {simulation}")
+            sim_outputs = p.map(
+                simulate,
+                prog_data,
+            )
+        print(f"Finished simulating set {simulation}")
     # -- Batch Report --
     # TODO: need to write code to clean up outputs here.
     print("...Cleaning up output data")
