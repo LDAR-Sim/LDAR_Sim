@@ -32,7 +32,7 @@ class MobileSchedule(GenericSchedule):
         )
         return
 
-    def update(self, workplan: Workplan) -> None:
+    def update(self, workplan: Workplan, current_date: date) -> None:
         reports, planners = workplan.get_reports()
         reports: dict[str, SiteSurveyReport]
         planners: dict[str, ScheduledSurveyPlanner]

@@ -51,6 +51,7 @@ from campaigns.methods import update_campaigns, setup_campaigns
 # from methods.company import BaseCompany
 from numpy.random import binomial
 from out_processing.plotter import make_plots
+from programs.program import Program
 
 
 class LdarSim:
@@ -59,7 +60,7 @@ class LdarSim:
         sim_number,
         simulation_settings,
         virtual_world,
-        program,
+        program: Program,
         infrastructure: Infrastructure,
         input_dir,
         output_dir,
@@ -82,7 +83,9 @@ class LdarSim:
 
     def run_simulation(self):
         while not self._tc.at_simulation_end():
-            self.program
+            self.program.do_daily_program_deployment()
+            self.program.update_date()
+            self._tc.next_day()
 
     def update(self):
         """

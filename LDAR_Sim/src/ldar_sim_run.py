@@ -125,9 +125,9 @@ def simulate(
 ):
     simulation: LdarSim = LdarSim(
         sim_num,
-        prog,
         sim_settings,
         virtual_world,
+        prog,
         infrastructure,
         input_dir,
         output_dir,
@@ -229,6 +229,7 @@ if __name__ == "__main__":
         print(f"......Simulating set {simulation}")
         # -- Run simulations --
         prog_data = []
+        prog_names = []
         for program in programs:
             # TODO: get rid of state and split out into weather/daylight
             sites = infrastructure._sites
@@ -243,6 +244,7 @@ if __name__ == "__main__":
                 date(*virtual_world["end_date"]),
                 virtual_world["consider_weather"],
             )
+            prog_names.append(program)
             prog_data.append(
                 (
                     simulation,
@@ -254,12 +256,17 @@ if __name__ == "__main__":
                     out_dir,
                 )
             )
-        with mp.Pool(processes=sim_params["n_processes"]) as p:
-            # TODO need to pass same infrastructure to simulate, but different programs for a set of simulations
-            sim_outputs = p.starmap(
-                simulate,
-                prog_data,
-            )
+        for index, prog_tuple in enumerate(prog_data):
+            p_name = prog_names[index]
+            print(f".........Simulating program: {p_name}")
+            simulate(*prog_tuple)
+            print(f".........Finished simulating program: {p_name}")
+        # with mp.Pool(processes=sim_params["n_processes"]) as p:
+        #     # TODO need to pass same infrastructure to simulate, but different programs for a set of simulations
+        #     sim_outputs = p.starmap(
+        #         simulate,
+        #         prog_data,
+        #     )
         print(f"Finished simulating set {simulation}")
     # -- Batch Report --
     # TODO: need to write code to clean up outputs here.
