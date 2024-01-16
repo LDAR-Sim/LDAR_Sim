@@ -66,15 +66,13 @@ def create_schedule(
             exit()
     else:
         if method_deployment_type == FollowUpMobileSchedule.DEPLOY_TYPE_CODE:
-            schedule: GenericSchedule = (
-                FollowUpMobileSchedule(
-                    method_name,
-                    sites,
-                    sim_start_date,
-                    sim_end_date,
-                    est_meth_daily_surveys,
-                    method_avail_crews,
-                ),
+            schedule: GenericSchedule = FollowUpMobileSchedule(
+                method_name,
+                sites,
+                sim_start_date,
+                sim_end_date,
+                est_meth_daily_surveys,
+                method_avail_crews,
             )
         else:
             print(

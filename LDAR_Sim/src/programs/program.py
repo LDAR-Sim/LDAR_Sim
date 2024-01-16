@@ -128,12 +128,14 @@ class Program:
             if isinstance(meth_pref_follow_up, str) and meth_pref_follow_up != "_placeholder_str_":
                 follow_up_schedule: GenericSchedule = self._survey_schedules[meth_pref_follow_up]
             else:
-                follow_up_schedule: GenericSchedule = next(iter(self._survey_schedules.items()))
+                _, follow_up_schedule = next(iter(self._survey_schedules.items()))
+                follow_up_schedule: GenericSchedule
 
             return SiteLevelMethod(
                 method_name,
                 properties,
                 consider_weather,
+                sites=sites,
                 follow_up_schedule=follow_up_schedule,
             )
         elif method_survey_level == EquipmentGroupLevelMethod.MEASUREMENT_SCALE:
@@ -144,12 +146,14 @@ class Program:
             if isinstance(meth_pref_follow_up, str) and meth_pref_follow_up != "_placeholder_str_":
                 follow_up_schedule: GenericSchedule = self._survey_schedules[meth_pref_follow_up]
             else:
-                follow_up_schedule: GenericSchedule = next(iter(self._survey_schedules.items()))
+                _, follow_up_schedule = next(iter(self._survey_schedules.items()))
+                follow_up_schedule: GenericSchedule
 
             return EquipmentGroupLevelMethod(
                 method_name,
                 properties,
                 consider_weather,
+                sites=sites,
                 follow_up_schedule=follow_up_schedule,
             )
         elif method_survey_level == EquipmentLevelMethod.MEASUREMENT_SCALE:
