@@ -26,22 +26,16 @@ import numpy as np
 
 # Calculate the study area average daylight for each day of the simulation
 class DaylightCalculatorAve:
-    def __init__(self, sites: list[Site], start_date: date, end_date: date):
+    def __init__(self, site_lat_lon: tuple, start_date: date, end_date: date):
         # Get average lat and lon values for the sites in your study area
-        lat_list = []
-        lon_list = []
-        for site in sites:
-            lat, lon = site.get_loc()
-            lat_list.append(float(lat))
-            lon_list.append(float(lon))
-        lat_ave = np.mean(lat_list)
-        lon_ave = np.mean(lon_list)
+
+        lat_ave = site_lat_lon[0]
+        lon_ave = site_lat_lon[1]
 
         curr_date = start_date
 
         # Create an empty list to store the daylight hours - rounding down.
         self.daylight_hours = {}
-
         while curr_date <= end_date:
             # Create ephem object
             obs = ephem.Observer()

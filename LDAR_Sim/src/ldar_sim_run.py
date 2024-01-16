@@ -215,7 +215,7 @@ if __name__ == "__main__":
     weather = WL(virtual_world, in_dir)
     print("...Initializing daylight")
     daylight = DaylightCalculatorAve(
-        infrastructure._sites,
+        infrastructure.get_site_avrg_lat_lon(),
         date(*virtual_world["start_date"]),
         date(*virtual_world["end_date"]),
     )

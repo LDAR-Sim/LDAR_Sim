@@ -29,7 +29,6 @@ import pandas as pd
 from virtual_world.fugitive_emission import FugitiveEmission
 from virtual_world.infrastructure import Infrastructure
 from time_counter import TimeCounter
-from weather.daylight_calculator import DaylightCalculatorAve
 from config.output_flag_mapping import (
     OUTPUTS,
     SITE_VISITS,

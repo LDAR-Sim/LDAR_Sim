@@ -188,3 +188,14 @@ class Infrastructure:
 
     def get_flagged_sites(self, company_id) -> list[Site]:
         return [site for site in self._sites if site.flagged_for_follow_up(company_id)]
+
+    def get_site_avrg_lat_lon(self) -> tuple[int, int]:
+        lat_list = []
+        lon_list = []
+        for site in self._sites:
+            lat, lon = site.get_loc()
+            lat_list.append(float(lat))
+            lon_list.append(float(lon))
+        lat_ave = np.mean(lat_list)
+        lon_ave = np.mean(lon_list)
+        return (lat_ave, lon_ave)
