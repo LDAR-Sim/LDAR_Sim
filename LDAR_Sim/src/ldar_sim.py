@@ -19,7 +19,7 @@
 # ------------------------------------------------------------------------------
 
 
-import datetime
+from datetime import date
 import random
 import sys
 import warnings
@@ -67,9 +67,7 @@ class LdarSim:
         """
         Construct the simulation.
         """
-        self._tc: TimeCounter = TimeCounter(
-            virtual_world["start_date"], virtual_world["end_date"]
-        )
+        self._tc: TimeCounter = TimeCounter(virtual_world["start_date"], virtual_world["end_date"])
         self.sim_number: int = sim_number
         self.infrastructure: Infrastructure = infrastructure
         self.simulation_settings = simulation_settings
@@ -82,8 +80,10 @@ class LdarSim:
 
     def run_simulation(self):
         while not self._tc.at_simulation_end():
+            self.add_emissions()
             self.program.do_daily_program_deployment()
             self.program.update_date()
+            self.update_emis_state()
             self._tc.next_day()
 
     def update(self):
@@ -96,11 +96,11 @@ class LdarSim:
         # self.update_state()  # Update state of sites and leaks
         return
 
-    def update_state(self):
+    def update_emis_state(self):
         """
         update the state of active leaks
         """
-        cur_date = self.state["t"].current_date
+        self.infrastructure.update_emissions_state()
 
         return
 
@@ -108,8 +108,7 @@ class LdarSim:
         """
         add new emissions to infrastructure in the simulation
         """
-        time_counter: TimeCounter = self.state["t"]
-        cur_date: datetime = time_counter.current_date
+        cur_date: date = self._tc.current_date
         infrastructure: Infrastructure = self.infrastructure
         infrastructure.activate_emissions(cur_date, self.sim_number)
         return
@@ -140,25 +139,13 @@ class LdarSim:
 
         # Extract Metadata
         wanted_meta_cols = ["program_name", "simulation", "NRd", "start_date"]
-        metadata = {
-            key: value
-            for key, value in virtual_world.items()
-            if key in wanted_meta_cols
-        }
+        metadata = {key: value for key, value in virtual_world.items() if key in wanted_meta_cols}
 
         metadata.update(
-            {
-                key: value
-                for key, value in program_parameters.items()
-                if key in wanted_meta_cols
-            }
+            {key: value for key, value in program_parameters.items() if key in wanted_meta_cols}
         )
         metadata.update(
-            {
-                key: value
-                for key, value in simulation_settings.items()
-                if key in wanted_meta_cols
-            }
+            {key: value for key, value in simulation_settings.items() if key in wanted_meta_cols}
         )
 
         sim_summary = {

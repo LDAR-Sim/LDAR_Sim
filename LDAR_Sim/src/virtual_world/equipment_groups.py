@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date
 from scheduling.schedule_dataclasses import TaggingInfo
 from virtual_world.emissions import Emission
 from virtual_world.infrastructure_const import Infrastructure_Constants
@@ -16,8 +16,8 @@ class Equipment_Group:
             info=info,
         )
 
-    def update_prop_params(self, info, prop_params) -> None:
-        meth_specific_params = prop_params.pop("Method_Specific_Params")
+    def update_prop_params(self, info: dict, prop_params: dict) -> None:
+        meth_specific_params: dict = prop_params.pop("Method_Specific_Params")
 
         for param in meth_specific_params.keys():
             for method in meth_specific_params[param].keys():
@@ -52,27 +52,27 @@ class Equipment_Group:
     def generate_emissions(self, sim_start_date, sim_end_date, sim_number) -> dict:
         eqg_emissions = {}
         for eqmt in self._equipment:
-            eqg_emissions.update(
-                eqmt.generate_emissions(sim_start_date, sim_end_date, sim_number)
-            )
+            eqg_emissions.update(eqmt.generate_emissions(sim_start_date, sim_end_date, sim_number))
 
         return {self._id: eqg_emissions}
 
-    def activate_emissions(self, date: datetime, sim_number: int) -> None:
+    def activate_emissions(self, date: date, sim_number: int) -> None:
         """Activate any emissions that are due to begin on the current date for the given simulation
         and add them to the active emissions list for the equipment at which they occur.
 
         Args:
-            date (datetime): The current date in simulation.
+            date (date): The current date in simulation.
             sim_number (int): The simulation number.
             Used to interact with the correct set of emissions.
         """
         for equipment in self._equipment:
             equipment.activate_emissions(date, sim_number)
 
-    def tag_emissions_at_equipment(
-        self, equipment: str, tagging_info: TaggingInfo
-    ) -> None:
+    def update_emissions_state(self) -> None:
+        for equip in self._equipment:
+            equip.update_emissions_state()
+
+    def tag_emissions_at_equipment(self, equipment: str, tagging_info: TaggingInfo) -> None:
         target_equip: Equipment | None = next(
             (equip for equip in self._equipment if equip.get_id() == equipment),
             None,
@@ -82,17 +82,13 @@ class Equipment_Group:
     def get_detectable_emissions(self, method_name: str) -> dict[str, list[Emission]]:
         detectable_emissions: dict[str, Emission] = {}
         for equip in self._equipment:
-            detectable_emissions[equip.get_id()] = equip.get_detectable_emissions(
-                method_name
-            )
+            detectable_emissions[equip.get_id()] = equip.get_detectable_emissions(method_name)
 
         return detectable_emissions
 
     def set_pregen_emissions(self, eqg_emissions, sim_number) -> None:
         for equipment in self._equipment:
-            equipment.set_pregen_emissions(
-                eqg_emissions[equipment.get_id()], sim_number
-            )
+            equipment.set_pregen_emissions(eqg_emissions[equipment.get_id()], sim_number)
 
     def get_survey_time(self, method_name) -> float:
         survey_time: float = self._meth_survey_times[method_name]
