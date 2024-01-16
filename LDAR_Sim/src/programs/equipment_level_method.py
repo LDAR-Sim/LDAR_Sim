@@ -1,3 +1,22 @@
+"""
+------------------------------------------------------------------------------
+Program:     The LDAR Simulator (LDAR-Sim)
+File:        equipment_level_method
+Purpose: The provides default behaviors for equipment level methods
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the MIT License as published
+by the Free Software Foundation, version 3.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+MIT License for more details.
+You should have received a copy of the MIT License
+along with this program.  If not, see <https://opensource.org/licenses/MIT>.
+
+------------------------------------------------------------------------------
+"""
 from datetime import date
 from queue import PriorityQueue
 import sys
@@ -10,6 +29,9 @@ from scheduling.schedule_dataclasses import (
 )
 from scheduling.workplan import Workplan
 from sensors.default_equipment_level_sensor import DefaultEquipmentLevelSensor
+from sensors.OGI_camera_rk import OGICameraRKSensor
+from sensors.OGI_camera_zim import OGICameraZimSensor
+from sensors.METEC_NoWind_sensor import METECNWEquipment
 from virtual_world.sites import Site
 from sensors.sensor_constant_mapping import (
     SENS_TYPE,
@@ -41,15 +63,11 @@ class EquipmentLevelMethod(Method):
             curr_date=curr_date,
         )
         if survey_report.survey_complete:
-            prev_tagging_survey_date: date = (
-                site_to_survey.get_latest_tagging_survey_date()
-            )
+            prev_tagging_survey_date: date = site_to_survey.get_latest_tagging_survey_date()
             days_since_last_survey: int = (curr_date - prev_tagging_survey_date).days
             site_to_survey.set_latest_tagging_survey_date(curr_date)
             for equip_group_survey_report in survey_report.equipment_groups_surveyed:
-                for (
-                    emission_detection_report
-                ) in equip_group_survey_report.emissions_detected:
+                for emission_detection_report in equip_group_survey_report.emissions_detected:
                     tagging_info = TaggingInfo(
                         measured_rate=emission_detection_report.measured_rate,
                         curr_date=curr_date,
@@ -73,9 +91,13 @@ class EquipmentLevelMethod(Method):
             sensor_into (dict): _description_
         """
         if sensor_info[SENS_TYPE] == "default":
-            self._sensor = DefaultEquipmentLevelSensor(
-                sensor_info[SENS_MDL], sensor_info[SENS_QE]
-            )
+            self._sensor = DefaultEquipmentLevelSensor(sensor_info[SENS_MDL], sensor_info[SENS_QE])
+        elif sensor_info[SENS_TYPE] == "OGI_camera_zim":
+            self._sensor = OGICameraZimSensor(sensor_info[SENS_MDL], sensor_info[SENS_QE])
+        elif sensor_info[SENS_TYPE] == "OGI_camera_rk":
+            self._sensor = OGICameraRKSensor(sensor_info[SENS_MDL], sensor_info[SENS_QE])
+        elif sensor_info[SENS_TYPE] == "METEC_no_wind":
+            self._sensor = METECNWEquipment(sensor_info[SENS_MDL], sensor_info[SENS_QE])
         else:
             print(ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
             sys.exit()
