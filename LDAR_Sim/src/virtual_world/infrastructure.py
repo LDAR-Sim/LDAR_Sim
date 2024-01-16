@@ -1,5 +1,4 @@
-from datetime import datetime
-import math
+from datetime import date
 import numpy as np
 import pandas as pd
 
@@ -18,9 +17,7 @@ from file_processing.input_processing.infrastructure_processing import (
 
 class Infrastructure:
     def __init__(self, virtual_world, methods, in_dir) -> None:
-        self.generate_infrastructure(
-            virtual_world=virtual_world, methods=methods, in_dir=in_dir
-        )
+        self.generate_infrastructure(virtual_world=virtual_world, methods=methods, in_dir=in_dir)
 
     def generate_propagating_params(self, virtual_world, methods) -> dict:
         prop_params_dict: dict = {}
@@ -60,9 +57,7 @@ class Infrastructure:
     ) -> None:
         if site_type_info is not None:
             # Updating propagating parameters with site type info
-            for (
-                param
-            ) in Infrastructure_Constants.Site_Type_File_Constants.PROPAGATING_PARAMS:
+            for param in Infrastructure_Constants.Site_Type_File_Constants.PROPAGATING_PARAMS:
                 site_type_val = site_type_info.get(param, None)
                 if site_type_val is not None:
                     prop_params[param] = site_type_val
@@ -70,30 +65,20 @@ class Infrastructure:
             for method in methods:
                 for (
                     param
-                ) in (
-                    Infrastructure_Constants.Site_Type_File_Constants.METH_SPEC_PROP_PARAMS
-                ):
+                ) in Infrastructure_Constants.Site_Type_File_Constants.METH_SPEC_PROP_PARAMS:
                     site_type_val = site_type_info.get(method + param, None)
                     if site_type_val is not None:
-                        prop_params["Method_Specific_Params"][param][
-                            method
-                        ] = site_type_val
+                        prop_params["Method_Specific_Params"][param][method] = site_type_val
 
             # Updating propagating parameters with site info
-            for (
-                param
-            ) in Infrastructure_Constants.Sites_File_Constants.PROPAGATING_PARAMS:
+            for param in Infrastructure_Constants.Sites_File_Constants.PROPAGATING_PARAMS:
                 site_val = site_row_df_info.get(param, None)
                 if site_val is not None:
                     prop_params[param] = site_val
 
             # Update method specific propagating params with site info
             for method in methods:
-                for (
-                    param
-                ) in (
-                    Infrastructure_Constants.Sites_File_Constants.METH_SPEC_PROP_PARAMS
-                ):
+                for param in Infrastructure_Constants.Sites_File_Constants.METH_SPEC_PROP_PARAMS:
                     site_val = site_row_df_info.get(method + param, None)
                     if site_val is not None:
                         prop_params["Method_Specific_Params"][param][method] = site_val
@@ -104,8 +89,6 @@ class Infrastructure:
 
     # Generate Emissions for all infrastructure
     def generate_emissions(self, sim_start_date, sim_end_date, sim_number) -> dict:
-        sim_start_date = datetime(*sim_start_date)
-        sim_end_date = datetime(*sim_end_date)
         infrastructure_emissions: dict = {}
         for site in self._sites:
             infrastructure_emissions.update(
@@ -113,17 +96,21 @@ class Infrastructure:
             )
         return {sim_number: infrastructure_emissions}
 
-    def activate_emissions(self, date: datetime, sim_number: int) -> None:
+    def activate_emissions(self, date: date, sim_number: int) -> None:
         """Activate any emissions that are due to begin on the current date for the given simulation
         and add them to the active emissions list for the equipment at which they occur.
 
         Args:
-            date (datetime): The current date in simulation.
+            date (date): The current date in simulation.
             sim_number (int): The simulation number.
             Used to interact with the correct set of emissions.
         """
         for site in self._sites:
             site.activate_emissions(date, sim_number)
+
+    def update_emissions_state(self) -> None:
+        for site in self._sites:
+            site.update_emissions_state()
 
     def generate_infrastructure(self, virtual_world, methods, in_dir) -> list[Site]:
         """[summary]
@@ -157,9 +144,7 @@ class Infrastructure:
                 site_types_info = infrastructure_inputs["site_types"]
                 site_type = srow[Infrastructure_Constants.Sites_File_Constants.ID]
                 site_types_info = site_types_info.loc[
-                    site_types_info[
-                        Infrastructure_Constants.Site_Type_File_Constants.TYPE
-                    ]
+                    site_types_info[Infrastructure_Constants.Site_Type_File_Constants.TYPE]
                     == site_type
                 ].iloc[0]
             propagating_params = self.generate_propagating_params(
@@ -175,9 +160,7 @@ class Infrastructure:
                 id=srow[Infrastructure_Constants.Sites_File_Constants.ID],
                 lat=srow[Infrastructure_Constants.Sites_File_Constants.LAT],
                 long=srow[Infrastructure_Constants.Sites_File_Constants.LON],
-                equipment_groups=srow[
-                    Infrastructure_Constants.Sites_File_Constants.EQG
-                ],
+                equipment_groups=srow[Infrastructure_Constants.Sites_File_Constants.EQG],
                 propagating_params=propagating_params,
                 infrastructure_inputs=infrastructure_inputs,
             )

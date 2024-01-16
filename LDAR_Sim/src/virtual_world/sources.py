@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import date, timedelta
 import re
 import sys
 from typing import Literal
@@ -105,7 +105,7 @@ class Source:
             sys.exit()
 
     def generate_emissions(
-        self, sim_start_date: datetime, sim_end_date: datetime, sim_number: int
+        self, sim_start_date: date, sim_end_date: date, sim_number: int
     ) -> dict[str, list[Emission]]:
         emissions: list[Emission] = []
 
@@ -120,7 +120,7 @@ class Source:
         for day in range(1, self._emis_duration + 1):
             create_emis: int = np.random.binomial(1, self._emis_prod_rate)
             if create_emis:
-                emis_start_date: datetime = sim_start_date - timedelta(days=day)
+                emis_start_date: date = sim_start_date - timedelta(days=day)
                 emission: Emission = self._create_emission(
                     leak_count=leak_count, start_date=emis_start_date, sim_start_date=sim_start_date
                 )
@@ -134,7 +134,7 @@ class Source:
         for day in range(0, sim_dur):
             create_emis: int = np.random.binomial(1, self._emis_prod_rate)
             if create_emis:
-                emis_start_date: datetime = sim_start_date + timedelta(days=day)
+                emis_start_date: date = sim_start_date + timedelta(days=day)
                 emission: Emission = self._create_emission(
                     leak_count=leak_count, start_date=emis_start_date, sim_start_date=sim_start_date
                 )
@@ -143,7 +143,7 @@ class Source:
         self._generated_emissions[sim_number] = emissions
         return {self._source_ID: emissions}
 
-    def activate_emissions(self, date: datetime, sim_number: int) -> list[Emission]:
+    def activate_emissions(self, date: date, sim_number: int) -> list[Emission]:
         """Activate any emissions produced by the source that are due to begin on the current date
         for the given simulation and return them in a list.
 

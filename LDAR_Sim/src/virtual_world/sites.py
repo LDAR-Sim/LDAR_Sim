@@ -19,7 +19,7 @@
 # ------------------------------------------------------------------------------
 
 import copy
-from datetime import date, datetime
+from datetime import date
 import math
 
 
@@ -52,9 +52,7 @@ class Site:
         self._long: float = long
 
         self._site_type: str = site_type
-        self._survey_frequencies: dict = propagating_params[
-            "Method_Specific_Params"
-        ].pop(
+        self._survey_frequencies: dict = propagating_params["Method_Specific_Params"].pop(
             Infrastructure_Constants.Sites_File_Constants.SURVEY_FREQUENCY_PLACEHOLDER
         )
         self._deployment_months = propagating_params["Method_Specific_Params"].pop(
@@ -63,9 +61,7 @@ class Site:
         self._deployment_years = propagating_params["Method_Specific_Params"].pop(
             Infrastructure_Constants.Sites_File_Constants.DEPLOYMENT_YEARS_PLACEHOLDER
         )
-        self.create_equipment_groups(
-            equipment_groups, infrastructure_inputs, propagating_params
-        )
+        self.create_equipment_groups(equipment_groups, infrastructure_inputs, propagating_params)
         self._latest_tagging_survey_date: date = None
 
     def create_equipment_groups(
@@ -103,9 +99,7 @@ class Site:
                 )
                 prop_params = copy.deepcopy(propagating_params)
                 self._equipment_groups.append(
-                    Equipment_Group(
-                        i, infrastructure_inputs, prop_params, equip_group_info
-                    )
+                    Equipment_Group(i, infrastructure_inputs, prop_params, equip_group_info)
                 )
         else:
             equip_group_info = pd.Series(
@@ -120,32 +114,30 @@ class Site:
         site_emissions: dict = {}
         for eqg in self._equipment_groups:
             eqg: Equipment_Group
-            site_emissions.update(
-                eqg.generate_emissions(sim_start_date, sim_end_date, sim_number)
-            )
+            site_emissions.update(eqg.generate_emissions(sim_start_date, sim_end_date, sim_number))
 
         return {self._site_ID: site_emissions}
 
-    def activate_emissions(self, date: datetime, sim_number: int) -> None:
+    def activate_emissions(self, date: date, sim_number: int) -> None:
         """Activate any emissions that are due to begin on the current date for the given simulation
         and add them to the active emissions list for the equipment at which they occur.
 
         Args:
-            date (datetime): The current date in simulation.
+            date (date): The current date in simulation.
             sim_number (int): The simulation number.
             Used to interact with the correct set of emissions.
         """
         for eqg in self._equipment_groups:
             eqg.activate_emissions(date, sim_number)
 
-    def get_detectable_emissions(
-        self, method_name: str
-    ) -> dict[str, dict[str, list[Emission]]]:
+    def update_emissions_state(self) -> None:
+        for eqg in self._equipment_groups:
+            eqg.update_emissions_state()
+
+    def get_detectable_emissions(self, method_name: str) -> dict[str, dict[str, list[Emission]]]:
         detectable_emissions: dict[str, dict[str, Emission]] = {}
         for eqg in self._equipment_groups:
-            detectable_emissions[eqg.get_id()] = eqg.get_detectable_emissions(
-                method_name
-            )
+            detectable_emissions[eqg.get_id()] = eqg.get_detectable_emissions(method_name)
 
         return detectable_emissions
 
@@ -168,13 +160,11 @@ class Site:
     def get_loc(self) -> tuple[float, float]:
         return self._lat, self._long
 
-    def _get_days_since_last_survey(
-        self, method_name: str, current_date: datetime
-    ) -> int:
-        return (self._last_survey_dates[method_name] - current_date).days
+    # def _get_days_since_last_survey(self, method_name: str, current_date: date) -> int:
+    #     return (self._last_survey_dates[method_name] - current_date).days
 
-    def _get_current_yearly_surveys(self, method_name: str) -> int:
-        return self._surveys_this_year[method_name]
+    # def _get_current_yearly_surveys(self, method_name: str) -> int:
+    #     return self._surveys_this_year[method_name]
 
     def get_latest_tagging_survey_date(self) -> date:
         return self._latest_tagging_survey_date
