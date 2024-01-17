@@ -37,6 +37,7 @@ class Program:
 
     def __init__(
         self,
+        name: str,
         # TODO do away with state and just track anything we need from state separately.
         # From a quick look, the only things we need from it are weather are daylight hours,
         # which should be tracked on their own
@@ -47,6 +48,7 @@ class Program:
         sim_end_date: date,
         consider_weather: bool,
     ) -> None:
+        self.name: str = name
         self._survey_schedules: dict[str, GenericSchedule] = {}
         self._init_methods_and_schedules(
             methods, consider_weather, sites, sim_start_date, sim_end_date

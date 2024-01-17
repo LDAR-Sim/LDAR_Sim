@@ -1,6 +1,8 @@
 from copy import deepcopy
 from datetime import date
 import re
+
+import pandas as pd
 from scheduling.schedule_dataclasses import TaggingInfo
 
 from virtual_world.emissions import Emission
@@ -97,3 +99,8 @@ class Equipment:
 
     def get_id(self) -> str:
         return self._equipment_ID
+
+    def get_emis_data(self) -> pd.DataFrame:
+        emis_data: pd.DataFrame = pd.concat([eqg.get_emis_data() for eqg in self._])
+        emis_data["equipment"] = self._equipment_ID
+        return emis_data

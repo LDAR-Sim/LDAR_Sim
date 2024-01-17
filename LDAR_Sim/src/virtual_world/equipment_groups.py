@@ -1,4 +1,6 @@
 from datetime import date
+
+import pandas as pd
 from scheduling.schedule_dataclasses import TaggingInfo
 from virtual_world.emissions import Emission
 from virtual_world.infrastructure_const import Infrastructure_Constants
@@ -100,3 +102,8 @@ class Equipment_Group:
 
     def get_id(self) -> str:
         return self._id
+
+    def get_emis_data(self) -> pd.DataFrame:
+        emis_data: pd.DataFrame = pd.concat([equip.get_emis_data() for equip in self._equipment])
+        emis_data["equipment_group"] = self._id
+        return emis_data

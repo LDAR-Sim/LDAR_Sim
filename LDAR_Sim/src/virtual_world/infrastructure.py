@@ -182,3 +182,8 @@ class Infrastructure:
         lat_ave = np.mean(lat_list)
         lon_ave = np.mean(lon_list)
         return (lat_ave, lon_ave)
+
+    def gen_summary_emis_data(self) -> None:
+        self._sites_emis_data: pd.DataFrame = pd.concat(
+            [site.get_emis_data() for site in self._sites]
+        )
