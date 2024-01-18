@@ -23,6 +23,8 @@ class Equipment:
         self._equip_type: str = re.sub(pattern, "", equip_type)
         self._equipment_ID: str = self._equip_type + "_" + str(equip_id)
         self.create_sources(infrastructure_inputs=infrastructure_inputs, prop_params=prop_params)
+        self._active_emissions: list[Emission] = []
+        self._inactive_emissions: list[Emission] = []
 
     def create_sources(self, infrastructure_inputs, prop_params) -> None:
         self._sources: list[Source] = []
@@ -64,14 +66,22 @@ class Equipment:
             sim_number (int): The simulation number.
             Used to interact with the correct set of emissions.
         """
-        self._active_emissions: list[Emission] = []
         for source in self._sources:
             new_emissions: list[Emission] = source.activate_emissions(date, sim_number)
             self._active_emissions.extend(new_emissions)
 
     def update_emissions_state(self) -> None:
-        for emission in self._active_emissions:
-            emission.update()
+        def emission_active(emission: Emission) -> bool:
+            # TODO change status strings to constants
+            return emission.update() == "no_status_change"
+
+        self._active_emissions = [
+            emission for emission in self._active_emissions if emission_active(emission)
+        ]
+        self._inactive_emissions = [
+            emission for emission in self._active_emissions if not emission_active(emission)
+        ]
+        return
 
     def tag_emissions(self, tagging_info: TaggingInfo) -> None:
         for emission in self._active_emissions:
@@ -101,6 +111,14 @@ class Equipment:
         return self._equipment_ID
 
     def get_emis_data(self) -> pd.DataFrame:
-        emis_data: pd.DataFrame = pd.concat([eqg.get_emis_data() for eqg in self._])
+        emis_data_active: list[pd.DataFrame] = [
+            pd.DataFrame(emission.get_summary_dict()) for emission in self._active_emissions
+        ]
+
+        emis_data_inactive: list[pd.DataFrame] = [
+            pd.DataFrame(emission.get_summary_dict()) for emission in self._inactive_emissions
+        ]
+        emis_data_list = emis_data_active.extend(emis_data_inactive)
+        emis_data: pd.DataFrame = pd.concat([emis_data_list])
         emis_data["equipment"] = self._equipment_ID
         return emis_data
