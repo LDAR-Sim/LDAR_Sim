@@ -1,3 +1,22 @@
+"""
+------------------------------------------------------------------------------
+Program:     The LDAR Simulator (LDAR-Sim)
+File:        fugitive_emission
+Purpose: The fugitive emissions module. 
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the MIT License as published
+by the Free Software Foundation, version 3.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+MIT License for more details.
+You should have received a copy of the MIT License
+along with this program.  If not, see <https://opensource.org/licenses/MIT>.
+
+------------------------------------------------------------------------------
+"""
 from datetime import date, timedelta
 from math import ceil
 from typing import Any, Literal
@@ -43,7 +62,9 @@ class FugitiveEmission(Emission):
         if self._repairable:
             if self._days_since_tagged >= self._repair_delay + self._tagging_rep_delay:
                 self._status = "repaired"
-                self._repair_date = self._start_date + timedelta(days=(self._active_days))
+                self._repair_date = self._start_date + timedelta(
+                    days=(self._active_days)
+                )
 
     def get_init_detect_company(self):
         return self._init_detect_by
@@ -133,7 +154,9 @@ class FugitiveEmission(Emission):
         return summary_dict
 
     @override
-    def activate(self, date: date) -> Literal["Already_Active", "Newly_Active", "Inactive"]:
+    def activate(
+        self, date: date
+    ) -> Literal["Already_Active", "Newly_Active", "Inactive"]:
         activated: str = "Inactive"
         if self._status == "Active":
             activated = "Already_Active"

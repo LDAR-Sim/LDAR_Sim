@@ -1,3 +1,23 @@
+"""
+------------------------------------------------------------------------------
+Program:     The LDAR Simulator (LDAR-Sim)
+File:        equipment_groups
+Purpose: The equipment group module.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the MIT License as published
+by the Free Software Foundation, version 3.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+MIT License for more details.
+You should have received a copy of the MIT License
+along with this program.  If not, see <https://opensource.org/licenses/MIT>.
+
+------------------------------------------------------------------------------
+"""
+
 from datetime import date
 
 import pandas as pd
@@ -54,7 +74,9 @@ class Equipment_Group:
     def generate_emissions(self, sim_start_date, sim_end_date, sim_number) -> dict:
         eqg_emissions = {}
         for eqmt in self._equipment:
-            eqg_emissions.update(eqmt.generate_emissions(sim_start_date, sim_end_date, sim_number))
+            eqg_emissions.update(
+                eqmt.generate_emissions(sim_start_date, sim_end_date, sim_number)
+            )
 
         return {self._id: eqg_emissions}
 
@@ -74,7 +96,9 @@ class Equipment_Group:
         for equip in self._equipment:
             equip.update_emissions_state()
 
-    def tag_emissions_at_equipment(self, equipment: str, tagging_info: TaggingInfo) -> None:
+    def tag_emissions_at_equipment(
+        self, equipment: str, tagging_info: TaggingInfo
+    ) -> None:
         target_equip: Equipment | None = next(
             (equip for equip in self._equipment if equip.get_id() == equipment),
             None,
@@ -84,13 +108,17 @@ class Equipment_Group:
     def get_detectable_emissions(self, method_name: str) -> dict[str, list[Emission]]:
         detectable_emissions: dict[str, Emission] = {}
         for equip in self._equipment:
-            detectable_emissions[equip.get_id()] = equip.get_detectable_emissions(method_name)
+            detectable_emissions[equip.get_id()] = equip.get_detectable_emissions(
+                method_name
+            )
 
         return detectable_emissions
 
     def set_pregen_emissions(self, eqg_emissions, sim_number) -> None:
         for equipment in self._equipment:
-            equipment.set_pregen_emissions(eqg_emissions[equipment.get_id()], sim_number)
+            equipment.set_pregen_emissions(
+                eqg_emissions[equipment.get_id()], sim_number
+            )
 
     def get_survey_time(self, method_name) -> float:
         survey_time: float = self._meth_survey_times[method_name]
@@ -104,6 +132,8 @@ class Equipment_Group:
         return self._id
 
     def get_emis_data(self) -> pd.DataFrame:
-        emis_data: pd.DataFrame = pd.concat([equip.get_emis_data() for equip in self._equipment])
+        emis_data: pd.DataFrame = pd.concat(
+            [equip.get_emis_data() for equip in self._equipment]
+        )
         emis_data["equipment_group"] = self._id
         return emis_data

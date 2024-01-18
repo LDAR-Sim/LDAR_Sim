@@ -2,7 +2,7 @@
 ------------------------------------------------------------------------------
 Program:     The LDAR Simulator (LDAR-Sim)
 File:        equipment_group_level_method
-Purpose: The provides default behaviors for equipment group level methods
+Purpose: The module provides default behaviors for equipment group level methods
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the MIT License as published
@@ -57,7 +57,9 @@ class EquipmentGroupLevelMethod(SiteLevelMethod):
                 sensor_info[SENS_MDL], sensor_info[SENS_QE]
             )
         elif sensor_info[SENS_TYPE] == "METEC_no_wind":
-            self._sensor = METECNWEquipmentGroup(sensor_info[SENS_MDL], sensor_info[SENS_QE])
+            self._sensor = METECNWEquipmentGroup(
+                sensor_info[SENS_MDL], sensor_info[SENS_QE]
+            )
         else:
             print(ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
             sys.exit()

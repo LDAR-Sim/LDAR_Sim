@@ -2,7 +2,7 @@
 ------------------------------------------------------------------------------
 Program:     The LDAR Simulator (LDAR-Sim)
 File:        equipment_level_method
-Purpose: The provides default behaviors for equipment level methods
+Purpose: The module provides default behaviors for equipment level methods
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the MIT License as published
@@ -63,11 +63,15 @@ class EquipmentLevelMethod(Method):
             curr_date=curr_date,
         )
         if survey_report.survey_complete:
-            prev_tagging_survey_date: date = site_to_survey.get_latest_tagging_survey_date()
+            prev_tagging_survey_date: date = (
+                site_to_survey.get_latest_tagging_survey_date()
+            )
             days_since_last_survey: int = (curr_date - prev_tagging_survey_date).days
             site_to_survey.set_latest_tagging_survey_date(curr_date)
             for equip_group_survey_report in survey_report.equipment_groups_surveyed:
-                for emission_detection_report in equip_group_survey_report.emissions_detected:
+                for (
+                    emission_detection_report
+                ) in equip_group_survey_report.emissions_detected:
                     tagging_info = TaggingInfo(
                         measured_rate=emission_detection_report.measured_rate,
                         curr_date=curr_date,
@@ -91,11 +95,17 @@ class EquipmentLevelMethod(Method):
             sensor_into (dict): _description_
         """
         if sensor_info[SENS_TYPE] == "default":
-            self._sensor = DefaultEquipmentLevelSensor(sensor_info[SENS_MDL], sensor_info[SENS_QE])
+            self._sensor = DefaultEquipmentLevelSensor(
+                sensor_info[SENS_MDL], sensor_info[SENS_QE]
+            )
         elif sensor_info[SENS_TYPE] == "OGI_camera_zim":
-            self._sensor = OGICameraZimSensor(sensor_info[SENS_MDL], sensor_info[SENS_QE])
+            self._sensor = OGICameraZimSensor(
+                sensor_info[SENS_MDL], sensor_info[SENS_QE]
+            )
         elif sensor_info[SENS_TYPE] == "OGI_camera_rk":
-            self._sensor = OGICameraRKSensor(sensor_info[SENS_MDL], sensor_info[SENS_QE])
+            self._sensor = OGICameraRKSensor(
+                sensor_info[SENS_MDL], sensor_info[SENS_QE]
+            )
         elif sensor_info[SENS_TYPE] == "METEC_no_wind":
             self._sensor = METECNWEquipment(sensor_info[SENS_MDL], sensor_info[SENS_QE])
         else:

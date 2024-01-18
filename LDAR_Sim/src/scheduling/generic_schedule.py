@@ -1,6 +1,24 @@
+"""
+------------------------------------------------------------------------------
+Program:     The LDAR Simulator (LDAR-Sim)
+File:        generic_schedule
+Purpose: Contains the generic schedule module. This provides a survey queue for a given LDAR
+method so that sites can be queued to be surveyed. 
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the MIT License as published
+by the Free Software Foundation, version 3.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+MIT License for more details.
+You should have received a copy of the MIT License
+along with this program.  If not, see <https://opensource.org/licenses/MIT>.
+
+------------------------------------------------------------------------------
+"""
 from datetime import date
-
-
 from scheduling.workplan import Workplan
 from virtual_world.sites import Site
 from scheduling.schedule_dataclasses import SiteSurveyReport
