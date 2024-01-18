@@ -1,4 +1,4 @@
-version: "3.0"
+version: "4.0"
 parameter_level: virtual_world
 site_samples: 50
 emissions:
