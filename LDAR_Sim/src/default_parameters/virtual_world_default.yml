@@ -3,7 +3,6 @@ parameter_level: "virtual_world"
 start_date: [2023, 1, 1]
 end_date: [2027, 12, 31]
 weather_file: "weather_alberta.nc"
-weather_is_hourly: True # True/False
 consider_weather: False # True/False
 infrastructure:
   site_type_file: "_placeholder_str_" # Infrastructure file defining site types
@@ -21,11 +20,8 @@ repairs:
 emissions:
   consider_venting: False # True/False
   emissions_file: "_placeholder_str_" #File containing sample emissions rates or emissions distributions.
-  # See the user manual for more guidance on how to use this file.
-  leak_dist_params: [-2.776, 1.462]
-  leak_dist_type: "lognorm"
-  ERS: "dist" # Valid options are "dist" or the name of a column in the emissions file
-  non_rep_ERS: "_placeholder_str_"
+  ERS: "_placeholder_str_" # The name of a column in the emissions file
+  non_rep_ERS: "_placeholder_str_" # The name of a column in the emissions file
   LPR: 0.0065
   max_leak_rate: 100000.0
   units: ["kilogram", "hour"]

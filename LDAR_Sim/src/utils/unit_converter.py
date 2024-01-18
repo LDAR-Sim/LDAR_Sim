@@ -117,7 +117,7 @@ temperature_units = {
     },
     "K": {
         "scale": 1,
-        "offset": 1,
+        "offset": 0,
     },
     "F": {
         "scale": 0.55555555556,
@@ -154,10 +154,10 @@ pressure_units = {
 
 def gas_convert(
     input_quantity=0,
-    input_substance="natural gas",
+    input_substance="methane",
     input_metric="cubic feet",
     input_increment="hour",
-    output_substance="natural gas",
+    output_substance="methane",
     output_metric="gram",
     output_increment="second",
     NG_comp=0.949,
@@ -167,7 +167,7 @@ def gas_convert(
     pressure_unit="atm",
     GWP=25,
     carbon_price=40,
-):
+) -> float:
     """Converts gas flow rates to different units, and time intervals
 
     Args:
