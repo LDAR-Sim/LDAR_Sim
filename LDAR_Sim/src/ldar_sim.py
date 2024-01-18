@@ -19,50 +19,26 @@
 # ------------------------------------------------------------------------------
 
 
-from datetime import date
-import random
-import sys
-import warnings
-from math import floor
-import numpy as np
+import os
+from pathlib import Path, WindowsPath
 import pandas as pd
-from virtual_world.fugitive_emission import FugitiveEmission
 from virtual_world.infrastructure import Infrastructure
 from time_counter import TimeCounter
-from config.output_flag_mapping import (
-    OUTPUTS,
-    SITE_VISITS,
-    SITES,
-    LEAKS,
-    TIMESERIES,
-    PLOTS,
-)
-from geography.vector import grid_contains_point
-from initialization.leaks import generate_initial_leaks, generate_leak
-from initialization.update_methods import (
-    est_n_crews,
-    est_site_p_day,
-    est_t_bw_sites,
-    est_min_time_bt_surveys,
-)
-from campaigns.methods import update_campaigns, setup_campaigns
-
-# from methods.company import BaseCompany
-from numpy.random import binomial
-from out_processing.plotter import make_plots
 from programs.program import Program
 
 
 class LdarSim:
+    SIMULATION_NAME_STR = "{program}_{sim_number}"
+
     def __init__(
         self,
-        sim_number,
+        sim_number: int,
         simulation_settings,
         virtual_world,
         program: Program,
         infrastructure: Infrastructure,
-        input_dir,
-        output_dir,
+        input_dir: WindowsPath,
+        output_dir: WindowsPath,
     ):
         """
         Construct the simulation.
@@ -70,91 +46,81 @@ class LdarSim:
         self._tc: TimeCounter = TimeCounter(virtual_world["start_date"], virtual_world["end_date"])
         self.sim_number: int = sim_number
         self.infrastructure: Infrastructure = infrastructure
+        # TODO remove if unused
         self.simulation_settings = simulation_settings
-        self.program = program
+        self.program: Program = program
 
-        self.input_dir = input_dir
-        self.output_dir = output_dir
+        self.input_dir: WindowsPath = input_dir
+        self.output_dir: WindowsPath = output_dir / program.name
+        self.name_str: str = self.SIMULATION_NAME_STR.format(
+            program=program.name, sim_number=sim_number
+        )
 
         return
 
     def run_simulation(self):
         while not self._tc.at_simulation_end():
-            self.add_emissions()
+            self.infrastructure.activate_emissions(self._tc.current_date, self.sim_number)
             self.program.do_daily_program_deployment()
             self.program.update_date()
-            self.update_emis_state()
+            self.infrastructure.update_emissions_state()
             self._tc.next_day()
 
-    def update(self):
-        """
-        this rolls the model forward one timestep
-        returns nothing
-        """
-        # TODO : this should be in programs? - Add emissions should still be LDAR_sim, but deploys crews can go
-        self.add_emissions()  # Add leaks to the leak pool
-        # self.update_state()  # Update state of sites and leaks
-        return
+        overall_emission_data: pd.DataFrame = self.infrastructure.gen_summary_emis_data()
+        self.gen_sim_directory()
+        summary_filename = "_".join([self.name_str, "emissions_summary"])
+        self.save_results(overall_emission_data, summary_filename)
 
-    def update_emis_state(self):
-        """
-        update the state of active leaks
-        """
-        self.infrastructure.update_emissions_state()
+    def gen_sim_directory(self) -> None:
+        if not os.path.exists(self.output_dir):
+            os.mkdir(self.output_dir)
 
-        return
+    def save_results(self, data: pd.DataFrame, filename: str) -> None:
+        filepath: Path = self.output_dir / filename
+        data.to_csv(filepath)
 
-    def add_emissions(self):
-        """
-        add new emissions to infrastructure in the simulation
-        """
-        cur_date: date = self._tc.current_date
-        infrastructure: Infrastructure = self.infrastructure
-        infrastructure.activate_emissions(cur_date, self.sim_number)
-        return
+    # def finalize(self):
+    #     """
+    #     Compile and write output files.
+    #     """
 
-    def finalize(self):
-        """
-        Compile and write output files.
-        """
+    #     # Write metadata
+    #     f_name = self.output_dir / "metadata_{}.txt".format(virtual_world["simulation"])
+    #     metadata = open(f_name, "w")
+    #     metadata.write(str(virtual_world) + "\n" + str(datetime.datetime.now()))
+    #     metadata.close()
 
-        # Write metadata
-        f_name = self.output_dir / "metadata_{}.txt".format(virtual_world["simulation"])
-        metadata = open(f_name, "w")
-        metadata.write(str(virtual_world) + "\n" + str(datetime.datetime.now()))
-        metadata.close()
+    #     # Extract necessary information from the parameters
+    #     wanted_c_economics = [
+    #         "sale_price_natgas",
+    #         "GWP_CH4",
+    #         "carbon_price_tonnesCO2e",
+    #         "cost_CCUS",
+    #     ]
+    #     carbon_economics = {
+    #         key: value
+    #         for key, value in program_parameters["economics"].items()
+    #         if key in wanted_c_economics
+    #     }
 
-        # Extract necessary information from the parameters
-        wanted_c_economics = [
-            "sale_price_natgas",
-            "GWP_CH4",
-            "carbon_price_tonnesCO2e",
-            "cost_CCUS",
-        ]
-        carbon_economics = {
-            key: value
-            for key, value in program_parameters["economics"].items()
-            if key in wanted_c_economics
-        }
+    #     # Extract Metadata
+    #     wanted_meta_cols = ["program_name", "simulation", "NRd", "start_date"]
+    #     metadata = {key: value for key, value in virtual_world.items() if key in wanted_meta_cols}
 
-        # Extract Metadata
-        wanted_meta_cols = ["program_name", "simulation", "NRd", "start_date"]
-        metadata = {key: value for key, value in virtual_world.items() if key in wanted_meta_cols}
+    #     metadata.update(
+    #         {key: value for key, value in program_parameters.items() if key in wanted_meta_cols}
+    #     )
+    #     metadata.update(
+    #         {key: value for key, value in simulation_settings.items() if key in wanted_meta_cols}
+    #     )
 
-        metadata.update(
-            {key: value for key, value in program_parameters.items() if key in wanted_meta_cols}
-        )
-        metadata.update(
-            {key: value for key, value in simulation_settings.items() if key in wanted_meta_cols}
-        )
+    #     sim_summary = {
+    #         "meta": metadata,
+    #         "leaks": leak_df,
+    #         "timeseries": time_df,
+    #         "sites": site_df,
+    #         "program_name": program_parameters["program_name"],
+    #         "p_c_economics": carbon_economics,
+    #     }
 
-        sim_summary = {
-            "meta": metadata,
-            "leaks": leak_df,
-            "timeseries": time_df,
-            "sites": site_df,
-            "program_name": program_parameters["program_name"],
-            "p_c_economics": carbon_economics,
-        }
-
-        return sim_summary
+    #     return sim_summary

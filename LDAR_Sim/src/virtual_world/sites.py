@@ -184,3 +184,8 @@ class Site:
             None,
         )
         target_equip_group.tag_emissions_at_equipment(equipment, tagging_info)
+
+    def get_emis_data(self) -> pd.DataFrame:
+        emis_data: pd.DataFrame = pd.concat([eqg.get_emis_data() for eqg in self._equipment_groups])
+        emis_data["site_id"] = self._site_ID
+        return emis_data

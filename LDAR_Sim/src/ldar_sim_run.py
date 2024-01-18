@@ -35,6 +35,7 @@ from initialization.initialize_infrastructure import initialize_infrastructure
 from virtual_world.infrastructure import Infrastructure
 from stdout_redirect import stdout_redirect
 from time_counter import TimeCounter
+from virtual_world.sites import Site
 from weather.daylight_calculator import DaylightCalculatorAve
 from weather.weather_lookup import WeatherLookup as WL
 
@@ -65,9 +66,7 @@ def ldar_sim_run(simulation, weather, daylight):
     virtual_world = simulation["virtual_world"]
     program_parameters = simulation["program"]
     input_directory = simulation["input_directory"]
-    output_directory = (
-        simulation["output_directory"] / program_parameters["program_name"]
-    )
+    output_directory = simulation["output_directory"] / program_parameters["program_name"]
     virtual_world["pregenerate_leaks"] = simulation["pregenerate_leaks"]
     infrastructure: Infrastructure = simulation["Infrastructure"]
     simulation_settings = simulation["simulation_settings"]
@@ -232,11 +231,12 @@ if __name__ == "__main__":
         prog_names = []
         for program in programs:
             # TODO: get rid of state and split out into weather/daylight
-            sites = infrastructure._sites
+            sites: list[Site] = infrastructure._sites
             meth_params = {}
             for meth in programs[program]["method_labels"]:
                 meth_params[meth] = methods[meth]
             prog: Program = Program(
+                program,
                 state,
                 meth_params,
                 sites,

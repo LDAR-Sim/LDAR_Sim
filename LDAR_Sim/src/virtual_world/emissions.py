@@ -49,6 +49,8 @@ class Emission:
         if self._tagged:
             self._days_since_tagged += 1
 
+        return "no_status_change"
+
     def check_spatial_cov(self, method) -> int:
         if method not in self._tech_spat_covs:
             cov_prob: float = self._tech_spat_cov_probs[method]
