@@ -20,6 +20,10 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 from datetime import date
 import numpy as np
 import pandas as pd
+from LDAR_Sim.src.file_processing.input_processing.emissions_source_processing import (
+    EmissionsSource,
+    process_emission_sources,
+)
 
 from virtual_world.infrastructure_const import (
     Infrastructure_Constants,
@@ -36,9 +40,10 @@ from file_processing.input_processing.infrastructure_processing import (
 
 class Infrastructure:
     def __init__(self, virtual_world, methods, in_dir) -> None:
-        self.generate_infrastructure(
-            virtual_world=virtual_world, methods=methods, in_dir=in_dir
+        self.leak_rate_source_dictionary: dict[str, EmissionsSource] = process_emission_sources(
+            inputs_path=in_dir, virtual_world=virtual_world
         )
+        self.generate_infrastructure(virtual_world=virtual_world, methods=methods, in_dir=in_dir)
 
     def generate_propagating_params(self, virtual_world, methods) -> dict:
         prop_params_dict: dict = {}
@@ -78,9 +83,7 @@ class Infrastructure:
     ) -> None:
         if site_type_info is not None:
             # Updating propagating parameters with site type info
-            for (
-                param
-            ) in Infrastructure_Constants.Site_Type_File_Constants.PROPAGATING_PARAMS:
+            for param in Infrastructure_Constants.Site_Type_File_Constants.PROPAGATING_PARAMS:
                 site_type_val = site_type_info.get(param, None)
                 if site_type_val is not None:
                     prop_params[param] = site_type_val
@@ -88,30 +91,20 @@ class Infrastructure:
             for method in methods:
                 for (
                     param
-                ) in (
-                    Infrastructure_Constants.Site_Type_File_Constants.METH_SPEC_PROP_PARAMS
-                ):
+                ) in Infrastructure_Constants.Site_Type_File_Constants.METH_SPEC_PROP_PARAMS:
                     site_type_val = site_type_info.get(method + param, None)
                     if site_type_val is not None:
-                        prop_params["Method_Specific_Params"][param][
-                            method
-                        ] = site_type_val
+                        prop_params["Method_Specific_Params"][param][method] = site_type_val
 
             # Updating propagating parameters with site info
-            for (
-                param
-            ) in Infrastructure_Constants.Sites_File_Constants.PROPAGATING_PARAMS:
+            for param in Infrastructure_Constants.Sites_File_Constants.PROPAGATING_PARAMS:
                 site_val = site_row_df_info.get(param, None)
                 if site_val is not None:
                     prop_params[param] = site_val
 
             # Update method specific propagating params with site info
             for method in methods:
-                for (
-                    param
-                ) in (
-                    Infrastructure_Constants.Sites_File_Constants.METH_SPEC_PROP_PARAMS
-                ):
+                for param in Infrastructure_Constants.Sites_File_Constants.METH_SPEC_PROP_PARAMS:
                     site_val = site_row_df_info.get(method + param, None)
                     if site_val is not None:
                         prop_params["Method_Specific_Params"][param][method] = site_val
@@ -125,7 +118,9 @@ class Infrastructure:
         infrastructure_emissions: dict = {}
         for site in self._sites:
             infrastructure_emissions.update(
-                site.generate_emissions(sim_start_date, sim_end_date, sim_number)
+                site.generate_emissions(
+                    sim_start_date, sim_end_date, sim_number, self.leak_rate_source_dictionary
+                )
             )
         return {sim_number: infrastructure_emissions}
 
@@ -177,9 +172,7 @@ class Infrastructure:
                 site_types_info = infrastructure_inputs["site_types"]
                 site_type = srow[Infrastructure_Constants.Sites_File_Constants.ID]
                 site_types_info = site_types_info.loc[
-                    site_types_info[
-                        Infrastructure_Constants.Site_Type_File_Constants.TYPE
-                    ]
+                    site_types_info[Infrastructure_Constants.Site_Type_File_Constants.TYPE]
                     == site_type
                 ].iloc[0]
             propagating_params = self.generate_propagating_params(
@@ -195,9 +188,7 @@ class Infrastructure:
                 id=srow[Infrastructure_Constants.Sites_File_Constants.ID],
                 lat=srow[Infrastructure_Constants.Sites_File_Constants.LAT],
                 long=srow[Infrastructure_Constants.Sites_File_Constants.LON],
-                equipment_groups=srow[
-                    Infrastructure_Constants.Sites_File_Constants.EQG
-                ],
+                equipment_groups=srow[Infrastructure_Constants.Sites_File_Constants.EQG],
                 propagating_params=propagating_params,
                 infrastructure_inputs=infrastructure_inputs,
             )

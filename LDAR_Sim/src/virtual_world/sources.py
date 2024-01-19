@@ -23,6 +23,9 @@ import sys
 from typing import Literal
 
 import numpy as np
+from LDAR_Sim.src.file_processing.input_processing.emissions_source_processing import (
+    EmissionsSource,
+)
 from virtual_world.emissions import Emission
 from virtual_world.fugitive_emission import FugitiveEmission
 from virtual_world.infrastructure_const import Infrastructure_Constants
@@ -38,18 +41,10 @@ class Source:
 
     def __init__(self, id: str, info, prop_params) -> None:
         self._source_ID: str = id
-        self._repairable = info[
-            Infrastructure_Constants.Sources_File_Constants.REPAIRABLE
-        ]
-        self._persistent = info[
-            Infrastructure_Constants.Sources_File_Constants.PERSISTENT
-        ]
-        self._active_duration = info[
-            Infrastructure_Constants.Sources_File_Constants.ACTIVE_DUR
-        ]
-        self._inactive_duration = info[
-            Infrastructure_Constants.Sources_File_Constants.INACTIVE_DUR
-        ]
+        self._repairable = info[Infrastructure_Constants.Sources_File_Constants.REPAIRABLE]
+        self._persistent = info[Infrastructure_Constants.Sources_File_Constants.PERSISTENT]
+        self._active_duration = info[Infrastructure_Constants.Sources_File_Constants.ACTIVE_DUR]
+        self._inactive_duration = info[Infrastructure_Constants.Sources_File_Constants.INACTIVE_DUR]
         self._generated_emissions: dict[int, list[Emission]] = {}
         self.update_prop_params(info=info, prop_params=prop_params)
         self.set_source_properties(prop_params=prop_params)
@@ -84,12 +79,8 @@ class Source:
         self._emis_rate_source = prop_params[
             Infrastructure_Constants.Sources_File_Constants.EMIS_ERS
         ]
-        self._emis_prod_rate = prop_params[
-            Infrastructure_Constants.Sources_File_Constants.EMIS_EPR
-        ]
-        self._emis_duration = prop_params[
-            Infrastructure_Constants.Sources_File_Constants.EMIS_DUR
-        ]
+        self._emis_prod_rate = prop_params[Infrastructure_Constants.Sources_File_Constants.EMIS_EPR]
+        self._emis_duration = prop_params[Infrastructure_Constants.Sources_File_Constants.EMIS_DUR]
 
         self._meth_spat_covs = prop_params["Method_Specific_Params"][
             Infrastructure_Constants.Sources_File_Constants.SPATIAL_PLACEHOLDER
@@ -103,8 +94,8 @@ class Source:
                 Infrastructure_Constants.Sources_File_Constants.REPAIR_COST
             ]
 
-    def _get_rate(self):
-        return self._emis_rate_source
+    def _get_rate(self, leak_rate_source_dictionary: dict[str, EmissionsSource]):
+        return leak_rate_source_dictionary[self._emis_rate_source].get_a_rate()
 
     def _get_repairable(self):
         return self._repairable
@@ -118,11 +109,17 @@ class Source:
     def _get_emis_duration(self):
         return self._emis_duration
 
-    def _create_emission(self, leak_count, start_date, sim_start_date) -> Emission:
+    def _create_emission(
+        self,
+        leak_count,
+        start_date,
+        sim_start_date,
+        leak_rate_source_dictionary: dict[str, EmissionsSource],
+    ) -> Emission:
         if self._repairable:
             return FugitiveEmission(
                 emission_n=leak_count,
-                rate=self._get_rate(),
+                rate=self._get_rate(leak_rate_source_dictionary),
                 start_date=start_date,
                 simulation_sd=sim_start_date,
                 repairable=self._get_repairable(),
@@ -136,7 +133,11 @@ class Source:
             sys.exit()
 
     def generate_emissions(
-        self, sim_start_date: date, sim_end_date: date, sim_number: int
+        self,
+        sim_start_date: date,
+        sim_end_date: date,
+        sim_number: int,
+        leak_rate_source_dictionary: dict[str, EmissionsSource],
     ) -> dict[str, list[Emission]]:
         emissions: list[Emission] = []
 
@@ -156,6 +157,7 @@ class Source:
                     leak_count=leak_count,
                     start_date=emis_start_date,
                     sim_start_date=sim_start_date,
+                    leak_rate_source_dictionary=leak_rate_source_dictionary,
                 )
                 leak_count += 1
                 emissions.append(emission)
@@ -172,6 +174,7 @@ class Source:
                     leak_count=leak_count,
                     start_date=emis_start_date,
                     sim_start_date=sim_start_date,
+                    leak_rate_source_dictionary=leak_rate_source_dictionary,
                 )
                 leak_count += 1
                 emissions.append(emission)

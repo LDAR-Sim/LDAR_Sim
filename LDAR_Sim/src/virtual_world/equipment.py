@@ -3,6 +3,9 @@ from datetime import date
 import re
 
 import pandas as pd
+from LDAR_Sim.src.file_processing.input_processing.emissions_source_processing import (
+    EmissionsSource,
+)
 from scheduling.schedule_dataclasses import TaggingInfo
 
 from virtual_world.emissions import Emission
@@ -50,10 +53,20 @@ class Equipment:
         else:
             print(SOURCE_CREATION_ERROR_MESSAGE)
 
-    def generate_emissions(self, sim_start_date, sim_end_date, sim_number) -> dict:
+    def generate_emissions(
+        self,
+        sim_start_date,
+        sim_end_date,
+        sim_number,
+        leak_rate_source_dictionary: dict[str, EmissionsSource],
+    ) -> dict:
         equip_emissions = {}
         for src in self._sources:
-            equip_emissions.update(src.generate_emissions(sim_start_date, sim_end_date, sim_number))
+            equip_emissions.update(
+                src.generate_emissions(
+                    sim_start_date, sim_end_date, sim_number, leak_rate_source_dictionary
+                )
+            )
 
         return {self._equipment_ID: equip_emissions}
 

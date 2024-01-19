@@ -21,6 +21,9 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 from datetime import date
 
 import pandas as pd
+from LDAR_Sim.src.file_processing.input_processing.emissions_source_processing import (
+    EmissionsSource,
+)
 from scheduling.schedule_dataclasses import TaggingInfo
 from virtual_world.emissions import Emission
 from virtual_world.infrastructure_const import Infrastructure_Constants
@@ -71,11 +74,19 @@ class Equipment_Group:
             Infrastructure_Constants.Equipment_Group_File_Constants.SURVEY_COST_PLACEHOLDER
         )
 
-    def generate_emissions(self, sim_start_date, sim_end_date, sim_number) -> dict:
+    def generate_emissions(
+        self,
+        sim_start_date,
+        sim_end_date,
+        sim_number,
+        leak_rate_source_dictionary: dict[str, EmissionsSource],
+    ) -> dict:
         eqg_emissions = {}
         for eqmt in self._equipment:
             eqg_emissions.update(
-                eqmt.generate_emissions(sim_start_date, sim_end_date, sim_number)
+                eqmt.generate_emissions(
+                    sim_start_date, sim_end_date, sim_number, leak_rate_source_dictionary
+                )
             )
 
         return {self._id: eqg_emissions}
@@ -96,9 +107,7 @@ class Equipment_Group:
         for equip in self._equipment:
             equip.update_emissions_state()
 
-    def tag_emissions_at_equipment(
-        self, equipment: str, tagging_info: TaggingInfo
-    ) -> None:
+    def tag_emissions_at_equipment(self, equipment: str, tagging_info: TaggingInfo) -> None:
         target_equip: Equipment | None = next(
             (equip for equip in self._equipment if equip.get_id() == equipment),
             None,
@@ -108,17 +117,13 @@ class Equipment_Group:
     def get_detectable_emissions(self, method_name: str) -> dict[str, list[Emission]]:
         detectable_emissions: dict[str, Emission] = {}
         for equip in self._equipment:
-            detectable_emissions[equip.get_id()] = equip.get_detectable_emissions(
-                method_name
-            )
+            detectable_emissions[equip.get_id()] = equip.get_detectable_emissions(method_name)
 
         return detectable_emissions
 
     def set_pregen_emissions(self, eqg_emissions, sim_number) -> None:
         for equipment in self._equipment:
-            equipment.set_pregen_emissions(
-                eqg_emissions[equipment.get_id()], sim_number
-            )
+            equipment.set_pregen_emissions(eqg_emissions[equipment.get_id()], sim_number)
 
     def get_survey_time(self, method_name) -> float:
         survey_time: float = self._meth_survey_times[method_name]
@@ -132,8 +137,6 @@ class Equipment_Group:
         return self._id
 
     def get_emis_data(self) -> pd.DataFrame:
-        emis_data: pd.DataFrame = pd.concat(
-            [equip.get_emis_data() for equip in self._equipment]
-        )
+        emis_data: pd.DataFrame = pd.concat([equip.get_emis_data() for equip in self._equipment])
         emis_data["equipment_group"] = self._id
         return emis_data

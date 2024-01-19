@@ -18,7 +18,6 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 ------------------------------------------------------------------------------
 """
 import sys
-from typing import Any
 from pandas import DataFrame, read_csv, Series
 from numpy.random import choice as random_sample
 from scipy import stats
@@ -177,30 +176,22 @@ def read_in_emissions_sources_file(
         sys.exit()
 
 
-def process_emission_sources(inputs_path: WindowsPath, virtual_world: dict) -> dict[str, Any]:
-    emissions_sources = {}
-
+def process_emission_sources(
+    inputs_path: WindowsPath, virtual_world: dict
+) -> dict[str, EmissionsSource]:
     # Try to read in Emissions Sources file
     emissions_source_file = read_in_emissions_sources_file(
         inputs_path=inputs_path, virtual_world=virtual_world
     )
     # Read in the emissions sources file
-    processed_emissions_sources: dict[
-        str, list[int] | stats.rv_continuous
-    ] = process_emission_source_file(emissions_source_file)
-    emissions_sources[EMISSION_SOURCES] = processed_emissions_sources
+    processed_emissions_sources: dict[str, EmissionsSource] = process_emission_source_file(
+        emissions_source_file
+    )
 
-    # Extract the default emissions rates
-    emissions_default: list[float] | stats.rv_continuous = processed_emissions_sources[
-        virtual_world[EMISSION][EMISSION_ERS]
-    ]
-
-    emissions_sources[EMISSION_SOURCE_DEFAULT] = emissions_default
-
-    return emissions_sources
+    return processed_emissions_sources
 
 
-def process_emission_source_file(emis_sources: DataFrame) -> dict[str, Any]:
+def process_emission_source_file(emis_sources: DataFrame) -> dict[str, EmissionsSource]:
     """Process the given emissions sources DataFrame in order to
     set up the correct emissions sources types.
 
