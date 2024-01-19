@@ -23,7 +23,7 @@ import sys
 from typing import Literal
 
 import numpy as np
-from LDAR_Sim.src.file_processing.input_processing.emissions_source_processing import (
+from file_processing.input_processing.emissions_source_processing import (
     EmissionsSource,
 )
 from virtual_world.emissions import Emission
@@ -41,10 +41,18 @@ class Source:
 
     def __init__(self, id: str, info, prop_params) -> None:
         self._source_ID: str = id
-        self._repairable = info[Infrastructure_Constants.Sources_File_Constants.REPAIRABLE]
-        self._persistent = info[Infrastructure_Constants.Sources_File_Constants.PERSISTENT]
-        self._active_duration = info[Infrastructure_Constants.Sources_File_Constants.ACTIVE_DUR]
-        self._inactive_duration = info[Infrastructure_Constants.Sources_File_Constants.INACTIVE_DUR]
+        self._repairable = info[
+            Infrastructure_Constants.Sources_File_Constants.REPAIRABLE
+        ]
+        self._persistent = info[
+            Infrastructure_Constants.Sources_File_Constants.PERSISTENT
+        ]
+        self._active_duration = info[
+            Infrastructure_Constants.Sources_File_Constants.ACTIVE_DUR
+        ]
+        self._inactive_duration = info[
+            Infrastructure_Constants.Sources_File_Constants.INACTIVE_DUR
+        ]
         self._generated_emissions: dict[int, list[Emission]] = {}
         self.update_prop_params(info=info, prop_params=prop_params)
         self.set_source_properties(prop_params=prop_params)
@@ -79,8 +87,12 @@ class Source:
         self._emis_rate_source = prop_params[
             Infrastructure_Constants.Sources_File_Constants.EMIS_ERS
         ]
-        self._emis_prod_rate = prop_params[Infrastructure_Constants.Sources_File_Constants.EMIS_EPR]
-        self._emis_duration = prop_params[Infrastructure_Constants.Sources_File_Constants.EMIS_DUR]
+        self._emis_prod_rate = prop_params[
+            Infrastructure_Constants.Sources_File_Constants.EMIS_EPR
+        ]
+        self._emis_duration = prop_params[
+            Infrastructure_Constants.Sources_File_Constants.EMIS_DUR
+        ]
 
         self._meth_spat_covs = prop_params["Method_Specific_Params"][
             Infrastructure_Constants.Sources_File_Constants.SPATIAL_PLACEHOLDER

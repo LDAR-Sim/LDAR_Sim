@@ -43,7 +43,9 @@ class LdarSim:
         """
         Construct the simulation.
         """
-        self._tc: TimeCounter = TimeCounter(virtual_world["start_date"], virtual_world["end_date"])
+        self._tc: TimeCounter = TimeCounter(
+            virtual_world["start_date"], virtual_world["end_date"]
+        )
         self.sim_number: int = sim_number
         self.infrastructure: Infrastructure = infrastructure
         # TODO remove if unused
@@ -60,15 +62,20 @@ class LdarSim:
 
     def run_simulation(self):
         while not self._tc.at_simulation_end():
-            self.infrastructure.activate_emissions(self._tc.current_date, self.sim_number)
+            self.infrastructure.activate_emissions(
+                self._tc.current_date, self.sim_number
+            )
             self.program.do_daily_program_deployment()
             self.program.update_date()
             self.infrastructure.update_emissions_state()
             self._tc.next_day()
 
-        overall_emission_data: pd.DataFrame = self.infrastructure.gen_summary_emis_data()
+        overall_emission_data: pd.DataFrame = (
+            self.infrastructure.gen_summary_emis_data()
+        )
+
         self.gen_sim_directory()
-        summary_filename = "_".join([self.name_str, "emissions_summary"])
+        summary_filename = "_".join([self.name_str, "emissions_summary.csv"])
         self.save_results(overall_emission_data, summary_filename)
 
     def gen_sim_directory(self) -> None:
@@ -76,8 +83,10 @@ class LdarSim:
             os.mkdir(self.output_dir)
 
     def save_results(self, data: pd.DataFrame, filename: str) -> None:
+        if data is None:
+            return
         filepath: Path = self.output_dir / filename
-        data.to_csv(filepath)
+        data.to_csv(filepath, index=False)
 
     # def finalize(self):
     #     """

@@ -66,7 +66,9 @@ def ldar_sim_run(simulation, weather, daylight):
     virtual_world = simulation["virtual_world"]
     program_parameters = simulation["program"]
     input_directory = simulation["input_directory"]
-    output_directory = simulation["output_directory"] / program_parameters["program_name"]
+    output_directory = (
+        simulation["output_directory"] / program_parameters["program_name"]
+    )
     virtual_world["pregenerate_leaks"] = simulation["pregenerate_leaks"]
     infrastructure: Infrastructure = simulation["Infrastructure"]
     simulation_settings = simulation["simulation_settings"]
@@ -195,7 +197,10 @@ if __name__ == "__main__":
     generator_dir = in_dir / "generator"
     if os.path.exists(generator_dir):
         print(
-            "Pre-generated initialization files exist. LDAR-Sim may not create new leaks to model with"
+            [
+                "Pre-generated initialization files exist.",
+                "LDAR-Sim may not create new leaks to model with",
+            ]
         )
     print("...Initializing infrastructure")
     # TODO split out infrastructure generation from emissions generation somehow so we don't
@@ -209,6 +214,12 @@ if __name__ == "__main__":
         generator_dir,
         in_dir,
     )
+
+    print("...Initializing emissions")
+    # pregen emissions
+    # TODO split emissions generation out from infrastructure
+    # emissions = initialize_emissions()
+
     # Initialize objects
     print("...Initializing weather")
     weather = WL(virtual_world, in_dir)
@@ -218,11 +229,7 @@ if __name__ == "__main__":
         date(*virtual_world["start_date"]),
         date(*virtual_world["end_date"]),
     )
-
-    print("...Initializing emissions")
-    # pregen emissions
-    # TODO split emissions generation out from infrastructure
-    # emissions = initialize_emissions()
+    # TODO: remove the need for state
     state = {"weather": weather, "daylight": daylight}
     for simulation in range(simulation_count):
         print(f"......Simulating set {simulation}")

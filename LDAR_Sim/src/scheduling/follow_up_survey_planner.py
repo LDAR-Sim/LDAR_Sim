@@ -1,3 +1,22 @@
+"""
+------------------------------------------------------------------------------
+Program:     The LDAR Simulator (LDAR-Sim)
+File:        follow_up_survey_planner
+Purpose: The extended Survey Planner module, specifically for Follow up surveys.  
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the MIT License as published
+by the Free Software Foundation, version 3.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+MIT License for more details.
+You should have received a copy of the MIT License
+along with this program.  If not, see <https://opensource.org/licenses/MIT>.
+
+------------------------------------------------------------------------------
+"""
 from datetime import date
 import sys
 
@@ -11,7 +30,9 @@ class FollowUpSurveyPlanner(SurveyPlanner):
     REDUND_FILTER_MAX = "max"
     REDUND_FILTER_AVERAGE = "average"
 
-    INVALID_REDUND_FILTER_ERROR = "Error: Invalid Redundancy filter: {filter} for method: {method}"
+    INVALID_REDUND_FILTER_ERROR = (
+        "Error: Invalid Redundancy filter: {filter} for method: {method}"
+    )
 
     def __init__(self, detection_record: DetectionRecord, detect_date: date) -> None:
         super().__init__(detection_record.site)
@@ -40,5 +61,9 @@ class FollowUpSurveyPlanner(SurveyPlanner):
             self.rate_at_site = max(self._detected_rates)
             self._latest_detection_date = detect_date
         else:
-            print(self.INVALID_REDUND_FILTER_ERROR.format(filter=redund_filter, method=method_name))
+            print(
+                self.INVALID_REDUND_FILTER_ERROR.format(
+                    filter=redund_filter, method=method_name
+                )
+            )
             sys.exit()

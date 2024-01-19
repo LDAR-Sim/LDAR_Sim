@@ -1,9 +1,28 @@
+"""
+------------------------------------------------------------------------------
+Program:     The LDAR Simulator (LDAR-Sim)
+File:        equipment
+Purpose: The equipment module.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the MIT License as published
+by the Free Software Foundation, version 3.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+MIT License for more details.
+You should have received a copy of the MIT License
+along with this program.  If not, see <https://opensource.org/licenses/MIT>.
+
+------------------------------------------------------------------------------
+"""
 from copy import deepcopy
 from datetime import date
 import re
 
 import pandas as pd
-from LDAR_Sim.src.file_processing.input_processing.emissions_source_processing import (
+from file_processing.input_processing.emissions_source_processing import (
     EmissionsSource,
 )
 from scheduling.schedule_dataclasses import TaggingInfo
@@ -14,18 +33,20 @@ from virtual_world.infrastructure_const import Infrastructure_Constants
 
 from virtual_world.sources import Source
 
-SOURCE_CREATION_ERROR_MESSAGE = (
-    "Invalid LDAR-Sim infrastructure inputs: Failure to read in sources infrastructure input"
-)
+SOURCE_CREATION_ERROR_MESSAGE = "Invalid LDAR-Sim infrastructure inputs: Failure to read in sources infrastructure input"
 
 
 class Equipment:
-    def __init__(self, equip_type, equip_id, infrastructure_inputs, prop_params) -> None:
+    def __init__(
+        self, equip_type, equip_id, infrastructure_inputs, prop_params
+    ) -> None:
         STR_FILTER = r"_equipment"
         pattern: re.Pattern[str] = re.compile(re.escape(STR_FILTER), re.IGNORECASE)
         self._equip_type: str = re.sub(pattern, "", equip_type)
         self._equipment_ID: str = self._equip_type + "_" + str(equip_id)
-        self.create_sources(infrastructure_inputs=infrastructure_inputs, prop_params=prop_params)
+        self.create_sources(
+            infrastructure_inputs=infrastructure_inputs, prop_params=prop_params
+        )
         self._active_emissions: list[Emission] = []
         self._inactive_emissions: list[Emission] = []
 
@@ -64,7 +85,10 @@ class Equipment:
         for src in self._sources:
             equip_emissions.update(
                 src.generate_emissions(
-                    sim_start_date, sim_end_date, sim_number, leak_rate_source_dictionary
+                    sim_start_date,
+                    sim_end_date,
+                    sim_number,
+                    leak_rate_source_dictionary,
                 )
             )
 
@@ -92,7 +116,9 @@ class Equipment:
             emission for emission in self._active_emissions if emission_active(emission)
         ]
         self._inactive_emissions = [
-            emission for emission in self._active_emissions if not emission_active(emission)
+            emission
+            for emission in self._active_emissions
+            if not emission_active(emission)
         ]
         return
 
@@ -124,14 +150,34 @@ class Equipment:
         return self._equipment_ID
 
     def get_emis_data(self) -> pd.DataFrame:
-        emis_data_active: list[pd.DataFrame] = [
-            pd.DataFrame(emission.get_summary_dict()) for emission in self._active_emissions
-        ]
+        emis_data_active: pd.DataFrame = pd.DataFrame(
+            [emission.get_summary_dict() for emission in self._active_emissions]
+        )
 
-        emis_data_inactive: list[pd.DataFrame] = [
-            pd.DataFrame(emission.get_summary_dict()) for emission in self._inactive_emissions
-        ]
-        emis_data_list = emis_data_active.extend(emis_data_inactive)
-        emis_data: pd.DataFrame = pd.concat([emis_data_list])
+        emis_data_inactive: pd.DataFrame = pd.DataFrame(
+            [emission.get_summary_dict() for emission in self._inactive_emissions]
+        )
+        # Handle empty dataframe cases
+        if emis_data_active.empty and emis_data_inactive.empty:
+            columns = [
+                "Emissions ID",
+                "Status",
+                "Days Active",
+                "Volume Emitted",
+                "Date Began",
+                "Initially Detected By",
+                "Tagged",
+                "Tagged By",
+                "equipment",
+            ]
+            return pd.DataFrame(columns=columns)
+        elif emis_data_inactive.empty:
+            emis_data = emis_data_active
+        elif emis_data_active.empty:
+            emis_data = emis_data_inactive
+        else:
+            emis_data = emis_data_active.append(emis_data_inactive, ignore_index=True)
+
         emis_data["equipment"] = self._equipment_ID
+
         return emis_data

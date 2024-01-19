@@ -3,9 +3,9 @@ parameter_level: virtual_world
 site_samples: 50
 emissions:
   consider_venting: False
+  emissions_file: "emissions_file.csv" #File containing sample emissions rates or emissions distributions.
+  ERS: "test1" # The name of a column in the emissions file
   LPR: 0.0065
-  max_leak_rate: 100000
-  leak_dist_params: [-1.79, 2.17]
 infrastructure:
   site_type_file: "_placeholder_str_" # Infrastructure file defining site types
   sites_file: "facilities_Perm.csv" #Infrastructure file defining sites

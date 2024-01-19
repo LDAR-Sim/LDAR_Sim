@@ -26,7 +26,7 @@ from pathlib import WindowsPath
 from dataclasses import dataclass
 from numpy import exp as exponential
 
-from LDAR_Sim.src.utils.unit_converter import gas_convert
+from utils.unit_converter import gas_convert
 
 
 EMISSION_SOURCES = "sources"
@@ -57,12 +57,17 @@ class EmissionsSource:
         self.source_identifier = source_id
 
     def unit_conversion(
-        for_conversion: float | list[float], unit_amount: str, unit_time: str
+        self, for_conversion: float | list[float], unit_amount: str, unit_time: str
     ) -> float:
+        # don't bother converting if units are already gram/second
+        if unit_amount == "gram" and unit_time == "second":
+            return for_conversion
         if isinstance(for_conversion, float):
             # TODO check gas convert defaults
             converted_val: float = gas_convert(
-                input_quantity=for_conversion, input_metric=unit_amount, input_increment=unit_time
+                input_quantity=for_conversion,
+                input_metric=unit_amount,
+                input_increment=unit_time,
             )
             return converted_val
         elif isinstance(for_conversion, list):
@@ -116,12 +121,13 @@ class EmissionsSourceDist(EmissionsSource):
         scale: float = float(dist_scale)
         if dist_type == "lognorm":
             scale = exponential(scale)
+            dist_shape = dist_shape[0]
         # Ensure all shape values are captured
         shape: float | list[float] = json.loads(dist_shape)
         if not isinstance(shape, list):
             shape = [shape]
         dist_type_obj = getattr(stats, dist_type)
-        distribution = dist_type_obj(*dist_shape, 0, scale)
+        distribution = dist_type_obj(*shape, 0, scale)
         return distribution
 
 
@@ -137,7 +143,9 @@ class EmissionsSourceSample(EmissionsSource):
         super().__init__(source_id=source_id)
         numerical_samples = [float(sample) for sample in samples]
         self._samples = self.unit_conversion(
-            for_conversion=numerical_samples, unit_amount=unit_amount, unit_time=unit_time
+            for_conversion=numerical_samples,
+            unit_amount=unit_amount,
+            unit_time=unit_time,
         )
         self._max_emis_rate = self.unit_conversion(
             for_conversion=max_emis_rate, unit_amount=unit_amount, unit_time=unit_time
@@ -184,9 +192,9 @@ def process_emission_sources(
         inputs_path=inputs_path, virtual_world=virtual_world
     )
     # Read in the emissions sources file
-    processed_emissions_sources: dict[str, EmissionsSource] = process_emission_source_file(
-        emissions_source_file
-    )
+    processed_emissions_sources: dict[
+        str, EmissionsSource
+    ] = process_emission_source_file(emissions_source_file)
 
     return processed_emissions_sources
 
@@ -231,17 +239,21 @@ def process_emission_source_file(emis_sources: DataFrame) -> dict[str, Emissions
                 max_emis_rate=emis_source_info.max_emission_rate,
             )
         else:
-            print(f"Error, invalid emissions source information for source {source_name}")
+            print(
+                f"Error, invalid emissions source information for source {source_name}"
+            )
 
         processed_emissions_data[source_name] = emis_source
 
     return processed_emissions_data
 
 
-def read_in_emis_source_col(column_name: str, emis_source_col: Series) -> EmissionsSourceInfo:
-    col_vals: list[str] = emis_source_col.str.split(",")
+def read_in_emis_source_col(
+    column_name: str, emis_source_col: Series
+) -> EmissionsSourceInfo:
+    # col_vals: list[str] = emis_source_col.str.split(",")
     try:
-        date_use: str = col_vals[0]
+        date_use: str = emis_source_col[0]
     except Exception as e:
         print(
             INVALID_EMISSIONS_SOURCE_FILE_VALUE_ERROR.format(
@@ -249,7 +261,7 @@ def read_in_emis_source_col(column_name: str, emis_source_col: Series) -> Emissi
             )
         )
     try:
-        dist_type: str = col_vals[1]
+        dist_type: str = emis_source_col[1]
     except Exception as e:
         print(
             INVALID_EMISSIONS_SOURCE_FILE_VALUE_ERROR.format(
@@ -257,7 +269,7 @@ def read_in_emis_source_col(column_name: str, emis_source_col: Series) -> Emissi
             )
         )
     try:
-        max_emis_rate: float = float(col_vals[2])
+        max_emis_rate: float = float(emis_source_col[2])
     except Exception as e:
         print(
             INVALID_EMISSIONS_SOURCE_FILE_VALUE_ERROR.format(
@@ -265,7 +277,7 @@ def read_in_emis_source_col(column_name: str, emis_source_col: Series) -> Emissi
             )
         )
     try:
-        unit_amount: str = col_vals[3]
+        unit_amount: str = emis_source_col[3]
     except Exception as e:
         print(
             INVALID_EMISSIONS_SOURCE_FILE_VALUE_ERROR.format(
@@ -273,7 +285,7 @@ def read_in_emis_source_col(column_name: str, emis_source_col: Series) -> Emissi
             )
         )
     try:
-        units_time: str = col_vals[4]
+        units_time: str = emis_source_col[4]
     except Exception as e:
         print(
             INVALID_EMISSIONS_SOURCE_FILE_VALUE_ERROR.format(
@@ -281,7 +293,7 @@ def read_in_emis_source_col(column_name: str, emis_source_col: Series) -> Emissi
             )
         )
     try:
-        source: list[str] = col_vals[5:]
+        source: list[str] = Series(emis_source_col[5:]).dropna().tolist()
     except Exception as e:
         print(
             INVALID_EMISSIONS_SOURCE_FILE_VALUE_ERROR.format(
