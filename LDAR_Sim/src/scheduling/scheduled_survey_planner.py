@@ -213,6 +213,12 @@ class ScheduledSurveyPlanner(SurveyPlanner):
             return True
         return False
 
+    def _check_deployable_month(self) -> bool:
+        """Checks to make sure current date is a valid month to send out crews"""
+        if self._current_date.month in self._deployment_months:
+            return True
+        return False
+
     def queue_site_for_survey(self) -> bool:
         """Method to determine if the site for which this survey plan was generated
         should be queued to be surveyed. Will return True if the site should be
@@ -223,6 +229,8 @@ class ScheduledSurveyPlanner(SurveyPlanner):
             True if the site should be queued to be surveyed, False otherwise.
         """
         if self._check_deployable_year() is False:
+            return False
+        if self._check_deployable_month() is False:
             return False
         elif self._queued is False and (
             self._surveys_this_year[self._current_date.year].Required_surveys
