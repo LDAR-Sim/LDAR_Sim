@@ -86,8 +86,6 @@ def ldar_sim_run(simulation, weather, daylight):
         sys.stdout = stdout_redirect([logfile])
     gc.collect()
 
-    # --------------------------------------
-    # TODO : probably program?
     sim = LdarSim(
         simulation_settings,
         state,

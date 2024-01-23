@@ -63,7 +63,6 @@ class EmissionsSource:
         if unit_amount == "gram" and unit_time == "second":
             return for_conversion
         if isinstance(for_conversion, float):
-            # TODO check gas convert defaults
             converted_val: float = gas_convert(
                 input_quantity=for_conversion,
                 input_metric=unit_amount,
