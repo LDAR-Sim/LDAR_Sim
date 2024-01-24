@@ -114,9 +114,9 @@ class Equipment:
         self._active_emissions = [
             emission for emission in self._active_emissions if emission_active(emission)
         ]
-        self._inactive_emissions = [
-            emission for emission in self._active_emissions if not emission_active(emission)
-        ]
+        self._inactive_emissions.extend(
+            [emission for emission in self._active_emissions if not emission_active(emission)]
+        )
         return
 
     def tag_emissions(self, tagging_info: TaggingInfo) -> None:
@@ -163,7 +163,7 @@ class Equipment:
         elif emis_data_active.empty:
             emis_data = emis_data_inactive
         else:
-            emis_data = emis_data_active.append(emis_data_inactive, ignore_index=True)
+            emis_data = pd.concat([emis_data_active, emis_data_inactive])
 
         emis_data["equipment"] = self._equipment_ID
 
