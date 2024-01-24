@@ -45,7 +45,7 @@ from initialization.args import (
     files_from_args,
     get_abs_path,
 )  # TODO: move this over to input_processing?
-from initialization.initialize_emissions import initialize_emissions
+from initialization.initialize_emissions import initialize_emissions, read_in_emissions
 from ldar_sim import LdarSim
 from programs.program import Program
 
@@ -193,10 +193,12 @@ if __name__ == "__main__":
     generator_dir = in_dir / "generator"
     if os.path.exists(generator_dir):
         print(
-            [
-                "Pre-generated initialization files exist.",
-                "LDAR-Sim may not create new leaks to model with",
-            ]
+            "\n".join(
+                [
+                    "!!!Pre-generated initialization files exist!!!",
+                    "LDAR-Sim may not create new emissions to model with",
+                ]
+            )
         )
     print("...Initializing infrastructure")
     # TODO split out infrastructure generation from emissions generation somehow so we don't
@@ -216,7 +218,7 @@ if __name__ == "__main__":
     print("...Initializing emissions")
     # pregen emissions
     # TODO split emissions generation out from infrastructure
-    infrastructure = initialize_emissions(
+    initialize_emissions(
         simulation_count, hash_file_exist, n_sim_match, infrastructure, virtual_world, generator_dir
     )
 
@@ -233,12 +235,13 @@ if __name__ == "__main__":
     state = {"weather": weather, "daylight": daylight}
     for simulation in range(simulation_count):
         print(f"......Simulating set {simulation}")
+        infra = read_in_emissions(infrastructure, generator_dir, simulation)
         # -- Run simulations --
         prog_data = []
         prog_names = []
         for program in programs:
             # TODO: get rid of state and split out into weather/daylight
-            sites: list[Site] = infrastructure._sites
+            sites: list[Site] = infra._sites
             meth_params = {}
             for meth in programs[program]["method_labels"]:
                 meth_params[meth] = methods[meth]
@@ -258,7 +261,7 @@ if __name__ == "__main__":
                     prog,
                     sim_params,
                     virtual_world,
-                    copy.deepcopy(infrastructure),
+                    copy.deepcopy(infra),
                     in_dir,
                     out_dir,
                 )

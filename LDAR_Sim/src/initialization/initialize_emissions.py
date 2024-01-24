@@ -25,9 +25,6 @@ import pickle
 from datetime import date
 
 
-from virtual_world.infrastructure import Infrastructure
-
-
 def initialize_emissions(
     n_sims,
     hash_file_exist,
@@ -40,8 +37,8 @@ def initialize_emissions(
     n_simulations: int = n_sims
     if not hash_file_exist:
         # Generate emissions for all simulation sets
-        emissions: dict = {}
         for i in range(n_simulations):
+            emissions: dict = {}
             emis_file_loc = generator_dir / f"gen_infrastructure_emissions_{i}.p"
             print(f"Generating emissions for Set_{i} simulations")
             emissions.update(
@@ -55,13 +52,7 @@ def initialize_emissions(
             pickle.dump(emissions, open(emis_file_loc, "wb"))
     else:
         # Check if the same amount of simulations are required
-        if n_sims_match:
-            # Load Previously Generated Emissions back into Previously Generated infrastructure
-            for i in range(n_simulations):
-                emis_file_loc = generator_dir / f"gen_infrastructure_emissions_{i}.p"
-                emissions: dict = pickle.load(open(emis_file_loc, "rb"))
-                infrastructure.set_pregen_emissions(emissions[i], i)
-        else:
+        if not n_sims_match:
             # More simulations are required. Generated emissions can still be re-used,
             # but it is necessary to generate more emissions scenarios for the extra simulations
 
@@ -70,16 +61,11 @@ def initialize_emissions(
 
             # Read the previous number of simulations
             gen_n_simulations = gen_infra_hash_dict["n_simulations"]
-            # Load Emissions back into pregenerated infrastructure
-            for i in range(gen_n_simulations):
-                emis_file_loc = generator_dir / f"gen_infrastructure_emissions_{i}.p"
-                emissions: dict = pickle.load(open(emis_file_loc, "rb"))
-                infrastructure.set_pregen_emissions(emissions[i], i)
-
             # Generate emissions for remaining simulation sets
             for i in range(gen_n_simulations, n_simulations):
                 print(f"Generating emissions for Set_{i} simulations")
                 emis_file_loc = generator_dir / f"gen_infrastructure_emissions_{i}.p"
+                emissions: dict = {}
                 emissions.update(
                     infrastructure.generate_emissions(
                         sim_start_date=date(*virtual_world["start_date"]),
@@ -89,4 +75,13 @@ def initialize_emissions(
                 )
 
             pickle.dump(emissions, open(emis_file_loc, "wb"))
+    return None
+
+
+def read_in_emissions(infrastructure, generator_dir, sim_numb):
+    # Load emissions into the pregenerated infrastructure
+    emissions: dict = {}
+    emis_file_loc = generator_dir / f"gen_infrastructure_emissions_{sim_numb}.p"
+    emissions: dict = pickle.load(open(emis_file_loc, "rb"))
+    infrastructure.set_pregen_emissions(emissions[sim_numb], sim_numb)
     return infrastructure
