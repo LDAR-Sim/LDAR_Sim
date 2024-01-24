@@ -63,7 +63,9 @@ class Method:
     METHOD_FOLLOW_UP_PROPERTIES_DELAY_ACCESSOR = "delay"
     METHOD_FOLLOW_UP_PROPERTIES_REDUND_FILTER_ACCESSOR = "redundancy_filter"
 
-    POTENTIAL_CREW_SHORTAGE_MESSAGE = "Warning: LDAR-Sim has detected a potential for crew shortage for the method: {method}"
+    POTENTIAL_CREW_SHORTAGE_MESSAGE = (
+        "Warning: LDAR-Sim has detected a potential for crew shortage for the method: {method}"
+    )
 
     # TODO ensure survey times aren't needed for methods
     def __init__(
@@ -114,10 +116,7 @@ class Method:
             Average time in minutes
         """
         return np.average(
-            [
-                (site.get_method_survey_time(method_name) + avg_travel_time)
-                for site in sites
-            ]
+            [(site.get_method_survey_time(method_name) + avg_travel_time) for site in sites]
         )
 
     def _estimate_method_crews_required(
@@ -134,9 +133,7 @@ class Method:
             self._name, avg_travel_time, sites
         )
         if not self._is_follow_up:
-            self._average_req_surveys: float = (
-                self._get_average_method_surveys_required(sites)
-            )
+            self._average_req_surveys: float = self._get_average_method_surveys_required(sites)
             # Subtract average travel time here to account the method needing to return
             # at the end of the day
             daily_work_time: float = (self._max_work_hours * 60) - avg_travel_time
@@ -172,7 +169,7 @@ class Method:
     def get_crew_count(self) -> int:
         return self._crews
 
-    def deploy_crews(self, workplan: Workplan, weather) -> None:
+    def deploy_crews(self, workplan: Workplan, weather, daylight) -> None:
         """Deploy crews will send crews out to survey sites based on the provided workplan"""
 
         priority_queue = PriorityQueue()
@@ -180,7 +177,7 @@ class Method:
         # Initialize the daily available survey time for existing crews
         if self._daylight_sensitive:
             day_time_remaining = self.get_daylight_hours(
-                weather, self._max_work_hours, workplan.date
+                daylight, self._max_work_hours, workplan.date
             )
         for crew in self._crew_reports:
             # TODO : if method is daylight sensitive, check for max daylight
@@ -202,7 +199,7 @@ class Method:
                     crew=assigned_crew,
                     survey_report=survey_report,
                     site_to_survey=site_to_survey,
-                    state=weather,
+                    weather=weather,
                     curr_date=workplan.date,
                 )
                 survey_report: SiteSurveyReport
@@ -249,7 +246,7 @@ class Method:
         crew: CrewDailyReport,
         survey_report: SiteSurveyReport,
         site_to_survey: Site,
-        state,
+        weather,
         curr_date: date,
     ) -> Tuple[SiteSurveyReport, float]:
         """The method will attempt to survey the site provided as an argument, detecting emissions
@@ -263,14 +260,14 @@ class Method:
             daily_report (CrewDailyReport): the associated crew's daily report
             (of available work hours)
             site (Site): The site to survey
-            state : Dictionary containing information about weather and
+            weather : Dictionary containing information about weather
         """
         workable: bool = True
         last_site_survey: bool = False
         site_travel_time: float = 0
         if self._weather:
             # if weather is considered
-            workable: bool = self.check_weather(state, curr_date, site_to_survey)
+            workable: bool = self.check_weather(weather, curr_date, site_to_survey)
 
         if workable:
             site_survey_time: float = site_to_survey.get_method_survey_time(self._name)
@@ -300,9 +297,7 @@ class Method:
                 # Account for survey time in time calculations,
                 # and consider that some of the site may have previously been surveyed
                 survey_report.time_surveyed = site_survey_time
-                crew.day_time_remaining -= (
-                    site_survey_time - survey_report.time_surveyed
-                )
+                crew.day_time_remaining -= site_survey_time - survey_report.time_surveyed
                 if crew.day_time_remaining <= site_travel_time:
                     last_site_survey = True
                 self._sensor.detect_emissions(
@@ -318,9 +313,7 @@ class Method:
                 last_site_survey = True
                 # Log Survey and travel time
                 survey_report.time_spent_to_travel += site_travel_time
-                survey_report.time_surveyed += crew.day_time_remaining - (
-                    site_travel_time * 2
-                )
+                survey_report.time_surveyed += crew.day_time_remaining - (site_travel_time * 2)
                 crew.day_time_remaining = site_travel_time
                 # Log survey start date
                 survey_report.survey_start_date = curr_date
@@ -379,22 +372,20 @@ class Method:
             sensor_into (dict): _description_
         """
         if sensor_info[SENS_TYPE] == "default":
-            self._sensor = DefaultSiteLevelSensor(
-                sensor_info[SENS_MDL], sensor_info[SENS_QE]
-            )
+            self._sensor = DefaultSiteLevelSensor(sensor_info[SENS_MDL], sensor_info[SENS_QE])
         else:
             print(ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
             sys.exit()
 
-    def get_daylight_hours(state, max_hours: int, curr_date) -> int:
+    def get_daylight_hours(self, daylight, max_hours: int, curr_date) -> int:
         """Get the amount of daylight hours"""
-        daylight_hours = state["daylight"].get_daylight(curr_date)
+        daylight_hours = daylight.get_daylight(curr_date)
         work_hours = daylight_hours
         if max_hours < daylight_hours:
             work_hours = max_hours
         return work_hours
 
-    def check_weather(self, state, curr_date, site: Site) -> bool:
+    def check_weather(self, weather, curr_date, site: Site) -> bool:
         """
         Check the weather conditions for the given site on the given day
 
@@ -413,19 +404,19 @@ class Method:
 
         if (
             self._weather_envs[TEMP][0]
-            <= state["weather"].temps[curr_date, lat, long]
+            <= weather.temps[curr_date, lat, long]
             <= self._weather_envs[TEMP][1]
         ):
             bool_temp = True
         if (
             self._weather_envs[WIND][0]
-            <= state["weather"].winds[curr_date, lat, long]
+            <= weather.winds[curr_date, lat, long]
             <= self._weather_envs[WIND][1]
         ):
             bool_wind = True
         if (
             self._weather_envs[PREICIP][0]
-            <= state["weather"].precip[curr_date, lat, long]
+            <= weather.precip[curr_date, lat, long]
             <= self._weather_envs[PREICIP][1]
         ):
             bool_precip = True

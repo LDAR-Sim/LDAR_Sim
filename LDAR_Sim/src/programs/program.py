@@ -41,7 +41,8 @@ class Program:
         # TODO do away with state and just track anything we need from state separately.
         # From a quick look, the only things we need from it are weather are daylight hours,
         # which should be tracked on their own
-        state,
+        weather,
+        daylight,
         methods: dict,
         sites: "list[Site]",
         sim_start_date: date,
@@ -54,7 +55,8 @@ class Program:
             methods, consider_weather, sites, sim_start_date, sim_end_date
         )
         self._current_date: date = sim_start_date
-        self.state = state
+        self.weather = weather
+        self.daylight = daylight
 
     def _init_methods_and_schedules(
         self,
@@ -166,7 +168,7 @@ class Program:
         for method in self._methods:
             method_schedule: GenericSchedule = self._survey_schedules[method.get_name()]
             method_workplan: Workplan = method_schedule.get_workplan(self._current_date)
-            method.deploy_crews(method_workplan, self.state["weather"])
+            method.deploy_crews(method_workplan, self.weather, self.daylight)
             method_schedule.update(method_workplan, self._current_date)
 
     def update_date(self) -> None:

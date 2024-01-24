@@ -52,26 +52,22 @@ class EquipmentLevelMethod(Method):
         crew: CrewDailyReport,
         survey_report: SiteSurveyReport,
         site_to_survey: Site,
-        state,
+        weather,
         curr_date: date,
     ) -> Tuple[SiteSurveyReport, float]:
         survey_report, site_travel_time, last_site_survey = super().survey_site(
             crew=crew,
             survey_report=survey_report,
             site_to_survey=site_to_survey,
-            state=state,
+            weather=weather,
             curr_date=curr_date,
         )
         if survey_report.survey_complete:
-            prev_tagging_survey_date: date = (
-                site_to_survey.get_latest_tagging_survey_date()
-            )
+            prev_tagging_survey_date: date = site_to_survey.get_latest_tagging_survey_date()
             days_since_last_survey: int = (curr_date - prev_tagging_survey_date).days
             site_to_survey.set_latest_tagging_survey_date(curr_date)
             for equip_group_survey_report in survey_report.equipment_groups_surveyed:
-                for (
-                    emission_detection_report
-                ) in equip_group_survey_report.emissions_detected:
+                for emission_detection_report in equip_group_survey_report.emissions_detected:
                     tagging_info = TaggingInfo(
                         measured_rate=emission_detection_report.measured_rate,
                         curr_date=curr_date,
@@ -95,24 +91,18 @@ class EquipmentLevelMethod(Method):
             sensor_into (dict): _description_
         """
         if sensor_info[SENS_TYPE] == "default":
-            self._sensor = DefaultEquipmentLevelSensor(
-                sensor_info[SENS_MDL], sensor_info[SENS_QE]
-            )
+            self._sensor = DefaultEquipmentLevelSensor(sensor_info[SENS_MDL], sensor_info[SENS_QE])
         elif sensor_info[SENS_TYPE] == "OGI_camera_zim":
-            self._sensor = OGICameraZimSensor(
-                sensor_info[SENS_MDL], sensor_info[SENS_QE]
-            )
+            self._sensor = OGICameraZimSensor(sensor_info[SENS_MDL], sensor_info[SENS_QE])
         elif sensor_info[SENS_TYPE] == "OGI_camera_rk":
-            self._sensor = OGICameraRKSensor(
-                sensor_info[SENS_MDL], sensor_info[SENS_QE]
-            )
+            self._sensor = OGICameraRKSensor(sensor_info[SENS_MDL], sensor_info[SENS_QE])
         elif sensor_info[SENS_TYPE] == "METEC_no_wind":
             self._sensor = METECNWEquipment(sensor_info[SENS_MDL], sensor_info[SENS_QE])
         else:
             print(ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
             sys.exit()
 
-    def deploy_crews(self, workplan: Workplan, weather) -> None:
+    def deploy_crews(self, workplan: Workplan, weather, daylight) -> None:
         """Deploy crews will send crews out to survey sites based on the provided workplan"""
 
         priority_queue = PriorityQueue()
@@ -120,7 +110,7 @@ class EquipmentLevelMethod(Method):
         # Initialize the daily available survey time for existing crews
         if self._daylight_sensitive:
             day_time_remaining = self.get_daylight_hours(
-                weather, self._max_work_hours, workplan.date
+                daylight, self._max_work_hours, workplan.date
             )
         for crew in self._crew_reports:
             # TODO : if method is daylight sensitive, check for max daylight
@@ -143,7 +133,7 @@ class EquipmentLevelMethod(Method):
                     crew=assigned_crew,
                     survey_report=survey_report,
                     site_to_survey=site_to_survey,
-                    state=weather,
+                    weather=weather,
                     curr_date=workplan.date,
                 )
                 survey_report: SiteSurveyReport

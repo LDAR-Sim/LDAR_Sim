@@ -86,23 +86,14 @@ def ldar_sim_run(simulation, weather, daylight):
 
     sim = LdarSim(
         simulation_settings,
-        state,
+        weather,
+        daylight,
         program_parameters,
         virtual_world,
         infrastructure,
         input_directory,
         output_directory,
     )
-
-    # start_date = date(*virtual_world["start_date"])
-    # # Loop through timeseries
-    # for ts in range(state["t"].timesteps):
-    #     state["t"].current_timestep = ts
-    #     state["t"].current_date = start_date + timedelta(days=ts)
-    #     if virtual_world["seed_timeseries"]:
-    #         np_rand.seed(virtual_world["seed_timeseries"][state["t"].current_timestep])
-    #         rand.seed(virtual_world["seed_timeseries"][state["t"].current_timestep])
-    #     sim.update()  # TODO: this should be replaced with program
 
     # Clean up and write files
     sim_summary = sim.finalize()
@@ -201,9 +192,7 @@ if __name__ == "__main__":
             )
         )
     print("...Initializing infrastructure")
-    # TODO split out infrastructure generation from emissions generation somehow so we don't
-    # need all emissions in memory. Could possibly consider generating emissions all and
-    # then only loading the necessary ones into scope?
+
     simulation_count: int = sim_params["n_simulations"]
     infrastructure, hash_file_exist, n_sim_match = initialize_infrastructure(
         simulation_count,
@@ -217,7 +206,6 @@ if __name__ == "__main__":
     n_sim_match: bool
     print("...Initializing emissions")
     # pregen emissions
-    # TODO split emissions generation out from infrastructure
     initialize_emissions(
         simulation_count, hash_file_exist, n_sim_match, infrastructure, virtual_world, generator_dir
     )
@@ -231,10 +219,9 @@ if __name__ == "__main__":
         date(*virtual_world["start_date"]),
         date(*virtual_world["end_date"]),
     )
-    # TODO: remove the need for state
-    state = {"weather": weather, "daylight": daylight}
     for simulation in range(simulation_count):
         print(f"......Simulating set {simulation}")
+        # read in pregen emissions
         infra = read_in_emissions(infrastructure, generator_dir, simulation)
         # -- Run simulations --
         prog_data = []
@@ -247,7 +234,8 @@ if __name__ == "__main__":
                 meth_params[meth] = methods[meth]
             prog: Program = Program(
                 program,
-                state,
+                weather,
+                daylight,
                 meth_params,
                 sites,
                 date(*virtual_world["start_date"]),
@@ -272,12 +260,11 @@ if __name__ == "__main__":
             simulate(*prog_tuple)
             print(f".........Finished simulating program: {p_name}")
         # with mp.Pool(processes=sim_params["n_processes"]) as p:
-        #     # TODO need to pass same infrastructure to simulate, but different programs for a set of simulations
         #     sim_outputs = p.starmap(
         #         simulate,
-        #         prog_data,
+        #         zip(*prog_data),
         #     )
-        print(f"Finished simulating set {simulation}")
+        # print(f"Finished simulating set {simulation}")
     # -- Batch Report --
     # TODO: need to write code to clean up outputs here.
     print("...Cleaning up output data")
@@ -311,31 +298,3 @@ if __name__ == "__main__":
 
     # metadata.close()
     """
-
-"""
-TODO implement this pseudocode
-
-
-main script ------------
-Read in all the inputs and parameters
-intializae infrastructure
-pregen emissions
-intialize weather
-initialize daylight
-
-in a loop ------- for each simulation #
-
-collect info necessary to run a sim for eahc program
-using multiprocessing, create processes for each program
-pass info necessary to create ldar-sim object to each process which will execute a simulate function
-
-
-in simulate function ------
-create ldar-sim object
-call ldar_sim object run simulation
-once that call finishes, interact with LDAR-Sim object through its other methods to generate outputs
-save outputs
-kill process
-
-
-"""
