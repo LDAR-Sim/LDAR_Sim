@@ -45,7 +45,7 @@ from initialization.args import (
     files_from_args,
     get_abs_path,
 )  # TODO: move this over to input_processing?
-
+from initialization.initialize_emissions import initialize_emissions
 from ldar_sim import LdarSim
 from programs.program import Program
 
@@ -203,18 +203,22 @@ if __name__ == "__main__":
     # need all emissions in memory. Could possibly consider generating emissions all and
     # then only loading the necessary ones into scope?
     simulation_count: int = sim_params["n_simulations"]
-    infrastructure: Infrastructure = initialize_infrastructure(
+    infrastructure, hash_file_exist, n_sim_match = initialize_infrastructure(
         simulation_count,
         methods,
         virtual_world,
         generator_dir,
         in_dir,
     )
-
+    infrastructure: Infrastructure
+    hash_file_exist: bool
+    n_sim_match: bool
     print("...Initializing emissions")
     # pregen emissions
     # TODO split emissions generation out from infrastructure
-    # emissions = initialize_emissions()
+    infrastructure = initialize_emissions(
+        simulation_count, hash_file_exist, n_sim_match, infrastructure, virtual_world, generator_dir
+    )
 
     # Initialize objects
     print("...Initializing weather")

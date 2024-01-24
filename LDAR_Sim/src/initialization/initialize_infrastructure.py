@@ -3,7 +3,6 @@ import pickle
 from virtual_world.infrastructure import Infrastructure
 import hashlib
 import json
-from datetime import date
 
 
 def hash_file(file_path) -> str:
@@ -48,7 +47,7 @@ def initialize_infrastructure(
     # If previously generated infrastructure exists, use it instead.
     hash_file_loc = generator_dir / "gen_infrastructure_hashes.p"
     infra_file_loc = generator_dir / "gen_infrastructure.p"
-    emis_file_loc = generator_dir / "gen_infrastructure_emissions.p"
+    # emis_file_loc = generator_dir / "gen_infrastructure_emissions.p"
     # TODO Also add logic to hash the emissions rate sources file. Add logic elsewhere to make
     # that a standard input.
 
@@ -60,9 +59,7 @@ def initialize_infrastructure(
     # this allows us to know if the inputs that influence infrastructure have changed so that
     # we can generate new Infrastructure instead of using the old one in that case.
     print("Hashing files")
-    sites_file_hash: str = hash_file(
-        in_dir / virtual_world["infrastructure"]["sites_file"]
-    )
+    sites_file_hash: str = hash_file(in_dir / virtual_world["infrastructure"]["sites_file"])
     site_type_file_hash: str = (
         hash_file(in_dir / virtual_world["infrastructure"]["site_type_file"])
         if virtual_world["infrastructure"]["site_type_file"] is not None
@@ -101,20 +98,8 @@ def initialize_infrastructure(
             open(hash_file_loc, "wb"),
         )
         pickle.dump({"infrastructure": infrastructure}, open(infra_file_loc, "wb"))
-
-        # Generate emissions for all simulation sets
-        emissions: dict = {}
-        for i in range(n_simulations):
-            print(f"Generating emissions for Set_{i} simulations")
-            emissions.update(
-                infrastructure.generate_emissions(
-                    sim_start_date=date(*virtual_world["start_date"]),
-                    sim_end_date=date(*virtual_world["end_date"]),
-                    sim_number=i,
-                )
-            )
-
-        pickle.dump(emissions, open(emis_file_loc, "wb"))
+        hash_file_exist = False
+        n_sims_match = False
     else:
         # Read in all the saved hashes from the infrastructure used to generate
         # the previously generated sites.
@@ -145,34 +130,7 @@ def initialize_infrastructure(
             # The hashes match, meaning it's okay to reuse the previously generated infrastructure,
             # and the previously generated emissions
             infrastructure = pickle.load(open(infra_file_loc, "rb"))["infrastructure"]
-            emissions: dict = pickle.load(open(emis_file_loc, "rb"))
-
-            # Check if the same amount of simulations are required
-            if n_sims_match:
-                # Load Previously Generated Emissions back into Previously Generated infrastructure
-                for i in range(n_simulations):
-                    infrastructure.set_pregen_emissions(emissions[i], i)
-            else:
-                # More simulations are required. Generated emissions can still be re-used,
-                # but it is necessary to generate more emissions scenarios for the extra simulations
-
-                # Load Emissions back into pregenerated infrastructure
-                for i in range(gen_n_simulations):
-                    infrastructure.set_pregen_emissions(emissions[i], i)
-
-                # Generate emissions for remaining simulation sets
-                for i in range(gen_n_simulations, n_simulations):
-                    print(f"Generating emissions for Set_{i} simulations")
-                    emissions.update(
-                        infrastructure.generate_emissions(
-                            sim_start_date=date(*virtual_world["start_date"]),
-                            sim_end_date=date(*virtual_world["end_date"]),
-                            sim_number=i,
-                        )
-                    )
-
-                pickle.dump(emissions, open(emis_file_loc, "wb"))
-
+            hash_file_exist = True
         else:
             # The hashes do not match,
             # meaning something has changed with the infrastructure or virtual world.
@@ -197,17 +155,5 @@ def initialize_infrastructure(
             )
             pickle.dump({"infrastructure": infrastructure}, open(infra_file_loc, "wb"))
 
-            # Generate emissions for all simulation sets
-            emissions: dict = {}
-            for i in range(n_simulations):
-                print(f"Generating emissions for Set_{i} simulations")
-                emissions.update(
-                    infrastructure.generate_emissions(
-                        sim_start_date=date(*virtual_world["start_date"]),
-                        sim_end_date=date(*virtual_world["end_date"]),
-                        sim_number=i,
-                    )
-                )
-
-            pickle.dump(emissions, open(emis_file_loc, "wb"))
-    return infrastructure
+            hash_file_exist = False
+    return infrastructure, hash_file_exist, n_sims_match

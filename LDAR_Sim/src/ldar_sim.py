@@ -43,9 +43,7 @@ class LdarSim:
         """
         Construct the simulation.
         """
-        self._tc: TimeCounter = TimeCounter(
-            virtual_world["start_date"], virtual_world["end_date"]
-        )
+        self._tc: TimeCounter = TimeCounter(virtual_world["start_date"], virtual_world["end_date"])
         self.sim_number: int = sim_number
         self.infrastructure: Infrastructure = infrastructure
         # TODO remove if unused
@@ -62,17 +60,13 @@ class LdarSim:
 
     def run_simulation(self):
         while not self._tc.at_simulation_end():
-            self.infrastructure.activate_emissions(
-                self._tc.current_date, self.sim_number
-            )
+            self.infrastructure.activate_emissions(self._tc.current_date, self.sim_number)
             self.program.do_daily_program_deployment()
-            self.program.update_date()
             self.infrastructure.update_emissions_state()
+            self.program.update_date()
             self._tc.next_day()
 
-        overall_emission_data: pd.DataFrame = (
-            self.infrastructure.gen_summary_emis_data()
-        )
+        overall_emission_data: pd.DataFrame = self.infrastructure.gen_summary_emis_data()
 
         self.gen_sim_directory()
         summary_filename = "_".join([self.name_str, "emissions_summary.csv"])
