@@ -76,8 +76,8 @@ class Emission:
             self._tech_spat_covs[method] = binomial(1, cov_prob)
         return self._tech_spat_covs[method]
 
-    def activate() -> str:
-        return ""
+    def activate() -> bool:
+        return False
 
     def get_emis_vol(self) -> float:
         return self._active_days * self._rate * 86.4
@@ -121,9 +121,7 @@ class Emission:
 
 
 class NonRepairableEmission(Emission):
-    def __init__(
-        self, emission_n, source_id, rate, start_date, simulation_sd, repairable
-    ):
+    def __init__(self, emission_n, source_id, rate, start_date, simulation_sd, repairable):
         super().__init__(
             emission_n,
             rate,

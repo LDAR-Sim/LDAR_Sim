@@ -33,20 +33,18 @@ from virtual_world.infrastructure_const import Infrastructure_Constants
 
 from virtual_world.sources import Source
 
-SOURCE_CREATION_ERROR_MESSAGE = "Invalid LDAR-Sim infrastructure inputs: Failure to read in sources infrastructure input"
+SOURCE_CREATION_ERROR_MESSAGE = (
+    "Invalid LDAR-Sim infrastructure inputs: Failure to read in sources infrastructure input"
+)
 
 
 class Equipment:
-    def __init__(
-        self, equip_type, equip_id, infrastructure_inputs, prop_params
-    ) -> None:
+    def __init__(self, equip_type, equip_id, infrastructure_inputs, prop_params) -> None:
         STR_FILTER = r"_equipment"
         pattern: re.Pattern[str] = re.compile(re.escape(STR_FILTER), re.IGNORECASE)
         self._equip_type: str = re.sub(pattern, "", equip_type)
         self._equipment_ID: str = self._equip_type + "_" + str(equip_id)
-        self.create_sources(
-            infrastructure_inputs=infrastructure_inputs, prop_params=prop_params
-        )
+        self.create_sources(infrastructure_inputs=infrastructure_inputs, prop_params=prop_params)
         self._active_emissions: list[Emission] = []
         self._inactive_emissions: list[Emission] = []
 
@@ -116,9 +114,7 @@ class Equipment:
             emission for emission in self._active_emissions if emission_active(emission)
         ]
         self._inactive_emissions = [
-            emission
-            for emission in self._active_emissions
-            if not emission_active(emission)
+            emission for emission in self._active_emissions if not emission_active(emission)
         ]
         return
 

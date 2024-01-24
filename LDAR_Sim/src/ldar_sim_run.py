@@ -66,9 +66,7 @@ def ldar_sim_run(simulation, weather, daylight):
     virtual_world = simulation["virtual_world"]
     program_parameters = simulation["program"]
     input_directory = simulation["input_directory"]
-    output_directory = (
-        simulation["output_directory"] / program_parameters["program_name"]
-    )
+    output_directory = simulation["output_directory"] / program_parameters["program_name"]
     virtual_world["pregenerate_leaks"] = simulation["pregenerate_leaks"]
     infrastructure: Infrastructure = simulation["Infrastructure"]
     simulation_settings = simulation["simulation_settings"]
@@ -256,7 +254,7 @@ if __name__ == "__main__":
                     prog,
                     sim_params,
                     virtual_world,
-                    infrastructure,
+                    copy.deepcopy(infrastructure),
                     in_dir,
                     out_dir,
                 )

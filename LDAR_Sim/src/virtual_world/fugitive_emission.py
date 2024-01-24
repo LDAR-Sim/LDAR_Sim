@@ -19,7 +19,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 """
 from datetime import date, timedelta
 from math import ceil
-from typing import Any, Literal
+from typing import Any
 from typing_extensions import override
 
 from virtual_world.emissions import Emission
@@ -62,9 +62,7 @@ class FugitiveEmission(Emission):
         if self._repairable:
             if self._days_since_tagged >= self._repair_delay + self._tagging_rep_delay:
                 self._status = "repaired"
-                self._repair_date = self._start_date + timedelta(
-                    days=(self._active_days)
-                )
+                self._repair_date = self._start_date + timedelta(days=(self._active_days))
 
     def get_init_detect_company(self):
         return self._init_detect_by
@@ -154,13 +152,9 @@ class FugitiveEmission(Emission):
         return summary_dict
 
     @override
-    def activate(
-        self, date: date
-    ) -> Literal["Already_Active", "Newly_Active", "Inactive"]:
-        activated: str = "Inactive"
-        if self._status == "Active":
-            activated = "Already_Active"
-        elif self._start_date <= date:
+    def activate(self, date: date) -> bool:
+        if self._start_date <= date:
             self._status = "Active"
-            activated = "Newly_Active"
-        return activated
+            return True
+        else:
+            return False

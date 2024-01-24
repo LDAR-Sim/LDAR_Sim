@@ -41,21 +41,14 @@ class Source:
 
     def __init__(self, id: str, info, prop_params) -> None:
         self._source_ID: str = id
-        self._repairable = info[
-            Infrastructure_Constants.Sources_File_Constants.REPAIRABLE
-        ]
-        self._persistent = info[
-            Infrastructure_Constants.Sources_File_Constants.PERSISTENT
-        ]
-        self._active_duration = info[
-            Infrastructure_Constants.Sources_File_Constants.ACTIVE_DUR
-        ]
-        self._inactive_duration = info[
-            Infrastructure_Constants.Sources_File_Constants.INACTIVE_DUR
-        ]
+        self._repairable = info[Infrastructure_Constants.Sources_File_Constants.REPAIRABLE]
+        self._persistent = info[Infrastructure_Constants.Sources_File_Constants.PERSISTENT]
+        self._active_duration = info[Infrastructure_Constants.Sources_File_Constants.ACTIVE_DUR]
+        self._inactive_duration = info[Infrastructure_Constants.Sources_File_Constants.INACTIVE_DUR]
         self._generated_emissions: dict[int, list[Emission]] = {}
         self.update_prop_params(info=info, prop_params=prop_params)
         self.set_source_properties(prop_params=prop_params)
+        self._next_emission: Emission = None
 
     def update_prop_params(self, info, prop_params) -> None:
         meth_specific_params = prop_params.pop("Method_Specific_Params")
@@ -87,12 +80,8 @@ class Source:
         self._emis_rate_source = prop_params[
             Infrastructure_Constants.Sources_File_Constants.EMIS_ERS
         ]
-        self._emis_prod_rate = prop_params[
-            Infrastructure_Constants.Sources_File_Constants.EMIS_EPR
-        ]
-        self._emis_duration = prop_params[
-            Infrastructure_Constants.Sources_File_Constants.EMIS_DUR
-        ]
+        self._emis_prod_rate = prop_params[Infrastructure_Constants.Sources_File_Constants.EMIS_EPR]
+        self._emis_duration = prop_params[Infrastructure_Constants.Sources_File_Constants.EMIS_DUR]
 
         self._meth_spat_covs = prop_params["Method_Specific_Params"][
             Infrastructure_Constants.Sources_File_Constants.SPATIAL_PLACEHOLDER
@@ -151,7 +140,8 @@ class Source:
         sim_number: int,
         leak_rate_source_dictionary: dict[str, EmissionsSource],
     ) -> dict[str, list[Emission]]:
-        emissions: list[Emission] = []
+        # Using a list as a FIFO queue for less overhead and to be able to pickle it
+        emissions_fifo: list[Emission] = []
 
         # Initialize a counter to give all emissions for the source a unique "ID"
         leak_count: int = 0
@@ -172,7 +162,7 @@ class Source:
                     leak_rate_source_dictionary=leak_rate_source_dictionary,
                 )
                 leak_count += 1
-                emissions.append(emission)
+                emissions_fifo.append(emission)
 
         # Generate Emissions for the course of the simulation
         date_diff: timedelta = sim_end_date - sim_start_date
@@ -189,9 +179,9 @@ class Source:
                     leak_rate_source_dictionary=leak_rate_source_dictionary,
                 )
                 leak_count += 1
-                emissions.append(emission)
-        self._generated_emissions[sim_number] = emissions
-        return {self._source_ID: emissions}
+                emissions_fifo.append(emission)
+        self._generated_emissions[sim_number] = emissions_fifo
+        return {self._source_ID: emissions_fifo}
 
     def activate_emissions(self, date: date, sim_number: int) -> list[Emission]:
         """Activate any emissions produced by the source that are due to begin on the current date
@@ -207,12 +197,29 @@ class Source:
         """
         newly_activated_emissions: list[Emission] = []
         sim_emissions: list[Emission] = self._generated_emissions[sim_number]
-        for emission in sim_emissions:
-            activate_status: str = emission.activate(date)
-            if activate_status == "Inactive":
-                break
-            elif activate_status == "Newly_Active":
-                newly_activated_emissions.append(emission)
+
+        activate_emissions: bool = False
+        focus_emission: Emission = None
+
+        if self._next_emission is None:
+            if sim_emissions:
+                focus_emission: Emission = sim_emissions.pop(0)
+                activate_emissions = focus_emission.activate(date)
+        else:
+            focus_emission: Emission = self._next_emission
+            activate_emissions = focus_emission.activate(date)
+
+        while activate_emissions:
+            newly_activated_emissions.append(focus_emission)
+            if sim_emissions:
+                focus_emission = sim_emissions.pop(0)
+                activate_emissions = focus_emission.activate(date)
+            else:
+                activate_emissions = False
+                focus_emission = None
+
+        self._next_emission = focus_emission
+
         return newly_activated_emissions
 
     def set_pregen_emissions(self, src_emissions, sim_number) -> None:
