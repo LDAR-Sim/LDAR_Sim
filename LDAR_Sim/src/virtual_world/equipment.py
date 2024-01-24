@@ -22,6 +22,7 @@ from datetime import date
 import re
 
 import pandas as pd
+from file_processing.output_processing.output_constants import EMIS_SUMMARY_DATA_COLS
 from file_processing.input_processing.emissions_source_processing import (
     EmissionsSource,
 )
@@ -155,17 +156,7 @@ class Equipment:
         )
         # Handle empty dataframe cases
         if emis_data_active.empty and emis_data_inactive.empty:
-            columns = [
-                "Emissions ID",
-                "Status",
-                "Days Active",
-                "Volume Emitted",
-                "Date Began",
-                "Initially Detected By",
-                "Tagged",
-                "Tagged By",
-                "equipment",
-            ]
+            columns = EMIS_SUMMARY_DATA_COLS
             return pd.DataFrame(columns=columns)
         elif emis_data_inactive.empty:
             emis_data = emis_data_active
