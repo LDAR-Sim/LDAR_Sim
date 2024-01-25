@@ -228,7 +228,8 @@ if __name__ == "__main__":
         prog_names = []
         for program in programs:
             # TODO: get rid of state and split out into weather/daylight
-            sites: list[Site] = infra._sites
+            prog_infra = copy.deepcopy(infra)
+            sites: list[Site] = prog_infra._sites
             meth_params = {}
             for meth in programs[program]["method_labels"]:
                 meth_params[meth] = methods[meth]
@@ -249,7 +250,7 @@ if __name__ == "__main__":
                     prog,
                     sim_params,
                     virtual_world,
-                    copy.deepcopy(infra),
+                    prog_infra,
                     in_dir,
                     out_dir,
                 )
