@@ -128,6 +128,9 @@ class Equipment:
                     crew_id=tagging_info.crew,
                     tagging_rep_delay=tagging_info.report_delay,
                 )
+                emission.update_detection_records(
+                    company=tagging_info.company, detect_date=tagging_info.curr_date
+                )
 
     def get_detectable_emissions(self, method_name: str) -> Emission:
         detectable_emissions: list[Emission] = []
