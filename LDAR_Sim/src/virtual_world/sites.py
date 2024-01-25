@@ -48,6 +48,7 @@ class Site:
         equipment_groups: list,
         propagating_params: dict,
         infrastructure_inputs: dict,
+        start_date: date,
         site_type: str = None,
     ) -> None:
         self._site_ID: str = id
@@ -55,9 +56,7 @@ class Site:
         self._long: float = long
 
         self._site_type: str = site_type
-        self._survey_frequencies: dict = propagating_params[
-            "Method_Specific_Params"
-        ].pop(
+        self._survey_frequencies: dict = propagating_params["Method_Specific_Params"].pop(
             Infrastructure_Constants.Sites_File_Constants.SURVEY_FREQUENCY_PLACEHOLDER
         )
         self._deployment_months = propagating_params["Method_Specific_Params"].pop(
@@ -66,10 +65,8 @@ class Site:
         self._deployment_years = propagating_params["Method_Specific_Params"].pop(
             Infrastructure_Constants.Sites_File_Constants.DEPLOYMENT_YEARS_PLACEHOLDER
         )
-        self.create_equipment_groups(
-            equipment_groups, infrastructure_inputs, propagating_params
-        )
-        self._latest_tagging_survey_date: date = None
+        self.create_equipment_groups(equipment_groups, infrastructure_inputs, propagating_params)
+        self._latest_tagging_survey_date: date = start_date
 
     def create_equipment_groups(
         self, equipment_groups, infrastructure_inputs, propagating_params
@@ -106,9 +103,7 @@ class Site:
                 )
                 prop_params = copy.deepcopy(propagating_params)
                 self._equipment_groups.append(
-                    Equipment_Group(
-                        i, infrastructure_inputs, prop_params, equip_group_info
-                    )
+                    Equipment_Group(i, infrastructure_inputs, prop_params, equip_group_info)
                 )
         else:
             equip_group_info = pd.Series(
@@ -156,14 +151,10 @@ class Site:
         for eqg in self._equipment_groups:
             eqg.update_emissions_state()
 
-    def get_detectable_emissions(
-        self, method_name: str
-    ) -> dict[str, dict[str, list[Emission]]]:
+    def get_detectable_emissions(self, method_name: str) -> dict[str, dict[str, list[Emission]]]:
         detectable_emissions: dict[str, dict[str, Emission]] = {}
         for eqg in self._equipment_groups:
-            detectable_emissions[eqg.get_id()] = eqg.get_detectable_emissions(
-                method_name
-            )
+            detectable_emissions[eqg.get_id()] = eqg.get_detectable_emissions(method_name)
 
         return detectable_emissions
 
@@ -212,8 +203,6 @@ class Site:
         target_equip_group.tag_emissions_at_equipment(equipment, tagging_info)
 
     def get_emis_data(self) -> pd.DataFrame:
-        emis_data: pd.DataFrame = pd.concat(
-            [eqg.get_emis_data() for eqg in self._equipment_groups]
-        )
+        emis_data: pd.DataFrame = pd.concat([eqg.get_emis_data() for eqg in self._equipment_groups])
         emis_data["site_id"] = self._site_ID
         return emis_data
