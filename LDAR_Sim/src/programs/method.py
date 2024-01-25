@@ -271,7 +271,7 @@ class Method:
 
         if workable:
             site_survey_time: float = site_to_survey.get_method_survey_time(self._name)
-            site_travel_time = self._get_travel_time()
+            site_travel_time: float = self._get_travel_time()
 
             # Check if the site survey can be completed
             can_complete_survey: bool = self._determine_if_site_survey_can_be_completed(
@@ -344,7 +344,7 @@ class Method:
         if isinstance(self._travel_times, (int, float)):
             return self._travel_times
         elif isinstance(self._travel_times, list):
-            choice(self._travel_times)
+            return choice(self._travel_times)
         else:
             print(f"Error: Unrecognized travel time format for method {self._name}")
             sys.exit()
