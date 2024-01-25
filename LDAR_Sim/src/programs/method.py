@@ -233,9 +233,11 @@ class Method:
                     site=survey_plan.get_site(),
                     rate_detected=survey_report.site_measured_rate,
                 )
-                self._detection_records[workplan.date] = self._detection_records.get(
+                current_records: list[DetectionRecord] = self._detection_records.get(
                     workplan.date, []
-                ).append(detection_record)
+                )
+                current_records.append(detection_record)
+                self._detection_records[workplan.date] = current_records
 
         return
 
