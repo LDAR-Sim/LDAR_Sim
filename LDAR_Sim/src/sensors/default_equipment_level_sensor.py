@@ -72,6 +72,7 @@ class DefaultEquipmentLevelSensor(DefaultSensor):
                     eqg_id=eqg,
                     true_rate=eqg_level_emis_rate,
                     measured_rate=eqg_level_measured_rate,
+                    emissions_detection_reports=emissions_detection_reports,
                 )
             )
 
@@ -97,10 +98,19 @@ class DefaultEquipmentLevelSensor(DefaultSensor):
         survey_report.equipment_groups_surveyed = eqg_survey_reports
 
     def _gen_eqg_survey_report(
-        self, site_id: str, eqg_id: str, true_rate: float, measured_rate: float
+        self,
+        site_id: str,
+        eqg_id: str,
+        true_rate: float,
+        measured_rate: float,
+        emissions_detection_reports: list[EmissionDetectionReport],
     ) -> EquipmentGroupSurveyReport:
         eqg_survey_report: EquipmentGroupSurveyReport = EquipmentGroupSurveyReport(
-            site_id, eqg_id, measured_rate=measured_rate, true_rate=true_rate
+            site_id,
+            eqg_id,
+            measured_rate=measured_rate,
+            true_rate=true_rate,
+            emissions_detected=emissions_detection_reports,
         )
         return eqg_survey_report
 

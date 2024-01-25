@@ -81,6 +81,7 @@ class Equipment_Group:
         sim_end_date,
         sim_number,
         leak_rate_source_dictionary: dict[str, EmissionsSource],
+        repair_delay_dataframe: pd.DataFrame,
     ) -> dict:
         eqg_emissions = {}
         for eqmt in self._equipment:
@@ -90,6 +91,7 @@ class Equipment_Group:
                     sim_end_date,
                     sim_number,
                     leak_rate_source_dictionary,
+                    repair_delay_dataframe,
                 )
             )
 

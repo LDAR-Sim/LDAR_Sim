@@ -79,6 +79,7 @@ class Equipment:
         sim_end_date,
         sim_number,
         leak_rate_source_dictionary: dict[str, EmissionsSource],
+        repair_delay_dataframe: pd.DataFrame,
     ) -> dict:
         equip_emissions = {}
         for src in self._sources:
@@ -88,6 +89,7 @@ class Equipment:
                     sim_end_date,
                     sim_number,
                     leak_rate_source_dictionary,
+                    repair_delay_dataframe,
                 )
             )
 

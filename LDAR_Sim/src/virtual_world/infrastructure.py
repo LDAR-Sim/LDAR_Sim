@@ -24,7 +24,9 @@ from file_processing.input_processing.emissions_source_processing import (
     EmissionsSource,
     process_emission_sources,
 )
-
+from file_processing.input_processing.repair_delay_processing import (
+    read_in_repair_delay_sources_file,
+)
 from virtual_world.infrastructure_const import (
     Infrastructure_Constants,
     Virtual_World_To_Prop_Params_Mapping,
@@ -41,6 +43,9 @@ from file_processing.input_processing.infrastructure_processing import (
 class Infrastructure:
     def __init__(self, virtual_world, methods, in_dir) -> None:
         self.leak_rate_source_dictionary: dict[str, EmissionsSource] = process_emission_sources(
+            inputs_path=in_dir, virtual_world=virtual_world
+        )
+        self.repair_delay_dataframe: pd.DataFrame = read_in_repair_delay_sources_file(
             inputs_path=in_dir, virtual_world=virtual_world
         )
         self.generate_infrastructure(virtual_world=virtual_world, methods=methods, in_dir=in_dir)
@@ -123,6 +128,7 @@ class Infrastructure:
                     sim_end_date,
                     sim_number,
                     self.leak_rate_source_dictionary,
+                    self.repair_delay_dataframe,
                 )
             )
         return {sim_number: infrastructure_emissions}

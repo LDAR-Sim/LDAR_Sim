@@ -21,8 +21,10 @@ from datetime import date, timedelta
 import re
 import sys
 from typing import Literal
+import random
 
 import numpy as np
+import pandas as pd
 from file_processing.input_processing.emissions_source_processing import (
     EmissionsSource,
 )
@@ -36,6 +38,8 @@ class Source:
         "Error: Non-Fugitive Emissions generation is still in development."
         " Please remove these sources for now"
     )
+    INVALID_REPAIR_DELAY_COL_MSG = "Error, Invalid repair delay column provided: {key}"
+    INVALID_REPAIR_DELAY_ERR_MSG = "Error, Invalid repair delay provided: {delay}"
     REP_PREFIX = "repairable_"
     NON_REP_PREFIX = "non_repairable_"
 
@@ -90,10 +94,10 @@ class Source:
         if self._repairable:
             self._emis_rep_delay = prop_params[
                 Infrastructure_Constants.Sources_File_Constants.REPAIR_DELAY
-            ]
+            ]["vals"]
             self._emis_rep_cost = prop_params[
                 Infrastructure_Constants.Sources_File_Constants.REPAIR_COST
-            ]
+            ]["vals"]
 
     def _get_rate(self, leak_rate_source_dictionary: dict[str, EmissionsSource]):
         return leak_rate_source_dictionary[self._emis_rate_source].get_a_rate()
@@ -101,8 +105,20 @@ class Source:
     def _get_repairable(self):
         return self._repairable
 
-    def _get_rep_delay(self):
-        return self._emis_rep_delay
+    def _get_rep_delay(self, repair_delay_dataframe: pd.DataFrame):
+        if isinstance(self._emis_rep_delay, int):
+            return self._emis_rep_delay
+        elif isinstance(self._emis_rep_delay, list):
+            return random.choice(self._emis_rep_delay)
+        elif isinstance(self._emis_rep_delay, str):
+            if self._emis_rep_delay in repair_delay_dataframe:
+                return random.choice(repair_delay_dataframe[self._emis_rep_delay])
+            else:
+                print(self.INVALID_REPAIR_DELAY_COL_MSG.format(key=self._emis_rep_delay))
+                sys.exit()
+        else:
+            print(self.INVALID_REPAIR_DELAY_ERR_MSG.format(delay=self._emis_rep_delay))
+            sys.exit()
 
     def _get_rep_cost(self):
         return self._emis_rep_cost
@@ -116,6 +132,7 @@ class Source:
         start_date,
         sim_start_date,
         leak_rate_source_dictionary: dict[str, EmissionsSource],
+        repair_delay_dataframe: pd.DataFrame,
     ) -> Emission:
         if self._repairable:
             return FugitiveEmission(
@@ -125,7 +142,7 @@ class Source:
                 simulation_sd=sim_start_date,
                 repairable=self._get_repairable(),
                 tech_spat_cov_probs=self._meth_spat_covs,
-                repair_delay=self._get_rep_delay(),
+                repair_delay=self._get_rep_delay(repair_delay_dataframe),
                 repair_cost=self._get_rep_cost(),
                 nrd=self._get_emis_duration(),
             )
@@ -139,6 +156,7 @@ class Source:
         sim_end_date: date,
         sim_number: int,
         leak_rate_source_dictionary: dict[str, EmissionsSource],
+        repair_delay_dataframe: pd.DataFrame,
     ) -> dict[str, list[Emission]]:
         # Using a list as a FIFO queue for less overhead and to be able to pickle it
         emissions_fifo: list[Emission] = []
@@ -160,6 +178,7 @@ class Source:
                     start_date=emis_start_date,
                     sim_start_date=sim_start_date,
                     leak_rate_source_dictionary=leak_rate_source_dictionary,
+                    repair_delay_dataframe=repair_delay_dataframe,
                 )
                 leak_count += 1
                 emissions_fifo.append(emission)
@@ -177,6 +196,7 @@ class Source:
                     start_date=emis_start_date,
                     sim_start_date=sim_start_date,
                     leak_rate_source_dictionary=leak_rate_source_dictionary,
+                    repair_delay_dataframe=repair_delay_dataframe,
                 )
                 leak_count += 1
                 emissions_fifo.append(emission)
