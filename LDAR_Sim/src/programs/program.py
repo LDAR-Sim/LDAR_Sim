@@ -67,6 +67,7 @@ class Program:
         sim_end_date: date,
     ) -> None:
         self._methods: list[Method] = []
+        follow_up_method_list: list[Method] = []
 
         follow_up_methods, non_follow_up_methods = self.split_methods(methods)
 
@@ -76,7 +77,7 @@ class Program:
 
             method: Method = EquipmentLevelMethod(method_name, properties, consider_weather, sites)
 
-            self._methods.append(method)
+            follow_up_method_list.append(method)
 
             self._survey_schedules[method_name] = create_schedule(
                 method_name=method_name,
@@ -104,6 +105,7 @@ class Program:
                 est_meth_daily_surveys=method.estimate_average_daily_surveys(),
                 method_avail_crews=method.get_crew_count(),
             )
+        self._methods.extend(follow_up_method_list)
 
     def split_methods(self, methods: dict) -> Tuple[dict, dict]:
         follow_up_methods: dict = {}
