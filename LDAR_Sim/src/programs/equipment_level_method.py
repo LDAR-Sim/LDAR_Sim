@@ -112,6 +112,7 @@ class EquipmentLevelMethod(Method):
             day_time_remaining = self.get_daylight_hours(
                 daylight, self._max_work_hours, workplan.date
             )
+        day_time_remaining = day_time_remaining * 60  # Convert time from hours to minutes
         for crew in self._crew_reports:
             # TODO : if method is daylight sensitive, check for max daylight
             crew.day_time_remaining = day_time_remaining
