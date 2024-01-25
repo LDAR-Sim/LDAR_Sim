@@ -2,7 +2,7 @@
 ------------------------------------------------------------------------------
 Program:     The LDAR Simulator (LDAR-Sim)
 File:        emissions
-Purpose: The emissions module. 
+Purpose: The emissions module.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the MIT License as published
@@ -42,10 +42,6 @@ class Emission:
         self._estimated_days_active: int = 0
         self._active_days: int = 0
         self._measured_rate: float = None
-        self._tagged: bool = False
-        self._days_since_tagged: int = 0
-        self._tagged_by_company: str = None
-        self._tagged_by_crew: str = None
         self._flagged_by: str = None
         self._init_detect_by: str = None
         self._init_detect_date: date = None
@@ -53,22 +49,15 @@ class Emission:
         self._tech_spat_covs: dict[str, int] = {}
         self._status = "Inactive"
 
-        # if simulation_sd >= start_date:
-        #     self._status = "Active"
-        # else:
-        #     self._status = "Inactive"
-
-    def update(self):
+    def update(self) -> bool:
         """
         Increments duration values
         """
         if self._status == "Active":
             self._active_days += 1
-
-        if self._tagged:
-            self._days_since_tagged += 1
-
-        return "no_status_change"
+            return True
+        else:
+            return False
 
     def check_spatial_cov(self, method) -> int:
         if method not in self._tech_spat_covs:
@@ -82,20 +71,11 @@ class Emission:
     def get_emis_vol(self) -> float:
         return self._active_days * self._rate * 86.4
 
-    def get_tagged(self):
-        return self._tagged
-
-    def set_tagged(self):
-        self._tagged = True
-
     def set_init_detect_by(self, init_detect_by):
         self._init_detect_by = init_detect_by
 
     def set_init_detect_date(self, init_detect_date):
         self._init_detect_date = init_detect_date
-
-    def set_tagged_by_company(self, tagged_by_company):
-        self._tagged_by_company = tagged_by_company
 
     def set_measured_rate(self, measured_rate):
         self._measured_rate = measured_rate
@@ -114,8 +94,8 @@ class Emission:
         summary_dict.update({("Volume Emitted", self.get_emis_vol())})
         summary_dict.update({("Date Began", self._start_date)})
         summary_dict.update({("Initially Detected By", self._init_detect_by)})
-        summary_dict.update({("Tagged", self._tagged)})
-        summary_dict.update({("Tagged By", self._tagged_by_company)})
+        summary_dict.update({("Tagged", "N/A")})
+        summary_dict.update({("Tagged By", "N/A")})
         summary_dict.update(self._tech_spat_covs)
         return summary_dict
 

@@ -107,17 +107,13 @@ class Equipment:
             self._active_emissions.extend(new_emissions)
 
     def update_emissions_state(self) -> None:
-        def emission_active(emission: Emission) -> bool:
-            # TODO change status strings to constants
-            return emission.update() == "no_status_change"
-
-        self._active_emissions = [
-            emission for emission in self._active_emissions if emission_active(emission)
-        ]
-        self._inactive_emissions.extend(
-            [emission for emission in self._active_emissions if not emission_active(emission)]
-        )
-        return
+        updated_active_emissions: list[Emission] = []
+        for emission in self._active_emissions:
+            if emission.update():
+                updated_active_emissions.append(emission)
+            else:
+                self._inactive_emissions.append(emission)
+        self._active_emissions = updated_active_emissions
 
     def tag_emissions(self, tagging_info: TaggingInfo) -> None:
         for emission in self._active_emissions:

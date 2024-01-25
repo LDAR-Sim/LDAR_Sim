@@ -2,7 +2,7 @@
 ------------------------------------------------------------------------------
 Program:     The LDAR Simulator (LDAR-Sim)
 File:        fugitive_emission
-Purpose: The fugitive emissions module. 
+Purpose: The fugitive emissions module.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the MIT License as published
@@ -46,6 +46,10 @@ class FugitiveEmission(Emission):
             repairable,
             tech_spat_cov_probs,
         )
+        self._tagged: bool = False
+        self._days_since_tagged: int = 0
+        self._tagged_by_company: str = None
+        self._tagged_by_crew: str = None
         self._repair_delay: int = repair_delay
         self._repair_cost: float = repair_cost
         self._tagging_rep_delay: int = 0
@@ -54,7 +58,7 @@ class FugitiveEmission(Emission):
         days_active_b4_sim: int = (simulation_sd - start_date).days
         self._days_active_b4_sim = days_active_b4_sim if days_active_b4_sim > 0 else 0
 
-    def check_if_repaired(self):
+    def check_if_repaired(self) -> bool:
         """
         Checks the days since tagged against the repair delay
         Repairs the emission if possible
@@ -63,6 +67,8 @@ class FugitiveEmission(Emission):
             if self._days_since_tagged >= self._repair_delay + self._tagging_rep_delay:
                 self._status = "repaired"
                 self._repair_date = self._start_date + timedelta(days=(self._active_days))
+                return True
+        return False
 
     def get_init_detect_company(self):
         return self._init_detect_by
@@ -134,21 +140,24 @@ class FugitiveEmission(Emission):
         return True
 
     @override
-    def update(self):
-        super().update()
-        if self._active_days + self._days_active_b4_sim >= self._nrd:
-            self.natural_repair()
-            return "nat_repaired"
-        if self._tagged:
-            self.check_if_repaired()
-            if self._status == "repaired":
-                return "repaired"
-        return "no_status_change"
+    def update(self) -> bool:
+        is_active: bool = super().update()
+        if is_active:
+            if self._tagged:
+                self._days_since_tagged += 1
+                if self.check_if_repaired():
+                    is_active = False
+            elif self._active_days + self._days_active_b4_sim >= self._nrd:
+                self.natural_repair()
+                is_active = False
+        return is_active
 
     @override
     def get_summary_dict(self) -> dict[str, Any]:
         summary_dict: dict[str, Any] = super().get_summary_dict()
         summary_dict.update({("Date Repaired", self._repair_date)})
+        summary_dict.update({("Tagged", self._tagged)})
+        summary_dict.update({("Tagged By", self._tagged_by_company)})
         return summary_dict
 
     @override

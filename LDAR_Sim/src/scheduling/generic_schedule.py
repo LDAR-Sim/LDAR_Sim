@@ -57,7 +57,7 @@ class GenericSchedule:
         )
 
     def _set_survey_plans(
-        self, sim_start_date, sim_end_date, sites
+        self, sim_start_date, sim_end_date, sites: list[Site]
     ) -> list[ScheduledSurveyPlanner]:
         survey_plans: list[ScheduledSurveyPlanner] = []
         for site in sites:
@@ -88,20 +88,14 @@ class GenericSchedule:
         """
         self._survey_queue.put(GenericSchedule.DEFAULT_SURVEY_PRIORITY, survey_plan)
 
-    def add_unfinished_to_survey_queue(
-        self, survey_plan: ScheduledSurveyPlanner
-    ) -> None:
+    def add_unfinished_to_survey_queue(self, survey_plan: ScheduledSurveyPlanner) -> None:
         """Add the supplied, partial surveyed site to queue
 
         Args:
             site (Site) : the Site to be added to the survey queue"""
-        self._survey_queue.put(
-            GenericSchedule.UNFINISHED_SURVEY_HIGHEST_PRIORITY, survey_plan
-        )
+        self._survey_queue.put(GenericSchedule.UNFINISHED_SURVEY_HIGHEST_PRIORITY, survey_plan)
 
-    def add_previous_queued_to_survey_queue(
-        self, survey_plan: ScheduledSurveyPlanner
-    ) -> None:
+    def add_previous_queued_to_survey_queue(self, survey_plan: ScheduledSurveyPlanner) -> None:
         """Add the supplied, unattended site back to queue
 
         Args:
