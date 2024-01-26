@@ -17,6 +17,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 ------------------------------------------------------------------------------
 """
+from datetime import date
 from scheduling.schedule_dataclasses import SiteSurveyReport
 from virtual_world.sites import Site
 
@@ -28,6 +29,7 @@ class SurveyPlanner:
     ) -> None:
         self._site: Site = site
         self._active_survey_report: SiteSurveyReport = None
+        self._surveys_this_year: dict[int, int] = {}
 
     def get_site(self) -> Site:
         return self._site
@@ -38,3 +40,8 @@ class SurveyPlanner:
             return self._active_survey_report
         else:
             return self._active_survey_report
+
+    def add_to_surveys_done(self, current_date: date) -> None:
+        surveys_done = self._surveys_this_year.get(current_date.year, 0)
+        self._surveys_this_year[current_date.year] = surveys_done + 1
+        self._active_survey_report = None

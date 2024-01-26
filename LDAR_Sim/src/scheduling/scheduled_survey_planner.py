@@ -249,7 +249,7 @@ class ScheduledSurveyPlanner(SurveyPlanner):
         """Adds to the counter keeping track of the number of surveys done"""
         self._surveys_this_year[self._current_date.year].Surveys_done += 1  # TODO : update when dat
         self._active_survey_report = None  # TODO make sure this makes sense here
-        return None
+        self.unflag_for_queue()
 
 
 class MobileSurveyPlanner(ScheduledSurveyPlanner):

@@ -149,3 +149,5 @@ class GenericSchedule:
                     self.add_unfinished_to_survey_queue(planner)
                 else:
                     self.add_previous_queued_to_survey_queue(planner)
+            else:
+                planner.add_to_surveys_done(current_date)
