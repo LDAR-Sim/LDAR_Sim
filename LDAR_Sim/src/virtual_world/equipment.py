@@ -34,6 +34,7 @@ from virtual_world.infrastructure_const import Infrastructure_Constants
 
 from virtual_world.sources import Source
 
+
 SOURCE_CREATION_ERROR_MESSAGE = (
     "Invalid LDAR-Sim infrastructure inputs: Failure to read in sources infrastructure input"
 )
@@ -165,15 +166,10 @@ class Equipment:
         elif emis_data_active.empty:
             emis_data = emis_data_inactive
         else:
-            # Handle all N/A or empty columns
-            empty_cols_active = emis_data_active.columns[emis_data_active.isna().all()].tolist()
-            empty_cols_inactive = emis_data_inactive.columns[
-                emis_data_inactive.isna().all()
-            ].tolist()
-            # Concatenate DataFrames after excluding empty or all-NA columns
-            emis_data_active = emis_data_active.drop(columns=empty_cols_active)
-            emis_data_inactive = emis_data_inactive.drop(columns=empty_cols_inactive)
-
+            # Exclude empty or all-NA columns from both DataFrames
+            # Specifically the spatial coverage column that may be empty for emis_data_active
+            emis_data_active = emis_data_active.dropna(axis=1, how="all")
+            emis_data_inactive = emis_data_inactive.dropna(axis=1, how="all")
             emis_data = pd.concat([emis_data_active, emis_data_inactive], ignore_index=True)
 
         emis_data["Equipment"] = self._equipment_ID
