@@ -155,6 +155,7 @@ class Equipment:
         emis_data_inactive: pd.DataFrame = pd.DataFrame(
             [emission.get_summary_dict() for emission in self._inactive_emissions]
         )
+
         # Handle empty dataframe cases
         if emis_data_active.empty and emis_data_inactive.empty:
             columns = EMIS_SUMMARY_DATA_COLS
@@ -164,7 +165,16 @@ class Equipment:
         elif emis_data_active.empty:
             emis_data = emis_data_inactive
         else:
-            emis_data = pd.concat([emis_data_active, emis_data_inactive])
+            # Handle all N/A or empty columns
+            empty_cols_active = emis_data_active.columns[emis_data_active.isna().all()].tolist()
+            empty_cols_inactive = emis_data_inactive.columns[
+                emis_data_inactive.isna().all()
+            ].tolist()
+            # Concatenate DataFrames after excluding empty or all-NA columns
+            emis_data_active = emis_data_active.drop(columns=empty_cols_active)
+            emis_data_inactive = emis_data_inactive.drop(columns=empty_cols_inactive)
+
+            emis_data = pd.concat([emis_data_active, emis_data_inactive], ignore_index=True)
 
         emis_data["Equipment"] = self._equipment_ID
 
