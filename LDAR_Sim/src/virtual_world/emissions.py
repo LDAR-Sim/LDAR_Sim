@@ -61,9 +61,10 @@ class Emission:
 
     def check_spatial_cov(self, method) -> int:
         if method not in self._tech_spat_covs:
+            name_str: str = f"spat_cov_{method}"
             cov_prob: float = self._tech_spat_cov_probs[method]
-            self._tech_spat_covs[method] = binomial(1, cov_prob)
-        return self._tech_spat_covs[method]
+            self._tech_spat_covs[name_str] = binomial(1, cov_prob)
+        return self._tech_spat_covs[name_str]
 
     def activate() -> bool:
         return False
@@ -94,6 +95,7 @@ class Emission:
         summary_dict.update({("Volume Emitted", self.get_emis_vol())})
         summary_dict.update({("Date Began", self._start_date)})
         summary_dict.update({("Initially Detected By", self._init_detect_by)})
+        summary_dict.update({("Initially Detected Date", self._init_detect_date)})
         summary_dict.update({("Tagged", "N/A")})
         summary_dict.update({("Tagged By", "N/A")})
         summary_dict.update(self._tech_spat_covs)
