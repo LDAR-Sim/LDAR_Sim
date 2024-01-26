@@ -97,7 +97,7 @@ class Equipment_Group:
 
         return {self._id: eqg_emissions}
 
-    def activate_emissions(self, date: date, sim_number: int) -> None:
+    def activate_emissions(self, date: date, sim_number: int) -> int:
         """Activate any emissions that are due to begin on the current date for the given simulation
         and add them to the active emissions list for the equipment at which they occur.
 
@@ -106,12 +106,14 @@ class Equipment_Group:
             sim_number (int): The simulation number.
             Used to interact with the correct set of emissions.
         """
+        new_emissions: int = 0
         for equipment in self._equipment:
-            equipment.activate_emissions(date, sim_number)
+            new_emissions += equipment.activate_emissions(date, sim_number)
+        return new_emissions
 
-    def update_emissions_state(self) -> None:
+    def update_emissions_state(self, timeseries: dict) -> None:
         for equip in self._equipment:
-            equip.update_emissions_state()
+            equip.update_emissions_state(timeseries)
 
     def tag_emissions_at_equipment(self, equipment: str, tagging_info: TaggingInfo) -> None:
         target_equip: Equipment | None = next(

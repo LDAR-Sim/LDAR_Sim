@@ -26,6 +26,7 @@ from file_processing.output_processing.output_constants import EMIS_SUMMARY_DATA
 from file_processing.input_processing.emissions_source_processing import (
     EmissionsSource,
 )
+from file_processing.output_processing.output_constants import TIMESERIES_COL_ACCESSORS as tca
 from scheduling.schedule_dataclasses import TaggingInfo
 
 from virtual_world.emissions import Emission
@@ -96,7 +97,7 @@ class Equipment:
 
         return {self._equipment_ID: equip_emissions}
 
-    def activate_emissions(self, date: date, sim_number: int) -> None:
+    def activate_emissions(self, date: date, sim_number: int) -> int:
         """Activate any emissions that are due to begin on the current date for the given simulation
         and add them to the active emissions list for the equipment at which they occur.
 
@@ -105,18 +106,24 @@ class Equipment:
             sim_number (int): The simulation number.
             Used to interact with the correct set of emissions.
         """
+        new_emissions_count: int = 0
         for source in self._sources:
             new_emissions: list[Emission] = source.activate_emissions(date, sim_number)
             self._active_emissions.extend(new_emissions)
+            new_emissions_count += len(new_emissions)
+        return new_emissions_count
 
-    def update_emissions_state(self) -> None:
+    def update_emissions_state(self, timeseries: dict) -> None:
         updated_active_emissions: list[Emission] = []
         for emission in self._active_emissions:
             if emission.update():
                 updated_active_emissions.append(emission)
+                timeseries[tca.EMIS] += emission.get_daily_emis()
             else:
                 self._inactive_emissions.append(emission)
+                timeseries[tca.REP_LEAKS] += 1
         self._active_emissions = updated_active_emissions
+        timeseries[tca.ACT_LEAKS] += len(self._active_emissions)
 
     def tag_emissions(self, tagging_info: TaggingInfo) -> None:
         for emission in self._active_emissions:

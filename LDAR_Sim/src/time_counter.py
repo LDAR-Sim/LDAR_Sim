@@ -46,7 +46,7 @@ class TimeCounter:
         return
 
     def at_simulation_end(self) -> bool:
-        if self.current_date == self.end_date:
+        if self.current_date > self.end_date:
             return True
         else:
             return False

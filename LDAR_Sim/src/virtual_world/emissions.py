@@ -22,6 +22,8 @@ from typing import Any
 
 from numpy.random import binomial
 
+from utils.conversion_constants import GRAMS_PER_SECOND_TO_KG_PER_DAY
+
 
 class Emission:
     def __init__(
@@ -70,7 +72,7 @@ class Emission:
         return False
 
     def get_emis_vol(self) -> float:
-        return self._active_days * self._rate * 86.4
+        return self._active_days * self._rate * GRAMS_PER_SECOND_TO_KG_PER_DAY
 
     def update_detection_records(self, company: str, detect_date: date):
         if self._init_detect_by is None:
@@ -91,6 +93,9 @@ class Emission:
 
     def get_status(self) -> str:
         return self._status
+
+    def get_daily_emis(self) -> float:
+        return self._rate * GRAMS_PER_SECOND_TO_KG_PER_DAY
 
     def get_summary_dict(self) -> dict[str, Any]:
         summary_dict = {}

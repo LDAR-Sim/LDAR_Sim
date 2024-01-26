@@ -21,11 +21,16 @@
 
 import os
 from pathlib import Path, WindowsPath
+from typing import Any
 import pandas as pd
 from virtual_world.infrastructure import Infrastructure
 from time_counter import TimeCounter
 from programs.program import Program
-from file_processing.output_processing.output_constants import EMIS_SUMMARY_FINAL_COL_ORDER
+from file_processing.output_processing.output_constants import (
+    EMIS_SUMMARY_FINAL_COL_ORDER,
+    TIMESERIES_COLUMNS,
+    TIMESERIES_COL_ACCESSORS as tca,
+)
 
 
 class LdarSim:
@@ -60,10 +65,15 @@ class LdarSim:
         return
 
     def run_simulation(self):
+        timeseries = pd.DataFrame(columns=TIMESERIES_COLUMNS)
         while not self._tc.at_simulation_end():
-            self.infrastructure.activate_emissions(self._tc.current_date, self.sim_number)
+            new_row: dict[str, Any] = self._init_ts_row()
+            new_row[tca.NEW_LEAKS] = self.infrastructure.activate_emissions(
+                self._tc.current_date, self.sim_number
+            )
             self.program.do_daily_program_deployment()
-            self.infrastructure.update_emissions_state()
+            self.infrastructure.update_emissions_state(new_row)
+            timeseries.loc[len(timeseries)] = new_row
             self.program.update_date()
             self._tc.next_day()
 
@@ -81,6 +91,28 @@ class LdarSim:
         self.gen_sim_directory()
         summary_filename = "_".join([self.name_str, "emissions_summary.csv"])
         self.save_results(overall_emission_data, summary_filename)
+        self.format_timeseries(timeseries)
+        timeseries_filename = "_".join([self.name_str, "timeseries.csv"])
+        self.save_results(timeseries, timeseries_filename)
+
+    def _init_ts_row(self):
+        new_ts_row: dict[str, Any] = {
+            tca.DATE: self._tc.current_date,
+            tca.EMIS: 0,
+            tca.COST: 0,
+            tca.ACT_LEAKS: 0,
+            tca.NEW_LEAKS: 0,
+            tca.REP_LEAKS: 0,
+            tca.NAT_REP_LEAKS: 0,
+            tca.TAGGED_LEAKS: 0,
+            tca.REP_COST: 0,
+            tca.NAT_REP_COST: 0,
+            tca.VERF_COST: 0,
+        }
+        return new_ts_row
+
+    def format_timeseries(self, timeseries: pd.DataFrame) -> None:
+        return None
 
     def gen_sim_directory(self) -> None:
         if not os.path.exists(self.output_dir):

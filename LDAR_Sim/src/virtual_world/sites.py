@@ -137,7 +137,7 @@ class Site:
 
         return {self._site_ID: site_emissions}
 
-    def activate_emissions(self, date: date, sim_number: int) -> None:
+    def activate_emissions(self, date: date, sim_number: int) -> int:
         """Activate any emissions that are due to begin on the current date for the given simulation
         and add them to the active emissions list for the equipment at which they occur.
 
@@ -146,12 +146,14 @@ class Site:
             sim_number (int): The simulation number.
             Used to interact with the correct set of emissions.
         """
+        new_emissions: int = 0
         for eqg in self._equipment_groups:
-            eqg.activate_emissions(date, sim_number)
+            new_emissions += eqg.activate_emissions(date, sim_number)
+        return new_emissions
 
-    def update_emissions_state(self) -> None:
+    def update_emissions_state(self, timeseries: dict) -> None:
         for eqg in self._equipment_groups:
-            eqg.update_emissions_state()
+            eqg.update_emissions_state(timeseries)
 
     def get_detectable_emissions(self, method_name: str) -> dict[str, dict[str, list[Emission]]]:
         detectable_emissions: dict[str, dict[str, Emission]] = {}

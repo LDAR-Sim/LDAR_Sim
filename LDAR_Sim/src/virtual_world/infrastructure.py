@@ -133,7 +133,7 @@ class Infrastructure:
             )
         return {sim_number: infrastructure_emissions}
 
-    def activate_emissions(self, date: date, sim_number: int) -> None:
+    def activate_emissions(self, date: date, sim_number: int) -> int:
         """Activate any emissions that are due to begin on the current date for the given simulation
         and add them to the active emissions list for the equipment at which they occur.
 
@@ -142,12 +142,14 @@ class Infrastructure:
             sim_number (int): The simulation number.
             Used to interact with the correct set of emissions.
         """
+        new_emissions: int = 0
         for site in self._sites:
-            site.activate_emissions(date, sim_number)
+            new_emissions += site.activate_emissions(date, sim_number)
+        return new_emissions
 
-    def update_emissions_state(self) -> None:
+    def update_emissions_state(self, timeseries: dict) -> None:
         for site in self._sites:
-            site.update_emissions_state()
+            site.update_emissions_state(timeseries)
 
     def generate_infrastructure(
         self,
