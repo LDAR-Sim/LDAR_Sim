@@ -46,6 +46,12 @@ class DefaultSiteLevelSensor(DefaultSensor):
 
         if emissions_detected:
             site_level_measured_rate: float = self._measure_rate(site_level_emission_rate)
+            for eq_emis_list in detectable_emissions.values():
+                for emis_list in eq_emis_list.values():
+                    for emission in emis_list:
+                        emission.update_detection_records(
+                            company=meth_name, detect_date=survey_report.survey_completion_date
+                        )
         else:
             site_level_measured_rate: float = 0.0
 

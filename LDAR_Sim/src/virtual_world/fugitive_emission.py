@@ -80,11 +80,6 @@ class FugitiveEmission(Emission):
             self._tagged and (self._days_since_tagged == 0)
         ) and self._tagged_by_company != "natural"
 
-    def update_detection_records(self, company, detect_date):
-        if self._init_detect_by is None:
-            self._init_detect_by = company
-            self._init_detect_date = detect_date
-
     def get_repair_cost(self) -> float:
         return self._repair_cost
 

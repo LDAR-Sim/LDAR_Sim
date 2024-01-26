@@ -72,6 +72,11 @@ class Emission:
     def get_emis_vol(self) -> float:
         return self._active_days * self._rate * 86.4
 
+    def update_detection_records(self, company: str, detect_date: date):
+        if self._init_detect_by is None:
+            self.set_init_detect_by(company)
+            self.set_init_detect_date(detect_date)
+
     def set_init_detect_by(self, init_detect_by):
         self._init_detect_by = init_detect_by
 
@@ -93,6 +98,8 @@ class Emission:
         summary_dict.update({("Status", self._status)})
         summary_dict.update({("Days Active", self._active_days)})
         summary_dict.update({("Volume Emitted", self.get_emis_vol())})
+        summary_dict.update({("True Rate", self._rate)})
+        summary_dict.update({("Measured Rate", self._measured_rate)})
         summary_dict.update({("Date Began", self._start_date)})
         summary_dict.update({("Initially Detected By", self._init_detect_by)})
         summary_dict.update({("Initially Detected Date", self._init_detect_date)})
