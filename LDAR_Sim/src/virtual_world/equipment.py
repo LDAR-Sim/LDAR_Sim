@@ -22,11 +22,10 @@ from datetime import date
 import re
 
 import pandas as pd
-from file_processing.output_processing.output_constants import EMIS_SUMMARY_DATA_COLS
+from file_processing.output_processing.output_utils import EMIS_SUMMARY_DATA_COLS, TsEmisData
 from file_processing.input_processing.emissions_source_processing import (
     EmissionsSource,
 )
-from file_processing.output_processing.output_constants import TIMESERIES_COL_ACCESSORS as tca
 from scheduling.schedule_dataclasses import TaggingInfo
 
 from virtual_world.emissions import Emission
@@ -113,17 +112,19 @@ class Equipment:
             new_emissions_count += len(new_emissions)
         return new_emissions_count
 
-    def update_emissions_state(self, timeseries: dict) -> None:
+    def update_emissions_state(self) -> TsEmisData:
         updated_active_emissions: list[Emission] = []
+        emis_data: TsEmisData = TsEmisData()
         for emission in self._active_emissions:
             if emission.update():
                 updated_active_emissions.append(emission)
-                timeseries[tca.EMIS] += emission.get_daily_emis()
+                emis_data.daily_emis += emission.get_daily_emis()
             else:
                 self._inactive_emissions.append(emission)
-                timeseries[tca.REP_LEAKS] += 1
+                emis_data.repaired_leaks += 1
         self._active_emissions = updated_active_emissions
-        timeseries[tca.ACT_LEAKS] += len(self._active_emissions)
+        emis_data.active_leaks += len(self._active_emissions)
+        return emis_data
 
     def tag_emissions(self, tagging_info: TaggingInfo) -> None:
         for emission in self._active_emissions:

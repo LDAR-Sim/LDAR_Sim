@@ -20,6 +20,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 from datetime import date
 import numpy as np
 import pandas as pd
+from file_processing.output_processing.output_utils import TsEmisData
 from file_processing.input_processing.emissions_source_processing import (
     EmissionsSource,
     process_emission_sources,
@@ -147,9 +148,11 @@ class Infrastructure:
             new_emissions += site.activate_emissions(date, sim_number)
         return new_emissions
 
-    def update_emissions_state(self, timeseries: dict) -> None:
+    def update_emissions_state(self) -> TsEmisData:
+        emis_data = TsEmisData()
         for site in self._sites:
-            site.update_emissions_state(timeseries)
+            emis_data += site.update_emissions_state()
+        return emis_data
 
     def generate_infrastructure(
         self,

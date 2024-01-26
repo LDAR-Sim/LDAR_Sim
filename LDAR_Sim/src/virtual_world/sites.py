@@ -24,6 +24,7 @@ import math
 
 
 import pandas as pd
+from file_processing.output_processing.output_utils import TsEmisData
 from file_processing.input_processing.emissions_source_processing import (
     EmissionsSource,
 )
@@ -151,9 +152,11 @@ class Site:
             new_emissions += eqg.activate_emissions(date, sim_number)
         return new_emissions
 
-    def update_emissions_state(self, timeseries: dict) -> None:
+    def update_emissions_state(self) -> TsEmisData:
+        emis_data = TsEmisData()
         for eqg in self._equipment_groups:
-            eqg.update_emissions_state(timeseries)
+            emis_data += eqg.update_emissions_state()
+        return emis_data
 
     def get_detectable_emissions(self, method_name: str) -> dict[str, dict[str, list[Emission]]]:
         detectable_emissions: dict[str, dict[str, Emission]] = {}

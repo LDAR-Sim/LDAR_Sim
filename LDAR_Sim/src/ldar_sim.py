@@ -26,10 +26,11 @@ import pandas as pd
 from virtual_world.infrastructure import Infrastructure
 from time_counter import TimeCounter
 from programs.program import Program
-from file_processing.output_processing.output_constants import (
+from file_processing.output_processing.output_utils import (
     EMIS_SUMMARY_FINAL_COL_ORDER,
     TIMESERIES_COLUMNS,
     TIMESERIES_COL_ACCESSORS as tca,
+    TsEmisData,
 )
 
 
@@ -72,7 +73,8 @@ class LdarSim:
                 self._tc.current_date, self.sim_number
             )
             self.program.do_daily_program_deployment()
-            self.infrastructure.update_emissions_state(new_row)
+            ts_emis_info: TsEmisData = self.infrastructure.update_emissions_state()
+            self._update_ts_row_w_emis_info(new_row=new_row, ts_emis_info=ts_emis_info)
             timeseries.loc[len(timeseries)] = new_row
             self.program.update_date()
             self._tc.next_day()
@@ -110,6 +112,11 @@ class LdarSim:
             tca.VERF_COST: 0,
         }
         return new_ts_row
+
+    def _update_ts_row_w_emis_info(self, new_row: dict[str, Any], ts_emis_info: TsEmisData):
+        new_row[tca.EMIS] = ts_emis_info.daily_emis
+        new_row[tca.ACT_LEAKS] = ts_emis_info.active_leaks
+        new_row[tca.REP_LEAKS] = ts_emis_info.repaired_leaks
 
     def format_timeseries(self, timeseries: pd.DataFrame) -> None:
         return None
