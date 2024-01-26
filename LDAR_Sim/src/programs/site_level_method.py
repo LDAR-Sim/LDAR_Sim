@@ -88,6 +88,8 @@ class SiteLevelMethod(Method):
         self._inst_threshold: float = properties[Method.METHOD_FOLLOW_UP_PROPERTIES_ACCESSOR][
             Method.METHOD_FOLLOW_UP_PROPERTIES_INST_THRESH_ACCESSOR
         ]
+        if self._inst_threshold is None:
+            self._inst_threshold = 0.0
         self._redund_filter: str = properties[Method.METHOD_FOLLOW_UP_PROPERTIES_ACCESSOR][
             Method.METHOD_FOLLOW_UP_PROPERTIES_REDUND_FILTER_ACCESSOR
         ]
@@ -106,7 +108,7 @@ class SiteLevelMethod(Method):
                 # If the site is already in the list for potential flags, pop it from the list,
                 # update it based on the new measurements and the redundancy filter, and either
                 # add it back to the list or bypass the list if it now passes the instant threshold.
-                if self._site_IDs_in_consideration_for_flag(detection_record.site_id):
+                if self._site_IDs_in_consideration_for_flag.get(detection_record.site_id, False):
                     existing_plan: FollowUpSurveyPlanner = self._get_plan_from_candidates(
                         detection_record.site_id
                     )
@@ -119,7 +121,7 @@ class SiteLevelMethod(Method):
                         self._candidates_for_flags.add(existing_plan)
                 # If the site is already queued to get a follow-up,
                 # update the queue priority based on new results
-                elif self._site_IDs_in_follow_up_queue(detection_record.site_id):
+                elif self._site_IDs_in_follow_up_queue[detection_record.site_id]:
                     existing_plan: FollowUpSurveyPlanner = (
                         self._follow_up_schedule.get_plan_from_queue(detection_record.site_id)
                     )

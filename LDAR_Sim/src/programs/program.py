@@ -172,6 +172,7 @@ class Program:
             method_workplan: Workplan = method_schedule.get_workplan(self._current_date)
             method.deploy_crews(method_workplan, self.weather, self.daylight)
             method_schedule.update(method_workplan, self._current_date)
+            method.update(self._current_date)
 
     def update_date(self) -> None:
         """Increment the current date counter"""
