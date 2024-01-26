@@ -152,5 +152,5 @@ class Equipment_Group:
             emis_data: pd.DataFrame = pd.concat(equip_emis_dataframes)
         else:
             emis_data: pd.DataFrame = pd.DataFrame(columns=EMIS_SUMMARY_DATA_COLS)
-        emis_data["equipment_group"] = self._id
+        emis_data["Equipment Group"] = self._id
         return emis_data

@@ -206,5 +206,5 @@ class Site:
 
     def get_emis_data(self) -> pd.DataFrame:
         emis_data: pd.DataFrame = pd.concat([eqg.get_emis_data() for eqg in self._equipment_groups])
-        emis_data["site_id"] = self._site_ID
+        emis_data["Site ID"] = self._site_ID
         return emis_data

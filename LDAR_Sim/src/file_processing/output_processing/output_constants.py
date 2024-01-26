@@ -11,3 +11,10 @@ EMIS_SUMMARY_DATA_COLS = [
     "Tagged By",
     "equipment",
 ]
+
+EMIS_SUMMARY_FINAL_COL_ORDER = [
+    "Emissions ID",
+    "Site ID",
+    "Equipment Group",
+    "Equipment",
+]

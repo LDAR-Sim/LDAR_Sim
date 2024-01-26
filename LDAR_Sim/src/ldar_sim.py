@@ -25,6 +25,7 @@ import pandas as pd
 from virtual_world.infrastructure import Infrastructure
 from time_counter import TimeCounter
 from programs.program import Program
+from file_processing.output_processing.output_constants import EMIS_SUMMARY_FINAL_COL_ORDER
 
 
 class LdarSim:
@@ -67,6 +68,15 @@ class LdarSim:
             self._tc.next_day()
 
         overall_emission_data: pd.DataFrame = self.infrastructure.gen_summary_emis_data()
+
+        overall_emission_data = overall_emission_data[
+            EMIS_SUMMARY_FINAL_COL_ORDER
+            + [
+                col
+                for col in overall_emission_data.columns
+                if col not in EMIS_SUMMARY_FINAL_COL_ORDER
+            ]
+        ]
 
         self.gen_sim_directory()
         summary_filename = "_".join([self.name_str, "emissions_summary.csv"])

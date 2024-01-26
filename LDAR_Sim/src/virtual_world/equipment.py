@@ -166,6 +166,6 @@ class Equipment:
         else:
             emis_data = pd.concat([emis_data_active, emis_data_inactive])
 
-        emis_data["equipment"] = self._equipment_ID
+        emis_data["Equipment"] = self._equipment_ID
 
         return emis_data
