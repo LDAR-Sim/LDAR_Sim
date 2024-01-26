@@ -66,7 +66,9 @@ class FugitiveEmission(Emission):
         if self._repairable:
             if self._days_since_tagged >= self._repair_delay + self._tagging_rep_delay:
                 self._status = "repaired"
-                self._repair_date = self._start_date + timedelta(days=(self._active_days))
+                self._repair_date = self._start_date + timedelta(
+                    days=(self._active_days + self._days_active_b4_sim)
+                )
                 return True
         return False
 
