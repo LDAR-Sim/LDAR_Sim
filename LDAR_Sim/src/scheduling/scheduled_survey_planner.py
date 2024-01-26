@@ -245,9 +245,9 @@ class ScheduledSurveyPlanner(SurveyPlanner):
         self._queued = False
         return None
 
-    def add_to_surveys_done(self) -> None:
+    def add_to_surveys_done(self, current_date: date) -> None:
         """Adds to the counter keeping track of the number of surveys done"""
-        self._surveys_this_year[self._current_date.year].Surveys_done += 1  # TODO : update when dat
+        self._surveys_this_year[current_date.year].Surveys_done += 1  # TODO : update when dat
         self._active_survey_report = None  # TODO make sure this makes sense here
         self.unflag_for_queue()
 
