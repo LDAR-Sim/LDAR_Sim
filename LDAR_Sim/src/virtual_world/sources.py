@@ -248,21 +248,6 @@ class Source:
     def get_id(self) -> str:
         return self._source_ID
 
-    # def create_emission(self):
-    #     if type(self._emis_rate_source) == str and emiss_type.lower() == 'sample':
-
-    #         # add in code to deal with source file
-    #     elif type(self._emiss_source) == str and emiss_type.lower() == 'fit':
-    #         # add in code to deal with source file and fitting to distribution
-    #     elif type(self._emiss_source) == list and emiss_type.lower() == 'sample':
-    #         emiss_val = emiss_source
-    #     elif type(self._emiss_source) == float or type(emiss_source) == int:
-    #         emiss_val = [emiss_source]
-    #     elif type(self._emiss_source) == list and emiss_type.lower() == 'dist':
-    #         # add in code to deal with handling a distribution
-
-    # the above may be required to be moved to the emissions object.
-
 
 # TODO : make an if/else function to determine emission sample from list or distribution
 # TODO: make function that is called by above function to get single value for emission

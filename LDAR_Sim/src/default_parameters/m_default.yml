@@ -13,7 +13,6 @@ coverage:
   temporal: 1.0 # 0.0 to 1.0
 cost:
   per_day: 0
-  per_hour: 0
   per_site: 0
   upfront: 0
 n_crews: 0 # whole numbers

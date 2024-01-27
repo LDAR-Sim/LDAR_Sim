@@ -63,6 +63,14 @@ class Method:
     METHOD_FOLLOW_UP_PROPERTIES_DELAY_ACCESSOR = "delay"
     METHOD_FOLLOW_UP_PROPERTIES_REDUND_FILTER_ACCESSOR = "redundancy_filter"
 
+    METHOD_COST_ACESSOR = "cost"
+    METHOD_COST_PER_DAY = "per_day"
+    METHOD_COST_PER_SITE = "per_site"
+    METHOD_COST_UPFRONT = "upfront"
+
+    PER_SITE_COST = "site"
+    PER_DAY_COST = "day"
+
     POTENTIAL_CREW_SHORTAGE_MESSAGE = (
         "Warning: LDAR-Sim has detected a potential for crew shortage for the method: {method}"
     )
@@ -90,6 +98,7 @@ class Method:
         self._site_survey_reports: list[SiteSurveyReport] = []
         self._detection_records: dict[date, list[DetectionRecord]] = {}
         self.initialize_crews(crews, sites)
+        self.initialize_cost_tracking(properties[self.METHOD_COST_ACESSOR])
 
     def initialize_crews(self, crews, sites: "list[Site]") -> None:
         """Initialize the daily crew reports that the method will use
@@ -169,8 +178,21 @@ class Method:
     def get_crew_count(self) -> int:
         return self._crews
 
+    def initialize_cost_tracking(self, cost_properties: dict[str, float]):
+        self.upfront_cost = cost_properties[self.METHOD_COST_UPFRONT]
+        if cost_properties[self.METHOD_COST_PER_SITE] > 0:
+            self.cost_type = self.PER_SITE_COST
+            self.cost = cost_properties[self.METHOD_COST_PER_SITE]
+        elif cost_properties[self.METHOD_COST_PER_DAY] > 0:
+            self.cost_type = self.PER_DAY_COST
+            self.cost = cost_properties[self.METHOD_COST_PER_DAY]
+        else:
+            self.cost_type = self.PER_SITE_COST
+            self.cost = -1
+
     def deploy_crews(self, workplan: Workplan, weather, daylight) -> None:
         """Deploy crews will send crews out to survey sites based on the provided workplan"""
+        deployment_cost = 0
 
         priority_queue = PriorityQueue()
         day_time_remaining = self._max_work_hours
@@ -180,10 +202,15 @@ class Method:
                 daylight, self._max_work_hours, workplan.date
             )
         day_time_remaining = day_time_remaining * 60  # Convert time from hours to minutes
+        # TODO Add logic to not deploy all crews if not necessary?
         for crew in self._crew_reports:
             # TODO : if method is daylight sensitive, check for max daylight
             crew.day_time_remaining = day_time_remaining
             priority_queue.put((-crew.day_time_remaining, crew.crew_id, crew))
+
+        # If the cost type for the method is per day, calculate the deployment cost for day
+        # based off the number of crews being deployed
+        deployment_cost = self.cost * len(self._crew_reports)
         # pop the site with the longest remaining hours to assign the next crew
         # while there are crews that can work
         for survey_plan in workplan.site_survey_planners.values():
@@ -239,6 +266,11 @@ class Method:
                 current_records.append(detection_record)
                 self._detection_records[workplan.date] = current_records
 
+                if self.cost_type == self.PER_SITE_COST:
+                    site_survey_cost = site_to_survey.get_survey_cost(self._name)
+                    if site_survey_cost == 0 and self.cost > 0:
+                        site_survey_cost = self.cost
+                    deployment_cost += site_survey_cost
         return
 
     def update(self, current_date: date) -> None:

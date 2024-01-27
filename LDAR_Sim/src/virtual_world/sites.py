@@ -213,3 +213,9 @@ class Site:
         emis_data: pd.DataFrame = pd.concat([eqg.get_emis_data() for eqg in self._equipment_groups])
         emis_data["Site ID"] = self._site_ID
         return emis_data
+
+    def get_survey_cost(self, method_name) -> float:
+        cost: float = 0
+        for eqg in self._equipment_groups:
+            cost += eqg.get_survey_cost(method_name)
+        return cost
