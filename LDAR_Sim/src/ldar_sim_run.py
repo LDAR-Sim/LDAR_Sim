@@ -186,14 +186,6 @@ if __name__ == "__main__":
     os.makedirs(out_dir)
     input_manager.write_parameters(out_dir / "parameters.yaml")
 
-    if preseed_random:
-        seed_timeseries = gen_seed_timeseries(
-            sim_end_date=date(*virtual_world["end_date"]),
-            sim_start_date=date(*virtual_world["start_date"]),
-        )
-    else:
-        seed_timeseries = None
-
     generator_dir = in_dir / "generator"
     if os.path.exists(generator_dir):
         print(
@@ -222,7 +214,16 @@ if __name__ == "__main__":
     initialize_emissions(
         simulation_count, hash_file_exist, n_sim_match, infrastructure, virtual_world, generator_dir
     )
-
+    # Check and set up preseed random if relevant
+    if preseed_random:
+        seed_timeseries = gen_seed_timeseries(
+            sim_end_date=date(*virtual_world["end_date"]),
+            sim_start_date=date(*virtual_world["start_date"]),
+            gen_dir=generator_dir,
+            preseed_file_exist=hash_file_exist,  # assumes if hash files exist, so will the preseed.
+        )
+    else:
+        seed_timeseries = None
     # Initialize objects
     print("...Initializing weather")
     weather = WL(virtual_world, in_dir)
