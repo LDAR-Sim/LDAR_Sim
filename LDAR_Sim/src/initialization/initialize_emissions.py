@@ -74,7 +74,7 @@ def initialize_emissions(
                     )
                 )
 
-            pickle.dump(emissions, open(emis_file_loc, "wb"))
+                pickle.dump(emissions, open(emis_file_loc, "wb"))
     return None
 
 
