@@ -19,9 +19,13 @@
 # ------------------------------------------------------------------------------
 
 import random
-from datetime import datetime
+from datetime import date, timedelta
 
 
-def gen_seed_timeseries(sim_start_date: datetime, sim_end_date: datetime) -> list[int]:
-    n_timesteps: int = (sim_end_date - sim_start_date).days
-    return [random.randrange(1, 50, 1) for i in range(n_timesteps)]
+def gen_seed_timeseries(sim_start_date: date, sim_end_date: date) -> list[int]:
+    seed_ts_dict: dict[date, int] = {}
+    current_date = sim_start_date
+    while current_date <= sim_end_date:
+        seed_ts_dict[current_date] = random.randint(1, 50)
+        current_date += timedelta(days=1)
+    return seed_ts_dict

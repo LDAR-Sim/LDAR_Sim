@@ -23,6 +23,7 @@ import os
 from pathlib import Path, WindowsPath
 from typing import Any
 import pandas as pd
+import numpy as np
 from virtual_world.infrastructure import Infrastructure
 from time_counter import TimeCounter
 from programs.program import Program
@@ -46,6 +47,7 @@ class LdarSim:
         infrastructure: Infrastructure,
         input_dir: WindowsPath,
         output_dir: WindowsPath,
+        preseed_timeseries,
     ):
         """
         Construct the simulation.
@@ -62,12 +64,18 @@ class LdarSim:
         self.name_str: str = self.SIMULATION_NAME_STR.format(
             program=program.name, sim_number=sim_number
         )
-
+        if preseed_timeseries is not None:
+            self.preseed = True
+            self.preseed_ts = preseed_timeseries
+        else:
+            self.preseed = False
         return
 
     def run_simulation(self):
         timeseries = pd.DataFrame(columns=TIMESERIES_COLUMNS)
         while not self._tc.at_simulation_end():
+            if self.preseed:
+                np.random.seed(self.preseed_ts[self._tc.current_date])
             new_row: dict[str, Any] = self._init_ts_row()
             new_row[tca.NEW_LEAKS] = self.infrastructure.activate_emissions(
                 self._tc.current_date, self.sim_number

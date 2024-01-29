@@ -32,6 +32,7 @@ from datetime import timedelta, date
 
 from numpy import random as np_rand
 from initialization.initialize_infrastructure import initialize_infrastructure
+from initialization.preseed import gen_seed_timeseries
 from virtual_world.infrastructure import Infrastructure
 from stdout_redirect import stdout_redirect
 from time_counter import TimeCounter
@@ -110,6 +111,7 @@ def simulate(
     infrastructure,
     input_dir,
     output_dir,
+    preseed_timeseries,
 ):
     simulation: LdarSim = LdarSim(
         sim_num,
@@ -119,6 +121,7 @@ def simulate(
         infrastructure,
         input_dir,
         output_dir,
+        preseed_timeseries,
     )
     simulation.run_simulation()
     return
@@ -158,6 +161,8 @@ if __name__ == "__main__":
     in_dir = get_abs_path(sim_params["input_directory"])
     programs = sim_params.pop("programs")
     virtual_world = sim_params.pop("virtual_world")
+    preseed_random = sim_params["preseed_random"]
+
     METHODS_ACCESSOR = "methods"
     METHOD_LABELS_ACCESSOR = "method_labels"
     methods = {
@@ -180,6 +185,14 @@ if __name__ == "__main__":
         shutil.rmtree(out_dir)
     os.makedirs(out_dir)
     input_manager.write_parameters(out_dir / "parameters.yaml")
+
+    if preseed_random:
+        seed_timeseries = gen_seed_timeseries(
+            sim_end_date=date(*virtual_world["end_date"]),
+            sim_start_date=date(*virtual_world["start_date"]),
+        )
+    else:
+        seed_timeseries = None
 
     generator_dir = in_dir / "generator"
     if os.path.exists(generator_dir):
@@ -253,6 +266,7 @@ if __name__ == "__main__":
                     prog_infra,
                     in_dir,
                     out_dir,
+                    seed_timeseries,
                 )
             )
         for index, prog_tuple in enumerate(prog_data):
