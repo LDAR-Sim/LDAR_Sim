@@ -95,6 +95,7 @@ class Method:
         ]  # TODO: update this to not use just vals
         self._reporting_delay: int = properties[self.REPORTING_DELAY_ACCESSOR]
         crews: int = properties[self.CREW_COUNT]
+        # TODO Check where these should be saved
         self._site_survey_reports: list[SiteSurveyReport] = []
         self._detection_records: dict[date, list[DetectionRecord]] = {}
         self.initialize_crews(crews, sites)
@@ -190,7 +191,7 @@ class Method:
             self.cost_type = self.PER_SITE_COST
             self.cost = -1
 
-    def deploy_crews(self, workplan: Workplan, weather, daylight) -> None:
+    def deploy_crews(self, workplan: Workplan, weather, daylight) -> float:
         """Deploy crews will send crews out to survey sites based on the provided workplan"""
         deployment_cost = 0
 
@@ -210,7 +211,8 @@ class Method:
 
         # If the cost type for the method is per day, calculate the deployment cost for day
         # based off the number of crews being deployed
-        deployment_cost = self.cost * len(self._crew_reports)
+        if self.cost_type == self.METHOD_COST_PER_DAY:
+            deployment_cost = self.cost * len(self._crew_reports)
         # pop the site with the longest remaining hours to assign the next crew
         # while there are crews that can work
         for survey_plan in workplan.site_survey_planners.values():
@@ -271,7 +273,7 @@ class Method:
                     if site_survey_cost == 0 and self.cost > 0:
                         site_survey_cost = self.cost
                     deployment_cost += site_survey_cost
-        return
+        return deployment_cost
 
     def update(self, current_date: date) -> None:
         return None

@@ -80,7 +80,7 @@ class LdarSim:
             new_row[tca.NEW_LEAKS] = self.infrastructure.activate_emissions(
                 self._tc.current_date, self.sim_number
             )
-            self.program.do_daily_program_deployment()
+            ts_method_info: list[TsMethodData] = self.program.do_daily_program_deployment()
             ts_emis_info: TsEmisData = self.infrastructure.update_emissions_state()
             self._update_ts_row_w_emis_info(new_row=new_row, ts_emis_info=ts_emis_info)
             timeseries.loc[len(timeseries)] = new_row

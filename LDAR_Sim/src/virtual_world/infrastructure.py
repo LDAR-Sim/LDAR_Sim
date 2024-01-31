@@ -43,6 +43,7 @@ from file_processing.input_processing.infrastructure_processing import (
 
 class Infrastructure:
     def __init__(self, virtual_world, methods, in_dir) -> None:
+        # TODO rename this to emissions rate source dictionary
         self.leak_rate_source_dictionary: dict[str, EmissionsSource] = process_emission_sources(
             inputs_path=in_dir, virtual_world=virtual_world
         )
@@ -159,7 +160,7 @@ class Infrastructure:
         virtual_world,
         methods,
         in_dir,
-    ) -> list[Site]:
+    ) -> None:
         """[summary]
 
         Args:
@@ -211,12 +212,14 @@ class Infrastructure:
                 propagating_params=propagating_params,
                 infrastructure_inputs=infrastructure_inputs,
                 start_date=date(*virtual_world["start_date"]),
+                methods=methods,
             )
 
             sites.append(new_site)
 
         self._sites: list[Site] = sites
 
+    # TODO
     def get_flagged_sites(self, company_id) -> list[Site]:
         return [site for site in self._sites if site.flagged_for_follow_up(company_id)]
 

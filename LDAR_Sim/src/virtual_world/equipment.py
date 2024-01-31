@@ -47,7 +47,6 @@ class Equipment:
         self._equip_type: str = re.sub(pattern, "", equip_type)
         self._equipment_ID: str = self._equip_type + "_" + str(equip_id)
         self.create_sources(infrastructure_inputs=infrastructure_inputs, prop_params=prop_params)
-        self.set_survey_costs(prop_params=prop_params)
         self._active_emissions: list[Emission] = []
         self._inactive_emissions: list[Emission] = []
 
@@ -74,10 +73,6 @@ class Equipment:
             self._sources.append(Source(src_id, placeholder_source_info, prop_params))
         else:
             print(SOURCE_CREATION_ERROR_MESSAGE)
-
-    def set_survey_costs(self, prop_params: dict) -> None:
-        self._survey_costs = {}
-        return None
 
     def generate_emissions(
         self,
@@ -188,7 +183,3 @@ class Equipment:
         emis_data["Equipment"] = self._equipment_ID
 
         return emis_data
-
-    def get_survey_cost(self, method_name) -> float:
-        return None
-        # return self._survey_costs[method_name]

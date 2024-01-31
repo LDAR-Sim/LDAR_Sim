@@ -101,7 +101,7 @@ class EmissionsSourceDist(EmissionsSource):
         self._distribution: stats.rv_continuous = self.generate_distribution(
             dist_type=dist_type, dist_shape=dist_shape, dist_scale=dist_scale
         )
-        self._max_emis_rate = max_emis_rate
+        self._max_emis_rate: float = max_emis_rate
 
     def get_a_rate(self) -> float:
         unconverted_rate: float = self._distribution.rvs()
@@ -191,9 +191,9 @@ def process_emission_sources(
         inputs_path=inputs_path, virtual_world=virtual_world
     )
     # Read in the emissions sources file
-    processed_emissions_sources: dict[
-        str, EmissionsSource
-    ] = process_emission_source_file(emissions_source_file)
+    processed_emissions_sources: dict[str, EmissionsSource] = process_emission_source_file(
+        emissions_source_file
+    )
 
     return processed_emissions_sources
 
@@ -238,18 +238,14 @@ def process_emission_source_file(emis_sources: DataFrame) -> dict[str, Emissions
                 max_emis_rate=emis_source_info.max_emission_rate,
             )
         else:
-            print(
-                f"Error, invalid emissions source information for source {source_name}"
-            )
+            print(f"Error, invalid emissions source information for source {source_name}")
 
         processed_emissions_data[source_name] = emis_source
 
     return processed_emissions_data
 
 
-def read_in_emis_source_col(
-    column_name: str, emis_source_col: Series
-) -> EmissionsSourceInfo:
+def read_in_emis_source_col(column_name: str, emis_source_col: Series) -> EmissionsSourceInfo:
     # col_vals: list[str] = emis_source_col.str.split(",")
     try:
         date_use: str = emis_source_col[0]

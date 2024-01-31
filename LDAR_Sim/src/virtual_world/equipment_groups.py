@@ -160,7 +160,4 @@ class Equipment_Group:
         return emis_data
 
     def get_survey_cost(self, method_name) -> float:
-        cost: float = 0
-        for equip in self._equipment:
-            cost += equip.get_survey_cost(method_name)
-        return cost
+        return self._meth_survey_costs[method_name]

@@ -170,7 +170,7 @@ class Program:
         for method in self._methods:
             method_schedule: GenericSchedule = self._survey_schedules[method.get_name()]
             method_workplan: Workplan = method_schedule.get_workplan(self._current_date)
-            method.deploy_crews(method_workplan, self.weather, self.daylight)
+            deployment_cost = method.deploy_crews(method_workplan, self.weather, self.daylight)
             method_schedule.update(method_workplan, self._current_date)
             method.update(self._current_date)
 

@@ -1,7 +1,7 @@
 """
 ------------------------------------------------------------------------------
 Program:     The LDAR Simulator (LDAR-Sim)
-File:   infrastructure_const    
+File:   infrastructure_const 
 Purpose: The file contains constants used for the infrastructure module
 
 This program is free software: you can redistribute it and/or modify
@@ -27,28 +27,20 @@ class Infrastructure_Constants:
         TYPE = "site_type"  # Site Type
         EQG = "equipment_groups"  # Equipment Group
         REP_EMIS_ERS = "repairable_ERS"  # Repairable Emissions: Emissions Rate Source
-        REP_EMIS_EPR = (
-            "repairable_EPR"  # Repairable Emissions : Emission Production Rate
-        )
+        REP_EMIS_EPR = "repairable_EPR"  # Repairable Emissions : Emission Production Rate
         REP_EMIS_RD = "repairable_RD"  # Repairable Emissions : Repair Delay
         REP_EMIS_RC = "repairable_RC"  # Repairable Emissions : Repair Cost
         REP_EMIS_ED = "repairable_ED"  # Repairable Emissions : Emissions Duration
-        NON_REP_EMIS_ERS = (
-            "non_repairable_ERS"  # Non-Repairable Emissions: Emissions Rate Source
-        )
-        SURVEY_FREQUENCY_PLACEHOLDER = (
-            "_surveyfreq"  # Survey Frequency - Method specific
-        )
-        DEPLOYMENT_YEARS_PLACEHOLDER = (
-            "_deploy_year"  # Deployment Year - Method specific
-        )
-        DEPLOYMENT_MONTHS_PLACEHOLDER = (
-            "_deploy_month"  # Deployment Month - Method specific
-        )
+        NON_REP_EMIS_ERS = "non_repairable_ERS"  # Non-Repairable Emissions: Emissions Rate Source
+        SURVEY_FREQUENCY_PLACEHOLDER = "_surveyfreq"  # Survey Frequency - Method specific
+        DEPLOYMENT_YEARS_PLACEHOLDER = "_deploy_year"  # Deployment Year - Method specific
+        DEPLOYMENT_MONTHS_PLACEHOLDER = "_deploy_month"  # Deployment Month - Method specific
         SPATIAL_PLACEHOLDER = "_spatial"  # Spatial coverage - Method specific
         SURVEY_TIME_PLACEHOLDER = "_surveytime"  # Survey Time - Method specific
         SURVEY_COST_PLACEHOLDER = "_surveycost"  # Survey Cost - Method specific
-        MIN_TIME_BT_SURVEYS_PLACEHOLDER = "_min_time_bt_surveys"  # Minimum days between LDAR surveys - Method specific
+        MIN_TIME_BT_SURVEYS_PLACEHOLDER = (
+            "_min_time_bt_surveys"  # Minimum days between LDAR surveys - Method specific
+        )
 
         PROPAGATING_PARAMS: list[str] = [
             REP_EMIS_ERS,
@@ -98,28 +90,20 @@ class Infrastructure_Constants:
         TYPE = "site_type"  # Site Type
         EQG = "equipment_group"  # Equipment Group
         REP_EMIS_ERS = "repairable_ERS"  # Repairable Emissions: Emissions Rate Source
-        REP_EMIS_EPR = (
-            "repairable_EPR"  # Repairable Emissions : Emission Production Rate
-        )
+        REP_EMIS_EPR = "repairable_EPR"  # Repairable Emissions : Emission Production Rate
         REP_EMIS_RD = "repairable_RD"  # Repairable Emissions : Repair Delay
         REP_EMIS_RC = "repairable_RC"  # Repairable Emissions : Repair Cost
         REP_EMIS_ED = "repairable_ED"  # Repairable Emissions : Emissions Duration
-        NON_REP_EMIS_ERS = (
-            "non_repairable_ERS"  # Non-Repairable Emissions: Emissions Rate Source
-        )
-        SURVEY_FREQUENCY_PLACEHOLDER = (
-            "_surveyfreq"  # Survey Frequency - Method specific
-        )
+        NON_REP_EMIS_ERS = "non_repairable_ERS"  # Non-Repairable Emissions: Emissions Rate Source
+        SURVEY_FREQUENCY_PLACEHOLDER = "_surveyfreq"  # Survey Frequency - Method specific
         SPATIAL_PLACEHOLDER = "_spatial"  # Spatial coverage - Method specific
         SURVEY_TIME_PLACEHOLDER = "_surveytime"  # Survey Time - Method specific
         SURVEY_COST_PLACEHOLDER = "_surveycost"  # Survey Cost - Method specific
-        MIN_TIME_BT_SURVEYS_PLACEHOLDER = "_min_time_bt_surveys"  # Minimum days between LDAR surveys - Method specific
-        DEPLOYMENT_YEARS_PLACEHOLDER = (
-            "_deploy_year"  # Deployment Year - Method specific
+        MIN_TIME_BT_SURVEYS_PLACEHOLDER = (
+            "_min_time_bt_surveys"  # Minimum days between LDAR surveys - Method specific
         )
-        DEPLOYMENT_MONTHS_PLACEHOLDER = (
-            "_deploy_month"  # Deployment Month - Method specific
-        )
+        DEPLOYMENT_YEARS_PLACEHOLDER = "_deploy_year"  # Deployment Year - Method specific
+        DEPLOYMENT_MONTHS_PLACEHOLDER = "_deploy_month"  # Deployment Month - Method specific
 
         PROPAGATING_PARAMS: list[str] = [
             REP_EMIS_ERS,
@@ -153,7 +137,7 @@ class Virtual_World_To_Prop_Params_Mapping:
     METH_SPEC_PROP_PARAMS: dict[str, str] = {
         Infrastructure_Constants.Sites_File_Constants.SPATIAL_PLACEHOLDER: "coverage.spatial",  # noqa
         Infrastructure_Constants.Sites_File_Constants.SURVEY_FREQUENCY_PLACEHOLDER: "RS",
-        Infrastructure_Constants.Sites_File_Constants.SURVEY_COST_PLACEHOLDER: "cost",
+        Infrastructure_Constants.Sites_File_Constants.SURVEY_COST_PLACEHOLDER: "cost.per_site",
         Infrastructure_Constants.Sites_File_Constants.SURVEY_TIME_PLACEHOLDER: "time",
         Infrastructure_Constants.Sites_File_Constants.MIN_TIME_BT_SURVEYS_PLACEHOLDER: "scheduling.min_time_bt_surveys",  # noqa
         Infrastructure_Constants.Sites_File_Constants.MIN_TIME_BT_SURVEYS_PLACEHOLDER: "scheduling.min_time_bt_surveys",  # noqa

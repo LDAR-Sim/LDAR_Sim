@@ -92,6 +92,7 @@ class Source:
         ]
 
         if self._repairable:
+            # TODO look at processing for these values
             self._emis_rep_delay = prop_params[
                 Infrastructure_Constants.Sources_File_Constants.REPAIR_DELAY
             ]["vals"]

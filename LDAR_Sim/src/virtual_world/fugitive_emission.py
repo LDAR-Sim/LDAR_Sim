@@ -52,6 +52,7 @@ class FugitiveEmission(Emission):
         self._tagged_by_crew: str = None
         self._repair_delay: int = repair_delay
         self._repair_cost: float = repair_cost
+        # TODO take tagging rep delay out
         self._tagging_rep_delay: int = 0
         self._nrd: int = nrd
         self._repair_date: date = None

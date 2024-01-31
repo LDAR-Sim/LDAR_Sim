@@ -87,3 +87,9 @@ class TsEmisData:
             return self
         else:
             raise ValueError("Unsupported operand type for in-place addition")
+
+
+@dataclass
+class TsMethodData:
+    method_name: str
+    daily_cost: float = 0

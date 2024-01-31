@@ -41,6 +41,7 @@ PLACEHOLDER_EQUIPMENT_COUNT = 10
 
 
 class Site:
+    # TODO its lat and lon not lat and long
     def __init__(
         self,
         id: str,
@@ -50,6 +51,7 @@ class Site:
         propagating_params: dict,
         infrastructure_inputs: dict,
         start_date: date,
+        methods: list[str],
         site_type: str = None,
     ) -> None:
         self._site_ID: str = id
@@ -57,6 +59,7 @@ class Site:
         self._long: float = long
 
         self._site_type: str = site_type
+        # TODO check that we use these
         self._survey_frequencies: dict = propagating_params["Method_Specific_Params"].pop(
             Infrastructure_Constants.Sites_File_Constants.SURVEY_FREQUENCY_PLACEHOLDER
         )
@@ -67,6 +70,7 @@ class Site:
             Infrastructure_Constants.Sites_File_Constants.DEPLOYMENT_YEARS_PLACEHOLDER
         )
         self.create_equipment_groups(equipment_groups, infrastructure_inputs, propagating_params)
+        self.set_survey_costs(methods=methods)
         self._latest_tagging_survey_date: date = start_date
 
     def create_equipment_groups(
@@ -214,8 +218,12 @@ class Site:
         emis_data["Site ID"] = self._site_ID
         return emis_data
 
-    def get_survey_cost(self, method_name) -> float:
-        cost: float = 0
-        for eqg in self._equipment_groups:
-            cost += eqg.get_survey_cost(method_name)
-        return cost
+    def get_survey_cost(self, method_name: str) -> float:
+        return self._survey_costs[method_name]
+
+    def set_survey_costs(self, methods: list[str]) -> float:
+        self._survey_costs: dict[str, float] = {}
+        for method in methods:
+            self._survey_costs[method] = 0
+            for eqg in self._equipment_groups:
+                self._survey_costs[method] += eqg.get_survey_cost(method)
