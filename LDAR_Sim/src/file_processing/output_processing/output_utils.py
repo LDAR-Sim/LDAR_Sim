@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from numpy import NaN
 
 
 EMIS_SUMMARY_DATA_COLS = [
@@ -36,30 +37,36 @@ EMIS_SUMMARY_FINAL_COL_ORDER = [
 TIMESERIES_COLUMNS = [
     "Date",
     "Daily Emissions (Kg Methane)",
-    "Daily Cost",
+    "Daily Cost ($)",
     "Active Leaks",
     "New Leaks",
     "Leaks Repaired",
     "Leaks Naturally Repaired",
     "Leaks Tagged",
-    "Daily Repair Cost",
-    "Daily Natural Repair Cost",
-    "Daily Verification Cost",
+    "Daily Repair Cost ($)",
+    "Daily Natural Repair Cost ($)",
+    "Daily Verification Cost ($)",
 ]
 
 
 class TIMESERIES_COL_ACCESSORS:
     DATE = "Date"
     EMIS = "Daily Emissions (Kg Methane)"
-    COST = "Daily Cost"
+    COST = "Daily Cost ($)"
     ACT_LEAKS = "Active Leaks"
     NEW_LEAKS = "New Leaks"
     REP_LEAKS = "Leaks Repaired"
     NAT_REP_LEAKS = "Leaks Naturally Repaired"
     TAGGED_LEAKS = "Leaks Tagged"
-    REP_COST = "Daily Repair Cost"
-    NAT_REP_COST = "Daily Natural Repair Cost"
-    VERF_COST = "Daily Verification Cost"
+    REP_COST = "Daily Repair Cost ($)"
+    NAT_REP_COST = "Daily Natural Repair Cost ($)"
+    VERF_COST = "Daily Verification Cost ($)"
+    METH_DAILY_DEPLOY_COST = "{method} Deployment Cost ($)"
+    METH_DAILY_TAGS = "{method} Leaks tagged for repair"
+    METH_DAILY_FLAGS = "{method} Sites flagged for Follow-Up"
+    METH_DAILY_SITES_VIS = "{method} Sites Visited"
+    METH_DAILY_TRAVEL_TIME = "{method} Travel Time (Minutes)"
+    METH_DAILY_SURVEY_TIME = "{method} Survey Time (Minutes)"
 
 
 @dataclass
@@ -92,4 +99,23 @@ class TsEmisData:
 @dataclass
 class TsMethodData:
     method_name: str
-    daily_cost: float = 0
+    daily_deployment_cost: float = 0.0
+    daily_tags: int = 0
+    daily_flags: int = 0
+    sites_visited: int = 0
+    travel_time: int = 0
+    survey_time: int = 0
+
+
+@dataclass
+class TaggingFlaggingStats:
+    sites_flagged: int = NaN
+    leaks_tagged: int = NaN
+
+
+@dataclass
+class CrewDeploymentStats:
+    deployment_cost: float = 0.0
+    sites_visited: int = 0
+    travel_time: int = 0
+    survey_time: int = 0

@@ -21,6 +21,7 @@ from datetime import date, timedelta
 from math import ceil
 
 from sortedcontainers import SortedList
+from file_processing.output_processing.output_utils import TaggingFlaggingStats
 from programs.method import Method
 from scheduling.follow_up_mobile_schedule import FollowUpMobileSchedule
 from scheduling.follow_up_survey_planner import FollowUpSurveyPlanner
@@ -96,7 +97,7 @@ class SiteLevelMethod(Method):
         self._follow_up_schedule: FollowUpMobileSchedule = follow_up_schedule
         self._detection_count = 0
 
-    def update(self, current_date: date) -> None:
+    def update(self, current_date: date) -> TaggingFlaggingStats:
         # TODO add user configurable follow_up parameter to allow
         # for up to a certain % variation between rates
         date_to_check: date = current_date - timedelta(days=self._reporting_delay)
@@ -147,9 +148,13 @@ class SiteLevelMethod(Method):
                         self._detection_count += 1
 
         # Queue candidates based on follow up work practice specified.
-        self.update_candidates_for_flags(current_date)
+        tags_flags: TaggingFlaggingStats = TaggingFlaggingStats(
+            sites_flagged=self.update_candidates_for_flags(current_date)
+        )
+        return tags_flags
 
-    def update_candidates_for_flags(self, current_date: date) -> None:
+    def update_candidates_for_flags(self, current_date: date) -> int:
+        n_flags: int = 0
         candidates_empty: bool = bool(self._candidates_for_flags)
 
         if self._first_candidate_date is None:
@@ -161,6 +166,8 @@ class SiteLevelMethod(Method):
 
             for survey_plan in self._get_candidates():
                 self._follow_up_schedule.add_to_survey_queue(survey_plan)
+                n_flags += 1
+        return n_flags
 
     def _get_plan_from_candidates(self, site_id: str) -> FollowUpSurveyPlanner:
         survey_plan: FollowUpSurveyPlanner = next(

@@ -21,6 +21,7 @@ from datetime import date
 from queue import PriorityQueue
 import sys
 from typing import Tuple
+from file_processing.output_processing.output_utils import TaggingFlaggingStats
 from programs.method import Method
 from scheduling.schedule_dataclasses import (
     CrewDailyReport,
@@ -46,6 +47,14 @@ class EquipmentLevelMethod(Method):
 
     def __init__(self, name, properties, consider_weather, sites):
         super().__init__(name, properties, consider_weather, sites)
+        self._emissions_tagged_daily: int = 0
+
+    def update(self, current_date: date) -> TaggingFlaggingStats:
+        tags_flags: TaggingFlaggingStats = TaggingFlaggingStats(
+            leaks_tagged=self._emissions_tagged_daily
+        )
+        self._emissions_tagged_daily = 0
+        return tags_flags
 
     def survey_site(
         self,
@@ -81,6 +90,7 @@ class EquipmentLevelMethod(Method):
                         emission_detection_report.equipment,
                         tagging_info=tagging_info,
                     )
+                    self._emissions_tagged_daily += 1
         return survey_report, site_travel_time, last_site_survey
 
     def _initialize_sensor(self, sensor_info: dict) -> None:
@@ -104,7 +114,7 @@ class EquipmentLevelMethod(Method):
 
     def deploy_crews(self, workplan: Workplan, weather, daylight) -> float:
         """Deploy crews will send crews out to survey sites based on the provided workplan"""
-        deployment_cost = 0
+        deployment_cost: float = 0.0
 
         priority_queue = PriorityQueue()
         day_time_remaining = self._max_work_hours
@@ -171,4 +181,4 @@ class EquipmentLevelMethod(Method):
             # Update the survey planner. If the survey was not finished, the update will
             # indicate that the particular site needs to be requeued with higher priority
             workplan.add_survey_report(survey_report, survey_plan)
-            return deployment_cost
+        return deployment_cost

@@ -32,6 +32,7 @@ from file_processing.output_processing.output_utils import (
     TIMESERIES_COLUMNS,
     TIMESERIES_COL_ACCESSORS as tca,
     TsEmisData,
+    TsMethodData,
 )
 
 
@@ -72,7 +73,8 @@ class LdarSim:
         return
 
     def run_simulation(self):
-        timeseries = pd.DataFrame(columns=TIMESERIES_COLUMNS)
+        ts_columns = self._init_ts_columns()
+        timeseries = pd.DataFrame(columns=ts_columns)
         while not self._tc.at_simulation_end():
             if self._preseed:
                 np.random.seed(self._preseed_ts[self._tc.current_date])
@@ -80,9 +82,10 @@ class LdarSim:
             new_row[tca.NEW_LEAKS] = self._infrastructure.activate_emissions(
                 self._tc.current_date, self._sim_number
             )
-            ts_method_info: list[TsMethodData] = self._program.do_daily_program_deployment()
+            ts_methods_info: list[TsMethodData] = self._program.do_daily_program_deployment()
             ts_emis_info: TsEmisData = self._infrastructure.update_emissions_state()
             self._update_ts_row_w_emis_info(new_row=new_row, ts_emis_info=ts_emis_info)
+            self._update_ts_row_w_methods_info(new_row=new_row, ts_methods_info=ts_methods_info)
             timeseries.loc[len(timeseries)] = new_row
             self._program.update_date()
             self._tc.next_day()
@@ -105,6 +108,17 @@ class LdarSim:
         timeseries_filename = "_".join([self.name_str, "timeseries.csv"])
         self.save_results(timeseries, timeseries_filename)
 
+    def _init_ts_columns(self) -> list[str]:
+        ts_columns = TIMESERIES_COLUMNS
+        for method in self.program.method_names:
+            ts_columns.append(tca.METH_DAILY_DEPLOY_COST.format(method=method))
+            ts_columns.append(tca.METH_DAILY_FLAGS.format(method=method))
+            ts_columns.append(tca.METH_DAILY_TAGS.format(method=method))
+            ts_columns.append(tca.METH_DAILY_SITES_VIS.format(method=method))
+            ts_columns.append(tca.METH_DAILY_TRAVEL_TIME.format(method=method))
+            ts_columns.append(tca.METH_DAILY_SURVEY_TIME.format(method=method))
+        return ts_columns
+
     def _init_ts_row(self):
         new_ts_row: dict[str, Any] = {
             tca.DATE: self._tc.current_date,
@@ -125,6 +139,35 @@ class LdarSim:
         new_row[tca.EMIS] = ts_emis_info.daily_emis
         new_row[tca.ACT_LEAKS] = ts_emis_info.active_leaks
         new_row[tca.REP_LEAKS] = ts_emis_info.repaired_leaks
+
+    def _update_ts_row_w_methods_info(
+        self, new_row: dict[str, Any], ts_methods_info: list[TsMethodData]
+    ) -> None:
+        total_daily_cost: float = 0.0
+        total_leaks_tagged: int = 0
+        for method_info in ts_methods_info:
+            total_daily_cost += method_info.daily_deployment_cost
+            total_leaks_tagged += np.nan_to_num(method_info.daily_tags)
+            new_row[
+                tca.METH_DAILY_DEPLOY_COST.format(method=method_info.method_name)
+            ] = method_info.daily_deployment_cost
+            new_row[
+                tca.METH_DAILY_TAGS.format(method=method_info.method_name)
+            ] = method_info.daily_tags
+            new_row[
+                tca.METH_DAILY_FLAGS.format(method=method_info.method_name)
+            ] = method_info.daily_flags
+            new_row[
+                tca.METH_DAILY_SITES_VIS.format(method=method_info.method_name)
+            ] = method_info.sites_visited
+            new_row[
+                tca.METH_DAILY_TRAVEL_TIME.format(method=method_info.method_name)
+            ] = method_info.travel_time
+            new_row[
+                tca.METH_DAILY_SURVEY_TIME.format(method=method_info.method_name)
+            ] = method_info.survey_time
+        new_row[tca.COST] = total_daily_cost
+        new_row[tca.METH_DAILY_TAGS] = total_leaks_tagged
 
     def format_timeseries(self, timeseries: pd.DataFrame) -> None:
         return None

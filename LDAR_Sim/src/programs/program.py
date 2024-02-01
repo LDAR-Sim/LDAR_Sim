@@ -19,6 +19,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 """
 from datetime import date, timedelta
 from typing import Tuple
+from file_processing.output_processing.output_utils import TaggingFlaggingStats, TsMethodData
 from programs.equipment_group_level_method import EquipmentGroupLevelMethod
 from programs.equipment_level_method import EquipmentLevelMethod
 from programs.site_level_method import SiteLevelMethod
@@ -43,7 +44,7 @@ class Program:
         # which should be tracked on their own
         weather,
         daylight,
-        methods: dict,
+        methods: dict[str, dict],
         sites: "list[Site]",
         sim_start_date: date,
         sim_end_date: date,
@@ -51,6 +52,7 @@ class Program:
     ) -> None:
         self.name: str = name
         self._survey_schedules: dict[str, GenericSchedule] = {}
+        self.method_names: list[str] = [method for method in methods]
         self._init_methods_and_schedules(
             methods, consider_weather, sites, sim_start_date, sim_end_date
         )
@@ -165,14 +167,24 @@ class Program:
         elif method_survey_level == EquipmentLevelMethod.MEASUREMENT_SCALE:
             return EquipmentLevelMethod(method_name, properties, consider_weather, sites)
 
-    def do_daily_program_deployment(self) -> None:
+    def do_daily_program_deployment(self) -> list[TsMethodData]:
+        timeseries_methods_data: list[TsMethodData] = []
         # TODO may need to split up methods and follow_up methods
         for method in self._methods:
             method_schedule: GenericSchedule = self._survey_schedules[method.get_name()]
             method_workplan: Workplan = method_schedule.get_workplan(self._current_date)
             deployment_cost = method.deploy_crews(method_workplan, self.weather, self.daylight)
             method_schedule.update(method_workplan, self._current_date)
-            method.update(self._current_date)
+            tags_flags: TaggingFlaggingStats = method.update(self._current_date)
+            timeseries_methods_data.append(
+                TsMethodData(
+                    method_name=method.get_name(),
+                    daily_deployment_cost=deployment_cost,
+                    daily_flags=tags_flags.sites_flagged,
+                    daily_tags=tags_flags.leaks_tagged,
+                )
+            )
+        return timeseries_methods_data
 
     def update_date(self) -> None:
         """Increment the current date counter"""

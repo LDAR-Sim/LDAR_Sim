@@ -26,6 +26,7 @@ import sys
 from typing import Tuple
 
 import numpy as np
+from file_processing.output_processing.output_utils import TaggingFlaggingStats
 from sensors.default_site_level_sensor import DefaultSiteLevelSensor
 from virtual_world.sites import Site
 from scheduling.workplan import Workplan
@@ -193,7 +194,7 @@ class Method:
 
     def deploy_crews(self, workplan: Workplan, weather, daylight) -> float:
         """Deploy crews will send crews out to survey sites based on the provided workplan"""
-        deployment_cost = 0
+        deployment_cost: float = 0.0
 
         priority_queue = PriorityQueue()
         day_time_remaining = self._max_work_hours
@@ -275,7 +276,7 @@ class Method:
                     deployment_cost += site_survey_cost
         return deployment_cost
 
-    def update(self, current_date: date) -> None:
+    def update(self, current_date: date) -> TaggingFlaggingStats:
         return None
 
     def survey_site(
