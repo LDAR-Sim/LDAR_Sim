@@ -19,9 +19,7 @@
 # ------------------------------------------------------------------------------
 
 from datetime import date, timedelta, datetime
-from virtual_world.infrastructure import Site
 import ephem
-import numpy as np
 
 
 # Calculate the study area average daylight for each day of the simulation
@@ -42,9 +40,7 @@ class DaylightCalculatorAve:
             # Turn off PyEphem’s native mechanism for computing atmospheric refraction
             # near the horizon
             obs.pressure = 0
-            obs.horizon = (
-                "-6"  # -6 = civil twilight, -12 = nautical, -18 = astronomical
-            )
+            obs.horizon = "-6"  # -6 = civil twilight, -12 = nautical, -18 = astronomical
             # Set the time
             obs.date = datetime.combine(curr_date, datetime.min.time())
             # set the latitude and longitude for object

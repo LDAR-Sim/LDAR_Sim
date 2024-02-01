@@ -80,7 +80,7 @@ class Equipment_Group:
         sim_start_date,
         sim_end_date,
         sim_number,
-        leak_rate_source_dictionary: dict[str, EmissionsSource],
+        emission_rate_source_dictionary: dict[str, EmissionsSource],
         repair_delay_dataframe: pd.DataFrame,
     ) -> dict:
         eqg_emissions = {}
@@ -90,7 +90,7 @@ class Equipment_Group:
                     sim_start_date,
                     sim_end_date,
                     sim_number,
-                    leak_rate_source_dictionary,
+                    emission_rate_source_dictionary,
                     repair_delay_dataframe,
                 )
             )

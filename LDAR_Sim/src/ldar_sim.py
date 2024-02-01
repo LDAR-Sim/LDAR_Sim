@@ -53,41 +53,41 @@ class LdarSim:
         Construct the simulation.
         """
         self._tc: TimeCounter = TimeCounter(virtual_world["start_date"], virtual_world["end_date"])
-        self.sim_number: int = sim_number
-        self.infrastructure: Infrastructure = infrastructure
+        self._sim_number: int = sim_number
+        self._infrastructure: Infrastructure = infrastructure
         # TODO remove if unused
         self.simulation_settings = simulation_settings
-        self.program: Program = program
+        self._program: Program = program
 
-        self.input_dir: WindowsPath = input_dir
-        self.output_dir: WindowsPath = output_dir / program.name
+        self._input_dir: WindowsPath = input_dir
+        self._output_dir: WindowsPath = output_dir / program.name
         self.name_str: str = self.SIMULATION_NAME_STR.format(
             program=program.name, sim_number=sim_number
         )
         if preseed_timeseries is not None:
-            self.preseed = True
-            self.preseed_ts = preseed_timeseries
+            self._preseed = True
+            self._preseed_ts = preseed_timeseries
         else:
-            self.preseed = False
+            self._preseed = False
         return
 
     def run_simulation(self):
         timeseries = pd.DataFrame(columns=TIMESERIES_COLUMNS)
         while not self._tc.at_simulation_end():
-            if self.preseed:
-                np.random.seed(self.preseed_ts[self._tc.current_date])
+            if self._preseed:
+                np.random.seed(self._preseed_ts[self._tc.current_date])
             new_row: dict[str, Any] = self._init_ts_row()
-            new_row[tca.NEW_LEAKS] = self.infrastructure.activate_emissions(
-                self._tc.current_date, self.sim_number
+            new_row[tca.NEW_LEAKS] = self._infrastructure.activate_emissions(
+                self._tc.current_date, self._sim_number
             )
-            ts_method_info: list[TsMethodData] = self.program.do_daily_program_deployment()
-            ts_emis_info: TsEmisData = self.infrastructure.update_emissions_state()
+            ts_method_info: list[TsMethodData] = self._program.do_daily_program_deployment()
+            ts_emis_info: TsEmisData = self._infrastructure.update_emissions_state()
             self._update_ts_row_w_emis_info(new_row=new_row, ts_emis_info=ts_emis_info)
             timeseries.loc[len(timeseries)] = new_row
-            self.program.update_date()
+            self._program.update_date()
             self._tc.next_day()
 
-        overall_emission_data: pd.DataFrame = self.infrastructure.gen_summary_emis_data()
+        overall_emission_data: pd.DataFrame = self._infrastructure.gen_summary_emis_data()
 
         overall_emission_data = overall_emission_data[
             EMIS_SUMMARY_FINAL_COL_ORDER
@@ -130,11 +130,11 @@ class LdarSim:
         return None
 
     def gen_sim_directory(self) -> None:
-        if not os.path.exists(self.output_dir):
-            os.mkdir(self.output_dir)
+        if not os.path.exists(self._output_dir):
+            os.mkdir(self._output_dir)
 
     def save_results(self, data: pd.DataFrame, filename: str) -> None:
         if data is None:
             return
-        filepath: Path = self.output_dir / filename
+        filepath: Path = self._output_dir / filename
         data.to_csv(filepath, index=False)

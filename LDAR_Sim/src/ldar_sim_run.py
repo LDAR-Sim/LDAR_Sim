@@ -25,17 +25,14 @@ import multiprocessing as mp
 import sys
 import shutil
 from pathlib import Path
-import random as rand
 import sys
-from datetime import timedelta, date
+from datetime import date
 
 
-from numpy import random as np_rand
 from initialization.initialize_infrastructure import initialize_infrastructure
 from initialization.preseed import gen_seed_timeseries
 from virtual_world.infrastructure import Infrastructure
 from stdout_redirect import stdout_redirect
-from time_counter import TimeCounter
 from virtual_world.sites import Site
 from weather.daylight_calculator import DaylightCalculatorAve
 from weather.weather_lookup import WeatherLookup as WL

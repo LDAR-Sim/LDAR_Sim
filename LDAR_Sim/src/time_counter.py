@@ -32,9 +32,9 @@ class TimeCounter:
         Initialize a calendar and clock to count through the simulation.
 
         """
-        self.start_date = date(*start_date)
-        self.end_date = date(*end_date)
-        self.current_date = self.start_date
+        self._start_date = date(*start_date)
+        self._end_date = date(*end_date)
+        self.current_date = self._start_date
         return
 
     def next_day(self):
@@ -46,7 +46,7 @@ class TimeCounter:
         return
 
     def at_simulation_end(self) -> bool:
-        if self.current_date > self.end_date:
+        if self.current_date > self._end_date:
             return True
         else:
             return False

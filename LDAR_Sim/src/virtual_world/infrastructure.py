@@ -43,8 +43,7 @@ from file_processing.input_processing.infrastructure_processing import (
 
 class Infrastructure:
     def __init__(self, virtual_world, methods, in_dir) -> None:
-        # TODO rename this to emissions rate source dictionary
-        self.leak_rate_source_dictionary: dict[str, EmissionsSource] = process_emission_sources(
+        self.emission_rate_source_dictionary: dict[str, EmissionsSource] = process_emission_sources(
             inputs_path=in_dir, virtual_world=virtual_world
         )
         self.repair_delay_dataframe: pd.DataFrame = read_in_repair_delay_sources_file(
@@ -129,7 +128,7 @@ class Infrastructure:
                     sim_start_date,
                     sim_end_date,
                     sim_number,
-                    self.leak_rate_source_dictionary,
+                    self.emission_rate_source_dictionary,
                     self.repair_delay_dataframe,
                 )
             )

@@ -46,11 +46,11 @@ class Equipment:
         pattern: re.Pattern[str] = re.compile(re.escape(STR_FILTER), re.IGNORECASE)
         self._equip_type: str = re.sub(pattern, "", equip_type)
         self._equipment_ID: str = self._equip_type + "_" + str(equip_id)
-        self.create_sources(infrastructure_inputs=infrastructure_inputs, prop_params=prop_params)
+        self._create_sources(infrastructure_inputs=infrastructure_inputs, prop_params=prop_params)
         self._active_emissions: list[Emission] = []
         self._inactive_emissions: list[Emission] = []
 
-    def create_sources(self, infrastructure_inputs, prop_params) -> None:
+    def _create_sources(self, infrastructure_inputs, prop_params) -> None:
         self._sources: list[Source] = []
         if self._equip_type != "Placeholder" and "sources" in infrastructure_inputs:
             sources_info = infrastructure_inputs["sources"]
@@ -79,7 +79,7 @@ class Equipment:
         sim_start_date,
         sim_end_date,
         sim_number,
-        leak_rate_source_dictionary: dict[str, EmissionsSource],
+        emission_rate_source_dictionary: dict[str, EmissionsSource],
         repair_delay_dataframe: pd.DataFrame,
     ) -> dict:
         equip_emissions = {}
@@ -89,7 +89,7 @@ class Equipment:
                     sim_start_date,
                     sim_end_date,
                     sim_number,
-                    leak_rate_source_dictionary,
+                    emission_rate_source_dictionary,
                     repair_delay_dataframe,
                 )
             )

@@ -100,8 +100,8 @@ class Source:
                 Infrastructure_Constants.Sources_File_Constants.REPAIR_COST
             ]["vals"]
 
-    def _get_rate(self, leak_rate_source_dictionary: dict[str, EmissionsSource]):
-        return leak_rate_source_dictionary[self._emis_rate_source].get_a_rate()
+    def _get_rate(self, emission_rate_source_dictionary: dict[str, EmissionsSource]):
+        return emission_rate_source_dictionary[self._emis_rate_source].get_a_rate()
 
     def _get_repairable(self):
         return self._repairable
@@ -132,13 +132,13 @@ class Source:
         leak_count,
         start_date,
         sim_start_date,
-        leak_rate_source_dictionary: dict[str, EmissionsSource],
+        emission_rate_source_dictionary: dict[str, EmissionsSource],
         repair_delay_dataframe: pd.DataFrame,
     ) -> Emission:
         if self._repairable:
             return FugitiveEmission(
                 emission_n=leak_count,
-                rate=self._get_rate(leak_rate_source_dictionary),
+                rate=self._get_rate(emission_rate_source_dictionary),
                 start_date=start_date,
                 simulation_sd=sim_start_date,
                 repairable=self._get_repairable(),
@@ -156,7 +156,7 @@ class Source:
         sim_start_date: date,
         sim_end_date: date,
         sim_number: int,
-        leak_rate_source_dictionary: dict[str, EmissionsSource],
+        emission_rate_source_dictionary: dict[str, EmissionsSource],
         repair_delay_dataframe: pd.DataFrame,
     ) -> dict[str, list[Emission]]:
         # Using a list as a FIFO queue for less overhead and to be able to pickle it
@@ -178,7 +178,7 @@ class Source:
                     leak_count=leak_count,
                     start_date=emis_start_date,
                     sim_start_date=sim_start_date,
-                    leak_rate_source_dictionary=leak_rate_source_dictionary,
+                    emission_rate_source_dictionary=emission_rate_source_dictionary,
                     repair_delay_dataframe=repair_delay_dataframe,
                 )
                 leak_count += 1
@@ -196,7 +196,7 @@ class Source:
                     leak_count=leak_count,
                     start_date=emis_start_date,
                     sim_start_date=sim_start_date,
-                    leak_rate_source_dictionary=leak_rate_source_dictionary,
+                    emission_rate_source_dictionary=emission_rate_source_dictionary,
                     repair_delay_dataframe=repair_delay_dataframe,
                 )
                 leak_count += 1

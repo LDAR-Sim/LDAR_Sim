@@ -69,12 +69,12 @@ class Site:
         self._deployment_years = propagating_params["Method_Specific_Params"].pop(
             Infrastructure_Constants.Sites_File_Constants.DEPLOYMENT_YEARS_PLACEHOLDER
         )
-        self.create_equipment_groups(equipment_groups, infrastructure_inputs, propagating_params)
-        self.set_survey_costs(methods=methods)
+        self._create_equipment_groups(equipment_groups, infrastructure_inputs, propagating_params)
+        self._set_survey_costs(methods=methods)
         self._latest_tagging_survey_date: date = start_date
 
-    def create_equipment_groups(
-        self, equipment_groups, infrastructure_inputs, propagating_params
+    def _create_equipment_groups(
+        self, equipment_groups: list, infrastructure_inputs, propagating_params
     ) -> None:
         self._equipment_groups: list[Equipment_Group] = []
         if isinstance(equipment_groups, list) and len(equipment_groups) > 0:
@@ -111,6 +111,7 @@ class Site:
                     Equipment_Group(i, infrastructure_inputs, prop_params, equip_group_info)
                 )
         else:
+            # REVIEW: Should this be an elif and have an else that does error handling for bad input
             equip_group_info = pd.Series(
                 {PLACEHOLDER_EQUIPMENT: math.ceil(PLACEHOLDER_EQUIPMENT_COUNT)}
             )
@@ -119,28 +120,12 @@ class Site:
                 Equipment_Group(i, infrastructure_inputs, prop_params, equip_group_info)
             )
 
-    def generate_emissions(
-        self,
-        sim_start_date,
-        sim_end_date,
-        sim_number,
-        leak_rate_source_dictionary: dict[str, EmissionsSource],
-        repair_delay_dataframe: pd.DataFrame,
-    ) -> dict:
-        site_emissions: dict = {}
-        for eqg in self._equipment_groups:
-            eqg: Equipment_Group
-            site_emissions.update(
-                eqg.generate_emissions(
-                    sim_start_date,
-                    sim_end_date,
-                    sim_number,
-                    leak_rate_source_dictionary,
-                    repair_delay_dataframe,
-                )
-            )
-
-        return {self._site_ID: site_emissions}
+    def _set_survey_costs(self, methods: list[str]) -> float:
+        self._survey_costs: dict[str, float] = {}
+        for method in methods:
+            self._survey_costs[method] = 0
+            for eqg in self._equipment_groups:
+                self._survey_costs[method] += eqg.get_survey_cost(method)
 
     def activate_emissions(self, date: date, sim_number: int) -> int:
         """Activate any emissions that are due to begin on the current date for the given simulation
@@ -156,11 +141,28 @@ class Site:
             new_emissions += eqg.activate_emissions(date, sim_number)
         return new_emissions
 
-    def update_emissions_state(self) -> TsEmisData:
-        emis_data = TsEmisData()
+    def generate_emissions(
+        self,
+        sim_start_date,
+        sim_end_date,
+        sim_number,
+        emission_rate_source_dictionary: dict[str, EmissionsSource],
+        repair_delay_dataframe: pd.DataFrame,
+    ) -> dict:
+        site_emissions: dict = {}
         for eqg in self._equipment_groups:
-            emis_data += eqg.update_emissions_state()
-        return emis_data
+            eqg: Equipment_Group
+            site_emissions.update(
+                eqg.generate_emissions(
+                    sim_start_date,
+                    sim_end_date,
+                    sim_number,
+                    emission_rate_source_dictionary,
+                    repair_delay_dataframe,
+                )
+            )
+
+        return {self._site_ID: site_emissions}
 
     def get_detectable_emissions(self, method_name: str) -> dict[str, dict[str, list[Emission]]]:
         detectable_emissions: dict[str, dict[str, Emission]] = {}
@@ -168,10 +170,6 @@ class Site:
             detectable_emissions[eqg.get_id()] = eqg.get_detectable_emissions(method_name)
 
         return detectable_emissions
-
-    def set_pregen_emissions(self, site_emissions, sim_number) -> None:
-        for eqg in self._equipment_groups:
-            eqg.set_pregen_emissions(site_emissions[eqg.get_id()], sim_number)
 
     def get_required_surveys(self, method_name) -> int:
         return self._survey_frequencies[method_name]
@@ -197,8 +195,20 @@ class Site:
     def get_latest_tagging_survey_date(self) -> date:
         return self._latest_tagging_survey_date
 
+    def get_emis_data(self) -> pd.DataFrame:
+        emis_data: pd.DataFrame = pd.concat([eqg.get_emis_data() for eqg in self._equipment_groups])
+        emis_data["Site ID"] = self._site_ID
+        return emis_data
+
+    def get_survey_cost(self, method_name: str) -> float:
+        return self._survey_costs[method_name]
+
     def set_latest_tagging_survey_date(self, date: date) -> None:
         self._latest_tagging_survey_date = date
+
+    def set_pregen_emissions(self, site_emissions, sim_number) -> None:
+        for eqg in self._equipment_groups:
+            eqg.set_pregen_emissions(site_emissions[eqg.get_id()], sim_number)
 
     def tag_emissions_at_equipment(
         self, equipment_group: str, equipment: str, tagging_info: TaggingInfo
@@ -213,17 +223,8 @@ class Site:
         )
         target_equip_group.tag_emissions_at_equipment(equipment, tagging_info)
 
-    def get_emis_data(self) -> pd.DataFrame:
-        emis_data: pd.DataFrame = pd.concat([eqg.get_emis_data() for eqg in self._equipment_groups])
-        emis_data["Site ID"] = self._site_ID
+    def update_emissions_state(self) -> TsEmisData:
+        emis_data = TsEmisData()
+        for eqg in self._equipment_groups:
+            emis_data += eqg.update_emissions_state()
         return emis_data
-
-    def get_survey_cost(self, method_name: str) -> float:
-        return self._survey_costs[method_name]
-
-    def set_survey_costs(self, methods: list[str]) -> float:
-        self._survey_costs: dict[str, float] = {}
-        for method in methods:
-            self._survey_costs[method] = 0
-            for eqg in self._equipment_groups:
-                self._survey_costs[method] += eqg.get_survey_cost(method)
