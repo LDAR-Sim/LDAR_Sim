@@ -21,7 +21,7 @@ from datetime import date
 from queue import PriorityQueue
 import sys
 from typing import Tuple
-from file_processing.output_processing.output_utils import TaggingFlaggingStats
+from file_processing.output_processing.output_utils import CrewDeploymentStats, TaggingFlaggingStats
 from programs.method import Method
 from scheduling.schedule_dataclasses import (
     CrewDailyReport,
@@ -112,9 +112,9 @@ class EquipmentLevelMethod(Method):
             print(ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
             sys.exit()
 
-    def deploy_crews(self, workplan: Workplan, weather, daylight) -> float:
+    def deploy_crews(self, workplan: Workplan, weather, daylight) -> CrewDeploymentStats:
         """Deploy crews will send crews out to survey sites based on the provided workplan"""
-        deployment_cost: float = 0.0
+        deploy_stats: CrewDeploymentStats = CrewDeploymentStats()
 
         priority_queue = PriorityQueue()
         day_time_remaining = self._max_work_hours
@@ -132,7 +132,7 @@ class EquipmentLevelMethod(Method):
         # If the cost type for the method is per day, calculate the deployment cost for day
         # based off the number of crews being deployed
         if self.cost_type == self.METHOD_COST_PER_DAY:
-            deployment_cost = self.cost * len(self._crew_reports)
+            deploy_stats.deployment_cost = self.cost * len(self._crew_reports)
         # pop the site with the longest remaining hours to assign the next crew
         # while there are crews that can work
         for survey_plan in workplan.site_survey_planners.values():
@@ -155,12 +155,17 @@ class EquipmentLevelMethod(Method):
                 survey_report: SiteSurveyReport
                 travel_time: float
                 last_site_survey: bool
+                # Tracking Deployment statistics
+                deploy_stats.sites_visited += 1
+                deploy_stats.travel_time += travel_time
+                deploy_stats.survey_time += survey_report.time_surveyed
 
                 # If this will be last survey of the day, set remaining time
                 # to 0 and track travel home time
                 if last_site_survey:
                     crew.day_time_remaining = 0
                     workplan.total_travel_time += travel_time
+                    deploy_stats.travel_time += travel_time
                     # TODO Make sure this gets update for other travel times as well
                 # If the crew still has time left, requeue it to go survey another site
                 if assigned_crew.day_time_remaining > 0:
@@ -177,8 +182,8 @@ class EquipmentLevelMethod(Method):
                         site_survey_cost = site_to_survey.get_survey_cost(self._name)
                         if site_survey_cost == 0 and self.cost > 0:
                             site_survey_cost = self.cost
-                        deployment_cost += site_survey_cost
+                        deploy_stats.deployment_cost += site_survey_cost
             # Update the survey planner. If the survey was not finished, the update will
             # indicate that the particular site needs to be requeued with higher priority
             workplan.add_survey_report(survey_report, survey_plan)
-        return deployment_cost
+        return deploy_stats

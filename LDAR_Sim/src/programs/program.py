@@ -19,7 +19,11 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 """
 from datetime import date, timedelta
 from typing import Tuple
-from file_processing.output_processing.output_utils import TaggingFlaggingStats, TsMethodData
+from file_processing.output_processing.output_utils import (
+    CrewDeploymentStats,
+    TaggingFlaggingStats,
+    TsMethodData,
+)
 from programs.equipment_group_level_method import EquipmentGroupLevelMethod
 from programs.equipment_level_method import EquipmentLevelMethod
 from programs.site_level_method import SiteLevelMethod
@@ -173,15 +177,20 @@ class Program:
         for method in self._methods:
             method_schedule: GenericSchedule = self._survey_schedules[method.get_name()]
             method_workplan: Workplan = method_schedule.get_workplan(self._current_date)
-            deployment_cost = method.deploy_crews(method_workplan, self.weather, self.daylight)
+            deployment_stats: CrewDeploymentStats = method.deploy_crews(
+                method_workplan, self.weather, self.daylight
+            )
             method_schedule.update(method_workplan, self._current_date)
             tags_flags: TaggingFlaggingStats = method.update(self._current_date)
             timeseries_methods_data.append(
                 TsMethodData(
                     method_name=method.get_name(),
-                    daily_deployment_cost=deployment_cost,
+                    daily_deployment_cost=deployment_stats.deployment_cost,
                     daily_flags=tags_flags.sites_flagged,
                     daily_tags=tags_flags.leaks_tagged,
+                    sites_visited=deployment_stats.sites_visited,
+                    travel_time=deployment_stats.travel_time,
+                    survey_time=deployment_stats.survey_time,
                 )
             )
         return timeseries_methods_data
