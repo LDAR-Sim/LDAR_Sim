@@ -50,11 +50,11 @@ class Source:
         self._active_duration = info[Infrastructure_Constants.Sources_File_Constants.ACTIVE_DUR]
         self._inactive_duration = info[Infrastructure_Constants.Sources_File_Constants.INACTIVE_DUR]
         self._generated_emissions: dict[int, list[Emission]] = {}
-        self.update_prop_params(info=info, prop_params=prop_params)
-        self.set_source_properties(prop_params=prop_params)
+        self._update_prop_params(info=info, prop_params=prop_params)
+        self._set_source_properties(prop_params=prop_params)
         self._next_emission: Emission = None
 
-    def update_prop_params(self, info, prop_params) -> None:
+    def _update_prop_params(self, info, prop_params) -> None:
         meth_specific_params = prop_params.pop("Method_Specific_Params")
 
         prefix: Literal["repairable", "non_repairable"] = (
@@ -80,7 +80,7 @@ class Source:
 
         prop_params["Method_Specific_Params"] = meth_specific_params
 
-    def set_source_properties(self, prop_params) -> None:
+    def _set_source_properties(self, prop_params) -> None:
         self._emis_rate_source = prop_params[
             Infrastructure_Constants.Sources_File_Constants.EMIS_ERS
         ]

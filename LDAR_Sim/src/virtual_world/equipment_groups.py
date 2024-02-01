@@ -34,15 +34,15 @@ from virtual_world.equipment import Equipment
 class Equipment_Group:
     def __init__(self, id, infrastructure_inputs, prop_params, info) -> None:
         self._id: str = id
-        self.update_prop_params(info, prop_params)
-        self.set_method_specific_params(prop_params)
-        self.create_equipment(
+        self._update_prop_params(info, prop_params)
+        self._set_method_specific_params(prop_params)
+        self._create_equipment(
             infrastructure_inputs=infrastructure_inputs,
             prop_params=prop_params,
             info=info,
         )
 
-    def update_prop_params(self, info: dict, prop_params: dict) -> None:
+    def _update_prop_params(self, info: dict, prop_params: dict) -> None:
         meth_specific_params: dict = prop_params.pop("Method_Specific_Params")
 
         for param in meth_specific_params.keys():
@@ -58,7 +58,7 @@ class Equipment_Group:
 
         prop_params["Method_Specific_Params"] = meth_specific_params
 
-    def create_equipment(self, infrastructure_inputs, prop_params, info) -> None:
+    def _create_equipment(self, infrastructure_inputs, prop_params, info) -> None:
         self._equipment: list[Equipment] = []
         for col, val in info.items():
             if "equipment" in col.lower():
@@ -67,7 +67,7 @@ class Equipment_Group:
                         Equipment(col, count, infrastructure_inputs, prop_params)
                     )
 
-    def set_method_specific_params(self, prop_params):
+    def _set_method_specific_params(self, prop_params):
         self._meth_survey_times = prop_params["Method_Specific_Params"].pop(
             Infrastructure_Constants.Equipment_Group_File_Constants.SURVEY_TIME_PLACEHOLDER
         )
@@ -140,7 +140,7 @@ class Equipment_Group:
         return survey_time
 
     def report_func(self):
-        # some reporting agregate function?
+        # TODO: some reporting agregate function?
         return
 
     def get_id(self) -> str:
