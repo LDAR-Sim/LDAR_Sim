@@ -17,8 +17,10 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 ------------------------------------------------------------------------------
 """
+
 from datetime import date, timedelta
 from math import ceil
+from numpy import random
 from typing import Any
 from typing_extensions import override
 from file_processing.output_processing.output_utils import EmisRepairInfo
@@ -69,7 +71,7 @@ class FugitiveEmission(Emission):
             if self._days_since_tagged >= self._repair_delay + self._tagging_rep_delay:
                 self._status = "repaired"
                 emis_rep_info.leaks_repaired += 1
-                emis_rep_info.repair_cost += self._repair_cost
+                emis_rep_info.repair_cost += self.get_repair_cost()
                 self._repair_date = self._start_date + timedelta(
                     days=(self._active_days + self._days_active_b4_sim)
                 )
@@ -85,7 +87,10 @@ class FugitiveEmission(Emission):
         ) and self._tagged_by_company != "natural"
 
     def get_repair_cost(self) -> float:
-        return self._repair_cost
+        if isinstance(self._repair_cost, (float, int)):
+            return self._repair_cost
+        elif isinstance(self._repair_cost, list):
+            return random.choice(self._repair_cost)
 
     def get_daily_emissions(self) -> float:
         return self._rate * 86.4
@@ -95,7 +100,7 @@ class FugitiveEmission(Emission):
         self._tagged_by_company = "natural"
         self._status = "repaired"
         emis_rep_info.leaks_nat_repaired += 1
-        emis_rep_info.nat_repair_cost += self._repair_cost
+        emis_rep_info.nat_repair_cost += self.get_repair_cost()
         self._repair_date = self._start_date + timedelta(days=(self._active_days))
 
     # TODO potentially move this into company later
@@ -144,7 +149,7 @@ class FugitiveEmission(Emission):
 
     @override
     def update(self, emis_rep_info: EmisRepairInfo) -> bool:
-        is_active: bool = super().update()
+        is_active: bool = super().update(emis_rep_info)
         if is_active:
             if self._tagged:
                 self._days_since_tagged += 1

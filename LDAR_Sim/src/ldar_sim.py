@@ -58,6 +58,7 @@ from file_processing.output_processing.output_utils import (
     EMIS_SUMMARY_FINAL_COL_ORDER,
     TIMESERIES_COLUMNS,
     TIMESERIES_COL_ACCESSORS as tca,
+    EmisRepairInfo,
     TsEmisData,
     TsMethodData,
 )
@@ -256,8 +257,11 @@ class LdarSim:
                 self._tc.current_date, self._sim_number
             )
             ts_methods_info: list[TsMethodData] = self._program.do_daily_program_deployment()
-            ts_emis_info: TsEmisData = self._infrastructure.update_emissions_state()
-            self._update_ts_row_w_emis_info(new_row=new_row, ts_emis_info=ts_emis_info)
+            ts_emis_rep_info: EmisRepairInfo = EmisRepairInfo()
+            ts_emis_info: TsEmisData = self._infrastructure.update_emissions_state(ts_emis_rep_info)
+            self._update_ts_row_w_emis_info(
+                new_row=new_row, ts_emis_info=ts_emis_info, ts_emis_rep_info=ts_emis_rep_info
+            )
             self._update_ts_row_w_methods_info(new_row=new_row, ts_methods_info=ts_methods_info)
             timeseries.loc[len(timeseries)] = new_row
             self._program.update_date()
@@ -612,14 +616,18 @@ class LdarSim:
             tca.TAGGED_LEAKS: 0,
             tca.REP_COST: 0,
             tca.NAT_REP_COST: 0,
-            tca.VERF_COST: 0,
         }
         return new_ts_row
 
-    def _update_ts_row_w_emis_info(self, new_row: dict[str, Any], ts_emis_info: TsEmisData):
+    def _update_ts_row_w_emis_info(
+        self, new_row: dict[str, Any], ts_emis_info: TsEmisData, ts_emis_rep_info: EmisRepairInfo
+    ):
         new_row[tca.EMIS] = ts_emis_info.daily_emis
         new_row[tca.ACT_LEAKS] = ts_emis_info.active_leaks
-        new_row[tca.REP_LEAKS] = ts_emis_info.repaired_leaks
+        new_row[tca.REP_COST] = ts_emis_rep_info.repair_cost
+        new_row[tca.REP_LEAKS] = ts_emis_rep_info.leaks_repaired
+        new_row[tca.NAT_REP_COST] = ts_emis_rep_info.nat_repair_cost
+        new_row[tca.NAT_REP_LEAKS] = ts_emis_rep_info.leaks_nat_repaired
 
     def _update_ts_row_w_methods_info(
         self, new_row: dict[str, Any], ts_methods_info: list[TsMethodData]
@@ -629,24 +637,24 @@ class LdarSim:
         for method_info in ts_methods_info:
             total_daily_cost += method_info.daily_deployment_cost
             total_leaks_tagged += np.nan_to_num(method_info.daily_tags)
-            new_row[
-                tca.METH_DAILY_DEPLOY_COST.format(method=method_info.method_name)
-            ] = method_info.daily_deployment_cost
-            new_row[
-                tca.METH_DAILY_TAGS.format(method=method_info.method_name)
-            ] = method_info.daily_tags
-            new_row[
-                tca.METH_DAILY_FLAGS.format(method=method_info.method_name)
-            ] = method_info.daily_flags
-            new_row[
-                tca.METH_DAILY_SITES_VIS.format(method=method_info.method_name)
-            ] = method_info.sites_visited
-            new_row[
-                tca.METH_DAILY_TRAVEL_TIME.format(method=method_info.method_name)
-            ] = method_info.travel_time
-            new_row[
-                tca.METH_DAILY_SURVEY_TIME.format(method=method_info.method_name)
-            ] = method_info.survey_time
+            new_row[tca.METH_DAILY_DEPLOY_COST.format(method=method_info.method_name)] = (
+                method_info.daily_deployment_cost
+            )
+            new_row[tca.METH_DAILY_TAGS.format(method=method_info.method_name)] = (
+                method_info.daily_tags
+            )
+            new_row[tca.METH_DAILY_FLAGS.format(method=method_info.method_name)] = (
+                method_info.daily_flags
+            )
+            new_row[tca.METH_DAILY_SITES_VIS.format(method=method_info.method_name)] = (
+                method_info.sites_visited
+            )
+            new_row[tca.METH_DAILY_TRAVEL_TIME.format(method=method_info.method_name)] = (
+                method_info.travel_time
+            )
+            new_row[tca.METH_DAILY_SURVEY_TIME.format(method=method_info.method_name)] = (
+                method_info.survey_time
+            )
         new_row[tca.COST] = total_daily_cost
         new_row[tca.TAGGED_LEAKS] = total_leaks_tagged
 

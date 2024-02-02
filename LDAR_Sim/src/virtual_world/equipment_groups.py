@@ -21,7 +21,11 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 from datetime import date
 
 import pandas as pd
-from file_processing.output_processing.output_utils import EMIS_SUMMARY_DATA_COLS, TsEmisData
+from file_processing.output_processing.output_utils import (
+    EMIS_SUMMARY_DATA_COLS,
+    EmisRepairInfo,
+    TsEmisData,
+)
 from file_processing.input_processing.emissions_source_processing import (
     EmissionsSource,
 )
@@ -111,10 +115,10 @@ class Equipment_Group:
             new_emissions += equipment.activate_emissions(date, sim_number)
         return new_emissions
 
-    def update_emissions_state(self) -> TsEmisData:
+    def update_emissions_state(self, emis_rep_info: EmisRepairInfo) -> TsEmisData:
         emis_data = TsEmisData()
         for equip in self._equipment:
-            emis_data += equip.update_emissions_state()
+            emis_data += equip.update_emissions_state(emis_rep_info)
         return emis_data
 
     def tag_emissions_at_equipment(self, equipment: str, tagging_info: TaggingInfo) -> None:
