@@ -90,7 +90,7 @@ class SiteLevelMethod(Method):
             Method.METHOD_FOLLOW_UP_PROPERTIES_INST_THRESH_ACCESSOR
         ]
         if self._inst_threshold is None:
-            self._inst_threshold = 0.0
+            self._inst_threshold = float("inf")
         self._redund_filter: str = properties[Method.METHOD_FOLLOW_UP_PROPERTIES_ACCESSOR][
             Method.METHOD_FOLLOW_UP_PROPERTIES_REDUND_FILTER_ACCESSOR
         ]
@@ -136,15 +136,21 @@ class SiteLevelMethod(Method):
                 # Otherwise, the site is not already in processing for a follow-up,
                 # process as normal
                 else:
+                    # if above the instant threshold, add to higher priority queue
                     if detection_record.rate_detected >= self._inst_threshold:
                         self._follow_up_schedule.add_previous_queued_to_survey_queue(
                             FollowUpSurveyPlanner(detection_record, date_to_check)
                         )
-                    elif existing_plan.rate_at_site >= self._threshold:
+                    # if the detected rate is non-zero, and above the threshold add to queue
+                    elif (
+                        detection_record.rate_detected != 0
+                        and detection_record.rate_detected >= self._threshold
+                    ):
                         self._candidates_for_flags.add(
                             FollowUpSurveyPlanner(detection_record, date_to_check)
                         )
-                    elif existing_plan.rate_at_site > 0:
+                    # count that there was a detection, but it wasn't above the threshold
+                    elif detection_record.rate_detected > 0:
                         self._detection_count += 1
 
         # Queue candidates based on follow up work practice specified.
@@ -155,12 +161,13 @@ class SiteLevelMethod(Method):
 
     def update_candidates_for_flags(self, current_date: date) -> int:
         n_flags: int = 0
-        candidates_empty: bool = bool(self._candidates_for_flags)
 
         if self._first_candidate_date is None:
-            if not candidates_empty:
+            candidates_not_empty: bool = bool(self._candidates_for_flags)
+            if candidates_not_empty:
                 self._first_candidate_date = current_date
-
+            else:
+                return n_flags
         if (current_date - self._first_candidate_date).days >= self._delay:
             self._filter_candidates_by_proportion()
 

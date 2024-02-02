@@ -110,7 +110,7 @@ class LdarSim:
 
     def _init_ts_columns(self) -> list[str]:
         ts_columns = TIMESERIES_COLUMNS
-        for method in self.program.method_names:
+        for method in self._program.method_names:
             ts_columns.append(tca.METH_DAILY_DEPLOY_COST.format(method=method))
             ts_columns.append(tca.METH_DAILY_FLAGS.format(method=method))
             ts_columns.append(tca.METH_DAILY_TAGS.format(method=method))
@@ -167,7 +167,7 @@ class LdarSim:
                 tca.METH_DAILY_SURVEY_TIME.format(method=method_info.method_name)
             ] = method_info.survey_time
         new_row[tca.COST] = total_daily_cost
-        new_row[tca.METH_DAILY_TAGS] = total_leaks_tagged
+        new_row[tca.TAGGED_LEAKS] = total_leaks_tagged
 
     def format_timeseries(self, timeseries: pd.DataFrame) -> None:
         return None
