@@ -1,5 +1,5 @@
 parameter_level: "method"
-version: "3.3"
+version: "4.0"
 label: "_placeholder_str_"
 measurement_scale: "_placeholder_str_" # site/equipment/component
 deployment_type: "_placeholder_str_" # mobile/stationary/orbit
@@ -13,10 +13,9 @@ coverage:
   temporal: 1.0 # 0.0 to 1.0
 cost:
   per_day: 0
-  per_hour: 0
   per_site: 0
   upfront: 0
-n_crews: "_placeholder_int_" # whole numbers
+n_crews: 0 # whole numbers
 consider_daylight: False
 RS: "_placeholder_int_"
 time: "_placeholder_int_" # minutes

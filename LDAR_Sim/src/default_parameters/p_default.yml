@@ -1,4 +1,4 @@
-version: "3.3"
+version: "4.0"
 parameter_level: "program"
 program_name: "default"
 method_labels: []
@@ -7,7 +7,4 @@ economics:
   cost_CCUS: 20.0
   GWP_CH4: 28.0
   sale_price_natgas: 3.0
-  repair_costs:
-    vals: [200]
-    file: "_placeholder_str_"
   verification_cost: 0
