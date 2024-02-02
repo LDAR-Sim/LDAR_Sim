@@ -56,12 +56,12 @@ MAJOR_VERSION_ONLY_WARNING = (
     "\nLDAR-Sim has detected an attempt to run a simulation model"
     " with a single number version. \n\n"
     "Standard parameter version numbers include a major and a minor "
-    " version number, for example: 3.0. \n\n"
+    " version number, for example: 4.0. \n\n"
     "Please update the version to a valid version and rerun LDAR-Sim. \n\n"
 )
 
-CURRENT_MAJOR_VERSION = "3"
+CURRENT_MAJOR_VERSION = "4"
 
-CURRENT_MINOR_VERSION = "3"
+CURRENT_MINOR_VERSION = "0"
 
-CURRENT_FULL_VERSION = "3.3"
+CURRENT_FULL_VERSION = "4.0"

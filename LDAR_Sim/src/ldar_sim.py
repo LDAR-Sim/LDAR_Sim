@@ -19,13 +19,11 @@
 # ------------------------------------------------------------------------------
 
 
-import datetime
-import random
-import sys
-import warnings
-from math import floor
-import numpy as np
+import os
+from pathlib import Path, WindowsPath
+from typing import Any
 import pandas as pd
+<<<<<<< Updated upstream
 from weather.daylight_calculator import DaylightCalculatorAve
 from config.output_flag_mapping import (
     OUTPUTS,
@@ -51,31 +49,46 @@ from out_processing.plotter import make_plots
 from utils.attribution import update_tag
 
 warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning)
+=======
+import numpy as np
+from virtual_world.infrastructure import Infrastructure
+from time_counter import TimeCounter
+from programs.program import Program
+from file_processing.output_processing.output_utils import (
+    EMIS_SUMMARY_FINAL_COL_ORDER,
+    TIMESERIES_COLUMNS,
+    TIMESERIES_COL_ACCESSORS as tca,
+    TsEmisData,
+    TsMethodData,
+)
+>>>>>>> Stashed changes
 
 
 class LdarSim:
+    SIMULATION_NAME_STR = "{program}_{sim_number}"
+
     def __init__(
         self,
+        sim_number: int,
         simulation_settings,
-        state,
-        program_parameters,
         virtual_world,
-        timeseries,
-        input_dir,
-        output_dir,
+        program: Program,
+        infrastructure: Infrastructure,
+        input_dir: WindowsPath,
+        output_dir: WindowsPath,
+        preseed_timeseries,
     ):
         """
         Construct the simulation.
         """
-        self.state = state
+        self._tc: TimeCounter = TimeCounter(virtual_world["start_date"], virtual_world["end_date"])
+        self._sim_number: int = sim_number
+        self._infrastructure: Infrastructure = infrastructure
+        # TODO remove if unused
         self.simulation_settings = simulation_settings
-        self.virtual_world = virtual_world
-        self.program_parameters = program_parameters
-        self.timeseries = timeseries
-        self.active_leaks = []
-        self.input_dir = input_dir
-        self.output_dir = output_dir
+        self._program: Program = program
 
+<<<<<<< Updated upstream
         #  --- state variables ---
         self.state["campaigns"] = {}
         state["candidate_flags"] = {}
@@ -218,76 +231,41 @@ class LdarSim:
             virtual_world,
             n_sites,
             n_screening_rs_sets,
+=======
+        self._input_dir: WindowsPath = input_dir
+        self._output_dir: WindowsPath = output_dir / program.name
+        self.name_str: str = self.SIMULATION_NAME_STR.format(
+            program=program.name, sim_number=sim_number
+>>>>>>> Stashed changes
         )
-
-        #  --- timeseries variables ---
-        timeseries["total_daily_cost"] = np.zeros(virtual_world["timesteps"])
-        timeseries["repair_cost"] = np.zeros(virtual_world["timesteps"])
-        timeseries["nat_repair_cost"] = np.zeros(virtual_world["timesteps"])
-        timeseries["verification_cost"] = np.zeros(virtual_world["timesteps"])
-        timeseries["natural_redund_tags"] = np.zeros(self.virtual_world["timesteps"])
-        timeseries["natural_n_tags"] = np.zeros(self.virtual_world["timesteps"])
-        timeseries["new_leaks"] = np.zeros(self.virtual_world["timesteps"])
-        timeseries["cum_repaired_leaks"] = np.zeros(self.virtual_world["timesteps"])
-        timeseries["daily_emissions_kg"] = np.zeros(self.virtual_world["timesteps"])
-        timeseries["n_tags"] = np.zeros(self.virtual_world["timesteps"])
-        timeseries["rolling_cost_estimate"] = np.zeros(self.virtual_world["timesteps"])
-        timeseries["rolling_cost_estimate_b"] = np.zeros(self.virtual_world["timesteps"])
-
-        # Initialize method(s) to be used; append to state
-        calculate_daylight = False
-        for m_label, m_obj in program_parameters["methods"].items():
-            # Initialize method site_visit tracking
-            state["site_visits"][m_label] = []
-            # Update method parameters
-            m_obj_wr = program_parameters["methods"][m_label]
-            if m_obj["scheduling"]["route_planning"]:
-                m_obj_wr["t_bw_sites"]["vals"] = est_t_bw_sites(m_obj, state["sites"])
-            if m_obj["n_crews"] is None:
-                m_obj_wr["n_crews"] = est_n_crews(m_obj, state["sites"])
-            m_obj_wr["est_site_p_day"] = est_site_p_day(m_obj, state["sites"])
-            if m_obj["t_bw_sites"]["file"] is not None:
-                m_obj_wr["t_bw_sites"]["vals"] = np.array(
-                    pd.read_csv(input_dir / m_obj["t_bw_sites"]["file"]).iloc[:, 0]
-                )
-            if m_obj["consider_daylight"]:
-                calculate_daylight = True
-            try:
-                state["methods"].append(
-                    BaseCompany(
-                        state,
-                        program_parameters,
-                        virtual_world,
-                        simulation_settings,
-                        m_obj,
-                        timeseries,
-                        m_label,
-                    )
-                )
-            except AttributeError:
-                print("Cannot add this method: " + m_label)
-
-        # Initialize daylight
-        if calculate_daylight:
-            state["daylight"] = DaylightCalculatorAve(state, virtual_world)
-
-        # If working without methods (operator only), need to get the first day going
-        if not bool(program_parameters["methods"]):
-            state["t"].current_date = state["t"].current_date.replace(hour=1)
-
-        # HBD this is sooooo hacky Repair time seems like its wrong
-        if len(self.state["campaigns"]) > 0:
-            self.program_parameters["methods"].update(
-                {"makeup": {"reporting_delay": 0, "label": "makeup"}}
-            )
+        if preseed_timeseries is not None:
+            self._preseed = True
+            self._preseed_ts = preseed_timeseries
+        else:
+            self._preseed = False
         return
 
-    def update(self):
-        """
-        this rolls the model forward one timestep
-        returns nothing
-        """
+    def run_simulation(self):
+        ts_columns = self._init_ts_columns()
+        timeseries = pd.DataFrame(columns=ts_columns)
+        while not self._tc.at_simulation_end():
+            if self._preseed:
+                np.random.seed(self._preseed_ts[self._tc.current_date])
+            new_row: dict[str, Any] = self._init_ts_row()
+            new_row[tca.NEW_LEAKS] = self._infrastructure.activate_emissions(
+                self._tc.current_date, self._sim_number
+            )
+            ts_methods_info: list[TsMethodData] = self._program.do_daily_program_deployment()
+            ts_emis_info: TsEmisData = self._infrastructure.update_emissions_state()
+            self._update_ts_row_w_emis_info(new_row=new_row, ts_emis_info=ts_emis_info)
+            self._update_ts_row_w_methods_info(new_row=new_row, ts_methods_info=ts_methods_info)
+            timeseries.loc[len(timeseries)] = new_row
+            self._program.update_date()
+            self._tc.next_day()
 
+        overall_emission_data: pd.DataFrame = self._infrastructure.gen_summary_emis_data()
+
+<<<<<<< Updated upstream
         self.update_state()  # Update state of sites and leaks
         self.add_leaks()  # Add leaks to the leak pool
         self.deploy_crews()  # Find leaks
@@ -593,31 +571,94 @@ class LdarSim:
             "GWP_CH4",
             "carbon_price_tonnesCO2e",
             "cost_CCUS",
+=======
+        overall_emission_data = overall_emission_data[
+            EMIS_SUMMARY_FINAL_COL_ORDER
+            + [
+                col
+                for col in overall_emission_data.columns
+                if col not in EMIS_SUMMARY_FINAL_COL_ORDER
+            ]
+>>>>>>> Stashed changes
         ]
-        carbon_economics = {
-            key: value
-            for key, value in program_parameters["economics"].items()
-            if key in wanted_c_economics
+
+        self.gen_sim_directory()
+        summary_filename = "_".join([self.name_str, "emissions_summary.csv"])
+        self.save_results(overall_emission_data, summary_filename)
+        self.format_timeseries(timeseries)
+        timeseries_filename = "_".join([self.name_str, "timeseries.csv"])
+        self.save_results(timeseries, timeseries_filename)
+
+    def _init_ts_columns(self) -> list[str]:
+        ts_columns = TIMESERIES_COLUMNS
+        for method in self._program.method_names:
+            ts_columns.append(tca.METH_DAILY_DEPLOY_COST.format(method=method))
+            ts_columns.append(tca.METH_DAILY_FLAGS.format(method=method))
+            ts_columns.append(tca.METH_DAILY_TAGS.format(method=method))
+            ts_columns.append(tca.METH_DAILY_SITES_VIS.format(method=method))
+            ts_columns.append(tca.METH_DAILY_TRAVEL_TIME.format(method=method))
+            ts_columns.append(tca.METH_DAILY_SURVEY_TIME.format(method=method))
+        return ts_columns
+
+    def _init_ts_row(self):
+        new_ts_row: dict[str, Any] = {
+            tca.DATE: self._tc.current_date,
+            tca.EMIS: 0,
+            tca.COST: 0,
+            tca.ACT_LEAKS: 0,
+            tca.NEW_LEAKS: 0,
+            tca.REP_LEAKS: 0,
+            tca.NAT_REP_LEAKS: 0,
+            tca.TAGGED_LEAKS: 0,
+            tca.REP_COST: 0,
+            tca.NAT_REP_COST: 0,
+            tca.VERF_COST: 0,
         }
+        return new_ts_row
 
-        # Extract Metadata
-        wanted_meta_cols = ["program_name", "simulation", "NRd", "start_date"]
-        metadata = {key: value for key, value in virtual_world.items() if key in wanted_meta_cols}
+    def _update_ts_row_w_emis_info(self, new_row: dict[str, Any], ts_emis_info: TsEmisData):
+        new_row[tca.EMIS] = ts_emis_info.daily_emis
+        new_row[tca.ACT_LEAKS] = ts_emis_info.active_leaks
+        new_row[tca.REP_LEAKS] = ts_emis_info.repaired_leaks
 
-        metadata.update(
-            {key: value for key, value in program_parameters.items() if key in wanted_meta_cols}
-        )
-        metadata.update(
-            {key: value for key, value in simulation_settings.items() if key in wanted_meta_cols}
-        )
+    def _update_ts_row_w_methods_info(
+        self, new_row: dict[str, Any], ts_methods_info: list[TsMethodData]
+    ) -> None:
+        total_daily_cost: float = 0.0
+        total_leaks_tagged: int = 0
+        for method_info in ts_methods_info:
+            total_daily_cost += method_info.daily_deployment_cost
+            total_leaks_tagged += np.nan_to_num(method_info.daily_tags)
+            new_row[
+                tca.METH_DAILY_DEPLOY_COST.format(method=method_info.method_name)
+            ] = method_info.daily_deployment_cost
+            new_row[
+                tca.METH_DAILY_TAGS.format(method=method_info.method_name)
+            ] = method_info.daily_tags
+            new_row[
+                tca.METH_DAILY_FLAGS.format(method=method_info.method_name)
+            ] = method_info.daily_flags
+            new_row[
+                tca.METH_DAILY_SITES_VIS.format(method=method_info.method_name)
+            ] = method_info.sites_visited
+            new_row[
+                tca.METH_DAILY_TRAVEL_TIME.format(method=method_info.method_name)
+            ] = method_info.travel_time
+            new_row[
+                tca.METH_DAILY_SURVEY_TIME.format(method=method_info.method_name)
+            ] = method_info.survey_time
+        new_row[tca.COST] = total_daily_cost
+        new_row[tca.TAGGED_LEAKS] = total_leaks_tagged
 
-        sim_summary = {
-            "meta": metadata,
-            "leaks": leak_df,
-            "timeseries": time_df,
-            "sites": site_df,
-            "program_name": program_parameters["program_name"],
-            "p_c_economics": carbon_economics,
-        }
+    def format_timeseries(self, timeseries: pd.DataFrame) -> None:
+        return None
 
-        return sim_summary
+    def gen_sim_directory(self) -> None:
+        if not os.path.exists(self._output_dir):
+            os.mkdir(self._output_dir)
+
+    def save_results(self, data: pd.DataFrame, filename: str) -> None:
+        if data is None:
+            return
+        filepath: Path = self._output_dir / filename
+        data.to_csv(filepath, index=False)
