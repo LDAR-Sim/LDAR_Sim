@@ -71,16 +71,12 @@ class TIMESERIES_COL_ACCESSORS:
 class TsEmisData:
     daily_emis: float = 0
     active_leaks: int = 0
-    repaired_leaks: int = 0
 
     def __add__(self, other):
         if isinstance(other, TsEmisData):
             daily_emis = self.daily_emis + other.daily_emis
             active_leaks = self.active_leaks + other.active_leaks
-            repaired_leaks = self.repaired_leaks + other.repaired_leaks
-            return TsEmisData(
-                daily_emis=daily_emis, active_leaks=active_leaks, repaired_leaks=repaired_leaks
-            )
+            return TsEmisData(daily_emis=daily_emis, active_leaks=active_leaks)
         else:
             raise ValueError("Unsupported operand type for addition")
 
@@ -88,7 +84,6 @@ class TsEmisData:
         if isinstance(other, TsEmisData):
             self.daily_emis += other.daily_emis
             self.active_leaks += other.active_leaks
-            self.repaired_leaks += other.repaired_leaks
             return self
         else:
             raise ValueError("Unsupported operand type for in-place addition")

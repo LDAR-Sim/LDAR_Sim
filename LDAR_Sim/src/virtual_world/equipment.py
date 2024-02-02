@@ -17,6 +17,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 ------------------------------------------------------------------------------
 """
+
 from copy import deepcopy
 from datetime import date
 import re
@@ -125,7 +126,6 @@ class Equipment:
                 emis_data.daily_emis += emission.get_daily_emis()
             else:
                 self._inactive_emissions.append(emission)
-                emis_data.repaired_leaks += 1
         self._active_emissions = updated_active_emissions
         emis_data.active_leaks += len(self._active_emissions)
         return emis_data

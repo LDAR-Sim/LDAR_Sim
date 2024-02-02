@@ -17,10 +17,11 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 ------------------------------------------------------------------------------
 """
+
 from datetime import date
 import numpy as np
 import pandas as pd
-from file_processing.output_processing.output_utils import TsEmisData
+from file_processing.output_processing.output_utils import EmisRepairInfo, TsEmisData
 from file_processing.input_processing.emissions_source_processing import (
     EmissionsSource,
     process_emission_sources,
@@ -148,10 +149,10 @@ class Infrastructure:
             new_emissions += site.activate_emissions(date, sim_number)
         return new_emissions
 
-    def update_emissions_state(self) -> TsEmisData:
+    def update_emissions_state(self, emis_rep_info: EmisRepairInfo) -> TsEmisData:
         emis_data = TsEmisData()
         for site in self._sites:
-            emis_data += site.update_emissions_state()
+            emis_data += site.update_emissions_state(emis_rep_info)
         return emis_data
 
     def generate_infrastructure(

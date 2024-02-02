@@ -24,7 +24,7 @@ import math
 
 
 import pandas as pd
-from file_processing.output_processing.output_utils import TsEmisData
+from file_processing.output_processing.output_utils import EmisRepairInfo, TsEmisData
 from file_processing.input_processing.emissions_source_processing import (
     EmissionsSource,
 )
@@ -223,8 +223,8 @@ class Site:
         )
         target_equip_group.tag_emissions_at_equipment(equipment, tagging_info)
 
-    def update_emissions_state(self) -> TsEmisData:
+    def update_emissions_state(self, emis_rep_info: EmisRepairInfo) -> TsEmisData:
         emis_data = TsEmisData()
         for eqg in self._equipment_groups:
-            emis_data += eqg.update_emissions_state()
+            emis_data += eqg.update_emissions_state(emis_rep_info)
         return emis_data
