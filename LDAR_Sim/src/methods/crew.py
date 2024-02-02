@@ -145,12 +145,19 @@ class BaseCrew:
 
         if self.config["measurement_scale"].lower() == "component":
             # Remove site from flag pool if component level measurement
-            site.update({"currently_flagged": False})
+            if self.config["is_follow_up"]:
+                site["preferred_FU_method"].remove(m_name)
+                if not site["preferred_FU_method"]:
+                    site.update({"currently_flagged": False})
+            else:
+                site.update({"currently_flagged": False})
             site["last_component_survey"] = cur_ts
             if site_detect_results["found_leak"]:
                 self.timeseries["{}_sites_vis_w_leaks".format(m_name)][cur_ts] += 1
         elif self.config["is_follow_up"]:
-            site.update({"currently_flagged": False})
+            site["preferred_FU_method"].remove(m_name)
+            if not site["preferred_FU_method"]:
+                site.update({"currently_flagged": False})
             if site_detect_results["found_leak"] and (
                 self.config["measurement_scale"].lower() == "site"
                 or self.config["measurement_scale"].lower() == "equipment"

@@ -158,7 +158,7 @@ class Schedule:
                         s
                         for s in out_sites
                         if s["preferred_FU_method"] is None
-                        or s["preferred_FU_method"] == self.config["label"]
+                        or self.config["label"] in s["preferred_FU_method"]
                     ),
                     key=lambda x: x[days_since_LDAR],
                     reverse=True,

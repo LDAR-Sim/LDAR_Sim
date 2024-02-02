@@ -93,4 +93,4 @@ def update_campaigns(campaigns, sites, cur_ts, current_date):
                 site["currently_flagged"] = True
                 site["date_flagged"] = current_date
                 site["flagged_by"] = "makeup"
-                site["preferred_FU_method"] = cpgn["preferred_FU_method"]
+                site["preferred_FU_method"] = [cpgn["preferred_FU_method"]]

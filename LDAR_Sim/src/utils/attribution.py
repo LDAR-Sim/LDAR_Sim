@@ -105,12 +105,15 @@ def update_flag(config, site, timeseries, time_obj, campaign, company, consider_
     site_true_rate = site["site_measured_rate"]
     venting = site["vent_rate"]
     if site_obj["currently_flagged"]:
-        timeseries["{}_flags_redund1".format(company)][time_obj.current_timestep] += 1
+        if config["follow_up"]["preferred_method"] not in site_obj["preferred_FU_method"]:
+            site_obj["preferred_FU_method"].append(config["follow_up"]["preferred_method"])
+        else:
+            timeseries["{}_flags_redund1".format(company)][time_obj.current_timestep] += 1
     else:
         # Flag the site for follow-up
         site_obj["currently_flagged"] = True
 
-        site_obj["preferred_FU_method"] = config["follow_up"]["preferred_method"]
+        site_obj["preferred_FU_method"] = [config["follow_up"]["preferred_method"]]
 
         site_obj["date_flagged"] = time_obj.current_date
         site_obj["flagged_by"] = company
