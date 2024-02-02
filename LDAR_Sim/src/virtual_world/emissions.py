@@ -21,6 +21,7 @@ from datetime import date
 from typing import Any
 
 from numpy.random import binomial
+from file_processing.output_processing.output_utils import EmisRepairInfo
 
 from utils.conversion_constants import GRAMS_PER_SECOND_TO_KG_PER_DAY
 
@@ -51,7 +52,7 @@ class Emission:
         self._tech_spat_covs: dict[str, int] = {}
         self._status = "Inactive"
 
-    def update(self) -> bool:
+    def update(self, emis_rep_info: EmisRepairInfo) -> bool:
         """
         Increments duration values
         """

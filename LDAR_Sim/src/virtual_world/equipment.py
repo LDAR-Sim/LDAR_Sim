@@ -22,7 +22,11 @@ from datetime import date
 import re
 
 import pandas as pd
-from file_processing.output_processing.output_utils import EMIS_SUMMARY_DATA_COLS, TsEmisData
+from file_processing.output_processing.output_utils import (
+    EMIS_SUMMARY_DATA_COLS,
+    EmisRepairInfo,
+    TsEmisData,
+)
 from file_processing.input_processing.emissions_source_processing import (
     EmissionsSource,
 )
@@ -112,11 +116,11 @@ class Equipment:
             new_emissions_count += len(new_emissions)
         return new_emissions_count
 
-    def update_emissions_state(self) -> TsEmisData:
+    def update_emissions_state(self, emis_rep_info: EmisRepairInfo) -> TsEmisData:
         updated_active_emissions: list[Emission] = []
         emis_data: TsEmisData = TsEmisData()
         for emission in self._active_emissions:
-            if emission.update():
+            if emission.update(emis_rep_info):
                 updated_active_emissions.append(emission)
                 emis_data.daily_emis += emission.get_daily_emis()
             else:

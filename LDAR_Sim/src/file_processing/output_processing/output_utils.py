@@ -45,7 +45,6 @@ TIMESERIES_COLUMNS = [
     "Leaks Tagged",
     "Daily Repair Cost ($)",
     "Daily Natural Repair Cost ($)",
-    "Daily Verification Cost ($)",
 ]
 
 
@@ -60,7 +59,6 @@ class TIMESERIES_COL_ACCESSORS:
     TAGGED_LEAKS = "Leaks Tagged"
     REP_COST = "Daily Repair Cost ($)"
     NAT_REP_COST = "Daily Natural Repair Cost ($)"
-    VERF_COST = "Daily Verification Cost ($)"
     METH_DAILY_DEPLOY_COST = "{method} Deployment Cost ($)"
     METH_DAILY_TAGS = "{method} Leaks tagged for repair"
     METH_DAILY_FLAGS = "{method} Sites flagged for Follow-Up"
@@ -119,3 +117,11 @@ class CrewDeploymentStats:
     sites_visited: int = 0
     travel_time: int = 0
     survey_time: int = 0
+
+
+@dataclass
+class EmisRepairInfo:
+    leaks_repaired: int = 0
+    leaks_nat_repaired: int = 0
+    repair_cost: int = 0
+    nat_repair_cost: int = 0

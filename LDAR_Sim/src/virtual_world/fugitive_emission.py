@@ -21,6 +21,7 @@ from datetime import date, timedelta
 from math import ceil
 from typing import Any
 from typing_extensions import override
+from file_processing.output_processing.output_utils import EmisRepairInfo
 
 from virtual_world.emissions import Emission
 
@@ -59,7 +60,7 @@ class FugitiveEmission(Emission):
         days_active_b4_sim: int = (simulation_sd - start_date).days
         self._days_active_b4_sim = days_active_b4_sim if days_active_b4_sim > 0 else 0
 
-    def check_if_repaired(self) -> bool:
+    def check_if_repaired(self, emis_rep_info: EmisRepairInfo) -> bool:
         """
         Checks the days since tagged against the repair delay
         Repairs the emission if possible
@@ -67,6 +68,8 @@ class FugitiveEmission(Emission):
         if self._repairable:
             if self._days_since_tagged >= self._repair_delay + self._tagging_rep_delay:
                 self._status = "repaired"
+                emis_rep_info.leaks_repaired += 1
+                emis_rep_info.repair_cost += self._repair_cost
                 self._repair_date = self._start_date + timedelta(
                     days=(self._active_days + self._days_active_b4_sim)
                 )
@@ -87,10 +90,12 @@ class FugitiveEmission(Emission):
     def get_daily_emissions(self) -> float:
         return self._rate * 86.4
 
-    def natural_repair(self):
+    def natural_repair(self, emis_rep_info: EmisRepairInfo):
         self._tagged = True
         self._tagged_by_company = "natural"
         self._status = "repaired"
+        emis_rep_info.leaks_nat_repaired += 1
+        emis_rep_info.nat_repair_cost += self._repair_cost
         self._repair_date = self._start_date + timedelta(days=(self._active_days))
 
     # TODO potentially move this into company later
@@ -138,15 +143,15 @@ class FugitiveEmission(Emission):
         return True
 
     @override
-    def update(self) -> bool:
+    def update(self, emis_rep_info: EmisRepairInfo) -> bool:
         is_active: bool = super().update()
         if is_active:
             if self._tagged:
                 self._days_since_tagged += 1
-                if self.check_if_repaired():
+                if self.check_if_repaired(emis_rep_info):
                     is_active = False
             elif self._active_days + self._days_active_b4_sim >= self._nrd:
-                self.natural_repair()
+                self.natural_repair(emis_rep_info)
                 is_active = False
         return is_active
 
