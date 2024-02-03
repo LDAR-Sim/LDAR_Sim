@@ -2,7 +2,7 @@
 
 Github Repository: LDAR-Sim
 
-Version: 3.3
+Version: 4.0
 
 Branch: Master
 
@@ -22,8 +22,12 @@ Email: <sally@highwoodemissions.com>
 6. [Virtual World Setting](#6-virtual-world-settings)
 7. [Program Inputs](#7-program-inputs)
 8. [Method Inputs](#8-method-inputs)
-9. [Infrastructure File](#9-infrastructure-file)
-10. [Subtype File](#10-subtype-file)
+9. [Infrastructure Files](#9-infrastructure-file)
+   1. [Site Type File](#9.1-site-type-file)
+   2. [Sites File](#9.2-sites-file)
+   3. [Equipment Group File](#9.3-equipment-group-file)
+   4. [Sources File](#9.4-sources-file)
+10. [Emissions File](#10-emissions-file)
 11. [Legacy Inputs](#11-legacy-inputs)
 12. [Data sources, modelling confidence and model sensitivity](#12-data-sources-modelling-confidence-and-model-sensitivity)
 13. [References](#13-references)
@@ -77,7 +81,7 @@ The LDAR-Sim software is organized using the following structure:
 
 The **Root** folder includes all code, inputs, and outputs necessary to run LDAR-Sim. From a software perspective, the root folder is the parent to the src folder (folder containing LDAR_sim_main). This folder will be always be the root folder when making relative references in LDAR-Sim. For example, if input_directory is specified as _./inputs_ from anywhere in the code, the targeted folder will be _{absolute_path_to} / Root / inputs_.
 
-The **inputs** folder contains input files required to run LDAR-Sim. These include airport files, empirical leak and vent data, facility lists, facility type defaults, and other inputs.
+The **inputs** folder contains input files required to run LDAR-Sim. These include weather files, empirical leak and vent data, facility lists, and other inputs.
 
 The **outputs** folder stores all output data files produced by LDAR-Sim. The folder is cleaned, and added if required each time ldar_sim_main is run.
 
@@ -85,22 +89,22 @@ The **src** folder stores the python source code. The main code of LDAR-Sim, LDA
 
 The **external_sensors** folder contains python source code for alternative technology sensors that users are free to use and add to.
 
-The **simulations** stores sample V3.0 input parameter files.
+The **simulations** stores sample V4.0 input parameter files.
 
 --------------------------------------------------------------------------------
 
 ## 4\. Running the Model
 
-To run the model, supply one or more input parameter files as arguments to the program. The main function is called `ldar_sim_main.py` and is the main entrypoint to the model. File paths can be relative to the root directory (e.g., `./parameter_file1.yaml`) or absolute (e.g., `D://parameter_files//parameter_file1.yaml`). File paths are positional arguments and should be separated by a single space.
+To run the model, supply one or more input parameter files as arguments to the program. The main function is called `ldar_sim_run.py` and is the main entrypoint to the model. File paths can be relative to the root directory (e.g., `./parameter_file1.yaml`) or absolute (e.g., `D://parameter_files//parameter_file1.yaml`). File paths are positional arguments and should be separated by a single space.
 
 ```buildoutcfg
-python ldar_sim_main.py parameter_file1.yaml parameter_file2.yaml
+python ldar_sim_run.py parameter_file1.yaml parameter_file2.yaml
 ```
 
 Alternatively, a single folder name (absolute or relative to root) can be passed by flagged argument _-P_ or _--in_dir_. All json or yaml files within that folder will be added as parameter_files. For example, the following will use all parameter files within the sample simulation folder:
 
 ```buildoutcfg
-python ldar_sim_main.py --in_dir ./simulations
+python ldar_sim_run.py --in_dir ./simulations
 ```
 
 We recommend running the model with a working directory set to /LDAR_Sim/src.
@@ -108,7 +112,7 @@ We recommend running the model with a working directory set to /LDAR_Sim/src.
 Optionally, a single folder name (absolute or relative to root) can be passed by flagged argument _-X_ or _--out_dir_. All output files will be added as outputs in that directory. For example, the following will save all output files within the "out" folder:
 
 ```buildoutcfg
-python ldar_sim_main.py --in_dir ./simulations --out_dir ./out
+python ldar_sim_run.py --in_dir ./simulations --out_dir ./out
 ```
 
 ### Parameter File Structure
@@ -156,7 +160,7 @@ All simulations using multiple parameter files are created the following way:
 Parameter files are read on top of each other, starting with the default set of parameters. How does this work? Here is an example `parameter_file1.yaml`:
 
 ```yaml
-version: 3.0
+version: 4.0
 n_simulations: 30
 LPR: 0.0065
 ```
@@ -164,14 +168,14 @@ LPR: 0.0065
 This will revise the `n_simulations` key to 30, from whatever was default, and the `LPR` key to 0.0065, from whatever was default. Next, `parameter_file2.yaml` is read, which looks like this:
 
 ```yaml
-version: 3.0
+version: 4.0
 n_simulations: 3
 ```
 
 This will replace the `n_simulations` key with 3 (instead of 30), but leave the `LPR` key, and all other parameters in the model untouched. The model will now run with parameters that look like this:
 
 ```yaml
-version: 3.0
+version: 4.0
 n_simulations: 3
 LPR: 0.0065
 .... ALL OTHER PARAMETERS RUN WITH DEFAULT VALUES ....
@@ -182,13 +186,13 @@ Keep in mind that only 2 parameters have been changed with these parameter files
 In this example, changing the `n_simulations` key to 3 makes the model run faster and provides a way to test the model without waiting for it to complete 30 simulations. A reasonable workflow with these parameters would be something like running the model in a test configuration with:
 
 ```buildoutcfg
-python ldar_sim_main.py parameter_file1.yaml parameter_file2.yaml
+python ldar_sim_run.py parameter_file1.yaml parameter_file2.yaml
 ```
 
 Then, when comfortable understanding the outputs and ready to run the model for longer to get more statistically valid results, run:
 
 ```buildoutcfg
-python ldar_sim_main.py parameter_file1.yaml
+python ldar_sim_run.py parameter_file1.yaml
 ```
 
 The model will now run for the full 30 simulations because we did not load `parameter_file2.yaml` and the `n_simulations` key did not get overwritten to 3\. Essentially `parameter_file2.yaml` is a run configuration for testing, it is something you could add onto any simulation you like to test out the configuration, then drop it when you are ready to get more robust results.
@@ -264,7 +268,7 @@ To specify this, we can refer to the program by name in the program definitions 
 
 ```yaml
 test_program_1:
-    version: '3.0'
+    version: '4.0'
     parameter_level: program
     method_labels: [new_LDAR_method_1]
     program_name: "test_program_1"
@@ -274,7 +278,7 @@ This `new_LDAR_method_1` has to be defined elsewhere in a separate parameter fil
 
 ```yaml
 new_LDAR_method_1:
-    version: '3.0'
+    version: '4.0'
     parameter_level: method
     label: new_LDAR_method_1
     .... OTHER OGI METHOD PARAMETERS ....
@@ -284,7 +288,7 @@ When the simulation is put together, the program will be assembled to look like 
 
 ```yaml
 test_program:
-  version': '3.0',
+  version': '4.0',
   parameter_level: program,
   method_names: [new_LDAR_method_1],
   methods: [
@@ -315,14 +319,14 @@ LDAR-Sim includes a flexible input parameter mapper that accepts a variety of in
 For example, here is a program definition in yaml:
 
 ```buildoutcfg
-version: '3.0'
+version: '4.0'
 parameter_level: program
 ```
 
 Here is a method definition in yaml:
 
 ```buildoutcfg
-version: '3.0'  
+version: '4.0'  
 parameter_level: method
 label: awesome_method
 ```
@@ -331,7 +335,9 @@ Note that programs are interpreted as a flat list of parameters that are incorpo
 
 ### Versioning of Parameter Files
 
-All parameter files must specify a version to enable mapping. This versioning is used to allow code to verify that a compatible version of the parameters is being used. If the parameter version is incompatible, the software will output an error message with further instructions on where to find guidance on input parameter mapping to the latest version. Refer to `input_mapper_v1.py` for a template file and discussion document on input parameter mapping from V1.0 to V2.0. Refer to [ParameterMigrationGuide](ParameterMigrationGuide.md) for instructions on how to migrate parameters from v2.x.x to V3.0. Reverse compatibility mapping only exists for minor parameter versions within the same major LDAR-Sim version (For example LDAR_Sim version 3.0 is not compatible with version 2.x.x parameters).
+All parameter files must specify a version to enable mapping. This versioning is used to allow code to verify that a compatible version of the parameters is being used. If the parameter version is incompatible, the software will output an error message with further instructions on where to find guidance on input parameter mapping to the latest version.
+Refer to `input_mapper_v1.py` for a template file and discussion document on input parameter mapping from V1.0 to V2.0.
+Refer to [ParameterMigrationGuide](ParameterMigrationGuide.md) for instructions on how to migrate parameters from v2.x.x to V3.0 and from V3.0 to V4.0. Reverse compatibility mapping only exists for minor parameter versions within the same major LDAR-Sim version (For example LDAR_Sim version 3.0 is not compatible with version 2.x.x parameters).
 
 ### Notes for Developers
 
@@ -367,7 +373,7 @@ If you are developing in LDAR-Sim, please adhere to the following rules:
 
 **Data type:** String
 
-**Default input:** 3.0
+**Default input:** 4.0
 
 **Description:** Specify version of LDAR-Sim. See section _[Versioning of Parameter Files](#versioning-of-parameter-files)_ for more information.
 
@@ -591,7 +597,7 @@ If enabled, the leaks will be stored locally in /inputs/generation after running
 
 **Data type:** String
 
-**Default input:** 3.0
+**Default input:** 4.0
 
 **Description:** Specify version of LDAR-Sim. See section _[Versioning of Parameter Files](#versioning-of-parameter-files)_ for more information.
 
@@ -624,6 +630,14 @@ If enabled, the leaks will be stored locally in /inputs/generation after running
 - Alberta: "ERA5_AB_1x1_hourly_2015_2019.nc"
 - Colorado: "ERA5_CO_1x1_hourly_2015_2019.nc"
 - New Mexico: "ERA5_NM_1x1_hourly_2015_2019.nc"
+
+In addition, the following files are included in the GitHub repository:
+
+- "weather_alberta.nc"
+- "weather_marcellus.nc"
+- "weather_permian.nc"
+- "ERA5_2020_2020_Canada_2xRes.nc"
+- "ERA5_2020_2020_US_2xRes.nc"
 
 Each of these files provides hourly weather (wind, temp, precipitation) data spanning the years specified at a spatial resolution of 1 degree latitude and 1 degree longitude. If custom configurations are needed for different regions, spatial resolutions, temporal resolutions, dates, or weather variables (e.g., clouds, snow cover, etc.), they must be downloaded manually from the ERA5 database. The 'ERA5_downloader' python file in the model code folder provides code and guidance for accessing custom weather data.
 
@@ -888,7 +902,7 @@ By default LPR will be used if value is not provided
 
 **Data type:** String
 
-**Default input:** 3.0
+**Default input:** 4.0
 
 **Description:** Specify version of LDAR-Sim. See section _[Versioning of Parameter Files](#versioning-of-parameter-files)_ for more information.
 
@@ -1046,7 +1060,7 @@ method_labels:
 
 **Data type:** String
 
-**Default input:** 3.0
+**Default input:** 4.0
 
 **Description:** Specify version of LDAR-Sim. See section _[Versioning of Parameter Files](#versioning-of-parameter-files)_ for more information.
 
@@ -1712,6 +1726,8 @@ The follow-up delay parameter can be set to require multiple measurements for a 
 
 ## 9\. Infrastructure file
 
+TODO: add a smal ldescription about how the values propagate
+
 ### facility_ID
 
 **Data type:** String
@@ -1828,63 +1844,77 @@ If **\*\*\_time** is present in the infrastructure file, it must **NOT** be set 
 
 --------------------------------------------------------------------------------
 
-## 10\. Subtype File
+### 9.1\. Site Type File
 
-### leak_rate_source
+--------------------------------------------------------------------------------
 
-**Data type:** string
+### 9.2\. Sites File
 
-**Default input:** None
+--------------------------------------------------------------------------------
 
-**Description:** A column in the subtype_file indicating the source informing leak rate behavior. Valid options are "sample" and "dist". If 'dist', it is necessary to populate the dist_type, dist_scale, dist_sigma, dist_metric and dist_increment columns. If 'sample', it is necessary to populate the 'leaks_rates_file' column.
+### 9.3\. Equipment Group File
+
+--------------------------------------------------------------------------------
+
+### 9.4\. Sources File
+
+--------------------------------------------------------------------------------
+
+## 10\. Emissions File
+
+Each column in the emissions file represents a single emissions source. Each row represents a specific value provided by the following:
+
+- Header
+- Data Use
+- Distribution type
+- Maximum emission rate
+- Units (amount)
+- Units (time)
+- Source
+
+For example:
+
+| Bottom-Up Fugitive Emissions | Top-Down Fugitive Emission Rates |
+|----------|----------|
+| dist | sample |
+| lognormal | n/a |
+| 100000 | 100000 |
+| kilogram | gram |
+| hour | second |
+| -1.79 | 10 |
+| 2.17 | 4 |
+| | 1.2|
+| | 2.2|
+
+### Header
+
+**Description:** A user define row name, that corresponds to the ERS references used in the virtual world parameters or in the infrastructure files.
 
 **Notes on acquisition:** User defined
 
-**Notes of caution:** Must be populated when using the subtype file
+### Data Use
 
-### dist_type
+**Description:** The way the following information in the column is utilized. The simulation will either use emissions values as sampled, or generate values based on the distribution shape and scale. Valid inputs are ``sample`` and ``dist``.
 
-**Data type:** string
+**Notes on acquisition:** User defined. In the future, the ``fit`` functionality will be reimplemented to enable fitting of sample data to the most appropriate statistical curve.
 
-**Default input:** None
+### Distribution Type
 
-**Description:** The name of a distribution from the scipy library, used in conjunction with other subtype dist_<> params. See scipy documentation for more details.
+**Description:** TODO
 
-**Notes on acquisition:** User defined
+**Notes on acquisition:** TODO
 
-**Notes of caution:** Must be populated when using the subtype file with leak_rate_source set to "dist"
+**Notes on caution** TODO
 
-### dist_scale
+### Maximum Emission Rate
 
-**Data type:** string
+**Description:** TODO
 
-**Default input:** None
+**Notes on acquisition:** TODO
 
-**Description:** The scale of the leak rate distribution to be used for each subtype.
+### Units (amount)
 
-**Notes on acquisition:** Ideally, should be drawn from a distribution fit to empirical data for similar sites.
-
-**Notes of caution:** Must be populated when using the subtype file with leak_rate_source set to "dist"
-
-### dist_sigma
-
-**Data type:** string
-
-**Default input:** None
-
-**Description:** The sigma of the leak rate distribution to be used for each subtype.
-
-**Notes on acquisition:** Ideally, should be drawn from a distribution fit to empirical data for similar sites.
-
-**Notes of caution:** Must be populated when using the subtype file with leak_rate_source set to "dist"
-
-### dist_metric
-
-**Data type:** string
-
-**Default input:** None
-
-**Description:** Units of the amount used for inputs of subtype leak distributions.  Can be one of:
+**Description:** Units of the amount used for inputs of emissions.  Can be one of:
 
 - gram
 - kilogram
@@ -1897,49 +1927,29 @@ If **\*\*\_time** is present in the infrastructure file, it must **NOT** be set 
 
 **Notes on acquisition:** User defined
 
-**Notes of caution:** Must be populated when using the subtype file with leak_rate_source set to "dist"
+**Notes of caution:** TODO: add in disclaimer about assumptions behind conversions and standard atmospheric tmep/press
 
-#### dist_increment
+### Units (time)
 
-**Data type:** string
-
-**Default input:** None
-
-**Description:** Units of the increment used for inputs of subtype leak distributions. Can be one of:
+**Description:** The time units of the inputs of emissions. Can be one of:
 
 - second
 - minute
 - hour
 - day
+- week
+- month
 - year
 
 **Notes on acquisition:** User defined
 
-**Notes of caution:** Must be populated when using the subtype file with leak_rate_source set to "dist"
+**Notes of caution:** See Units (amount) above.
 
-### leak_rates_file
+### Source
 
-**Data type:** string
+**Description:** TODO
 
-**Default input:** None
-
-**Description:** A string pointing to a file containing leak rates to sample from for the subtype. The file must be a single column csv file with the header "gpersec" and leak rates in grams per second.
-
-**Notes on acquisition:** Ideally, should be empirical data for similar sites.
-
-**Notes of caution:** Must be populated when using the subtype file with leak_rate_source set to "sample"
-
-### vent_rates_file
-
-**Data type:** string
-
-**Default input:** None
-
-**Description:** A string pointing to a file containing venting rates to sample from for the subtype. The file must be a single column csv file with the header "gpersec" and venting rates in grams per second.
-
-**Notes on acquisition:** Ideally, should be empirical data for similar sites.
-
-**Notes of caution:** Must be populated when using the subtype file with consider_venting set to True if venting is not set per site in the infrastructure file.
+**Notes on acquisition:** TODO
 
 --------------------------------------------------------------------------------
 
@@ -1947,7 +1957,7 @@ If **\*\*\_time** is present in the infrastructure file, it must **NOT** be set 
 
 As LDAR-Sim continues to grow and evolve, certain parameters may need to be retired and removed from the current version of LDAR-Sim. For completeness, the documentation for these parameters will be moved to this section along with an indication of which version of LDAR-Sim they were removed in.
 
-### &lt;write_data&gt -- Removed as of version 3.2.0;
+### &lt;write_data&gt -- Removed as of version 3.2.0
 
 **Data type:** Boolean
 
