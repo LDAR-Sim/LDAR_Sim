@@ -1,6 +1,6 @@
 """Tests for the map parameters method"""
 
-from initialization.input_manager import InputManager
+from file_processing.input_processing.input_manager import InputManager
 from testing.unit_testing.test_initialization.test_input_manager.input_manager_testing_fixtures import (  # Noqa: 401
     mock_parameter_program_level_fix,
     mock_parameter_sim_settings_fix,

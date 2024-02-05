@@ -1,7 +1,7 @@
 """Module to test handle_parameter_version"""
 
 import pytest
-from initialization.input_manager import InputManager
+from file_processing.input_processing.input_manager import InputManager
 from initialization.versioning import (
     LEGACY_PARAMETER_WARNING,
     MAJOR_VERSION_ONLY_WARNING,

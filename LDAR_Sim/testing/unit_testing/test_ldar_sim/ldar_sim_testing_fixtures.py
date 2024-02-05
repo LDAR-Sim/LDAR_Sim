@@ -4,13 +4,13 @@ import pytest
 from src.time_counter import TimeCounter
 from src.weather.weather_lookup_hourly import WeatherLookup
 
-import datetime
+from datetime import date
 
 
 @pytest.fixture(name="mock_state_for_ldar_sim_testing_1")
 def mock_state_for_ldar_sim_testing_1_fix(mocker):
     mock_tc = mocker.Mock(TimeCounter)
-    mock_tc.current_date = datetime.datetime(2017, 1, 1, 8, 0)
+    mock_tc.current_date = date(2017, 1, 1)
     mock_tc.current_timestep = 1
     mock_weather = mocker.Mock(WeatherLookup)
     mock_weather.latitude = [55.05]
@@ -82,9 +82,9 @@ def mock_vw_for_ldar_sim_testing_2_fix():
 @pytest.fixture(name="mock_state_for_ldar_sim_testing_2")
 def mock_state_for_ldar_sim_testing_2_fix(mocker):
     mock_tc = mocker.Mock(TimeCounter)
-    mock_tc.current_date = datetime.datetime(2017, 1, 1, 8, 0)
+    mock_tc.current_date = date(2017, 1, 1)
     mock_tc.current_timestep = 1
-    mock_tc.start_date = datetime.datetime(2017, 1, 1, 8, 0)
+    mock_tc.start_date = date(2017, 1, 1)
     mock_weather = mocker.Mock(WeatherLookup)
     mock_weather.latitude = [55.05]
     mock_weather.longitude = [-119.99]

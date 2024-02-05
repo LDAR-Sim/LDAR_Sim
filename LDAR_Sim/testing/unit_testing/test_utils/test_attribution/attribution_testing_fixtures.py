@@ -1,14 +1,14 @@
 """Fixtures for testing utils.attribution methods"""
 
 import pytest
-import datetime
+from datetime import date
 
 from src.time_counter import TimeCounter
 
 
 @pytest.fixture(name="mock_leak_for_update_tag_testing_1")
 def mock_leak_for_update_tag_testing_1_fix():
-    return {"tagged": True, "date_tagged": datetime.datetime(2017, 1, 1, 8, 0)}
+    return {"tagged": True, "date_tagged": date(2017, 1, 1)}
 
 
 @pytest.fixture(name="mock_leak_for_update_tag_testing_2")
@@ -24,7 +24,7 @@ def mock_company_for_update_tag_testing_1_fix():
 @pytest.fixture(name="mock_TimeCounter_for_update_tag_testing_1")
 def mock_TimeCounter_for_update_tag_testing_1_fix(mocker):
     mock_tc = mocker.Mock(TimeCounter)
-    mock_tc.current_date = datetime.datetime(2017, 1, 1, 8, 0)
+    mock_tc.current_date = date(2017, 1, 1)
     mock_tc.current_timestep = 1
     return mock_tc
 

@@ -9,7 +9,7 @@ from testing.unit_testing.test_initialization.test_input_manager.input_manager_t
 
 from config.output_flag_mapping import OUTPUTS, SITES, TIMESERIES, LEAKS, PLOTS, BATCH_REPORTING
 
-from initialization.input_manager import InputManager
+from file_processing.input_processing.input_manager import InputManager
 
 
 def test_045_make_plots_write_data(mocker, mock_parameter_write_data_make_plots):
