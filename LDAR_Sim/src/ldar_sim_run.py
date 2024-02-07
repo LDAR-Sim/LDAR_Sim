@@ -36,10 +36,6 @@ from stdout_redirect import stdout_redirect
 from virtual_world.sites import Site
 from weather.daylight_calculator import DaylightCalculatorAve
 from weather.weather_lookup import WeatherLookup as WL
-<<<<<<< Updated upstream
-from weather.weather_lookup_hourly import WeatherLookup as WL_h
-=======
->>>>>>> Stashed changes
 
 from utils.generic_functions import check_ERA5_file
 from file_processing.input_processing.input_manager import InputManager
@@ -70,14 +66,7 @@ def ldar_sim_run(simulation, weather, daylight):
     input_directory = simulation["input_directory"]
     output_directory = simulation["output_directory"] / program_parameters["program_name"]
     virtual_world["pregenerate_leaks"] = simulation["pregenerate_leaks"]
-<<<<<<< Updated upstream
-    virtual_world["leak_timeseries"] = simulation["leak_timeseries"]
-    virtual_world["initial_leaks"] = simulation["initial_leaks"]
-    virtual_world["seed_timeseries"] = simulation["seed_timeseries"]
-    virtual_world["sites"] = simulation["sites"]
-=======
     infrastructure: Infrastructure = simulation["Infrastructure"]
->>>>>>> Stashed changes
     simulation_settings = simulation["simulation_settings"]
 
     if not os.path.exists(output_directory):
@@ -93,52 +82,6 @@ def ldar_sim_run(simulation, weather, daylight):
         sys.stdout = stdout_redirect([logfile])
     gc.collect()
 
-<<<<<<< Updated upstream
-    # --------- Leak distributions -------------
-    if len(virtual_world["leak_timeseries"]) < 1:
-        get_subtype_dist(virtual_world, input_directory)
-
-    # --------------------------------------
-    # --- Initialize dynamic model state ---
-    state = {
-        "t": None,
-        "operator": None,  # operator gets assigned during initialization
-        "methods": [],  # list of methods in action
-        "sites": virtual_world["sites"],  # sites in the simulation
-        "flags": [],  # list of sites flagged for follow-up
-        # 'leaks': [],  # list of all current leaks
-        "tags": [],  # leaks that have been tagged for repair
-        "weather": None,  # weather gets assigned during initialization
-        "daylight": None,  # daylight hours calculated during initialization
-        # 'init_leaks': [],  # the initial leaks generated at timestep 1
-        "max_leak_rate": None,  # the largest leak in the input file
-        "site_visits": {},
-    }
-
-    # ------------------------Initialize timeseries data----------------------------
-
-    timeseries = {
-        "datetime": [],
-        "active_leaks": [],
-        "new_leaks": [],
-        "n_tags": [],
-        "rolling_cost_estimate": [],
-        "rolling_cost_estimate_b": [],
-        "cum_repaired_leaks": [],
-        "daily_emissions_kg": [],
-    }
-
-    # -----------------------------Run simulations----------------------------------
-
-    # Initialize objects
-    if "weather_is_hourly" in virtual_world and virtual_world["weather_is_hourly"]:
-        state["weather"] = WL_h(state, virtual_world, input_directory)
-    else:
-        state["weather"] = WL(state, virtual_world, input_directory)
-    state["t"] = TimeCounter(simulation_settings["start_date"], simulation_settings["end_date"])
-    virtual_world.update({"timesteps": state["t"].timesteps})
-=======
->>>>>>> Stashed changes
     sim = LdarSim(
         simulation_settings,
         weather,
