@@ -1,4 +1,4 @@
-# The LDAR Simulator V3.3
+# The LDAR Simulator V4.0
 
 See changelog [here](changelog.md)
 
@@ -98,7 +98,7 @@ Simulation_settings.yaml =>
 
 ``` yaml
   parameter_level: simulation_settings     // Denotes the parameter level (used for input handling)
-  version: '2.0'              // Denotes the version
+  version: '4.0'              // Denotes the version
   reference_program: P_OGI    // Denotes the regulatory reference program for relative differences
   baseline_program: P_none    // Denotes a baseline program for estimating program mitigation, usually in place of no formal LDAR
 ```
@@ -109,7 +109,7 @@ A Program yaml file is required, the most basic setup is as follows (where a met
 ``` yaml
   program_name: P_OGI           // Denotes program name (must be unique)
   parameter_level: program      // Denotes the program level (used for input handling)
-  version: '2.0'                // Denotes the version
+  version: '4.0'                // Denotes the version
   method_labels:                // Denotes the associated methods
     - OGI 
 ```
@@ -119,7 +119,7 @@ P_none.yaml =>
 ``` yaml
   program_name: P_none
   parameter_level: program
-  version: '2.0'
+  version: '4.0'
   method_labels: []
 
 ```
@@ -130,7 +130,7 @@ A Method yaml file is required, the most basic setup is as follows:
 
 ``` yaml
     parameter_level: method         // Denotes program name (must be unique)
-    version: '2.0'                  // Denotes the version
+    version: '4.0'                  // Denotes the version
     label: OGI                      // Specify the label to link to an associated program
     deployment_type: mobile         // How the technology operates, 'mobile', 'stationary' or 'orbit'
     measurement_scale: component    // Does the sensor measure at a site level, equipment level or component level
@@ -149,17 +149,17 @@ Check out the [user manual](USER_MANUAL.md) for more info on the parameters.
 
 #### Step 5: Run the program
 
-The main program is a python script called LDAR_Sim_main.py. Within the virtual environment (or where all py packages are installed) run:
+The main program is a python script called LDAR_Sim_run.py. Within the virtual environment (or where all py packages are installed) run:
 
- ```Python LDAR_Sim_main.py {SS_XXX} {VW_XXX} {P_XXX} {M_YYY}```
+ ```Python LDAR_Sim_run.py {SS_XXX} {VW_XXX} {P_XXX} {M_YYY}```
 
   where each argument is a path to a simulation settings, virtual world, program, or method input parameter file. for example:
 
-```Python LDAR_Sim_main.py ./simulations/Simulation_settings.yaml ./simulations/virtual_world.yaml ./simulations/P_aircraft.yaml ./simulations/P_none.yaml ./ simulations/M_aircraft.yaml ./simulations/M_OGI_FU.```
+```Python LDAR_Sim_run.py ./simulations/Simulation_settings.yaml ./simulations/virtual_world.yaml ./simulations/P_aircraft.yaml ./simulations/P_none.yaml ./ simulations/M_aircraft.yaml ./simulations/M_OGI_FU.```
 
 alternatively, an entire directory can be passed using the "-P", "--in_dir" flags where all files within the directory are added to the program. for example:
 
- ```Python LDAR_Sim_main.py --in_dir ./simulations```
+ ```Python LDAR_Sim_run.py --in_dir ./simulations```
 
  will load all files in the simulations folder into the program.
 

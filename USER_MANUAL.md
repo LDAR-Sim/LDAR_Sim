@@ -162,22 +162,22 @@ Parameter files are read on top of each other, starting with the default set of 
 ```yaml
 version: 4.0
 n_simulations: 30
-LPR: 0.0065
+n_processes: 2 
 ```
 
-This will revise the `n_simulations` key to 30, from whatever was default, and the `LPR` key to 0.0065, from whatever was default. Next, `parameter_file2.yaml` is read, which looks like this:
+This will revise the `n_simulations` key to 30, from the default of 2, and the `n_processes` key to 2, from the default of 6. Next, `parameter_file2.yaml` is read, which looks like this:
 
 ```yaml
 version: 4.0
 n_simulations: 3
 ```
 
-This will replace the `n_simulations` key with 3 (instead of 30), but leave the `LPR` key, and all other parameters in the model untouched. The model will now run with parameters that look like this:
+This will replace the `n_simulations` key with 3 (instead of 30), but leave the `n_processes` key, and all other parameters in the model untouched. The model will now run with parameters that look like this:
 
 ```yaml
 version: 4.0
 n_simulations: 3
-LPR: 0.0065
+n_processes: 6
 .... ALL OTHER PARAMETERS RUN WITH DEFAULT VALUES ....
 ```
 
@@ -186,7 +186,7 @@ Keep in mind that only 2 parameters have been changed with these parameter files
 In this example, changing the `n_simulations` key to 3 makes the model run faster and provides a way to test the model without waiting for it to complete 30 simulations. A reasonable workflow with these parameters would be something like running the model in a test configuration with:
 
 ```buildoutcfg
-python ldar_sim_run.py parameter_file1.yaml parameter_file2.yaml
+python ldar_sim_run.py parameter_file2.yaml
 ```
 
 Then, when comfortable understanding the outputs and ready to run the model for longer to get more statistically valid results, run:
@@ -231,8 +231,8 @@ There are special considerations for methods:
 - All methods require a `deployment_type`. This can be custom coded following the `template_crew` and `template_company` modules or one of the prebuilt methods can be used:
 
   - `mobile`: Agent moves between sites. Surveys occur when a site is "ready" for a survey and a crew is available to survey.
-  - `stationary`: Each site has one or more _fixed_ sensors. Surveys are carried out daily.
-  - `orbit`: Agent 'orbits' site and performs surveys at regular intervals.
+  - `stationary`: (WIP) Each site has one or more _fixed_ sensors. Surveys are carried out daily.
+  - `orbit`: (WIP) Agent 'orbits' site and performs surveys at regular intervals.
 
 - All methods require a `measurement_scale`. This can be one of:
 
@@ -242,7 +242,10 @@ There are special considerations for methods:
 
 - All methods require a `sensor` This can either be custom built or one of the following can be used:
 
-  - `default`: Uses a simple threshold where the leak rate is based on the measurement scale, for example if `measurement_scale = site` then the site's total emissions will be considered measured if greater than the sensors MDL. -`OGI_camera_rk`: Uses detection curve based on Ravikumar, 2018. Requires measurement_scale = 'component'.
+  - `default`: Uses a simple threshold where the leak rate is based on the measurement scale, for example if `measurement_scale = site` then the site's total emissions will be considered measured if greater than the sensors MDL.
+  - `OGI_camera_rk`: Uses the detection curve based on Ravikumar, 2018. Requires measurement_scale = 'component'.
+  - `OGI_camera_zim`: Uses the detection curve based on Zimmerle 2020. Requires measurement_scale = 'component'.
+  - `METEC_no_wind`: Replicates the probability of detection curve provided by METEC reports. Users are required to know the coefficients to replicate the technology they wish to simulate.
 
 - Follow up technologies need to be set explicitly. `is_follow_up = True`. The default value is false
 - Third, because methods are often carefully designed and used in treatment / control experiments, it is helpful to allow reuse of specific methods by referring to methods by their `label`.
@@ -264,20 +267,22 @@ Programs:
 
 Here, there is a situation where `New LDAR method 1` is used in both `Test program` and `Test program 2`. The definition for `New LDAR method 1` can and should be specified only once and reused as it is common among two test programs. However, the two programs may differ in _how_ they implement the same method (e.g., different basins).
 
-To specify this, we can refer to the program by name in the program definitions with the addition of the `method_labels` parameter to our program. Note, we leave the `methods` key empty as the specified `new_LDAR_method_1` will be injected in at runtime.
+To specify this, we can refer to the program by name in the program definitions with the addition of the `method_labels` parameter to our program.
+
+test_program_1.yaml:
 
 ```yaml
-test_program_1:
-    version: '4.0'
-    parameter_level: program
-    method_labels: [new_LDAR_method_1]
-    program_name: "test_program_1"
+  version: '4.0'
+  parameter_level: program
+  program_name: "test_program_1"
+  method_labels: [new_LDAR_method_1]
 ```
 
 This `new_LDAR_method_1` has to be defined elsewhere in a separate parameter file to be called by name.
 
+new_LDAR_method_1.yaml:
+
 ```yaml
-new_LDAR_method_1:
     version: '4.0'
     parameter_level: method
     label: new_LDAR_method_1
@@ -387,7 +392,7 @@ If you are developing in LDAR-Sim, please adhere to the following rules:
 
 **Default input:** "./inputs"
 
-**Description:** Specify location containing input files like infrastructure and weather. Can be an absolute path, or relative path from the root folder.
+**Description:** Specify location containing input files like infrastructure, weather, and more. Can be an absolute path, or relative path from the root folder.
 
 **Notes on acquisition:** N/A
 
@@ -411,7 +416,7 @@ If you are developing in LDAR-Sim, please adhere to the following rules:
 
 **Default input:** 'P_none'
 
-**Description:** A program that represents a scenario where there is no formal LDAR, or that has no LDAR methods.
+**Description:** A program that represents a scenario where there is no formal LDAR, or that has no LDAR methods. Any results requiring a reference point for comparison, such as mitigation efforts, will be derived from this baseline program.
 
 **Notes on acquisition:** N/A
 
@@ -445,7 +450,7 @@ If you are developing in LDAR-Sim, please adhere to the following rules:
 
 **Data type:** Integer
 
-**Default input:** 3 (much more required to constrain uncertainty)
+**Default input:** 2 (much more required to constrain uncertainty)
 
 **Description:** The number of repeat simulations to perform for each program.
 
@@ -453,31 +458,7 @@ If you are developing in LDAR-Sim, please adhere to the following rules:
 
 **Notes of caution:** Using more simulations leads to better-constrained results but requires greater run time. For high-consequence scenarios that are meant to inform decision-making, we recommend using 10+ simulations for each scenario modeled. A minimum of two simulations is required to compare a set of different LDAR programs.
 
-### &lt;start_date&gt;
-
-**Data type:** List of integers [year, month, day]
-
-**Default input:** [2023,1,1]
-
-**Description:** The date at which the simulations begins.
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** The NetCDF file should encompass the start date and end date.
-
-### &lt;end_date&gt;
-
-**Data type:** List of integers [year, month, day]
-
-**Default input:** [2027,12,31]
-
-**Description:** The date at which the simulations ends.
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** We recommend running the simulation for several years due to the stochastic nature of LDAR systems and the periods of time over which leaks arise and are repaired.
-
-### &lt;print_from_simulations&gt;
+### &lt;print_from_simulations&gt; (WIP)
 
 **Data type:** Boolean
 
@@ -489,27 +470,13 @@ If you are developing in LDAR-Sim, please adhere to the following rules:
 
 **Notes of caution:** N/A
 
-### &lt;pregenerate_leaks&gt;
-
-**Data type:** Boolean
-
-**Default input:** True
-
-**Description:** If set to True, leaks will be generated prior to running the simulations. This can be used to test a set of program simulations with the same leaks and the same sites. This can reduce modelling uncertainty when comparing two programs with a limited number of simulations, especially from very large leaks.
-
-If enabled, the leaks will be stored locally in /inputs/generation after running (this also enables users to share leaks used to test programs, which enhances transparency and reproducibility). On subsequent simulations the user will be prompted to use the stored data or to regenerate. At this time, input parameters are not checked, therefore the user should generate new leaks after changing input parameters.
-
-**Notes on acquisition:** N/A
-
-**Notes of caution:** N/A
-
 ### &lt;preseed_random&gt;
 
 **Data type:** Boolean
 
 **Default input:** False
 
-**Description:** If set to True, a time series of daily random integers will be created, and passed into each program, where each program within a simulation set receives the same time series. Then within each day of the simulation, the numpy and random seeds are set using the daily integer. This ensures that the output values will be the same in identical programs regardless of the stochastic nature of the software.
+**Description:** If set to True, a time series of daily random integers will be created, and passed into each program, where each program within a simulation set receives the same time series. Then within each day of the simulation, the numpy and random seeds are set using the daily integer. This ensures that the output values can be duplicated and the same throughout the same program.
 
 **Notes on acquisition:** N/A
 
@@ -617,6 +584,30 @@ If enabled, the leaks will be stored locally in /inputs/generation after running
 
 **Notes of caution:** Must be set to ```parameter_level: virtual_world``` for a virtual world parameter file.
 
+### &lt;start_date&gt;
+
+**Data type:** List of integers [year, month, day]
+
+**Default input:** [2023,1,1]
+
+**Description:** The date at which the simulations begins.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** N/A
+
+### &lt;end_date&gt;
+
+**Data type:** List of integers [year, month, day]
+
+**Default input:** [2027,12,31]
+
+**Description:** The date at which the simulations ends.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** We recommend running the simulation for several years due to the stochastic nature of LDAR systems and the periods of time over which leaks arise and are repaired.
+
 ### &lt;weather_file&gt;
 
 **Data type:** String
@@ -647,18 +638,6 @@ Weather file sizes can become quite large, especially when spatial and temporal 
 
 If using different weather files for different programs (e.g., when comparing different regions), weather data must be downloaded manually and saved to the inputs folder before beginning simulations, as the automatic downloader built into LDAR-Sim will only download one file at a time.
 
-### &lt;weather_is_hourly&gt;
-
-**Data type:** Boolean
-
-**Default input:** False
-
-**Description:** Specify if the weather file is ERA5 reanalysis hourly data downloaded directly from ERA5 Copernicus database or API. If false, the weather file is assumed to be daily average data generated using the /weather/ERA5_hourly_to_daily.py script.
-
-**Notes on acquisition:** N/A
-
-**Notes of caution:** N/A
-
 ### &lt;consider_weather&gt;
 
 **Data type:** Boolean
@@ -671,17 +650,33 @@ If using different weather files for different programs (e.g., when comparing di
 
 **Notes of caution:** Even if weather is considered false, ```weather_file``` must be present and valid.
 
-### &lt;infrastructure_file&gt;
+### &lt;infrastructure&gt;
+
+#### &lt;site_type_file&gt;
 
 **Data type:** String
 
-**Default input:**"facility_list_template.csv"
+**Default input:** None
 
-**Description:** Character string that specifies the name of the csv file that contains all of the required data on the sites that comprise the LDAR program. At a bare minimum, the csv must contain the following columns: 'facility_ID', 'lat', 'lon', 'equipment_groups', and 'subtype_code'. For each mobile measurement company used as part of the LDAR program, the number of annual surveys (survey frequency) must be indicated and the inspection time for each method indicated (in minutes). The number of fixed sensors used at each site must also be indicated. A static venting rate may be provided for each site.
+**Description:** Character string that specifies the name of the csv file that contains all of the required data on the site types that comprise the LDAR program. This is an optional file. **TODO**
 
-**Notes on acquisition:** See [infrastructure file](#9-infrastructure-file) which describes individual columns in greater detail.
+**Notes on acquisition:**  See [Site Type File](#9.1-site-type-file) which describes individual columns in greater detail.
+
+#### &lt;sites_file&gt; -- Previously called infrastructure_file
+
+**Data type:** String
+
+**Default input:**"facility_alberta.csv"
+
+**Description:** Character string that specifies the name of the csv file that contains all of the required data on the sites that comprise the LDAR program. At a bare minimum, the csv must contain the following columns: 'facility_ID', 'lat', 'lon', 'equipment_groups', and 'subtype_code'. **TODO**
+
+**Notes on acquisition:**  See [Sites File](#9.2-sites-file) which describes individual columns in greater detail.
 
 **Notes of caution:** Although facility-specific inputs provide flexibility, in most cases the appropriate data will not be available, and the same survey time or survey frequency may be used for all facilities. In general, LDAR-Sim does not hard-code methods, facility types, production types, and so on. These are provided by the user as categorical variables and can be anything. However, categorical variables must be consistent among different input files or errors will occur.
+
+#### &lt;equipment_group_file&lt;
+
+**
 
 ### &lt;site_samples&gt;
 
@@ -1957,7 +1952,35 @@ For example:
 
 As LDAR-Sim continues to grow and evolve, certain parameters may need to be retired and removed from the current version of LDAR-Sim. For completeness, the documentation for these parameters will be moved to this section along with an indication of which version of LDAR-Sim they were removed in.
 
-### &lt;write_data&gt -- Removed as of version 3.2.0
+### &lt;pregenerate_leaks&gt; -- Removed as of 4.0.0
+
+To ensure a fair comparison of programs, the functionality to compare programs with differing emission levels has been omitted, ensuring a standardized evaluation across all programs.
+
+**Data type:** Boolean
+
+**Default input:** True
+
+**Description:** If set to True, leaks will be generated prior to running the simulations. This can be used to test a set of program simulations with the same leaks and the same sites. This can reduce modelling uncertainty when comparing two programs with a limited number of simulations, especially from very large leaks.
+
+If enabled, the leaks will be stored locally in /inputs/generation after running (this also enables users to share leaks used to test programs, which enhances transparency and reproducibility). On subsequent simulations the user will be prompted to use the stored data or to regenerate. At this time, input parameters are not checked, therefore the user should generate new leaks after changing input parameters.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** N/A
+
+### &lt;weather_is_hourly&gt; --Removed as of version 4.0.0
+
+**Data type:** Boolean
+
+**Default input:** False
+
+**Description:** Specify if the weather file is ERA5 reanalysis hourly data downloaded directly from ERA5 Copernicus database or API. If false, the weather file is assumed to be daily average data generated using the /weather/ERA5_hourly_to_daily.py script.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** N/A
+
+### &lt;write_data&gt; -- Removed as of version 3.2.0
 
 **Data type:** Boolean
 
