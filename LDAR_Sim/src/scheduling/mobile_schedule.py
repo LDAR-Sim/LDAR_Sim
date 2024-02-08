@@ -18,6 +18,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 ------------------------------------------------------------------------------
 """
+
 from datetime import date
 from scheduling.generic_schedule import GenericSchedule
 from virtual_world.sites import Site
@@ -47,4 +48,8 @@ class MobileSchedule(GenericSchedule):
             est_meth_daily_surveys,
             method_avail_crews,
         )
+        return
+
+    def _reconstruct():
+        super()._reconstruct()
         return

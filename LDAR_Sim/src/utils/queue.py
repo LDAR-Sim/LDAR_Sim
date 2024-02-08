@@ -17,16 +17,43 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 ------------------------------------------------------------------------------
 """
-import queue
+
+from multiprocessing import Queue
 import itertools
 
 
-class PriorityQueueWithFIFO(queue.PriorityQueue):
-    def __init__(self):
-        super().__init__()
-        self.counter = itertools.count()
+class PriorityQueueWithFIFO:
+    def __init__(self, num_priorities=3):
+        self.queues = [Queue() for _ in range(num_priorities)]
+        self.counters = [itertools.count() for _ in range(num_priorities)]
 
     def put(self, priority, item):
-        # Add a tie-breaker using a secondary counter
-        entry = (priority, next(self.counter), item)
-        super().put(entry)
+        entry = (next(self.counters[priority]), item)
+        self.queues[priority].put(entry)
+
+    def get(self):
+        for queue in self.queues:
+            if not queue.empty():
+                _, item = queue.get()
+                return item
+        raise IndexError("Queue is empty")
+
+    def empty(self):
+        return all(queue.empty() for queue in self.queues)
+
+
+class PriorityQueue:
+    def __init__(self, num_priorities=3):
+        self.queues = [Queue() for _ in range(num_priorities)]
+
+    def put(self, priority, item):
+        self.queues[priority].put(item)
+
+    def get(self):
+        for queue in self.queues:
+            if not queue.empty():
+                return queue.get()
+        raise IndexError("Queue is empty")
+
+    def empty(self):
+        return all(queue.empty() for queue in self.queues)

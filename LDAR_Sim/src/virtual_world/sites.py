@@ -73,6 +73,45 @@ class Site:
         self._set_survey_costs(methods=methods)
         self._latest_tagging_survey_date: date = start_date
 
+    def __reduce__(self):
+        args = (
+            self._site_ID,
+            self._lat,
+            self._long,
+            self._equipment_groups,
+            self._survey_frequencies,
+            self._deployment_months,
+            self._deployment_years,
+            self._site_type,
+            self._latest_tagging_survey_date,
+        )
+        return (self.__class__._reconstruct, args)
+
+    @classmethod
+    def _reconstruct(
+        cls,
+        site_ID,
+        lat,
+        long,
+        equipment_groups,
+        survey_frequencies,
+        deployment_months,
+        deployment_years,
+        site_type,
+        latest_tagging_survey_date,
+    ):
+        instance = cls.__new__(cls)
+        instance._site_ID = site_ID
+        instance._lat = lat
+        instance._long = long
+        instance._equipment_groups = equipment_groups
+        instance._survey_frequencies = survey_frequencies
+        instance._deployment_months = deployment_months
+        instance._deployment_years = deployment_years
+        instance._site_type = site_type
+        instance._latest_tagging_survey_date = latest_tagging_survey_date
+        return instance
+
     def _create_equipment_groups(
         self, equipment_groups: list, infrastructure_inputs, propagating_params
     ) -> None:

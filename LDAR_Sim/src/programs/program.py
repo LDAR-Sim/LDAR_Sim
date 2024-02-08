@@ -17,8 +17,9 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 ------------------------------------------------------------------------------
 """
+
 from datetime import date, timedelta
-from typing import Tuple
+from typing import Any, Tuple
 from file_processing.output_processing.output_utils import (
     CrewDeploymentStats,
     TaggingFlaggingStats,
@@ -61,8 +62,35 @@ class Program:
             methods, consider_weather, sites, sim_start_date, sim_end_date
         )
         self._current_date: date = sim_start_date
+        self._consider_weather: bool = consider_weather
         self.weather = weather
         self.daylight = daylight
+
+    def __reduce__(self) -> str | tuple[Any, ...]:
+        args = (
+            self.name,
+            self.weather,
+            self.daylight,
+            self._survey_schedules,
+            self.method_names,
+            self._current_date,
+            self._methods,
+        )
+        return (self.__class__._reconstruct, args)
+
+    @classmethod
+    def _reconstruct(
+        cls, name, weather, daylight, survey_schedules, method_names, current_date, methods
+    ):
+        instance = cls.__new__(cls)
+        instance.name = name
+        instance.weather = weather
+        instance.daylight = daylight
+        instance._survey_schedules = survey_schedules
+        instance.method_names = method_names
+        instance._current_date = current_date
+        instance._methods = methods
+        return instance
 
     def _init_methods_and_schedules(
         self,

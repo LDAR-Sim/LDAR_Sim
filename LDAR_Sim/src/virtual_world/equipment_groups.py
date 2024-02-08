@@ -46,6 +46,24 @@ class Equipment_Group:
             info=info,
         )
 
+    def __reduce__(self):
+        args = (
+            self._id,
+            self._meth_survey_times,
+            self._meth_survey_costs,
+            [eq for eq in self._equipment],
+        )
+        return (self.__class__._reconstruct, args)
+
+    @classmethod
+    def _reconstruct(cls, id, meth_survey_times, meth_survey_costs, equipment):
+        instance = cls.__new__(cls)
+        instance._id = id
+        instance._meth_survey_times = meth_survey_times
+        instance._meth_survey_costs = meth_survey_costs
+        instance._equipment = equipment
+        return instance
+
     def _update_prop_params(self, info: dict, prop_params: dict) -> None:
         meth_specific_params: dict = prop_params.pop("Method_Specific_Params")
 

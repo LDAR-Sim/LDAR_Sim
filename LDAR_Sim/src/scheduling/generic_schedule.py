@@ -18,6 +18,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 ------------------------------------------------------------------------------
 """
+
 from datetime import date
 from scheduling.workplan import Workplan
 from virtual_world.sites import Site
@@ -55,6 +56,28 @@ class GenericSchedule:
         self._survey_plans: list[ScheduledSurveyPlanner] = self._set_survey_plans(
             sim_start_date, sim_end_date, sites
         )
+
+    def __reduce__(self):
+        args = (
+            self._method,
+            self._survey_plans,
+            self._est_meth_daily_surveys,
+            self._method_crews,
+            self._survey_queue,
+        )
+        return (self.__class__._reconstruct, args)
+
+    @classmethod
+    def _reconstruct(
+        cls, method_name, survey_plans, est_meth_daily_surveys, method_crews, survey_queue
+    ):
+        instance = cls.__new__(cls)
+        instance._method = method_name
+        instance._survey_plans = survey_plans
+        instance._est_meth_daily_surveys = est_meth_daily_surveys
+        instance._method_crews = method_crews
+        instance._survey_queue = survey_queue
+        return instance
 
     def _set_survey_plans(
         self, sim_start_date, sim_end_date, sites: list[Site]

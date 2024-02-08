@@ -113,6 +113,7 @@ def simulate(
     output_dir,
     preseed_timeseries,
 ):
+    print("GOT IN SIMULATE")
     simulation: LdarSim = LdarSim(
         sim_num,
         sim_settings,
@@ -155,7 +156,7 @@ if __name__ == "__main__":
         sim_params = input_manager.read_and_validate_parameters(parameter_filenames)
         out_dir = get_abs_path(sim_params["output_directory"])
 
-    # --- Assign local variabls
+    # --- Assign local variables
     ref_program = sim_params["reference_program"]
     base_program = sim_params["baseline_program"]
     in_dir = get_abs_path(sim_params["input_directory"])
@@ -279,17 +280,20 @@ if __name__ == "__main__":
                         seed_timeseries,
                     )
                 )
-            for index, prog_tuple in enumerate(prog_data):
-                p_name = prog_names[index]
-                print(f".........Simulating program: {p_name}")
-                simulate(*prog_tuple)
-                print(f".........Finished simulating program: {p_name}")
-        # with mp.Pool(processes=sim_params["n_processes"]) as p:
-        #     sim_outputs = p.starmap(
-        #         simulate,
-        #         zip(*prog_data),
-        #     )
-        # print(f"Finished simulating set {simulation}")
+            print()
+        # for index, prog_tuple in enumerate(prog_data):
+        #     p_name = prog_names[index]
+        #     print(f".........Simulating program: {p_name}")
+        #     simulate(*prog_tuple)
+        #     print(f".........Finished simulating program: {p_name}")
+        with mp.Pool(processes=sim_params["n_processes"]) as p:
+            sim_outputs = p.starmap(
+                simulate,
+                prog_data,
+            )
+        print(f"Finished simulating set {simulation}")
+        # TODO: ADD GC.COLLECT HERE AND ONCE AFTER THE SIMULATE FINISHES
+        # TODO: move program into simulate
         # -- Batch Report --
         # TODO: need to write code to clean up outputs here.
         print("...Cleaning up output data")

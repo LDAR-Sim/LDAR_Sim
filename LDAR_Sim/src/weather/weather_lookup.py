@@ -29,46 +29,54 @@ class WeatherLookup:
         """
 
         self.virtual_world = virtual_world
+        self.input_directory = input_directory
 
+        # Initialize attributes to store weather data
+        self.temps = None
+        self.u_wind = None
+        self.v_wind = None
+        self.winds = None
+        self.precip = None
+        self.time_total = None
+        self.latitude = None
+        self.longitude = None
+        self.time_length = None
+        self.lat_length = None
+        self.lon_length = None
+
+        # Load weather data
+        self.load_weather_data()
+
+    def load_weather_data(self):
         # Read in weather data as NetCDF file(s)
+        with Dataset(
+            self.input_directory / self.virtual_world["weather_file"], "r"
+        ) as weather_data:
+            # Extract temperatures
+            self.temps = np.array(weather_data.variables["t2m"]) - 273.15
+            # Extract u wind component
+            self.u_wind = np.array(weather_data.variables["u10"])
+            # Extract v wind component
+            self.v_wind = np.array(weather_data.variables["v10"])
+            # Calculate the net wind speed
+            self.winds = np.sqrt(np.square(self.u_wind) + np.square(self.v_wind))
+            # Extract precipitation values and convert to mm
+            self.precip = np.array(weather_data.variables["tp"]) * 1000
+            # Extract time values
+            self.time_total = weather_data.variables["time"][:]
+            # Extract latitude values
+            self.latitude = weather_data.variables["latitude"][:]
+            # Extract longitude values
+            self.longitude = weather_data.variables["longitude"][:]
+            # Length of time dimension - number of timesteps
+            self.time_length = len(self.time_total)
+            # Length of latitude dimension - n cells
+            self.lat_length = len(self.latitude)
+            # Length of longitude dimension - n cells
+            self.lon_length = len(self.longitude)
 
-        self.weather_data = Dataset(
-            input_directory / self.virtual_world["weather_file"], "r"
-        )  # Load wind and temp data
-        self.weather_data.set_auto_mask(False)  # Load wind and temp data
-        # Extract temperatures
-        self.temps = np.array(self.weather_data.variables["t2m"])
-        # Convert to degrees Celcius (time, lat, long)
-        self.temps = self.temps - 273.15
-        # Extract u wind component
-        self.u_wind = np.array(self.weather_data.variables["u10"])
-        # Extract v wind component
-        self.v_wind = np.array(self.weather_data.variables["v10"])
-        self.winds = np.add(
-            np.square(self.u_wind), np.square(self.v_wind)
-        )  # Calculate the net wind speed
-        # Calculate the net wind speed (time, lat, long)
-        self.winds = np.sqrt(self.winds.astype(float))
-        # Extract precipitation values (time, lat, long)
-        self.precip = np.array(self.weather_data.variables["tp"])
-        self.precip = self.precip * 1000  # Convert m to mm (time, lat, long)
-
-        # Extract time values
-        self.time_total = self.weather_data.variables["time"][:]
-        # Extract latitude values
-        self.latitude = self.weather_data.variables["latitude"][:]
-        # Extract longitude values
-        self.longitude = self.weather_data.variables["longitude"][:]
-        # Length of time dimension - number of timesteps
-        self.time_length = len(self.time_total)
-        # Length of latitude dimension - n cells
-        self.lat_length = len(self.latitude)
-        # Length of longitude dimension - n cells
-        self.lon_length = len(self.longitude)
-
-        self.weather_data.close()  # close the netCDF4 file
-
-        return
+    def __reduce__(self):
+        return (self.__class__, (self.virtual_world, self.input_directory))
 
     def deployment_days(
         self, method_name, config, start_date, start_work_hour=0, consider_weather=False
@@ -81,15 +89,9 @@ class WeatherLookup:
         """
 
         # Initialize empty boolean arrays for threshold pass(1)/fail(0)
-        bool_temp = np.zeros(
-            (self.lon_length, self.lat_length, self.virtual_world["timesteps"])
-        )
-        bool_wind = np.zeros(
-            (self.lon_length, self.lat_length, self.virtual_world["timesteps"])
-        )
-        bool_precip = np.zeros(
-            (self.lon_length, self.lat_length, self.virtual_world["timesteps"])
-        )
+        bool_temp = np.zeros((self.lon_length, self.lat_length, self.virtual_world["timesteps"]))
+        bool_wind = np.zeros((self.lon_length, self.lat_length, self.virtual_world["timesteps"]))
+        bool_precip = np.zeros((self.lon_length, self.lat_length, self.virtual_world["timesteps"]))
 
         # For each day...
         for day in range(self.virtual_world["timesteps"]):

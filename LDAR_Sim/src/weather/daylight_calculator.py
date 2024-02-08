@@ -19,6 +19,7 @@
 # ------------------------------------------------------------------------------
 
 from datetime import date, timedelta, datetime
+from typing import Any
 import ephem
 
 
@@ -31,7 +32,10 @@ class DaylightCalculatorAve:
         lon_ave = site_lat_lon[1]
 
         curr_date = start_date
-
+        # Store the inputs as attributes
+        self.site_lat_lon = site_lat_lon
+        self.start_date = start_date
+        self.end_date = end_date
         # Create an empty list to store the daylight hours - rounding down.
         self.daylight_hours = {}
         while curr_date <= end_date:
@@ -54,6 +58,17 @@ class DaylightCalculatorAve:
             self.daylight_hours[curr_date] = dif_hours
             curr_date += timedelta(days=1)
         return
+
+    def __reduce__(self):
+        # Serialize relevant state information
+        args = (self.site_lat_lon, self.start_date, self.end_date)
+        # Return a tuple with the constructor and its arguments
+        return (self.__class__._reconstruct, args)
+
+    @classmethod
+    def _reconstruct(cls, site_lat_lon, start_date, end_date):
+        # Reconstruct the object using the serialized state
+        return cls(site_lat_lon, start_date, end_date)
 
     def get_daylight(self, curr_date: date):
         daylight = self.daylight_hours[curr_date]

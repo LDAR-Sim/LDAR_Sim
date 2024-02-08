@@ -17,6 +17,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 ------------------------------------------------------------------------------
 """
+
 import numpy as np
 from virtual_world.sites import Site
 
@@ -25,6 +26,9 @@ class DefaultSensor:
     def __init__(self, mdl: float, quantification_error: float) -> None:
         self._mdl: float = mdl
         self._quantification_error: float = quantification_error
+
+    def __reduce__(self):
+        return (self.__class__, (self._mdl, self._quantification_error))
 
     def _rate_detected(self, emis_rate: float) -> bool:
         return emis_rate >= self._mdl[0]

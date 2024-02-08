@@ -20,7 +20,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 from datetime import date
 import math
-from queue import PriorityQueue
+from utils.queue import PriorityQueue
 from random import choice
 import sys
 from typing import Tuple
@@ -116,6 +116,85 @@ class Method:
         self._crew_reports: list[CrewDailyReport] = crew_reports
         return
 
+    def initialize_cost_tracking(self, cost_properties: dict[str, float]):
+        self.upfront_cost = cost_properties[self.METHOD_COST_UPFRONT]
+        if cost_properties[self.METHOD_COST_PER_SITE] > 0:
+            self.cost_type = self.PER_SITE_COST
+            self.cost = cost_properties[self.METHOD_COST_PER_SITE]
+        elif cost_properties[self.METHOD_COST_PER_DAY] > 0:
+            self.cost_type = self.PER_DAY_COST
+            self.cost = cost_properties[self.METHOD_COST_PER_DAY]
+        else:
+            self.cost_type = self.PER_SITE_COST
+            self.cost = -1
+
+    def _initialize_sensor(self, sensor_info: dict) -> None:
+        """Will initialize a sensor of the correct type based
+        on the sensor info provided to the method
+
+        Args:
+            sensor_into (dict): _description_
+        """
+        if sensor_info[SENS_TYPE] == "default":
+            self._sensor = DefaultSiteLevelSensor(sensor_info[SENS_MDL], sensor_info[SENS_QE])
+        else:
+            print(ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
+            sys.exit()
+
+    def __reduce__(self):
+        args = (
+            self._name,
+            self._sensor,
+            self._max_work_hours,
+            self._daylight_sensitive,
+            self._weather,
+            self._weather_envs,
+            self._is_follow_up,
+            self._travel_times,
+            self._reporting_delay,
+            self._site_survey_reports,
+            self._detection_records,
+            self._crew_reports,
+            self.cost,
+            self.cost_type,
+        )
+        return (self.__class__._reconstruct, args)
+
+    @classmethod
+    def _reconstruct(
+        cls,
+        name,
+        sensor,
+        max_work_hours,
+        daylight_sensitive,
+        weather,
+        weather_envs,
+        is_follow_up,
+        travel_times,
+        reporting_delay,
+        site_survey_reports,
+        detection_records,
+        crew_reports,
+        cost,
+        cost_type,
+    ):
+        instance = cls.__new__(cls)
+        instance._name = name
+        instance._sensor = sensor
+        instance._max_work_hours = max_work_hours
+        instance._daylight_sensitive = daylight_sensitive
+        instance._weather = weather
+        instance._weather_envs = weather_envs
+        instance._is_follow_up = is_follow_up
+        instance._travel_times = travel_times
+        instance._reporting_delay = reporting_delay
+        instance._site_survey_reports = site_survey_reports
+        instance._detection_records = detection_records
+        instance._crew_reports = crew_reports
+        instance.cost = cost
+        instance.cost_type = cost_type
+        return instance
+
     def _get_average_method_surveys_required(self, sites: "list[Site]") -> float:
         return np.average([site.get_required_surveys(self._name) for site in sites])
 
@@ -179,18 +258,6 @@ class Method:
 
     def get_crew_count(self) -> int:
         return self._crews
-
-    def initialize_cost_tracking(self, cost_properties: dict[str, float]):
-        self.upfront_cost = cost_properties[self.METHOD_COST_UPFRONT]
-        if cost_properties[self.METHOD_COST_PER_SITE] > 0:
-            self.cost_type = self.PER_SITE_COST
-            self.cost = cost_properties[self.METHOD_COST_PER_SITE]
-        elif cost_properties[self.METHOD_COST_PER_DAY] > 0:
-            self.cost_type = self.PER_DAY_COST
-            self.cost = cost_properties[self.METHOD_COST_PER_DAY]
-        else:
-            self.cost_type = self.PER_SITE_COST
-            self.cost = -1
 
     def deploy_crews(self, workplan: Workplan, weather, daylight) -> CrewDeploymentStats:
         """Deploy crews will send crews out to survey sites based on the provided workplan"""
@@ -406,19 +473,6 @@ class Method:
             current_date=curr_date,
         )
         return report
-
-    def _initialize_sensor(self, sensor_info: dict) -> None:
-        """Will initialize a sensor of the correct type based
-        on the sensor info provided to the method
-
-        Args:
-            sensor_into (dict): _description_
-        """
-        if sensor_info[SENS_TYPE] == "default":
-            self._sensor = DefaultSiteLevelSensor(sensor_info[SENS_MDL], sensor_info[SENS_QE])
-        else:
-            print(ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
-            sys.exit()
 
     def get_daylight_hours(self, daylight, max_hours: int, curr_date) -> int:
         """Get the amount of daylight hours"""
