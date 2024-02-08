@@ -1,0 +1,17 @@
+parameter_level: method
+version: "4.0"
+label: airH
+deployment_type: mobile
+measurement_scale: site
+sensor:
+  # mod_loc: 'plugins.alt_sensor'
+  type: default
+  MDL: [5.55]
+is_follow_up: False
+cost:
+  per_day: 0
+  per_site: 100
+t_bw_sites:
+  vals: [5]
+RS: 4
+time: 5
