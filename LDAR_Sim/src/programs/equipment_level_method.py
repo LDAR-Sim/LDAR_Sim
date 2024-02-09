@@ -17,6 +17,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 ------------------------------------------------------------------------------
 """
+
 from datetime import date
 from queue import PriorityQueue
 import sys
@@ -77,20 +78,21 @@ class EquipmentLevelMethod(Method):
             site_to_survey.set_latest_tagging_survey_date(curr_date)
             for equip_group_survey_report in survey_report.equipment_groups_surveyed:
                 for emission_detection_report in equip_group_survey_report.emissions_detected:
-                    tagging_info = TaggingInfo(
-                        measured_rate=emission_detection_report.measured_rate,
-                        curr_date=curr_date,
-                        t_since_LDAR=days_since_last_survey,
-                        company=self._name,
-                        crew=crew.crew_id,
-                        report_delay=self._reporting_delay,
-                    )
-                    site_to_survey.tag_emissions_at_equipment(
-                        emission_detection_report.equipment_group,
-                        emission_detection_report.equipment,
-                        tagging_info=tagging_info,
-                    )
-                    self._emissions_tagged_daily += 1
+                    if emission_detection_report.measured_rate > 0:
+                        tagging_info = TaggingInfo(
+                            measured_rate=emission_detection_report.measured_rate,
+                            curr_date=curr_date,
+                            t_since_LDAR=days_since_last_survey,
+                            company=self._name,
+                            crew=crew.crew_id,
+                            report_delay=self._reporting_delay,
+                        )
+                        site_to_survey.tag_emissions_at_equipment(
+                            emission_detection_report.equipment_group,
+                            emission_detection_report.equipment,
+                            tagging_info=tagging_info,
+                        )
+                        self._emissions_tagged_daily += 1
         return survey_report, site_travel_time, last_site_survey
 
     def _initialize_sensor(self, sensor_info: dict) -> None:
