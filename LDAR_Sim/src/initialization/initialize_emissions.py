@@ -24,6 +24,8 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 import pickle
 from datetime import date
 
+from virtual_world.infrastructure import Infrastructure
+
 
 def initialize_emissions(
     n_sims,
@@ -78,7 +80,7 @@ def initialize_emissions(
     return None
 
 
-def read_in_emissions(infrastructure, generator_dir, sim_numb):
+def read_in_emissions(infrastructure: Infrastructure, generator_dir, sim_numb):
     # Load emissions into the pregenerated infrastructure
     emissions: dict = {}
     emis_file_loc = generator_dir / f"gen_infrastructure_emissions_{sim_numb}.p"

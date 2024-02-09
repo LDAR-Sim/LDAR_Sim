@@ -2,36 +2,55 @@ from dataclasses import dataclass
 from numpy import NaN
 
 
-EMIS_SUMMARY_DATA_COLS = [
-    "Emissions ID",
-    "Status",
-    "Days Active",
-    "Volume Emitted",
-    "True Rate",
-    "Measured Rate" "Date Began",
-    "Initially Detected By",
-    "Initially Detected Date",
-    "Tagged",
-    "Tagged By",
-    "equipment",
+class EMIS_DATA_COL_ACCESSORS:
+    EMIS_ID = "Emissions ID"
+    SITE_ID = "Site ID"
+    EQG = "Equipment Group"
+    STATUS = "Status"
+    DAYS_ACT = "Days Active"
+    T_VOL_EMIT = '"True" Volume Emitted (Kg Methane)'
+    T_RATE = '"True" Rate (g/s)'
+    M_RATE = '"Measured" Rate (g/s)'
+    DATE_BEG = "Date Began"
+    DATE_REP = "Date Repaired"
+    INIT_DETECT_BY = "Initially Detected By"
+    INIT_DETECT_DATE = "Initially Detected Date"
+    TAGGED = "Tagged"
+    TAGGED_BY = "Tagged By"
+    EQUIP = "Equipment"
+
+
+EMIS_DATA_COLS = [
+    EMIS_DATA_COL_ACCESSORS.EMIS_ID,
+    EMIS_DATA_COL_ACCESSORS.STATUS,
+    EMIS_DATA_COL_ACCESSORS.DAYS_ACT,
+    EMIS_DATA_COL_ACCESSORS.T_VOL_EMIT,
+    EMIS_DATA_COL_ACCESSORS.T_RATE,
+    EMIS_DATA_COL_ACCESSORS.M_RATE,
+    EMIS_DATA_COL_ACCESSORS.DATE_BEG,
+    EMIS_DATA_COL_ACCESSORS.INIT_DETECT_BY,
+    EMIS_DATA_COL_ACCESSORS.INIT_DETECT_DATE,
+    EMIS_DATA_COL_ACCESSORS.TAGGED,
+    EMIS_DATA_COL_ACCESSORS.TAGGED_BY,
+    EMIS_DATA_COL_ACCESSORS.EQUIP,
 ]
 
-EMIS_SUMMARY_FINAL_COL_ORDER = [
-    "Emissions ID",
-    "Site ID",
-    "Equipment Group",
-    "Equipment",
-    "Status",
-    "Days Active",
-    "Date Began",
-    "Date Repaired",
-    "Volume Emitted",
-    "True Rate",
-    "Measured Rate",
-    "Initially Detected By",
-    "Initially Detected Date",
-    "Tagged",
-    "Tagged By",
+EMIS_DATA_FINAL_COL_ORDER = [
+    EMIS_DATA_COL_ACCESSORS.EMIS_ID,
+    EMIS_DATA_COL_ACCESSORS.SITE_ID,
+    EMIS_DATA_COL_ACCESSORS.EQG,
+    EMIS_DATA_COL_ACCESSORS.EQUIP,
+    EMIS_DATA_COL_ACCESSORS.STATUS,
+    EMIS_DATA_COL_ACCESSORS.DAYS_ACT,
+    EMIS_DATA_COL_ACCESSORS.DATE_BEG,
+    EMIS_DATA_COL_ACCESSORS.DATE_REP,
+    EMIS_DATA_COL_ACCESSORS.T_VOL_EMIT,
+    EMIS_DATA_COL_ACCESSORS.T_RATE,
+    EMIS_DATA_COL_ACCESSORS.M_RATE,
+    EMIS_DATA_COL_ACCESSORS.INIT_DETECT_BY,
+    EMIS_DATA_COL_ACCESSORS.INIT_DETECT_DATE,
+    EMIS_DATA_COL_ACCESSORS.TAGGED,
+    EMIS_DATA_COL_ACCESSORS.TAGGED_BY,
 ]
 
 TIMESERIES_COLUMNS = [
