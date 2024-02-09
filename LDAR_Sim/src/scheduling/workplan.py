@@ -38,21 +38,6 @@ class Workplan:
         for survey_plan in site_survey_plan_list:
             self.site_survey_planners[survey_plan.get_site().get_id()] = survey_plan
 
-    def __reduce__(self):
-        # Serialize relevant state information
-        args = (self.site_survey_planners, self.date)
-        # Return a tuple with the constructor and its arguments
-        return (self.__class__._reconstruct, args)
-
-    @classmethod
-    def _reconstruct(cls, site_survey_planners, date):
-        # Reconstruct the object using the serialized state
-        instance = cls.__new__(cls)
-        instance.date = date
-        instance.site_survey_planners = site_survey_planners
-        # Recalculate total travel time or any other necessary initialization
-        return instance
-
     def add_survey_report(
         self, survey_report: SiteSurveyReport, survey_planner: SurveyPlanner
     ) -> None:

@@ -84,6 +84,7 @@ class Site:
             self._deployment_years,
             self._site_type,
             self._latest_tagging_survey_date,
+            self._survey_costs,
         )
         return (self.__class__._reconstruct, args)
 
@@ -99,6 +100,7 @@ class Site:
         deployment_years,
         site_type,
         latest_tagging_survey_date,
+        survey_costs,
     ):
         instance = cls.__new__(cls)
         instance._site_ID = site_ID
@@ -110,6 +112,7 @@ class Site:
         instance._deployment_years = deployment_years
         instance._site_type = site_type
         instance._latest_tagging_survey_date = latest_tagging_survey_date
+        instance._survey_costs = survey_costs
         return instance
 
     def _create_equipment_groups(

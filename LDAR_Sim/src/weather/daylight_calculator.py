@@ -59,17 +59,6 @@ class DaylightCalculatorAve:
             curr_date += timedelta(days=1)
         return
 
-    def __reduce__(self):
-        # Serialize relevant state information
-        args = (self.site_lat_lon, self.start_date, self.end_date)
-        # Return a tuple with the constructor and its arguments
-        return (self.__class__._reconstruct, args)
-
-    @classmethod
-    def _reconstruct(cls, site_lat_lon, start_date, end_date):
-        # Reconstruct the object using the serialized state
-        return cls(site_lat_lon, start_date, end_date)
-
     def get_daylight(self, curr_date: date):
         daylight = self.daylight_hours[curr_date]
         return daylight

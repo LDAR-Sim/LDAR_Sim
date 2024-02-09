@@ -27,9 +27,6 @@ class DefaultSensor:
         self._mdl: float = mdl
         self._quantification_error: float = quantification_error
 
-    def __reduce__(self):
-        return (self.__class__, (self._mdl, self._quantification_error))
-
     def _rate_detected(self, emis_rate: float) -> bool:
         return emis_rate >= self._mdl[0]
 

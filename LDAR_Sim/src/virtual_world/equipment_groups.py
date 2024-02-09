@@ -51,7 +51,7 @@ class Equipment_Group:
             self._id,
             self._meth_survey_times,
             self._meth_survey_costs,
-            [eq for eq in self._equipment],
+            self._equipment,
         )
         return (self.__class__._reconstruct, args)
 

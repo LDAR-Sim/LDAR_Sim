@@ -32,21 +32,6 @@ class SurveyPlanner:
         self._active_survey_report: SiteSurveyReport = None
         self._surveys_this_year: dict[int, int] = {}
 
-    def __reduce__(self):
-        # Serialize relevant state information
-        args = (self._site, self._active_survey_report, self._surveys_this_year)
-        # Return a tuple with the constructor and its arguments
-        return (self.__class__._reconstruct, args)
-
-    @classmethod
-    def _reconstruct(cls, site, active_survey_report, surveys_this_year):
-        # Reconstruct the object using the serialized state
-        instance = cls.__new__(cls)
-        instance._site = site
-        instance._active_survey_report = active_survey_report
-        instance._surveys_this_year = surveys_this_year
-        return instance
-
     def get_site(self) -> Site:
         return self._site
 

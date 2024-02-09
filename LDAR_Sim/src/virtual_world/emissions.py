@@ -56,25 +56,6 @@ class Emission:
         self._tech_spat_covs: dict[str, int] = {}
         self._status = "Inactive"
 
-    def __reduce__(self):
-        args = (
-            self._emissions_id,
-            self._rate,
-            self._start_date,
-            self._repairable,
-            self._estimated_date_began,
-            self._estimated_days_active,
-            self._active_days,
-            self._measured_rate,
-            self._flagged_by,
-            self._init_detect_by,
-            self._init_detect_date,
-            self._tech_spat_cov_probs,
-            self._tech_spat_covs,
-            self._status,
-        )
-        return (self.__class__, args)
-
     def update(self, emis_rep_info: EmisRepairInfo) -> bool:
         """
         Increments duration values

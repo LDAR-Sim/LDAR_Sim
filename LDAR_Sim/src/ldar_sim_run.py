@@ -104,8 +104,11 @@ def ldar_sim_run(simulation, weather, daylight):
 
 
 def simulate(
-    sim_num,
-    prog,
+    daylight,
+    weather,
+    sim_num: int,
+    prog_name: str,
+    meth_params,
     sim_settings,
     virtual_world,
     infrastructure,
@@ -113,18 +116,31 @@ def simulate(
     output_dir,
     preseed_timeseries,
 ):
-    print("GOT IN SIMULATE")
+    infra = copy.deepcopy(infrastructure)
+    program: Program = Program(
+        prog_name,
+        weather,
+        daylight,
+        meth_params,
+        infra._sites,
+        date(*virtual_world["start_date"]),
+        date(*virtual_world["end_date"]),
+        virtual_world["consider_weather"],
+    )
+    print(f"......... Simulating program: {prog_name}")
     simulation: LdarSim = LdarSim(
         sim_num,
         sim_settings,
         virtual_world,
-        prog,
-        infrastructure,
+        program,
+        infra,
         input_dir,
         output_dir,
         preseed_timeseries,
     )
     simulation.run_simulation()
+    gc.collect()
+    print(f"......... Finished simulating program: {prog_name}")
     return
 
 
@@ -211,7 +227,7 @@ if __name__ == "__main__":
     hash_file_exist: bool
     n_sim_match: bool
     print("...Initializing emissions")
-    # pregen emissions
+    # Pregenerate emissions
     initialize_emissions(
         simulation_count, hash_file_exist, n_sim_match, infrastructure, virtual_world, generator_dir
     )
@@ -286,14 +302,40 @@ if __name__ == "__main__":
         #     print(f".........Simulating program: {p_name}")
         #     simulate(*prog_tuple)
         #     print(f".........Finished simulating program: {p_name}")
+    for simulation in range(simulation_count):
+        print(f"......Simulating set {simulation}")
+        # read in pre-generated emissions
+        infra = read_in_emissions(infrastructure, generator_dir, simulation)
+        # -- Run simulations --
+        # -- Set up inputs for each program in a simulation set
+        prog_data = []
+        for program in programs:
+            meth_params = {}
+            for meth in programs[program]["method_labels"]:
+                meth_params[meth] = methods[meth]
+            prog_data.append(
+                (
+                    daylight,
+                    weather,
+                    simulation,
+                    program,
+                    meth_params,
+                    sim_params,
+                    virtual_world,
+                    infra,
+                    in_dir,
+                    out_dir,
+                    seed_timeseries,
+                )
+            )
         with mp.Pool(processes=sim_params["n_processes"]) as p:
             sim_outputs = p.starmap(
                 simulate,
                 prog_data,
             )
+        gc.collect()
         print(f"Finished simulating set {simulation}")
-        # TODO: ADD GC.COLLECT HERE AND ONCE AFTER THE SIMULATE FINISHES
-        # TODO: move program into simulate
+
         # -- Batch Report --
         # TODO: need to write code to clean up outputs here.
         print("...Cleaning up output data")

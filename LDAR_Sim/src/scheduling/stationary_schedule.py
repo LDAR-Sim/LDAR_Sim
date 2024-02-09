@@ -48,7 +48,3 @@ class StationarySchedule(GenericSchedule):
             method_avail_crews,
         )
         return
-
-    def _reconstruct():
-        super()._reconstruct()
-        return

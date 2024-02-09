@@ -70,6 +70,7 @@ class Source:
                 self._meth_spat_covs,
                 self._emis_rep_delay,
                 self._emis_rep_cost,
+                self._next_emission,
             )
         else:
             args = (
@@ -85,6 +86,7 @@ class Source:
                 self._meth_spat_covs,
                 None,
                 None,
+                self._next_emission,
             )
         return (self.__class__._reconstruct, args)
 
@@ -103,6 +105,7 @@ class Source:
         meth_spat_covs,
         emis_rep_delay,
         emis_rep_cost,
+        next_emission,
     ):
         # Create a new instance without invoking __init__
         instance = cls.__new__(cls)
@@ -119,6 +122,7 @@ class Source:
         instance._meth_spat_covs = meth_spat_covs
         instance._emis_rep_delay = emis_rep_delay
         instance._emis_rep_cost = emis_rep_cost
+        instance._next_emission = next_emission
         return instance
 
     def _update_prop_params(self, info, prop_params) -> None:

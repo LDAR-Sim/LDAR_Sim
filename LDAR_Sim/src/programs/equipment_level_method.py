@@ -19,7 +19,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 """
 
 from datetime import date
-from utils.queue import PriorityQueue
+from queue import PriorityQueue
 import sys
 from typing import Tuple
 from file_processing.output_processing.output_utils import CrewDeploymentStats, TaggingFlaggingStats

@@ -75,9 +75,6 @@ class WeatherLookup:
             # Length of longitude dimension - n cells
             self.lon_length = len(self.longitude)
 
-    def __reduce__(self):
-        return (self.__class__, (self.virtual_world, self.input_directory))
-
     def deployment_days(
         self, method_name, config, start_date, start_work_hour=0, consider_weather=False
     ):

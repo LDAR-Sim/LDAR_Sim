@@ -63,20 +63,6 @@ class FugitiveEmission(Emission):
         days_active_b4_sim: int = (simulation_sd - start_date).days
         self._days_active_b4_sim = days_active_b4_sim if days_active_b4_sim > 0 else 0
 
-    def __reduce__(self):
-        args = (
-            self._emissions_id,
-            self._rate,
-            self._start_date,
-            self._simulation_sd,
-            self._repairable,
-            self._tech_spat_cov_probs,
-            self._repair_delay,
-            self._repair_cost,
-            self._nrd,
-        )
-        return (self.__class__, args)
-
     def check_if_repaired(self, emis_rep_info: EmisRepairInfo) -> bool:
         """
         Checks the days since tagged against the repair delay

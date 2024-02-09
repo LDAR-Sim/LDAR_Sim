@@ -52,10 +52,6 @@ class FollowUpMobileSchedule(GenericSchedule):
         self._site_IDs_in_queue: dict[str, bool] = {site.get_id(): False for site in sites}
         return
 
-    def _reconstruct():
-        super()._reconstruct()
-        return
-
     def get_site_id_queue_list(self) -> dict[str, bool]:
         return self._site_IDs_in_queue
 
