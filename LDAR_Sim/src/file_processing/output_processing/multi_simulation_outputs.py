@@ -1,3 +1,23 @@
+"""
+------------------------------------------------------------------------------
+Program:     The LDAR Simulator (LDAR-Sim)
+File:        multi_simulation_outputs
+Purpose: Functionality for outputs across multiple simulations.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the MIT License as published
+by the Free Software Foundation, version 3.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+MIT License for more details.
+You should have received a copy of the MIT License
+along with this program.  If not, see <https://opensource.org/licenses/MIT>.
+
+------------------------------------------------------------------------------
+"""
+
 import os
 from pathlib import Path
 import numpy as np
@@ -64,6 +84,7 @@ def get_sum(df: pd.DataFrame, column: str) -> float:
     return df[column].sum()
 
 
+# TODO add this comment to the relevant User Manual Section
 # Currently defined to compute percentiles using a median-unbiased method as described in:
 # https://numpy.org/doc/stable/reference/generated/numpy.percentile.html and
 # Rob J. Hyndman & Yanan Fan (1996) Sample Quantiles in Statistical
