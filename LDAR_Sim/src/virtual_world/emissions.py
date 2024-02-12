@@ -17,11 +17,15 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 ------------------------------------------------------------------------------
 """
+
 from datetime import date
 from typing import Any
 
 from numpy.random import binomial
-from file_processing.output_processing.output_utils import EmisRepairInfo
+from file_processing.output_processing.output_utils import (
+    EmisRepairInfo,
+    EMIS_DATA_COL_ACCESSORS as eca,
+)
 
 from utils.conversion_constants import GRAMS_PER_SECOND_TO_KG_PER_DAY
 
@@ -100,17 +104,17 @@ class Emission:
 
     def get_summary_dict(self) -> dict[str, Any]:
         summary_dict = {}
-        summary_dict.update({("Emissions ID", self._emissions_id)})
-        summary_dict.update({("Status", self._status)})
-        summary_dict.update({("Days Active", self._active_days)})
-        summary_dict.update({("Volume Emitted", self.get_emis_vol())})
-        summary_dict.update({("True Rate", self._rate)})
-        summary_dict.update({("Measured Rate", self._measured_rate)})
-        summary_dict.update({("Date Began", self._start_date)})
-        summary_dict.update({("Initially Detected By", self._init_detect_by)})
-        summary_dict.update({("Initially Detected Date", self._init_detect_date)})
-        summary_dict.update({("Tagged", "N/A")})
-        summary_dict.update({("Tagged By", "N/A")})
+        summary_dict.update({(eca.EMIS_ID, self._emissions_id)})
+        summary_dict.update({(eca.STATUS, self._status)})
+        summary_dict.update({(eca.DAYS_ACT, self._active_days)})
+        summary_dict.update({(eca.T_VOL_EMIT, self.get_emis_vol())})
+        summary_dict.update({(eca.T_RATE, self._rate)})
+        summary_dict.update({(eca.M_RATE, self._measured_rate)})
+        summary_dict.update({(eca.DATE_BEG, self._start_date)})
+        summary_dict.update({(eca.INIT_DETECT_BY, self._init_detect_by)})
+        summary_dict.update({(eca.INIT_DETECT_DATE, self._init_detect_date)})
+        summary_dict.update({(eca.TAGGED, "N/A")})
+        summary_dict.update({(eca.TAGGED_BY, "N/A")})
         summary_dict.update(self._tech_spat_covs)
         return summary_dict
 

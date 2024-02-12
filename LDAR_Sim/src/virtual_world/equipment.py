@@ -24,7 +24,7 @@ import re
 
 import pandas as pd
 from file_processing.output_processing.output_utils import (
-    EMIS_SUMMARY_DATA_COLS,
+    EMIS_DATA_COLS,
     EmisRepairInfo,
     TsEmisData,
 )
@@ -171,7 +171,7 @@ class Equipment:
 
         # Handle empty dataframe cases
         if emis_data_active.empty and emis_data_inactive.empty:
-            columns = EMIS_SUMMARY_DATA_COLS
+            columns = EMIS_DATA_COLS
             return pd.DataFrame(columns=columns)
         elif emis_data_inactive.empty:
             emis_data = emis_data_active

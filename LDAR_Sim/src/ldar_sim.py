@@ -28,7 +28,7 @@ from virtual_world.infrastructure import Infrastructure
 from time_counter import TimeCounter
 from programs.program import Program
 from file_processing.output_processing.output_utils import (
-    EMIS_SUMMARY_FINAL_COL_ORDER,
+    EMIS_DATA_FINAL_COL_ORDER,
     TIMESERIES_COLUMNS,
     TIMESERIES_COL_ACCESSORS as tca,
     EmisRepairInfo,
@@ -97,11 +97,11 @@ class LdarSim:
         overall_emission_data: pd.DataFrame = self._infrastructure.gen_summary_emis_data()
 
         overall_emission_data = overall_emission_data[
-            EMIS_SUMMARY_FINAL_COL_ORDER
+            EMIS_DATA_FINAL_COL_ORDER
             + [
                 col
                 for col in overall_emission_data.columns
-                if col not in EMIS_SUMMARY_FINAL_COL_ORDER
+                if col not in EMIS_DATA_FINAL_COL_ORDER
             ]
         ]
 

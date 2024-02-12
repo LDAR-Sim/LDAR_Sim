@@ -15,6 +15,7 @@
 
 import copy
 import gc
+from math import floor
 
 # You should have received a copy of the MIT License
 # along with this program.  If not, see <https://opensource.org/licenses/MIT>.
@@ -25,8 +26,10 @@ import multiprocessing as mp
 import sys
 import shutil
 from pathlib import Path
-import sys
 from datetime import date
+from file_processing.output_processing.multi_simulation_outputs import (
+    concat_output_data,
+)
 
 
 from initialization.initialize_infrastructure import initialize_infrastructure
@@ -230,57 +233,67 @@ if __name__ == "__main__":
         date(*virtual_world["start_date"]),
         date(*virtual_world["end_date"]),
     )
-    for simulation in range(simulation_count):
-        print(f"......Simulating set {simulation}")
-        # read in pregen emissions
-        infra = read_in_emissions(infrastructure, generator_dir, simulation)
-        # -- Run simulations --
-        prog_data = []
-        prog_names = []
-        for program in programs:
-            # TODO: get rid of state and split out into weather/daylight
-            prog_infra = copy.deepcopy(infra)
-            sites: list[Site] = prog_infra._sites
-            meth_params = {}
-            for meth in programs[program]["method_labels"]:
-                meth_params[meth] = methods[meth]
-            prog: Program = Program(
-                program,
-                weather,
-                daylight,
-                meth_params,
-                sites,
-                date(*virtual_world["start_date"]),
-                date(*virtual_world["end_date"]),
-                virtual_world["consider_weather"],
-            )
-            prog_names.append(program)
-            prog_data.append(
-                (
-                    simulation,
-                    prog,
-                    sim_params,
-                    virtual_world,
-                    prog_infra,
-                    in_dir,
-                    out_dir,
-                    seed_timeseries,
+    # IF the are more than 5 simulations, divide the simulations into batches
+    if simulation_count > 5:
+        simulation_batches = floor(simulation_count / 5.0)
+        sim_counts = [5] * simulation_batches
+        sim_counts.append(simulation_count % 5)
+    else:
+        sim_counts = [simulation_count]
+    for batch_count, sim_count in enumerate(sim_counts):
+        for simulation in range(sim_count):
+            simulation_number: int = batch_count * 5 + simulation
+            print(f"......Simulating set {simulation_number}")
+            # read in pregen emissions
+            infra = read_in_emissions(infrastructure, generator_dir, simulation_number)
+            # -- Run simulations --
+            prog_data = []
+            prog_names = []
+            for program in programs:
+                # TODO: get rid of state and split out into weather/daylight
+                prog_infra = copy.deepcopy(infra)
+                sites: list[Site] = prog_infra._sites
+                meth_params = {}
+                for meth in programs[program]["method_labels"]:
+                    meth_params[meth] = methods[meth]
+                prog: Program = Program(
+                    program,
+                    weather,
+                    daylight,
+                    meth_params,
+                    sites,
+                    date(*virtual_world["start_date"]),
+                    date(*virtual_world["end_date"]),
+                    virtual_world["consider_weather"],
                 )
-            )
-        for index, prog_tuple in enumerate(prog_data):
-            p_name = prog_names[index]
-            print(f".........Simulating program: {p_name}")
-            simulate(*prog_tuple)
-            print(f".........Finished simulating program: {p_name}")
+                prog_names.append(program)
+                prog_data.append(
+                    (
+                        simulation_number,
+                        prog,
+                        sim_params,
+                        virtual_world,
+                        prog_infra,
+                        in_dir,
+                        out_dir,
+                        seed_timeseries,
+                    )
+                )
+            for index, prog_tuple in enumerate(prog_data):
+                p_name = prog_names[index]
+                print(f".........Simulating program: {p_name}")
+                simulate(*prog_tuple)
+                print(f".........Finished simulating program: {p_name}")
         # with mp.Pool(processes=sim_params["n_processes"]) as p:
         #     sim_outputs = p.starmap(
         #         simulate,
         #         zip(*prog_data),
         #     )
         # print(f"Finished simulating set {simulation}")
-    # -- Batch Report --
-    # TODO: need to write code to clean up outputs here.
-    print("...Cleaning up output data")
+        # -- Batch Report --
+        # TODO: need to write code to clean up outputs here.
+        print("...Cleaning up output data")
+        concat_output_data(out_dir, batch_count != 0)
     """
     # # Do batch reporting
     # print("....Generating output data")

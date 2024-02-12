@@ -21,8 +21,11 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 # TODO create logic to read in the generated emission file
 # TODO move over and cleanup all logic to read in previously
 # generated infrastructure and emissions
+from pathlib import Path
 import pickle
 from datetime import date
+
+from virtual_world.infrastructure import Infrastructure
 
 
 def initialize_emissions(
@@ -78,7 +81,7 @@ def initialize_emissions(
     return None
 
 
-def read_in_emissions(infrastructure, generator_dir, sim_numb):
+def read_in_emissions(infrastructure: Infrastructure, generator_dir: Path, sim_numb: int):
     # Load emissions into the pregenerated infrastructure
     emissions: dict = {}
     emis_file_loc = generator_dir / f"gen_infrastructure_emissions_{sim_numb}.p"

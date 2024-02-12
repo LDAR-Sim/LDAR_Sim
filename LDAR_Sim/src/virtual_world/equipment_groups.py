@@ -22,7 +22,7 @@ from datetime import date
 
 import pandas as pd
 from file_processing.output_processing.output_utils import (
-    EMIS_SUMMARY_DATA_COLS,
+    EMIS_DATA_COLS,
     EmisRepairInfo,
     TsEmisData,
 )
@@ -159,7 +159,7 @@ class Equipment_Group:
         if equip_emis_dataframes:
             emis_data: pd.DataFrame = pd.concat(equip_emis_dataframes)
         else:
-            emis_data: pd.DataFrame = pd.DataFrame(columns=EMIS_SUMMARY_DATA_COLS)
+            emis_data: pd.DataFrame = pd.DataFrame(columns=EMIS_DATA_COLS)
         emis_data["Equipment Group"] = self._id
         return emis_data
 
