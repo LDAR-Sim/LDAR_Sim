@@ -22,7 +22,6 @@ from datetime import date
 
 import pandas as pd
 from file_processing.output_processing.output_utils import (
-    EMIS_DATA_COLS,
     EmisRepairInfo,
     TsEmisData,
 )
@@ -174,12 +173,14 @@ class Equipment_Group:
         equip_emis_dataframes: list[pd.DataFrame] = [
             equip.get_emis_data() for equip in self._equipment
         ]
-        equip_emis_dataframes = [df for df in equip_emis_dataframes if not df.empty]
+        cleaned_equip_emis_dataframes = [df for df in equip_emis_dataframes if not df.empty]
 
-        if equip_emis_dataframes:
-            emis_data: pd.DataFrame = pd.concat(equip_emis_dataframes)
+        na_dfs = any([any(df.isna().all()) for df in cleaned_equip_emis_dataframes])
+
+        if cleaned_equip_emis_dataframes:
+            emis_data: pd.DataFrame = pd.concat(cleaned_equip_emis_dataframes)
         else:
-            emis_data: pd.DataFrame = pd.DataFrame(columns=EMIS_DATA_COLS)
+            emis_data: pd.DataFrame = equip_emis_dataframes[0]
         emis_data["Equipment Group"] = self._id
         return emis_data
 

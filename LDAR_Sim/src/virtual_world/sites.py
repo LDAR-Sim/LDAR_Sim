@@ -238,7 +238,12 @@ class Site:
         return self._latest_tagging_survey_date
 
     def get_emis_data(self) -> pd.DataFrame:
-        emis_data: pd.DataFrame = pd.concat([eqg.get_emis_data() for eqg in self._equipment_groups])
+        site_emis_data: list[pd.DataFrame] = [eqg.get_emis_data() for eqg in self._equipment_groups]
+        cleaned_site_emis_data = [emis_data for emis_data in site_emis_data if not emis_data.empty]
+        if cleaned_site_emis_data:
+            emis_data: pd.DataFrame = pd.concat(cleaned_site_emis_data)
+        else:
+            emis_data: pd.DataFrame = site_emis_data[0]
         emis_data["Site ID"] = self._site_ID
         return emis_data
 
