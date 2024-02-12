@@ -17,6 +17,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 ------------------------------------------------------------------------------
 """
+
 from datetime import date, timedelta
 import re
 import sys
@@ -244,6 +245,7 @@ class Source:
         return newly_activated_emissions
 
     def set_pregen_emissions(self, src_emissions, sim_number) -> None:
+        self._generated_emissions.clear()
         self._generated_emissions[sim_number] = src_emissions
 
     def get_id(self) -> str:
