@@ -19,7 +19,6 @@
 # ------------------------------------------------------------------------------
 
 from datetime import date, timedelta, datetime
-from typing import Any
 import ephem
 
 

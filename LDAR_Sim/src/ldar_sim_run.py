@@ -119,7 +119,7 @@ def simulate(
 ):
     with lock:
         infra = copy.deepcopy(infrastructure)
-        gc.collect()
+    gc.collect()
     program: Program = Program(
         prog_name,
         weather,

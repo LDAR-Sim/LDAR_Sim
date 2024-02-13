@@ -21,7 +21,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 from datetime import date, timedelta
 import re
 import sys
-from typing import Any, Literal
+from typing import Literal
 import random
 
 import numpy as np
