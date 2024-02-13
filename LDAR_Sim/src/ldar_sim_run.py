@@ -279,7 +279,7 @@ if __name__ == "__main__":
                         (
                             daylight,
                             weather,
-                            simulation,
+                            simulation_number,
                             program,
                             meth_params,
                             sim_params,
@@ -297,7 +297,7 @@ if __name__ == "__main__":
                         prog_data,
                     )
                 gc.collect()
-                print(f"Finished simulating set {simulation}")
+                print(f"Finished simulating set {simulation_number}")
 
             # -- Batch Report --
             print("...Cleaning up output data")
