@@ -57,50 +57,50 @@ adding an issue to https://github.com/LDAR-Sim/LDAR_Sim.git
 """
 
 
-def ldar_sim_run(simulation, weather, daylight):
-    """
-    The ldar sim run function takes a simulation dictionary
-    simulation = a dictionary of simulation parameters necessary to run LDAR-Sim
-    """
+# def ldar_sim_run(simulation, weather, daylight):
+#     """
+#     The ldar sim run function takes a simulation dictionary
+#     simulation = a dictionary of simulation parameters necessary to run LDAR-Sim
+#     """
 
-    simulation = copy.deepcopy(simulation)
-    virtual_world = simulation["virtual_world"]
-    program_parameters = simulation["program"]
-    input_directory = simulation["input_directory"]
-    output_directory = simulation["output_directory"] / program_parameters["program_name"]
-    virtual_world["pregenerate_leaks"] = simulation["pregenerate_leaks"]
-    infrastructure: Infrastructure = simulation["Infrastructure"]
-    simulation_settings = simulation["simulation_settings"]
+#     simulation = copy.deepcopy(simulation)
+#     virtual_world = simulation["virtual_world"]
+#     program_parameters = simulation["program"]
+#     input_directory = simulation["input_directory"]
+#     output_directory = simulation["output_directory"] / program_parameters["program_name"]
+#     virtual_world["pregenerate_leaks"] = simulation["pregenerate_leaks"]
+#     infrastructure: Infrastructure = simulation["Infrastructure"]
+#     simulation_settings = simulation["simulation_settings"]
 
-    if not os.path.exists(output_directory):
-        try:
-            os.makedirs(output_directory)
-        except Exception:
-            pass
+#     if not os.path.exists(output_directory):
+#         try:
+#             os.makedirs(output_directory)
+#         except Exception:
+#             pass
 
-    logfile = open(output_directory / "logfile.txt", "w")
-    if "print_from_simulation" not in simulation or simulation["print_from_simulation"]:
-        sys.stdout = stdout_redirect([sys.stdout, logfile])
-    else:
-        sys.stdout = stdout_redirect([logfile])
-    gc.collect()
+#     logfile = open(output_directory / "logfile.txt", "w")
+#     if "print_from_simulation" not in simulation or simulation["print_from_simulation"]:
+#         sys.stdout = stdout_redirect([sys.stdout, logfile])
+#     else:
+#         sys.stdout = stdout_redirect([logfile])
+#     gc.collect()
 
-    sim = LdarSim(
-        simulation_settings,
-        weather,
-        daylight,
-        program_parameters,
-        virtual_world,
-        infrastructure,
-        input_directory,
-        output_directory,
-    )
+#     sim = LdarSim(
+#         simulation_settings,
+#         weather,
+#         daylight,
+#         program_parameters,
+#         virtual_world,
+#         infrastructure,
+#         input_directory,
+#         output_directory,
+#     )
 
-    # Clean up and write files
-    sim_summary = sim.finalize()
-    print(simulation["closing_message"])
-    logfile.close()
-    return sim_summary
+#     # Clean up and write files
+#     sim_summary = sim.finalize()
+#     print(simulation["closing_message"])
+#     logfile.close()
+#     return sim_summary
 
 
 def simulate(
@@ -115,8 +115,11 @@ def simulate(
     input_dir,
     output_dir,
     preseed_timeseries,
+    lock,
 ):
-    infra = copy.deepcopy(infrastructure)
+    with lock:
+        infra = copy.deepcopy(infrastructure)
+        gc.collect()
     program: Program = Program(
         prog_name,
         weather,
@@ -139,8 +142,8 @@ def simulate(
         preseed_timeseries,
     )
     simulation.run_simulation()
-    gc.collect()
     print(f"......... Finished simulating program: {prog_name}")
+    gc.collect()
     return
 
 
@@ -257,116 +260,45 @@ if __name__ == "__main__":
         sim_counts.append(simulation_count % 5)
     else:
         sim_counts = [simulation_count]
-    for batch_count, sim_count in enumerate(sim_counts):
-        for simulation in range(sim_count):
-            simulation_number: int = batch_count * 5 + simulation
-            print(f"......Simulating set {simulation_number}")
-            # read in pregen emissions
-            infra = read_in_emissions(infrastructure, generator_dir, simulation_number)
-            # -- Run simulations --
-            prog_data = []
-            prog_names = []
-            for program in programs:
-                # TODO: get rid of state and split out into weather/daylight
-                prog_infra = copy.deepcopy(infra)
-                sites: list[Site] = prog_infra._sites
-                meth_params = {}
-                for meth in programs[program]["method_labels"]:
-                    meth_params[meth] = methods[meth]
-                prog: Program = Program(
-                    program,
-                    weather,
-                    daylight,
-                    meth_params,
-                    sites,
-                    date(*virtual_world["start_date"]),
-                    date(*virtual_world["end_date"]),
-                    virtual_world["consider_weather"],
-                )
-                prog_names.append(program)
-                prog_data.append(
-                    (
-                        simulation_number,
-                        prog,
-                        sim_params,
-                        virtual_world,
-                        prog_infra,
-                        in_dir,
-                        out_dir,
-                        seed_timeseries,
+
+    with mp.Manager() as manager:
+        lock = manager.Lock()
+        for batch_count, sim_count in enumerate(sim_counts):
+            for simulation in range(sim_count):
+                simulation_number: int = batch_count * 5 + simulation
+                print(f"......Simulating set {simulation_number}")
+                # read in pregen emissions
+                infra = read_in_emissions(infrastructure, generator_dir, simulation_number)
+                # -- Run simulations --
+                prog_data = []
+                for program in programs:
+                    meth_params = {}
+                    for meth in programs[program]["method_labels"]:
+                        meth_params[meth] = methods[meth]
+                    prog_data.append(
+                        (
+                            daylight,
+                            weather,
+                            simulation,
+                            program,
+                            meth_params,
+                            sim_params,
+                            virtual_world,
+                            infra,
+                            in_dir,
+                            out_dir,
+                            seed_timeseries,
+                            lock,
+                        )
                     )
-                )
-            print()
-        # for index, prog_tuple in enumerate(prog_data):
-        #     p_name = prog_names[index]
-        #     print(f".........Simulating program: {p_name}")
-        #     simulate(*prog_tuple)
-        #     print(f".........Finished simulating program: {p_name}")
-    for simulation in range(simulation_count):
-        print(f"......Simulating set {simulation}")
-        # read in pre-generated emissions
-        infra = read_in_emissions(infrastructure, generator_dir, simulation)
-        # -- Run simulations --
-        # -- Set up inputs for each program in a simulation set
-        prog_data = []
-        for program in programs:
-            meth_params = {}
-            for meth in programs[program]["method_labels"]:
-                meth_params[meth] = methods[meth]
-            prog_data.append(
-                (
-                    daylight,
-                    weather,
-                    simulation,
-                    program,
-                    meth_params,
-                    sim_params,
-                    virtual_world,
-                    infra,
-                    in_dir,
-                    out_dir,
-                    seed_timeseries,
-                )
-            )
-        with mp.Pool(processes=sim_params["n_processes"]) as p:
-            sim_outputs = p.starmap(
-                simulate,
-                prog_data,
-            )
-        gc.collect()
-        print(f"Finished simulating set {simulation}")
+                with mp.Pool(processes=sim_params["n_processes"]) as p:
+                    sim_outputs = p.starmap(
+                        simulate,
+                        prog_data,
+                    )
+                gc.collect()
+                print(f"Finished simulating set {simulation}")
 
-        # -- Batch Report --
-        # TODO: need to write code to clean up outputs here.
-        print("...Cleaning up output data")
-        concat_output_data(out_dir, batch_count != 0)
-    """
-    # # Do batch reporting
-    # print("....Generating output data")
-    # if sim_params[OUTPUTS][BATCH_REPORTING] and (
-    #     sim_params[OUTPUTS][SITES]
-    #     and sim_params[OUTPUTS][LEAKS]
-    #     and sim_params[OUTPUTS][TIMESERIES]
-    # ):
-    #     # Create a data object...
-    #     if has_ref & has_base:
-    #         print("....Generating cost mitigation outputs")
-    #         cost_mitigation = cost_mitigation(sim_outputs, ref_program, base_program, out_dir)
-    #         reporting_data = BatchReporting(
-    #             out_dir, sim_params["start_date"], ref_program, base_program
-    #         )
-    #         if sim_params["n_simulations"] > 1:
-    #             reporting_data.program_report()
-    #             if len(programs) > 1:
-    #                 print("....Generating program comparison plots")
-    #                 reporting_data.batch_report()
-    #                 reporting_data.batch_plots()
-    #     else:
-    #         print("No reference or base program input...skipping batch reporting and economics.")
-
-    # Write program metadata
-    # metadata = open(out_dir / "_metadata.txt", "w")
-    # metadata.write(str(programs) + "\n" + str(datetime.datetime.now()))
-
-    # metadata.close()
-    """
+            # -- Batch Report --
+            print("...Cleaning up output data")
+            concat_output_data(out_dir, batch_count != 0)

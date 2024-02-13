@@ -51,12 +51,12 @@ class Equipment:
         pattern: re.Pattern[str] = re.compile(re.escape(STR_FILTER), re.IGNORECASE)
         self._equip_type: str = re.sub(pattern, "", equip_type)
         self._equipment_ID: str = self._equip_type + "_" + str(equip_id)
+        self._sources: list[Source] = []
         self._create_sources(infrastructure_inputs=infrastructure_inputs, prop_params=prop_params)
         self._active_emissions: list[Emission] = []
         self._inactive_emissions: list[Emission] = []
 
     def _create_sources(self, infrastructure_inputs, prop_params) -> None:
-        self._sources: list[Source] = []
         if self._equip_type != "Placeholder" and "sources" in infrastructure_inputs:
             sources_info = infrastructure_inputs["sources"]
             sources = sources_info.loc[

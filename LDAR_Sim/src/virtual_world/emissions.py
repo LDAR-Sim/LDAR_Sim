@@ -56,6 +56,18 @@ class Emission:
         self._tech_spat_covs: dict[str, int] = {}
         self._status = "Inactive"
 
+    def __reduce__(self):
+        return (self.__class__._reconstruct_emissions, (self.__dict__,))
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+
+    @classmethod
+    def _reconstruct_emissions(cls, state):
+        emission = cls.__new__(cls)
+        emission.__setstate__(state)
+        return emission
+
     def update(self, emis_rep_info: EmisRepairInfo) -> bool:
         """
         Increments duration values

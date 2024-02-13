@@ -17,6 +17,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 ------------------------------------------------------------------------------
 """
+
 from dataclasses import dataclass
 from datetime import date, timedelta
 import pandas as pd
@@ -61,7 +62,7 @@ class ScheduledSurveyPlanner(SurveyPlanner):
         )
         self._site_annual_rs: int = site_annual_rs
         self._deployment_months: list[int] = deployment_months
-        self._set_deployment_years(deploy_yrs=deployment_years)
+        self._deployment_years: list[int] = self._set_deployment_years(deploy_yrs=deployment_years)
         self._survey_plan: dict[int, date] = self._gen_survey_plan(site_annual_rs)
         self._current_date: date = sim_start_date - timedelta(days=1)
         self._surveys_this_year: dict[int, Survey_Counter] = self._set_survey_per_year()
@@ -70,9 +71,9 @@ class ScheduledSurveyPlanner(SurveyPlanner):
 
     def _set_deployment_years(self, deploy_yrs: list[int]):
         if deploy_yrs:
-            self._deployment_years = deploy_yrs
+            return deploy_yrs
         else:
-            self._deployment_years = self._sim_years
+            return self._sim_years
 
     def _get_simulation_years(self, sim_start_date: date, sim_end_date: date) -> list[int]:
         """Takes a start and end date and returns a list of all years between the two dates.

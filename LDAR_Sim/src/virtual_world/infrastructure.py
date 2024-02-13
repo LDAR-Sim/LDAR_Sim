@@ -53,6 +53,18 @@ class Infrastructure:
         self._sites: list[Site] = []
         self.generate_infrastructure(virtual_world=virtual_world, methods=methods, in_dir=in_dir)
 
+    def __reduce__(self):
+        args = (self.emission_rate_source_dictionary, self.repair_delay_dataframe, self._sites)
+        return (self.__class__._reconstruct, args)
+
+    @classmethod
+    def _reconstruct(cls, emission_rate_dict, repair_df, sites):
+        instance = cls.__new__(cls)
+        instance.emission_rate_source_dictionary = emission_rate_dict
+        instance.repair_delay_dataframe = repair_df
+        instance._sites = sites
+        return instance
+
     def generate_propagating_params(self, virtual_world, methods) -> dict:
         prop_params_dict: dict = {}
         for (
@@ -240,23 +252,3 @@ class Infrastructure:
             [site.get_emis_data() for site in self._sites]
         )
         return self._sites_emis_data
-
-    def to_dict(self) -> dict:
-        infrastructure_dict = {
-            "emission_rate_source_dictionary": self.emission_rate_source_dictionary,
-            "repair_delay_dataframe": self.repair_delay_dataframe.to_dict(),
-            "sites": [site.to_dict() for site in self._sites],
-        }
-        return infrastructure_dict
-
-    @classmethod
-    def from_dict(cls, infrastructure_dict: dict) -> "Infrastructure":
-        infrastructure = cls
-        infrastructure.emission_rate_source_dictionary = infrastructure_dict[
-            "emission_rate_source_dictionary"
-        ]
-        infrastructure.repair_delay_dataframe = pd.DataFrame.from_dict(
-            infrastructure_dict["repair_delay_dataframe"]
-        )
-        infrastructure._sites = [Site.from_dict(site) for site in infrastructure_dict["sites"]]
-        return infrastructure

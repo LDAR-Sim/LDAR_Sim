@@ -51,43 +51,32 @@ class Source:
         self._active_duration = info[Infrastructure_Constants.Sources_File_Constants.ACTIVE_DUR]
         self._inactive_duration = info[Infrastructure_Constants.Sources_File_Constants.INACTIVE_DUR]
         self._generated_emissions: dict[int, list[Emission]] = {}
+        self._emis_rate_source = None
+        self._emis_prod_rate = None
+        self._emis_duration = None
+        self._meth_spat_covs = None
+        self._emis_rep_delay = None
+        self._emis_rep_cost = None
         self._update_prop_params(info=info, prop_params=prop_params)
         self._set_source_properties(prop_params=prop_params)
         self._next_emission: Emission = None
 
-    def __reduce__(self) -> str | tuple[Any, ...]:
-        if self._repairable:
-            args = (
-                self._source_ID,
-                self._repairable,
-                self._persistent,
-                self._active_duration,
-                self._inactive_duration,
-                self._generated_emissions,
-                self._emis_rate_source,
-                self._emis_prod_rate,
-                self._emis_duration,
-                self._meth_spat_covs,
-                self._emis_rep_delay,
-                self._emis_rep_cost,
-                self._next_emission,
-            )
-        else:
-            args = (
-                self._source_ID,
-                self._repairable,
-                self._persistent,
-                self._active_duration,
-                self._inactive_duration,
-                self._generated_emissions,
-                self._emis_rate_source,
-                self._emis_prod_rate,
-                self._emis_duration,
-                self._meth_spat_covs,
-                None,
-                None,
-                self._next_emission,
-            )
+    def __reduce__(self):
+        args = (
+            self._source_ID,
+            self._repairable,
+            self._persistent,
+            self._active_duration,
+            self._inactive_duration,
+            self._generated_emissions,
+            self._emis_rate_source,
+            self._emis_prod_rate,
+            self._emis_duration,
+            self._meth_spat_covs,
+            self._emis_rep_delay,
+            self._emis_rep_cost,
+            self._next_emission,
+        )
         return (self.__class__._reconstruct, args)
 
     @classmethod

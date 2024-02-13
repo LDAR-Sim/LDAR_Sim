@@ -69,6 +69,8 @@ class Site:
         self._deployment_years = propagating_params["Method_Specific_Params"].pop(
             Infrastructure_Constants.Sites_File_Constants.DEPLOYMENT_YEARS_PLACEHOLDER
         )
+        self._equipment_groups: list[Equipment_Group] = []
+        self._survey_costs: dict[str, float] = {}
         self._create_equipment_groups(equipment_groups, infrastructure_inputs, propagating_params)
         self._set_survey_costs(methods=methods)
         self._latest_tagging_survey_date: date = start_date
@@ -118,7 +120,6 @@ class Site:
     def _create_equipment_groups(
         self, equipment_groups: list, infrastructure_inputs, propagating_params
     ) -> None:
-        self._equipment_groups: list[Equipment_Group] = []
         if isinstance(equipment_groups, list) and len(equipment_groups) > 0:
             equip_groups_in: pd.DataFrame = infrastructure_inputs["equipment_groups"]
             for equipment_group in equipment_groups:
@@ -163,7 +164,6 @@ class Site:
             )
 
     def _set_survey_costs(self, methods: list[str]) -> float:
-        self._survey_costs: dict[str, float] = {}
         for method in methods:
             self._survey_costs[method] = 0
             for eqg in self._equipment_groups:

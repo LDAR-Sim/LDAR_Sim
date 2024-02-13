@@ -32,10 +32,7 @@ class DaylightCalculatorAve:
         lon_ave = site_lat_lon[1]
 
         curr_date = start_date
-        # Store the inputs as attributes
-        self.site_lat_lon = site_lat_lon
-        self.start_date = start_date
-        self.end_date = end_date
+
         # Create an empty list to store the daylight hours - rounding down.
         self.daylight_hours = {}
         while curr_date <= end_date:
@@ -58,6 +55,17 @@ class DaylightCalculatorAve:
             self.daylight_hours[curr_date] = dif_hours
             curr_date += timedelta(days=1)
         return
+
+    def __reduce__(self):
+        args = (self.daylight_hours,)
+        return (self.__class__._reconstruct, args)
+
+    @classmethod
+    def _reconstruct(cls, daylight_hours):
+        # Create a new instance without invoking __init__
+        instance = cls.__new__(cls)
+        instance.daylight_hours = daylight_hours
+        return instance
 
     def get_daylight(self, curr_date: date):
         daylight = self.daylight_hours[curr_date]

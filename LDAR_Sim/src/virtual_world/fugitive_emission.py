@@ -59,9 +59,20 @@ class FugitiveEmission(Emission):
         self._tagging_rep_delay: int = 0
         self._nrd: int = nrd
         self._repair_date: date = None
-        self._simulation_sd = start_date  # Start date
         days_active_b4_sim: int = (simulation_sd - start_date).days
         self._days_active_b4_sim = days_active_b4_sim if days_active_b4_sim > 0 else 0
+
+    def __reduce__(self):
+        return self._reconstruct_fugitive_emission, (self.__dict__,)
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+
+    @classmethod
+    def _reconstruct_fugitive_emission(cls, state):
+        instance = cls.__new__(cls)
+        instance.__setstate__(state)
+        return instance
 
     def check_if_repaired(self, emis_rep_info: EmisRepairInfo) -> bool:
         """
@@ -176,41 +187,3 @@ class FugitiveEmission(Emission):
             return True
         else:
             return False
-
-    def to_dict(self) -> dict[str, Any]:
-        emission_dict = super().to_dict()
-        emission_dict.update(
-            {
-                "tagged": self._tagged,
-                "days_since_tagged": self._days_since_tagged,
-                "tagged_by_company": self._tagged_by_company,
-                "tagged_by_crew": self._tagged_by_crew,
-                "repair_delay": self._repair_delay,
-                "repair_cost": self._repair_cost,
-                "tagging_rep_delay": self._tagging_rep_delay,
-                "nrd": self._nrd,
-                "repair_date": self._repair_date.isoformat() if self._repair_date else None,
-                "days_active_b4_sim": self._days_active_b4_sim,
-            }
-        )
-        return emission_dict
-
-    @classmethod
-    def from_dict(cls, emission_dict: dict[str, Any]) -> "FugitiveEmission":
-        emission = cls.__new__(cls)
-        super(FugitiveEmission, emission).__init__(*emission_dict.values())
-        emission._tagged = emission_dict["tagged"]
-        emission._days_since_tagged = emission_dict["days_since_tagged"]
-        emission._tagged_by_company = emission_dict["tagged_by_company"]
-        emission._tagged_by_crew = emission_dict["tagged_by_crew"]
-        emission._repair_delay = emission_dict["repair_delay"]
-        emission._repair_cost = emission_dict["repair_cost"]
-        emission._tagging_rep_delay = emission_dict["tagging_rep_delay"]
-        emission._nrd = emission_dict["nrd"]
-        emission._repair_date = (
-            date.fromisoformat(emission_dict["repair_date"])
-            if emission_dict["repair_date"]
-            else None
-        )
-        emission._days_active_b4_sim = emission_dict["days_active_b4_sim"]
-        return emission

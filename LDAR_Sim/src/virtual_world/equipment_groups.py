@@ -38,6 +38,9 @@ from virtual_world.equipment import Equipment
 class Equipment_Group:
     def __init__(self, id, infrastructure_inputs, prop_params, info) -> None:
         self._id: str = id
+        self._meth_survey_times = None
+        self._meth_survey_costs = None
+        self._equipment: list[Equipment] = []
         self._update_prop_params(info, prop_params)
         self._set_method_specific_params(prop_params)
         self._create_equipment(
@@ -81,7 +84,6 @@ class Equipment_Group:
         prop_params["Method_Specific_Params"] = meth_specific_params
 
     def _create_equipment(self, infrastructure_inputs, prop_params, info) -> None:
-        self._equipment: list[Equipment] = []
         for col, val in info.items():
             if "equipment" in col.lower():
                 for count in range(0, val):

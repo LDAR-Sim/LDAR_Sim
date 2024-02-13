@@ -27,10 +27,6 @@ class WeatherLookup:
         """
         Read in NetCDF files and returns the environment at a given place in time.
         """
-
-        self.virtual_world = virtual_world
-        self.input_directory = input_directory
-
         # Initialize attributes to store weather data
         self.temps = None
         self.u_wind = None
@@ -45,13 +41,11 @@ class WeatherLookup:
         self.lon_length = None
 
         # Load weather data
-        self.load_weather_data()
+        self.load_weather_data(virtual_world, input_directory)
 
-    def load_weather_data(self):
+    def load_weather_data(self, virtual_world, in_dir):
         # Read in weather data as NetCDF file(s)
-        with Dataset(
-            self.input_directory / self.virtual_world["weather_file"], "r"
-        ) as weather_data:
+        with Dataset(in_dir / virtual_world["weather_file"], "r") as weather_data:
             # Extract temperatures
             self.temps = np.array(weather_data.variables["t2m"]) - 273.15
             # Extract u wind component
@@ -74,6 +68,52 @@ class WeatherLookup:
             self.lat_length = len(self.latitude)
             # Length of longitude dimension - n cells
             self.lon_length = len(self.longitude)
+
+    def __reduce__(self):
+        args = (
+            self.temps,
+            self.u_wind,
+            self.v_wind,
+            self.winds,
+            self.precip,
+            self.time_total,
+            self.latitude,
+            self.longitude,
+            self.time_length,
+            self.lat_length,
+            self.lon_length,
+        )
+        return (self.__class__._reconstruct, args)
+
+    @classmethod
+    def _reconstruct(
+        cls,
+        temps,
+        u_wind,
+        v_wind,
+        winds,
+        precip,
+        time_total,
+        latitude,
+        longitude,
+        time_length,
+        lat_length,
+        lon_length,
+    ):
+        # Create a new instance without invoking __init__
+        instance = cls.__new__(cls)
+        instance.temps = temps
+        instance.u_wind = u_wind
+        instance.v_wind = v_wind
+        instance.winds = winds
+        instance.precip = precip
+        instance.time_total = time_total
+        instance.latitude = latitude
+        instance.longitude = longitude
+        instance.time_length = time_length
+        instance.lat_length = lat_length
+        instance.lon_length = lon_length
+        return instance
 
     def deployment_days(
         self, method_name, config, start_date, start_work_hour=0, consider_weather=False
