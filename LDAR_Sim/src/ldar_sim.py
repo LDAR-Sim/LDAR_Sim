@@ -188,4 +188,4 @@ class LdarSim:
         if data is None:
             return
         filepath: Path = self._output_dir / filename
-        data.to_csv(filepath, index=False)
+        data.to_csv(filepath, index=False, float_format="%.5f")
