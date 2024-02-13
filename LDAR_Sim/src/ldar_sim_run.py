@@ -260,7 +260,9 @@ if __name__ == "__main__":
         sim_counts.append(simulation_count % 5)
     else:
         sim_counts = [simulation_count]
-
+    n_process = sim_params["n_processes"]
+    if len(programs) < sim_params["n_processes"]:
+        n_process = len(programs)
     with mp.Manager() as manager:
         lock = manager.Lock()
         for batch_count, sim_count in enumerate(sim_counts):
@@ -291,7 +293,8 @@ if __name__ == "__main__":
                             lock,
                         )
                     )
-                with mp.Pool(processes=sim_params["n_processes"]) as p:
+
+                with mp.Pool(processes=n_process) as p:
                     sim_outputs = p.starmap(
                         simulate,
                         prog_data,
