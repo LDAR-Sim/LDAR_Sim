@@ -51,7 +51,7 @@ Citation for this release: Fox, Thomas A., Mozhou Gao, Thomas E. Barchyn, Yorwea
 
 ### Getting started
 
-This guide is intended to get a user running with LDAR-Sim, **note** that even though we have supplied default variables, these should be used with caution, as many are not fully understood, are dependent on specific company workpractices, and vary by geographical region.
+This guide is intended to get a user running with LDAR-Sim, **note** that even though we have supplied default variables, these should be used with caution, as many are not fully understood, are dependent on specific company work practices, and vary by geographical region.
 
 #### Step 1: Before you begin
 
@@ -89,7 +89,7 @@ The application requires both facility and weather data to run. We have included
 
 #### Step 4: Populate the simulation folder with Programs and associated methods
 
-The simulation files allow a user to set simulation_setting / virtual_world / program/ and method parameters. If a parameter is not included in the file a default value will be used. One simulation_settings file, one virtual world file and at least one Program File is required for running the program while method files are required for running a method.
+The simulation files allow a user to set simulation_setting / virtual_world / program/ and method parameters. If a parameter is not included in the file a default value, where applicable, will be used. One simulation_settings file, one virtual world file and at least one Program File is required for running the program while method files are required for running a method.
 
 ##### Example
 
