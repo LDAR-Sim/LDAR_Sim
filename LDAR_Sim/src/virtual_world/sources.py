@@ -51,9 +51,68 @@ class Source:
         self._active_duration = info[Infrastructure_Constants.Sources_File_Constants.ACTIVE_DUR]
         self._inactive_duration = info[Infrastructure_Constants.Sources_File_Constants.INACTIVE_DUR]
         self._generated_emissions: dict[int, list[Emission]] = {}
+        self._emis_rate_source = None
+        self._emis_prod_rate = None
+        self._emis_duration = None
+        self._meth_spat_covs = None
+        self._emis_rep_delay = None
+        self._emis_rep_cost = None
         self._update_prop_params(info=info, prop_params=prop_params)
         self._set_source_properties(prop_params=prop_params)
         self._next_emission: Emission = None
+
+    def __reduce__(self):
+        args = (
+            self._source_ID,
+            self._repairable,
+            self._persistent,
+            self._active_duration,
+            self._inactive_duration,
+            self._generated_emissions,
+            self._emis_rate_source,
+            self._emis_prod_rate,
+            self._emis_duration,
+            self._meth_spat_covs,
+            self._emis_rep_delay,
+            self._emis_rep_cost,
+            self._next_emission,
+        )
+        return (self.__class__._reconstruct, args)
+
+    @classmethod
+    def _reconstruct(
+        cls,
+        source_ID,
+        repairable,
+        persistent,
+        active_duration,
+        inactive_duration,
+        generated_emissions,
+        emis_rate_source,
+        emis_prod_rate,
+        emis_duration,
+        meth_spat_covs,
+        emis_rep_delay,
+        emis_rep_cost,
+        next_emission,
+    ):
+        # Create a new instance without invoking __init__
+        instance = cls.__new__(cls)
+        # Restore the instance's attributes
+        instance._source_ID = source_ID
+        instance._repairable = repairable
+        instance._persistent = persistent
+        instance._active_duration = active_duration
+        instance._inactive_duration = inactive_duration
+        instance._generated_emissions = generated_emissions
+        instance._emis_rate_source = emis_rate_source
+        instance._emis_prod_rate = emis_prod_rate
+        instance._emis_duration = emis_duration
+        instance._meth_spat_covs = meth_spat_covs
+        instance._emis_rep_delay = emis_rep_delay
+        instance._emis_rep_cost = emis_rep_cost
+        instance._next_emission = next_emission
+        return instance
 
     def _update_prop_params(self, info, prop_params) -> None:
         meth_specific_params = prop_params.pop("Method_Specific_Params")

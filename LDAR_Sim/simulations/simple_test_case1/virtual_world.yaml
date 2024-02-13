@@ -13,4 +13,5 @@ infrastructure:
   sources_file: "_placeholder_str_" #Infrastructure file defining emissions sources at equipment
 NRd: 365
 weather_file: "ERA5_2017_2019_Perm.nc"
-weather_is_hourly: True
+start_date: [2017, 1, 1]
+end_date: [2021, 12, 31]

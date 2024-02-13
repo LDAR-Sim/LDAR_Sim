@@ -38,6 +38,9 @@ from virtual_world.equipment import Equipment
 class Equipment_Group:
     def __init__(self, id, infrastructure_inputs, prop_params, info) -> None:
         self._id: str = id
+        self._meth_survey_times = None
+        self._meth_survey_costs = None
+        self._equipment: list[Equipment] = []
         self._update_prop_params(info, prop_params)
         self._set_method_specific_params(prop_params)
         self._create_equipment(
@@ -45,6 +48,24 @@ class Equipment_Group:
             prop_params=prop_params,
             info=info,
         )
+
+    def __reduce__(self):
+        args = (
+            self._id,
+            self._meth_survey_times,
+            self._meth_survey_costs,
+            self._equipment,
+        )
+        return (self.__class__._reconstruct, args)
+
+    @classmethod
+    def _reconstruct(cls, id, meth_survey_times, meth_survey_costs, equipment):
+        instance = cls.__new__(cls)
+        instance._id = id
+        instance._meth_survey_times = meth_survey_times
+        instance._meth_survey_costs = meth_survey_costs
+        instance._equipment = equipment
+        return instance
 
     def _update_prop_params(self, info: dict, prop_params: dict) -> None:
         meth_specific_params: dict = prop_params.pop("Method_Specific_Params")
@@ -63,7 +84,6 @@ class Equipment_Group:
         prop_params["Method_Specific_Params"] = meth_specific_params
 
     def _create_equipment(self, infrastructure_inputs, prop_params, info) -> None:
-        self._equipment: list[Equipment] = []
         for col, val in info.items():
             if "equipment" in col.lower():
                 for count in range(0, val):

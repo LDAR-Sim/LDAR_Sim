@@ -17,6 +17,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 ------------------------------------------------------------------------------
 """
+
 from datetime import date
 from scheduling.follow_up_survey_planner import FollowUpSurveyPlanner
 from scheduling.generic_schedule import GenericSchedule
@@ -48,9 +49,7 @@ class FollowUpMobileSchedule(GenericSchedule):
             est_meth_daily_surveys,
             method_avail_crews,
         )
-        self._site_IDs_in_queue: dict[str, bool] = {
-            site.get_id(): False for site in sites
-        }
+        self._site_IDs_in_queue: dict[str, bool] = {site.get_id(): False for site in sites}
         return
 
     def get_site_id_queue_list(self) -> dict[str, bool]:
@@ -70,12 +69,8 @@ class FollowUpMobileSchedule(GenericSchedule):
         self._survey_queue: PriorityQueueWithFIFO = new_queue
         return prio, target_plan
 
-    def requeue_survey_plan(
-        self, prio: int, survey_plan: FollowUpSurveyPlanner
-    ) -> None:
-        self._survey_queue.put(
-            priority=(prio, survey_plan.rate_at_site), item=survey_plan
-        )
+    def requeue_survey_plan(self, prio: int, survey_plan: FollowUpSurveyPlanner) -> None:
+        self._survey_queue.put(priority=(prio, survey_plan.rate_at_site), item=survey_plan)
 
     def add_to_survey_queue(self, survey_plan: FollowUpSurveyPlanner) -> None:
         """Add the supplied site to the survey queue to surveyed
@@ -88,9 +83,7 @@ class FollowUpMobileSchedule(GenericSchedule):
             survey_plan,
         )
 
-    def add_unfinished_to_survey_queue(
-        self, survey_plan: FollowUpSurveyPlanner
-    ) -> None:
+    def add_unfinished_to_survey_queue(self, survey_plan: FollowUpSurveyPlanner) -> None:
         """Add the supplied, partial surveyed site to queue
 
         Args:
@@ -103,9 +96,7 @@ class FollowUpMobileSchedule(GenericSchedule):
             survey_plan,
         )
 
-    def add_previous_queued_to_survey_queue(
-        self, survey_plan: FollowUpSurveyPlanner
-    ) -> None:
+    def add_previous_queued_to_survey_queue(self, survey_plan: FollowUpSurveyPlanner) -> None:
         """Add the supplied, unattended site back to queue
 
         Args:

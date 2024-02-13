@@ -55,6 +55,17 @@ class DaylightCalculatorAve:
             curr_date += timedelta(days=1)
         return
 
+    def __reduce__(self):
+        args = (self.daylight_hours,)
+        return (self.__class__._reconstruct, args)
+
+    @classmethod
+    def _reconstruct(cls, daylight_hours):
+        # Create a new instance without invoking __init__
+        instance = cls.__new__(cls)
+        instance.daylight_hours = daylight_hours
+        return instance
+
     def get_daylight(self, curr_date: date):
         daylight = self.daylight_hours[curr_date]
         return daylight

@@ -2,7 +2,7 @@
 ------------------------------------------------------------------------------
 Program:     The LDAR Simulator (LDAR-Sim)
 File:        survey_planner
-Purpose: The survey planner module. 
+Purpose: The survey planner module.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the MIT License as published
@@ -17,6 +17,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 ------------------------------------------------------------------------------
 """
+
 from datetime import date
 from scheduling.schedule_dataclasses import SiteSurveyReport
 from virtual_world.sites import Site

@@ -69,14 +69,57 @@ class Site:
         self._deployment_years = propagating_params["Method_Specific_Params"].pop(
             Infrastructure_Constants.Sites_File_Constants.DEPLOYMENT_YEARS_PLACEHOLDER
         )
+        self._equipment_groups: list[Equipment_Group] = []
+        self._survey_costs: dict[str, float] = {}
         self._create_equipment_groups(equipment_groups, infrastructure_inputs, propagating_params)
         self._set_survey_costs(methods=methods)
         self._latest_tagging_survey_date: date = start_date
 
+    def __reduce__(self):
+        args = (
+            self._site_ID,
+            self._lat,
+            self._long,
+            self._equipment_groups,
+            self._survey_frequencies,
+            self._deployment_months,
+            self._deployment_years,
+            self._site_type,
+            self._latest_tagging_survey_date,
+            self._survey_costs,
+        )
+        return (self.__class__._reconstruct, args)
+
+    @classmethod
+    def _reconstruct(
+        cls,
+        site_ID,
+        lat,
+        long,
+        equipment_groups,
+        survey_frequencies,
+        deployment_months,
+        deployment_years,
+        site_type,
+        latest_tagging_survey_date,
+        survey_costs,
+    ):
+        instance = cls.__new__(cls)
+        instance._site_ID = site_ID
+        instance._lat = lat
+        instance._long = long
+        instance._equipment_groups = equipment_groups
+        instance._survey_frequencies = survey_frequencies
+        instance._deployment_months = deployment_months
+        instance._deployment_years = deployment_years
+        instance._site_type = site_type
+        instance._latest_tagging_survey_date = latest_tagging_survey_date
+        instance._survey_costs = survey_costs
+        return instance
+
     def _create_equipment_groups(
         self, equipment_groups: list, infrastructure_inputs, propagating_params
     ) -> None:
-        self._equipment_groups: list[Equipment_Group] = []
         if isinstance(equipment_groups, list) and len(equipment_groups) > 0:
             equip_groups_in: pd.DataFrame = infrastructure_inputs["equipment_groups"]
             for equipment_group in equipment_groups:
@@ -121,7 +164,6 @@ class Site:
             )
 
     def _set_survey_costs(self, methods: list[str]) -> float:
-        self._survey_costs: dict[str, float] = {}
         for method in methods:
             self._survey_costs[method] = 0
             for eqg in self._equipment_groups:

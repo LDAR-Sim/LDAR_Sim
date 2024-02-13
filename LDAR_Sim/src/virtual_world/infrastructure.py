@@ -50,7 +50,20 @@ class Infrastructure:
         self.repair_delay_dataframe: pd.DataFrame = read_in_repair_delay_sources_file(
             inputs_path=in_dir, virtual_world=virtual_world
         )
+        self._sites: list[Site] = []
         self.generate_infrastructure(virtual_world=virtual_world, methods=methods, in_dir=in_dir)
+
+    def __reduce__(self):
+        args = (self.emission_rate_source_dictionary, self.repair_delay_dataframe, self._sites)
+        return (self.__class__._reconstruct, args)
+
+    @classmethod
+    def _reconstruct(cls, emission_rate_dict, repair_df, sites):
+        instance = cls.__new__(cls)
+        instance.emission_rate_source_dictionary = emission_rate_dict
+        instance.repair_delay_dataframe = repair_df
+        instance._sites = sites
+        return instance
 
     def generate_propagating_params(self, virtual_world, methods) -> dict:
         prop_params_dict: dict = {}
