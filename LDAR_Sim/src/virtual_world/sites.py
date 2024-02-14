@@ -275,3 +275,7 @@ class Site:
         for eqg in self._equipment_groups:
             emis_data += eqg.update_emissions_state(emis_rep_info)
         return emis_data
+
+    def setup(self, methods: list[str]):
+        for eqg in self._equipment_groups:
+            eqg.setup(methods)

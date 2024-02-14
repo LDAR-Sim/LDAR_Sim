@@ -175,8 +175,6 @@ class Equipment_Group:
         ]
         cleaned_equip_emis_dataframes = [df for df in equip_emis_dataframes if not df.empty]
 
-        na_dfs = any([any(df.isna().all()) for df in cleaned_equip_emis_dataframes])
-
         if cleaned_equip_emis_dataframes:
             emis_data: pd.DataFrame = pd.concat(cleaned_equip_emis_dataframes)
         else:
@@ -186,3 +184,7 @@ class Equipment_Group:
 
     def get_survey_cost(self, method_name) -> float:
         return self._meth_survey_costs[method_name]
+
+    def setup(self, methods: list[str]):
+        for equipment in self._equipment:
+            equipment.set_emis_sum_dtypes(methods)

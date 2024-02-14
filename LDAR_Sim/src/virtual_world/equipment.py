@@ -24,7 +24,6 @@ import re
 
 import pandas as pd
 from file_processing.output_processing.output_utils import (
-    EMIS_DATA_COLS,
     EmisRepairInfo,
     TsEmisData,
 )
@@ -55,6 +54,51 @@ class Equipment:
         self._create_sources(infrastructure_inputs=infrastructure_inputs, prop_params=prop_params)
         self._active_emissions: list[Emission] = []
         self._inactive_emissions: list[Emission] = []
+        self.emis_sum_dtypes: dict[str, str] = {}
+
+    def __reduce__(self):
+        args = (
+            self._equip_type,
+            self._equipment_ID,
+            self._sources,
+            self._active_emissions,
+            self._inactive_emissions,
+            self.emis_sum_dtypes,
+        )
+        return (self.__class__._reconstruct, args)
+
+    @classmethod
+    def _reconstruct(
+        cls,
+        equip_type,
+        equipment_ID,
+        sources,
+        active_emissions,
+        inactive_emissions,
+        emis_sum_dtypes,
+    ):
+        instance = cls.__new__(cls)
+        instance._equip_type = equip_type
+        instance._equipment_ID = equipment_ID
+        instance._sources = sources
+        instance._active_emissions = active_emissions
+        instance._inactive_emissions = inactive_emissions
+        instance.emis_sum_dtypes = emis_sum_dtypes
+        return instance
+
+    def set_emis_sum_dtypes(self, methods: list[str]):
+        self.emis_sum_dtypes = Emission.EMIS_SUMMARY_DTYPES
+        method_spat_dtypes = {method: "bool" for method in methods}
+        self.emis_sum_dtypes.update(method_spat_dtypes)
+
+    # def _get_methods_for_dtype(self, prop_params) -> dict[str, str]:
+    #     # Loop through any method specific param to get the existing methods
+
+    #     method_spat_dtypes = {}
+    #     for method in next(iter(prop_params["Method_Specific_Params"].values())):
+    #         method_spat_dtypes[f"{method} Spatial Coverage"] = "bool"
+
+    #     return method_spat_dtypes
 
     def _create_sources(self, infrastructure_inputs, prop_params) -> None:
         if self._equip_type != "Placeholder" and "sources" in infrastructure_inputs:
@@ -162,26 +206,21 @@ class Equipment:
 
     def get_emis_data(self) -> pd.DataFrame:
         emis_data_active: pd.DataFrame = pd.DataFrame(
-            [emission.get_summary_dict() for emission in self._active_emissions]
+            [emission.get_summary_dict() for emission in self._active_emissions],
+            dtype=self.emis_sum_dtypes,
         )
 
         emis_data_inactive: pd.DataFrame = pd.DataFrame(
-            [emission.get_summary_dict() for emission in self._inactive_emissions]
+            [emission.get_summary_dict() for emission in self._inactive_emissions],
+            dtype=self.emis_sum_dtypes,
         )
 
         # Handle empty dataframe cases
-        if emis_data_active.empty and emis_data_inactive.empty:
-            columns = EMIS_DATA_COLS
-            return pd.DataFrame(columns=columns)
-        elif emis_data_inactive.empty:
+        if emis_data_inactive.empty:
             emis_data = emis_data_active
         elif emis_data_active.empty:
             emis_data = emis_data_inactive
         else:
-            # Exclude empty or all-NA columns from both DataFrames
-            # Specifically the spatial coverage column that may be empty for emis_data_active
-            emis_data_active = emis_data_active.dropna(axis=1, how="all")
-            emis_data_inactive = emis_data_inactive.dropna(axis=1, how="all")
             emis_data = pd.concat([emis_data_active, emis_data_inactive], ignore_index=True)
 
         emis_data["Equipment"] = self._equipment_ID
