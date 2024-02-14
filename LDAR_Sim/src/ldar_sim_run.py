@@ -111,9 +111,9 @@ def simulate(
     meth_params,
     sim_settings,
     virtual_world,
-    infrastructure,
-    input_dir,
-    output_dir,
+    infrastructure: Infrastructure,
+    input_dir: Path,
+    output_dir: Path,
     preseed_timeseries,
     lock,
 ):
@@ -130,6 +130,7 @@ def simulate(
         date(*virtual_world["end_date"]),
         virtual_world["consider_weather"],
     )
+    infra.setup(program.get_method_names())
     print(f"......... Simulating program: {prog_name}")
     simulation: LdarSim = LdarSim(
         sim_num,

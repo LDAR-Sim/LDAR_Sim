@@ -31,6 +31,21 @@ from utils.conversion_constants import GRAMS_PER_SECOND_TO_KG_PER_DAY
 
 
 class Emission:
+    EMIS_SUMMARY_DTYPES = {
+        eca.EMIS_ID: "object",
+        eca.STATUS: "object",
+        eca.DAYS_ACT: "int32",
+        eca.T_VOL_EMIT: "float64",
+        eca.T_RATE: "float64",
+        eca.M_RATE: "float64",
+        eca.DATE_BEG: "datetime64",
+        eca.INIT_DETECT_BY: "object",
+        eca.INIT_DETECT_DATE: "datetime64",
+        eca.TAGGED: "bool",
+        eca.TAGGED_BY: "object",
+        eca.DATE_REP: "datetime64",
+    }
+
     def __init__(
         self,
         emission_n: int,

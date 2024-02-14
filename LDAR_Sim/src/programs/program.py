@@ -199,3 +199,6 @@ class Program:
     def update_date(self) -> None:
         """Increment the current date counter"""
         self._current_date += timedelta(days=1)
+
+    def get_method_names(self) -> list[str]:
+        return self.method_names

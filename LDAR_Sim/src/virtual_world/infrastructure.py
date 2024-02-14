@@ -257,3 +257,7 @@ class Infrastructure:
         else:
             self._sites_emis_data: pd.DataFrame = sites_emis_data[0]
         return self._sites_emis_data
+
+    def setup(self, methods: list[str]) -> None:
+        for site in self._sites:
+            site.setup(methods)
