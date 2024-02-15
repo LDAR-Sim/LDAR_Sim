@@ -36,6 +36,7 @@ class TS_SUMMARY_COLUMNS_ACCESSORS:
     T_DAILY_EMIS_95 = '95th Percentile "True" Daily Emissions (Kg Methane)'
     T_DAILY_EMIS_5 = '5th Percentile "True" Daily Emissions (Kg Methane)'
     AVG_DAILY_COST = "Average Daily Cost ($)"
+    TOTAL_COST = "Total Cost ($)"
     DAILY_COST_95 = "95th Percentile Daily Cost ($)"
     DAILY_COST_5 = "5th Percentile Daily Cost ($)"
 
@@ -43,6 +44,7 @@ class TS_SUMMARY_COLUMNS_ACCESSORS:
 class EMIS_SUMMARY_COLUMNS_ACCESSORS:
     PROG_NAME = "Program Name"
     SIM = "Simulation"
+    T_EMIS_COUNT = "Total emission count"
     T_TOTAL_EMIS = 'Total "True" Emissions (Kg Methane)'
     AVG_T_EMIS_RATE = 'Average "True" Emissions Rate (g/s)'
     T_EMIS_RATE_95 = '95th Percentile "True" Emissions Rate (g/s)'
@@ -59,6 +61,7 @@ TS_SUMMARY_COLUMNS = [
     TS_SUMMARY_COLUMNS_ACCESSORS.T_DAILY_EMIS_95,
     TS_SUMMARY_COLUMNS_ACCESSORS.T_DAILY_EMIS_5,
     TS_SUMMARY_COLUMNS_ACCESSORS.AVG_DAILY_COST,
+    TS_SUMMARY_COLUMNS_ACCESSORS.TOTAL_COST,
     TS_SUMMARY_COLUMNS_ACCESSORS.DAILY_COST_95,
     TS_SUMMARY_COLUMNS_ACCESSORS.DAILY_COST_5,
 ]
@@ -66,6 +69,7 @@ TS_SUMMARY_COLUMNS = [
 EMIS_SUMMARY_COLUMNS = [
     EMIS_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME,
     EMIS_SUMMARY_COLUMNS_ACCESSORS.SIM,
+    EMIS_SUMMARY_COLUMNS_ACCESSORS.T_EMIS_COUNT,
     EMIS_SUMMARY_COLUMNS_ACCESSORS.T_TOTAL_EMIS,
     EMIS_SUMMARY_COLUMNS_ACCESSORS.AVG_T_EMIS_RATE,
     EMIS_SUMMARY_COLUMNS_ACCESSORS.T_EMIS_RATE_95,
@@ -84,6 +88,10 @@ def get_sum(df: pd.DataFrame, column: str) -> float:
     return df[column].sum()
 
 
+def get_count(df: pd.DataFrame, column: str) -> int:
+    return df[column].count()
+
+
 # TODO add this comment to the relevant User Manual Section
 # Currently defined to compute percentiles using a median-unbiased method as described in:
 # https://numpy.org/doc/stable/reference/generated/numpy.percentile.html and
@@ -99,12 +107,14 @@ TS_MAPPING_TO_SUMMARY_COLS = {
     TS_SUMMARY_COLUMNS_ACCESSORS.T_DAILY_EMIS_95: lambda df: get_nth_percentile(df, tca.EMIS, 95),
     TS_SUMMARY_COLUMNS_ACCESSORS.T_DAILY_EMIS_5: lambda df: get_nth_percentile(df, tca.EMIS, 5),
     TS_SUMMARY_COLUMNS_ACCESSORS.AVG_DAILY_COST: lambda df: get_mean_val(df, tca.COST),
+    TS_SUMMARY_COLUMNS_ACCESSORS.TOTAL_COST: lambda df: get_sum(df, tca.COST),
     TS_SUMMARY_COLUMNS_ACCESSORS.DAILY_COST_95: lambda df: get_nth_percentile(df, tca.COST, 95),
     TS_SUMMARY_COLUMNS_ACCESSORS.DAILY_COST_5: lambda df: get_nth_percentile(df, tca.COST, 5),
 }
 
 EMIS_MAPPING_TO_SUMMARY_COLS = {
     EMIS_SUMMARY_COLUMNS_ACCESSORS.T_TOTAL_EMIS: lambda df: get_sum(df, eca.T_VOL_EMIT),
+    EMIS_SUMMARY_COLUMNS_ACCESSORS.T_EMIS_COUNT: lambda df: get_count(df, eca.EMIS_ID),
     EMIS_SUMMARY_COLUMNS_ACCESSORS.AVG_T_EMIS_RATE: lambda df: get_mean_val(df, eca.T_RATE),
     EMIS_SUMMARY_COLUMNS_ACCESSORS.T_EMIS_RATE_95: lambda df: get_nth_percentile(
         df, eca.T_RATE, 95
