@@ -237,15 +237,9 @@ class Site:
     def get_latest_tagging_survey_date(self) -> date:
         return self._latest_tagging_survey_date
 
-    def get_emis_data(self) -> pd.DataFrame:
-        site_emis_data: list[pd.DataFrame] = [eqg.get_emis_data() for eqg in self._equipment_groups]
-        cleaned_site_emis_data = [emis_data for emis_data in site_emis_data if not emis_data.empty]
-        if cleaned_site_emis_data:
-            emis_data: pd.DataFrame = pd.concat(cleaned_site_emis_data)
-        else:
-            emis_data: pd.DataFrame = site_emis_data[0]
-        emis_data["Site ID"] = self._site_ID
-        return emis_data
+    def gen_emis_data(self, emis_df: pd.DataFrame, row_index: int):
+        for eqg in self._equipment_groups:
+            eqg.gen_emis_data(emis_df, self._site_ID, row_index)
 
     def get_survey_cost(self, method_name: str) -> float:
         return self._survey_costs[method_name]

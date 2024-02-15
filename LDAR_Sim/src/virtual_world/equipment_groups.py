@@ -169,18 +169,9 @@ class Equipment_Group:
     def get_id(self) -> str:
         return self._id
 
-    def get_emis_data(self) -> pd.DataFrame:
-        equip_emis_dataframes: list[pd.DataFrame] = [
-            equip.get_emis_data() for equip in self._equipment
-        ]
-        cleaned_equip_emis_dataframes = [df for df in equip_emis_dataframes if not df.empty]
-
-        if cleaned_equip_emis_dataframes:
-            emis_data: pd.DataFrame = pd.concat(cleaned_equip_emis_dataframes)
-        else:
-            emis_data: pd.DataFrame = equip_emis_dataframes[0]
-        emis_data["Equipment Group"] = self._id
-        return emis_data
+    def gen_emis_data(self, emis_df: pd.DataFrame, site_id: str, row_index: int):
+        for equip in self._equipment:
+            equip.gen_emis_data(emis_df, site_id, self._id, row_index)
 
     def get_survey_cost(self, method_name) -> float:
         return self._meth_survey_costs[method_name]
