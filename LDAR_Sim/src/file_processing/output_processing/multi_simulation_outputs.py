@@ -41,6 +41,16 @@ class TS_SUMMARY_COLUMNS_ACCESSORS:
     DAILY_COST_5 = "5th Percentile Daily Cost ($)"
 
 
+class TS_SUMMARY_METHOD_COLUMN_ACCESSORS:
+    TOTAL_SITES_VISITED = "{method} Total Sites Visited"
+    TOTAL_SITES_FLAGGED = "{method} Total Sites Flagged "
+    TOTAL_SITES_TAGGED = "{method} Total Sites Tagged"
+    TOTAL_TIME_SURVEYING = "{method} Total Surveying Time (Minutes)"
+    AVG_SURVEYING_TIME = "{method} Average Surveying Time (Minutes)"
+    TOTAL_TIME_TRAVELING = "{method} Total Travel Time (Minutes)"
+    AVG_TRAVELING_TIME = "{method} Average Travel Time (Minutes)"
+
+
 class EMIS_SUMMARY_COLUMNS_ACCESSORS:
     PROG_NAME = "Program Name"
     SIM = "Simulation"
@@ -160,11 +170,62 @@ def gen_ts_summary(dir: Path):
                 )
                 for sum_stat, calc in TS_MAPPING_TO_SUMMARY_COLS.items():
                     new_summary_row[sum_stat] = calc(ts_data)
+
+                meth_summary = gen_ts_method_summary(ts_data)
+
+                new_summary_row.update(meth_summary)
+
                 ts_summary_df.loc[len(ts_summary_df)] = new_summary_row
+
     return ts_summary_df
 
 
+def gen_ts_method_summary(ts_data):
+    method_summary = {}
+    non_time_accessors = [
+        (
+            tca.METH_DAILY_SITES_VIS.format(method=""),
+            TS_SUMMARY_METHOD_COLUMN_ACCESSORS.TOTAL_SITES_VISITED,
+        ),
+        (
+            tca.METH_DAILY_FLAGS.format(method=""),
+            TS_SUMMARY_METHOD_COLUMN_ACCESSORS.TOTAL_SITES_FLAGGED,
+        ),
+        (
+            tca.METH_DAILY_TAGS.format(method=""),
+            TS_SUMMARY_METHOD_COLUMN_ACCESSORS.TOTAL_SITES_TAGGED,
+        ),
+    ]
+    time_accessors = [
+        (
+            tca.METH_DAILY_SURVEY_TIME.format(method=""),
+            TS_SUMMARY_METHOD_COLUMN_ACCESSORS.AVG_SURVEYING_TIME,
+            TS_SUMMARY_METHOD_COLUMN_ACCESSORS.TOTAL_TIME_SURVEYING,
+        ),
+        (
+            tca.METH_DAILY_TRAVEL_TIME.format(method=""),
+            TS_SUMMARY_METHOD_COLUMN_ACCESSORS.AVG_TRAVELING_TIME,
+            TS_SUMMARY_METHOD_COLUMN_ACCESSORS.TOTAL_TIME_TRAVELING,
+        ),
+    ]
+
+    for accessor, column_name in non_time_accessors:
+        filtered_columns = [col for col in ts_data.columns if accessor in col]
+        for col in filtered_columns:
+            method = col.split(accessor)[0]
+            method_summary[column_name.format(method=method)] = ts_data[col].sum()
+
+    for accessor, column_namm_avg, column_name_tot in time_accessors:
+        filtered_columns = [col for col in ts_data.columns if accessor in col]
+        for col in filtered_columns:
+            method = col.split(accessor)[0]
+            method_summary[column_namm_avg.format(method=method)] = ts_data[col].mean()
+            method_summary[column_name_tot.format(method=method)] = ts_data[col].sum()
+    return method_summary
+
+
 def gen_emissions_summary(dir: Path):
+
     emis_summary_df = pd.DataFrame(columns=EMIS_SUMMARY_COLUMNS)
     with os.scandir(dir) as entries:
         for entry in entries:
@@ -230,6 +291,7 @@ def concat_output_data(out_dir: Path, clear_outputs: bool):
             clear_directory(program_dir)
         else:
             mark_outputs_to_keep(program_dir)
+
     if not leg_ts_sum.empty and not leg_emis_sum.empty:
         prog_ts_sum_dfs.insert(0, leg_ts_sum)
         new_ts_sum: pd.DataFrame = pd.concat(prog_ts_sum_dfs, ignore_index=True)
@@ -242,3 +304,9 @@ def concat_output_data(out_dir: Path, clear_outputs: bool):
         new_emis_sum: pd.DataFrame = pd.concat(prog_emis_sum_dfs, ignore_index=True)
         save_summary_file(new_ts_sum, out_dir, TS_SUMMARY_FILENAME)
         save_summary_file(new_emis_sum, out_dir, EMIS_SUMMARY_FILENAME)
+
+
+def extract_method_column_names(column_names_index):
+    prefix_length = len(" Sites Visited")
+    matches = [col[:-prefix_length] for col in column_names_index if col.endswith(" Sites Visited")]
+    return matches
