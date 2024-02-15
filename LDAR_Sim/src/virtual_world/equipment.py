@@ -207,18 +207,20 @@ class Equipment:
         return self._equipment_ID
 
     def gen_emis_data(self, emis_df: pd.DataFrame, site_id: str, eqg_id: str, row_index: int):
+        upd_row_index = row_index
         for emission in self._active_emissions:
             summary_dict: dict[str, Any] = emission.get_summary_dict()
             summary_dict.update(
                 {eca.SITE_ID: site_id, eca.EQG: eqg_id, eca.EQUIP: self._equipment_ID}
             )
-            emis_df.loc[row_index] = summary_dict.values()
-            row_index += 1
+            emis_df.loc[upd_row_index] = summary_dict
+            upd_row_index += 1
 
         for emission in self._inactive_emissions:
             summary_dict: dict[str, Any] = emission.get_summary_dict()
             summary_dict.update(
                 {eca.SITE_ID: site_id, eca.EQG: eqg_id, eca.EQUIP: self._equipment_ID}
             )
-            emis_df.loc[row_index] = summary_dict
-            row_index += 1
+            emis_df.loc[upd_row_index] = summary_dict
+            upd_row_index += 1
+        return upd_row_index

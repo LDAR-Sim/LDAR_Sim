@@ -250,7 +250,7 @@ class Infrastructure:
     def gen_summary_emis_data(self, emis_df: pd.DataFrame) -> None:
         row_index: int = 0
         for site in self._sites:
-            site.gen_emis_data(emis_df, row_index)
+            row_index = site.gen_emis_data(emis_df, row_index)
 
     def setup(self, methods: list[str]) -> None:
         for site in self._sites:
