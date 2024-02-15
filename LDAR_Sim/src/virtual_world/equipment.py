@@ -21,11 +21,13 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 from copy import deepcopy
 from datetime import date
 import re
+from typing import Any
 
 import pandas as pd
 from file_processing.output_processing.output_utils import (
     EmisRepairInfo,
     TsEmisData,
+    EMIS_DATA_COL_ACCESSORS as eca,
 )
 from file_processing.input_processing.emissions_source_processing import (
     EmissionsSource,
@@ -204,25 +206,19 @@ class Equipment:
     def get_id(self) -> str:
         return self._equipment_ID
 
-    def get_emis_data(self) -> pd.DataFrame:
-        emis_data_active: pd.DataFrame = pd.DataFrame(
-            [emission.get_summary_dict() for emission in self._active_emissions],
-            dtype=self.emis_sum_dtypes,
-        )
+    def gen_emis_data(self, emis_df: pd.DataFrame, site_id: str, eqg_id: str, row_index: int):
+        for emission in self._active_emissions:
+            summary_dict: dict[str, Any] = emission.get_summary_dict()
+            summary_dict.update(
+                {eca.SITE_ID: site_id, eca.EQG: eqg_id, eca.EQUIP: self._equipment_ID}
+            )
+            emis_df.loc[row_index] = summary_dict.values()
+            row_index += 1
 
-        emis_data_inactive: pd.DataFrame = pd.DataFrame(
-            [emission.get_summary_dict() for emission in self._inactive_emissions],
-            dtype=self.emis_sum_dtypes,
-        )
-
-        # Handle empty dataframe cases
-        if emis_data_inactive.empty:
-            emis_data = emis_data_active
-        elif emis_data_active.empty:
-            emis_data = emis_data_inactive
-        else:
-            emis_data = pd.concat([emis_data_active, emis_data_inactive], ignore_index=True)
-
-        emis_data["Equipment"] = self._equipment_ID
-
-        return emis_data
+        for emission in self._inactive_emissions:
+            summary_dict: dict[str, Any] = emission.get_summary_dict()
+            summary_dict.update(
+                {eca.SITE_ID: site_id, eca.EQG: eqg_id, eca.EQUIP: self._equipment_ID}
+            )
+            emis_df.loc[row_index] = summary_dict
+            row_index += 1
