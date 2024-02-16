@@ -32,6 +32,7 @@ from file_processing.output_processing.output_utils import (
 class TS_SUMMARY_COLUMNS_ACCESSORS:
     PROG_NAME = "Program Name"
     SIM = "Simulation"
+    MED_ACT_EMIS_COUNT = "Median Active Daily Emission Count"
     AVG_T_DAILY_EMIS = 'Average "True" Daily Emissions (Kg Methane)'
     T_DAILY_EMIS_95 = '95th Percentile "True" Daily Emissions (Kg Methane)'
     T_DAILY_EMIS_5 = '5th Percentile "True" Daily Emissions (Kg Methane)'
@@ -56,7 +57,9 @@ class EMIS_SUMMARY_COLUMNS_ACCESSORS:
     SIM = "Simulation"
     T_EMIS_COUNT = "Total emission count"
     T_TOTAL_EMIS = 'Total "True" Emissions (Kg Methane)'
+    T_NAT_REP = "Total Naturally Repaired Emissions"
     AVG_T_EMIS_RATE = 'Average "True" Emissions Rate (g/s)'
+    MED_T_EMIS_RATE = 'Median "True" Emissions Rate (g/s)'
     T_EMIS_RATE_95 = '95th Percentile "True" Emissions Rate (g/s)'
     T_EMIS_RATE_5 = '5th Percentile "True" Emissions Rate (g/s)'
     T_AVG_EMIS_AMOUNT = '"True" Average Emissions Amount (Kg Methane)'
@@ -67,6 +70,7 @@ class EMIS_SUMMARY_COLUMNS_ACCESSORS:
 TS_SUMMARY_COLUMNS = [
     TS_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME,
     TS_SUMMARY_COLUMNS_ACCESSORS.SIM,
+    TS_SUMMARY_COLUMNS_ACCESSORS.MED_ACT_EMIS_COUNT,
     TS_SUMMARY_COLUMNS_ACCESSORS.AVG_T_DAILY_EMIS,
     TS_SUMMARY_COLUMNS_ACCESSORS.T_DAILY_EMIS_95,
     TS_SUMMARY_COLUMNS_ACCESSORS.T_DAILY_EMIS_5,
@@ -81,7 +85,9 @@ EMIS_SUMMARY_COLUMNS = [
     EMIS_SUMMARY_COLUMNS_ACCESSORS.SIM,
     EMIS_SUMMARY_COLUMNS_ACCESSORS.T_EMIS_COUNT,
     EMIS_SUMMARY_COLUMNS_ACCESSORS.T_TOTAL_EMIS,
+    EMIS_SUMMARY_COLUMNS_ACCESSORS.T_NAT_REP,
     EMIS_SUMMARY_COLUMNS_ACCESSORS.AVG_T_EMIS_RATE,
+    EMIS_SUMMARY_COLUMNS_ACCESSORS.MED_T_EMIS_RATE,
     EMIS_SUMMARY_COLUMNS_ACCESSORS.T_EMIS_RATE_95,
     EMIS_SUMMARY_COLUMNS_ACCESSORS.T_EMIS_RATE_5,
     EMIS_SUMMARY_COLUMNS_ACCESSORS.T_AVG_EMIS_AMOUNT,
@@ -102,6 +108,14 @@ def get_count(df: pd.DataFrame, column: str) -> int:
     return df[column].count()
 
 
+def get_median_val(df: pd.DataFrame, column: str) -> float:
+    return df[column].median()
+
+
+def get_val_count(df: pd.DataFrame, column: str, value: str) -> int:
+    return df[column].value_counts().get(value, 0)
+
+
 # TODO add this comment to the relevant User Manual Section
 # Currently defined to compute percentiles using a median-unbiased method as described in:
 # https://numpy.org/doc/stable/reference/generated/numpy.percentile.html and
@@ -113,6 +127,7 @@ def get_nth_percentile(df: pd.DataFrame, column: str, percentile: float) -> floa
 
 
 TS_MAPPING_TO_SUMMARY_COLS = {
+    TS_SUMMARY_COLUMNS_ACCESSORS.MED_ACT_EMIS_COUNT: lambda df: get_median_val(df, tca.ACT_LEAKS),
     TS_SUMMARY_COLUMNS_ACCESSORS.AVG_T_DAILY_EMIS: lambda df: get_mean_val(df, tca.EMIS),
     TS_SUMMARY_COLUMNS_ACCESSORS.T_DAILY_EMIS_95: lambda df: get_nth_percentile(df, tca.EMIS, 95),
     TS_SUMMARY_COLUMNS_ACCESSORS.T_DAILY_EMIS_5: lambda df: get_nth_percentile(df, tca.EMIS, 5),
@@ -125,7 +140,11 @@ TS_MAPPING_TO_SUMMARY_COLS = {
 EMIS_MAPPING_TO_SUMMARY_COLS = {
     EMIS_SUMMARY_COLUMNS_ACCESSORS.T_TOTAL_EMIS: lambda df: get_sum(df, eca.T_VOL_EMIT),
     EMIS_SUMMARY_COLUMNS_ACCESSORS.T_EMIS_COUNT: lambda df: get_count(df, eca.EMIS_ID),
+    EMIS_SUMMARY_COLUMNS_ACCESSORS.T_NAT_REP: lambda df: get_val_count(
+        df, eca.TAGGED_BY, "natural"
+    ),
     EMIS_SUMMARY_COLUMNS_ACCESSORS.AVG_T_EMIS_RATE: lambda df: get_mean_val(df, eca.T_RATE),
+    EMIS_SUMMARY_COLUMNS_ACCESSORS.MED_T_EMIS_RATE: lambda df: get_median_val(df, eca.T_RATE),
     EMIS_SUMMARY_COLUMNS_ACCESSORS.T_EMIS_RATE_95: lambda df: get_nth_percentile(
         df, eca.T_RATE, 95
     ),
