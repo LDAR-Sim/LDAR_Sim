@@ -141,6 +141,7 @@ EMIS_MAPPING_TO_SUMMARY_COLS = {
 
 TS_SUMMARY_FILENAME = "daily_summary_stats.csv"
 EMIS_SUMMARY_FILENAME = "emissions_summary_stats.csv"
+TS_METH_SUMMARY_FILENAME = "method_specific_summary_stats.csv"
 
 TS_PATTERN = re.compile(r".*timeseries\.csv$")
 EMIS_PATTERN = re.compile(r".*emissions_summary\.csv$")
@@ -153,6 +154,7 @@ OUTPUT_KEEP_REGEX = re.compile(re.escape(OUTPUT_KEEP_STR))
 
 def gen_ts_summary(dir: Path):
     ts_summary_df = pd.DataFrame(columns=TS_SUMMARY_COLUMNS)
+    add_extra_col: bool = True
     with os.scandir(dir) as entries:
         for entry in entries:
             if (
@@ -172,6 +174,10 @@ def gen_ts_summary(dir: Path):
                     new_summary_row[sum_stat] = calc(ts_data)
 
                 meth_summary = gen_ts_method_summary(ts_data)
+                if add_extra_col:
+                    for key in meth_summary:
+                        ts_summary_df[key] = None
+                    add_extra_col = False
 
                 new_summary_row.update(meth_summary)
 
@@ -285,7 +291,8 @@ def concat_output_data(out_dir: Path, clear_outputs: bool):
     prog_ts_sum_dfs: list[pd.DataFrame] = []
     prog_emis_sum_dfs: list[pd.DataFrame] = []
     for program_dir in program_dirs:
-        prog_ts_sum_dfs.append(gen_ts_summary(program_dir))
+        prog_ts_df = gen_ts_summary(program_dir)
+        prog_ts_sum_dfs.append(prog_ts_df)
         prog_emis_sum_dfs.append(gen_emissions_summary(program_dir))
         if clear_outputs:
             clear_directory(program_dir)
