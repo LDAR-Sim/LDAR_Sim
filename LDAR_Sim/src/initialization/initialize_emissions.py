@@ -24,61 +24,93 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 from pathlib import Path
 import pickle
 from datetime import date
-
+import numpy as np
 from virtual_world.infrastructure import Infrastructure
+from initialization.preseed import gen_seed_timeseries, get_seed_timeseries
 
 
 def initialize_emissions(
-    n_sims,
-    hash_file_exist,
-    n_sims_match,
-    infrastructure,
-    virtual_world,
-    generator_dir,
+    n_sims: int,
+    preseed: bool,
+    hash_file_exist: bool,
+    infrastructure: Infrastructure,
+    start_date: date,
+    end_date: date,
+    generator_dir: Path,
 ):
+
     # Store params used to generate the pickle files for change detection
-    n_simulations: int = n_sims
     if not hash_file_exist:
+        if preseed:
+            seed_timeseries = gen_seed_timeseries(
+                sim_end_date=end_date, sim_start_date=start_date, gen_dir=generator_dir
+            )
+            emissions_preseed: list[int] = []
+        else:
+            seed_timeseries = None
         # Generate emissions for all simulation sets
-        for i in range(n_simulations):
+        for i in range(n_sims):
+            if preseed:
+                emis_preseed: int = np.random.randint(0, 255)
+                np.random.seed(emis_preseed)
+                emissions_preseed.append(emis_preseed)
             emissions: dict = {}
             emis_file_loc = generator_dir / f"gen_infrastructure_emissions_{i}.p"
             print(f"Generating emissions for Set_{i} simulations")
             emissions.update(
                 infrastructure.generate_emissions(
-                    sim_start_date=date(*virtual_world["start_date"]),
-                    sim_end_date=date(*virtual_world["end_date"]),
+                    sim_start_date=start_date,
+                    sim_end_date=end_date,
                     sim_number=i,
                 )
             )
 
             pickle.dump(emissions, open(emis_file_loc, "wb"))
+        if preseed:
+            emis_preseed_loc = generator_dir / "emis_preseed.p"
+            pickle.dump(emissions_preseed, open(emis_preseed_loc, "wb"))
     else:
-        # Check if the same amount of simulations are required
-        if not n_sims_match:
+        n_sim_loc = generator_dir / "n_sim_saved.p"
+        n_simulation_saved = 0
+        with open(n_sim_loc, "rb") as f:
+            n_simulation_saved = pickle.load(f)
+
+        if n_simulation_saved < n_sims:
+            n_sim = n_simulation_saved
+            pickle.dump(n_sim, open(n_sim_loc, "wb"))
+            if preseed:
+                emis_preseed_loc = generator_dir / "emis_preseed.p"
+                emissions_preseed: list[int] = []
+                with open(emis_preseed_loc, "rb") as f:
+                    emissions_preseed = pickle.load(f)
             # More simulations are required. Generated emissions can still be re-used,
             # but it is necessary to generate more emissions scenarios for the extra simulations
-
-            hash_file_loc = generator_dir / "gen_infrastructure_hashes.p"
-            gen_infra_hash_dict = pickle.load(open(hash_file_loc, "rb"))
-
-            # Read the previous number of simulations
-            gen_n_simulations = gen_infra_hash_dict["n_simulations"]
             # Generate emissions for remaining simulation sets
-            for i in range(gen_n_simulations, n_simulations):
+            # TODO: need to account for if you have pre-gen seed files but no actual emission files.
+            for i in range(n_simulation_saved, n_sims):
+                if preseed:
+                    emis_preseed: int = np.random.randint(0, 255)
+                    np.random.seed(emis_preseed)
+                    emissions_preseed.append(emis_preseed)
                 print(f"Generating emissions for Set_{i} simulations")
                 emis_file_loc = generator_dir / f"gen_infrastructure_emissions_{i}.p"
                 emissions: dict = {}
                 emissions.update(
                     infrastructure.generate_emissions(
-                        sim_start_date=date(*virtual_world["start_date"]),
-                        sim_end_date=date(*virtual_world["end_date"]),
+                        sim_start_date=start_date,
+                        sim_end_date=end_date,
                         sim_number=i,
                     )
                 )
 
                 pickle.dump(emissions, open(emis_file_loc, "wb"))
-    return None
+            if preseed:
+                pickle.dump(emissions_preseed, open(emis_preseed_loc, "rb"))
+        if preseed:
+            seed_timeseries = get_seed_timeseries(generator_dir)
+        else:
+            seed_timeseries = None
+    return seed_timeseries
 
 
 def read_in_emissions(infrastructure: Infrastructure, generator_dir: Path, sim_numb: int):

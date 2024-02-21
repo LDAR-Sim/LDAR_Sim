@@ -19,7 +19,6 @@
 # ------------------------------------------------------------------------------
 
 import numpy as np
-import random
 
 
 def determine_delay(virtual_world):
@@ -39,7 +38,7 @@ def determine_delay(virtual_world):
         delay = virtual_world["repair_delay"]["val"][0]
     elif virtual_world["repair_delay"]["type"] == "list":
         list_len = len(virtual_world["repair_delay"]["val"])
-        delay_ind = random.randint(0, list_len - 1)
+        delay_ind = np.random.randint(0, list_len - 1)
         delay = virtual_world["repair_delay"]["val"][delay_ind]
     elif virtual_world["repair_delay"]["type"] == "distribution":
         delay = np.random.lognormal(

@@ -33,7 +33,6 @@ from file_processing.output_processing.multi_simulation_outputs import (
 
 
 from initialization.initialize_infrastructure import initialize_infrastructure
-from initialization.preseed import gen_seed_timeseries
 from virtual_world.infrastructure import Infrastructure
 from stdout_redirect import stdout_redirect
 from virtual_world.sites import Site
@@ -219,8 +218,7 @@ if __name__ == "__main__":
     print("...Initializing infrastructure")
 
     simulation_count: int = sim_params["n_simulations"]
-    infrastructure, hash_file_exist, n_sim_match = initialize_infrastructure(
-        simulation_count,
+    infrastructure, hash_file_exist = initialize_infrastructure(
         methods,
         virtual_world,
         generator_dir,
@@ -228,22 +226,17 @@ if __name__ == "__main__":
     )
     infrastructure: Infrastructure
     hash_file_exist: bool
-    n_sim_match: bool
     print("...Initializing emissions")
     # Pregenerate emissions
-    initialize_emissions(
-        simulation_count, hash_file_exist, n_sim_match, infrastructure, virtual_world, generator_dir
+    seed_timeseries = initialize_emissions(
+        simulation_count,
+        preseed_random,
+        hash_file_exist,
+        infrastructure,
+        date(*virtual_world["start_date"]),
+        date(*virtual_world["end_date"]),
+        generator_dir,
     )
-    # Check and set up preseed random if relevant
-    if preseed_random:
-        seed_timeseries = gen_seed_timeseries(
-            sim_end_date=date(*virtual_world["end_date"]),
-            sim_start_date=date(*virtual_world["start_date"]),
-            gen_dir=generator_dir,
-            preseed_file_exist=hash_file_exist,  # assumes if hash files exist, so will the preseed.
-        )
-    else:
-        seed_timeseries = None
     # Initialize objects
     print("...Initializing weather")
     weather = WL(virtual_world, in_dir)

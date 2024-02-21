@@ -31,14 +31,11 @@ def hash_dict(in_dict) -> str:
 
 
 def initialize_infrastructure(
-    n_sims,
     methods,
     virtual_world,
     generator_dir,
     in_dir,
 ) -> Infrastructure:
-    # Store params used to generate the pickle files for change detection
-    n_simulations: int = n_sims
 
     if not os.path.exists(generator_dir):
         os.mkdir(generator_dir)
@@ -93,13 +90,11 @@ def initialize_infrastructure(
                 "equipment_group_file": equip_group_file_hash,
                 "sources_file": sources_file_hash,
                 "virtual_world": virtual_world_hash,
-                "n_simulations": n_simulations,
             },
             open(hash_file_loc, "wb"),
         )
         pickle.dump({"infrastructure": infrastructure}, open(infra_file_loc, "wb"))
         hash_file_exist = False
-        n_sims_match = False
     else:
         # Read in all the saved hashes from the infrastructure used to generate
         # the previously generated sites.
@@ -110,9 +105,6 @@ def initialize_infrastructure(
         gen_sources_file_hash: str = gen_infra_hash_dict["sources_file"]
         gen_virtual_world_hash: str = gen_infra_hash_dict["virtual_world"]
 
-        # Read the previous number of simulations
-        gen_n_simulations = gen_infra_hash_dict["n_simulations"]
-
         # Check if all previous hashes match current hashes
         hashes_match: bool = (
             gen_sites_file_hash == sites_file_hash
@@ -121,9 +113,6 @@ def initialize_infrastructure(
             and gen_sources_file_hash == sources_file_hash
             and gen_virtual_world_hash == virtual_world_hash
         )
-
-        # Check if the same number of simulations or less simulations are required.
-        n_sims_match: bool = gen_n_simulations >= n_simulations
 
         # Determine what to do next based on if all current hashes match previous hashes
         if hashes_match:
@@ -149,11 +138,10 @@ def initialize_infrastructure(
                     "equipment_group_file": equip_group_file_hash,
                     "sources_file": sources_file_hash,
                     "virtual_world": virtual_world_hash,
-                    "n_simulations": n_simulations,
                 },
                 open(hash_file_loc, "wb"),
             )
             pickle.dump({"infrastructure": infrastructure}, open(infra_file_loc, "wb"))
 
             hash_file_exist = False
-    return infrastructure, hash_file_exist, n_sims_match
+    return infrastructure, hash_file_exist
