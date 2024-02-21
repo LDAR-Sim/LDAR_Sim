@@ -33,6 +33,7 @@ from file_processing.output_processing.multi_simulation_outputs import (
 
 
 from initialization.initialize_infrastructure import initialize_infrastructure
+from initialization.preseed import gen_seed_emis
 from virtual_world.infrastructure import Infrastructure
 from stdout_redirect import stdout_redirect
 from virtual_world.sites import Site
@@ -216,13 +217,12 @@ if __name__ == "__main__":
             )
         )
     print("...Initializing infrastructure")
-
     simulation_count: int = sim_params["n_simulations"]
+    emis_preseed_val: list[int] = None
+    if preseed_random:
+        emis_preseed_val = gen_seed_emis(simulation_count, generator_dir)
     infrastructure, hash_file_exist = initialize_infrastructure(
-        methods,
-        virtual_world,
-        generator_dir,
-        in_dir,
+        methods, virtual_world, generator_dir, in_dir, preseed_random, emis_preseed_val
     )
     infrastructure: Infrastructure
     hash_file_exist: bool
@@ -231,6 +231,7 @@ if __name__ == "__main__":
     seed_timeseries = initialize_emissions(
         simulation_count,
         preseed_random,
+        emis_preseed_val,
         hash_file_exist,
         infrastructure,
         date(*virtual_world["start_date"]),

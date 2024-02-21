@@ -3,6 +3,7 @@ import pickle
 from virtual_world.infrastructure import Infrastructure
 import hashlib
 import json
+import numpy as np
 
 
 def hash_file(file_path) -> str:
@@ -31,10 +32,7 @@ def hash_dict(in_dict) -> str:
 
 
 def initialize_infrastructure(
-    methods,
-    virtual_world,
-    generator_dir,
-    in_dir,
+    methods, virtual_world, generator_dir, in_dir, preseed, preseed_val
 ) -> Infrastructure:
 
     if not os.path.exists(generator_dir):
@@ -44,6 +42,7 @@ def initialize_infrastructure(
     # If previously generated infrastructure exists, use it instead.
     hash_file_loc = generator_dir / "gen_infrastructure_hashes.p"
     infra_file_loc = generator_dir / "gen_infrastructure.p"
+    preseed_loc = generator_dir / "emis_preseed.p"
     # emis_file_loc = generator_dir / "gen_infrastructure_emissions.p"
     # TODO Also add logic to hash the emissions rate sources file. Add logic elsewhere to make
     # that a standard input.
@@ -78,6 +77,9 @@ def initialize_infrastructure(
     if not os.path.isfile(hash_file_loc) or not os.path.isfile(infra_file_loc):
         # No previously generated Infrastructure found, generate new Infrastructure
         print("Generating Infrastructure")
+        if preseed:
+            np.random.seed(preseed_val[0])
+
         infrastructure: Infrastructure = Infrastructure(
             virtual_world=virtual_world, methods=methods, in_dir=in_dir
         )
@@ -125,10 +127,14 @@ def initialize_infrastructure(
             # meaning something has changed with the infrastructure or virtual world.
             # Either way, the sites need to be generated anew.
             print("Generating Infrastructure")
+
+            if preseed:
+                np.random.seed(preseed_val[0])
+
             infrastructure: Infrastructure = Infrastructure(
                 virtual_world=virtual_world, methods=methods, in_dir=in_dir
             )
-
+            pickle.dump(preseed_val, open(preseed_loc, "wb"))
             # Save the generated Infrastructure,
             # the input file hashes and the virtual world hash.
             pickle.dump(
