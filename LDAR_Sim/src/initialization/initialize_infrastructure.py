@@ -85,22 +85,25 @@ def initialize_infrastructure(
         )
 
         # Save the generated Infrastructure and the input file hashes and the virtual world hash.
-        pickle.dump(
-            {
-                "sites_file": sites_file_hash,
-                "site_type_file": site_type_file_hash,
-                "equipment_group_file": equip_group_file_hash,
-                "sources_file": sources_file_hash,
-                "virtual_world": virtual_world_hash,
-            },
-            open(hash_file_loc, "wb"),
-        )
-        pickle.dump({"infrastructure": infrastructure}, open(infra_file_loc, "wb"))
+        with open(hash_file_loc, "wb") as f:
+            pickle.dump(
+                {
+                    "sites_file": sites_file_hash,
+                    "site_type_file": site_type_file_hash,
+                    "equipment_group_file": equip_group_file_hash,
+                    "sources_file": sources_file_hash,
+                    "virtual_world": virtual_world_hash,
+                },
+                f,
+            )
+        with open(infra_file_loc, "wb") as f:
+            pickle.dump({"infrastructure": infrastructure}, f)
         hash_file_exist = False
     else:
         # Read in all the saved hashes from the infrastructure used to generate
         # the previously generated sites.
-        gen_infra_hash_dict = pickle.load(open(hash_file_loc, "rb"))
+        with open(hash_file_loc, "rb") as f:
+            gen_infra_hash_dict = pickle.load(f)
         gen_sites_file_hash: str = gen_infra_hash_dict["sites_file"]
         gen_site_type_file_hash: str = gen_infra_hash_dict["site_type_file"]
         gen_equip_group_file_hash: str = gen_infra_hash_dict["equipment_group_file"]
@@ -120,7 +123,8 @@ def initialize_infrastructure(
         if hashes_match:
             # The hashes match, meaning it's okay to reuse the previously generated infrastructure,
             # and the previously generated emissions
-            infrastructure = pickle.load(open(infra_file_loc, "rb"))["infrastructure"]
+            with open(infra_file_loc, "rb") as f:
+                infrastructure = pickle.load(f)["infrastructure"]
             hash_file_exist = True
         else:
             # The hashes do not match,
@@ -136,17 +140,19 @@ def initialize_infrastructure(
             )
             # Save the generated Infrastructure,
             # the input file hashes and the virtual world hash.
-            pickle.dump(
-                {
-                    "sites_file": sites_file_hash,
-                    "site_type_file": site_type_file_hash,
-                    "equipment_group_file": equip_group_file_hash,
-                    "sources_file": sources_file_hash,
-                    "virtual_world": virtual_world_hash,
-                },
-                open(hash_file_loc, "wb"),
-            )
-            pickle.dump({"infrastructure": infrastructure}, open(infra_file_loc, "wb"))
+            with open(hash_file_loc, "wb") as f:
+                pickle.dump(
+                    {
+                        "sites_file": sites_file_hash,
+                        "site_type_file": site_type_file_hash,
+                        "equipment_group_file": equip_group_file_hash,
+                        "sources_file": sources_file_hash,
+                        "virtual_world": virtual_world_hash,
+                    },
+                    f,
+                )
+            with open(infra_file_loc, "wb") as f:
+                pickle.dump({"infrastructure": infrastructure}, f)
 
             hash_file_exist = False
     return infrastructure, hash_file_exist

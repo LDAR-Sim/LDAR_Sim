@@ -180,14 +180,16 @@ def gen_emissions_summary(dir: Path):
 def get_summary_file(out_dir: Path, filename: str):
     filepath: Path = out_dir / filename
     if os.path.exists(filepath):
-        return pd.read_csv(filepath)
+        with open(filepath, "r") as f:
+            return pd.read_csv(f)
     else:
         return pd.DataFrame()
 
 
 def save_summary_file(summary_file: pd.DataFrame, out_dir: Path, filename: str):
     filepath: Path = out_dir / filename
-    summary_file.to_csv(filepath, index=False, mode="w")
+    with open(filepath, "w", newline="") as f:
+        summary_file.to_csv(f, index=False)
 
 
 def clear_directory(dir: Path):

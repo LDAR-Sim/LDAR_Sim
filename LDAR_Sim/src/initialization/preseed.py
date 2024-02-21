@@ -39,14 +39,17 @@ def gen_seed_timeseries(sim_start_date: date, sim_end_date: date, gen_dir) -> li
     while current_date <= sim_end_date:
         seed_ts_dict[current_date] = np.random.randint(0, 255)
         current_date += timedelta(days=1)
-    pickle.dump(seed_ts_dict, open(preseed_loc, "wb"))
+    with open(preseed_loc, "wb") as f:
+        pickle.dump(seed_ts_dict, f)
 
     return seed_ts_dict
 
 
 def get_seed_timeseries(gen_dir) -> list[int]:
     preseed_loc = gen_dir / PRESEED_FILE
-    return pickle.load(open(preseed_loc, "rb"))
+    with open(preseed_loc, "rb") as f:
+        seed_ts = pickle.load(f)
+    return seed_ts
 
 
 def gen_seed_emis(n_sim: int, gen_dir):
@@ -62,16 +65,20 @@ def gen_seed_emis(n_sim: int, gen_dir):
             for i in range(len(preseed_val), n_sim):
                 emis_preseed: int = np.random.randint(0, 255)
                 preseed_val.append(emis_preseed)
-            pickle.dump(preseed_val, open(preseed_loc, "wb"))
+            with open(preseed_loc, "wb") as f:
+                pickle.dump(preseed_val, f)
     else:
         print("Generating Random Seed values for emissions...")
         for i in range(n_sim):
             emis_preseed: int = np.random.randint(0, 255)
             preseed_val.append(emis_preseed)
-        pickle.dump(preseed_val, open(preseed_loc, "wb"))
+        with open(preseed_loc, "wb") as f:
+            pickle.dump(preseed_val, f)
     return preseed_val
 
 
 def get_emis_seed(gen_dir) -> list[int]:
     preseed_loc = gen_dir / EMISSION_PRESEED_FILE
-    return pickle.load(open(preseed_loc, "rb"))
+    with open(preseed_loc, "rb") as f:
+        emis_seed = pickle.load(f)
+    return emis_seed

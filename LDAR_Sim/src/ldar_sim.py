@@ -98,11 +98,7 @@ class LdarSim:
 
         overall_emission_data = overall_emission_data[
             EMIS_DATA_FINAL_COL_ORDER
-            + [
-                col
-                for col in overall_emission_data.columns
-                if col not in EMIS_DATA_FINAL_COL_ORDER
-            ]
+            + [col for col in overall_emission_data.columns if col not in EMIS_DATA_FINAL_COL_ORDER]
         ]
 
         self.gen_sim_directory()
@@ -188,4 +184,5 @@ class LdarSim:
         if data is None:
             return
         filepath: Path = self._output_dir / filename
-        data.to_csv(filepath, index=False, float_format="%.5f")
+        with open(filepath, "w", newline="") as f:
+            data.to_csv(f, index=False, float_format="%.5f")

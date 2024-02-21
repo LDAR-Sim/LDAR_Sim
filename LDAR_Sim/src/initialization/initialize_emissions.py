@@ -58,13 +58,18 @@ def initialize_emissions(
                     sim_number=i,
                 )
             )
-            pickle.dump(emissions, open(emis_file_loc, "wb"))
-        pickle.dump(n_sims, open(n_sim_loc, "wb"))
+            with open(emis_file_loc, "wb") as f:
+                pickle.dump(emissions, f)
+
+        with open(n_sim_loc, "wb") as f:
+            pickle.dump(n_sims, f)
     else:
-        n_simulation_saved = pickle.load(open(n_sim_loc, "rb"))
+        with open(n_sim_loc, "rb") as f:
+            n_simulation_saved = pickle.load(f)
 
         if n_simulation_saved < n_sims:
-            pickle.dump(n_sims, open(n_sim_loc, "wb"))
+            with open(n_sim_loc, "wb") as f:
+                pickle.dump(n_sims, f)
 
             # More simulations are required. Generated emissions can still be re-used,
             # but it is necessary to generate more emissions scenarios for the extra simulations
@@ -82,8 +87,8 @@ def initialize_emissions(
                         sim_number=i,
                     )
                 )
-
-                pickle.dump(emissions, open(emis_file_loc, "wb"))
+                with open(emis_file_loc, "wb") as f:
+                    pickle.dump(emissions, f)
 
     if preseed:
         seed_timeseries = gen_seed_timeseries(
@@ -98,6 +103,7 @@ def read_in_emissions(infrastructure: Infrastructure, generator_dir: Path, sim_n
     # Load emissions into the pregenerated infrastructure
     emissions: dict = {}
     emis_file_loc = generator_dir / f"gen_infrastructure_emissions_{sim_numb}.p"
-    emissions: dict = pickle.load(open(emis_file_loc, "rb"))
+    with open(emis_file_loc, "rb") as f:
+        emissions: dict = pickle.load(f)
     infrastructure.set_pregen_emissions(emissions[sim_numb], sim_numb)
     return infrastructure
