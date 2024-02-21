@@ -39,7 +39,7 @@ from stdout_redirect import stdout_redirect
 from virtual_world.sites import Site
 from weather.daylight_calculator import DaylightCalculatorAve
 from weather.weather_lookup import WeatherLookup as WL
-
+from utils.file_name_constants import PARAMETER_FILE, GENERATOR_FOLDER
 from utils.generic_functions import check_ERA5_file
 from file_processing.input_processing.input_manager import InputManager
 from initialization.args import (
@@ -204,9 +204,9 @@ if __name__ == "__main__":
     if os.path.exists(out_dir):
         shutil.rmtree(out_dir)
     os.makedirs(out_dir)
-    input_manager.write_parameters(out_dir / "parameters.yaml")
+    input_manager.write_parameters(out_dir / PARAMETER_FILE)
 
-    generator_dir = in_dir / "generator"
+    generator_dir = in_dir / GENERATOR_FOLDER
     if os.path.exists(generator_dir):
         print(
             "\n".join(

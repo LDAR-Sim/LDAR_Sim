@@ -4,6 +4,7 @@ from virtual_world.infrastructure import Infrastructure
 import hashlib
 import json
 import numpy as np
+from utils.file_name_constants import HASH_FILE, INFRA_FILE
 
 
 def hash_file(file_path) -> str:
@@ -40,9 +41,8 @@ def initialize_infrastructure(
 
     # Generate Infrastructure for all simulations.
     # If previously generated infrastructure exists, use it instead.
-    hash_file_loc = generator_dir / "gen_infrastructure_hashes.p"
-    infra_file_loc = generator_dir / "gen_infrastructure.p"
-    preseed_loc = generator_dir / "emis_preseed.p"
+    hash_file_loc = generator_dir / HASH_FILE
+    infra_file_loc = generator_dir / INFRA_FILE
     # emis_file_loc = generator_dir / "gen_infrastructure_emissions.p"
     # TODO Also add logic to hash the emissions rate sources file. Add logic elsewhere to make
     # that a standard input.
@@ -134,7 +134,6 @@ def initialize_infrastructure(
             infrastructure: Infrastructure = Infrastructure(
                 virtual_world=virtual_world, methods=methods, in_dir=in_dir
             )
-            pickle.dump(preseed_val, open(preseed_loc, "wb"))
             # Save the generated Infrastructure,
             # the input file hashes and the virtual world hash.
             pickle.dump(

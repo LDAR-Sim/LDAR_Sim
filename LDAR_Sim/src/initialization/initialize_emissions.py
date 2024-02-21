@@ -27,6 +27,7 @@ from datetime import date
 import numpy as np
 from virtual_world.infrastructure import Infrastructure
 from initialization.preseed import gen_seed_timeseries
+from utils.file_name_constants import N_SIM_SAVE_FILE
 
 
 def initialize_emissions(
@@ -39,16 +40,10 @@ def initialize_emissions(
     end_date: date,
     generator_dir: Path,
 ):
-    n_sim_loc = generator_dir / "n_sim_saved.p"
+    n_sim_loc = generator_dir / N_SIM_SAVE_FILE
     n_simulation_saved: int = 0
     # Store params used to generate the pickle files for change detection
     if not hash_file_exist:
-        if preseed:
-            seed_timeseries = gen_seed_timeseries(
-                sim_end_date=end_date, sim_start_date=start_date, gen_dir=generator_dir
-            )
-        else:
-            seed_timeseries = None
         # Generate emissions for all simulation sets
         for i in range(n_sims):
             if preseed:
@@ -66,12 +61,10 @@ def initialize_emissions(
             pickle.dump(emissions, open(emis_file_loc, "wb"))
         pickle.dump(n_sims, open(n_sim_loc, "wb"))
     else:
-
         n_simulation_saved = pickle.load(open(n_sim_loc, "rb"))
 
         if n_simulation_saved < n_sims:
-            n_sim = n_simulation_saved
-            pickle.dump(n_sim, open(n_sim_loc, "wb"))
+            pickle.dump(n_sims, open(n_sim_loc, "wb"))
 
             # More simulations are required. Generated emissions can still be re-used,
             # but it is necessary to generate more emissions scenarios for the extra simulations
@@ -92,12 +85,12 @@ def initialize_emissions(
 
                 pickle.dump(emissions, open(emis_file_loc, "wb"))
 
-        if preseed:
-            seed_timeseries = gen_seed_timeseries(
-                sim_end_date=end_date, sim_start_date=start_date, gen_dir=generator_dir
-            )
-        else:
-            seed_timeseries = None
+    if preseed:
+        seed_timeseries = gen_seed_timeseries(
+            sim_end_date=end_date, sim_start_date=start_date, gen_dir=generator_dir
+        )
+    else:
+        seed_timeseries = None
     return seed_timeseries
 
 
