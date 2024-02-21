@@ -3,6 +3,8 @@ import pickle
 from virtual_world.infrastructure import Infrastructure
 import hashlib
 import json
+import numpy as np
+from utils.file_name_constants import HASH_FILE, INFRA_FILE
 
 
 def hash_file(file_path) -> str:
@@ -31,22 +33,16 @@ def hash_dict(in_dict) -> str:
 
 
 def initialize_infrastructure(
-    n_sims,
-    methods,
-    virtual_world,
-    generator_dir,
-    in_dir,
+    methods, virtual_world, generator_dir, in_dir, preseed, preseed_val
 ) -> Infrastructure:
-    # Store params used to generate the pickle files for change detection
-    n_simulations: int = n_sims
 
     if not os.path.exists(generator_dir):
         os.mkdir(generator_dir)
 
     # Generate Infrastructure for all simulations.
     # If previously generated infrastructure exists, use it instead.
-    hash_file_loc = generator_dir / "gen_infrastructure_hashes.p"
-    infra_file_loc = generator_dir / "gen_infrastructure.p"
+    hash_file_loc = generator_dir / HASH_FILE
+    infra_file_loc = generator_dir / INFRA_FILE
     # emis_file_loc = generator_dir / "gen_infrastructure_emissions.p"
     # TODO Also add logic to hash the emissions rate sources file. Add logic elsewhere to make
     # that a standard input.
@@ -81,6 +77,9 @@ def initialize_infrastructure(
     if not os.path.isfile(hash_file_loc) or not os.path.isfile(infra_file_loc):
         # No previously generated Infrastructure found, generate new Infrastructure
         print("Generating Infrastructure")
+        if preseed:
+            np.random.seed(preseed_val[0])
+
         infrastructure: Infrastructure = Infrastructure(
             virtual_world=virtual_world, methods=methods, in_dir=in_dir
         )
@@ -93,13 +92,11 @@ def initialize_infrastructure(
                 "equipment_group_file": equip_group_file_hash,
                 "sources_file": sources_file_hash,
                 "virtual_world": virtual_world_hash,
-                "n_simulations": n_simulations,
             },
             open(hash_file_loc, "wb"),
         )
         pickle.dump({"infrastructure": infrastructure}, open(infra_file_loc, "wb"))
         hash_file_exist = False
-        n_sims_match = False
     else:
         # Read in all the saved hashes from the infrastructure used to generate
         # the previously generated sites.
@@ -110,9 +107,6 @@ def initialize_infrastructure(
         gen_sources_file_hash: str = gen_infra_hash_dict["sources_file"]
         gen_virtual_world_hash: str = gen_infra_hash_dict["virtual_world"]
 
-        # Read the previous number of simulations
-        gen_n_simulations = gen_infra_hash_dict["n_simulations"]
-
         # Check if all previous hashes match current hashes
         hashes_match: bool = (
             gen_sites_file_hash == sites_file_hash
@@ -121,9 +115,6 @@ def initialize_infrastructure(
             and gen_sources_file_hash == sources_file_hash
             and gen_virtual_world_hash == virtual_world_hash
         )
-
-        # Check if the same number of simulations or less simulations are required.
-        n_sims_match: bool = gen_n_simulations >= n_simulations
 
         # Determine what to do next based on if all current hashes match previous hashes
         if hashes_match:
@@ -136,10 +127,13 @@ def initialize_infrastructure(
             # meaning something has changed with the infrastructure or virtual world.
             # Either way, the sites need to be generated anew.
             print("Generating Infrastructure")
+
+            if preseed:
+                np.random.seed(preseed_val[0])
+
             infrastructure: Infrastructure = Infrastructure(
                 virtual_world=virtual_world, methods=methods, in_dir=in_dir
             )
-
             # Save the generated Infrastructure,
             # the input file hashes and the virtual world hash.
             pickle.dump(
@@ -149,11 +143,10 @@ def initialize_infrastructure(
                     "equipment_group_file": equip_group_file_hash,
                     "sources_file": sources_file_hash,
                     "virtual_world": virtual_world_hash,
-                    "n_simulations": n_simulations,
                 },
                 open(hash_file_loc, "wb"),
             )
             pickle.dump({"infrastructure": infrastructure}, open(infra_file_loc, "wb"))
 
             hash_file_exist = False
-    return infrastructure, hash_file_exist, n_sims_match
+    return infrastructure, hash_file_exist

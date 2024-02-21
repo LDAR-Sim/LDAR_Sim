@@ -22,7 +22,6 @@ from datetime import date, timedelta
 import re
 import sys
 from typing import Literal
-import random
 
 import numpy as np
 import pandas as pd
@@ -170,10 +169,10 @@ class Source:
         if isinstance(self._emis_rep_delay, int):
             return self._emis_rep_delay
         elif isinstance(self._emis_rep_delay, list):
-            return random.choice(self._emis_rep_delay)
+            return np.random.choice(self._emis_rep_delay)
         elif isinstance(self._emis_rep_delay, str):
             if self._emis_rep_delay in repair_delay_dataframe:
-                return random.choice(repair_delay_dataframe[self._emis_rep_delay])
+                return np.random.choice(repair_delay_dataframe[self._emis_rep_delay])
             else:
                 print(self.INVALID_REPAIR_DELAY_COL_MSG.format(key=self._emis_rep_delay))
                 sys.exit()

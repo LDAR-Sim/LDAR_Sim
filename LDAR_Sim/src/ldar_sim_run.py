@@ -33,13 +33,13 @@ from file_processing.output_processing.multi_simulation_outputs import (
 
 
 from initialization.initialize_infrastructure import initialize_infrastructure
-from initialization.preseed import gen_seed_timeseries
+from initialization.preseed import gen_seed_emis
 from virtual_world.infrastructure import Infrastructure
 from stdout_redirect import stdout_redirect
 from virtual_world.sites import Site
 from weather.daylight_calculator import DaylightCalculatorAve
 from weather.weather_lookup import WeatherLookup as WL
-
+from utils.file_name_constants import PARAMETER_FILE, GENERATOR_FOLDER
 from utils.generic_functions import check_ERA5_file
 from file_processing.input_processing.input_manager import InputManager
 from initialization.args import (
@@ -204,9 +204,9 @@ if __name__ == "__main__":
     if os.path.exists(out_dir):
         shutil.rmtree(out_dir)
     os.makedirs(out_dir)
-    input_manager.write_parameters(out_dir / "parameters.yaml")
+    input_manager.write_parameters(out_dir / PARAMETER_FILE)
 
-    generator_dir = in_dir / "generator"
+    generator_dir = in_dir / GENERATOR_FOLDER
     if os.path.exists(generator_dir):
         print(
             "\n".join(
@@ -217,33 +217,27 @@ if __name__ == "__main__":
             )
         )
     print("...Initializing infrastructure")
-
     simulation_count: int = sim_params["n_simulations"]
-    infrastructure, hash_file_exist, n_sim_match = initialize_infrastructure(
-        simulation_count,
-        methods,
-        virtual_world,
-        generator_dir,
-        in_dir,
+    emis_preseed_val: list[int] = None
+    if preseed_random:
+        emis_preseed_val = gen_seed_emis(simulation_count, generator_dir)
+    infrastructure, hash_file_exist = initialize_infrastructure(
+        methods, virtual_world, generator_dir, in_dir, preseed_random, emis_preseed_val
     )
     infrastructure: Infrastructure
     hash_file_exist: bool
-    n_sim_match: bool
     print("...Initializing emissions")
     # Pregenerate emissions
-    initialize_emissions(
-        simulation_count, hash_file_exist, n_sim_match, infrastructure, virtual_world, generator_dir
+    seed_timeseries = initialize_emissions(
+        simulation_count,
+        preseed_random,
+        emis_preseed_val,
+        hash_file_exist,
+        infrastructure,
+        date(*virtual_world["start_date"]),
+        date(*virtual_world["end_date"]),
+        generator_dir,
     )
-    # Check and set up preseed random if relevant
-    if preseed_random:
-        seed_timeseries = gen_seed_timeseries(
-            sim_end_date=date(*virtual_world["end_date"]),
-            sim_start_date=date(*virtual_world["start_date"]),
-            gen_dir=generator_dir,
-            preseed_file_exist=hash_file_exist,  # assumes if hash files exist, so will the preseed.
-        )
-    else:
-        seed_timeseries = None
     # Initialize objects
     print("...Initializing weather")
     weather = WL(virtual_world, in_dir)
