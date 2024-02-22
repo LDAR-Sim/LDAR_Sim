@@ -22,7 +22,6 @@ from datetime import date
 
 import pandas as pd
 from file_processing.output_processing.output_utils import (
-    EMIS_DATA_COLS,
     EmisRepairInfo,
     TsEmisData,
 )
@@ -170,18 +169,15 @@ class Equipment_Group:
     def get_id(self) -> str:
         return self._id
 
-    def get_emis_data(self) -> pd.DataFrame:
-        equip_emis_dataframes: list[pd.DataFrame] = [
-            equip.get_emis_data() for equip in self._equipment
-        ]
-        equip_emis_dataframes = [df for df in equip_emis_dataframes if not df.empty]
-
-        if equip_emis_dataframes:
-            emis_data: pd.DataFrame = pd.concat(equip_emis_dataframes)
-        else:
-            emis_data: pd.DataFrame = pd.DataFrame(columns=EMIS_DATA_COLS)
-        emis_data["Equipment Group"] = self._id
-        return emis_data
+    def gen_emis_data(self, emis_df: pd.DataFrame, site_id: str, row_index: int):
+        upd_row_index = row_index
+        for equip in self._equipment:
+            upd_row_index = equip.gen_emis_data(emis_df, site_id, self._id, upd_row_index)
+        return upd_row_index
 
     def get_survey_cost(self, method_name) -> float:
         return self._meth_survey_costs[method_name]
+
+    def setup(self, methods: list[str]):
+        for equipment in self._equipment:
+            equipment.set_emis_sum_dtypes(methods)

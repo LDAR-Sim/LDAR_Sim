@@ -111,9 +111,9 @@ def simulate(
     meth_params,
     sim_settings,
     virtual_world,
-    infrastructure,
-    input_dir,
-    output_dir,
+    infrastructure: Infrastructure,
+    input_dir: Path,
+    output_dir: Path,
     preseed_timeseries,
     lock,
 ):
@@ -130,6 +130,7 @@ def simulate(
         date(*virtual_world["end_date"]),
         virtual_world["consider_weather"],
     )
+    infra.setup(program.get_method_names())
     print(f"......... Simulating program: {prog_name}")
     simulation: LdarSim = LdarSim(
         sim_num,
@@ -251,7 +252,9 @@ if __name__ == "__main__":
     if simulation_count > 5:
         simulation_batches = floor(simulation_count / 5.0)
         sim_counts = [5] * simulation_batches
-        sim_counts.append(simulation_count % 5)
+        remainder = simulation_count % 5
+        if remainder > 0:
+            sim_counts.append(remainder)
     else:
         sim_counts = [simulation_count]
     n_process = sim_params["n_processes"]
@@ -294,8 +297,8 @@ if __name__ == "__main__":
                         prog_data,
                     )
                 gc.collect()
-                print(f"Finished simulating set {simulation_number}")
+                print(f"... Finished simulating set {simulation_number}")
 
             # -- Batch Report --
-            print("...Cleaning up output data")
+            print(f"...Cleaning up batch {batch_count} data")
             concat_output_data(out_dir, batch_count != 0)

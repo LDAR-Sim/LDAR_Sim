@@ -247,8 +247,11 @@ class Infrastructure:
         lon_ave = np.mean(lon_list)
         return (lat_ave, lon_ave)
 
-    def gen_summary_emis_data(self) -> pd.DataFrame:
-        self._sites_emis_data: pd.DataFrame = pd.concat(
-            [site.get_emis_data() for site in self._sites]
-        )
-        return self._sites_emis_data
+    def gen_summary_emis_data(self, emis_df: pd.DataFrame) -> None:
+        row_index: int = 0
+        for site in self._sites:
+            row_index = site.gen_emis_data(emis_df, row_index)
+
+    def setup(self, methods: list[str]) -> None:
+        for site in self._sites:
+            site.setup(methods)

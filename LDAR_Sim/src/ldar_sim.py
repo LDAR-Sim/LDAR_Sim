@@ -76,6 +76,7 @@ class LdarSim:
     def run_simulation(self):
         ts_columns = self._init_ts_columns()
         timeseries = pd.DataFrame(columns=ts_columns)
+        total_emissions_count: int = 0
         while not self._tc.at_simulation_end():
             if self._preseed:
                 np.random.seed(self._preseed_ts[self._tc.current_date])
@@ -83,6 +84,7 @@ class LdarSim:
             new_row[tca.NEW_LEAKS] = self._infrastructure.activate_emissions(
                 self._tc.current_date, self._sim_number
             )
+            total_emissions_count += new_row[tca.NEW_LEAKS]
             ts_methods_info: list[TsMethodData] = self._program.do_daily_program_deployment()
             ts_emis_rep_info: EmisRepairInfo = EmisRepairInfo()
             ts_emis_info: TsEmisData = self._infrastructure.update_emissions_state(ts_emis_rep_info)
@@ -94,12 +96,10 @@ class LdarSim:
             self._program.update_date()
             self._tc.next_day()
 
-        overall_emission_data: pd.DataFrame = self._infrastructure.gen_summary_emis_data()
-
-        overall_emission_data = overall_emission_data[
-            EMIS_DATA_FINAL_COL_ORDER
-            + [col for col in overall_emission_data.columns if col not in EMIS_DATA_FINAL_COL_ORDER]
-        ]
+        overall_emission_data: pd.DataFrame = pd.DataFrame(
+            columns=EMIS_DATA_FINAL_COL_ORDER, index=range(total_emissions_count)
+        )
+        self._infrastructure.gen_summary_emis_data(overall_emission_data)
 
         self.gen_sim_directory()
         summary_filename = "_".join([self.name_str, "emissions_summary.csv"])
