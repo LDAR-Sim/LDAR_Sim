@@ -24,6 +24,9 @@ from pathlib import Path, WindowsPath
 from typing import Any
 import pandas as pd
 import numpy as np
+from file_processing.output_processing.program_specific_visualizations import (
+    gen_prog_timeseries_plot,
+)
 from virtual_world.infrastructure import Infrastructure
 from time_counter import TimeCounter
 from programs.program import Program
@@ -104,7 +107,7 @@ class LdarSim:
         self.gen_sim_directory()
         summary_filename = "_".join([self.name_str, "emissions_summary.csv"])
         self.save_results(overall_emission_data, summary_filename)
-        self.format_timeseries(timeseries)
+        self.gen_prog_spec_visualizations(timeseries=timeseries)
         timeseries_filename = "_".join([self.name_str, "timeseries.csv"])
         self.save_results(timeseries, timeseries_filename)
 
@@ -186,3 +189,7 @@ class LdarSim:
         filepath: Path = self._output_dir / filename
         with open(filepath, "w", newline="") as f:
             data.to_csv(f, index=False, float_format="%.5f")
+
+    def gen_prog_spec_visualizations(self, timeseries: pd.DataFrame):
+        gen_prog_timeseries_plot(timeseries, self._output_dir, self.name_str)
+        return
