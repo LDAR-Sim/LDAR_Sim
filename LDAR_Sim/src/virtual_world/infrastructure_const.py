@@ -75,7 +75,7 @@ class Infrastructure_Constants:
         SPATIAL_PLACEHOLDER = "_spatial"  # Spatial coverage - Method specific
 
     class Sources_File_Constants:
-        EQUIPMENT = "equipment"
+        COMPONENT = "component"
         SOURCE = "source"
         EMIS_EPR = "EPR"
         EMIS_ERS = "ERS"  # Emission rate source

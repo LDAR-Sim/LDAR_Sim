@@ -21,6 +21,7 @@
 import copy
 from datetime import date
 import math
+from typing import Union
 
 
 import pandas as pd
@@ -118,10 +119,21 @@ class Site:
         return instance
 
     def _create_equipment_groups(
-        self, equipment_groups: list, infrastructure_inputs, propagating_params
+        self,
+        equipment_groups: Union[list, str, int, float, None],
+        infrastructure_inputs,
+        propagating_params,
     ) -> None:
+        if isinstance(equipment_groups, str):
+            split_eqgs: list[str] = [
+                split2.replace("'", "").strip()
+                for split1 in equipment_groups.split(";")
+                for split2 in split1.split(",")
+                if split2 not in [""]
+            ]
+            equipment_groups = split_eqgs
         if isinstance(equipment_groups, list) and len(equipment_groups) > 0:
-            equip_groups_in: pd.DataFrame = infrastructure_inputs["equipment_groups"]
+            equip_groups_in: pd.DataFrame = infrastructure_inputs["equipment"]
             for equipment_group in equipment_groups:
                 site_equipment_group = equip_groups_in.loc[
                     equip_groups_in[
@@ -137,7 +149,7 @@ class Site:
                         ],
                         infrastructure_inputs,
                         prop_params,
-                        site_equipment_group,
+                        site_equipment_group[1:],
                     )
                 )
         elif isinstance(equipment_groups, (int, float)):
@@ -160,7 +172,7 @@ class Site:
             )
             prop_params = copy.deepcopy(propagating_params)
             self._equipment_groups.append(
-                Equipment_Group(i, infrastructure_inputs, prop_params, equip_group_info)
+                Equipment_Group(0, infrastructure_inputs, prop_params, equip_group_info)
             )
 
     def _set_survey_costs(self, methods: list[str]) -> float:

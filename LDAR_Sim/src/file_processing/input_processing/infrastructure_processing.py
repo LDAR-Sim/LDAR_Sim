@@ -27,9 +27,14 @@ from virtual_world.infrastructure_const import Infrastructure_Constants as ic
 
 MISSING_SITES_FILE_HEADER_ERROR = "The sites file is missing the column: {}"
 
+NO_PERSISTENT_FIELD_FOR_SOURCES_WARNING = (
+    "WARNING: The persistent field has not been provided for sources."
+    "Assuming all sources are persistent."
+)
+
 
 def read_in_infrastructure_files(virtual_world, in_dir: Path) -> dict[str, DataFrame]:
-    input_dict = {}
+    input_dict: dict[str, DataFrame] = {}
     input_dict["sites"] = file_reader(in_dir / virtual_world["infrastructure"]["sites_file"])
 
     if virtual_world["infrastructure"]["site_type_file"]:
@@ -43,9 +48,13 @@ def read_in_infrastructure_files(virtual_world, in_dir: Path) -> dict[str, DataF
         )
 
     if virtual_world["infrastructure"]["sources_file"]:
-        input_dict["sources"] = file_reader(
-            in_dir / virtual_world["infrastructure"]["sources_file"]
-        )
+        source_df: DataFrame = file_reader(in_dir / virtual_world["infrastructure"]["sources_file"])
+        if ic.Sources_File_Constants.PERSISTENT not in source_df.columns:
+            source_df[ic.Sources_File_Constants.PERSISTENT] = True
+            source_df[ic.Sources_File_Constants.ACTIVE_DUR] = 1
+            source_df[ic.Sources_File_Constants.INACTIVE_DUR] = 0
+            print(NO_PERSISTENT_FIELD_FOR_SOURCES_WARNING)
+        input_dict["sources"] = source_df
 
     return input_dict
 

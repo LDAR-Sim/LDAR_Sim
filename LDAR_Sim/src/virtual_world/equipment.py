@@ -104,17 +104,17 @@ class Equipment:
 
     def _create_sources(self, infrastructure_inputs, prop_params) -> None:
         if self._equip_type != "Placeholder" and "sources" in infrastructure_inputs:
-            sources_info = infrastructure_inputs["sources"]
-            sources = sources_info.loc[
-                sources_info[Infrastructure_Constants.Sources_File_Constants.EQUIPMENT]
+            sources_info: pd.DataFrame = infrastructure_inputs["sources"]
+            sources: pd.DataFrame = sources_info.loc[
+                sources_info[Infrastructure_Constants.Sources_File_Constants.COMPONENT]
                 == self._equip_type
             ]
-            for source in sources:
+            for idx, source in sources.iterrows():
                 src_prop_params = deepcopy(prop_params)
                 src_id = source[Infrastructure_Constants.Sources_File_Constants.SOURCE]
                 self._sources.append(Source(src_id, source, src_prop_params))
         elif self._equip_type == "Placeholder":
-            src_id = "Placeholder_Non_Rep"
+            src_id = "Placeholder_Rep"
             placeholder_source_info = {
                 Infrastructure_Constants.Sources_File_Constants.REPAIRABLE: True,
                 Infrastructure_Constants.Sources_File_Constants.PERSISTENT: True,

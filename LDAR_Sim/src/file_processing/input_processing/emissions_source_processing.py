@@ -17,7 +17,9 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 ------------------------------------------------------------------------------
 """
+
 import sys
+import re
 from pandas import DataFrame, read_csv, Series
 from numpy.random import choice as random_sample
 from scipy import stats
@@ -39,6 +41,12 @@ INVALID_EMISSIONS_SOURCE_FILE_VALUE_ERROR = (
     "Error: LDAR-Sim could not parse source file value: {value} from source:{source}."
     " Encountered exception: {exception}"
 )
+
+SAMPLE_MATCH = r"\s*sample\s*"
+DIST_MATCH = r"\s*dist\s*"
+
+SAMPLE_REGEX = re.compile(SAMPLE_MATCH, re.IGNORECASE)
+DIST_REGEX = re.compile(DIST_MATCH, re.IGNORECASE)
 
 
 # TODO add support for fitting a distribution to source data
@@ -216,31 +224,34 @@ def process_emission_source_file(emis_sources: DataFrame) -> dict[str, Emissions
     """
     processed_emissions_data: dict[str, EmissionsSource] = {}
     for source_name in emis_sources.columns:
+        clean_source_name = source_name.strip()
         emis_source_info: EmissionsSourceInfo = read_in_emis_source_col(
             source_name, emis_sources[source_name]
         )
-        if emis_source_info.data_use == "dist":
+        unit_amount: str = emis_source_info.unit_amount.strip()
+        unit_time: str = emis_source_info.units_time.strip()
+        if DIST_REGEX.search(emis_source_info.data_use):
             emis_source: EmissionsSource = EmissionsSourceDist(
-                source_id=source_name,
-                unit_amount=emis_source_info.unit_amount,
-                unit_time=emis_source_info.units_time,
+                source_id=clean_source_name,
+                unit_amount=unit_amount,
+                unit_time=unit_time,
                 dist_type=emis_source_info.dist_type,
                 dist_shape=emis_source_info.source[1:],
                 dist_scale=emis_source_info.source[0],
                 max_emis_rate=emis_source_info.max_emission_rate,
             )
-        elif emis_source_info.data_use == "sample":
+        elif SAMPLE_REGEX.search(emis_source_info.data_use):
             emis_source: EmissionsSource = EmissionsSourceSample(
-                source_id=source_name,
-                unit_amount=emis_source_info.unit_amount,
-                unit_time=emis_source_info.units_time,
+                source_id=clean_source_name,
+                unit_amount=unit_amount,
+                unit_time=unit_time,
                 samples=emis_source_info.source,
                 max_emis_rate=emis_source_info.max_emission_rate,
             )
         else:
-            print(f"Error, invalid emissions source information for source {source_name}")
+            print(f"Error, invalid emissions source information for source {clean_source_name}")
 
-        processed_emissions_data[source_name] = emis_source
+        processed_emissions_data[clean_source_name] = emis_source
 
     return processed_emissions_data
 
