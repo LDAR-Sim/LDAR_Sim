@@ -36,6 +36,8 @@ from virtual_world.infrastructure_const import (
 from virtual_world.sites import Site
 from file_processing.input_processing.infrastructure_processing import (
     read_in_infrastructure_files,
+    check_site_file,
+    get_equip,
 )
 
 # TODO: create logic for wrapping up the emissions into a dictionary
@@ -43,6 +45,7 @@ from file_processing.input_processing.infrastructure_processing import (
 
 
 class Infrastructure:
+
     def __init__(self, virtual_world, methods, in_dir) -> None:
         self.emission_rate_source_dictionary: dict[str, EmissionsSource] = process_emission_sources(
             inputs_path=in_dir, virtual_world=virtual_world
@@ -186,6 +189,7 @@ class Infrastructure:
         infrastructure_inputs: dict[str, pd.DataFrame] = read_in_infrastructure_files(
             virtual_world, in_dir
         )
+        check_site_file(infrastructure_inputs)
         sites_types_provided: bool = "site_types" in infrastructure_inputs
 
         sites_in: pd.DataFrame = infrastructure_inputs["sites"]
@@ -199,11 +203,24 @@ class Infrastructure:
 
         sites: list[Site] = []
 
+        for header in Infrastructure_Constants.Sites_File_Constants.OPTIONAL_SHARED_HEADERS:
+            if (
+                header not in sites_to_make.columns.to_list()
+                and sites_types_provided
+                and header in infrastructure_inputs["site_types"].columns.to_list()
+            ):
+                sites_to_make[header] = sites_to_make.apply(
+                    get_equip, args=(infrastructure_inputs["site_types"],), axis=1
+                )
+
+            else:
+                sites_to_make[header] = 0
+
         for sidx, srow in sites_to_make.iterrows():
             site_type_info = None
             if sites_types_provided:
                 site_types_info = infrastructure_inputs["site_types"]
-                site_type = srow[Infrastructure_Constants.Sites_File_Constants.ID]
+                site_type = srow[Infrastructure_Constants.Sites_File_Constants.TYPE]
                 site_types_info = site_types_info.loc[
                     site_types_info[Infrastructure_Constants.Site_Type_File_Constants.TYPE]
                     == site_type

@@ -25,7 +25,7 @@ class Infrastructure_Constants:
         LON = "lon"  # Longitude
         ID = "site_ID"  # Site ID
         TYPE = "site_type"  # Site Type
-        EQG = "equipment_groups"  # Equipment Group
+        EQG = "equipment"  # Equipment Group
         REP_EMIS_ERS = "repairable_ERS"  # Repairable Emissions: Emissions Rate Source
         REP_EMIS_EPR = "repairable_EPR"  # Repairable Emissions : Emission Production Rate
         REP_EMIS_RD = "repairable_RD"  # Repairable Emissions : Repair Delay
@@ -58,8 +58,12 @@ class Infrastructure_Constants:
             SURVEY_TIME_PLACEHOLDER,
         ]
 
+        REQUIRED_HEADERS: list[str] = [ID, LAT, LON, TYPE]
+
+        OPTIONAL_SHARED_HEADERS: list[str] = [EQG]
+
     class Equipment_Group_File_Constants:
-        EQUIPMENT_GROUP = "equipment_group"  # Equipment Group
+        EQUIPMENT_GROUP = "equipment"  # Equipment Group
         REP_EMIS_ERS = "repairable_ERS"  # Repairable Emissions Rate Source
         REP_EMIS_EPR = "repairable_EPR"  # Repairable Emissions Production Rate
         REP_EMIS_RD = "repairable_RD"  # Repairable Emissions Repair Delay
@@ -88,7 +92,7 @@ class Infrastructure_Constants:
 
     class Site_Type_File_Constants:
         TYPE = "site_type"  # Site Type
-        EQG = "equipment_group"  # Equipment Group
+        EQG = "equipment"  # Equipment Group
         REP_EMIS_ERS = "repairable_ERS"  # Repairable Emissions: Emissions Rate Source
         REP_EMIS_EPR = "repairable_EPR"  # Repairable Emissions : Emission Production Rate
         REP_EMIS_RD = "repairable_RD"  # Repairable Emissions : Repair Delay
