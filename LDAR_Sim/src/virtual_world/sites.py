@@ -126,7 +126,7 @@ class Site:
     ) -> None:
         if isinstance(equipment_groups, str):
             split_eqgs: list[str] = [
-                split2.replace("'", "").strip()
+                split2
                 for split1 in equipment_groups.split(";")
                 for split2 in split1.split(",")
                 if split2 not in [""]
