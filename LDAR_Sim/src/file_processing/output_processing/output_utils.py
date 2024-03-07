@@ -5,7 +5,7 @@ from numpy import NaN
 class EMIS_DATA_COL_ACCESSORS:
     EMIS_ID = "Emissions ID"
     SITE_ID = "Site ID"
-    EQG = "Equipment Group"
+    EQG = "Equipment"
     STATUS = "Status"
     DAYS_ACT = "Days Active"
     T_VOL_EMIT = '"True" Volume Emitted (Kg Methane)'

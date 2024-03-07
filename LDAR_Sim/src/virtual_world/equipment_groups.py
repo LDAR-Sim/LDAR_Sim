@@ -84,11 +84,8 @@ class Equipment_Group:
 
     def _create_equipment(self, infrastructure_inputs, prop_params, info) -> None:
         for col, val in info.items():
-            if "equipment" in col.lower():
-                for count in range(0, val):
-                    self._equipment.append(
-                        Equipment(col, count, infrastructure_inputs, prop_params)
-                    )
+            for count in range(0, val):
+                self._equipment.append(Equipment(col, count, infrastructure_inputs, prop_params))
 
     def _set_method_specific_params(self, prop_params):
         self._meth_survey_times = prop_params["Method_Specific_Params"].pop(

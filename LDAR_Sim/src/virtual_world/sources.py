@@ -45,17 +45,21 @@ class Source:
 
     def __init__(self, id: str, info, prop_params) -> None:
         self._source_ID: str = id
-        self._repairable = info[Infrastructure_Constants.Sources_File_Constants.REPAIRABLE]
-        self._persistent = info[Infrastructure_Constants.Sources_File_Constants.PERSISTENT]
-        self._active_duration = info[Infrastructure_Constants.Sources_File_Constants.ACTIVE_DUR]
-        self._inactive_duration = info[Infrastructure_Constants.Sources_File_Constants.INACTIVE_DUR]
+        self._repairable: bool = info[Infrastructure_Constants.Sources_File_Constants.REPAIRABLE]
+        self._persistent: bool = info[Infrastructure_Constants.Sources_File_Constants.PERSISTENT]
+        self._active_duration: int = info[
+            Infrastructure_Constants.Sources_File_Constants.ACTIVE_DUR
+        ]
+        self._inactive_duration: int = info[
+            Infrastructure_Constants.Sources_File_Constants.INACTIVE_DUR
+        ]
         self._generated_emissions: dict[int, list[Emission]] = {}
-        self._emis_rate_source = None
-        self._emis_prod_rate = None
-        self._emis_duration = None
-        self._meth_spat_covs = None
-        self._emis_rep_delay = None
-        self._emis_rep_cost = None
+        self._emis_rate_source: EmissionsSource = None
+        self._emis_prod_rate: float = None
+        self._emis_duration: int = None
+        self._meth_spat_covs: dict[str, float] = None
+        self._emis_rep_delay: int = None
+        self._emis_rep_cost: float = None
         self._update_prop_params(info=info, prop_params=prop_params)
         self._set_source_properties(prop_params=prop_params)
         self._next_emission: Emission = None
