@@ -44,12 +44,16 @@ class EMIS_SUMMARY_COLUMNS_ACCESSORS:
     PROG_NAME = "Program Name"
     SIM = "Simulation"
     T_TOTAL_EMIS = 'Total "True" Emissions (Kg Methane)'
+    EST_TOTAL_EMIS = 'Total "Estimated" Emissions (Kg Methane)'
     AVG_T_EMIS_RATE = 'Average "True" Emissions Rate (g/s)'
     T_EMIS_RATE_95 = '95th Percentile "True" Emissions Rate (g/s)'
     T_EMIS_RATE_5 = '5th Percentile "True" Emissions Rate (g/s)'
     T_AVG_EMIS_AMOUNT = '"True" Average Emissions Amount (Kg Methane)'
     T_EMIS_AMOUNT_95 = '95th Percentile "True" Emissions Amount (Kg Methane)'
     T_EMIS_AMOUNT_5 = '5th Percentile "True" Emissions Amount (Kg Methane)'
+    EST_AVG_EMIS_AMOUNT = '"Estimated" Average Emissions Amount (Kg Methane)'
+    EST_EMIS_AMOUNT_95 = '95th Percentile "Estimated" Emissions Amount (Kg Methane)'
+    EST_EMIS_AMOUNT_5 = '5th Percentile "Estimated" Emissions Amount (Kg Methane)'
 
 
 TS_SUMMARY_COLUMNS = [
@@ -67,12 +71,16 @@ EMIS_SUMMARY_COLUMNS = [
     EMIS_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME,
     EMIS_SUMMARY_COLUMNS_ACCESSORS.SIM,
     EMIS_SUMMARY_COLUMNS_ACCESSORS.T_TOTAL_EMIS,
+    EMIS_SUMMARY_COLUMNS_ACCESSORS.EST_TOTAL_EMIS,
     EMIS_SUMMARY_COLUMNS_ACCESSORS.AVG_T_EMIS_RATE,
     EMIS_SUMMARY_COLUMNS_ACCESSORS.T_EMIS_RATE_95,
     EMIS_SUMMARY_COLUMNS_ACCESSORS.T_EMIS_RATE_5,
     EMIS_SUMMARY_COLUMNS_ACCESSORS.T_AVG_EMIS_AMOUNT,
     EMIS_SUMMARY_COLUMNS_ACCESSORS.T_EMIS_AMOUNT_95,
     EMIS_SUMMARY_COLUMNS_ACCESSORS.T_EMIS_AMOUNT_5,
+    EMIS_SUMMARY_COLUMNS_ACCESSORS.EST_AVG_EMIS_AMOUNT,
+    EMIS_SUMMARY_COLUMNS_ACCESSORS.EST_EMIS_AMOUNT_95,
+    EMIS_SUMMARY_COLUMNS_ACCESSORS.EST_EMIS_AMOUNT_5,
 ]
 
 
@@ -105,6 +113,7 @@ TS_MAPPING_TO_SUMMARY_COLS = {
 
 EMIS_MAPPING_TO_SUMMARY_COLS = {
     EMIS_SUMMARY_COLUMNS_ACCESSORS.T_TOTAL_EMIS: lambda df: get_sum(df, eca.T_VOL_EMIT),
+    EMIS_SUMMARY_COLUMNS_ACCESSORS.EST_TOTAL_EMIS: lambda df: get_sum(df, eca.EST_VOL_EMIT),
     EMIS_SUMMARY_COLUMNS_ACCESSORS.AVG_T_EMIS_RATE: lambda df: get_mean_val(df, eca.T_RATE),
     EMIS_SUMMARY_COLUMNS_ACCESSORS.T_EMIS_RATE_95: lambda df: get_nth_percentile(
         df, eca.T_RATE, 95
@@ -116,6 +125,15 @@ EMIS_MAPPING_TO_SUMMARY_COLS = {
     ),
     EMIS_SUMMARY_COLUMNS_ACCESSORS.T_EMIS_AMOUNT_5: lambda df: get_nth_percentile(
         df, eca.T_VOL_EMIT, 5
+    ),
+    EMIS_SUMMARY_COLUMNS_ACCESSORS.EST_AVG_EMIS_AMOUNT: lambda df: get_mean_val(
+        df, eca.EST_VOL_EMIT
+    ),
+    EMIS_SUMMARY_COLUMNS_ACCESSORS.EST_EMIS_AMOUNT_95: lambda df: get_nth_percentile(
+        df, eca.EST_VOL_EMIT, 95
+    ),
+    EMIS_SUMMARY_COLUMNS_ACCESSORS.EST_EMIS_AMOUNT_5: lambda df: get_nth_percentile(
+        df, eca.EST_VOL_EMIT, 5
     ),
 }
 
