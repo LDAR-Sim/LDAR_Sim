@@ -36,6 +36,7 @@ class Emission:
         eca.STATUS: "object",
         eca.DAYS_ACT: "int32",
         eca.T_VOL_EMIT: "float64",
+        eca.EST_VOL_EMIT: "float64",
         eca.T_RATE: "float64",
         eca.M_RATE: "float64",
         eca.DATE_BEG: "datetime64",
@@ -103,8 +104,15 @@ class Emission:
     def activate() -> bool:
         return False
 
-    def get_emis_vol(self) -> float:
+    def calc_true_emis_vol(self) -> float:
         return self._active_days * self._rate * GRAMS_PER_SECOND_TO_KG_PER_DAY
+
+    def calc_est_emis_vol(self) -> float:
+        return (
+            self._estimated_days_active
+            * (self._measured_rate if self._measured_rate is not None else 0)
+            * GRAMS_PER_SECOND_TO_KG_PER_DAY
+        )
 
     def update_detection_records(self, company: str, detect_date: date):
         if self._init_detect_by is None:
@@ -134,7 +142,8 @@ class Emission:
         summary_dict.update({(eca.EMIS_ID, self._emissions_id)})
         summary_dict.update({(eca.STATUS, self._status)})
         summary_dict.update({(eca.DAYS_ACT, self._active_days)})
-        summary_dict.update({(eca.T_VOL_EMIT, self.get_emis_vol())})
+        summary_dict.update({(eca.T_VOL_EMIT, self.calc_true_emis_vol())})
+        summary_dict.update({(eca.EST_VOL_EMIT, self.calc_est_emis_vol())})
         summary_dict.update({(eca.T_RATE, self._rate)})
         summary_dict.update({(eca.M_RATE, self._measured_rate)})
         summary_dict.update({(eca.DATE_BEG, self._start_date)})
