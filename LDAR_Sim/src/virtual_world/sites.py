@@ -152,6 +152,15 @@ class Site:
                         site_equipment_group[1:],
                     )
                 )
+        elif equipment_groups == 0:
+            # special case for when equipment group isn't set
+            equip_group_info = pd.Series({PLACEHOLDER_EQUIPMENT: 1})
+            prop_params = copy.deepcopy(propagating_params)
+            self._equipment_groups.append(
+                Equipment_Group(
+                    equipment_groups, infrastructure_inputs, prop_params, equip_group_info
+                )
+            )
         elif isinstance(equipment_groups, (int, float)):
             for i in range(0, int(equipment_groups)):
                 equip_group_info = pd.Series(
