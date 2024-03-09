@@ -83,6 +83,15 @@ class TIMESERIES_COL_ACCESSORS:
     METH_DAILY_SURVEY_TIME = "{method} Survey Time (Minutes)"
 
 
+def percent_difference(a, b):
+    return abs(a - b) / ((a + b) / 2) * 100
+
+
+def percentage_formatter(x, pos):
+    x = x / 100
+    return f"{x:.0%}"
+
+
 @dataclass
 class TsEmisData:
     daily_emis: float = 0
