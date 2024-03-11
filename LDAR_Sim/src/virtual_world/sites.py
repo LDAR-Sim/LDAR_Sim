@@ -22,7 +22,7 @@ import copy
 from datetime import date
 import math
 from typing import Union
-
+import sys
 
 import pandas as pd
 from file_processing.output_processing.output_utils import EmisRepairInfo, TsEmisData
@@ -38,7 +38,7 @@ from virtual_world.infrastructure_const import (
 )
 
 PLACEHOLDER_EQUIPMENT = "Placeholder_Equipment"
-PLACEHOLDER_EQUIPMENT_COUNT = 10
+BAD_EQUIPMENT_INPUT_ERROR = "Invalid equipment input: {}"
 
 
 class Site:
@@ -152,28 +152,37 @@ class Site:
                         site_equipment_group[1:],
                     )
                 )
-        elif isinstance(equipment_groups, (int, float)):
+        elif isinstance(equipment_groups, (int, float)) and equipment_groups == 0:
+            # special case for when equipment group isn't set
+            equip_count = math.ceil(
+                propagating_params[Infrastructure_Constants.Sites_File_Constants.REP_EMIS_EPR]
+                * 365
+                * 2
+            )
+            equip_group_info = pd.Series({PLACEHOLDER_EQUIPMENT: equip_count})
+            prop_params = copy.deepcopy(propagating_params)
+            self._equipment_groups.append(
+                Equipment_Group(
+                    equipment_groups, infrastructure_inputs, prop_params, equip_group_info
+                )
+            )
+        elif isinstance(equipment_groups, (int, float)) and equipment_groups > 0:
+            equip_count = math.ceil(
+                propagating_params[Infrastructure_Constants.Sites_File_Constants.REP_EMIS_EPR]
+                * 365
+                * 2
+            )
             for i in range(0, int(equipment_groups)):
                 equip_group_info = pd.Series(
-                    {
-                        PLACEHOLDER_EQUIPMENT: math.ceil(
-                            PLACEHOLDER_EQUIPMENT_COUNT / equipment_groups
-                        )
-                    }
+                    {PLACEHOLDER_EQUIPMENT: math.ceil(equip_count / equipment_groups)}
                 )
                 prop_params = copy.deepcopy(propagating_params)
                 self._equipment_groups.append(
                     Equipment_Group(i, infrastructure_inputs, prop_params, equip_group_info)
                 )
         else:
-            # REVIEW: Should this be an elif and have an else that does error handling for bad input
-            equip_group_info = pd.Series(
-                {PLACEHOLDER_EQUIPMENT: math.ceil(PLACEHOLDER_EQUIPMENT_COUNT)}
-            )
-            prop_params = copy.deepcopy(propagating_params)
-            self._equipment_groups.append(
-                Equipment_Group(0, infrastructure_inputs, prop_params, equip_group_info)
-            )
+            print(BAD_EQUIPMENT_INPUT_ERROR.format(equipment_groups))
+            sys.exit()
 
     def _set_survey_costs(self, methods: list[str]) -> float:
         for method in methods:
