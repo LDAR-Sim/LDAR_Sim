@@ -25,7 +25,7 @@ from typing import Union
 import sys
 
 import pandas as pd
-from file_processing.output_processing.output_utils import EmisRepairInfo, TsEmisData
+from file_processing.output_processing.output_utils import EmisInfo, TsEmisData
 from file_processing.input_processing.emissions_source_processing import (
     EmissionsSource,
 )
@@ -38,7 +38,17 @@ from virtual_world.infrastructure_const import (
 )
 
 PLACEHOLDER_EQUIPMENT = "Placeholder_Equipment"
+PLACEHOLDER_REP_EQUIPMENT = "Placeholder_Rep_Equipment"
+PLACEHOLDER_NON_EQUIPMENT = "Placeholder_NonRep_Equipment"
 BAD_EQUIPMENT_INPUT_ERROR = "Invalid equipment input: {}"
+EMISSION_PRODUCTION_RATE_ERROR = (
+    "No valid emissions production rates. Please check values and re-run the simulation."
+)
+
+PLACEHOLDER_CREATION_WARNING_MESSAGE = (
+    "Warning: Only {type} emissions sources were created for the site ID: {site}. "
+    "Check the production rate (LPR/EPR) if this is not intended."
+)
 
 
 class Site:
@@ -153,13 +163,39 @@ class Site:
                     )
                 )
         elif isinstance(equipment_groups, (int, float)) and equipment_groups == 0:
+            rep_emis_epr = propagating_params[
+                Infrastructure_Constants.Sites_File_Constants.REP_EMIS_EPR
+            ]
+            nonrep_emis_epr = propagating_params[
+                Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_EPR
+            ]
             # special case for when equipment group isn't set
-            equip_count = math.ceil(
-                propagating_params[Infrastructure_Constants.Sites_File_Constants.REP_EMIS_EPR]
-                * 365
-                * 2
-            )
-            equip_group_info = pd.Series({PLACEHOLDER_EQUIPMENT: equip_count})
+            if (rep_emis_epr is None and rep_emis_epr <= 0) and (
+                nonrep_emis_epr is None or nonrep_emis_epr <= 0
+            ):
+                print(EMISSION_PRODUCTION_RATE_ERROR)
+                sys.exit()
+            elif nonrep_emis_epr is None and rep_emis_epr > 0:
+                prod_rate = rep_emis_epr
+                placeholder = PLACEHOLDER_REP_EQUIPMENT
+                print(
+                    PLACEHOLDER_CREATION_WARNING_MESSAGE.format(
+                        type="repairable", site=self._site_ID
+                    )
+                )
+            elif rep_emis_epr is None and nonrep_emis_epr > 0:
+                prod_rate = nonrep_emis_epr
+                placeholder = PLACEHOLDER_NON_EQUIPMENT
+                print(
+                    PLACEHOLDER_CREATION_WARNING_MESSAGE.format(
+                        type="non-repairable", site=self._site_ID
+                    )
+                )
+            else:
+                prod_rate = max(nonrep_emis_epr, rep_emis_epr)
+                placeholder = PLACEHOLDER_EQUIPMENT
+            equip_count = math.ceil(prod_rate * 365 * 2)
+            equip_group_info = pd.Series({placeholder: equip_count})
             prop_params = copy.deepcopy(propagating_params)
             self._equipment_groups.append(
                 Equipment_Group(
@@ -167,14 +203,40 @@ class Site:
                 )
             )
         elif isinstance(equipment_groups, (int, float)) and equipment_groups > 0:
-            equip_count = math.ceil(
-                propagating_params[Infrastructure_Constants.Sites_File_Constants.REP_EMIS_EPR]
-                * 365
-                * 2
-            )
+            rep_emis_epr = propagating_params[
+                Infrastructure_Constants.Sites_File_Constants.REP_EMIS_EPR
+            ]
+            nonrep_emis_epr = propagating_params[
+                Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_EPR
+            ]
+            if (rep_emis_epr is None or rep_emis_epr <= 0) and (
+                nonrep_emis_epr is None or nonrep_emis_epr <= 0
+            ):
+                print(EMISSION_PRODUCTION_RATE_ERROR)
+                sys.exit()
+            elif nonrep_emis_epr is None and rep_emis_epr > 0:
+                prod_rate = rep_emis_epr
+                placeholder = PLACEHOLDER_REP_EQUIPMENT
+                print(
+                    PLACEHOLDER_CREATION_WARNING_MESSAGE.format(
+                        type="repairable", site=self._site_ID
+                    )
+                )
+            elif rep_emis_epr is None and nonrep_emis_epr > 0:
+                prod_rate = nonrep_emis_epr
+                placeholder = PLACEHOLDER_NON_EQUIPMENT
+                print(
+                    PLACEHOLDER_CREATION_WARNING_MESSAGE.format(
+                        type="non-repairable", site=self._site_ID
+                    )
+                )
+            else:
+                prod_rate = max(rep_emis_epr, nonrep_emis_epr)
+                placeholder = PLACEHOLDER_EQUIPMENT
+            equip_count = math.ceil(prod_rate * 365 * 2)
             for i in range(0, int(equipment_groups)):
                 equip_group_info = pd.Series(
-                    {PLACEHOLDER_EQUIPMENT: math.ceil(equip_count / equipment_groups)}
+                    {placeholder: math.ceil(equip_count / equipment_groups)}
                 )
                 prop_params = copy.deepcopy(propagating_params)
                 self._equipment_groups.append(
@@ -287,7 +349,7 @@ class Site:
         )
         target_equip_group.tag_emissions_at_equipment(equipment, tagging_info)
 
-    def update_emissions_state(self, emis_rep_info: EmisRepairInfo) -> TsEmisData:
+    def update_emissions_state(self, emis_rep_info: EmisInfo) -> TsEmisData:
         emis_data = TsEmisData()
         for eqg in self._equipment_groups:
             emis_data += eqg.update_emissions_state(emis_rep_info)

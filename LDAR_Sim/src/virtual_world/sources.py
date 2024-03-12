@@ -30,8 +30,16 @@ from file_processing.input_processing.emissions_source_processing import (
 )
 from virtual_world.emissions import Emission
 from virtual_world.fugitive_emission import FugitiveEmission
-from virtual_world.infrastructure_const import Infrastructure_Constants
 from virtual_world.nonfugitive_emissions import NonRepairableEmission
+from virtual_world.infrastructure_const import (
+    Infrastructure_Constants as IC,
+)
+
+
+POTENTIAL_SOURCE_CREATION_ERROR_MESSAGE = (
+    "Error creating emissions sources, they were only partially defined. "
+    "Please input a value for the parameter '{rep} {const}' and rerun the simulation."
+)
 
 
 class Source:
@@ -42,14 +50,10 @@ class Source:
 
     def __init__(self, id: str, info, prop_params) -> None:
         self._source_ID: str = id
-        self._repairable: bool = info[Infrastructure_Constants.Sources_File_Constants.REPAIRABLE]
-        self._persistent: bool = info[Infrastructure_Constants.Sources_File_Constants.PERSISTENT]
-        self._active_duration: int = info[
-            Infrastructure_Constants.Sources_File_Constants.ACTIVE_DUR
-        ]
-        self._inactive_duration: int = info[
-            Infrastructure_Constants.Sources_File_Constants.INACTIVE_DUR
-        ]
+        self._repairable: bool = info[IC.Sources_File_Constants.REPAIRABLE]
+        self._persistent: bool = info[IC.Sources_File_Constants.PERSISTENT]
+        self._active_duration: int = info[IC.Sources_File_Constants.ACTIVE_DUR]
+        self._inactive_duration: int = info[IC.Sources_File_Constants.INACTIVE_DUR]
         self._generated_emissions: dict[int, list[Emission]] = {}
         self._emis_rate_source: EmissionsSource = None
         self._emis_prod_rate: float = None
@@ -57,6 +61,8 @@ class Source:
         self._meth_spat_covs: dict[str, float] = None
         self._emis_rep_delay: int = None
         self._emis_rep_cost: float = None
+        self._prefix: Literal["repairable", "non_repairable"] = None
+        self._set_prefix()
         self._update_prop_params(info=info, prop_params=prop_params)
         self._set_source_properties(prop_params=prop_params)
         self._next_emission: Emission = None
@@ -76,6 +82,7 @@ class Source:
             self._emis_rep_delay,
             self._emis_rep_cost,
             self._next_emission,
+            self._prefix,
         )
         return (self.__class__._reconstruct, args)
 
@@ -95,6 +102,7 @@ class Source:
         emis_rep_delay,
         emis_rep_cost,
         next_emission,
+        prefix,
     ):
         # Create a new instance without invoking __init__
         instance = cls.__new__(cls)
@@ -112,14 +120,17 @@ class Source:
         instance._emis_rep_delay = emis_rep_delay
         instance._emis_rep_cost = emis_rep_cost
         instance._next_emission = next_emission
+        instance._prefix = prefix
         return instance
 
-    def _update_prop_params(self, info, prop_params) -> None:
-        meth_specific_params = prop_params.pop("Method_Specific_Params")
-
+    def _set_prefix(self) -> None:
         prefix: Literal["repairable", "non_repairable"] = (
             Source.REP_PREFIX if self._repairable else Source.NON_REP_PREFIX
         )
+        self._prefix = prefix
+
+    def _update_prop_params(self, info, prop_params) -> None:
+        meth_specific_params = prop_params.pop("Method_Specific_Params")
 
         for param in meth_specific_params.keys():
             for method in meth_specific_params[param].keys():
@@ -129,8 +140,8 @@ class Source:
 
         prop_params_keys = list(prop_params.keys())
         for param in prop_params_keys:
-            if prefix in param:
-                src_param = re.sub(prefix, "", param)
+            if self._prefix in param:
+                src_param = re.sub(self._prefix, "", param)
                 src_val = info.get(src_param, None)
                 if src_val is not None:
                     prop_params[src_param] = src_val
@@ -141,24 +152,32 @@ class Source:
         prop_params["Method_Specific_Params"] = meth_specific_params
 
     def _set_source_properties(self, prop_params) -> None:
-        self._emis_rate_source = prop_params[
-            Infrastructure_Constants.Sources_File_Constants.EMIS_ERS
-        ]
-        self._emis_prod_rate = prop_params[Infrastructure_Constants.Sources_File_Constants.EMIS_EPR]
-        self._emis_duration = prop_params[Infrastructure_Constants.Sources_File_Constants.EMIS_DUR]
+        if prop_params[IC.Sources_File_Constants.EMIS_ERS] is None:
+            print(
+                POTENTIAL_SOURCE_CREATION_ERROR_MESSAGE.format(
+                    rep=self._prefix, const=IC.Sources_File_Constants.EMIS_ERS
+                )
+            )
+            sys.exit()
+        elif prop_params[IC.Sources_File_Constants.EMIS_EPR] is None:
+            print(
+                POTENTIAL_SOURCE_CREATION_ERROR_MESSAGE.format(
+                    rep=self._prefix, const=IC.Sources_File_Constants.EMIS_EPR
+                )
+            )
+            sys.exit()
+        self._emis_rate_source = prop_params[IC.Sources_File_Constants.EMIS_ERS]
+        self._emis_prod_rate = prop_params[IC.Sources_File_Constants.EMIS_EPR]
+        self._emis_duration = prop_params[IC.Sources_File_Constants.EMIS_DUR]
 
         self._meth_spat_covs = prop_params["Method_Specific_Params"][
-            Infrastructure_Constants.Sources_File_Constants.SPATIAL_PLACEHOLDER
+            IC.Sources_File_Constants.SPATIAL_PLACEHOLDER
         ]
 
         if self._repairable:
             # TODO look at processing for these values
-            self._emis_rep_delay = prop_params[
-                Infrastructure_Constants.Sources_File_Constants.REPAIR_DELAY
-            ]["vals"]
-            self._emis_rep_cost = prop_params[
-                Infrastructure_Constants.Sources_File_Constants.REPAIR_COST
-            ]["vals"]
+            self._emis_rep_delay = prop_params[IC.Sources_File_Constants.REPAIR_DELAY]["vals"]
+            self._emis_rep_cost = prop_params[IC.Sources_File_Constants.REPAIR_COST]["vals"]
 
     def _get_rate(self, emission_rate_source_dictionary: dict[str, EmissionsSource]):
         return emission_rate_source_dictionary[self._emis_rate_source].get_a_rate()
