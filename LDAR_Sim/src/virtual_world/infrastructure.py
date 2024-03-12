@@ -30,8 +30,8 @@ from file_processing.input_processing.repair_delay_processing import (
     read_in_repair_delay_sources_file,
 )
 from virtual_world.infrastructure_const import (
-    Infrastructure_Constants,
-    Virtual_World_To_Prop_Params_Mapping,
+    Infrastructure_Constants as IC,
+    Virtual_World_To_Prop_Params_Mapping as VW,
 )
 from virtual_world.sites import Site
 from file_processing.input_processing.infrastructure_processing import (
@@ -73,19 +73,18 @@ class Infrastructure:
         for (
             param,
             mapping,
-        ) in Virtual_World_To_Prop_Params_Mapping.PROPAGATING_PARAMS.items():
+        ) in VW.PROPAGATING_PARAMS.items():
             mapping: str
             access_path = mapping.split(".")
             val = virtual_world
             for path in access_path:
                 val = val[path]
             prop_params_dict[param] = val
-
         prop_params_dict["Method_Specific_Params"] = {}
         for (
             param,
             mapping,
-        ) in Virtual_World_To_Prop_Params_Mapping.METH_SPEC_PROP_PARAMS.items():
+        ) in VW.METH_SPEC_PROP_PARAMS.items():
             prop_params_dict["Method_Specific_Params"][param] = {}
             for method in methods:
                 access_path: list[str] = mapping.split(".")
@@ -94,7 +93,6 @@ class Infrastructure:
                 for path in access_path:
                     val = val[path]
                 prop_params_dict["Method_Specific_Params"][param][method] = val
-
         return prop_params_dict
 
     def update_propagating_params(
@@ -106,28 +104,26 @@ class Infrastructure:
     ) -> None:
         if site_type_info is not None:
             # Updating propagating parameters with site type info
-            for param in Infrastructure_Constants.Site_Type_File_Constants.PROPAGATING_PARAMS:
+            for param in IC.Site_Type_File_Constants.PROPAGATING_PARAMS:
                 site_type_val = site_type_info.get(param, None)
                 if site_type_val is not None:
                     prop_params[param] = site_type_val
 
             for method in methods:
-                for (
-                    param
-                ) in Infrastructure_Constants.Site_Type_File_Constants.METH_SPEC_PROP_PARAMS:
+                for param in IC.Site_Type_File_Constants.METH_SPEC_PROP_PARAMS:
                     site_type_val = site_type_info.get(method + param, None)
                     if site_type_val is not None:
                         prop_params["Method_Specific_Params"][param][method] = site_type_val
 
             # Updating propagating parameters with site info
-            for param in Infrastructure_Constants.Sites_File_Constants.PROPAGATING_PARAMS:
+            for param in IC.Sites_File_Constants.PROPAGATING_PARAMS:
                 site_val = site_row_df_info.get(param, None)
                 if site_val is not None:
                     prop_params[param] = site_val
 
             # Update method specific propagating params with site info
             for method in methods:
-                for param in Infrastructure_Constants.Sites_File_Constants.METH_SPEC_PROP_PARAMS:
+                for param in IC.Sites_File_Constants.METH_SPEC_PROP_PARAMS:
                     site_val = site_row_df_info.get(method + param, None)
                     if site_val is not None:
                         prop_params["Method_Specific_Params"][param][method] = site_val
@@ -203,7 +199,7 @@ class Infrastructure:
 
         sites: list[Site] = []
 
-        for header in Infrastructure_Constants.Sites_File_Constants.OPTIONAL_SHARED_HEADERS:
+        for header in IC.Sites_File_Constants.OPTIONAL_SHARED_HEADERS:
             if (
                 header not in sites_to_make.columns.to_list()
                 and sites_types_provided
@@ -220,10 +216,9 @@ class Infrastructure:
             site_type_info = None
             if sites_types_provided:
                 site_types_info = infrastructure_inputs["site_types"]
-                site_type = srow[Infrastructure_Constants.Sites_File_Constants.TYPE]
+                site_type = srow[IC.Sites_File_Constants.TYPE]
                 site_types_info = site_types_info.loc[
-                    site_types_info[Infrastructure_Constants.Site_Type_File_Constants.TYPE]
-                    == site_type
+                    site_types_info[IC.Site_Type_File_Constants.TYPE] == site_type
                 ].iloc[0]
             propagating_params = self.generate_propagating_params(
                 virtual_world=virtual_world, methods=methods
@@ -235,10 +230,10 @@ class Infrastructure:
                 methods=methods,
             )
             new_site = Site(
-                id=srow[Infrastructure_Constants.Sites_File_Constants.ID],
-                lat=srow[Infrastructure_Constants.Sites_File_Constants.LAT],
-                long=srow[Infrastructure_Constants.Sites_File_Constants.LON],
-                equipment_groups=srow[Infrastructure_Constants.Sites_File_Constants.EQG],
+                id=srow[IC.Sites_File_Constants.ID],
+                lat=srow[IC.Sites_File_Constants.LAT],
+                long=srow[IC.Sites_File_Constants.LON],
+                equipment_groups=srow[IC.Sites_File_Constants.EQG],
                 propagating_params=propagating_params,
                 infrastructure_inputs=infrastructure_inputs,
                 start_date=date(*virtual_world["start_date"]),

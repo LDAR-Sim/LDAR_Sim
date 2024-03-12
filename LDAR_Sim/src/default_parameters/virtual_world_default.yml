@@ -2,11 +2,11 @@ version: "4.0"
 parameter_level: "virtual_world"
 start_date: [2023, 1, 1]
 end_date: [2027, 12, 31]
-weather_file: "weather_alberta.nc"
+weather_file: "_placeholder_str_"
 consider_weather: False # True/False
 infrastructure:
   site_type_file: "_placeholder_str_" # Infrastructure file defining site types
-  sites_file: "facilities_alberta.csv" #Infrastructure file defining sites
+  sites_file: "_placeholder_str_" #Infrastructure file defining sites
   equipment_group_file: "_placeholder_str_" #Infrastructure file defining equipment groups at sites
   sources_file: "_placeholder_str_" #Infrastructure file defining emissions sources at equipment
 site_samples: 500
