@@ -196,7 +196,12 @@ class Equipment:
         for emission in self._active_emissions:
             if emission.update(emis_rep_info):
                 updated_active_emissions.append(emission)
-                emis_data.daily_emis += emission.get_daily_emis()
+                emis_total_daily = emission.get_daily_emis()
+                if emission._repairable:
+                    emis_data.daily_emis_mit += emis_total_daily
+                else:
+                    emis_data.daily_emis_non_mit += emis_total_daily
+                emis_data.daily_emis += emis_total_daily
             else:
                 self._inactive_emissions.append(emission)
         self._active_emissions = updated_active_emissions

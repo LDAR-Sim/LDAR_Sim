@@ -154,4 +154,5 @@ class Emission:
         summary_dict.update({(eca.RECORDED, "N/A")})
         summary_dict.update({(eca.RECORDED_BY, "N/A")})
         summary_dict.update(self._tech_spat_covs)
+        summary_dict.update({(eca.REPAIRABLE, self._repairable)})
         return summary_dict

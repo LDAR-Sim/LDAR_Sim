@@ -141,6 +141,8 @@ class LdarSim:
         self, new_row: dict[str, Any], ts_emis_info: TsEmisData, ts_emis_rep_info: EmisInfo
     ):
         new_row[tca.EMIS] = ts_emis_info.daily_emis
+        new_row[tca.EMIS_MIT] = ts_emis_info.daily_emis_mit
+        new_row[tca.EMIS_NON_MIT] = ts_emis_info.daily_emis_non_mit
         new_row[tca.ACT_LEAKS] = ts_emis_info.active_leaks
         new_row[tca.REP_COST] = ts_emis_rep_info.repair_cost
         new_row[tca.REP_LEAKS] = ts_emis_rep_info.leaks_repaired

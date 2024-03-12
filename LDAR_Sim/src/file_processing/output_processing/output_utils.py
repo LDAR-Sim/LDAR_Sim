@@ -21,6 +21,7 @@ class EMIS_DATA_COL_ACCESSORS:
     COMP = "Component"
     RECORDED = "Recorded"
     RECORDED_BY = "Recorded By"
+    REPAIRABLE = "Repairable"
 
 
 EMIS_DATA_FINAL_COL_ORDER = [
@@ -42,11 +43,14 @@ EMIS_DATA_FINAL_COL_ORDER = [
     EMIS_DATA_COL_ACCESSORS.TAGGED_BY,
     EMIS_DATA_COL_ACCESSORS.RECORDED,
     EMIS_DATA_COL_ACCESSORS.RECORDED_BY,
+    EMIS_DATA_COL_ACCESSORS.REPAIRABLE,
 ]
 
 TIMESERIES_COLUMNS = [
     "Date",
     "Daily Emissions (Kg Methane)",
+    "Daily Mitigable Emissions (Kg Methane)",
+    "Daily Non-Mitigable Emissions (Kg Methane)",
     "Daily Cost ($)",
     "Active Leaks",
     "New Leaks",
@@ -61,6 +65,8 @@ TIMESERIES_COLUMNS = [
 class TIMESERIES_COL_ACCESSORS:
     DATE = "Date"
     EMIS = "Daily Emissions (Kg Methane)"
+    EMIS_MIT = "Daily Mitigable Emissions (Kg Methane)"
+    EMIS_NON_MIT = "Daily Non-Mitigable Emissions (Kg Methane)"
     COST = "Daily Cost ($)"
     ACT_LEAKS = "Active Leaks"
     NEW_LEAKS = "New Leaks"
@@ -80,19 +86,30 @@ class TIMESERIES_COL_ACCESSORS:
 @dataclass
 class TsEmisData:
     daily_emis: float = 0
+    daily_emis_mit: float = 0
+    daily_emis_non_mit: float = 0
     active_leaks: int = 0
 
     def __add__(self, other):
         if isinstance(other, TsEmisData):
             daily_emis = self.daily_emis + other.daily_emis
+            daily_emis_mit = self.daily_emis_mit + other.daily_emis_mit
+            daily_emis_non_mit = self.daily_emis_non_mit + other.daily_emis_non_mit
             active_leaks = self.active_leaks + other.active_leaks
-            return TsEmisData(daily_emis=daily_emis, active_leaks=active_leaks)
+            return TsEmisData(
+                daily_emis=daily_emis,
+                daily_emis_mit=daily_emis_mit,
+                daily_emis_non_mit=daily_emis_non_mit,
+                active_leaks=active_leaks,
+            )
         else:
             raise ValueError("Unsupported operand type for addition")
 
     def __iadd__(self, other):
         if isinstance(other, TsEmisData):
             self.daily_emis += other.daily_emis
+            self.daily_emis_mit += other.daily_emis_mit
+            self.daily_emis_non_mit += other.daily_emis_non_mit
             self.active_leaks += other.active_leaks
             return self
         else:
