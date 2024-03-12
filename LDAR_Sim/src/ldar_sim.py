@@ -34,7 +34,7 @@ from file_processing.output_processing.output_utils import (
     EMIS_DATA_FINAL_COL_ORDER,
     TIMESERIES_COLUMNS,
     TIMESERIES_COL_ACCESSORS as tca,
-    EmisRepairInfo,
+    EmisInfo,
     TsEmisData,
     TsMethodData,
 )
@@ -89,7 +89,7 @@ class LdarSim:
             )
             total_emissions_count += new_row[tca.NEW_LEAKS]
             ts_methods_info: list[TsMethodData] = self._program.do_daily_program_deployment()
-            ts_emis_rep_info: EmisRepairInfo = EmisRepairInfo()
+            ts_emis_rep_info: EmisInfo = EmisInfo()
             ts_emis_info: TsEmisData = self._infrastructure.update_emissions_state(ts_emis_rep_info)
             self._update_ts_row_w_emis_info(
                 new_row=new_row, ts_emis_info=ts_emis_info, ts_emis_rep_info=ts_emis_rep_info
@@ -138,7 +138,7 @@ class LdarSim:
         return new_ts_row
 
     def _update_ts_row_w_emis_info(
-        self, new_row: dict[str, Any], ts_emis_info: TsEmisData, ts_emis_rep_info: EmisRepairInfo
+        self, new_row: dict[str, Any], ts_emis_info: TsEmisData, ts_emis_rep_info: EmisInfo
     ):
         new_row[tca.EMIS] = ts_emis_info.daily_emis
         new_row[tca.ACT_LEAKS] = ts_emis_info.active_leaks

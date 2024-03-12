@@ -23,7 +23,7 @@ from math import ceil
 from numpy import random
 from typing import Any
 from typing_extensions import override
-from file_processing.output_processing.output_utils import EmisRepairInfo
+from file_processing.output_processing.output_utils import EmisInfo, EMIS_DATA_COL_ACCESSORS as eca
 
 from virtual_world.emissions import Emission
 
@@ -74,7 +74,7 @@ class FugitiveEmission(Emission):
         instance.__setstate__(state)
         return instance
 
-    def check_if_repaired(self, emis_rep_info: EmisRepairInfo) -> bool:
+    def check_if_repaired(self, emis_rep_info: EmisInfo) -> bool:
         """
         Checks the days since tagged against the repair delay
         Repairs the emission if possible
@@ -90,9 +90,6 @@ class FugitiveEmission(Emission):
                 return True
         return False
 
-    def get_init_detect_company(self):
-        return self._init_detect_by
-
     def tagged_today(self) -> bool:
         return (
             self._tagged and (self._days_since_tagged == 0)
@@ -107,7 +104,7 @@ class FugitiveEmission(Emission):
     def get_daily_emissions(self) -> float:
         return self._rate * 86.4
 
-    def natural_repair(self, emis_rep_info: EmisRepairInfo):
+    def natural_repair(self, emis_rep_info: EmisInfo):
         self._tagged = True
         self._tagged_by_company = "natural"
         self._status = "repaired"
@@ -160,7 +157,7 @@ class FugitiveEmission(Emission):
         return True
 
     @override
-    def update(self, emis_rep_info: EmisRepairInfo) -> bool:
+    def update(self, emis_rep_info: EmisInfo) -> bool:
         is_active: bool = super().update(emis_rep_info)
         if is_active:
             if self._tagged:
@@ -175,9 +172,9 @@ class FugitiveEmission(Emission):
     @override
     def get_summary_dict(self) -> dict[str, Any]:
         summary_dict: dict[str, Any] = super().get_summary_dict()
-        summary_dict.update({("Date Repaired", self._repair_date)})
-        summary_dict.update({("Tagged", self._tagged)})
-        summary_dict.update({("Tagged By", self._tagged_by_company)})
+        summary_dict.update({(eca.DATE_REP, self._repair_date)})
+        summary_dict.update({(eca.TAGGED, self._tagged)})
+        summary_dict.update({(eca.TAGGED_BY, self._tagged_by_company)})
         return summary_dict
 
     @override

@@ -22,10 +22,10 @@ from copy import deepcopy
 from datetime import date
 import re
 from typing import Any
-
+import sys
 import pandas as pd
 from file_processing.output_processing.output_utils import (
-    EmisRepairInfo,
+    EmisInfo,
     TsEmisData,
     EMIS_DATA_COL_ACCESSORS as eca,
 )
@@ -36,7 +36,8 @@ from scheduling.schedule_dataclasses import TaggingInfo
 
 from virtual_world.emissions import Emission
 from virtual_world.fugitive_emission import FugitiveEmission
-from virtual_world.infrastructure_const import Infrastructure_Constants
+from virtual_world.nonfugitive_emissions import NonRepairableEmission
+from virtual_world.infrastructure_const import Infrastructure_Constants as IC
 
 from virtual_world.sources import Source
 
@@ -106,24 +107,50 @@ class Equipment:
         if self._equip_type != "Placeholder" and "sources" in infrastructure_inputs:
             sources_info: pd.DataFrame = infrastructure_inputs["sources"]
             sources: pd.DataFrame = sources_info.loc[
-                sources_info[Infrastructure_Constants.Sources_File_Constants.COMPONENT]
-                == self._equip_type
+                sources_info[IC.Sources_File_Constants.COMPONENT] == self._equip_type
             ]
             for idx, source in sources.iterrows():
                 src_prop_params = deepcopy(prop_params)
-                src_id = source[Infrastructure_Constants.Sources_File_Constants.SOURCE]
+                src_id = source[IC.Sources_File_Constants.SOURCE]
                 self._sources.append(Source(src_id, source, src_prop_params))
         elif self._equip_type == "Placeholder":
             src_id = "Placeholder_Rep"
             placeholder_source_info = {
-                Infrastructure_Constants.Sources_File_Constants.REPAIRABLE: True,
-                Infrastructure_Constants.Sources_File_Constants.PERSISTENT: True,
-                Infrastructure_Constants.Sources_File_Constants.ACTIVE_DUR: 1,
-                Infrastructure_Constants.Sources_File_Constants.INACTIVE_DUR: 0,
+                IC.Sources_File_Constants.REPAIRABLE: True,
+                IC.Sources_File_Constants.PERSISTENT: True,
+                IC.Sources_File_Constants.ACTIVE_DUR: 1,
+                IC.Sources_File_Constants.INACTIVE_DUR: 0,
             }
             self._sources.append(Source(src_id, placeholder_source_info, prop_params))
+            src_id_nonrep = "Placeholder_NonRep"
+            placeholder_nonrep_source_info = {
+                IC.Sources_File_Constants.REPAIRABLE: False,
+                IC.Sources_File_Constants.PERSISTENT: True,
+                IC.Sources_File_Constants.ACTIVE_DUR: 1,
+                IC.Sources_File_Constants.INACTIVE_DUR: 0,
+            }
+            self._sources.append(Source(src_id_nonrep, placeholder_nonrep_source_info, prop_params))
+        elif self._equip_type == "Placeholder_Rep":
+            src_id = "Placeholder_Rep"
+            placeholder_source_info = {
+                IC.Sources_File_Constants.REPAIRABLE: True,
+                IC.Sources_File_Constants.PERSISTENT: True,
+                IC.Sources_File_Constants.ACTIVE_DUR: 1,
+                IC.Sources_File_Constants.INACTIVE_DUR: 0,
+            }
+            self._sources.append(Source(src_id, placeholder_source_info, prop_params))
+        elif self._equip_type == "Placeholder_NonRep":
+            src_id_nonrep = "Placeholder_NonRep"
+            placeholder_nonrep_source_info = {
+                IC.Sources_File_Constants.REPAIRABLE: False,
+                IC.Sources_File_Constants.PERSISTENT: True,
+                IC.Sources_File_Constants.ACTIVE_DUR: 1,
+                IC.Sources_File_Constants.INACTIVE_DUR: 0,
+            }
+            self._sources.append(Source(src_id_nonrep, placeholder_nonrep_source_info, prop_params))
         else:
             print(SOURCE_CREATION_ERROR_MESSAGE)
+            sys.exit()
 
     def generate_emissions(
         self,
@@ -163,7 +190,7 @@ class Equipment:
             new_emissions_count += len(new_emissions)
         return new_emissions_count
 
-    def update_emissions_state(self, emis_rep_info: EmisRepairInfo) -> TsEmisData:
+    def update_emissions_state(self, emis_rep_info: EmisInfo) -> TsEmisData:
         updated_active_emissions: list[Emission] = []
         emis_data: TsEmisData = TsEmisData()
         for emission in self._active_emissions:
@@ -190,6 +217,17 @@ class Equipment:
                 emission.update_detection_records(
                     company=tagging_info.company, detect_date=tagging_info.curr_date
                 )
+            elif isinstance(emission, NonRepairableEmission):
+                emission.record_emission(
+                    measured_rate=tagging_info.measured_rate,
+                    cur_date=tagging_info.curr_date,
+                    t_since_ldar=tagging_info.t_since_LDAR,
+                    company=tagging_info.company,
+                    crew_id=tagging_info.crew,
+                )
+                emission.update_detection_records(
+                    company=tagging_info.company, detect_date=tagging_info.curr_date
+                )
 
     def get_detectable_emissions(self, method_name: str) -> Emission:
         detectable_emissions: list[Emission] = []
@@ -211,7 +249,7 @@ class Equipment:
         for emission in self._active_emissions:
             summary_dict: dict[str, Any] = emission.get_summary_dict()
             summary_dict.update(
-                {eca.SITE_ID: site_id, eca.EQG: eqg_id, eca.EQUIP: self._equipment_ID}
+                {eca.SITE_ID: site_id, eca.EQG: eqg_id, eca.COMP: self._equipment_ID}
             )
             emis_df.loc[upd_row_index] = summary_dict
             upd_row_index += 1
@@ -219,7 +257,7 @@ class Equipment:
         for emission in self._inactive_emissions:
             summary_dict: dict[str, Any] = emission.get_summary_dict()
             summary_dict.update(
-                {eca.SITE_ID: site_id, eca.EQG: eqg_id, eca.EQUIP: self._equipment_ID}
+                {eca.SITE_ID: site_id, eca.EQG: eqg_id, eca.COMP: self._equipment_ID}
             )
             emis_df.loc[upd_row_index] = summary_dict
             upd_row_index += 1
