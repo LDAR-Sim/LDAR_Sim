@@ -22,7 +22,7 @@ from datetime import date
 
 import pandas as pd
 from file_processing.output_processing.output_utils import (
-    EmisRepairInfo,
+    EmisInfo,
     TsEmisData,
 )
 from file_processing.input_processing.emissions_source_processing import (
@@ -131,7 +131,7 @@ class Equipment_Group:
             new_emissions += equipment.activate_emissions(date, sim_number)
         return new_emissions
 
-    def update_emissions_state(self, emis_rep_info: EmisRepairInfo) -> TsEmisData:
+    def update_emissions_state(self, emis_rep_info: EmisInfo) -> TsEmisData:
         emis_data = TsEmisData()
         for equip in self._equipment:
             emis_data += equip.update_emissions_state(emis_rep_info)

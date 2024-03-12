@@ -31,13 +31,10 @@ from file_processing.input_processing.emissions_source_processing import (
 from virtual_world.emissions import Emission
 from virtual_world.fugitive_emission import FugitiveEmission
 from virtual_world.infrastructure_const import Infrastructure_Constants
+from virtual_world.nonfugitive_emissions import NonRepairableEmission
 
 
 class Source:
-    WIP_NON_FUG_EMIS_GENERATION_MSG = (
-        "Error: Non-Fugitive Emissions generation is still in development."
-        " Please remove these sources for now"
-    )
     INVALID_REPAIR_DELAY_COL_MSG = "Error, Invalid repair delay column provided: {key}"
     INVALID_REPAIR_DELAY_ERR_MSG = "Error, Invalid repair delay provided: {delay}"
     REP_PREFIX = "repairable_"
@@ -211,8 +208,15 @@ class Source:
                 nrd=self._get_emis_duration(),
             )
         else:
-            print(Source.WIP_NON_FUG_EMIS_GENERATION_MSG)
-            sys.exit()
+            return NonRepairableEmission(
+                emission_n=leak_count,
+                rate=self._get_rate(emission_rate_source_dictionary),
+                start_date=start_date,
+                simulation_sd=sim_start_date,
+                repairable=self._get_repairable(),
+                tech_spat_cov_probs=self._meth_spat_covs,
+                duration=self._get_emis_duration(),
+            )
 
     def generate_emissions(
         self,

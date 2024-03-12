@@ -18,14 +18,16 @@ class EMIS_DATA_COL_ACCESSORS:
     INIT_DETECT_DATE = "Initially Detected Date"
     TAGGED = "Tagged"
     TAGGED_BY = "Tagged By"
-    EQUIP = "Equipment"
+    COMP = "Component"
+    RECORDED = "Recorded"
+    RECORDED_BY = "Recorded By"
 
 
 EMIS_DATA_FINAL_COL_ORDER = [
     EMIS_DATA_COL_ACCESSORS.EMIS_ID,
     EMIS_DATA_COL_ACCESSORS.SITE_ID,
     EMIS_DATA_COL_ACCESSORS.EQG,
-    EMIS_DATA_COL_ACCESSORS.EQUIP,
+    EMIS_DATA_COL_ACCESSORS.COMP,
     EMIS_DATA_COL_ACCESSORS.STATUS,
     EMIS_DATA_COL_ACCESSORS.DAYS_ACT,
     EMIS_DATA_COL_ACCESSORS.DATE_BEG,
@@ -38,6 +40,8 @@ EMIS_DATA_FINAL_COL_ORDER = [
     EMIS_DATA_COL_ACCESSORS.INIT_DETECT_DATE,
     EMIS_DATA_COL_ACCESSORS.TAGGED,
     EMIS_DATA_COL_ACCESSORS.TAGGED_BY,
+    EMIS_DATA_COL_ACCESSORS.RECORDED,
+    EMIS_DATA_COL_ACCESSORS.RECORDED_BY,
 ]
 
 TIMESERIES_COLUMNS = [
@@ -121,8 +125,9 @@ class CrewDeploymentStats:
 
 
 @dataclass
-class EmisRepairInfo:
+class EmisInfo:
     leaks_repaired: int = 0
     leaks_nat_repaired: int = 0
     repair_cost: int = 0
     nat_repair_cost: int = 0
+    emis_expired: int = 0

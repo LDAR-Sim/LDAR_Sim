@@ -32,6 +32,10 @@ class Infrastructure_Constants:
         REP_EMIS_RC = "repairable_RC"  # Repairable Emissions : Repair Cost
         REP_EMIS_ED = "repairable_ED"  # Repairable Emissions : Emissions Duration
         NON_REP_EMIS_ERS = "non_repairable_ERS"  # Non-Repairable Emissions: Emissions Rate Source
+        NON_REP_EMIS_EPR = (
+            "non_repairable_EPR"  # Non-Repairable Emissions: Emissions Production Rate
+        )
+        NON_REP_EMIS_ED = "non_repairable_ED"  # Non-Repairable Emissions: Emissions Duration
         SURVEY_FREQUENCY_PLACEHOLDER = "_surveyfreq"  # Survey Frequency - Method specific
         DEPLOYMENT_YEARS_PLACEHOLDER = "_deploy_year"  # Deployment Year - Method specific
         DEPLOYMENT_MONTHS_PLACEHOLDER = "_deploy_month"  # Deployment Month - Method specific
@@ -49,6 +53,8 @@ class Infrastructure_Constants:
             REP_EMIS_RC,
             REP_EMIS_ED,
             NON_REP_EMIS_ERS,
+            NON_REP_EMIS_EPR,
+            NON_REP_EMIS_ED,
         ]
 
         METH_SPEC_PROP_PARAMS: list[str] = [
@@ -70,6 +76,8 @@ class Infrastructure_Constants:
         REP_EMIS_RC = "repairable_RC"  # Repairable Emissions Repair Cost
         REP_EMIS_ED = "repairable_ED"  # Repairable Emissions Emissions Duration
         NON_REP_EMIS_ERS = "non_repairable_ERS"  # Non-Repairable Emissions Rate Source
+        NON_REP_EMIS_EPR = "non_repairable_EPR"  # Non-Repairable Emissions Production Rate
+        NON_REP_EMIS_ED = "non_repairable_ED"  # Non-Repairable Emissions: Emissions Duration
         SURVEY_TIME_PLACEHOLDER = "_surveytime"  # Survey Time - Method specific
         SURVEY_COST_PLACEHOLDER = "_surveycost"  # Survey Cost - Method specific
         SPATIAL_PLACEHOLDER = "_spatial"  # Spatial coverage - Method specific
@@ -99,6 +107,10 @@ class Infrastructure_Constants:
         REP_EMIS_RC = "repairable_RC"  # Repairable Emissions : Repair Cost
         REP_EMIS_ED = "repairable_ED"  # Repairable Emissions : Emissions Duration
         NON_REP_EMIS_ERS = "non_repairable_ERS"  # Non-Repairable Emissions: Emissions Rate Source
+        NON_REP_EMIS_EPR = (
+            "non_repairable_EPR"  # Non-Repairable Emissions: Emissions Production Rate
+        )
+        NON_REP_EMIS_ED = "non_repairable_ED"  # Non-Repairable Emissions: Emissions Duration
         SURVEY_FREQUENCY_PLACEHOLDER = "_surveyfreq"  # Survey Frequency - Method specific
         SPATIAL_PLACEHOLDER = "_spatial"  # Spatial coverage - Method specific
         SURVEY_TIME_PLACEHOLDER = "_surveytime"  # Survey Time - Method specific
@@ -116,6 +128,8 @@ class Infrastructure_Constants:
             REP_EMIS_RC,
             REP_EMIS_ED,
             NON_REP_EMIS_ERS,
+            NON_REP_EMIS_EPR,
+            NON_REP_EMIS_ED,
         ]
 
         METH_SPEC_PROP_PARAMS: list[str] = [
@@ -134,8 +148,10 @@ class Virtual_World_To_Prop_Params_Mapping:
         Infrastructure_Constants.Sites_File_Constants.REP_EMIS_EPR: "emissions.LPR",
         Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RD: "repairs.delay",
         Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RC: "repairs.cost",
-        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ED: "NRd",
-        Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_ERS: "emissions.non_rep_ERS",
+        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ED: "emissions.NRd",
+        Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_ERS: "emissions.NR_ERS",
+        Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_EPR: "emissions.NR_EPR",
+        Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_ED: "emissions.duration",
     }
 
     METH_SPEC_PROP_PARAMS: dict[str, str] = {

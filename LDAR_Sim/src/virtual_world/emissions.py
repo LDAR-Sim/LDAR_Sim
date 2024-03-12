@@ -23,7 +23,7 @@ from typing import Any
 
 from numpy.random import binomial
 from file_processing.output_processing.output_utils import (
-    EmisRepairInfo,
+    EmisInfo,
     EMIS_DATA_COL_ACCESSORS as eca,
 )
 
@@ -84,7 +84,7 @@ class Emission:
         emission.__setstate__(state)
         return emission
 
-    def update(self, emis_rep_info: EmisRepairInfo) -> bool:
+    def update(self, emis_rep_info: EmisInfo) -> bool:
         """
         Increments duration values
         """
@@ -151,16 +151,7 @@ class Emission:
         summary_dict.update({(eca.INIT_DETECT_DATE, self._init_detect_date)})
         summary_dict.update({(eca.TAGGED, "N/A")})
         summary_dict.update({(eca.TAGGED_BY, "N/A")})
+        summary_dict.update({(eca.RECORDED, "N/A")})
+        summary_dict.update({(eca.RECORDED_BY, "N/A")})
         summary_dict.update(self._tech_spat_covs)
         return summary_dict
-
-
-class NonRepairableEmission(Emission):
-    def __init__(self, emission_n, source_id, rate, start_date, simulation_sd, repairable):
-        super().__init__(
-            emission_n,
-            rate,
-            start_date,
-            simulation_sd,
-            repairable,
-        )

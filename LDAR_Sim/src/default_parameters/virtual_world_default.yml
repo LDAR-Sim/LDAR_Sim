@@ -19,13 +19,12 @@ repairs:
     vals: [14.0] # Can either be a single number, a list of numbers (for example [1,2,3]) 
     # or the name of a column in the repair delays file to sample from
 emissions:
-  consider_venting: False # True/False
-  emissions_file: "_placeholder_str_" #File containing sample emissions rates or emissions distributions.
+  emissions_file: "_placeholder_str_" # File containing sample emissions rates or emissions distributions.
   ERS: "_placeholder_str_" # The name of a column in the emissions file
-  non_rep_ERS: "_placeholder_str_" # The name of a column in the emissions file
-  LPR: 0.0065
-  max_leak_rate: 100000.0
+  LPR: "_placeholder_float_" # The production rate of repairable emissions
+  NR_ERS: "_placeholder_str_" # The name of a column in the emissions file
+  NR_EPR: "_placeholder_float_" # The production rate of non-repairable emissions
+  max_leak_rate: 100000.0 # Maximum emission rate
   units: ["kilogram", "hour"]
-NRd: 365
-n_init_leaks_prob: "_placeholder_float_"
-n_init_days: "_placeholder_int_"
+  NRd: 365 # Natural repair delay of repairable emissions
+  duration: 365 # Duration of non-repairable emissions
