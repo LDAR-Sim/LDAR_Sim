@@ -7,6 +7,17 @@ class ProgTsConstants:
 
 TS_SUMMARY_FILENAME = "daily_summary_stats.csv"
 EMIS_SUMMARY_FILENAME = "emissions_summary_stats.csv"
+TRUE_VS_ESTIMATED_PERCENT_DIFF_PLOT = "True_vs_Estimated_Emissions_percent_differences.png"
+TRUE_VS_ESTIMATED_RELATIVE_DIFF_PLOT = "True_vs_Estimated_Emissions_relative_differences.png"
+TRUE_AND_ESTIMATED_PAIRED_EMISSIONS_DISTRIBUTION_PLOT = (
+    "True_and_Estimated_Paired_Emissions_Distribution.png"
+)
+SUMMARY_PROGRAM_PLOTS_DIRECTORY = "program_summary_plots"
+
+
+class ESTIMATE_VS_TRUE_PLOTTING_CONSTANTS:
+    TRUE_EMISSIONS_SUFFIX = '"True" Total Emissions (Kg Methane)'
+    ESTIMATED_EMISSIONS_SUFFIX = '"Estimated" Total Emissions (Kg Methane)'
 
 
 class TS_SUMMARY_COLUMNS_ACCESSORS:

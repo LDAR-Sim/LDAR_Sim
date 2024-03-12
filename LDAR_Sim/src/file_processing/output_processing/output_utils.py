@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Tuple
 from numpy import NaN
 
 
@@ -83,13 +84,27 @@ class TIMESERIES_COL_ACCESSORS:
     METH_DAILY_SURVEY_TIME = "{method} Survey Time (Minutes)"
 
 
-def percent_difference(a, b):
+def percent_difference(a: float, b: float) -> float:
     return abs(a - b) / ((a + b) / 2) * 100
 
 
-def percentage_formatter(x, pos):
+def relative_difference(aquired_value: float, true_value: float) -> float:
+    return (aquired_value - true_value) / true_value * 100
+
+
+def percentage_formatter(x: float, pos):
     x = x / 100
     return f"{x:.0%}"
+
+
+def luminance_shift(
+    color: Tuple[float, float, float], factor: float = 0.3, lighten: bool = True
+) -> Tuple[float, float, float]:
+    if not lighten:
+        factor = -factor
+        return (max(color[0] + factor, 0), max(color[1] + factor, 0), max(color[2] + factor, 0))
+    else:
+        return (min(color[0] + factor, 1), min(color[1] + factor, 1), min(color[2] + factor, 1))
 
 
 @dataclass
