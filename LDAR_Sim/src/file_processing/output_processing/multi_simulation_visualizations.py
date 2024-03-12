@@ -10,7 +10,7 @@ from file_processing.output_processing import output_constants
 from file_processing.output_processing import output_utils
 
 
-def gen_cross_program_summary_plots(out_dir: Path):
+def gen_cross_program_summary_plots(out_dir: Path, baseline_program: str):
 
     summary_program_plots_directory = out_dir / output_constants.SUMMARY_PROGRAM_PLOTS_DIRECTORY
 
@@ -20,32 +20,43 @@ def gen_cross_program_summary_plots(out_dir: Path):
 
     estimate_vs_true_constants = output_constants.ESTIMATE_VS_TRUE_PLOTTING_CONSTANTS
     gen_estimated_vs_true_emissions_percent_difference_plot(
-        emis_summary_info, summary_program_plots_directory, estimate_vs_true_constants
+        emis_summary_info,
+        summary_program_plots_directory,
+        estimate_vs_true_constants,
+        baseline_program,
     )
     gen_estimated_vs_true_emissions_relative_difference_plot(
-        emis_summary_info, summary_program_plots_directory, estimate_vs_true_constants
+        emis_summary_info,
+        summary_program_plots_directory,
+        estimate_vs_true_constants,
+        baseline_program,
     )
     gen_paired_estimate_and_true_emission_distributions(
-        emis_summary_info, summary_program_plots_directory, estimate_vs_true_constants
+        emis_summary_info,
+        summary_program_plots_directory,
+        estimate_vs_true_constants,
+        baseline_program,
     )
 
 
 def plot_hist(
     legend_elements: list,
     ax: plt.Axes,
-    percent_diff_list,
+    x_values: list,
     program_name: str,
     color: Tuple[float, float, float],
-    bin_range: Tuple[int, int],
+    bin_range: Tuple[float, float],
     x_label: str,
     y_label: str,
     legend_label: str = None,
     bin_width: float = 0,
     bins: int = 0,
+    x_locator: ticker.Locator = ticker.AutoLocator(),
+    y_locator: ticker.Locator = ticker.MaxNLocator(nbins="auto", integer=True, prune=None),
 ):
     if bins != 0:
         sns.histplot(
-            percent_diff_list,
+            x_values,
             kde=True,
             color=color,
             element="step",
@@ -55,7 +66,7 @@ def plot_hist(
         )
     elif bin_width != 0:
         sns.histplot(
-            percent_diff_list,
+            x_values,
             kde=True,
             color=color,
             element="step",
@@ -65,7 +76,7 @@ def plot_hist(
         )
     else:
         sns.histplot(
-            percent_diff_list,
+            x_values,
             kde=True,
             color=color,
             element="step",
@@ -89,11 +100,15 @@ def plot_hist(
             ylabel=y_label,
         )
 
+    ax.xaxis.set_major_locator(locator=x_locator)
+    ax.yaxis.set_major_locator(locator=y_locator)
+
 
 def gen_estimated_vs_true_emissions_percent_difference_plot(
     emis_summary_info: pd.DataFrame,
     out_dir: Path,
     estimate_vs_true_constants: output_constants.ESTIMATE_VS_TRUE_PLOTTING_CONSTANTS,
+    baseline_program: str,
     combine_plots: bool = False,
     save_separate_plots: bool = True,
 ):
@@ -106,9 +121,13 @@ def gen_estimated_vs_true_emissions_percent_difference_plot(
         axis=1,
     )
 
-    program_names = emis_summary_info[
-        output_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME
-    ].unique()
+    program_names = [
+        program_name
+        for program_name in emis_summary_info[
+            output_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME
+        ].unique()
+        if program_name != baseline_program
+    ]
     percent_diff_lists = {}
 
     for program_name in program_names:
@@ -135,10 +154,10 @@ def gen_estimated_vs_true_emissions_percent_difference_plot(
             plot_hist(
                 legend_elements=legend_elements,
                 ax=ax_sep,
-                percent_diff_list=percent_diff_list,
+                x_values=percent_diff_list,
                 program_name=program_name,
                 color=colors[i],
-                bin_width=1.0,
+                bin_width=estimate_vs_true_constants.HISTOGRAM_BIN_WIDTH,
                 bin_range=(0, 200),
                 x_label='Percent Difference between "Estimated" and "True" Emissions',
                 y_label="Number of Occurrences",
@@ -158,10 +177,10 @@ def gen_estimated_vs_true_emissions_percent_difference_plot(
             plot_hist(
                 legend_elements=legend_elements,
                 ax=comb_ax,
-                percent_diff_list=percent_diff_list,
+                x_values=percent_diff_list,
                 program_name=program_name,
                 color=colors[i],
-                bin_width=1.0,
+                bin_width=estimate_vs_true_constants.HISTOGRAM_BIN_WIDTH,
                 bin_range=(0, 200),
             )
 
@@ -180,6 +199,7 @@ def gen_estimated_vs_true_emissions_relative_difference_plot(
     emis_summary_info: pd.DataFrame,
     out_dir: Path,
     estimate_vs_true_constants: output_constants.ESTIMATE_VS_TRUE_PLOTTING_CONSTANTS,
+    baseline_program: str,
     combine_plots: bool = False,
     save_separate_plots: bool = True,
 ):
@@ -192,9 +212,13 @@ def gen_estimated_vs_true_emissions_relative_difference_plot(
         axis=1,
     )
 
-    program_names = emis_summary_info[
-        output_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME
-    ].unique()
+    program_names = [
+        program_name
+        for program_name in emis_summary_info[
+            output_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME
+        ].unique()
+        if program_name != baseline_program
+    ]
     relative_diff_lists = {}
 
     for program_name in program_names:
@@ -210,7 +234,10 @@ def gen_estimated_vs_true_emissions_relative_difference_plot(
         comb_ax: plt.Axes = plt.gca()
 
     colors = sns.color_palette("husl", n_colors=len(program_names))
-    plot_bin_range = (-100, max(emis_summary_info["relative_diff"].max() + 10, 100))
+    plot_bin_range: Tuple[float, float] = (
+        -100,
+        max(emis_summary_info["relative_diff"].max() + 10, 100),
+    )
 
     legend_elements = []
 
@@ -222,13 +249,14 @@ def gen_estimated_vs_true_emissions_relative_difference_plot(
             plot_hist(
                 legend_elements=legend_elements,
                 ax=ax_sep,
-                percent_diff_list=relative_diff_list,
+                x_values=relative_diff_list,
                 program_name=program_name,
                 color=colors[i],
-                bin_width=1.0,
+                bin_width=estimate_vs_true_constants.HISTOGRAM_BIN_WIDTH,
                 bin_range=plot_bin_range,
                 x_label="Relative Difference between Estimated and True Emissions",
                 y_label="Number of Occurrences",
+                x_locator=ticker.MaxNLocator(nbins="auto", prune=None),
             )
 
             ax_sep.xaxis.set_major_formatter(
@@ -246,11 +274,12 @@ def gen_estimated_vs_true_emissions_relative_difference_plot(
             plot_hist(
                 legend_elements=legend_elements,
                 ax=comb_ax,
-                percent_diff_list=relative_diff_list,
+                x_values=relative_diff_list,
                 program_name=program_name,
                 color=colors[i],
-                bin_width=1.0,
+                bin_width=estimate_vs_true_constants.HISTOGRAM_BIN_WIDTH,
                 bin_range=plot_bin_range,
+                x_locator=ticker.MaxNLocator(nbins="auto", prune=None),
             )
 
     if combine_plots:
@@ -269,13 +298,18 @@ def gen_paired_estimate_and_true_emission_distributions(
     emis_summary_info: pd.DataFrame,
     out_dir: Path,
     estimate_vs_true_constants: output_constants.ESTIMATE_VS_TRUE_PLOTTING_CONSTANTS,
+    baseline_program: str,
     combine_plots: bool = False,
     save_separate_plots: bool = True,
 ):
 
-    program_names = emis_summary_info[
-        output_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME
-    ].unique()
+    program_names = [
+        program_name
+        for program_name in emis_summary_info[
+            output_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME
+        ].unique()
+        if program_name != baseline_program
+    ]
     paired_emissions_lists = {}
 
     for program_name in program_names:
@@ -316,7 +350,7 @@ def gen_paired_estimate_and_true_emission_distributions(
             plot_hist(
                 legend_elements=legend_elements,
                 ax=ax_sep,
-                percent_diff_list=paired_emis_list[0],
+                x_values=paired_emis_list[0],
                 program_name=program_name,
                 color=dark_pallete[i],
                 bin_range=plot_bin_range,
@@ -331,7 +365,7 @@ def gen_paired_estimate_and_true_emission_distributions(
             plot_hist(
                 legend_elements=legend_elements,
                 ax=ax_sep,
-                percent_diff_list=paired_emis_list[1],
+                x_values=paired_emis_list[1],
                 program_name=program_name,
                 color=light_pallete[i],
                 bin_range=plot_bin_range,
@@ -357,7 +391,7 @@ def gen_paired_estimate_and_true_emission_distributions(
             plot_hist(
                 legend_elements=legend_elements,
                 ax=comb_ax,
-                percent_diff_list=paired_emis_list[0],
+                x_values=paired_emis_list[0],
                 program_name=program_name,
                 color=dark_pallete[i],
                 bin_range=plot_bin_range,
@@ -370,7 +404,7 @@ def gen_paired_estimate_and_true_emission_distributions(
             plot_hist(
                 legend_elements=legend_elements,
                 ax=comb_ax,
-                percent_diff_list=paired_emis_list[1],
+                x_values=paired_emis_list[1],
                 program_name=program_name,
                 color=light_pallete[i],
                 bin_range=plot_bin_range,

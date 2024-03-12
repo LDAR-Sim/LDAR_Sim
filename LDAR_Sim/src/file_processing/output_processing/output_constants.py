@@ -18,6 +18,7 @@ SUMMARY_PROGRAM_PLOTS_DIRECTORY = "program_summary_plots"
 class ESTIMATE_VS_TRUE_PLOTTING_CONSTANTS:
     TRUE_EMISSIONS_SUFFIX = '"True" Total Emissions (Kg Methane)'
     ESTIMATED_EMISSIONS_SUFFIX = '"Estimated" Total Emissions (Kg Methane)'
+    HISTOGRAM_BIN_WIDTH = 8.0
 
 
 class TS_SUMMARY_COLUMNS_ACCESSORS:

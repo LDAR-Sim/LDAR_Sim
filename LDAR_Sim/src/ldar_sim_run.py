@@ -303,4 +303,4 @@ if __name__ == "__main__":
             # -- Batch Report --
             print(f"...Cleaning up batch {batch_count} data")
             concat_output_data(out_dir, batch_count != 0)
-    gen_cross_program_summary_plots(out_dir)
+    gen_cross_program_summary_plots(out_dir, base_program)
