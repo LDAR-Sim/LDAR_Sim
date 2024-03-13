@@ -144,6 +144,7 @@ class Site:
             equipment_groups = split_eqgs
         if isinstance(equipment_groups, list) and len(equipment_groups) > 0:
             equip_groups_in: pd.DataFrame = infrastructure_inputs["equipment"]
+            equip_count = len(equipment_groups)
             for equipment_group in equipment_groups:
                 site_equipment_group = equip_groups_in.loc[
                     equip_groups_in[
@@ -152,6 +153,16 @@ class Site:
                     == equipment_group
                 ].iloc[0]
                 prop_params = copy.deepcopy(propagating_params)
+                prop_params[Infrastructure_Constants.Sites_File_Constants.REP_EMIS_EPR] = (
+                    propagating_params[Infrastructure_Constants.Sites_File_Constants.REP_EMIS_EPR]
+                    / equip_count
+                )
+                prop_params[Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_EPR] = (
+                    propagating_params[
+                        Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_EPR
+                    ]
+                    / equip_count
+                )
                 self._equipment_groups.append(
                     Equipment_Group(
                         site_equipment_group[
@@ -239,6 +250,14 @@ class Site:
                     {placeholder: math.ceil(equip_count / equipment_groups)}
                 )
                 prop_params = copy.deepcopy(propagating_params)
+                if rep_emis_epr is not None and rep_emis_epr > 0:
+                    prop_params[Infrastructure_Constants.Sites_File_Constants.REP_EMIS_EPR] = (
+                        rep_emis_epr / equipment_groups
+                    )
+                if nonrep_emis_epr is not None and nonrep_emis_epr > 0:
+                    prop_params[Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_EPR] = (
+                        nonrep_emis_epr / equipment_groups
+                    )
                 self._equipment_groups.append(
                     Equipment_Group(i, infrastructure_inputs, prop_params, equip_group_info)
                 )
