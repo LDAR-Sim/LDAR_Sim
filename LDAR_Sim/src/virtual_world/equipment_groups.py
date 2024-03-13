@@ -173,10 +173,10 @@ class Equipment_Group:
     def get_id(self) -> str:
         return self._id
 
-    def gen_emis_data(self, emis_df: pd.DataFrame, site_id: str, row_index: int):
+    def gen_emis_data(self, emis_df: pd.DataFrame, site_id: str, row_index: int, end_date: date):
         upd_row_index = row_index
         for equip in self._equipment:
-            upd_row_index = equip.gen_emis_data(emis_df, site_id, self._id, upd_row_index)
+            upd_row_index = equip.gen_emis_data(emis_df, site_id, self._id, upd_row_index, end_date)
         return upd_row_index
 
     def get_survey_cost(self, method_name) -> float:

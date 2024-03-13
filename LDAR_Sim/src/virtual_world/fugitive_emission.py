@@ -19,10 +19,12 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 """
 
 from datetime import date, timedelta
-from math import ceil
+
 from numpy import random
 from typing import Any
 from typing_extensions import override
+
+from utils import conversion_constants as conv_const
 from file_processing.output_processing.output_utils import EmisInfo, EMIS_DATA_COL_ACCESSORS as eca
 
 from virtual_world.emissions import Emission
@@ -122,9 +124,22 @@ class FugitiveEmission(Emission):
             t_since_ldar (int): THe time in days since the site at which the emissions
             was discovered last received LDAR
         """
-        half_duration: int = ceil((t_since_ldar / 2))
-        self._estimated_days_active = half_duration
-        self._estimated_date_began = cur_date - timedelta(days=half_duration)
+        duration: int = t_since_ldar
+        self._estimated_days_active = duration
+        self._estimated_date_began = cur_date - timedelta(days=duration)
+
+    @override
+    def calc_est_emis_vol(self, end_date: date) -> float:
+        emis_finish_date: date = self._repair_date if self._repair_date is not None else end_date
+        if self._estimated_date_began is None:
+            return 0
+        else:
+            self._estimated_days_active = (emis_finish_date - self._estimated_date_began).days
+            return (
+                self._estimated_days_active
+                * (self._measured_rate if self._measured_rate is not None else 0)
+                * conv_const.GRAMS_PER_SECOND_TO_KG_PER_DAY
+            )
 
     def tag_leak(
         self,
@@ -170,11 +185,13 @@ class FugitiveEmission(Emission):
         return is_active
 
     @override
-    def get_summary_dict(self) -> dict[str, Any]:
+    def get_summary_dict(self, end_date: date) -> dict[str, Any]:
+        estimated_vol_emitted: float = self.calc_est_emis_vol(end_date=end_date)
         summary_dict: dict[str, Any] = super().get_summary_dict()
         summary_dict.update({(eca.DATE_REP, self._repair_date)})
         summary_dict.update({(eca.TAGGED, self._tagged)})
         summary_dict.update({(eca.TAGGED_BY, self._tagged_by_company)})
+        summary_dict.update({(eca.EST_VOL_EMIT, estimated_vol_emitted)})
         return summary_dict
 
     @override

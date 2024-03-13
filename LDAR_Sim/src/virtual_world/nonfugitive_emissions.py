@@ -20,8 +20,11 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 from datetime import date, timedelta
 from typing import Any
-from math import ceil
+
 from typing_extensions import override
+
+from numpy import average
+from utils import conversion_constants as conv_const
 from virtual_world.emissions import Emission
 from file_processing.output_processing.output_utils import EmisInfo, EMIS_DATA_COL_ACCESSORS as eca
 
@@ -54,6 +57,7 @@ class NonRepairableEmission(Emission):
         self._duration: int = duration
         days_active_b4_sim: int = (simulation_sd - start_date).days
         self._days_active_b4_sim = days_active_b4_sim if days_active_b4_sim > 0 else 0
+        self._estimated_days_active_after_detection: int = 0
 
     def __reduce__(self):
         return self._reconstruct_nonfugitive_emission, (self.__dict__,)
@@ -89,9 +93,10 @@ class NonRepairableEmission(Emission):
             t_since_ldar (int): THe time in days since the site at which the emissions
             was discovered last received LDAR
         """
-        half_duration: int = ceil((t_since_ldar / 2))
-        self._estimated_days_active = half_duration
-        self._estimated_date_began = cur_date - timedelta(days=half_duration)
+        # TODO implement user definable duration assumptions
+        duration: int = t_since_ldar
+        self._estimated_days_active = duration
+        self._estimated_date_began = cur_date - timedelta(days=duration)
 
     def record_emission(
         self,
@@ -108,7 +113,12 @@ class NonRepairableEmission(Emission):
         Returns:
             [bool]: Is the emission new?
         """
+        self._estimated_days_active_after_detection = t_since_ldar
+
         if self._record:
+            # TODO fix this up
+            self._measured_rate = average([self._measured_rate, measured_rate])
+            self._estimated_days_active += t_since_ldar
             return False
 
         self._record = True
@@ -121,6 +131,22 @@ class NonRepairableEmission(Emission):
         return True
 
     @override
+    def calc_est_emis_vol(self, end_date: date) -> float:
+        if self._estimated_date_began is None:
+            return 0
+        total_estimated_days_active: int = (
+            self._estimated_days_active + self._estimated_days_active_after_detection
+        )
+        if self._estimated_date_began + timedelta(days=total_estimated_days_active) > end_date:
+            total_estimated_days_active = (end_date - self._estimated_date_began).days
+        self._estimated_days_active = total_estimated_days_active
+        return (
+            (total_estimated_days_active)
+            * (self._measured_rate if self._measured_rate is not None else 0)
+            * conv_const.GRAMS_PER_SECOND_TO_KG_PER_DAY
+        )
+
+    @override
     def update(self, emis_info: EmisInfo) -> bool:
         is_active: bool = super().update(emis_info)
         if is_active:
@@ -130,10 +156,12 @@ class NonRepairableEmission(Emission):
         return is_active
 
     @override
-    def get_summary_dict(self) -> dict[str, Any]:
+    def get_summary_dict(self, end_date: date) -> dict[str, Any]:
+        estimated_vol_emitted: float = self.calc_est_emis_vol(end_date=end_date)
         summary_dict: dict[str, Any] = super().get_summary_dict()
         summary_dict.update({(eca.RECORDED, self._record)})
         summary_dict.update({(eca.RECORDED_BY, self._recorded_by_company)})
+        summary_dict.update({(eca.EST_VOL_EMIT, estimated_vol_emitted)})
         return summary_dict
 
     @override
