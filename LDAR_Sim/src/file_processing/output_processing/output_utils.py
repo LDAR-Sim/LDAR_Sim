@@ -85,10 +85,14 @@ class TIMESERIES_COL_ACCESSORS:
 
 
 def percent_difference(a: float, b: float) -> float:
+    if a == 0 and b == 0:
+        return 0
     return abs(a - b) / ((a + b) / 2) * 100
 
 
 def relative_difference(aquired_value: float, true_value: float) -> float:
+    if true_value == 0:
+        return 0
     return (aquired_value - true_value) / true_value * 100
 
 

@@ -49,7 +49,7 @@ def get_nth_percentile(df: pd.DataFrame, column: str, percentile: float) -> floa
     return np.percentile(df[column], percentile, method="median_unbiased")
 
 
-(TS_MAPPING_TO_SUMMARY_COLS) = {
+TS_MAPPING_TO_SUMMARY_COLS = {
     output_constants.TS_SUMMARY_COLUMNS_ACCESSORS.AVG_T_DAILY_EMIS: lambda df: (
         get_mean_val(df, tca.EMIS)
     ),

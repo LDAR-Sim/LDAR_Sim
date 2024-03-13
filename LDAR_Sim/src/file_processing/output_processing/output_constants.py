@@ -1,3 +1,24 @@
+"""
+------------------------------------------------------------------------------
+Program:     The LDAR Simulator (LDAR-Sim)
+File:        output_constants.py
+Purpose: All output related constants.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the MIT License as published
+by the Free Software Foundation, version 3.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+MIT License for more details.
+You should have received a copy of the MIT License
+along with this program.  If not, see <https://opensource.org/licenses/MIT>.
+
+------------------------------------------------------------------------------
+"""
+
+
 class ProgTsConstants:
     TITLE = "{name_str} Emissions Timeseries"
     X_AXIS_TITLE = "Date"
@@ -14,10 +35,13 @@ TRUE_AND_ESTIMATED_PAIRED_EMISSIONS_DISTRIBUTION_PLOT = (
 )
 SUMMARY_PROGRAM_PLOTS_DIRECTORY = "program_summary_plots"
 
+SUMMARRY_PLOT_GENERATION_MESSAGE = "Generating cross-program summary plots"
+
 
 class ESTIMATE_VS_TRUE_PLOTTING_CONSTANTS:
     TRUE_EMISSIONS_SUFFIX = '"True" Total Emissions (Kg Methane)'
     ESTIMATED_EMISSIONS_SUFFIX = '"Estimated" Total Emissions (Kg Methane)'
+    # TODO Look into ways to allow users to chose from a set of bin width options
     HISTOGRAM_BIN_WIDTH = 8.0
 
 

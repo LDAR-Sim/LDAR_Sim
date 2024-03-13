@@ -1,16 +1,37 @@
+"""
+------------------------------------------------------------------------------
+Program:     The LDAR Simulator (LDAR-Sim)
+File:        multi_simulation_visualizations.py
+Purpose: Functionality for visualizations across multiple simulations.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the MIT License as published
+by the Free Software Foundation, version 3.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+MIT License for more details.
+You should have received a copy of the MIT License
+along with this program.  If not, see <https://opensource.org/licenses/MIT>.
+
+------------------------------------------------------------------------------
+"""
+
 import os
 from pathlib import Path
-from typing import Tuple
+from typing import Tuple, Union
 import pandas as pd
 import seaborn as sns
 from matplotlib import pyplot as plt
 from matplotlib import ticker, lines
 
-from file_processing.output_processing import output_constants
-from file_processing.output_processing import output_utils
+from file_processing.output_processing import output_constants, output_utils
 
 
 def gen_cross_program_summary_plots(out_dir: Path, baseline_program: str):
+
+    print(output_constants.SUMMARRY_PLOT_GENERATION_MESSAGE)
 
     summary_program_plots_directory = out_dir / output_constants.SUMMARY_PROGRAM_PLOTS_DIRECTORY
 
@@ -50,21 +71,11 @@ def plot_hist(
     y_label: str,
     legend_label: str = None,
     bin_width: float = 0,
-    bins: int = 0,
+    bins: Union[int, str] = "auto",
     x_locator: ticker.Locator = ticker.AutoLocator(),
     y_locator: ticker.Locator = ticker.MaxNLocator(nbins="auto", integer=True, prune=None),
 ):
-    if bins != 0:
-        sns.histplot(
-            x_values,
-            kde=True,
-            color=color,
-            element="step",
-            ax=ax,
-            binrange=bin_range,
-            bins=bins,
-        )
-    elif bin_width != 0:
+    if bin_width != 0:
         sns.histplot(
             x_values,
             kde=True,
@@ -82,6 +93,7 @@ def plot_hist(
             element="step",
             ax=ax,
             binrange=bin_range,
+            bins=bins,
         )
 
     legend_elements.append(
@@ -142,6 +154,7 @@ def gen_estimated_vs_true_emissions_percent_difference_plot(
         comb_fig: plt.Figure = plt.figure()
         comb_ax: plt.Axes = plt.gca()
 
+    # TODO for all plots - account for colorblind palette
     colors = sns.color_palette("husl", n_colors=len(program_names))
 
     legend_elements = []
