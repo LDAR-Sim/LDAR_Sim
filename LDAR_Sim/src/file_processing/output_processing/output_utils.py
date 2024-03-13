@@ -9,6 +9,7 @@ class EMIS_DATA_COL_ACCESSORS:
     EQG = "Equipment"
     STATUS = "Status"
     DAYS_ACT = "Days Active"
+    EST_DAYS_ACT = "Estimated Days Active"
     T_VOL_EMIT = '"True" Volume Emitted (Kg Methane)'
     EST_VOL_EMIT = '"Estimated" Volume Emitted (Kg Methane)'
     T_RATE = '"True" Rate (g/s)'
@@ -32,6 +33,7 @@ EMIS_DATA_FINAL_COL_ORDER = [
     EMIS_DATA_COL_ACCESSORS.COMP,
     EMIS_DATA_COL_ACCESSORS.STATUS,
     EMIS_DATA_COL_ACCESSORS.DAYS_ACT,
+    EMIS_DATA_COL_ACCESSORS.EST_DAYS_ACT,
     EMIS_DATA_COL_ACCESSORS.DATE_BEG,
     EMIS_DATA_COL_ACCESSORS.DATE_REP,
     EMIS_DATA_COL_ACCESSORS.T_VOL_EMIT,

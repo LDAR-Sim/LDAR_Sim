@@ -20,8 +20,11 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 from datetime import date, timedelta
 from typing import Any
-from math import ceil
+
+# from math import ceil
 from typing_extensions import override
+
+from numpy import average
 from virtual_world.emissions import Emission
 from file_processing.output_processing.output_utils import EmisInfo, EMIS_DATA_COL_ACCESSORS as eca
 
@@ -89,9 +92,9 @@ class NonRepairableEmission(Emission):
             t_since_ldar (int): THe time in days since the site at which the emissions
             was discovered last received LDAR
         """
-        half_duration: int = ceil((t_since_ldar / 2))
-        self._estimated_days_active = half_duration
-        self._estimated_date_began = cur_date - timedelta(days=half_duration)
+        duration: int = t_since_ldar
+        self._estimated_days_active = duration
+        self._estimated_date_began = cur_date - timedelta(days=duration)
 
     def record_emission(
         self,
@@ -109,6 +112,9 @@ class NonRepairableEmission(Emission):
             [bool]: Is the emission new?
         """
         if self._record:
+            # TODO fix this up
+            self._measured_rate = average([self._measured_rate, measured_rate])
+            self._estimated_days_active += t_since_ldar
             return False
 
         self._record = True
@@ -130,10 +136,11 @@ class NonRepairableEmission(Emission):
         return is_active
 
     @override
-    def get_summary_dict(self) -> dict[str, Any]:
+    def get_summary_dict(self, end_date: date) -> dict[str, Any]:
         summary_dict: dict[str, Any] = super().get_summary_dict()
         summary_dict.update({(eca.RECORDED, self._record)})
         summary_dict.update({(eca.RECORDED_BY, self._recorded_by_company)})
+        summary_dict.update({(eca.EST_VOL_EMIT, self.calc_est_emis_vol())})
         return summary_dict
 
     @override
