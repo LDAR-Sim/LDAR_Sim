@@ -209,10 +209,12 @@ class Equipment:
         return emis_data
 
     def tag_emissions(self, tagging_info: TaggingInfo) -> None:
+        # TODO improve this logic
+        emission_rate = tagging_info.measured_rate / len(self._active_emissions)
         for emission in self._active_emissions:
             if isinstance(emission, FugitiveEmission):
                 emission.tag_leak(
-                    measured_rate=tagging_info.measured_rate,
+                    measured_rate=emission_rate,
                     cur_date=tagging_info.curr_date,
                     t_since_ldar=tagging_info.t_since_LDAR,
                     company=tagging_info.company,
@@ -224,7 +226,7 @@ class Equipment:
                 )
             elif isinstance(emission, NonRepairableEmission):
                 emission.record_emission(
-                    measured_rate=tagging_info.measured_rate,
+                    measured_rate=emission_rate,
                     cur_date=tagging_info.curr_date,
                     t_since_ldar=tagging_info.t_since_LDAR,
                     company=tagging_info.company,
