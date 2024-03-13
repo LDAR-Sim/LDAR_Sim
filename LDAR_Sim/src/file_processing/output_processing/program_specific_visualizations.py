@@ -1,7 +1,7 @@
 from pathlib import Path
 import pandas as pd
 import matplotlib.pyplot as plt
-from file_processing.output_processing.output_visualization_constants import ProgTsConstants as pts
+from file_processing.output_processing.output_constants import ProgTsConstants as pts
 from file_processing.output_processing.output_utils import TIMESERIES_COL_ACCESSORS as tca
 
 

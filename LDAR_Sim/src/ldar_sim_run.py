@@ -27,6 +27,9 @@ import sys
 import shutil
 from pathlib import Path
 from datetime import date
+from file_processing.output_processing.multi_simulation_visualizations import (
+    gen_cross_program_summary_plots,
+)
 from file_processing.output_processing.multi_simulation_outputs import (
     concat_output_data,
 )
@@ -35,8 +38,6 @@ from file_processing.output_processing.multi_simulation_outputs import (
 from initialization.initialize_infrastructure import initialize_infrastructure
 from initialization.preseed import gen_seed_emis
 from virtual_world.infrastructure import Infrastructure
-from stdout_redirect import stdout_redirect
-from virtual_world.sites import Site
 from weather.daylight_calculator import DaylightCalculatorAve
 from weather.weather_lookup import WeatherLookup as WL
 from utils.file_name_constants import PARAMETER_FILE, GENERATOR_FOLDER
@@ -302,3 +303,4 @@ if __name__ == "__main__":
             # -- Batch Report --
             print(f"...Cleaning up batch {batch_count} data")
             concat_output_data(out_dir, batch_count != 0)
+    gen_cross_program_summary_plots(out_dir, base_program)
