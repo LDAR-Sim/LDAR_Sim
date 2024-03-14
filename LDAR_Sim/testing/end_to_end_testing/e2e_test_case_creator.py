@@ -19,17 +19,15 @@
 # ------------------------------------------------------------------------------
 
 
-import datetime
-import json
 import multiprocessing as mp
 import os
-import pickle
 import shutil
 import sys
 from pathlib import Path
 from typing import Any
-
+from datetime import date
 import yaml
+import gc
 
 GLOBAL_PARAMS_TO_REP: "dict[str, Any]" = {
     "n_simulations": 1,
@@ -54,16 +52,26 @@ ext_sens_dir = root_dir / "external_sensors"
 sys.path.append(str(ext_sens_dir))
 
 if __name__ == "__main__":
-    from economics.cost_mitigation import cost_mitigation
-    from initialization.args import files_from_path, get_abs_path
-    from initialization.input_manager import InputManager
-    from initialization.sims import create_sims
-    from initialization.sites import init_generator_files
-    from ldar_sim_run import ldar_sim_run
-    from out_processing.batch_reporting import BatchReporting
-    from out_processing.prog_table import generate as gen_prog_table
+    from initialization.initialize_infrastructure import initialize_infrastructure
+    from initialization.preseed import gen_seed_emis
+    from virtual_world.infrastructure import Infrastructure
+    from weather.daylight_calculator import DaylightCalculatorAve
+    from weather.weather_lookup import WeatherLookup as WL
+    from utils.file_name_constants import PARAMETER_FILE, GENERATOR_FOLDER
     from utils.generic_functions import check_ERA5_file
-    from config.output_flag_mapping import OUTPUTS, SITES, LEAKS, TIMESERIES, BATCH_REPORTING
+    from file_processing.input_processing.input_manager import InputManager
+    from initialization.args import (
+        files_from_path,
+        get_abs_path,
+    )  # TODO: move this over to input_processing?
+    from initialization.initialize_emissions import initialize_emissions, read_in_emissions
+    from ldar_sim_run import simulate
+    from file_processing.output_processing.multi_simulation_visualizations import (
+        gen_cross_program_summary_plots,
+    )
+    from file_processing.output_processing.multi_simulation_outputs import (
+        concat_output_data,
+    )
 
     # --- Clean out the test creator directory
     for item in os.listdir(test_creator_dir):
@@ -101,86 +109,118 @@ if __name__ == "__main__":
     parameter_filenames = files_from_path(params_dir)
     input_manager = InputManager()
     sim_params = input_manager.read_and_validate_parameters(parameter_filenames)
-    out_dir = get_abs_path("./expected_outputs", test_case_dir)
 
     # --- Assign local variabls
     ref_program = sim_params["reference_program"]
     base_program = sim_params["baseline_program"]
     in_dir = get_abs_path("./inputs", test_creator_dir)
+    out_dir = get_abs_path("./expected_outputs", test_case_dir)
     shutil.copytree(original_inputs_dir, in_dir)
     if os.path.exists(in_dir / "generator"):
         shutil.rmtree(in_dir / "generator")
     programs = sim_params.pop("programs")
     virtual_world = sim_params.pop("virtual_world")
+    generator_dir = in_dir / "generator"
+    preseed_random = sim_params["preseed_random"]
+
+    METHODS_ACCESSOR = "methods"
+    METHOD_LABELS_ACCESSOR = "method_labels"
+    methods = {
+        method: programs[program][METHODS_ACCESSOR][method]
+        for program in programs
+        for method in programs[program][METHOD_LABELS_ACCESSOR]
+    }
 
     # --- Run Checks ----
     check_ERA5_file(in_dir, virtual_world)
     has_ref: bool = ref_program in programs
     has_base: bool = base_program in programs
 
-    # --- Setup Output folder
+    if not (has_ref and has_base):
+        print("No reference or base program input...Exiting sim")
+        sys.exit()
+
+    # -- Setup Output folder --
     if os.path.exists(out_dir):
         shutil.rmtree(out_dir)
     os.makedirs(out_dir)
-    input_manager.write_parameters(out_dir / "parameters.yaml")
+    input_manager.write_parameters(out_dir / PARAMETER_FILE)
 
-    # If leak generator is used and there are generated files, user is prompted
-    # to use files, If they say no, the files will be removed
-    if sim_params["pregenerate_leaks"]:
-        generator_dir = in_dir / "generator"
-        init_generator_files(
-            generator_dir, input_manager.simulation_parameters, in_dir, virtual_world
-        )
-    else:
-        generator_dir = None
-    # --- Create simulations ---
-    simulations = create_sims(sim_params, programs, virtual_world, generator_dir, in_dir, out_dir)
+    generator_dir = in_dir / GENERATOR_FOLDER
+    print("...Initializing infrastructure")
+    simulation_count: int = sim_params["n_simulations"]
+    emis_preseed_val: list[int] = None
+    if preseed_random:
+        emis_preseed_val = gen_seed_emis(simulation_count, generator_dir)
+    infrastructure, hash_file_exist = initialize_infrastructure(
+        methods, virtual_world, generator_dir, in_dir, preseed_random, emis_preseed_val
+    )
+    infrastructure: Infrastructure
+    hash_file_exist: bool
+    print("...Initializing emissions")
+    # Pregenerate emissions
+    seed_timeseries = initialize_emissions(
+        simulation_count,
+        preseed_random,
+        emis_preseed_val,
+        hash_file_exist,
+        infrastructure,
+        date(*virtual_world["start_date"]),
+        date(*virtual_world["end_date"]),
+        generator_dir,
+    )
+    # Initialize objects
+    print("...Initializing weather")
+    weather = WL(virtual_world, in_dir)
+    print("...Initializing daylight")
+    daylight = DaylightCalculatorAve(
+        infrastructure.get_site_avrg_lat_lon(),
+        date(*virtual_world["start_date"]),
+        date(*virtual_world["end_date"]),
+    )
 
-    # --- Run simulations (in parallel) --
-    with mp.Pool(processes=sim_params["n_processes"]) as p:
-        sim_outputs = p.starmap(ldar_sim_run, simulations)
-
-    # ---- Generate Outputs ----
-
-    # Do batch reporting
-    print("....Generating output data")
-    if sim_params[OUTPUTS][BATCH_REPORTING] and (
-        sim_params[OUTPUTS][SITES]
-        and sim_params[OUTPUTS][LEAKS]
-        and sim_params[OUTPUTS][TIMESERIES]
-    ):
-        # Create a data object...
-        if has_ref & has_base:
-            print("....Generating cost mitigation outputs")
-            cost_mitigation = cost_mitigation(sim_outputs, ref_program, base_program, out_dir)
-            reporting_data = BatchReporting(
-                out_dir, sim_params["start_date"], ref_program, base_program
+    n_process = sim_params["n_processes"]
+    if len(programs) < sim_params["n_processes"]:
+        n_process = len(programs)
+    with mp.Manager() as manager:
+        lock = manager.Lock()
+        simulation_number: int = 0
+        print(f"......Simulating set {simulation_number}")
+        # read in pregen emissions
+        infra = read_in_emissions(infrastructure, generator_dir, simulation_number)
+        # -- Run simulations --
+        prog_data = []
+        for program in programs:
+            meth_params = {}
+            for meth in programs[program]["method_labels"]:
+                meth_params[meth] = methods[meth]
+            prog_data.append(
+                (
+                    daylight,
+                    weather,
+                    simulation_number,
+                    program,
+                    meth_params,
+                    sim_params,
+                    virtual_world,
+                    infra,
+                    in_dir,
+                    out_dir,
+                    seed_timeseries,
+                    lock,
+                )
             )
-            if sim_params["n_simulations"] > 1:
-                reporting_data.program_report()
-                if len(programs) > 1:
-                    print("....Generating program comparison plots")
-                    reporting_data.batch_report()
-                    reporting_data.batch_plots()
-        else:
-            print("No reference or base program input...skipping batch reporting and economics.")
 
-    # Generate output table
-    print("....Exporting summary statistic tables")
-    out_prog_table = gen_prog_table(sim_outputs, base_program, programs)
-
-    with open(out_dir / "prog_table.json", "w") as fp:
-        json.dump(out_prog_table, fp)
-
-    # Write program metadata
-    metadata = open(out_dir / "_metadata.txt", "w")
-    metadata.write(str(programs) + "\n" + str(datetime.datetime.now()))
-
-    metadata.close()
-
-    # Write simulation outputs
-    with open(out_dir / "sim_outputs.pickle", "wb") as sim_res:
-        pickle.dump(sim_outputs, sim_res)
+        with mp.Pool(processes=n_process) as p:
+            sim_outputs = p.starmap(
+                simulate,
+                prog_data,
+            )
+        concat_output_data(out_dir, False)
+        gc.collect()
+        print(f"... Finished simulating set {simulation_number}")
+    # -- Batch Report --
+    gen_cross_program_summary_plots(out_dir, base_program)
 
     os.chdir(root_dir)
     shutil.move(params_dir, test_case_dir)
