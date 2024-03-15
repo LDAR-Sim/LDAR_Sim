@@ -68,7 +68,8 @@ class Site:
         self._site_ID: str = id
         self._lat: float = lat
         self._long: float = long
-
+        self._weather_lat: float = lat
+        self._weather_long: float = long
         self._site_type: str = site_type
         # TODO check that we use these
         self._survey_frequencies: dict = propagating_params["Method_Specific_Params"].pop(
@@ -91,6 +92,8 @@ class Site:
             self._site_ID,
             self._lat,
             self._long,
+            self._weather_lat,
+            self._weather_long,
             self._equipment_groups,
             self._survey_frequencies,
             self._deployment_months,
@@ -107,6 +110,8 @@ class Site:
         site_ID,
         lat,
         long,
+        weather_lat,
+        weather_long,
         equipment_groups,
         survey_frequencies,
         deployment_months,
@@ -119,6 +124,8 @@ class Site:
         instance._site_ID = site_ID
         instance._lat = lat
         instance._long = long
+        instance._weather_lat = weather_lat
+        instance._weather_long = weather_long
         instance._equipment_groups = equipment_groups
         instance._survey_frequencies = survey_frequencies
         instance._deployment_months = deployment_months
@@ -377,3 +384,15 @@ class Site:
     def setup(self, methods: list[str]):
         for eqg in self._equipment_groups:
             eqg.setup(methods)
+
+    def set_weather_lat(self, lat: float) -> None:
+        self._weather_lat = lat
+
+    def set_weather_long(self, long: float) -> None:
+        self._weather_long = long
+
+    def get_weather_lat(self) -> float:
+        return self._weather_lat
+
+    def get_weather_long(self) -> float:
+        return self._weather_long

@@ -253,3 +253,9 @@ def init_orbit_poly(predictor, T1, T2, interval):
         T1 += datetime.timedelta(minutes=interval)
 
     return day_list, polygon_list
+
+
+def count_decimal_places(number):
+    if "." in str(number):
+        return len(str(number).split(".")[1])
+    return 0
