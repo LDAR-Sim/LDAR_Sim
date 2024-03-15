@@ -21,8 +21,15 @@
 
 def check_major_version(version_string, major_version):
     try:
-        major_part, minor_part = map(str, version_string.split("."))
-        return major_part == major_version
+        major_part, _ = map(int, version_string.split("."))
+        major_version = int(major_version)
+
+        if major_part < major_version:
+            return -1
+        elif major_part == major_version:
+            return 0
+        else:
+            return 1
     except ValueError:
         return False
 
@@ -42,7 +49,21 @@ LEGACY_PARAMETER_WARNING = (
     "See https://github.com/LDAR-Sim/LDAR_Sim/blob/master/changelog.md"
     " to find a record of what has changed with LDAR-Sim\n"
 )
-
+NEWER_PARAMETER_WARNING = (
+    "\nLDAR-Sim has detected an attempt to run a simulation model"
+    " with newer parameter files. \n\n"
+    "If the goal is to reproduce previously modelled results "
+    "using newer parameters, please download the newer version "
+    "of LDAR-Sim compatible with newer parameters.\n"
+    "Versioned releases can be found at: https://github.com/LDAR-Sim/LDAR_Sim/releases.\n\n"
+    "Otherwise, please visit: "
+    "https://github.com/LDAR-Sim/LDAR_Sim/blob/master/ParameterMigrationGuide.md"
+    " for guidance on how to update parameter files to the other versions.\n"
+    "Please rerun the model once you have successfully"
+    " migrated your parameters to the correct version. \n\n"
+    "See https://github.com/LDAR-Sim/LDAR_Sim/blob/master/changelog.md"
+    " to find a record of what has changed with LDAR-Sim\n"
+)
 MINOR_VERSION_MISMATCH_WARNING = (
     "\nLDAR-Sim has detected an attempt to run a simulation model"
     " with out of date parameter files. \n\n"

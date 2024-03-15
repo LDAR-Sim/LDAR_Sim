@@ -40,6 +40,7 @@ from initialization.versioning import (
     CURRENT_MINOR_VERSION,
     LEGACY_PARAMETER_WARNING,
     MAJOR_VERSION_ONLY_WARNING,
+    NEWER_PARAMETER_WARNING,
     MINOR_VERSION_MISMATCH_WARNING,
     check_major_version,
 )
@@ -148,12 +149,19 @@ class InputManager:
                 if str(parameters["version"]) == CURRENT_MAJOR_VERSION:
                     print(MAJOR_VERSION_ONLY_WARNING)
                     sys.exit()
-                elif not check_major_version(str(parameters["version"]), CURRENT_MAJOR_VERSION):
-                    print(LEGACY_PARAMETER_WARNING)
-                    sys.exit()
                 else:
-                    print(MINOR_VERSION_MISMATCH_WARNING)
-                    self.old_params = True
+                    major_version_check = check_major_version(
+                        str(parameters["version"]), CURRENT_MAJOR_VERSION
+                    )
+                    if major_version_check == 1:
+                        print(NEWER_PARAMETER_WARNING)
+                        sys.exit()
+                    elif major_version_check == -1:
+                        print(LEGACY_PARAMETER_WARNING)
+                        sys.exit()
+                    else:
+                        print(MINOR_VERSION_MISMATCH_WARNING)
+                        self.old_params = True
         return
 
     def map_simulation_settings(self, parameters) -> None:
