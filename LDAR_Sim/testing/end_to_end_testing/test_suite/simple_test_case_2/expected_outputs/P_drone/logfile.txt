@@ -1,2 +1,0 @@
-Simulating program: P_drone ; simulation 1 of 1
-Finished simulating program P_drone ; simulation 1 of 1 
