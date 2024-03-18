@@ -439,27 +439,27 @@ class Method:
         PREICIP = "precip"
 
         # TODO change to getters
-        lat = site._lat
-        long = site._long
+        lat = site.get_weather_lat()
+        long = site.get_weather_long()
         bool_temp: bool = False
         bool_wind: bool = False
         bool_precip: bool = False
 
         if (
             self._weather_envs[TEMP][0]
-            <= weather.temps[curr_date, lat, long]
+            <= weather.temps[curr_date.timetuple().tm_yday, lat, long]
             <= self._weather_envs[TEMP][1]
         ):
             bool_temp = True
         if (
             self._weather_envs[WIND][0]
-            <= weather.winds[curr_date, lat, long]
+            <= weather.winds[curr_date.timetuple().tm_yday, lat, long]
             <= self._weather_envs[WIND][1]
         ):
             bool_wind = True
         if (
             self._weather_envs[PREICIP][0]
-            <= weather.precip[curr_date, lat, long]
+            <= weather.precip[curr_date.timetuple().tm_yday, lat, long]
             <= self._weather_envs[PREICIP][1]
         ):
             bool_precip = True

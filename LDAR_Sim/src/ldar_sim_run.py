@@ -243,6 +243,7 @@ if __name__ == "__main__":
     # Initialize objects
     print("...Initializing weather")
     weather = WL(virtual_world, in_dir)
+    infrastructure.set_weather_index(weather)
     print("...Initializing daylight")
     daylight = DaylightCalculatorAve(
         infrastructure.get_site_avrg_lat_lon(),
