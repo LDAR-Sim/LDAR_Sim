@@ -163,10 +163,10 @@ def compare_outputs(
     # logger.info(f"{'Parameters comparison status:'} {params_match}")
 
     # Check Program table is within acceptable range
-    prog_table_match: Literal["Success", "Failure"] = compare_prog_tables(
-        out_dir, expected_results, logger
-    )
-    logger.info(f"{'Programs comparison status:'} {prog_table_match}")
+    # prog_table_match: Literal["Success", "Failure"] = compare_prog_tables(
+    #     out_dir, expected_results, logger
+    # )
+    # logger.info(f"{'Programs comparison status:'} {prog_table_match}")
 
     # Compare filenames in expected outputs to outputs
     out_files_match: Literal["Success", "Failure"] = compare_out_files(

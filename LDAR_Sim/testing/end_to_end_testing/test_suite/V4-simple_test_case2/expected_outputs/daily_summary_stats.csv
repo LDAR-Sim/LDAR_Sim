@@ -1,0 +1,6 @@
+Program Name,Simulation,"Average ""True"" Daily Emissions (Kg Methane)","Average ""True"" Mitigable Daily Emissions (Kg Methane)","Average ""True"" Non-Mitigable Daily Emissions (Kg Methane)","95th Percentile ""True"" Daily Emissions (Kg Methane)","95th Percentile ""True"" Mitigable Daily Emissions (Kg Methane)","95th Percentile ""True"" Non-Mitigable Daily Emissions (Kg Methane)","5th Percentile ""True"" Daily Emissions (Kg Methane)","5th Percentile ""True"" Mitigable Daily Emissions (Kg Methane)","5th Percentile ""True"" Non-Mitigable Daily Emissions (Kg Methane)",Average Daily Cost ($),95th Percentile Daily Cost ($),5th Percentile Daily Cost ($)
+P_aircraft,0,4654.020521905805,4654.020521905805,0.0,5210.391323999999,5210.391323999999,0.0,4274.1576545,4274.1576545,0.0,1105.6407447973713,16000.0,0.0
+P_drone,0,2973.426940470975,2973.426940470975,0.0,4798.736986,4798.736986,0.0,2048.8175315,2048.8175315,0.0,2706.2431544359256,7100.0,0.0
+P_none,0,5128.905274605696,5128.905274605696,0.0,5495.166104,5495.166104,0.0,4718.1526155,4718.1526155,0.0,0.0,0.0,0.0
+P_OGI,0,2345.707341199343,2345.707341199343,0.0,2903.9360265,2903.9360265,0.0,1795.0564705000002,1795.0564705000002,0.0,1642.935377875137,2400.0,0.0
+P_truck,0,2955.7910161062428,2955.7910161062428,0.0,4422.1049724999975,4422.1049724999975,0.0,2157.7175925,2157.7175925,0.0,2221.57721796276,5300.0,0.0

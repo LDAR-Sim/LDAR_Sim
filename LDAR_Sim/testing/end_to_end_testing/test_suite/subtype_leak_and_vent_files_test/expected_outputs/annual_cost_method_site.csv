@@ -1,4 +1,0 @@
-program_name,verification_cost,repair_cost,airH_cost,OGI_FU_cost,OGI_cost,value_gas_sold,adjusted_program_cost
-P_OGI,0.0,0.5664,,,2.0,-24.27950754057346,-21.713107540573457
-P_air,0.0,0.5432,0.4,0.572,,-20.458161982194696,-18.942961982194696
-P_none,0.0,0.4884,,,,-0.0,0.4884

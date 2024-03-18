@@ -1,0 +1,16 @@
+version: "4.0"
+parameter_level: virtual_world
+site_samples: 50
+emissions:
+  LPR: 0.013
+  max_leak_rate: 100000
+  NRd: 365
+  emissions_file: emissions.csv
+  ERS: test1
+infrastructure:
+  sites_file: "facilities_Perm.csv"
+weather_file: "ERA5_2017_2019_Perm.nc"
+weather_is_hourly: True
+start_date: [2017, 1, 1]
+end_date: [2021, 12, 31]
+

@@ -1,6 +1,0 @@
-program_name: P_air
-parameter_level: program
-version: "3.0"
-method_labels:
-  - airH
-  - OGI_FU

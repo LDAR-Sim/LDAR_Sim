@@ -1,0 +1,22 @@
+parameter_level: virtual_world
+version: "4.0"
+site_samples: 50
+emissions:
+  LPR: 0.0065
+  emissions_file: "leak_file.csv"
+  ERS: "test" # sample/fit
+  NRd: 182
+infrastructure:
+  sites_file: "facilities_Perm.csv"
+weather_file: "ERA5_2017_2019_Perm.nc"
+consider_weather: False
+start_date: [2017, 1, 1]
+end_date: [2021, 12, 31]
+repairs:
+  cost:
+    vals: [400]
+    file: "_placeholder_str_"
+  delay:
+    file: "_placeholder_str_" # The file containing sample repair delays, if it exists
+    vals: [14.0] # Can either be a single number, a list of numbers (for example [1,2,3]) 
+    # or the name of a column in the repair delays file to sample from

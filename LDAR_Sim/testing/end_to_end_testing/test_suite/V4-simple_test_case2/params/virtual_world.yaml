@@ -1,0 +1,13 @@
+version: "4.0"
+parameter_level: virtual_world
+start_date: [2017, 1, 1]
+end_date: [2021, 12, 31]
+infrastructure:
+  sites_file: "facilities_alberta.csv"
+site_samples: 500
+emissions:
+  LPR: 0.0065
+  emissions_file: "emissions.csv" # File containing sample emissions rates or emissions distributions.
+  ERS: "test2"
+weather_file: "weather_alberta.nc"
+
