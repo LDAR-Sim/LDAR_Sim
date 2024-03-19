@@ -17,16 +17,17 @@ Email: <sally@highwoodemissions.com>
 1. [Read this first](#1-read-this-first)
 2. [Introduction](#2-introduction)
 3. [File Structure](#3-file-structure)
-4. [Running the Model](#4-running-the-model)
-5. [Simulation Settings](#5-simulation-settings)
-6. [Virtual World Setting](#6-virtual-world-settings)
-7. [Program Inputs](#7-program-inputs)
-8. [Method Inputs](#8-method-inputs)
-9. [Infrastructure File](#9-infrastructure-file)
-10. [Subtype File](#10-subtype-file)
-11. [Legacy Inputs](#11-legacy-inputs)
-12. [Data sources, modelling confidence and model sensitivity](#12-data-sources-modelling-confidence-and-model-sensitivity)
-13. [References](#13-references)
+4. [Installing](#4-installing)
+5. [Running the Model](#5-running-the-model)
+6. [Simulation Settings](#6-simulation-settings)
+7. [Virtual World Setting](#7-virtual-world-settings)
+8. [Program Inputs](#8-program-inputs)
+9. [Method Inputs](#9-method-inputs)
+10. [Infrastructure File](#10-infrastructure-file)
+11. [Subtype File](#11-subtype-file)
+12. [Legacy Inputs](#12-legacy-inputs)
+13. [Data sources, modelling confidence and model sensitivity](#13-data-sources-modelling-confidence-and-model-sensitivity)
+14. [References](#14-references)
 
 --------------------------------------------------------------------------------
 
@@ -74,6 +75,7 @@ The LDAR-Sim software is organized using the following structure:
 - LICENSE.txt
 - README.md
 - USER_MANUAL.md
+- INSTALL_GUIDE.md
 
 The **Root** folder includes all code, inputs, and outputs necessary to run LDAR-Sim. From a software perspective, the root folder is the parent to the src folder (folder containing LDAR_sim_main). This folder will be always be the root folder when making relative references in LDAR-Sim. For example, if input_directory is specified as _./inputs_ from anywhere in the code, the targeted folder will be _{absolute_path_to} / Root / inputs_.
 
@@ -89,7 +91,13 @@ The **simulations** stores sample V3.0 input parameter files.
 
 --------------------------------------------------------------------------------
 
-## 4\. Running the Model
+## 4\. Installing
+
+To set up the model, follow the [installation guide](INSTALL_GUIDE.md) provided.
+
+--------------------------------------------------------------------------------
+
+## 5\. Running the Model
 
 To run the model, supply one or more input parameter files as arguments to the program. The main function is called `ldar_sim_main.py` and is the main entrypoint to the model. File paths can be relative to the root directory (e.g., `./parameter_file1.yaml`) or absolute (e.g., `D://parameter_files//parameter_file1.yaml`). File paths are positional arguments and should be separated by a single space.
 
@@ -349,7 +357,7 @@ If you are developing in LDAR-Sim, please adhere to the following rules:
 
 --------------------------------------------------------------------------------
 
-## 5\. Simulation Settings
+## 6\. Simulation Settings
 
 ### &lt;parameter_level&gt; (simulation_settings)
 
@@ -585,7 +593,7 @@ If enabled, the leaks will be stored locally in /inputs/generation after running
 
 --------------------------------------------------------------------------------
 
-## 6\. Virtual World Settings
+## 7\. Virtual World Settings
 
 ### &lt;version&gt; (virtual world)
 
@@ -882,7 +890,7 @@ By default LPR will be used if value is not provided
 
 --------------------------------------------------------------------------------
 
-## 7\. Program Inputs
+## 8\. Program Inputs
 
 ### &lt;version&gt; (program level)
 
@@ -1028,7 +1036,7 @@ method_labels:
 
 --------------------------------------------------------------------------------
 
-## 8\. Method Inputs
+## 9\. Method Inputs
 
 ### &lt;parameter_level&gt; (method)
 
@@ -1710,7 +1718,7 @@ The follow-up delay parameter can be set to require multiple measurements for a 
 
 --------------------------------------------------------------------------------
 
-## 9\. Infrastructure file
+## 10\. Infrastructure file
 
 ### facility_ID
 
@@ -1828,7 +1836,7 @@ If **\*\*\_time** is present in the infrastructure file, it must **NOT** be set 
 
 --------------------------------------------------------------------------------
 
-## 10\. Subtype File
+## 11\. Subtype File
 
 ### leak_rate_source
 
@@ -1943,11 +1951,11 @@ If **\*\*\_time** is present in the infrastructure file, it must **NOT** be set 
 
 --------------------------------------------------------------------------------
 
-## 11\. Legacy Inputs
+## 12\. Legacy Inputs
 
 As LDAR-Sim continues to grow and evolve, certain parameters may need to be retired and removed from the current version of LDAR-Sim. For completeness, the documentation for these parameters will be moved to this section along with an indication of which version of LDAR-Sim they were removed in.
 
-### &lt;write_data&gt -- Removed as of version 3.2.0;
+### &lt;write_data&gt -- Removed as of version 3.2.0
 
 **Data type:** Boolean
 
@@ -2009,7 +2017,7 @@ As LDAR-Sim continues to grow and evolve, certain parameters may need to be reti
 
 --------------------------------------------------------------------------------
 
-## 12\. Data sources, modelling confidence and model sensitivity
+## 13\. Data sources, modelling confidence and model sensitivity
 
 There are a broad range of inputs used in LDAR-Sim that must be derived from various sources. Each of these parameters should be carefully considered and understood before using LDAR-Sim to inform decision making. Like other models, the quality of simulation results will depend on the quality and representativeness of the inputs used.
 
@@ -2048,7 +2056,7 @@ Below are some examples of common sources of LDAR-Sim data. Not all parameters a
 
 --------------------------------------------------------------------------------
 
-## 13\. References
+## 14\. References
 
 Fox, Thomas A., Mozhou Gao, Thomas E. Barchyn, Yorwearth L. Jamin, and Chris H. Hugenholtz. 2021\. "An Agent-Based Model for Estimating Emissions Reduction Equivalence among Leak Detection and Repair Programs." _Journal of Cleaner Production_, 125237\. <https://doi.org/10.1016/j.jclepro.2020.125237>.
 

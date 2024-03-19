@@ -15,19 +15,19 @@ LDAR-Sim has many potential uses, including:
 
 To learn more about LDAR-Sim, you can:
 
-  1) User [manual](USER_MANUAL.md)
+  1) [User manual](USER_MANUAL.md)
   2) Read our [story map](https://arcg.is/1rXeX10) (less technical introduction).
   3) Read [Fox et al., 2021](https://www.sciencedirect.com/science/article/pii/S0959652620352811).
 
 For first time users, we recommend attempting to reproduce the case study results in Fox et al. 2021 (see below).
 
-Thomas Fox: thomas@highwoodemissions.com
+Thomas Fox: <thomas@highwoodemissions.com>
 
-Mozhou Gao: mozhou.gao@ucalgary.ca
+Mozhou Gao: <mozhou.gao@ucalgary.ca>
 
-Thomas Barchyn: tbarchyn@ucalgary.ca
+Thomas Barchyn: <tbarchyn@ucalgary.ca>
 
-Chris Hugenholtz: chhugenh@ucalgary.ca
+Chris Hugenholtz: <chhugenh@ucalgary.ca>
 
 ## LDAR-Sim Licensing and Use
 
@@ -55,8 +55,9 @@ This guide is intended to get a user running with LDAR-Sim, **note** that even t
 
 #### Step 1: Before you begin
 
-Read and understand the LDAR-Sim LICENSE (MIT License).
-Read the user [manual](USER_MANUAL.md).
+Read and understand the LDAR-Sim [MIT license](LICENSE.txt).
+Read and follow the [installation guide](INSTALL_GUIDE.md).
+Read the [user manual](USER_MANUAL.md).
 
 Read [Fox et al 2021](https://www.sciencedirect.com/science/article/pii/S0959652620352811) to familiarize yourself with LDAR-Sim fundamentals.
 
