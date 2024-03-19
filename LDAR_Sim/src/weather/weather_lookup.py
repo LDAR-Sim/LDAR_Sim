@@ -62,6 +62,13 @@ class WeatherLookup:
             self.latitude = weather_data.variables["latitude"][:]
             # Extract longitude values
             self.longitude = weather_data.variables["longitude"][:]
+
+            self.lat_sort = np.argsort(self.latitude, kind="mergesort")
+            self.lon_sort = np.argsort(self.longitude, kind="mergesort")
+
+            self.latitude = self.latitude[self.lat_sort]
+            self.longitude = self.longitude[self.lon_sort]
+
             # Length of time dimension - number of timesteps
             self.time_length = len(self.time_total)
             # Length of latitude dimension - n cells

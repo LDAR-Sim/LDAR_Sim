@@ -259,3 +259,18 @@ def count_decimal_places(number):
     if "." in str(number):
         return len(str(number).split(".")[1])
     return 0
+
+
+def find_closest_index_numpy(arr, x):
+    idx = np.searchsorted(arr, x)
+    if idx == len(arr):
+        return len(arr) - 1
+    elif idx == 0:
+        return 0
+    else:
+        before = abs(arr[idx - 1] - x)
+        after = abs(arr[idx] - x)
+        if before < after:
+            return idx - 1
+        else:
+            return idx
