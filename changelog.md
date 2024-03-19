@@ -1,5 +1,9 @@
 # Change Log
 
+## 2024-03-18 - Version 3.3.6
+
+1. **New Documentation** Added new installation guide documentation.
+
 ## 2023-11-30 - Version 3.3.5
 
 1. **Bug fix for METEC wind sensor** Fixed the wind factor units. Previously used km/hr, changed to m/s to properly reflect the METEC wind dependent curve.
