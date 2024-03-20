@@ -17,6 +17,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 ------------------------------------------------------------------------------
 """
+
 from datetime import date, timedelta
 from math import ceil
 
@@ -73,9 +74,9 @@ class SiteLevelMethod(Method):
             key=lambda x: -x.rate_at_site
         )
         self._site_IDs_in_consideration_for_flag: dict[str, bool] = {}
-        self._site_IDs_in_follow_up_queue: dict[
-            str, bool
-        ] = follow_up_schedule.get_site_id_queue_list()
+        self._site_IDs_in_follow_up_queue: dict[str, bool] = (
+            follow_up_schedule.get_site_id_queue_list()
+        )
         self._first_candidate_date: date = None
         self._delay: int = properties[Method.METHOD_FOLLOW_UP_PROPERTIES_ACCESSOR][
             Method.METHOD_FOLLOW_UP_PROPERTIES_DELAY_ACCESSOR
