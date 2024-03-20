@@ -50,6 +50,8 @@ class Method:
     TEMP = "temp"
     WIND = "wind"
     PRECIP = "precip"
+    # Used to return the weather value
+    HOUR = 8
 
     SURVEY_TIME_ACCESSOR = "time"
     TRAVEL_TIME_ACCESSOR = "t_bw_sites"
@@ -436,9 +438,7 @@ class Method:
 
     def get_weather_val(self, weather) -> float:
         # TODO: update this later to consider averaging the hourly weather conditions
-        # Currently, returns the weather at the 8th hour
-        hour = 8
-        return weather[hour]
+        return weather[Method.HOUR]
 
     def get_weather_segment(
         self, weather, lat, long, timerange
