@@ -160,16 +160,21 @@ class Site:
                     == equipment_group
                 ].iloc[0]
                 prop_params = copy.deepcopy(propagating_params)
-                prop_params[Infrastructure_Constants.Sites_File_Constants.REP_EMIS_EPR] = (
-                    propagating_params[Infrastructure_Constants.Sites_File_Constants.REP_EMIS_EPR]
-                    / equip_count
-                )
-                prop_params[Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_EPR] = (
-                    propagating_params[
+                if (
+                    prop_params[Infrastructure_Constants.Sites_File_Constants.REP_EMIS_EPR]
+                    is not None
+                ):
+                    prop_params[
+                        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_EPR
+                    ] /= equip_count
+                if (
+                    prop_params[Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_EPR]
+                    is not None
+                ):
+                    prop_params[
                         Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_EPR
-                    ]
-                    / equip_count
-                )
+                    ] /= equip_count
+
                 self._equipment_groups.append(
                     Equipment_Group(
                         site_equipment_group[
