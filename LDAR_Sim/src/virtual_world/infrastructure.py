@@ -21,7 +21,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 from datetime import date
 import numpy as np
 import pandas as pd
-from utils.generic_functions import count_decimal_places
+from utils.generic_functions import find_closest_index_numpy
 from file_processing.output_processing.output_utils import EmisInfo, TsEmisData
 from file_processing.input_processing.emissions_source_processing import (
     EmissionsSource,
@@ -271,9 +271,9 @@ class Infrastructure:
             site.setup(methods)
 
     def set_weather_index(self, weather: WL):
-        lat_dec = count_decimal_places(weather.latitude[0])
-        lon_dec = count_decimal_places(weather.longitude[0])
         for site in self._sites:
             lat, lon = site.get_loc()
-            site.set_weather_lat(np.where(weather.latitude == round(lat, lat_dec))[0][0])
-            site.set_weather_long(np.where(weather.longitude == round(lon, lon_dec))[0][0])
+            lat_ind = find_closest_index_numpy(weather.latitude, lat)
+            lon_ind = find_closest_index_numpy(weather.longitude, lon)
+            site.set_weather_lat(weather.lat_sort[lat_ind])
+            site.set_weather_long(weather.lon_sort[lon_ind])

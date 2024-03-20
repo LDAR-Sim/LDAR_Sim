@@ -43,8 +43,14 @@ from sensors.sensor_constant_mapping import (
     ERR_MSG_UNKNOWN_SENS_TYPE,
 )
 
+WEATHER_ERROR = "Error: Unrecognized weather type"
+
 
 class Method:
+    TEMP = "temp"
+    WIND = "wind"
+    PRECIP = "precip"
+
     SURVEY_TIME_ACCESSOR = "time"
     TRAVEL_TIME_ACCESSOR = "t_bw_sites"
     DETEC_ACCESSOR = "sensor"
@@ -428,15 +434,27 @@ class Method:
             work_hours = max_hours
         return work_hours
 
+    def get_weather_val(self, weather) -> float:
+        # TODO: update this later to consider averaging the hourly weather conditions
+        # Currently, returns the weather at the 8th hour
+        hour = 8
+        return weather[hour]
+
+    def get_weather_segment(
+        self, weather, lat, long, timerange
+    ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+        return (
+            weather.temps[timerange, lat, long],
+            weather.winds[timerange, lat, long],
+            weather.precip[timerange, lat, long],
+        )
+
     def check_weather(self, weather, curr_date, site: Site) -> bool:
         """
         Check the weather conditions for the given site on the given day
 
         # TODO : change this such that the matrix is set once for given method
         """
-        TEMP = "temp"
-        WIND = "wind"
-        PREICIP = "precip"
 
         # TODO change to getters
         lat = site.get_weather_lat()
@@ -444,23 +462,21 @@ class Method:
         bool_temp: bool = False
         bool_wind: bool = False
         bool_precip: bool = False
+        time = curr_date.timetuple().tm_yday - 1  # 0 indexed.
+        timerange = range(time * 24, time * 24 + 24)
+        temp_seg, wind_seg, precip_seg = self.get_weather_segment(weather, lat, long, timerange)
+        temp_val = self.get_weather_val(temp_seg)
+        wind_val = self.get_weather_val(wind_seg)
+        precip_val = self.get_weather_val(precip_seg)
 
-        if (
-            self._weather_envs[TEMP][0]
-            <= weather.temps[curr_date.timetuple().tm_yday, lat, long]
-            <= self._weather_envs[TEMP][1]
-        ):
+        if self._weather_envs[Method.TEMP][0] <= temp_val <= self._weather_envs[Method.TEMP][1]:
             bool_temp = True
-        if (
-            self._weather_envs[WIND][0]
-            <= weather.winds[curr_date.timetuple().tm_yday, lat, long]
-            <= self._weather_envs[WIND][1]
-        ):
+        if self._weather_envs[Method.WIND][0] <= wind_val <= self._weather_envs[Method.WIND][1]:
             bool_wind = True
         if (
-            self._weather_envs[PREICIP][0]
-            <= weather.precip[curr_date.timetuple().tm_yday, lat, long]
-            <= self._weather_envs[PREICIP][1]
+            self._weather_envs[Method.PRECIP][0]
+            <= precip_val
+            <= self._weather_envs[Method.PRECIP][1]
         ):
             bool_precip = True
 
