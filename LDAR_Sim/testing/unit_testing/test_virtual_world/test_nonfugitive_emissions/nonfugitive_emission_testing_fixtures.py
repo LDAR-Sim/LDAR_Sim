@@ -15,6 +15,7 @@ def mock_simple_emission_for_get_summary_dict_1_fix() -> (
     Tuple[NonRepairableEmission, dict[str, int]]
 ):
     return (
+        date(*[2020, 1, 1]),
         NonRepairableEmission(
             1,
             1,
@@ -39,6 +40,8 @@ def mock_simple_emission_for_get_summary_dict_1_fix() -> (
             "Tagged By": "N/A",
             "Recorded": False,
             "Recorded By": None,
+            "Repairable": False,
+            "Estimated Days Active": 0,
         },
     )
 
@@ -133,6 +136,7 @@ def mock_simple_nonfugitive_emission_for_record_testing_already_recorded_fix() -
     to_ret = NonRepairableEmission(1, 1, date(*[2018, 1, 1]), date(*[2017, 1, 1]), True, {}, 365)
     to_ret._active_days = 60
     to_ret._record = True
+    to_ret._measured_rate = 1
     return to_ret, (1.0, date(*[2017, 6, 1]), 1, "test", "test")
 
 
