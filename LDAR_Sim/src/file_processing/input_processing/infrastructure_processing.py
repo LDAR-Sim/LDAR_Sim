@@ -38,12 +38,12 @@ def read_in_infrastructure_files(virtual_world, in_dir: Path) -> dict[str, DataF
     input_dict["sites"] = file_reader(in_dir / virtual_world["infrastructure"]["sites_file"])
 
     if virtual_world["infrastructure"]["site_type_file"]:
-        input_dict["site_types"] = file_reader(
+        input_dict[ic.Virtual_World_Constants.SITE_TYPE] = file_reader(
             in_dir / virtual_world["infrastructure"]["site_type_file"]
         )
 
     if virtual_world["infrastructure"]["equipment_group_file"]:
-        input_dict["equipment"] = file_reader(
+        input_dict[ic.Virtual_World_Constants.EQG] = file_reader(
             in_dir / virtual_world["infrastructure"]["equipment_group_file"]
         )
 
@@ -68,8 +68,9 @@ def check_site_file(input_dict):
 
 def get_equip(row: Series, site_types_df: DataFrame):
     return site_types_df.loc[
-        site_types_df[ic.Site_Type_File_Constants.TYPE] == row[ic.Sites_File_Constants.TYPE],
-        ic.Site_Type_File_Constants.EQG,
+        site_types_df[ic.Virtual_World_Constants.SITE_TYPE]
+        == row[ic.Virtual_World_Constants.SITE_TYPE],
+        ic.Virtual_World_Constants.EQG,
     ].iloc[0]
 
 

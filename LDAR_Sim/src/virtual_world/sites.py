@@ -193,7 +193,7 @@ class Site:
                 Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_EPR
             ]
             # special case for when equipment group isn't set
-            if (rep_emis_epr is None and rep_emis_epr <= 0) and (
+            if (rep_emis_epr is None or rep_emis_epr <= 0) and (
                 nonrep_emis_epr is None or nonrep_emis_epr <= 0
             ):
                 print(EMISSION_PRODUCTION_RATE_ERROR)

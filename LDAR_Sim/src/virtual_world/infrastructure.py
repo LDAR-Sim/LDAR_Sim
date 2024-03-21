@@ -188,7 +188,7 @@ class Infrastructure:
             virtual_world, in_dir
         )
         check_site_file(infrastructure_inputs)
-        sites_types_provided: bool = "site_types" in infrastructure_inputs
+        sites_types_provided: bool = IC.Site_Type_File_Constants.TYPE in infrastructure_inputs
 
         sites_in: pd.DataFrame = infrastructure_inputs["sites"]
 
@@ -205,10 +205,13 @@ class Infrastructure:
             if (
                 header not in sites_to_make.columns.to_list()
                 and sites_types_provided
-                and header in infrastructure_inputs["site_types"].columns.to_list()
+                and header
+                in infrastructure_inputs[IC.Site_Type_File_Constants.TYPE].columns.to_list()
             ):
                 sites_to_make[header] = sites_to_make.apply(
-                    get_equip, args=(infrastructure_inputs["site_types"],), axis=1
+                    get_equip,
+                    args=(infrastructure_inputs[IC.Site_Type_File_Constants.TYPE],),
+                    axis=1,
                 )
 
             else:
@@ -217,9 +220,9 @@ class Infrastructure:
         for sidx, srow in sites_to_make.iterrows():
             site_type_info = None
             if sites_types_provided:
-                site_types_info = infrastructure_inputs["site_types"]
+                site_types_info = infrastructure_inputs[IC.Site_Type_File_Constants.TYPE]
                 site_type = srow[IC.Sites_File_Constants.TYPE]
-                site_types_info = site_types_info.loc[
+                site_type_info = site_types_info.loc[
                     site_types_info[IC.Site_Type_File_Constants.TYPE] == site_type
                 ].iloc[0]
             propagating_params = self.generate_propagating_params(
