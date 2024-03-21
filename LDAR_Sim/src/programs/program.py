@@ -209,9 +209,7 @@ class Program:
         """Aggregate the survey reports from all methods"""
 
         data: list[dict] = [
-            report.to_report_summary().update(
-                {"follow_up_method": method.get_follow_up_method_name()}
-            )
+            report.to_report_summary() | {"follow_up_method": method.get_follow_up_method_name()}
             for method in self._methods
             for report in method.site_survey_reports
         ]

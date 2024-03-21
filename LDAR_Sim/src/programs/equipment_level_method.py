@@ -188,4 +188,6 @@ class EquipmentLevelMethod(Method):
             # Update the survey planner. If the survey was not finished, the update will
             # indicate that the particular site needs to be requeued with higher priority
             workplan.add_survey_report(survey_report, survey_plan)
+            if survey_report.survey_complete:
+                self._site_survey_reports.append(survey_report)
         return deploy_stats

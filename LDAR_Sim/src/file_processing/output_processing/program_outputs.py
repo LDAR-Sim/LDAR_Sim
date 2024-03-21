@@ -4,7 +4,9 @@ from utils import conversion_constants as conv_const
 
 
 def gen_estimated_emissions_report(
-    site_survey_reports_summary: pd.DataFrame, output_dir: Path
+    site_survey_reports_summary: pd.DataFrame,
+    output_dir: Path,
+    name: str,
 ) -> None:
     """Generate a report of yearly estimated emissions
 
@@ -12,6 +14,13 @@ def gen_estimated_emissions_report(
         site_survey_reports (pd.DataFrame): The site survey reports
         output_dir (str): The output directory
     """
+    if site_survey_reports_summary.empty:
+        return
+
+    site_survey_reports_summary["survey_completion_date"] = site_survey_reports_summary[
+        "survey_completion_date"
+    ].astype("datetime64[ns]")
+
     sorted_by_site_summary = site_survey_reports_summary.sort_values(
         by=["site_id", "survey_completion_date"]
     )
@@ -28,5 +37,6 @@ def gen_estimated_emissions_report(
     )
 
     result = sorted_by_site_summary.groupby("site_id")["volume_emitted"].sum().reset_index()
+    filename: str = "_".join(name, "estimated_emissions.csv")
 
-    result.to_csv(output_dir / "estimated_emissions.csv", index=False)
+    result.to_csv(output_dir / filename, index=False)

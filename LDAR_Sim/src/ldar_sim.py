@@ -112,7 +112,7 @@ class LdarSim:
         timeseries_filename = "_".join([self.name_str, "timeseries.csv"])
         self.save_results(timeseries, timeseries_filename)
         program_outputs.gen_estimated_emissions_report(
-            self._program.aggregate_method_survey_reports(), self._output_dir
+            self._program.aggregate_method_survey_reports(), self._output_dir, self.name_str
         )
 
     def _init_ts_columns(self) -> list[str]:
