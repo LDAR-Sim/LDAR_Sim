@@ -19,6 +19,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 """
 
 from datetime import date
+import gc
 import math
 from queue import PriorityQueue
 from random import choice
@@ -489,3 +490,19 @@ class Method:
 
     def get_name(self) -> str:
         return self._name
+
+    @property
+    def site_survey_reports(self) -> list[SiteSurveyReport]:
+        return self._site_survey_reports
+
+    @site_survey_reports.setter
+    def site_survey_reports(self, value: list[SiteSurveyReport]) -> None:
+        self._site_survey_reports = value
+
+    @site_survey_reports.deleter
+    def site_survey_reports(self) -> None:
+        del self._site_survey_reports
+        gc.collect()
+
+    def get_follow_up_method_name(self) -> str:
+        return "N/A"

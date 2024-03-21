@@ -28,6 +28,7 @@ from file_processing.output_processing.program_specific_visualizations import (
     gen_prog_timeseries_plot,
 )
 from virtual_world.infrastructure import Infrastructure
+from file_processing.output_processing import program_outputs
 from time_counter import TimeCounter
 from programs.program import Program
 from file_processing.output_processing.output_utils import (
@@ -110,6 +111,9 @@ class LdarSim:
         self.gen_prog_spec_visualizations(timeseries=timeseries)
         timeseries_filename = "_".join([self.name_str, "timeseries.csv"])
         self.save_results(timeseries, timeseries_filename)
+        program_outputs.gen_estimated_emissions_report(
+            self._program.aggregate_method_survey_reports(), self._output_dir
+        )
 
     def _init_ts_columns(self) -> list[str]:
         ts_columns = TIMESERIES_COLUMNS

@@ -20,6 +20,8 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 from datetime import date, timedelta
 from typing import Tuple
+
+import pandas as pd
 from file_processing.output_processing.output_utils import (
     CrewDeploymentStats,
     TaggingFlaggingStats,
@@ -202,3 +204,18 @@ class Program:
 
     def get_method_names(self) -> list[str]:
         return self.method_names
+
+    def aggregate_method_survey_reports(self) -> pd.DataFrame:
+        """Aggregate the survey reports from all methods"""
+
+        data: list[dict] = [
+            report.to_report_summary().update(
+                {"follow_up_method": method.get_follow_up_method_name()}
+            )
+            for method in self._methods
+            for report in method.site_survey_reports
+        ]
+
+        df: pd.DataFrame = pd.DataFrame(data)
+
+        return df

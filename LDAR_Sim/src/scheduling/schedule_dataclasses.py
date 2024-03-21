@@ -51,9 +51,7 @@ class SiteSurveyReport:
     time_spent_to_travel: int = 0
     survey_complete: bool = False
     survey_in_progress: bool = False
-    equipment_groups_surveyed: list[EquipmentGroupSurveyReport] = field(
-        default_factory=list
-    )
+    equipment_groups_surveyed: list[EquipmentGroupSurveyReport] = field(default_factory=list)
     survey_level: str = None
     site_measured_rate: float = 0.0
     site_true_rate: float = 0.0
@@ -61,6 +59,17 @@ class SiteSurveyReport:
     survey_completion_date: date = None
     survey_start_date: date = None
     method: str = None
+
+    def to_report_summary(self):
+        return {
+            "site_id": self.site_id,
+            "survey_level": self.survey_level,
+            "site_measured_rate": self.site_measured_rate,
+            "site_flagged": self.site_flagged,
+            "survey_completion_date": self.survey_completion_date,
+            "survey_start_date": self.survey_start_date,
+            "method": self.method,
+        }
 
 
 @dataclass
