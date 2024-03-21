@@ -351,10 +351,10 @@ class Site:
     def get_latest_tagging_survey_date(self) -> date:
         return self._latest_tagging_survey_date
 
-    def gen_emis_data(self, emis_df: pd.DataFrame, row_index: int):
+    def gen_emis_data(self, emis_df: pd.DataFrame, row_index: int, end_date: date):
         upd_row_index = row_index
         for eqg in self._equipment_groups:
-            upd_row_index = eqg.gen_emis_data(emis_df, self._site_ID, upd_row_index)
+            upd_row_index = eqg.gen_emis_data(emis_df, self._site_ID, upd_row_index, end_date)
         return upd_row_index
 
     def get_survey_cost(self, method_name: str) -> float:

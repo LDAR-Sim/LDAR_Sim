@@ -251,10 +251,12 @@ class Equipment:
     def get_id(self) -> str:
         return self._equipment_ID
 
-    def gen_emis_data(self, emis_df: pd.DataFrame, site_id: str, eqg_id: str, row_index: int):
+    def gen_emis_data(
+        self, emis_df: pd.DataFrame, site_id: str, eqg_id: str, row_index: int, end_date: date
+    ) -> int:
         upd_row_index = row_index
         for emission in self._active_emissions:
-            summary_dict: dict[str, Any] = emission.get_summary_dict()
+            summary_dict: dict[str, Any] = emission.get_summary_dict(end_date)
             summary_dict.update(
                 {eca.SITE_ID: site_id, eca.EQG: eqg_id, eca.COMP: self._equipment_ID}
             )
@@ -262,7 +264,7 @@ class Equipment:
             upd_row_index += 1
 
         for emission in self._inactive_emissions:
-            summary_dict: dict[str, Any] = emission.get_summary_dict()
+            summary_dict: dict[str, Any] = emission.get_summary_dict(end_date)
             summary_dict.update(
                 {eca.SITE_ID: site_id, eca.EQG: eqg_id, eca.COMP: self._equipment_ID}
             )

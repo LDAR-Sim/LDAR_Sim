@@ -1,8 +1,27 @@
+"""
+------------------------------------------------------------------------------
+Program:     The LDAR Simulator (LDAR-Sim)
+File:        test_estimate_start_date.py
+Purpose: Testing for the FugitiveEmissions class estimate_start_date method.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the MIT License as published
+by the Free Software Foundation, version 3.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+MIT License for more details.
+You should have received a copy of the MIT License
+along with this program.  If not, see <https://opensource.org/licenses/MIT>.
+
+------------------------------------------------------------------------------
+"""
+
 from datetime import date, timedelta
-from math import ceil
 from typing import Tuple
 from hypothesis import given, strategies as st
-from virtual_world.fugitive_emission import FugitiveEmission
+from src.virtual_world.fugitive_emission import FugitiveEmission
 
 
 def mock_simple_fugitive_emission_for_est_start_date_testing_1() -> FugitiveEmission:
@@ -13,8 +32,8 @@ def mock_simple_fugitive_emission_for_est_start_date_testing_1() -> FugitiveEmis
 def gen_valid_est_start_date_testing_data(draw):
     t_since_ldar: int = draw(st.integers(min_value=1, max_value=365))
     current_date = draw(st.dates(min_value=date(2000, 1, 1), max_value=date(2023, 12, 31)))
-    expected_est_sd = current_date - timedelta(days=ceil(t_since_ldar / 2))
-    expected_est_days_active = ceil(t_since_ldar / 2)
+    expected_est_sd = current_date - timedelta(days=t_since_ldar)
+    expected_est_days_active = t_since_ldar
     return t_since_ldar, current_date, (expected_est_sd, expected_est_days_active)
 
 

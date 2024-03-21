@@ -102,7 +102,7 @@ class LdarSim:
         overall_emission_data: pd.DataFrame = pd.DataFrame(
             columns=EMIS_DATA_FINAL_COL_ORDER, index=range(total_emissions_count)
         )
-        self._infrastructure.gen_summary_emis_data(overall_emission_data)
+        self._infrastructure.gen_summary_emis_data(overall_emission_data, self._tc._end_date)
 
         self.gen_sim_directory()
         summary_filename = "_".join([self.name_str, "emissions_summary.csv"])
