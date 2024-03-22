@@ -24,7 +24,7 @@ import numpy as np
 import pandas as pd
 import re
 from file_processing.output_processing import output_constants
-
+from file_processing.output_processing import output_utils
 from file_processing.output_processing.output_utils import (
     TIMESERIES_COL_ACCESSORS as tca,
     EMIS_DATA_COL_ACCESSORS as eca,
@@ -37,6 +37,22 @@ def get_mean_val(df: pd.DataFrame, column: str) -> float:
 
 def get_sum(df: pd.DataFrame, column: str) -> float:
     return df[column].sum()
+
+
+def assign_part_sum_columns(df: pd.DataFrame, column_name: str, base_column_name: str):
+    # Extracting distinct years from the 'Date Began' column
+    distinct_years = pd.to_datetime(
+        df[output_utils.EMIS_DATA_COL_ACCESSORS.DATE_BEG]
+    ).dt.year.unique()
+    result = {}
+    for year in distinct_years:
+        year_df = df[
+            pd.to_datetime(df[output_utils.EMIS_DATA_COL_ACCESSORS.DATE_BEG]).dt.year == year
+        ]
+        ann_sum = get_sum(year_df, column_name)
+        year_column_name = base_column_name.format(year)
+        result[year_column_name] = ann_sum
+    return result
 
 
 # TODO add this comment to the relevant User Manual Section
@@ -155,6 +171,7 @@ def gen_ts_summary(dir: Path):
 
 def gen_emissions_summary(dir: Path):
     emis_summary_df = pd.DataFrame(columns=output_constants.EMIS_SUMMARY_COLUMNS)
+    add_annual_columns = False
     with os.scandir(dir) as entries:
         for entry in entries:
             if (
@@ -172,6 +189,25 @@ def gen_emissions_summary(dir: Path):
                 )
                 for sum_stat, calc in EMIS_MAPPING_TO_SUMMARY_COLS.items():
                     new_summary_row[sum_stat] = calc(emis_data)
+                true_annuals = assign_part_sum_columns(
+                    emis_data,
+                    eca.T_VOL_EMIT,
+                    output_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_ANN_EMIS,
+                )
+                estimated_annuals = assign_part_sum_columns(
+                    emis_data,
+                    eca.EST_VOL_EMIT,
+                    output_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.EST_ANN_EMIS,
+                )
+                new_summary_row.update(true_annuals)
+                new_summary_row.update(estimated_annuals)
+                if not add_annual_columns:
+                    # Add empty columns to the DataFrame based on the keys in true_annuals
+                    for column_name in sorted(true_annuals.keys()):
+                        emis_summary_df[column_name] = None
+                    for column_name in sorted(estimated_annuals.keys()):
+                        emis_summary_df[column_name] = None
+                    add_annual_columns = True
                 emis_summary_df.loc[len(emis_summary_df)] = new_summary_row
     return emis_summary_df
 

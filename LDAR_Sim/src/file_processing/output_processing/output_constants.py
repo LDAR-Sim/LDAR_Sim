@@ -65,6 +65,10 @@ class TS_SUMMARY_COLUMNS_ACCESSORS:
 class EMIS_SUMMARY_COLUMNS_ACCESSORS:
     PROG_NAME = "Program Name"
     SIM = "Simulation"
+    T_ANN_EMIS = 'Year {} "True" Emissions (Kg Methane)'
+    EST_ANN_EMIS = 'Year {} "Estimated" Emissions (Kg Methane)'
+    REGX_T_ANN_EMIS = 'Year \d+ "True" Emissions \(Kg Methane\)'
+    REGX_EST_ANN_EMIS = 'Year \d+ "Estimated" Emissions \(Kg Methane\)'
     T_TOTAL_EMIS = 'Total "True" Emissions (Kg Methane)'
     EST_TOTAL_EMIS = 'Total "Estimated" Emissions (Kg Methane)'
     T_TOTAL_MIT_EMIS = 'Total "True" Mitigable Emissions (Kg Methane)'
