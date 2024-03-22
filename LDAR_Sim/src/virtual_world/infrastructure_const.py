@@ -20,6 +20,10 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 
 class Infrastructure_Constants:
+    class Virtual_World_Constants:
+        EQG = "equipment"
+        SITE_TYPE = "site_type"
+
     class Sites_File_Constants:
         LAT = "lat"  # Latitude
         LON = "lon"  # Longitude
