@@ -36,6 +36,7 @@ from sensors.OGI_camera_zim import OGICameraZimSensor
 from sensors.METEC_NoWind_sensor import METECNWEquipment
 from virtual_world.sites import Site
 from sensors.pipeline_sensor import MobilePipeline
+from sensors.custom90 import CustomThreshold
 from sensors.sensor_constant_mapping import (
     SENS_TYPE,
     SENS_MDL,
@@ -113,6 +114,8 @@ class EquipmentLevelMethod(Method):
             self._sensor = METECNWEquipment(sensor_info[SENS_MDL], sensor_info[SENS_QE])
         elif sensor_info[SENS_TYPE] == "mobile_pipeline":
             self._sensor = MobilePipeline(sensor_info[SENS_MDL], sensor_info[SENS_QE])
+        elif sensor_info[SENS_TYPE] == "custom_threshold":
+            self._sensor = CustomThreshold(sensor_info[SENS_MDL], sensor_info[SENS_QE])
         else:
             print(ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
             sys.exit()

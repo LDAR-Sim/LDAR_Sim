@@ -5,9 +5,6 @@ File:        Mobile_pipeline
 Purpose: Provides a probability of detection curve based on the following paper
        https://doi.org/10.1016/j.envpol.2022.120027
 
-uses power function as shown in figure 2 to calculate probability of
-detection using leak size, and two mdl parameters are set based on camera
-crew experience.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the MIT License as published
@@ -26,9 +23,6 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 import numpy as np
 from sensors.default_equipment_level_sensor import DefaultEquipmentLevelSensor
 
-MDL_CONST1 = 0.24
-MDL_CONST2 = 0.39
-GS_TO_SCFH = 187
 """
 PoD = 1/(1+exp(-(5.0221+0.139q - 0.1498c - 0.057s - (12.7024/L) - 0.4115U - 0.0807T )))
 
