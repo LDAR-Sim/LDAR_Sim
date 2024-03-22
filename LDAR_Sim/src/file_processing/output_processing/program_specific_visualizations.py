@@ -19,4 +19,5 @@ def gen_prog_timeseries_plot(timeseries: pd.DataFrame, ts_filepath: Path, name_s
     complete_filepath = ts_filepath / complete_filename
 
     plt.savefig(complete_filepath)
+    plt.close()
     return

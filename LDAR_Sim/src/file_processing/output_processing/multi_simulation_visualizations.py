@@ -58,6 +58,8 @@ def gen_cross_program_summary_plots(out_dir: Path, baseline_program: str):
         estimate_vs_true_constants,
         baseline_program,
     )
+    # Close all plots
+    plt.close("all")
 
 
 def plot_hist(
@@ -184,6 +186,7 @@ def gen_estimated_vs_true_emissions_percent_difference_plot(
                 [program_name, output_constants.TRUE_VS_ESTIMATED_PERCENT_DIFF_PLOT]
             )
             plt.savefig(save_path)
+            plt.close(fig_sep)
 
         if combine_plots:
             plt.figure(comb_fig.number)
@@ -206,6 +209,7 @@ def gen_estimated_vs_true_emissions_percent_difference_plot(
         plt.legend(handles=legend_elements)
         save_path = out_dir / output_constants.TRUE_VS_ESTIMATED_PERCENT_DIFF_PLOT
         plt.savefig(save_path)
+        plt.close(comb_fig)
 
 
 def gen_estimated_vs_true_emissions_relative_difference_plot(
@@ -281,6 +285,7 @@ def gen_estimated_vs_true_emissions_relative_difference_plot(
                 [program_name, output_constants.TRUE_VS_ESTIMATED_RELATIVE_DIFF_PLOT]
             )
             plt.savefig(save_path)
+            plt.close(fig_sep)
 
         if combine_plots:
             plt.figure(comb_fig.number)
@@ -305,6 +310,7 @@ def gen_estimated_vs_true_emissions_relative_difference_plot(
         plt.legend(handles=legend_elements)
         save_path = out_dir / output_constants.TRUE_VS_ESTIMATED_RELATIVE_DIFF_PLOT
         plt.savefig(save_path)
+        plt.close(comb_fig)
 
 
 def gen_paired_estimate_and_true_emission_distributions(
@@ -398,6 +404,7 @@ def gen_paired_estimate_and_true_emission_distributions(
                 ]
             )
             plt.savefig(save_path)
+            plt.close(fig_sep)
 
         if combine_plots:
             plt.figure(comb_fig.number)
@@ -435,3 +442,4 @@ def gen_paired_estimate_and_true_emission_distributions(
         plt.legend(handles=legend_elements)
         save_path = out_dir / output_constants.TRUE_AND_ESTIMATED_PAIRED_EMISSIONS_DISTRIBUTION_PLOT
         plt.savefig(save_path)
+        plt.close(comb_fig)
