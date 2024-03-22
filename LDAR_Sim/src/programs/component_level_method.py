@@ -37,6 +37,7 @@ from sensors.OGI_camera_zim import OGICameraZimSensor
 from sensors.METEC_NoWind_sensor import METECNWComponent
 from virtual_world.sites import Site
 from sensors.pipeline_sensor import MobilePipeline
+from sensors.custom90 import CustomThreshold
 from constants.param_default_const import Method_Params as mp
 import constants.param_default_const as pdc
 
@@ -119,6 +120,8 @@ class ComponentLevelMethod(Method):
             )
         elif sensor_info[mp.TYPE] == "mobile_pipeline":
             self._sensor = MobilePipeline(sensor_info[mp.MDL], sensor_info[mp.QE])
+        elif sensor_info[mp.TYPE] == "custom_threshold":
+            self._sensor = CustomThreshold(sensor_info[mp.MDL], sensor_info[mp.QE])
         else:
             print(ipm.ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
             sys.exit()
