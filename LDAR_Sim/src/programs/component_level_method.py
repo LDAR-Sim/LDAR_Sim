@@ -36,6 +36,8 @@ from sensors.OGI_camera_rk import OGICameraRKSensor
 from sensors.OGI_camera_zim import OGICameraZimSensor
 from sensors.METEC_NoWind_sensor import METECNWComponent
 from virtual_world.sites import Site
+from sensors.pipeline_sensor import MobilePipeline
+from constants.param_default_const import Method_Params as mp
 import constants.param_default_const as pdc
 
 
@@ -115,6 +117,8 @@ class ComponentLevelMethod(Method):
             self._sensor = METECNWComponent(
                 sensor_info[pdc.Method_Params.MDL], sensor_info[pdc.Method_Params.QE]
             )
+        elif sensor_info[mp.TYPE] == "mobile_pipeline":
+            self._sensor = MobilePipeline(sensor_info[mp.MDL], sensor_info[mp.QE])
         else:
             print(ipm.ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
             sys.exit()
