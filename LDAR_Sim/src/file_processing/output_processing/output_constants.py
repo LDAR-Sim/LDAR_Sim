@@ -19,6 +19,14 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 """
 
 
+class HistogramConstants:
+    Y_AXIS_LABEL = "Relative Frequency (%)"
+    BINS = 30
+    X_AXIS_LABEL_PAIRED = "Annual Emissions of All {n_sites} Sites (Kg Methane)"
+    X_AXIS_LABEL_RELATIVE = "Relative Difference between Estimated and True Emissions"
+    X_AXIS_LABEL_PERCENT = 'Percent Difference between "Estimated" and "True" Emissions'
+
+
 class ProgTsConstants:
     TITLE = "{name_str} Emissions Timeseries"
     X_AXIS_TITLE = "Date"

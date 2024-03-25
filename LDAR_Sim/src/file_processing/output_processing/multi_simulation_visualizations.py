@@ -30,9 +30,6 @@ from matplotlib import ticker, lines
 from file_processing.output_processing import output_constants, output_utils
 import numpy as np
 
-Y_AXIS_LABEL = "Likelihood of Occurrence (%)"
-BINS = 30
-
 
 def get_non_baseline_prog_names(emis_summary_info, baseline_program) -> list:
     return [
@@ -91,7 +88,7 @@ def gen_annual_emissions_summary_list(emis_summary_info, program_names) -> dict[
     return paired_emissions_lists
 
 
-def gen_cross_program_summary_plots(out_dir: Path, baseline_program: str):
+def gen_cross_program_summary_plots(out_dir: Path, baseline_program: str, n_sites: int):
 
     print(output_constants.SUMMARRY_PLOT_GENERATION_MESSAGE)
 
@@ -119,9 +116,29 @@ def gen_cross_program_summary_plots(out_dir: Path, baseline_program: str):
         summary_program_plots_directory,
         estimate_vs_true_constants,
         baseline_program,
+        n_sites=n_sites,
     )
     # Close all plots
     plt.close("all")
+
+
+def format_tick_labels(x, pos):
+    """
+    Function to format tick labels as words
+    """
+    powers = [18, 15, 12, 9, 6, 3, 0]
+    label = [
+        "H",
+        "Q",
+        "T",
+        "B",
+        "M",
+        "K",
+        "",
+    ]
+    for i, power in enumerate(powers):
+        if x >= 10**power:
+            return "{:.1f}{}".format(x / 10**power, label[i])
 
 
 def plot_hist(
@@ -181,6 +198,9 @@ def plot_hist(
     ax.xaxis.set_major_locator(locator=x_locator)
     ax.yaxis.set_major_locator(locator=y_locator)
 
+    # Set custom formatter for x-axis
+    ax.xaxis.set_major_formatter(ticker.FuncFormatter(format_tick_labels))
+
 
 def gen_estimated_vs_true_emissions_percent_difference_plot(
     emis_summary_info: pd.DataFrame,
@@ -190,7 +210,6 @@ def gen_estimated_vs_true_emissions_percent_difference_plot(
     combine_plots: bool = False,
     save_separate_plots: bool = True,
 ):
-    X_AXIS_LABEL = 'Percent Difference between "Estimated" and "True" Emissions'
     program_names = get_non_baseline_prog_names(emis_summary_info, baseline_program)
 
     paired_emissions_lists = gen_annual_emissions_summary_list(emis_summary_info, program_names)
@@ -225,8 +244,8 @@ def gen_estimated_vs_true_emissions_percent_difference_plot(
                 color=colors[i],
                 bin_width=estimate_vs_true_constants.HISTOGRAM_BIN_WIDTH,
                 bin_range=(0, 200),
-                x_label=X_AXIS_LABEL,
-                y_label=Y_AXIS_LABEL,
+                x_label=output_constants.HistogramConstants.X_AXIS_LABEL_PERCENT,
+                y_label=output_constants.HistogramConstants.Y_AXIS_LABEL,
             )
 
             ax_sep.xaxis.set_major_formatter(
@@ -253,8 +272,8 @@ def gen_estimated_vs_true_emissions_percent_difference_plot(
 
     if combine_plots:
         comb_ax.set(
-            xlabel=X_AXIS_LABEL,
-            ylabel=Y_AXIS_LABEL,
+            xlabel=output_constants.HistogramConstants.X_AXIS_LABEL_PERCENT,
+            ylabel=output_constants.HistogramConstants.Y_AXIS_LABEL,
         )
         comb_ax.xaxis.set_major_formatter(ticker.FuncFormatter(output_utils.percentage_formatter))
         plt.legend(handles=legend_elements)
@@ -271,7 +290,6 @@ def gen_estimated_vs_true_emissions_relative_difference_plot(
     combine_plots: bool = False,
     save_separate_plots: bool = True,
 ):
-    X_AXIS_LABEL = "Relative Difference between Estimated and True Emissions"
     program_names = get_non_baseline_prog_names(emis_summary_info, baseline_program)
     paired_emissions_lists = gen_annual_emissions_summary_list(emis_summary_info, program_names)
     relative_diff_lists = {}
@@ -311,8 +329,8 @@ def gen_estimated_vs_true_emissions_relative_difference_plot(
                 color=colors[i],
                 bin_width=estimate_vs_true_constants.HISTOGRAM_BIN_WIDTH,
                 bin_range=plot_bin_range,
-                x_label=X_AXIS_LABEL,
-                y_label=Y_AXIS_LABEL,
+                x_label=output_constants.HistogramConstants.X_AXIS_LABEL_RELATIVE,
+                y_label=output_constants.HistogramConstants.Y_AXIS_LABEL,
                 x_locator=ticker.MaxNLocator(nbins="auto", prune=None),
             )
 
@@ -342,8 +360,8 @@ def gen_estimated_vs_true_emissions_relative_difference_plot(
 
     if combine_plots:
         comb_ax.set(
-            xlabel=X_AXIS_LABEL,
-            ylabel=Y_AXIS_LABEL,
+            xlabel=output_constants.HistogramConstants.X_AXIS_LABEL_RELATIVE,
+            ylabel=output_constants.HistogramConstants.Y_AXIS_LABEL,
         )
         comb_ax.xaxis.set_major_formatter(ticker.FuncFormatter(output_utils.percentage_formatter))
         plt.axvline(0, color="black", linestyle="--")
@@ -360,21 +378,27 @@ def gen_paired_estimate_and_true_emission_distributions(
     baseline_program: str,
     combine_plots: bool = False,
     save_separate_plots: bool = True,
+    n_sites: int = 0,
 ):
-    X_AXIS_LABEL = "Annual Emissions of All Sites (Kg Methane)"
 
     program_names = get_non_baseline_prog_names(emis_summary_info, baseline_program)
 
     paired_emissions_lists = gen_annual_emissions_summary_list(emis_summary_info, program_names)
 
     overall_max = 0
+    overall_min = float("inf")
     for prog in program_names:
         true_emis_list, est_emis_list = paired_emissions_lists[prog]
         # Find maximum values for true_emis_list and est_emis_list
         true_max = max(true_emis_list)
         est_max = max(est_emis_list)
+
+        # Find the min values
+        true_min = min(true_emis_list)
+        est_min = min(est_emis_list)
         # Update overall_max if the maximum values in this list are greater than overall_max
         overall_max = max(overall_max, true_max, est_max)
+        overall_min = min(overall_min, true_min, est_min)
 
     if combine_plots:
         comb_fig: plt.Figure = plt.figure()
@@ -384,12 +408,12 @@ def gen_paired_estimate_and_true_emission_distributions(
     dark_pallete = [output_utils.luminance_shift(color, lighten=False) for color in colors]
     light_pallete = [output_utils.luminance_shift(color, lighten=True) for color in colors]
     plot_bin_range = (
-        0,
+        overall_min,
         overall_max,
     )
 
     legend_elements = []
-
+    x_label = output_constants.HistogramConstants.X_AXIS_LABEL_PAIRED.format(n_sites=n_sites)
     for i, (program_name, paired_emis_list) in enumerate(paired_emissions_lists.items()):
         if save_separate_plots:
             fig_sep: plt.Figure = plt.figure()  # noqa: 481
@@ -402,8 +426,8 @@ def gen_paired_estimate_and_true_emission_distributions(
                 program_name=program_name,
                 color=dark_pallete[i],
                 bin_range=plot_bin_range,
-                x_label=X_AXIS_LABEL,
-                y_label=Y_AXIS_LABEL,
+                x_label=x_label,
+                y_label=output_constants.HistogramConstants.Y_AXIS_LABEL,
                 bins=30,
                 legend_label=" ".join(
                     [program_name, estimate_vs_true_constants.TRUE_EMISSIONS_SUFFIX]
@@ -417,8 +441,8 @@ def gen_paired_estimate_and_true_emission_distributions(
                 program_name=program_name,
                 color=light_pallete[i],
                 bin_range=plot_bin_range,
-                x_label=X_AXIS_LABEL,
-                y_label=Y_AXIS_LABEL,
+                x_label=x_label,
+                y_label=output_constants.HistogramConstants.Y_AXIS_LABEL,
                 bins=30,
                 legend_label=" ".join(
                     [program_name, estimate_vs_true_constants.ESTIMATED_EMISSIONS_SUFFIX]
@@ -444,7 +468,7 @@ def gen_paired_estimate_and_true_emission_distributions(
                 program_name=program_name,
                 color=dark_pallete[i],
                 bin_range=plot_bin_range,
-                bins=BINS,
+                bins=output_constants.HistogramConstants.BINS,
                 legend_label=" ".join(
                     [program_name, estimate_vs_true_constants.TRUE_EMISSIONS_SUFFIX]
                 ),
@@ -457,7 +481,7 @@ def gen_paired_estimate_and_true_emission_distributions(
                 program_name=program_name,
                 color=light_pallete[i],
                 bin_range=plot_bin_range,
-                bins=BINS,
+                bins=output_constants.HistogramConstants.BINS,
                 legend_label=" ".join(
                     [program_name, estimate_vs_true_constants.ESTIMATED_EMISSIONS_SUFFIX]
                 ),
@@ -465,8 +489,8 @@ def gen_paired_estimate_and_true_emission_distributions(
 
     if combine_plots:
         comb_ax.set(
-            xlabel=X_AXIS_LABEL,
-            ylabel=Y_AXIS_LABEL,
+            xlabel=x_label,
+            ylabel=output_constants.HistogramConstants.Y_AXIS_LABEL,
         )
         plt.legend(handles=legend_elements)
         save_path = out_dir / output_constants.TRUE_AND_ESTIMATED_PAIRED_EMISSIONS_DISTRIBUTION_PLOT
