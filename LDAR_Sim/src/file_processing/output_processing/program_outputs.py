@@ -3,10 +3,13 @@ from pathlib import Path
 import pandas as pd
 from scheduling.schedule_dataclasses import SiteSurveyReport
 from utils import conversion_constants as conv_const
+from file_processing.output_processing import output_constants
+from file_processing.output_processing import output_utils
 
 
 def gen_estimated_emissions_report(
     site_survey_reports_summary: pd.DataFrame,
+    fugutive_emissions_rates_and_repair_dates: pd.DataFrame,
     output_dir: Path,
     name: str,
     start_date: date,
@@ -41,6 +44,10 @@ def gen_estimated_emissions_report(
         by=["site_id", "survey_completion_date"]
     )
 
+    fugitive_emissions_to_remove: pd.DataFrame = gen_estimated_fugitive_emissions_to_remove(
+        sorted_by_site_summary, fugutive_emissions_rates_and_repair_dates
+    )
+
     grouped_by_site_summary = sorted_by_site_summary.groupby("site_id")
 
     sorted_by_site_summary["days_since_last_survey"] = (
@@ -71,21 +78,65 @@ def gen_estimated_emissions_report(
     result = (
         sorted_by_site_summary.groupby(["site_id", "year"])["volume_emitted"].sum().reset_index()
     )
+
+    final_result: pd.DataFrame = result - fugitive_emissions_to_remove
+
     filename: str = "_".join([name, "estimated_emissions.csv"])
 
-    result.to_csv(output_dir / filename, index=False)
+    final_result.to_csv(output_dir / filename, index=False)
 
 
 def gen_estimated_fugitive_emissions_to_remove(
     site_survey_reports_summary: pd.DataFrame,
     fugitive_emissions_rates_and_repair_dates: pd.DataFrame,
-    start_date: date,
-    end_date: date,
-) -> dict[str, float]:
+) -> pd.DataFrame:
     """
     Generate a report of yearly estimated fugitive emissions to remove to avoid double counting
     """
-    fugitve_emissions_per_year_to_remove = {}
-    if site_survey_reports_summary.empty:
-        return fugitve_emissions_per_year_to_remove
-    return fugitve_emissions_per_year_to_remove
+    # Switch the data types of the repair date column to datetime so date computations can be done
+    fugitive_emissions_rates_and_repair_dates[output_constants.EMIS_DATA_COL_ACCESSORS.DATE_REP] = (
+        fugitive_emissions_rates_and_repair_dates[
+            output_constants.EMIS_DATA_COL_ACCESSORS.DATE_REP
+        ].astype("datetime64[ns]")
+    )
+
+    # Populate a new column in the fugitive emissions rates and repair dates dataframe
+    # with the closest future survey date. This wil be used to compute the estimated
+    # fugitive emissions to remove to avoid double counting
+    fugitive_emissions_rates_and_repair_dates[
+        "closest_survey_date"
+    ] = fugitive_emissions_rates_and_repair_dates[
+        output_constants.EMIS_DATA_COL_ACCESSORS.DATE_REP
+    ].apply(
+        lambda x: output_utils.closest_future_date(
+            x, site_survey_reports_summary["survey_completion_date"].unique()
+        )
+    )
+    # Calculate the estimated fugitive emissions that took place between the repair date
+    # and the next survey date. This is what we will remove to avoid double counting.
+    fugitive_emissions_rates_and_repair_dates["fugitive_emissions_to_remove"] = (
+        fugitive_emissions_rates_and_repair_dates[output_constants.EMIS_DATA_COL_ACCESSORS.M_RATE]
+        * conv_const.GRAMS_PER_SECOND_TO_KG_PER_DAY
+        * (
+            fugitive_emissions_rates_and_repair_dates["closest_survey_date"]
+            - fugitive_emissions_rates_and_repair_dates[
+                output_constants.EMIS_DATA_COL_ACCESSORS.DATE_REP
+            ]
+        ).dt.days
+    )
+
+    # Add in the year of occurence
+    fugitive_emissions_rates_and_repair_dates["year"] = fugitive_emissions_rates_and_repair_dates[
+        "closest_survey_date"
+    ].dt.year
+
+    # Group by sites and year and sum
+    result = (
+        fugitive_emissions_rates_and_repair_dates.groupby(
+            [output_constants.EMIS_DATA_COL_ACCESSORS.SITE_ID, "year"]
+        )["fugitive_emissions_to_remove"]
+        .sum()
+        .reset_index()
+    )
+
+    return result

@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Tuple
 from numpy import NaN
+import pandas as pd
 
 
 def percent_difference(a: float, b: float) -> float:
@@ -18,6 +19,10 @@ def relative_difference(aquired_value: float, true_value: float) -> float:
 def percentage_formatter(x: float, pos):
     x = x / 100
     return f"{x:.0%}"
+
+
+def closest_future_date(date: pd.Timestamp, date_list: list[pd.Timestamp]) -> pd.Timestamp:
+    return min([d for d in date_list if d > date], key=lambda x: abs(x - date))
 
 
 def luminance_shift(
