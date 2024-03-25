@@ -32,13 +32,11 @@ from file_processing.output_processing import program_outputs
 from time_counter import TimeCounter
 from programs.program import Program
 from file_processing.output_processing.output_utils import (
-    EMIS_DATA_FINAL_COL_ORDER,
-    TIMESERIES_COLUMNS,
-    TIMESERIES_COL_ACCESSORS as tca,
     EmisInfo,
     TsEmisData,
     TsMethodData,
 )
+from file_processing.output_processing import output_constants
 
 
 class LdarSim:
@@ -85,10 +83,10 @@ class LdarSim:
             if self._preseed:
                 np.random.seed(self._preseed_ts[self._tc.current_date])
             new_row: dict[str, Any] = self._init_ts_row()
-            new_row[tca.NEW_LEAKS] = self._infrastructure.activate_emissions(
-                self._tc.current_date, self._sim_number
+            new_row[output_constants.TIMESERIES_COL_ACCESSORS.NEW_LEAKS] = (
+                self._infrastructure.activate_emissions(self._tc.current_date, self._sim_number)
             )
-            total_emissions_count += new_row[tca.NEW_LEAKS]
+            total_emissions_count += new_row[output_constants.TIMESERIES_COL_ACCESSORS.NEW_LEAKS]
             ts_methods_info: list[TsMethodData] = self._program.do_daily_program_deployment()
             ts_emis_rep_info: EmisInfo = EmisInfo()
             ts_emis_info: TsEmisData = self._infrastructure.update_emissions_state(ts_emis_rep_info)
@@ -101,7 +99,7 @@ class LdarSim:
             self._tc.next_day()
 
         overall_emission_data: pd.DataFrame = pd.DataFrame(
-            columns=EMIS_DATA_FINAL_COL_ORDER, index=range(total_emissions_count)
+            columns=output_constants.EMIS_DATA_FINAL_COL_ORDER, index=range(total_emissions_count)
         )
         self._infrastructure.gen_summary_emis_data(overall_emission_data, self._tc._end_date)
 
@@ -111,8 +109,17 @@ class LdarSim:
         self.gen_prog_spec_visualizations(timeseries=timeseries)
         timeseries_filename = "_".join([self.name_str, "timeseries.csv"])
         self.save_results(timeseries, timeseries_filename)
+
+        # Calculate "Estimated" Emissions from method survey reports
+
+        # 1. Trim Emissions data to only include necessary columns
+        emis_info_for_duration_estimation = overall_emission_data.loc[
+            :, output_constants.EMIS_INFO_COLUMNS_TO_KEEP_FOR_DURATION_ESTIMATION
+        ]
+
         program_outputs.gen_estimated_emissions_report(
             self._program.aggregate_method_survey_reports(),
+            emis_info_for_duration_estimation,
             self._output_dir,
             self.name_str,
             self._tc._start_date,
@@ -120,42 +127,68 @@ class LdarSim:
         )
 
     def _init_ts_columns(self) -> list[str]:
-        ts_columns = TIMESERIES_COLUMNS
+        ts_columns = output_constants.TIMESERIES_COLUMNS
         for method in self._program.method_names:
-            ts_columns.append(tca.METH_DAILY_DEPLOY_COST.format(method=method))
-            ts_columns.append(tca.METH_DAILY_FLAGS.format(method=method))
-            ts_columns.append(tca.METH_DAILY_TAGS.format(method=method))
-            ts_columns.append(tca.METH_DAILY_SITES_VIS.format(method=method))
-            ts_columns.append(tca.METH_DAILY_TRAVEL_TIME.format(method=method))
-            ts_columns.append(tca.METH_DAILY_SURVEY_TIME.format(method=method))
+            ts_columns.append(
+                output_constants.TIMESERIES_COL_ACCESSORS.METH_DAILY_DEPLOY_COST.format(
+                    method=method
+                )
+            )
+            ts_columns.append(
+                output_constants.TIMESERIES_COL_ACCESSORS.METH_DAILY_FLAGS.format(method=method)
+            )
+            ts_columns.append(
+                output_constants.TIMESERIES_COL_ACCESSORS.METH_DAILY_TAGS.format(method=method)
+            )
+            ts_columns.append(
+                output_constants.TIMESERIES_COL_ACCESSORS.METH_DAILY_SITES_VIS.format(method=method)
+            )
+            ts_columns.append(
+                output_constants.TIMESERIES_COL_ACCESSORS.METH_DAILY_TRAVEL_TIME.format(
+                    method=method
+                )
+            )
+            ts_columns.append(
+                output_constants.TIMESERIES_COL_ACCESSORS.METH_DAILY_SURVEY_TIME.format(
+                    method=method
+                )
+            )
         return ts_columns
 
     def _init_ts_row(self):
         new_ts_row: dict[str, Any] = {
-            tca.DATE: self._tc.current_date,
-            tca.EMIS: 0,
-            tca.COST: 0,
-            tca.ACT_LEAKS: 0,
-            tca.NEW_LEAKS: 0,
-            tca.REP_LEAKS: 0,
-            tca.NAT_REP_LEAKS: 0,
-            tca.TAGGED_LEAKS: 0,
-            tca.REP_COST: 0,
-            tca.NAT_REP_COST: 0,
+            output_constants.TIMESERIES_COL_ACCESSORS.DATE: self._tc.current_date,
+            output_constants.TIMESERIES_COL_ACCESSORS.EMIS: 0,
+            output_constants.TIMESERIES_COL_ACCESSORS.COST: 0,
+            output_constants.TIMESERIES_COL_ACCESSORS.ACT_LEAKS: 0,
+            output_constants.TIMESERIES_COL_ACCESSORS.NEW_LEAKS: 0,
+            output_constants.TIMESERIES_COL_ACCESSORS.REP_LEAKS: 0,
+            output_constants.TIMESERIES_COL_ACCESSORS.NAT_REP_LEAKS: 0,
+            output_constants.TIMESERIES_COL_ACCESSORS.TAGGED_LEAKS: 0,
+            output_constants.TIMESERIES_COL_ACCESSORS.REP_COST: 0,
+            output_constants.TIMESERIES_COL_ACCESSORS.NAT_REP_COST: 0,
         }
         return new_ts_row
 
     def _update_ts_row_w_emis_info(
         self, new_row: dict[str, Any], ts_emis_info: TsEmisData, ts_emis_rep_info: EmisInfo
     ):
-        new_row[tca.EMIS] = ts_emis_info.daily_emis
-        new_row[tca.EMIS_MIT] = ts_emis_info.daily_emis_mit
-        new_row[tca.EMIS_NON_MIT] = ts_emis_info.daily_emis_non_mit
-        new_row[tca.ACT_LEAKS] = ts_emis_info.active_leaks
-        new_row[tca.REP_COST] = ts_emis_rep_info.repair_cost
-        new_row[tca.REP_LEAKS] = ts_emis_rep_info.leaks_repaired
-        new_row[tca.NAT_REP_COST] = ts_emis_rep_info.nat_repair_cost
-        new_row[tca.NAT_REP_LEAKS] = ts_emis_rep_info.leaks_nat_repaired
+        new_row[output_constants.TIMESERIES_COL_ACCESSORS.EMIS] = ts_emis_info.daily_emis
+        new_row[output_constants.TIMESERIES_COL_ACCESSORS.EMIS_MIT] = ts_emis_info.daily_emis_mit
+        new_row[output_constants.TIMESERIES_COL_ACCESSORS.EMIS_NON_MIT] = (
+            ts_emis_info.daily_emis_non_mit
+        )
+        new_row[output_constants.TIMESERIES_COL_ACCESSORS.ACT_LEAKS] = ts_emis_info.active_leaks
+        new_row[output_constants.TIMESERIES_COL_ACCESSORS.REP_COST] = ts_emis_rep_info.repair_cost
+        new_row[output_constants.TIMESERIES_COL_ACCESSORS.REP_LEAKS] = (
+            ts_emis_rep_info.leaks_repaired
+        )
+        new_row[output_constants.TIMESERIES_COL_ACCESSORS.NAT_REP_COST] = (
+            ts_emis_rep_info.nat_repair_cost
+        )
+        new_row[output_constants.TIMESERIES_COL_ACCESSORS.NAT_REP_LEAKS] = (
+            ts_emis_rep_info.leaks_nat_repaired
+        )
 
     def _update_ts_row_w_methods_info(
         self, new_row: dict[str, Any], ts_methods_info: list[TsMethodData]
@@ -165,26 +198,38 @@ class LdarSim:
         for method_info in ts_methods_info:
             total_daily_cost += method_info.daily_deployment_cost
             total_leaks_tagged += np.nan_to_num(method_info.daily_tags)
-            new_row[tca.METH_DAILY_DEPLOY_COST.format(method=method_info.method_name)] = (
-                method_info.daily_deployment_cost
-            )
-            new_row[tca.METH_DAILY_TAGS.format(method=method_info.method_name)] = (
-                method_info.daily_tags
-            )
-            new_row[tca.METH_DAILY_FLAGS.format(method=method_info.method_name)] = (
-                method_info.daily_flags
-            )
-            new_row[tca.METH_DAILY_SITES_VIS.format(method=method_info.method_name)] = (
-                method_info.sites_visited
-            )
-            new_row[tca.METH_DAILY_TRAVEL_TIME.format(method=method_info.method_name)] = (
-                method_info.travel_time
-            )
-            new_row[tca.METH_DAILY_SURVEY_TIME.format(method=method_info.method_name)] = (
-                method_info.survey_time
-            )
-        new_row[tca.COST] = total_daily_cost
-        new_row[tca.TAGGED_LEAKS] = total_leaks_tagged
+            new_row[
+                output_constants.TIMESERIES_COL_ACCESSORS.METH_DAILY_DEPLOY_COST.format(
+                    method=method_info.method_name
+                )
+            ] = method_info.daily_deployment_cost
+            new_row[
+                output_constants.TIMESERIES_COL_ACCESSORS.METH_DAILY_TAGS.format(
+                    method=method_info.method_name
+                )
+            ] = method_info.daily_tags
+            new_row[
+                output_constants.TIMESERIES_COL_ACCESSORS.METH_DAILY_FLAGS.format(
+                    method=method_info.method_name
+                )
+            ] = method_info.daily_flags
+            new_row[
+                output_constants.TIMESERIES_COL_ACCESSORS.METH_DAILY_SITES_VIS.format(
+                    method=method_info.method_name
+                )
+            ] = method_info.sites_visited
+            new_row[
+                output_constants.TIMESERIES_COL_ACCESSORS.METH_DAILY_TRAVEL_TIME.format(
+                    method=method_info.method_name
+                )
+            ] = method_info.travel_time
+            new_row[
+                output_constants.TIMESERIES_COL_ACCESSORS.METH_DAILY_SURVEY_TIME.format(
+                    method=method_info.method_name
+                )
+            ] = method_info.survey_time
+        new_row[output_constants.TIMESERIES_COL_ACCESSORS.COST] = total_daily_cost
+        new_row[output_constants.TIMESERIES_COL_ACCESSORS.TAGGED_LEAKS] = total_leaks_tagged
 
     def format_timeseries(self, timeseries: pd.DataFrame) -> None:
         return None

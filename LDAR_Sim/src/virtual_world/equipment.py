@@ -27,6 +27,8 @@ import pandas as pd
 from file_processing.output_processing.output_utils import (
     EmisInfo,
     TsEmisData,
+)
+from file_processing.output_processing.output_constants import (
     EMIS_DATA_COL_ACCESSORS as eca,
 )
 from file_processing.input_processing.emissions_source_processing import (

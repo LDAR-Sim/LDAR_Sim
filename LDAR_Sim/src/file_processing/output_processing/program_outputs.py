@@ -55,7 +55,7 @@ def gen_estimated_emissions_report(
     use_next_condition = sorted_by_site_summary["site_measured_rate"] < sorted_by_site_summary[
         "site_measured_rate"
     ].shift(1)
-    sorted_by_site_summary["volume_emitted"] = 0
+    sorted_by_site_summary["volume_emitted"] = 0.0
     sorted_by_site_summary.loc[use_prev_condition, "volume_emitted"] += (
         sorted_by_site_summary["days_since_last_survey"]
         * sorted_by_site_summary["site_measured_rate"]
@@ -74,3 +74,18 @@ def gen_estimated_emissions_report(
     filename: str = "_".join([name, "estimated_emissions.csv"])
 
     result.to_csv(output_dir / filename, index=False)
+
+
+def gen_estimated_fugitive_emissions_to_remove(
+    site_survey_reports_summary: pd.DataFrame,
+    fugitive_emissions_rates_and_repair_dates: pd.DataFrame,
+    start_date: date,
+    end_date: date,
+) -> dict[str, float]:
+    """
+    Generate a report of yearly estimated fugitive emissions to remove to avoid double counting
+    """
+    fugitve_emissions_per_year_to_remove = {}
+    if site_survey_reports_summary.empty:
+        return fugitve_emissions_per_year_to_remove
+    return fugitve_emissions_per_year_to_remove
