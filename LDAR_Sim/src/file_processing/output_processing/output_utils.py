@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Tuple
+from typing import Tuple, Any
 from numpy import NaN
 import pandas as pd
 
@@ -23,6 +23,12 @@ def percentage_formatter(x: float, pos):
 
 def closest_future_date(date: pd.Timestamp, date_list: list[pd.Timestamp]) -> pd.Timestamp:
     return min([d for d in date_list if d > date], default=None, key=lambda x: abs(x - date))
+
+
+def find_df_row_value_w_match(
+    value_to_match: Any, value_col: str, return_col: str, df: pd.DataFrame
+):
+    return df.loc[df[value_col] == value_to_match, return_col].values[0]
 
 
 def luminance_shift(

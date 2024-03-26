@@ -19,6 +19,12 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 """
 
 
+class SURVEY_REPORT_DATA:
+    SITE_ID = "site_ID"
+    COMP_DATE = "survey_completion_date"
+    LAST_SURVEY_DATE = "last_survey_date"
+
+
 class HistogramConstants:
     Y_AXIS_LABEL = "Relative Frequency (%)"
     BINS = 30

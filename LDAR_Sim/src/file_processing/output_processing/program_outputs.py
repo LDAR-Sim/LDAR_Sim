@@ -44,10 +44,6 @@ def gen_estimated_emissions_report(
         by=["site_id", "survey_completion_date"]
     )
 
-    fugitive_emissions_to_remove: pd.DataFrame = gen_estimated_fugitive_emissions_to_remove(
-        sorted_by_site_summary, fugutive_emissions_rates_and_repair_dates
-    )
-
     grouped_by_site_summary = sorted_by_site_summary.groupby("site_id")
 
     sorted_by_site_summary["days_since_last_survey"] = (
@@ -62,6 +58,11 @@ def gen_estimated_emissions_report(
     sorted_by_site_summary["use_next_condition"] = (
         grouped_by_site_summary["site_measured_rate"].diff(-1) < 0
     )
+
+    fugitive_emissions_to_remove: pd.DataFrame = gen_estimated_fugitive_emissions_to_remove(
+        sorted_by_site_summary, fugutive_emissions_rates_and_repair_dates
+    )
+
     sorted_by_site_summary["volume_emitted"] = 0.0
     sorted_by_site_summary.loc[sorted_by_site_summary["use_prev_condition"], "volume_emitted"] += (
         sorted_by_site_summary["days_since_last_survey"]
@@ -80,7 +81,14 @@ def gen_estimated_emissions_report(
     )
 
     if not fugitive_emissions_to_remove.empty:
-        final_result: pd.DataFrame = result - fugitive_emissions_to_remove
+        final_result: pd.DataFrame = pd.merge(
+            result,
+            fugitive_emissions_to_remove,
+            how="left",
+            on=["site_id", "year"],
+        )
+        final_result["fugitive_emissions_to_remove"].fillna(0, inplace=True)
+        final_result["volume_emitted"] -= final_result.pop("fugitive_emissions_to_remove")
     else:
         final_result = result
 
@@ -110,24 +118,49 @@ def gen_estimated_fugitive_emissions_to_remove(
     # fugitive emissions to remove to avoid double counting
     fugitive_emissions_rates_and_repair_dates[
         "closest_survey_date"
-    ] = fugitive_emissions_rates_and_repair_dates[
-        output_constants.EMIS_DATA_COL_ACCESSORS.DATE_REP
+    ] = fugitive_emissions_rates_and_repair_dates.loc[
+        :,
+        [
+            output_constants.EMIS_DATA_COL_ACCESSORS.DATE_REP,
+            output_constants.EMIS_DATA_COL_ACCESSORS.SITE_ID,
+        ],
     ].apply(
         lambda x: output_utils.closest_future_date(
-            x, site_survey_reports_summary["survey_completion_date"].unique()
+            x[output_constants.EMIS_DATA_COL_ACCESSORS.DATE_REP],
+            site_survey_reports_summary.loc[
+                site_survey_reports_summary["site_id"]
+                == x[output_constants.EMIS_DATA_COL_ACCESSORS.SITE_ID],
+                "survey_completion_date",
+            ].unique(),
+        ),
+        axis=1,
+    )
+    fugitive_emissions_rates_and_repair_dates[
+        "account_for_fugitives"
+    ] = fugitive_emissions_rates_and_repair_dates["closest_survey_date"].apply(
+        lambda x: output_utils.find_df_row_value_w_match(
+            x,
+            "survey_completion_date",
+            "use_prev_condition",
+            site_survey_reports_summary,
         )
     )
+    fugitive_emissions_rates_and_repair_dates = fugitive_emissions_rates_and_repair_dates.loc[
+        fugitive_emissions_rates_and_repair_dates["account_for_fugitives"]
+    ]
     # Calculate the estimated fugitive emissions that took place between the repair date
     # and the next survey date. This is what we will remove to avoid double counting.
     fugitive_emissions_rates_and_repair_dates["fugitive_emissions_to_remove"] = (
         fugitive_emissions_rates_and_repair_dates[output_constants.EMIS_DATA_COL_ACCESSORS.M_RATE]
         * conv_const.GRAMS_PER_SECOND_TO_KG_PER_DAY
-        * (
-            fugitive_emissions_rates_and_repair_dates["closest_survey_date"]
-            - fugitive_emissions_rates_and_repair_dates[
-                output_constants.EMIS_DATA_COL_ACCESSORS.DATE_REP
-            ]
-        ).dt.days
+        * abs(
+            (
+                fugitive_emissions_rates_and_repair_dates["closest_survey_date"]
+                - fugitive_emissions_rates_and_repair_dates[
+                    output_constants.EMIS_DATA_COL_ACCESSORS.DATE_REP
+                ]
+            ).dt.days
+        )
     )
 
     # Add in the year of occurence
@@ -142,6 +175,10 @@ def gen_estimated_fugitive_emissions_to_remove(
         )["fugitive_emissions_to_remove"]
         .sum()
         .reset_index()
+    )
+
+    result.rename(
+        columns={output_constants.EMIS_DATA_COL_ACCESSORS.SITE_ID: "site_id"}, inplace=True
     )
 
     return result
