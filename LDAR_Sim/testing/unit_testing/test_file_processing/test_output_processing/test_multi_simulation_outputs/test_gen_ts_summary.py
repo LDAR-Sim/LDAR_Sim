@@ -27,7 +27,7 @@ from src.file_processing.output_processing.multi_simulation_outputs import (
     TS_SUMMARY_COLUMNS_ACCESSORS as tsca,
 )
 import os
-from src.file_processing.output_processing.output_utils import TIMESERIES_COL_ACCESSORS as tca
+from src.file_processing.output_processing.output_constants import TIMESERIES_COL_ACCESSORS as tca
 
 
 class MockDirEntry:

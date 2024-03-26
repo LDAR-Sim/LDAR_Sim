@@ -20,6 +20,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 from datetime import date, timedelta
 from math import ceil
+from typing import override
 
 from sortedcontainers import SortedList
 from file_processing.output_processing.output_utils import TaggingFlaggingStats
@@ -230,3 +231,7 @@ class SiteLevelMethod(Method):
         else:
             print(ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
             sys.exit()
+
+    @override
+    def get_follow_up_method_name(self) -> str:
+        return self._follow_up_schedule._method

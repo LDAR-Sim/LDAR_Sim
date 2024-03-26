@@ -24,8 +24,8 @@ from typing import Any
 from numpy.random import binomial
 from file_processing.output_processing.output_utils import (
     EmisInfo,
-    EMIS_DATA_COL_ACCESSORS as eca,
 )
+from file_processing.output_processing.output_constants import EMIS_DATA_COL_ACCESSORS as eca
 
 from utils.conversion_constants import GRAMS_PER_SECOND_TO_KG_PER_DAY
 

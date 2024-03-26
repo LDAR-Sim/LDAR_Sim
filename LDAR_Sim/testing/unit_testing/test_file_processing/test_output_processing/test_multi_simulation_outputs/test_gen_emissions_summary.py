@@ -27,7 +27,7 @@ from src.file_processing.output_processing.multi_simulation_outputs import (
     EMIS_SUMMARY_COLUMNS_ACCESSORS as esca,
 )
 import os
-from src.file_processing.output_processing.output_utils import EMIS_DATA_COL_ACCESSORS as eca
+from src.file_processing.output_processing.output_constants import EMIS_DATA_COL_ACCESSORS as eca
 
 
 class MockDirEntry:

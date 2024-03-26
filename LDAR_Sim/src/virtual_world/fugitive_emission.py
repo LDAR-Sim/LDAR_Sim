@@ -25,7 +25,8 @@ from typing import Any
 from typing_extensions import override
 
 from utils import conversion_constants as conv_const
-from file_processing.output_processing.output_utils import EmisInfo, EMIS_DATA_COL_ACCESSORS as eca
+from file_processing.output_processing.output_utils import EmisInfo
+from file_processing.output_processing import output_constants
 
 from virtual_world.emissions import Emission
 
@@ -188,10 +189,16 @@ class FugitiveEmission(Emission):
     def get_summary_dict(self, end_date: date) -> dict[str, Any]:
         estimated_vol_emitted: float = self.calc_est_emis_vol(end_date=end_date)
         summary_dict: dict[str, Any] = super().get_summary_dict()
-        summary_dict.update({(eca.DATE_REP, self._repair_date)})
-        summary_dict.update({(eca.TAGGED, self._tagged)})
-        summary_dict.update({(eca.TAGGED_BY, self._tagged_by_company)})
-        summary_dict.update({(eca.EST_VOL_EMIT, estimated_vol_emitted)})
+        summary_dict.update(
+            {(output_constants.EMIS_DATA_COL_ACCESSORS.DATE_REP, self._repair_date)}
+        )
+        summary_dict.update({(output_constants.EMIS_DATA_COL_ACCESSORS.TAGGED, self._tagged)})
+        summary_dict.update(
+            {(output_constants.EMIS_DATA_COL_ACCESSORS.TAGGED_BY, self._tagged_by_company)}
+        )
+        summary_dict.update(
+            {(output_constants.EMIS_DATA_COL_ACCESSORS.EST_VOL_EMIT, estimated_vol_emitted)}
+        )
         return summary_dict
 
     @override
