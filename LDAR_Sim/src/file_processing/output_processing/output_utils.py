@@ -22,7 +22,7 @@ def percentage_formatter(x: float, pos):
 
 
 def closest_future_date(date: pd.Timestamp, date_list: list[pd.Timestamp]) -> pd.Timestamp:
-    return min([d for d in date_list if d > date], key=lambda x: abs(x - date))
+    return min([d for d in date_list if d > date], default=None, key=lambda x: abs(x - date))
 
 
 def luminance_shift(

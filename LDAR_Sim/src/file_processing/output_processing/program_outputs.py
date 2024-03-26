@@ -53,24 +53,24 @@ def gen_estimated_emissions_report(
     sorted_by_site_summary["days_since_last_survey"] = (
         grouped_by_site_summary["survey_completion_date"].diff().dt.days
     )
-    sorted_by_site_summary["days_until_next_survey"] = (
+    sorted_by_site_summary["days_until_next_survey"] = abs(
         grouped_by_site_summary["survey_completion_date"].diff(-1).dt.days
     )
-    use_prev_condition = sorted_by_site_summary["site_measured_rate"] > sorted_by_site_summary[
-        "site_measured_rate"
-    ].shift(-1)
-    use_next_condition = sorted_by_site_summary["site_measured_rate"] < sorted_by_site_summary[
-        "site_measured_rate"
-    ].shift(1)
+    sorted_by_site_summary["use_prev_condition"] = (
+        grouped_by_site_summary["site_measured_rate"].diff() < 0
+    )
+    sorted_by_site_summary["use_next_condition"] = (
+        grouped_by_site_summary["site_measured_rate"].diff(-1) < 0
+    )
     sorted_by_site_summary["volume_emitted"] = 0.0
-    sorted_by_site_summary.loc[use_prev_condition, "volume_emitted"] += (
+    sorted_by_site_summary.loc[sorted_by_site_summary["use_prev_condition"], "volume_emitted"] += (
         sorted_by_site_summary["days_since_last_survey"]
-        * sorted_by_site_summary["site_measured_rate"]
+        * sorted_by_site_summary["site_measured_rate"].shift(1)
         * conv_const.GRAMS_PER_SECOND_TO_KG_PER_DAY
     )
-    sorted_by_site_summary.loc[use_next_condition, "volume_emitted"] += (
+    sorted_by_site_summary.loc[sorted_by_site_summary["use_next_condition"], "volume_emitted"] += (
         sorted_by_site_summary["days_until_next_survey"]
-        * sorted_by_site_summary["site_measured_rate"]
+        * sorted_by_site_summary["site_measured_rate"].shift(-1)
         * conv_const.GRAMS_PER_SECOND_TO_KG_PER_DAY
     )
     sorted_by_site_summary["year"] = sorted_by_site_summary["survey_completion_date"].dt.year
@@ -79,7 +79,10 @@ def gen_estimated_emissions_report(
         sorted_by_site_summary.groupby(["site_id", "year"])["volume_emitted"].sum().reset_index()
     )
 
-    final_result: pd.DataFrame = result - fugitive_emissions_to_remove
+    if not fugitive_emissions_to_remove.empty:
+        final_result: pd.DataFrame = result - fugitive_emissions_to_remove
+    else:
+        final_result = result
 
     filename: str = "_".join([name, "estimated_emissions.csv"])
 
@@ -93,6 +96,8 @@ def gen_estimated_fugitive_emissions_to_remove(
     """
     Generate a report of yearly estimated fugitive emissions to remove to avoid double counting
     """
+    if fugitive_emissions_rates_and_repair_dates.empty:
+        return pd.DataFrame()
     # Switch the data types of the repair date column to datetime so date computations can be done
     fugitive_emissions_rates_and_repair_dates[output_constants.EMIS_DATA_COL_ACCESSORS.DATE_REP] = (
         fugitive_emissions_rates_and_repair_dates[

@@ -114,7 +114,7 @@ class LdarSim:
 
         # 1. Trim Emissions data to only include necessary columns
         emis_info_for_duration_estimation = overall_emission_data.loc[
-            overall_emission_data[output_constants.EMIS_DATA_COL_ACCESSORS.REPAIRABLE is True],
+            overall_emission_data[output_constants.EMIS_DATA_COL_ACCESSORS.REPAIRABLE],
             output_constants.EMIS_INFO_COLUMNS_TO_KEEP_FOR_DURATION_ESTIMATION,
         ]
 
