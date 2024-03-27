@@ -28,3 +28,5 @@ emissions:
   units: ["kilogram", "hour"]
   NRd: 365 # Natural repair delay of repairable emissions
   duration: 365 # Duration of non-repairable emissions
+  multi: True # True/False of whether repairable emission source can produce multiple emissions
+  NR_multi: False # True/False of whether non-repairable emission source can produce multiple emissions
