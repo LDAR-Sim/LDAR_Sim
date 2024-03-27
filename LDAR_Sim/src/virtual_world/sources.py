@@ -54,6 +54,7 @@ class Source:
         self._persistent: bool = info[IC.Sources_File_Constants.PERSISTENT]
         self._active_duration: int = info[IC.Sources_File_Constants.ACTIVE_DUR]
         self._inactive_duration: int = info[IC.Sources_File_Constants.INACTIVE_DUR]
+        self._multi_emissions: bool = info[IC.Sources_File_Constants.MULTI_EMISSIONS]
         self._generated_emissions: dict[int, list[Emission]] = {}
         self._emis_rate_source: EmissionsSource = None
         self._emis_prod_rate: float = None
@@ -74,6 +75,7 @@ class Source:
             self._persistent,
             self._active_duration,
             self._inactive_duration,
+            self._multi_emissions,
             self._generated_emissions,
             self._emis_rate_source,
             self._emis_prod_rate,
@@ -94,6 +96,7 @@ class Source:
         persistent,
         active_duration,
         inactive_duration,
+        multi_emissions,
         generated_emissions,
         emis_rate_source,
         emis_prod_rate,
@@ -112,6 +115,7 @@ class Source:
         instance._persistent = persistent
         instance._active_duration = active_duration
         instance._inactive_duration = inactive_duration
+        instance._multi_emissions = multi_emissions
         instance._generated_emissions = generated_emissions
         instance._emis_rate_source = emis_rate_source
         instance._emis_prod_rate = emis_prod_rate
@@ -256,28 +260,37 @@ class Source:
 
         # Generate Pre-Existing Emissions to exist at the start of simulation
         # The loop is working backwards in time, starting from 1 day before simulation start
+
+        last_emis_day: date = sim_start_date
         for day in range(1, self._emis_duration + 1):
             create_emis: int = np.random.binomial(1, self._emis_prod_rate)
-            if create_emis:
-                emis_start_date: date = sim_start_date - timedelta(days=day)
-                emission: Emission = self._create_emission(
-                    leak_count=leak_count,
-                    start_date=emis_start_date,
-                    sim_start_date=sim_start_date,
-                    emission_rate_source_dictionary=emission_rate_source_dictionary,
-                    repair_delay_dataframe=repair_delay_dataframe,
-                )
-                leak_count += 1
-                emissions_fifo.append(emission)
+            if not create_emis:
+                continue
+            emis_start_date: date = sim_start_date - timedelta(days=day)
+            emission: Emission = self._create_emission(
+                leak_count=leak_count,
+                start_date=emis_start_date,
+                sim_start_date=sim_start_date,
+                emission_rate_source_dictionary=emission_rate_source_dictionary,
+                repair_delay_dataframe=repair_delay_dataframe,
+            )
+            leak_count += 1
+            emissions_fifo.append(emission)
+            if not self._multi_emissions:
+                last_emis_day = emis_start_date + timedelta(days=self._emis_duration)
+                # If only one emission is allowed, break the loop
+                break
 
         # Generate Emissions for the course of the simulation
         date_diff: timedelta = sim_end_date - sim_start_date
         sim_dur: int = date_diff.days
-
         for day in range(0, sim_dur):
             create_emis: int = np.random.binomial(1, self._emis_prod_rate)
             if create_emis:
                 emis_start_date: date = sim_start_date + timedelta(days=day)
+                if not self._multi_emissions:
+                    if emis_start_date <= last_emis_day:
+                        continue
                 emission: Emission = self._create_emission(
                     leak_count=leak_count,
                     start_date=emis_start_date,
@@ -287,6 +300,8 @@ class Source:
                 )
                 leak_count += 1
                 emissions_fifo.append(emission)
+                if not self._multi_emissions:
+                    last_emis_day = emis_start_date + timedelta(days=self._emis_duration)
         self._generated_emissions[sim_number] = emissions_fifo
         return {self._source_ID: emissions_fifo}
 

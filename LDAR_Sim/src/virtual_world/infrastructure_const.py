@@ -101,6 +101,7 @@ class Infrastructure_Constants:
         SURVEY_TIME_PLACEHOLDER = "_surveytime"  # Survey Time - Method specific
         SURVEY_COST_PLACEHOLDER = "_surveycost"  # Survey Cost - Method specific
         SPATIAL_PLACEHOLDER = "_spatial"  # Spatial coverage - Method specific
+        MULTI_EMISSIONS = "multiple_emissions"  # Multiple Emissions (Y/N)
 
     class Site_Type_File_Constants:
         TYPE = "site_type"  # Site Type

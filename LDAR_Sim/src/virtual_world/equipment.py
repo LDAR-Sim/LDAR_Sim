@@ -120,6 +120,7 @@ class Equipment:
                 IC.Sources_File_Constants.PERSISTENT: True,
                 IC.Sources_File_Constants.ACTIVE_DUR: 1,
                 IC.Sources_File_Constants.INACTIVE_DUR: 0,
+                IC.Sources_File_Constants.MULTI_EMISSIONS: True,
             }
             self._sources.append(Source(src_id, placeholder_source_info, prop_params))
             src_id_nonrep = "Placeholder_NonRep"
@@ -128,6 +129,7 @@ class Equipment:
                 IC.Sources_File_Constants.PERSISTENT: True,
                 IC.Sources_File_Constants.ACTIVE_DUR: 1,
                 IC.Sources_File_Constants.INACTIVE_DUR: 0,
+                IC.Sources_File_Constants.MULTI_EMISSIONS: True,
             }
             self._sources.append(Source(src_id_nonrep, placeholder_nonrep_source_info, prop_params))
         elif self._equip_type == "Placeholder_Rep":
@@ -137,6 +139,7 @@ class Equipment:
                 IC.Sources_File_Constants.PERSISTENT: True,
                 IC.Sources_File_Constants.ACTIVE_DUR: 1,
                 IC.Sources_File_Constants.INACTIVE_DUR: 0,
+                IC.Sources_File_Constants.MULTI_EMISSIONS: True,
             }
             self._sources.append(Source(src_id, placeholder_source_info, prop_params))
         elif self._equip_type == "Placeholder_NonRep":
@@ -146,6 +149,7 @@ class Equipment:
                 IC.Sources_File_Constants.PERSISTENT: True,
                 IC.Sources_File_Constants.ACTIVE_DUR: 1,
                 IC.Sources_File_Constants.INACTIVE_DUR: 0,
+                IC.Sources_File_Constants.MULTI_EMISSIONS: True,
             }
             self._sources.append(Source(src_id_nonrep, placeholder_nonrep_source_info, prop_params))
         else:
