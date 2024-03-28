@@ -108,16 +108,19 @@ def gen_estimated_fugitive_emissions_to_remove(
         return pd.DataFrame()
     # Switch the data types of the repair date column to datetime so date computations can be done
     fugitive_emissions_rates_and_repair_dates[output_constants.EMIS_DATA_COL_ACCESSORS.DATE_REP] = (
-        fugitive_emissions_rates_and_repair_dates[
-            output_constants.EMIS_DATA_COL_ACCESSORS.DATE_REP
+        fugitive_emissions_rates_and_repair_dates.loc[
+            :, output_constants.EMIS_DATA_COL_ACCESSORS.DATE_REP
         ].astype("datetime64[ns]")
     )
+
+    # Drop rows with missing repair dates
+    fugitive_emissions_rates_and_repair_dates.dropna(inplace=True)
 
     # Populate a new column in the fugitive emissions rates and repair dates dataframe
     # with the closest future survey date. This wil be used to compute the estimated
     # fugitive emissions to remove to avoid double counting
-    fugitive_emissions_rates_and_repair_dates[
-        "closest_survey_date"
+    fugitive_emissions_rates_and_repair_dates.loc[
+        :, "closest_survey_date"
     ] = fugitive_emissions_rates_and_repair_dates.loc[
         :,
         [
@@ -135,9 +138,9 @@ def gen_estimated_fugitive_emissions_to_remove(
         ),
         axis=1,
     )
-    fugitive_emissions_rates_and_repair_dates[
-        "account_for_fugitives"
-    ] = fugitive_emissions_rates_and_repair_dates["closest_survey_date"].apply(
+    fugitive_emissions_rates_and_repair_dates.loc[
+        :, "account_for_fugitives"
+    ] = fugitive_emissions_rates_and_repair_dates.loc[:, "closest_survey_date"].apply(
         lambda x: output_utils.find_df_row_value_w_match(
             x,
             "survey_completion_date",
@@ -145,28 +148,34 @@ def gen_estimated_fugitive_emissions_to_remove(
             site_survey_reports_summary,
         )
     )
-    fugitive_emissions_rates_and_repair_dates = fugitive_emissions_rates_and_repair_dates.loc[
-        fugitive_emissions_rates_and_repair_dates["account_for_fugitives"]
-    ]
+    fugitive_emissions_rates_and_repair_dates.drop(
+        fugitive_emissions_rates_and_repair_dates.index[
+            ~fugitive_emissions_rates_and_repair_dates["account_for_fugitives"]
+        ],
+        inplace=True,
+    )
+
     # Calculate the estimated fugitive emissions that took place between the repair date
     # and the next survey date. This is what we will remove to avoid double counting.
-    fugitive_emissions_rates_and_repair_dates["fugitive_emissions_to_remove"] = (
-        fugitive_emissions_rates_and_repair_dates[output_constants.EMIS_DATA_COL_ACCESSORS.M_RATE]
+    fugitive_emissions_rates_and_repair_dates.loc[:, "fugitive_emissions_to_remove"] = (
+        fugitive_emissions_rates_and_repair_dates.loc[
+            :, output_constants.EMIS_DATA_COL_ACCESSORS.M_RATE
+        ]
         * conv_const.GRAMS_PER_SECOND_TO_KG_PER_DAY
         * abs(
             (
-                fugitive_emissions_rates_and_repair_dates["closest_survey_date"]
-                - fugitive_emissions_rates_and_repair_dates[
-                    output_constants.EMIS_DATA_COL_ACCESSORS.DATE_REP
+                fugitive_emissions_rates_and_repair_dates.loc[:, "closest_survey_date"]
+                - fugitive_emissions_rates_and_repair_dates.loc[
+                    :, output_constants.EMIS_DATA_COL_ACCESSORS.DATE_REP
                 ]
             ).dt.days
         )
     )
 
-    # Add in the year of occurence
-    fugitive_emissions_rates_and_repair_dates["year"] = fugitive_emissions_rates_and_repair_dates[
-        "closest_survey_date"
-    ].dt.year
+    # Add in the year of occurrence
+    fugitive_emissions_rates_and_repair_dates.loc[:, "year"] = (
+        fugitive_emissions_rates_and_repair_dates.loc[:, "closest_survey_date"].dt.year
+    )
 
     # Group by sites and year and sum
     result = (

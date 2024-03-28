@@ -28,7 +28,7 @@ def closest_future_date(date: pd.Timestamp, date_list: list[pd.Timestamp]) -> pd
 def find_df_row_value_w_match(
     value_to_match: Any, value_col: str, return_col: str, df: pd.DataFrame
 ):
-    return df.loc[df[value_col] == value_to_match, return_col].values[0]
+    return df.loc[df.loc[:, value_col] == value_to_match, return_col].values[0]
 
 
 def luminance_shift(
