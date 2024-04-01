@@ -88,6 +88,13 @@ def gen_annual_emissions_summary_list(emis_summary_info, program_names) -> dict[
     return paired_emissions_lists
 
 
+def gen_annual_emissions_summary_list_m2(emis_estimate_info, program_names) -> dict[str, list]:
+    paired_emissions_lists = {}
+
+    for program_name in program_names:
+        
+
+
 def gen_cross_program_summary_plots(out_dir: Path, baseline_program: str, n_sites: int):
 
     print(output_constants.SUMMARRY_PLOT_GENERATION_MESSAGE)

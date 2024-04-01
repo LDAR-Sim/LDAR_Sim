@@ -143,6 +143,41 @@ OUTPUT_KEEP_STR = "kept"
 OUTPUT_KEEP_REGEX = re.compile(re.escape(OUTPUT_KEEP_STR))
 
 
+def gen_emis_estimate_summary(dir: Path):
+    emis_estimate_summary_df = pd.DataFrame(
+        columns=output_constants.EMIS_ESTIMATION_SUMMARY_COLUMNS
+    )
+    with os.scandir(dir) as entries:
+        for entry in entries:
+            if (
+                entry.is_file()
+                and EMIS_PATTERN.match(entry.name)
+                and not re.search(OUTPUT_KEEP_REGEX, entry.name)
+            ):
+                emis_data: pd.DataFrame = pd.read_csv(entry.path)
+                prog_name = OUTPUTS_NAME_SIM_EXTRACTION_REGEX.match(entry.name).group(1)
+                sim = OUTPUTS_NAME_SIM_EXTRACTION_REGEX.match(entry.name).group(2)
+                for year in emis_data["year"].unique():
+                    new_summary_row = {}
+
+                    new_summary_row[
+                        output_constants.EMIS_ESTIMATION_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME
+                    ] = prog_name
+                    new_summary_row[
+                        output_constants.EMIS_ESTIMATION_SUMMARY_COLUMNS_ACCESSORS.SIM
+                    ] = sim
+                    new_summary_row[
+                        output_constants.EMIS_ESTIMATION_SUMMARY_COLUMNS_ACCESSORS.YEAR
+                    ] = year
+                    yearly_emissions = emis_data.loc[
+                        emis_data["year"] == year, "volume_emitted"
+                    ].sum()
+                    new_summary_row[
+                        output_constants.EMIS_ESTIMATION_SUMMARY_COLUMNS_ACCESSORS.ANNUAL_EMISSIONS
+                    ] = yearly_emissions
+    return emis_estimate_summary_df
+
+
 def gen_ts_summary(dir: Path):
     ts_summary_df = pd.DataFrame(columns=output_constants.TS_SUMMARY_COLUMNS)
     with os.scandir(dir) as entries:
@@ -244,12 +279,17 @@ def mark_outputs_to_keep(dir: Path):
 def concat_output_data(out_dir: Path, clear_outputs: bool):
     leg_ts_sum: pd.DataFrame = get_summary_file(out_dir, output_constants.TS_SUMMARY_FILENAME)
     leg_emis_sum: pd.DataFrame = get_summary_file(out_dir, output_constants.EMIS_SUMMARY_FILENAME)
+    leg_emis_estimate: pd.DataFrame = get_summary_file(
+        out_dir, output_constants.EMIS_ESTIMATION_SUMMARY_FILENAME
+    )
     program_dirs = [f.path for f in os.scandir(out_dir) if f.is_dir()]
     prog_ts_sum_dfs: list[pd.DataFrame] = []
     prog_emis_sum_dfs: list[pd.DataFrame] = []
+    prog_emis_estimate_dfs: list[pd.DataFrame] = []
     for program_dir in program_dirs:
         prog_ts_sum_dfs.append(gen_ts_summary(program_dir))
         prog_emis_sum_dfs.append(gen_emissions_summary(program_dir))
+        prog_emis_estimate_dfs.append(gen_emis_estimate_summary(program_dir))
         if clear_outputs:
             clear_directory(program_dir)
         else:
@@ -259,10 +299,19 @@ def concat_output_data(out_dir: Path, clear_outputs: bool):
         new_ts_sum: pd.DataFrame = pd.concat(prog_ts_sum_dfs, ignore_index=True)
         prog_emis_sum_dfs.insert(0, leg_emis_sum)
         new_emis_sum: pd.DataFrame = pd.concat(prog_emis_sum_dfs, ignore_index=True)
+        prog_emis_estimate_dfs.insert(0, leg_emis_estimate)
+        new_emis_estimate: pd.DataFrame = pd.concat(prog_emis_estimate_dfs, ignore_index=True)
         save_summary_file(new_ts_sum, out_dir, output_constants.TS_SUMMARY_FILENAME)
         save_summary_file(new_emis_sum, out_dir, output_constants.EMIS_SUMMARY_FILENAME)
+        save_summary_file(
+            new_emis_estimate, out_dir, output_constants.EMIS_ESTIMATION_SUMMARY_FILENAME
+        )
     else:
         new_ts_sum: pd.DataFrame = pd.concat(prog_ts_sum_dfs, ignore_index=True)
         new_emis_sum: pd.DataFrame = pd.concat(prog_emis_sum_dfs, ignore_index=True)
+        new_emis_estimate: pd.DataFrame = pd.concat(prog_emis_estimate_dfs, ignore_index=True)
         save_summary_file(new_ts_sum, out_dir, output_constants.TS_SUMMARY_FILENAME)
         save_summary_file(new_emis_sum, out_dir, output_constants.EMIS_SUMMARY_FILENAME)
+        save_summary_file(
+            new_emis_estimate, out_dir, output_constants.EMIS_ESTIMATION_SUMMARY_FILENAME
+        )
