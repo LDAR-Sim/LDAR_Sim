@@ -20,7 +20,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 from datetime import date, timedelta
 from math import ceil
-from typing import override
+from typing_extensions import override
 
 from sortedcontainers import SortedList
 from file_processing.output_processing.output_utils import TaggingFlaggingStats

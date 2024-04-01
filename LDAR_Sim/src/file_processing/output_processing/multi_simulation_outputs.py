@@ -136,6 +136,7 @@ EMIS_MAPPING_TO_SUMMARY_COLS = {
 
 TS_PATTERN = re.compile(r".*timeseries\.csv$")
 EMIS_PATTERN = re.compile(r".*emissions_summary\.csv$")
+EST_PATTERN = re.compile(r".*estimated_emissions\.csv$")
 
 OUTPUTS_NAME_SIM_EXTRACTION_REGEX = re.compile(r"^(.*?)_(\d+)_.+.csv$")
 
@@ -147,17 +148,19 @@ def gen_emis_estimate_summary(dir: Path):
     emis_estimate_summary_df = pd.DataFrame(
         columns=output_constants.EMIS_ESTIMATION_SUMMARY_COLUMNS
     )
+    emis_summary_df = pd.DataFrame(columns=output_constants.EMIS_SIMPLE_SUMMARY_COLUMNS)
     with os.scandir(dir) as entries:
         for entry in entries:
             if (
                 entry.is_file()
-                and EMIS_PATTERN.match(entry.name)
+                and EST_PATTERN.match(entry.name)
                 and not re.search(OUTPUT_KEEP_REGEX, entry.name)
             ):
-                emis_data: pd.DataFrame = pd.read_csv(entry.path)
+                est_emis_data: pd.DataFrame = pd.read_csv(entry.path)
                 prog_name = OUTPUTS_NAME_SIM_EXTRACTION_REGEX.match(entry.name).group(1)
                 sim = OUTPUTS_NAME_SIM_EXTRACTION_REGEX.match(entry.name).group(2)
-                for year in emis_data["year"].unique():
+
+                for year in est_emis_data["year"].unique():
                     new_summary_row = {}
 
                     new_summary_row[
@@ -169,13 +172,108 @@ def gen_emis_estimate_summary(dir: Path):
                     new_summary_row[
                         output_constants.EMIS_ESTIMATION_SUMMARY_COLUMNS_ACCESSORS.YEAR
                     ] = year
-                    yearly_emissions = emis_data.loc[
-                        emis_data["year"] == year, "volume_emitted"
+                    yearly_emissions = est_emis_data.loc[
+                        est_emis_data["year"] == year, "volume_emitted"
                     ].sum()
                     new_summary_row[
                         output_constants.EMIS_ESTIMATION_SUMMARY_COLUMNS_ACCESSORS.ANNUAL_EMISSIONS
                     ] = yearly_emissions
-    return emis_estimate_summary_df
+                    emis_estimate_summary_df.loc[len(emis_estimate_summary_df)] = new_summary_row
+            elif (
+                entry.is_file()
+                and EMIS_PATTERN.match(entry.name)
+                and not re.search(OUTPUT_KEEP_REGEX, entry.name)
+            ):
+                emis_data: pd.DataFrame = pd.read_csv(entry.path)
+                prog_name = OUTPUTS_NAME_SIM_EXTRACTION_REGEX.match(entry.name).group(1)
+                sim = OUTPUTS_NAME_SIM_EXTRACTION_REGEX.match(entry.name).group(2)
+                distinct_years = pd.to_datetime(
+                    emis_data[output_constants.EMIS_DATA_COL_ACCESSORS.DATE_BEG]
+                ).dt.year.unique()
+                int_data = pd.DataFrame(
+                    columns=[
+                        "Emissions ID",
+                        "Date Began",
+                        "Days Active",
+                        '"True" Rate (g/s)',
+                        "volume emitted",
+                        "year",
+                    ]
+                )
+                emis_data["Date Began"] = pd.to_datetime(emis_data["Date Began"])
+                for _, row in emis_data.iterrows():
+                    new_intermediate_row = {}
+                    new_intermediate_row["Emissions ID"] = row["Emissions ID"]
+                    new_intermediate_row["Date Began"] = row["Date Began"]
+                    new_intermediate_row["Days Active"] = row["Days Active"]
+                    new_intermediate_row['"True" Rate (g/s)'] = row['"True" Rate (g/s)']
+
+                    if (
+                        (row["Date Began"]) + pd.to_timedelta(row["Days Active"], unit="D")
+                    ).year == (row["Date Began"]).year:
+                        # If the emission is active for one specific year
+                        new_intermediate_row["volume emitted"] = (
+                            row['"True" Rate (g/s)'] * row["Days Active"] * 24 * 3600
+                        ) / 1000
+                        new_intermediate_row["year"] = row["Date Began"].year
+                        int_data.loc[len(int_data)] = new_intermediate_row
+                    else:
+                        # Emission is active for more than 1 year
+                        # Calculate the volume emitted for the first year
+                        days_in_first_year = (
+                            row["Date Began"] + pd.offsets.YearEnd()
+                        ).dayofyear - row["Date Began"].dayofyear
+                        new_intermediate_row["volume emitted"] = (
+                            row['"True" Rate (g/s)'] * days_in_first_year * 24 * 3600
+                        ) / 1000
+                        year = row["Date Began"].year
+                        new_intermediate_row["year"] = year
+                        int_data.loc[len(int_data)] = new_intermediate_row
+                        # Calculate the volume emitted for the subsequent years
+                        days_remaining = row["Days Active"] - days_in_first_year
+                        while days_remaining > 0:
+                            year += 1
+                            days_in_year = days_remaining
+                            if days_remaining > 365:
+                                days_in_year = 365
+                            new_intermediate_row["volume emitted"] = (
+                                row['"True" Rate (g/s)'] * days_in_year * 24 * 3600
+                            ) / 1000
+                            new_intermediate_row["year"] = year
+                            int_data.loc[len(int_data)] = new_intermediate_row
+                            days_remaining -= days_in_year
+
+                for year in distinct_years:
+                    new_summary_row = {}
+
+                    new_summary_row[
+                        output_constants.EMIS_SIMPLE_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME
+                    ] = prog_name
+                    new_summary_row[output_constants.EMIS_SIMPLE_SUMMARY_COLUMNS_ACCESSORS.SIM] = (
+                        sim
+                    )
+                    new_summary_row[output_constants.EMIS_SIMPLE_SUMMARY_COLUMNS_ACCESSORS.YEAR] = (
+                        year
+                    )
+                    yearly_emissions = int_data.loc[
+                        int_data["year"] == year, "volume emitted"
+                    ].sum()
+                    new_summary_row[
+                        output_constants.EMIS_SIMPLE_SUMMARY_COLUMNS_ACCESSORS.ANNUAL_EMISSIONS
+                    ] = yearly_emissions
+
+                    emis_summary_df.loc[len(emis_summary_df)] = new_summary_row
+
+    merged = pd.merge(
+        emis_estimate_summary_df,
+        emis_summary_df,
+        on=[
+            output_constants.EMIS_SIMPLE_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME,
+            output_constants.EMIS_SIMPLE_SUMMARY_COLUMNS_ACCESSORS.SIM,
+            output_constants.EMIS_SIMPLE_SUMMARY_COLUMNS_ACCESSORS.YEAR,
+        ],
+    )
+    return merged
 
 
 def gen_ts_summary(dir: Path):

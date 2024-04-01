@@ -92,7 +92,18 @@ def gen_annual_emissions_summary_list_m2(emis_estimate_info, program_names) -> d
     paired_emissions_lists = {}
 
     for program_name in program_names:
-        
+        true_emis_list = emis_estimate_info.loc[
+            emis_estimate_info[output_constants.EMIS_SIMPLE_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME]
+            == program_name,
+            output_constants.EMIS_SIMPLE_SUMMARY_COLUMNS_ACCESSORS.ANNUAL_EMISSIONS,
+        ].values.tolist()
+        est_emis_list = emis_estimate_info.loc[
+            emis_estimate_info[output_constants.EMIS_ESTIMATION_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME]
+            == program_name,
+            output_constants.EMIS_ESTIMATION_SUMMARY_COLUMNS_ACCESSORS.ANNUAL_EMISSIONS,
+        ].values.tolist()
+        paired_emissions_lists[program_name] = (true_emis_list, est_emis_list)
+    return paired_emissions_lists
 
 
 def gen_cross_program_summary_plots(out_dir: Path, baseline_program: str, n_sites: int):
@@ -103,23 +114,25 @@ def gen_cross_program_summary_plots(out_dir: Path, baseline_program: str, n_site
 
     os.makedirs(summary_program_plots_directory)
 
-    emis_summary_info: pd.DataFrame = pd.read_csv(out_dir / output_constants.EMIS_SUMMARY_FILENAME)
-
+    # emis_summary_info: pd.DataFrame = pd.read_csv(out_dir / output_constants.EMIS_SUMMARY_FILENAME)
+    emis_est_summary_info: pd.DataFrame = pd.read_csv(
+        out_dir / output_constants.EMIS_ESTIMATION_SUMMARY_FILENAME
+    )
     estimate_vs_true_constants = output_constants.ESTIMATE_VS_TRUE_PLOTTING_CONSTANTS
     gen_estimated_vs_true_emissions_percent_difference_plot(
-        emis_summary_info,
+        emis_est_summary_info,
         summary_program_plots_directory,
         estimate_vs_true_constants,
         baseline_program,
     )
     gen_estimated_vs_true_emissions_relative_difference_plot(
-        emis_summary_info,
+        emis_est_summary_info,
         summary_program_plots_directory,
         estimate_vs_true_constants,
         baseline_program,
     )
     gen_paired_estimate_and_true_emission_distributions(
-        emis_summary_info,
+        emis_est_summary_info,
         summary_program_plots_directory,
         estimate_vs_true_constants,
         baseline_program,
@@ -219,7 +232,8 @@ def gen_estimated_vs_true_emissions_percent_difference_plot(
 ):
     program_names = get_non_baseline_prog_names(emis_summary_info, baseline_program)
 
-    paired_emissions_lists = gen_annual_emissions_summary_list(emis_summary_info, program_names)
+    # paired_emissions_lists = gen_annual_emissions_summary_list(emis_summary_info, program_names)
+    paired_emissions_lists = gen_annual_emissions_summary_list_m2(emis_summary_info, program_names)
     percent_diff_lists = {}
 
     for key, (t_total_emis, est_total_emis) in paired_emissions_lists.items():
@@ -298,7 +312,8 @@ def gen_estimated_vs_true_emissions_relative_difference_plot(
     save_separate_plots: bool = True,
 ):
     program_names = get_non_baseline_prog_names(emis_summary_info, baseline_program)
-    paired_emissions_lists = gen_annual_emissions_summary_list(emis_summary_info, program_names)
+    # paired_emissions_lists = gen_annual_emissions_summary_list(emis_summary_info, program_names)
+    paired_emissions_lists = gen_annual_emissions_summary_list_m2(emis_summary_info, program_names)
     relative_diff_lists = {}
     overall_max = float("-inf")
     for key, (t_total_emis, est_total_emis) in paired_emissions_lists.items():
@@ -390,7 +405,8 @@ def gen_paired_estimate_and_true_emission_distributions(
 
     program_names = get_non_baseline_prog_names(emis_summary_info, baseline_program)
 
-    paired_emissions_lists = gen_annual_emissions_summary_list(emis_summary_info, program_names)
+    # paired_emissions_lists = gen_annual_emissions_summary_list(emis_summary_info, program_names)
+    paired_emissions_lists = gen_annual_emissions_summary_list_m2(emis_summary_info, program_names)
 
     overall_max = 0
     overall_min = float("inf")
