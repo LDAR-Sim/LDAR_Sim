@@ -2,7 +2,7 @@ from datetime import date
 from typing import Tuple
 import pytest
 
-from virtual_world.fugitive_emission import FugitiveEmission
+from src.virtual_world.fugitive_emission import FugitiveEmission
 
 
 @pytest.fixture(name="mock_simple_fugitive_emission_for_activate_testing_1")
@@ -71,12 +71,10 @@ def mock_simple_fugitive_emission_for_natural_repair_testing_1_fix() -> (
 
 
 @pytest.fixture(name="mock_simple_fugitive_emission_for_tag_leak_testing_1")
-def mock_simple_fugitive_emission_for_tag_leak_testing_1_fix() -> (
-    Tuple[
-        FugitiveEmission,
-        Tuple[float, date, int, str, str, int],
-    ]
-):
+def mock_simple_fugitive_emission_for_tag_leak_testing_1_fix() -> Tuple[
+    FugitiveEmission,
+    Tuple[float, date, int, str, str, int],
+]:
     to_ret = FugitiveEmission(
         1, 1, date(*[2018, 1, 1]), date(*[2017, 1, 1]), True, {}, 14, 200, 365
     )
@@ -85,12 +83,10 @@ def mock_simple_fugitive_emission_for_tag_leak_testing_1_fix() -> (
 
 
 @pytest.fixture(name="mock_simple_fugitive_emission_for_tag_leak_testing_already_tagged")
-def mock_simple_fugitive_emission_for_tag_leak_testing_already_tagged_fix() -> (
-    Tuple[
-        FugitiveEmission,
-        Tuple[float, date, int, str, str, int],
-    ]
-):
+def mock_simple_fugitive_emission_for_tag_leak_testing_already_tagged_fix() -> Tuple[
+    FugitiveEmission,
+    Tuple[float, date, int, str, str, int],
+]:
     to_ret = FugitiveEmission(
         1, 1, date(*[2018, 1, 1]), date(*[2017, 1, 1]), True, {}, 14, 200, 365
     )
