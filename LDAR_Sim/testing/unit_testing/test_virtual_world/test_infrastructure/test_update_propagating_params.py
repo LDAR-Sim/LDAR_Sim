@@ -17,14 +17,15 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 ------------------------------------------------------------------------------
 """
+
 import copy
 from typing import Tuple
 import pandas as pd
-from virtual_world.infrastructure import Infrastructure
+from src.virtual_world.infrastructure import Infrastructure
 
 from hypothesis import given, strategies as st
 
-from virtual_world.infrastructure_const import (
+from src.virtual_world.infrastructure_const import (
     Infrastructure_Constants,
     Virtual_World_To_Prop_Params_Mapping,
 )

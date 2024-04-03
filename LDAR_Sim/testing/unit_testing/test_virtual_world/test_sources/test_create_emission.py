@@ -1,7 +1,6 @@
 from datetime import date
 from typing import Tuple
 
-import pytest
 from src.virtual_world.emissions import Emission
 from src.virtual_world.sources import Source
 from src.file_processing.input_processing.emissions_source_processing import EmissionsSourceSample
