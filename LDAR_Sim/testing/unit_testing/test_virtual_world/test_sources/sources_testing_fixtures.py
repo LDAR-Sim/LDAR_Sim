@@ -2,8 +2,8 @@ from datetime import date
 from typing import Tuple
 import pytest
 
-from virtual_world.sources import Source
-from virtual_world.infrastructure_const import Infrastructure_Constants
+from src.virtual_world.sources import Source
+from src.virtual_world.infrastructure_const import Infrastructure_Constants
 
 
 @pytest.fixture(name="mock_simple_source_constructor_params")
@@ -19,8 +19,8 @@ def mock_simple_source_constructor_params_fix() -> Tuple[str, dict, dict]:
         Infrastructure_Constants.Sources_File_Constants.EMIS_ERS: "test",
         Infrastructure_Constants.Sources_File_Constants.EMIS_EPR: 1,
         Infrastructure_Constants.Sources_File_Constants.EMIS_DUR: 1,
-        Infrastructure_Constants.Sources_File_Constants.REPAIR_DELAY: 14,
-        Infrastructure_Constants.Sources_File_Constants.REPAIR_COST: 200,
+        Infrastructure_Constants.Sources_File_Constants.REPAIR_DELAY: {"vals": [14]},
+        Infrastructure_Constants.Sources_File_Constants.REPAIR_COST: {"vals": [200]},
         "Method_Specific_Params": {
             Infrastructure_Constants.Sources_File_Constants.SPATIAL_PLACEHOLDER: {}
         },
