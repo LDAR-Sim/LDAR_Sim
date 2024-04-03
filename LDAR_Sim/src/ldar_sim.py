@@ -175,7 +175,7 @@ class LdarSim:
             new_row[tca.METH_DAILY_SURVEY_TIME.format(method=method_info.method_name)] = (
                 method_info.survey_time
             )
-        new_row[tca.COST] = total_daily_cost
+        new_row[tca.COST] = total_daily_cost + new_row[tca.REP_COST]
         new_row[tca.TAGGED_LEAKS] = total_leaks_tagged
 
     def format_timeseries(self, timeseries: pd.DataFrame) -> None:
