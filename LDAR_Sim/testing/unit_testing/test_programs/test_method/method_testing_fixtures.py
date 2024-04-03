@@ -167,10 +167,11 @@ def simple_method_values_fix(mocker):
         "sensor": "default",
         "max_workday": 8,
         "consider_daylight": False,
-        "t_bw_sites": [1],
+        "t_bw_sites": {"vals": [1]},
         "is_follow_up": False,
         "weather_envs": {"wind": [0, 10], "temp": [-30, 30], "precip": [0, 1]},
         "reporting_delay": 0,
+        "cost": {"upfront": 1000, "per_site": 500},
     }
     current_date: date = date(2023, 1, 2)
     state = {"weather": create_random_state(), "daylight": [], "t": []}
@@ -220,11 +221,12 @@ def simple_method_values2_fix(mocker):
         "n_crews": 5,
         "sensor": "default",
         "max_workday": 1,
-        "t_bw_sites": [1],
+        "t_bw_sites": {"vals": [1]},
         "is_follow_up": False,
         "consider_daylight": False,
         "weather_envs": {"wind": [0, 10], "temp": [-30, 30], "precip": [0, 1]},
         "reporting_delay": 0,
+        "cost": {"upfront": 1000, "per_site": 500},
     }
     current_date: date = date(2023, 1, 2)
     state = {"weather": create_random_state(), "daylight": [], "t": []}
@@ -274,11 +276,12 @@ def simple_method_values3_fix(mocker):
         "n_crews": 5,
         "sensor": "default",
         "max_workday": 1,
-        "t_bw_sites": [1],
+        "t_bw_sites": {"vals": [1]},
         "is_follow_up": True,
         "consider_daylight": False,
         "weather_envs": {"wind": [0, 10], "temp": [-30, 30], "precip": [0, 1]},
         "reporting_delay": 0,
+        "cost": {"upfront": 1000, "per_site": 500},
     }
     current_date: date = date(2023, 1, 2)
     state = {"weather": create_random_state(), "daylight": [], "t": []}
