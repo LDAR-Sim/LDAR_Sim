@@ -13,19 +13,13 @@ from testing.unit_testing.test_sensors.test_site_level_sensors.site_level_sensor
 
 
 def test_000_default_site_level_sensor_detect_emissions_detects_emissions_at_site_if_combined_rate_above_mdl(  # noqa
-    sensor_info_for_default_equipment_group_level_sensor_construction_testing: dict[
-        str, int
-    ],
+    sensor_info_for_default_equipment_group_level_sensor_construction_testing: dict[str, int],
     mock_site_for_detect_emissions_testing,
 ) -> None:
     mock_site: Site = Site()
-    mdl: float = (
-        sensor_info_for_default_equipment_group_level_sensor_construction_testing["mdl"]
-    )
-    qe: float = (
-        sensor_info_for_default_equipment_group_level_sensor_construction_testing["QE"]
-    )
-    sensor = DefaultSiteLevelSensor(mdl, qe)
+    mdl: float = sensor_info_for_default_equipment_group_level_sensor_construction_testing["mdl"]
+    qe: float = sensor_info_for_default_equipment_group_level_sensor_construction_testing["QE"]
+    sensor = DefaultSiteLevelSensor([mdl], qe)
     report: SiteSurveyReport = SiteSurveyReport(1)
     emis_detected: bool = sensor.detect_emissions(mock_site, "test", report)
     expected_emis = mock_site_for_detect_emissions_testing[1]

@@ -17,6 +17,8 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 ------------------------------------------------------------------------------
 """
+
+from typing import Union
 from scheduling.schedule_dataclasses import EquipmentGroupSurveyReport, SiteSurveyReport
 from sensors.default_sensor import DefaultSensor
 from virtual_world.emissions import Emission
@@ -26,7 +28,7 @@ from virtual_world.sites import Site
 class DefaultEquipmentGroupLevelSensor(DefaultSensor):
     SURVEY_LEVEL = "equipment_group_level"
 
-    def __init__(self, mdl: float, quantification_error: float) -> None:
+    def __init__(self, mdl: Union[list[float], float], quantification_error: float) -> None:
         super().__init__(mdl, quantification_error)
 
     def detect_emissions(self, site: Site, meth_name: str, survey_report: SiteSurveyReport) -> bool:
