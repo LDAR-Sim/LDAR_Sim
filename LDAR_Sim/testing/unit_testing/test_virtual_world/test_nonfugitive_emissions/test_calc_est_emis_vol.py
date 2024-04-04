@@ -20,7 +20,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 from datetime import date
 from src.virtual_world.nonfugitive_emissions import NonRepairableEmission
-from src.utils import conversion_constants as conv_const
+from LDAR_Sim.src.constants import conversion_constants as conv_const
 
 
 def mock_non_fugitive_emission_init(self, *args, **kwargs):

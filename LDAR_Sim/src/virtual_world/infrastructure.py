@@ -30,7 +30,7 @@ from file_processing.input_processing.emissions_source_processing import (
 from file_processing.input_processing.repair_delay_processing import (
     read_in_repair_delay_sources_file,
 )
-from virtual_world.infrastructure_const import (
+from LDAR_Sim.src.constants.infrastructure_const import (
     Infrastructure_Constants as IC,
     Virtual_World_To_Prop_Params_Mapping as VW,
 )

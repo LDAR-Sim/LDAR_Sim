@@ -19,7 +19,6 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 """
 
 import sys
-import re
 from pandas import DataFrame, read_csv, Series
 from numpy.random import choice as random_sample
 from scipy import stats
@@ -29,24 +28,9 @@ from dataclasses import dataclass
 from numpy import exp as exponential
 
 from utils.unit_converter import gas_convert
-
-
-EMISSION_SOURCES = "sources"
-EMISSION_SOURCE_DEFAULT = "default"
-EMISSION_FILE = "emissions_file"
-EMISSION_ERS = "ERS"
-EMISSION = "emissions"
-
-INVALID_EMISSIONS_SOURCE_FILE_VALUE_ERROR = (
-    "Error: LDAR-Sim could not parse source file value: {value} from source:{source}."
-    " Encountered exception: {exception}"
-)
-
-SAMPLE_MATCH = r"\s*sample\s*"
-DIST_MATCH = r"\s*dist\s*"
-
-SAMPLE_REGEX = re.compile(SAMPLE_MATCH, re.IGNORECASE)
-DIST_REGEX = re.compile(DIST_MATCH, re.IGNORECASE)
+from constants.error_messages import Input_Processing_Messages as ipm
+from constants.input_processing_const import Emissions_Source_Processing_Const as esp
+import LDAR_Sim.src.constants.general_const as gc
 
 
 # TODO add support for fitting a distribution to source data
@@ -68,7 +52,7 @@ class EmissionsSource:
         self, for_conversion: float | list[float], unit_amount: str, unit_time: str
     ) -> float:
         # don't bother converting if units are already gram/second
-        if unit_amount == "gram" and unit_time == "second":
+        if unit_amount == gc.Unit_Constants.GRAM and unit_time == gc.Unit_Constants.SECOND:
             return for_conversion
         if isinstance(for_conversion, float):
             converted_val: float = gas_convert(
@@ -126,7 +110,7 @@ class EmissionsSourceDist(EmissionsSource):
         self, dist_type: str, dist_shape: str, dist_scale: str
     ) -> stats.rv_continuous:
         scale: float = float(dist_scale)
-        if dist_type == "lognorm":
+        if dist_type == gc.Dist_Constants.LOGNORM:
             scale = exponential(scale)
             dist_shape = dist_shape[0]
         # Ensure all shape values are captured
@@ -176,18 +160,13 @@ def read_in_emissions_sources_file(
     Returns
 
     """
-    filename: str = virtual_world[EMISSION][EMISSION_FILE]
+    filename: str = virtual_world[esp.EMISSION][esp.EMISSION_FILE]
     filepath: WindowsPath = inputs_path / filename
     if filename is not None:
         emissions_sources_file = read_csv(filepath)
         return emissions_sources_file
     else:
-        print(
-            (
-                "Emissions file parameter is missing for the virtual world. "
-                "Please provide a valid emissions file"
-            )
-        )
+        print(ipm.MISSING_EMISSIONS_FILE_ERROR)
         sys.exit()
 
 
@@ -230,7 +209,7 @@ def process_emission_source_file(emis_sources: DataFrame) -> dict[str, Emissions
         )
         unit_amount: str = emis_source_info.unit_amount.strip()
         unit_time: str = emis_source_info.units_time.strip()
-        if DIST_REGEX.search(emis_source_info.data_use):
+        if esp.DIST_REGEX.search(emis_source_info.data_use):
             emis_source: EmissionsSource = EmissionsSourceDist(
                 source_id=clean_source_name,
                 unit_amount=unit_amount,
@@ -240,7 +219,7 @@ def process_emission_source_file(emis_sources: DataFrame) -> dict[str, Emissions
                 dist_scale=emis_source_info.source[0],
                 max_emis_rate=emis_source_info.max_emission_rate,
             )
-        elif SAMPLE_REGEX.search(emis_source_info.data_use):
+        elif esp.SAMPLE_REGEX.search(emis_source_info.data_use):
             emis_source: EmissionsSource = EmissionsSourceSample(
                 source_id=clean_source_name,
                 unit_amount=unit_amount,
@@ -249,7 +228,7 @@ def process_emission_source_file(emis_sources: DataFrame) -> dict[str, Emissions
                 max_emis_rate=emis_source_info.max_emission_rate,
             )
         else:
-            print(f"Error, invalid emissions source information for source {clean_source_name}")
+            print(ipm.INVALID_EMISSIONS_SOURCE_ERROR.format(source_name=clean_source_name))
 
         processed_emissions_data[clean_source_name] = emis_source
 
@@ -262,48 +241,48 @@ def read_in_emis_source_col(column_name: str, emis_source_col: Series) -> Emissi
         date_use: str = emis_source_col[0]
     except Exception as e:
         print(
-            INVALID_EMISSIONS_SOURCE_FILE_VALUE_ERROR.format(
-                value="Data Usage", source=column_name, exception=e
+            ipm.INVALID_EMISSIONS_SOURCE_FILE_VALUE_ERROR.format(
+                value=ipm.INVALID_EMISSIONS_VALUE["data"], source=column_name, exception=e
             )
         )
     try:
         dist_type: str = emis_source_col[1]
     except Exception as e:
         print(
-            INVALID_EMISSIONS_SOURCE_FILE_VALUE_ERROR.format(
-                value="Distribution Type", source=column_name, exception=e
+            ipm.INVALID_EMISSIONS_SOURCE_FILE_VALUE_ERROR.format(
+                value=ipm.INVALID_EMISSIONS_VALUE["dist"], source=column_name, exception=e
             )
         )
     try:
         max_emis_rate: float = float(emis_source_col[2])
     except Exception as e:
         print(
-            INVALID_EMISSIONS_SOURCE_FILE_VALUE_ERROR.format(
-                value="Maximum Emission Rate", source=column_name, exception=e
+            ipm.INVALID_EMISSIONS_SOURCE_FILE_VALUE_ERROR.format(
+                value=ipm.INVALID_EMISSIONS_VALUE["max_emis"], source=column_name, exception=e
             )
         )
     try:
         unit_amount: str = emis_source_col[3]
     except Exception as e:
         print(
-            INVALID_EMISSIONS_SOURCE_FILE_VALUE_ERROR.format(
-                value="Units (amount)", source=column_name, exception=e
+            ipm.INVALID_EMISSIONS_SOURCE_FILE_VALUE_ERROR.format(
+                value=ipm.INVALID_EMISSIONS_VALUE["unit_amt"], source=column_name, exception=e
             )
         )
     try:
         units_time: str = emis_source_col[4]
     except Exception as e:
         print(
-            INVALID_EMISSIONS_SOURCE_FILE_VALUE_ERROR.format(
-                value="Units (time)", source=column_name, exception=e
+            ipm.INVALID_EMISSIONS_SOURCE_FILE_VALUE_ERROR.format(
+                value=ipm.INVALID_EMISSIONS_VALUE["unit_time"], source=column_name, exception=e
             )
         )
     try:
         source: list[str] = Series(emis_source_col[5:]).dropna().tolist()
     except Exception as e:
         print(
-            INVALID_EMISSIONS_SOURCE_FILE_VALUE_ERROR.format(
-                value="Data source values", source=column_name, exception=e
+            ipm.INVALID_EMISSIONS_SOURCE_FILE_VALUE_ERROR.format(
+                value=ipm.INVALID_EMISSIONS_VALUE["source"], source=column_name, exception=e
             )
         )
     return EmissionsSourceInfo(

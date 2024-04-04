@@ -36,7 +36,7 @@ from scheduling.schedule_dataclasses import (
     CrewDailyReport,
 )
 from scheduling.surveying_dataclasses import DetectionRecord
-from sensors.sensor_constant_mapping import (
+from LDAR_Sim.src.constants.sensor_constant_mapping import (
     SENS_TYPE,
     SENS_MDL,
     SENS_QE,

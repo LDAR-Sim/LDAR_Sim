@@ -23,7 +23,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import re
-from file_processing.output_processing import output_constants
+from LDAR_Sim.src.constants import output_constants
 from file_processing.output_processing import output_utils
 from file_processing.output_processing.output_utils import (
     TIMESERIES_COL_ACCESSORS as tca,

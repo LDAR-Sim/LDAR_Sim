@@ -17,6 +17,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 ------------------------------------------------------------------------------
 """
+
 import sys
 from programs.site_level_method import SiteLevelMethod
 from scheduling.follow_up_mobile_schedule import FollowUpMobileSchedule
@@ -24,7 +25,7 @@ from sensors.METEC_NoWind_sensor import METECNWEquipmentGroup
 from sensors.default_equipment_group_level_sensor import (
     DefaultEquipmentGroupLevelSensor,
 )
-from sensors.sensor_constant_mapping import (
+from LDAR_Sim.src.constants.sensor_constant_mapping import (
     ERR_MSG_UNKNOWN_SENS_TYPE,
     SENS_MDL,
     SENS_QE,
@@ -57,9 +58,7 @@ class EquipmentGroupLevelMethod(SiteLevelMethod):
                 sensor_info[SENS_MDL], sensor_info[SENS_QE]
             )
         elif sensor_info[SENS_TYPE] == "METEC_no_wind":
-            self._sensor = METECNWEquipmentGroup(
-                sensor_info[SENS_MDL], sensor_info[SENS_QE]
-            )
+            self._sensor = METECNWEquipmentGroup(sensor_info[SENS_MDL], sensor_info[SENS_QE])
         else:
             print(ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
             sys.exit()

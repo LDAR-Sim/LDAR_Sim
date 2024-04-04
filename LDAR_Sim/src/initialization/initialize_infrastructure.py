@@ -4,7 +4,7 @@ from virtual_world.infrastructure import Infrastructure
 import hashlib
 import json
 import numpy as np
-from utils.file_name_constants import HASH_FILE, INFRA_FILE
+from LDAR_Sim.src.constants.file_name_constants import HASH_FILE, INFRA_FILE
 
 
 def hash_file(file_path) -> str:

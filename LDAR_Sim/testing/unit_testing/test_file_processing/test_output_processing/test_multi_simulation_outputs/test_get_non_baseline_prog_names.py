@@ -2,7 +2,7 @@ import pandas as pd
 from src.file_processing.output_processing.multi_simulation_visualizations import (
     get_non_baseline_prog_names,
 )
-from src.file_processing.output_processing import output_constants
+from LDAR_Sim.src.constants import output_constants
 
 
 def test_get_non_baseline_prog_names():

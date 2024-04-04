@@ -27,7 +27,7 @@ from file_processing.output_processing.output_utils import (
     EMIS_DATA_COL_ACCESSORS as eca,
 )
 
-from utils.conversion_constants import GRAMS_PER_SECOND_TO_KG_PER_DAY
+from LDAR_Sim.src.constants.conversion_constants import GRAMS_PER_SECOND_TO_KG_PER_DAY
 
 
 class Emission:

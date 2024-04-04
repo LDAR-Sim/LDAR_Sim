@@ -27,7 +27,8 @@ import seaborn as sns
 from matplotlib import pyplot as plt
 from matplotlib import ticker, lines
 
-from file_processing.output_processing import output_constants, output_utils
+from LDAR_Sim.src.constants import output_constants
+from file_processing.output_processing import output_utils
 import numpy as np
 
 

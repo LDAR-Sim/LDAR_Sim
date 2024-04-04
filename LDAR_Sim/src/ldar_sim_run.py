@@ -40,7 +40,7 @@ from initialization.preseed import gen_seed_emis
 from virtual_world.infrastructure import Infrastructure
 from weather.daylight_calculator import DaylightCalculatorAve
 from weather.weather_lookup import WeatherLookup as WL
-from utils.file_name_constants import PARAMETER_FILE, GENERATOR_FOLDER
+from LDAR_Sim.src.constants.file_name_constants import PARAMETER_FILE, GENERATOR_FOLDER
 from utils.generic_functions import check_ERA5_file
 from file_processing.input_processing.input_manager import InputManager
 from initialization.args import (

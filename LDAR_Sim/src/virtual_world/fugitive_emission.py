@@ -24,7 +24,7 @@ from numpy import random
 from typing import Any
 from typing_extensions import override
 
-from utils import conversion_constants as conv_const
+from LDAR_Sim.src.constants import conversion_constants as conv_const
 from file_processing.output_processing.output_utils import EmisInfo, EMIS_DATA_COL_ACCESSORS as eca
 
 from virtual_world.emissions import Emission

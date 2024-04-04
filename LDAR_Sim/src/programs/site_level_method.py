@@ -29,7 +29,7 @@ from scheduling.follow_up_survey_planner import FollowUpSurveyPlanner
 from scheduling.surveying_dataclasses import DetectionRecord
 from sensors.default_site_level_sensor import DefaultSiteLevelSensor
 from sensors.METEC_NoWind_sensor import METECNWSite
-from sensors.sensor_constant_mapping import (
+from LDAR_Sim.src.constants.sensor_constant_mapping import (
     SENS_TYPE,
     SENS_MDL,
     SENS_QE,

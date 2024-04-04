@@ -33,7 +33,7 @@ from scheduling.schedule_dataclasses import TaggingInfo
 from virtual_world.emissions import Emission
 from virtual_world.equipment_groups import Equipment_Group
 
-from virtual_world.infrastructure_const import (
+from LDAR_Sim.src.constants.infrastructure_const import (
     Infrastructure_Constants,
 )
 

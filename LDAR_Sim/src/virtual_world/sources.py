@@ -31,7 +31,7 @@ from file_processing.input_processing.emissions_source_processing import (
 from virtual_world.emissions import Emission
 from virtual_world.fugitive_emission import FugitiveEmission
 from virtual_world.nonfugitive_emissions import NonRepairableEmission
-from virtual_world.infrastructure_const import (
+from constants.infrastructure_const import (
     Infrastructure_Constants as IC,
 )
 

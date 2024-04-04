@@ -1,7 +1,7 @@
 import pytest
 from typing import Tuple
 
-from src.virtual_world.infrastructure_const import Infrastructure_Constants
+from LDAR_Sim.src.constants.infrastructure_const import Infrastructure_Constants
 from src.virtual_world.sites import Site
 from src.file_processing.input_processing.emissions_source_processing import EmissionsSourceSample
 from datetime import date

@@ -3,8 +3,63 @@ from typing import Tuple
 import pytest
 
 from src.programs.site_level_method import SiteLevelMethod
-from src.virtual_world.infrastructure_const import Infrastructure_Constants
+from LDAR_Sim.src.constants.infrastructure_const import Infrastructure_Constants
 from src.virtual_world.sites import Site
+from LDAR_Sim.src.constants.sensor_constant_mapping import SENS_TYPE, SENS_MDL, SENS_QE
+
+
+def mock_get_method_survey_time(method_name, *args, **kwargs):
+    return 120
+
+
+def mock_check_weather(self, state, curr_date, site):
+    return False
+
+
+def mock_get_average_method_surveys_required(self, site):
+    return 1
+
+
+def mock_average_t_btw_site(self):
+    return 0
+
+
+@pytest.fixture(name="mock_values_for_simple_site_level_method_construction")
+def mock_values_for_simple_site_level_method_construction_fix(
+    mocker,
+) -> Tuple[str, dict]:
+    mocker.patch.object(Site, "__init__", lambda self, *args, **kwargs: setattr(self, "id", 1))
+    mocker.patch.object(
+        Method,
+        "_get_average_method_surveys_required",
+        mock_get_average_method_surveys_required,
+    )
+    mocker.patch.object(
+        Method,
+        "_get_avg_t_bt_sites",
+        mock_average_t_btw_site,
+    )
+    mocker.patch.object(
+        Method,
+        "check_weather",
+        mock_check_weather,
+    )
+    mocker.patch.object(
+        Method,
+        "_get_average_survey_time_for_method",
+        mock_get_method_survey_time,
+    )
+    name = "Test"
+    method_info: dict = {
+        Method.DETEC_ACCESSOR: {SENS_TYPE: "default", SENS_MDL: 1.0, SENS_QE: 0.0},
+        "max_workday": 8,
+        "consider_daylight": False,
+        "weather_envs": {"precip": [], "wind": [], "temp": []},
+        "is_follow_up": False,
+        "t_bw_sites": [],
+        "n_crews": 5,
+    }
+    return name, method_info, mocker
 
 
 @pytest.fixture(name="mock_simple_site_level_method_for_survey_site_testing")

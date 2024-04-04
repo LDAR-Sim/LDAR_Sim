@@ -35,7 +35,7 @@ from sensors.OGI_camera_rk import OGICameraRKSensor
 from sensors.OGI_camera_zim import OGICameraZimSensor
 from sensors.METEC_NoWind_sensor import METECNWEquipment
 from virtual_world.sites import Site
-from sensors.sensor_constant_mapping import (
+from LDAR_Sim.src.constants.sensor_constant_mapping import (
     SENS_TYPE,
     SENS_MDL,
     SENS_QE,

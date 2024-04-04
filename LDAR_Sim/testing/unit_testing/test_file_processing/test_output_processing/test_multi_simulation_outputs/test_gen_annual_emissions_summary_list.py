@@ -4,7 +4,7 @@ import pytest
 from src.file_processing.output_processing.multi_simulation_visualizations import (
     gen_annual_emissions_summary_list,
 )
-from src.file_processing.output_processing import output_constants
+from LDAR_Sim.src.constants import output_constants
 
 
 def test_gen_annual_emissions_summary_list_one_year():

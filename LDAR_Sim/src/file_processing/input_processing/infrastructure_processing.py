@@ -23,14 +23,8 @@ import sys
 from pandas import DataFrame, Series
 from file_processing.input_processing.file_reader import file_reader
 
-from virtual_world.infrastructure_const import Infrastructure_Constants as ic
-
-MISSING_SITES_FILE_HEADER_ERROR = "The sites file is missing the column: {}"
-
-NO_PERSISTENT_FIELD_FOR_SOURCES_WARNING = (
-    "WARNING: The persistent field has not been provided for sources."
-    "Assuming all sources are persistent."
-)
+from constants.infrastructure_const import Infrastructure_Constants as ic
+from constants.error_messages import Input_Processing_Messages as ipm
 
 
 def read_in_infrastructure_files(virtual_world, in_dir: Path) -> dict[str, DataFrame]:
@@ -53,7 +47,7 @@ def read_in_infrastructure_files(virtual_world, in_dir: Path) -> dict[str, DataF
             source_df[ic.Sources_File_Constants.PERSISTENT] = True
             source_df[ic.Sources_File_Constants.ACTIVE_DUR] = 1
             source_df[ic.Sources_File_Constants.INACTIVE_DUR] = 0
-            print(NO_PERSISTENT_FIELD_FOR_SOURCES_WARNING)
+            print(ipm.NO_PERSISTENT_FIELD_FOR_SOURCES_WARNING)
         input_dict["sources"] = source_df
 
     return input_dict
@@ -62,7 +56,7 @@ def read_in_infrastructure_files(virtual_world, in_dir: Path) -> dict[str, DataF
 def check_site_file(input_dict):
     for header in ic.Sites_File_Constants.REQUIRED_HEADERS:
         if header not in input_dict["sites"]:
-            print(MISSING_SITES_FILE_HEADER_ERROR.format(header=header))
+            print(ipm.MISSING_SITES_FILE_HEADER_ERROR.format(header=header))
             sys.exit()
 
 
@@ -72,14 +66,3 @@ def get_equip(row: Series, site_types_df: DataFrame):
         == row[ic.Virtual_World_Constants.SITE_TYPE],
         ic.Virtual_World_Constants.EQG,
     ].iloc[0]
-
-
-# def get_equip(row: Series, site_types_df: DataFrame):
-#     site_type = row[ic.Sites_File_Constants.TYPE]
-#     filtered_df = site_types_df.loc[
-#         site_types_df[ic.Site_Type_File_Constants.TYPE] == site_type,
-#         ic.Site_Type_File_Constants.EQG,
-#     ]
-#     if not filtered_df.empty:
-#         return filtered_df.iloc[0].item()
-#     return None

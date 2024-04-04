@@ -37,7 +37,7 @@ from scheduling.schedule_dataclasses import TaggingInfo
 from virtual_world.emissions import Emission
 from virtual_world.fugitive_emission import FugitiveEmission
 from virtual_world.nonfugitive_emissions import NonRepairableEmission
-from virtual_world.infrastructure_const import Infrastructure_Constants as IC
+from LDAR_Sim.src.constants.infrastructure_const import Infrastructure_Constants as IC
 
 from virtual_world.sources import Source
 
