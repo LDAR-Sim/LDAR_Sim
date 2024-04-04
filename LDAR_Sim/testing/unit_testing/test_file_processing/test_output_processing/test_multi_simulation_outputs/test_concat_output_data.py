@@ -22,16 +22,16 @@ import os
 from pathlib import Path
 
 import pandas as pd
-from LDAR_Sim.src.file_processing.output_processing.output_constants import (
+from src.file_processing.output_processing.output_constants import (
     EMIS_SUMMARY_FILENAME,
     TS_SUMMARY_FILENAME,
+    TS_SUMMARY_COLUMNS_ACCESSORS as tsca,
+    EMIS_SUMMARY_COLUMNS_ACCESSORS as esca,
 )
 
 from src.file_processing.output_processing.multi_simulation_outputs import (  # noqa
     gen_ts_summary,
-    TS_SUMMARY_COLUMNS_ACCESSORS as tsca,
     gen_emissions_summary,
-    EMIS_SUMMARY_COLUMNS_ACCESSORS as esca,
     get_summary_file,
     clear_directory,
     mark_outputs_to_keep,

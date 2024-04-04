@@ -64,15 +64,24 @@ def mock_nonfugitive_emission_for_update_no_status_change_fix() -> NonRepairable
     return to_ret
 
 
-@pytest.fixture(name="mock_nonfugitive_emission_for_update_no_status_change_emission_tagged")
-def mock_nonfugitive_emission_for_update_no_status_change_emission_tagged_fix() -> (
+@pytest.fixture(name="mock_nonfugitive_emission_for_update_no_status_change_emission_recorded")
+def mock_nonfugitive_emission_for_update_no_status_change_emission_recorded_fix() -> (
     NonRepairableEmission
 ):
     to_ret = NonRepairableEmission(1, 1, date(*[2018, 1, 1]), date(*[2017, 1, 1]), True, {}, 365)
     to_ret._active_days = 60
     to_ret._status = "Active"
     to_ret._record = True
-    to_ret._days_since_tagged = 1
+    to_ret._recorded_by_company = "Test"
+    return to_ret
+
+
+@pytest.fixture(name="mock_nonfugitive_emission_for_update_will_expire")
+def mock_nonfugitive_emission_for_update_will_expire_fix() -> NonRepairableEmission:
+    to_ret = NonRepairableEmission(1, 1, date(*[2018, 1, 1]), date(*[2017, 1, 1]), True, {}, 365)
+    to_ret._active_days = 59
+    to_ret._status = "Active"
+    to_ret._duration = 60
     return to_ret
 
 

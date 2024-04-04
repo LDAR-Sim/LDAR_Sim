@@ -102,7 +102,8 @@ def test_000_generate_propagating_params_correctly_updates_prop_params_dict_w_on
 ):
     methods, prop_params, site_info, site_type_info = inputs
     result = copy.deepcopy(prop_params)
-    Infrastructure.update_propagating_params(result, site_info, site_type_info, methods)
+    infra = Infrastructure.__new__(Infrastructure)
+    infra.update_propagating_params(result, site_info, site_type_info, methods)
     meth_spec_prop_params = prop_params.pop("Method_Specific_Params")
 
     for param in prop_params:

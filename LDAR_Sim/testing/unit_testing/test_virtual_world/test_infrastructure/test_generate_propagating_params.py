@@ -70,7 +70,8 @@ def generate_test_methods(draw):
 def test_000_generate_propagating_params_generates_correct_prop_params_dict_w_only_ints(vw, meth):
     """Test to confirm the generation of properly formatted output dictionary"""
 
-    result = Infrastructure.generate_propagating_params(vw[0], meth[0])
+    infra = Infrastructure.__new__(Infrastructure)
+    result = infra.generate_propagating_params(vw[0], meth[0])
 
     assert isinstance(result, dict)
 

@@ -87,9 +87,6 @@ class EMIS_SUMMARY_COLUMNS_ACCESSORS:
     T_AVG_EMIS_AMOUNT = '"True" Average Emissions Amount (Kg Methane)'
     T_EMIS_AMOUNT_95 = '95th Percentile "True" Emissions Amount (Kg Methane)'
     T_EMIS_AMOUNT_5 = '5th Percentile "True" Emissions Amount (Kg Methane)'
-    EST_AVG_EMIS_AMOUNT = '"Estimated" Average Emissions Amount (Kg Methane)'
-    EST_EMIS_AMOUNT_95 = '95th Percentile "Estimated" Emissions Amount (Kg Methane)'
-    EST_EMIS_AMOUNT_5 = '5th Percentile "Estimated" Emissions Amount (Kg Methane)'
 
 
 TS_SUMMARY_COLUMNS = [
@@ -122,7 +119,4 @@ EMIS_SUMMARY_COLUMNS = [
     EMIS_SUMMARY_COLUMNS_ACCESSORS.T_AVG_EMIS_AMOUNT,
     EMIS_SUMMARY_COLUMNS_ACCESSORS.T_EMIS_AMOUNT_95,
     EMIS_SUMMARY_COLUMNS_ACCESSORS.T_EMIS_AMOUNT_5,
-    EMIS_SUMMARY_COLUMNS_ACCESSORS.EST_AVG_EMIS_AMOUNT,
-    EMIS_SUMMARY_COLUMNS_ACCESSORS.EST_EMIS_AMOUNT_95,
-    EMIS_SUMMARY_COLUMNS_ACCESSORS.EST_EMIS_AMOUNT_5,
 ]
