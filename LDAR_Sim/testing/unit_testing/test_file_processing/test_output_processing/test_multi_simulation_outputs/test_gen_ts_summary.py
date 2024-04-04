@@ -25,11 +25,11 @@ import pandas as pd
 from src.file_processing.output_processing.multi_simulation_outputs import (
     gen_ts_summary,
 )
-from src.file_processing.output_processing.output_constants import (
+import os
+from src.constants.output_file_constants import (
+    TIMESERIES_COL_ACCESSORS as tca,
     TS_SUMMARY_COLUMNS_ACCESSORS as tsca,
 )
-import os
-from src.file_processing.output_processing.output_utils import TIMESERIES_COL_ACCESSORS as tca
 
 
 class MockDirEntry:

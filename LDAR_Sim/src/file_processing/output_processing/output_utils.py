@@ -1,89 +1,7 @@
 from dataclasses import dataclass
 from typing import Tuple
 from numpy import NaN
-
-
-class EMIS_DATA_COL_ACCESSORS:
-    EMIS_ID = "Emissions ID"
-    SITE_ID = "Site ID"
-    EQG = "Equipment"
-    STATUS = "Status"
-    DAYS_ACT = "Days Active"
-    EST_DAYS_ACT = "Estimated Days Active"
-    T_VOL_EMIT = '"True" Volume Emitted (Kg Methane)'
-    EST_VOL_EMIT = '"Estimated" Volume Emitted (Kg Methane)'
-    T_RATE = '"True" Rate (g/s)'
-    M_RATE = '"Measured" Rate (g/s)'
-    DATE_BEG = "Date Began"
-    DATE_REP = "Date Repaired"
-    INIT_DETECT_BY = "Initially Detected By"
-    INIT_DETECT_DATE = "Initially Detected Date"
-    TAGGED = "Tagged"
-    TAGGED_BY = "Tagged By"
-    COMP = "Component"
-    RECORDED = "Recorded"
-    RECORDED_BY = "Recorded By"
-    REPAIRABLE = "Repairable"
-
-
-EMIS_DATA_FINAL_COL_ORDER = [
-    EMIS_DATA_COL_ACCESSORS.EMIS_ID,
-    EMIS_DATA_COL_ACCESSORS.SITE_ID,
-    EMIS_DATA_COL_ACCESSORS.EQG,
-    EMIS_DATA_COL_ACCESSORS.COMP,
-    EMIS_DATA_COL_ACCESSORS.STATUS,
-    EMIS_DATA_COL_ACCESSORS.DAYS_ACT,
-    EMIS_DATA_COL_ACCESSORS.EST_DAYS_ACT,
-    EMIS_DATA_COL_ACCESSORS.DATE_BEG,
-    EMIS_DATA_COL_ACCESSORS.DATE_REP,
-    EMIS_DATA_COL_ACCESSORS.T_VOL_EMIT,
-    EMIS_DATA_COL_ACCESSORS.EST_VOL_EMIT,
-    EMIS_DATA_COL_ACCESSORS.T_RATE,
-    EMIS_DATA_COL_ACCESSORS.M_RATE,
-    EMIS_DATA_COL_ACCESSORS.INIT_DETECT_BY,
-    EMIS_DATA_COL_ACCESSORS.INIT_DETECT_DATE,
-    EMIS_DATA_COL_ACCESSORS.TAGGED,
-    EMIS_DATA_COL_ACCESSORS.TAGGED_BY,
-    EMIS_DATA_COL_ACCESSORS.RECORDED,
-    EMIS_DATA_COL_ACCESSORS.RECORDED_BY,
-    EMIS_DATA_COL_ACCESSORS.REPAIRABLE,
-]
-
-TIMESERIES_COLUMNS = [
-    "Date",
-    "Daily Emissions (Kg Methane)",
-    "Daily Mitigable Emissions (Kg Methane)",
-    "Daily Non-Mitigable Emissions (Kg Methane)",
-    "Daily Cost ($)",
-    "Active Leaks",
-    "New Leaks",
-    "Leaks Repaired",
-    "Leaks Naturally Repaired",
-    "Leaks Tagged",
-    "Daily Repair Cost ($)",
-    "Daily Natural Repair Cost ($)",
-]
-
-
-class TIMESERIES_COL_ACCESSORS:
-    DATE = "Date"
-    EMIS = "Daily Emissions (Kg Methane)"
-    EMIS_MIT = "Daily Mitigable Emissions (Kg Methane)"
-    EMIS_NON_MIT = "Daily Non-Mitigable Emissions (Kg Methane)"
-    COST = "Daily Cost ($)"
-    ACT_LEAKS = "Active Leaks"
-    NEW_LEAKS = "New Leaks"
-    REP_LEAKS = "Leaks Repaired"
-    NAT_REP_LEAKS = "Leaks Naturally Repaired"
-    TAGGED_LEAKS = "Leaks Tagged"
-    REP_COST = "Daily Repair Cost ($)"
-    NAT_REP_COST = "Daily Natural Repair Cost ($)"
-    METH_DAILY_DEPLOY_COST = "{method} Deployment Cost ($)"
-    METH_DAILY_TAGS = "{method} Leaks tagged for repair"
-    METH_DAILY_FLAGS = "{method} Sites flagged for Follow-Up"
-    METH_DAILY_SITES_VIS = "{method} Sites Visited"
-    METH_DAILY_TRAVEL_TIME = "{method} Travel Time (Minutes)"
-    METH_DAILY_SURVEY_TIME = "{method} Survey Time (Minutes)"
+from constants.error_messages import Output_Processing_Messages as om
 
 
 def percent_difference(a: float, b: float) -> float:
@@ -133,7 +51,7 @@ class TsEmisData:
                 active_leaks=active_leaks,
             )
         else:
-            raise ValueError("Unsupported operand type for addition")
+            raise ValueError(om.OPERAND_ADDITION_ERROR)
 
     def __iadd__(self, other):
         if isinstance(other, TsEmisData):
@@ -143,7 +61,7 @@ class TsEmisData:
             self.active_leaks += other.active_leaks
             return self
         else:
-            raise ValueError("Unsupported operand type for in-place addition")
+            raise ValueError(om.OPERAND_INPLACE_ADDITION_ERROR)
 
 
 @dataclass

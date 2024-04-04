@@ -27,13 +27,12 @@ import pandas as pd
 from file_processing.output_processing.output_utils import (
     EmisInfo,
     TsEmisData,
-    EMIS_DATA_COL_ACCESSORS as eca,
 )
 from file_processing.input_processing.emissions_source_processing import (
     EmissionsSource,
 )
 from scheduling.schedule_dataclasses import TaggingInfo
-
+from constants.output_file_constants import EMIS_DATA_COL_ACCESSORS as eca
 from virtual_world.emissions import Emission
 from virtual_world.fugitive_emission import FugitiveEmission
 from virtual_world.nonfugitive_emissions import NonRepairableEmission

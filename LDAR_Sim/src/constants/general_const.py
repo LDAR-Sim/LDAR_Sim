@@ -2,7 +2,8 @@
 ------------------------------------------------------------------------------
 Program:     The LDAR Simulator (LDAR-Sim)
 File:        general_const.py
-Purpose:     Holds general constants used in the program, such as units, dist etc.
+Purpose:     Holds general constants used in the program, such as units, file
+extensions, etc.
 
 
 This program is free software: you can redistribute it and/or modify
@@ -36,3 +37,11 @@ class Unit_Constants:
 
 class Dist_Constants:
     LOGNORM = "lognorm"
+
+
+class File_Extension_Constants:
+    PICKLE = ".p"
+    YML = ".yml"
+    YAML = ".yaml"
+    JSON = ".json"
+    CSV = ".csv"

@@ -2,14 +2,14 @@ import pandas as pd
 from src.file_processing.output_processing.multi_simulation_visualizations import (
     get_non_baseline_prog_names,
 )
-from LDAR_Sim.src.constants import output_constants
+from LDAR_Sim.src.constants import output_file_constants
 
 
 def test_get_non_baseline_prog_names():
     # Define a sample DataFrame
     emis_summary_info = pd.DataFrame(
         {
-            output_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME: [
+            output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME: [
                 "prog1",
                 "prog2",
                 "prog3",

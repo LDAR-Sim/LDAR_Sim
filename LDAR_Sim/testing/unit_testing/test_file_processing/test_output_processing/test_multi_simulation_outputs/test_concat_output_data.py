@@ -22,7 +22,7 @@ import os
 from pathlib import Path
 
 import pandas as pd
-from LDAR_Sim.src.constants.output_constants import (
+from LDAR_Sim.src.constants.output_file_constants import (
     EMIS_SUMMARY_FILENAME,
     TS_SUMMARY_FILENAME,
     TS_SUMMARY_COLUMNS_ACCESSORS as tsca,

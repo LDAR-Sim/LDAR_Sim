@@ -23,12 +23,12 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import re
-from LDAR_Sim.src.constants import output_constants
-from file_processing.output_processing import output_utils
-from file_processing.output_processing.output_utils import (
+from constants import output_file_constants as oc
+from constants.output_file_constants import (
     TIMESERIES_COL_ACCESSORS as tca,
     EMIS_DATA_COL_ACCESSORS as eca,
 )
+from constants.file_processing_const import Multi_Sim_Output_Const as mc
 
 
 def get_mean_val(df: pd.DataFrame, column: str) -> float:
@@ -41,14 +41,10 @@ def get_sum(df: pd.DataFrame, column: str) -> float:
 
 def assign_part_sum_columns(df: pd.DataFrame, column_name: str, base_column_name: str):
     # Extracting distinct years from the 'Date Began' column
-    distinct_years = pd.to_datetime(
-        df[output_utils.EMIS_DATA_COL_ACCESSORS.DATE_BEG]
-    ).dt.year.unique()
+    distinct_years = pd.to_datetime(df[eca.DATE_BEG]).dt.year.unique()
     result = {}
     for year in distinct_years:
-        year_df = df[
-            pd.to_datetime(df[output_utils.EMIS_DATA_COL_ACCESSORS.DATE_BEG]).dt.year == year
-        ]
+        year_df = df[pd.to_datetime(df[eca.DATE_BEG]).dt.year == year]
         ann_sum = get_sum(year_df, column_name)
         year_column_name = base_column_name.format(year)
         result[year_column_name] = ann_sum
@@ -66,102 +62,84 @@ def get_nth_percentile(df: pd.DataFrame, column: str, percentile: float) -> floa
 
 
 TS_MAPPING_TO_SUMMARY_COLS = {
-    output_constants.TS_SUMMARY_COLUMNS_ACCESSORS.AVG_T_DAILY_EMIS: lambda df: (
-        get_mean_val(df, tca.EMIS)
-    ),
-    output_constants.TS_SUMMARY_COLUMNS_ACCESSORS.AVG_T_MIT_DAILY_EMIS: lambda df: (
+    oc.TS_SUMMARY_COLUMNS_ACCESSORS.AVG_T_DAILY_EMIS: lambda df: (get_mean_val(df, tca.EMIS)),
+    oc.TS_SUMMARY_COLUMNS_ACCESSORS.AVG_T_MIT_DAILY_EMIS: lambda df: (
         get_mean_val(df, tca.EMIS_MIT)
     ),
-    output_constants.TS_SUMMARY_COLUMNS_ACCESSORS.AVG_T_NON_MIT_DAILY_EMIS: lambda df: (
+    oc.TS_SUMMARY_COLUMNS_ACCESSORS.AVG_T_NON_MIT_DAILY_EMIS: lambda df: (
         get_mean_val(df, tca.EMIS_NON_MIT)
     ),
-    output_constants.TS_SUMMARY_COLUMNS_ACCESSORS.T_DAILY_EMIS_95: lambda df: (
-        get_nth_percentile(df, tca.EMIS, 95)
+    oc.TS_SUMMARY_COLUMNS_ACCESSORS.T_DAILY_EMIS_95: lambda df: (
+        get_nth_percentile(df, tca.EMIS, mc.PERCENTILE_95)
     ),
-    output_constants.TS_SUMMARY_COLUMNS_ACCESSORS.T_MIT_DAILY_EMIS_95: lambda df: (
-        get_nth_percentile(df, tca.EMIS_MIT, 95)
+    oc.TS_SUMMARY_COLUMNS_ACCESSORS.T_MIT_DAILY_EMIS_95: lambda df: (
+        get_nth_percentile(df, tca.EMIS_MIT, mc.PERCENTILE_95)
     ),
-    output_constants.TS_SUMMARY_COLUMNS_ACCESSORS.T_NON_MIT_DAILY_EMIS_95: lambda df: (
-        get_nth_percentile(df, tca.EMIS_NON_MIT, 95)
+    oc.TS_SUMMARY_COLUMNS_ACCESSORS.T_NON_MIT_DAILY_EMIS_95: lambda df: (
+        get_nth_percentile(df, tca.EMIS_NON_MIT, mc.PERCENTILE_95)
     ),
-    output_constants.TS_SUMMARY_COLUMNS_ACCESSORS.T_DAILY_EMIS_5: lambda df: (
-        get_nth_percentile(df, tca.EMIS, 5)
+    oc.TS_SUMMARY_COLUMNS_ACCESSORS.T_DAILY_EMIS_5: lambda df: (
+        get_nth_percentile(df, tca.EMIS, mc.PERCENTILE_5)
     ),
-    output_constants.TS_SUMMARY_COLUMNS_ACCESSORS.T_MIT_DAILT_EMIS_5: lambda df: (
-        get_nth_percentile(df, tca.EMIS_MIT, 5)
+    oc.TS_SUMMARY_COLUMNS_ACCESSORS.T_MIT_DAILT_EMIS_5: lambda df: (
+        get_nth_percentile(df, tca.EMIS_MIT, mc.PERCENTILE_5)
     ),
-    output_constants.TS_SUMMARY_COLUMNS_ACCESSORS.T_NON_MIT_DAILY_EMIS_5: lambda df: (
-        get_nth_percentile(df, tca.EMIS_NON_MIT, 5)
+    oc.TS_SUMMARY_COLUMNS_ACCESSORS.T_NON_MIT_DAILY_EMIS_5: lambda df: (
+        get_nth_percentile(df, tca.EMIS_NON_MIT, mc.PERCENTILE_5)
     ),
-    output_constants.TS_SUMMARY_COLUMNS_ACCESSORS.AVG_DAILY_COST: lambda df: (
-        get_mean_val(df, tca.COST)
+    oc.TS_SUMMARY_COLUMNS_ACCESSORS.AVG_DAILY_COST: lambda df: (get_mean_val(df, tca.COST)),
+    oc.TS_SUMMARY_COLUMNS_ACCESSORS.DAILY_COST_95: lambda df: (
+        get_nth_percentile(df, tca.COST, mc.PERCENTILE_95)
     ),
-    output_constants.TS_SUMMARY_COLUMNS_ACCESSORS.DAILY_COST_95: lambda df: (
-        get_nth_percentile(df, tca.COST, 95)
-    ),
-    output_constants.TS_SUMMARY_COLUMNS_ACCESSORS.DAILY_COST_5: lambda df: (
-        get_nth_percentile(df, tca.COST, 5)
+    oc.TS_SUMMARY_COLUMNS_ACCESSORS.DAILY_COST_5: lambda df: (
+        get_nth_percentile(df, tca.COST, mc.PERCENTILE_5)
     ),
 }
 
 EMIS_MAPPING_TO_SUMMARY_COLS = {
-    output_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_TOTAL_EMIS: lambda df: get_sum(
-        df, eca.T_VOL_EMIT
-    ),
-    output_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.EST_TOTAL_EMIS: lambda df: get_sum(
-        df, eca.EST_VOL_EMIT
-    ),
-    output_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_TOTAL_MIT_EMIS: lambda df: get_sum(
+    oc.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_TOTAL_EMIS: lambda df: get_sum(df, eca.T_VOL_EMIT),
+    oc.EMIS_SUMMARY_COLUMNS_ACCESSORS.EST_TOTAL_EMIS: lambda df: get_sum(df, eca.EST_VOL_EMIT),
+    oc.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_TOTAL_MIT_EMIS: lambda df: get_sum(
         df.loc[df[eca.REPAIRABLE]], eca.T_VOL_EMIT
     ),
-    output_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_TOTAL_NON_MIT_EMIS: lambda df: get_sum(
+    oc.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_TOTAL_NON_MIT_EMIS: lambda df: get_sum(
         df.loc[~df[eca.REPAIRABLE]], eca.T_VOL_EMIT
     ),
-    output_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.AVG_T_EMIS_RATE: lambda df: get_mean_val(
-        df, eca.T_RATE
+    oc.EMIS_SUMMARY_COLUMNS_ACCESSORS.AVG_T_EMIS_RATE: lambda df: get_mean_val(df, eca.T_RATE),
+    oc.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_EMIS_RATE_95: lambda df: get_nth_percentile(
+        df, eca.T_RATE, mc.PERCENTILE_95
     ),
-    output_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_EMIS_RATE_95: lambda df: get_nth_percentile(
-        df, eca.T_RATE, 95
+    oc.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_EMIS_RATE_5: lambda df: get_nth_percentile(
+        df, eca.T_RATE, mc.PERCENTILE_5
     ),
-    output_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_EMIS_RATE_5: lambda df: get_nth_percentile(
-        df, eca.T_RATE, 5
-    ),
-    output_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_AVG_EMIS_AMOUNT: lambda df: get_mean_val(
+    oc.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_AVG_EMIS_AMOUNT: lambda df: get_mean_val(
         df, eca.T_VOL_EMIT
     ),
-    output_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_EMIS_AMOUNT_95: lambda df: get_nth_percentile(
-        df, eca.T_VOL_EMIT, 95
+    oc.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_EMIS_AMOUNT_95: lambda df: get_nth_percentile(
+        df, eca.T_VOL_EMIT, mc.PERCENTILE_95
     ),
-    output_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_EMIS_AMOUNT_5: lambda df: get_nth_percentile(
-        df, eca.T_VOL_EMIT, 5
+    oc.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_EMIS_AMOUNT_5: lambda df: get_nth_percentile(
+        df, eca.T_VOL_EMIT, mc.PERCENTILE_5
     ),
 }
 
-TS_PATTERN = re.compile(r".*timeseries\.csv$")
-EMIS_PATTERN = re.compile(r".*emissions_summary\.csv$")
-
-OUTPUTS_NAME_SIM_EXTRACTION_REGEX = re.compile(r"^(.*?)_(\d+)_.+.csv$")
-
-OUTPUT_KEEP_STR = "kept"
-OUTPUT_KEEP_REGEX = re.compile(re.escape(OUTPUT_KEEP_STR))
-
 
 def gen_ts_summary(dir: Path):
-    ts_summary_df = pd.DataFrame(columns=output_constants.TS_SUMMARY_COLUMNS)
+    ts_summary_df = pd.DataFrame(columns=oc.TS_SUMMARY_COLUMNS)
     with os.scandir(dir) as entries:
         for entry in entries:
             if (
                 entry.is_file()
-                and TS_PATTERN.match(entry.name)
-                and not re.search(OUTPUT_KEEP_REGEX, entry.name)
+                and mc.TS_PATTERN.match(entry.name)
+                and not re.search(mc.OUTPUT_KEEP_REGEX, entry.name)
             ):
                 new_summary_row = {}
                 ts_data: pd.DataFrame = pd.read_csv(entry.path)
-                new_summary_row[output_constants.TS_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME] = (
-                    OUTPUTS_NAME_SIM_EXTRACTION_REGEX.match(entry.name).group(1)
+                new_summary_row[oc.TS_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME] = (
+                    mc.OUTPUTS_NAME_SIM_EXTRACTION_REGEX.match(entry.name).group(1)
                 )
-                new_summary_row[output_constants.TS_SUMMARY_COLUMNS_ACCESSORS.SIM] = (
-                    OUTPUTS_NAME_SIM_EXTRACTION_REGEX.match(entry.name).group(2)
+                new_summary_row[oc.TS_SUMMARY_COLUMNS_ACCESSORS.SIM] = (
+                    mc.OUTPUTS_NAME_SIM_EXTRACTION_REGEX.match(entry.name).group(2)
                 )
                 for sum_stat, calc in TS_MAPPING_TO_SUMMARY_COLS.items():
                     new_summary_row[sum_stat] = calc(ts_data)
@@ -170,34 +148,34 @@ def gen_ts_summary(dir: Path):
 
 
 def gen_emissions_summary(dir: Path):
-    emis_summary_df = pd.DataFrame(columns=output_constants.EMIS_SUMMARY_COLUMNS)
+    emis_summary_df = pd.DataFrame(columns=oc.EMIS_SUMMARY_COLUMNS)
     add_annual_columns = False
     with os.scandir(dir) as entries:
         for entry in entries:
             if (
                 entry.is_file()
-                and EMIS_PATTERN.match(entry.name)
-                and not re.search(OUTPUT_KEEP_REGEX, entry.name)
+                and mc.EMIS_PATTERN.match(entry.name)
+                and not re.search(mc.OUTPUT_KEEP_REGEX, entry.name)
             ):
                 new_summary_row = {}
                 emis_data: pd.DataFrame = pd.read_csv(entry.path)
-                new_summary_row[output_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME] = (
-                    OUTPUTS_NAME_SIM_EXTRACTION_REGEX.match(entry.name).group(1)
+                new_summary_row[oc.EMIS_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME] = (
+                    mc.OUTPUTS_NAME_SIM_EXTRACTION_REGEX.match(entry.name).group(1)
                 )
-                new_summary_row[output_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.SIM] = (
-                    OUTPUTS_NAME_SIM_EXTRACTION_REGEX.match(entry.name).group(2)
+                new_summary_row[oc.EMIS_SUMMARY_COLUMNS_ACCESSORS.SIM] = (
+                    mc.OUTPUTS_NAME_SIM_EXTRACTION_REGEX.match(entry.name).group(2)
                 )
                 for sum_stat, calc in EMIS_MAPPING_TO_SUMMARY_COLS.items():
                     new_summary_row[sum_stat] = calc(emis_data)
                 true_annuals = assign_part_sum_columns(
                     emis_data,
                     eca.T_VOL_EMIT,
-                    output_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_ANN_EMIS,
+                    oc.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_ANN_EMIS,
                 )
                 estimated_annuals = assign_part_sum_columns(
                     emis_data,
                     eca.EST_VOL_EMIT,
-                    output_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.EST_ANN_EMIS,
+                    oc.EMIS_SUMMARY_COLUMNS_ACCESSORS.EST_ANN_EMIS,
                 )
                 new_summary_row.update(true_annuals)
                 new_summary_row.update(estimated_annuals)
@@ -230,7 +208,7 @@ def save_summary_file(summary_file: pd.DataFrame, out_dir: Path, filename: str):
 def clear_directory(dir: Path):
     with os.scandir(dir) as entries:
         for entry in entries:
-            if not re.search(OUTPUT_KEEP_REGEX, entry.name):
+            if not re.search(mc.OUTPUT_KEEP_REGEX, entry.name):
                 os.remove(entry.path)
 
 
@@ -239,14 +217,14 @@ def mark_outputs_to_keep(dir: Path):
         for entry in entries:
             if entry.is_file():
                 old_file_path = entry.path
-                new_name = OUTPUT_KEEP_STR + entry.name
+                new_name = mc.OUTPUT_KEEP_STR + entry.name
                 new_file_path = os.path.join(dir, new_name)
                 os.rename(old_file_path, new_file_path)
 
 
 def concat_output_data(out_dir: Path, clear_outputs: bool):
-    leg_ts_sum: pd.DataFrame = get_summary_file(out_dir, output_constants.TS_SUMMARY_FILENAME)
-    leg_emis_sum: pd.DataFrame = get_summary_file(out_dir, output_constants.EMIS_SUMMARY_FILENAME)
+    leg_ts_sum: pd.DataFrame = get_summary_file(out_dir, oc.FileNames.TS_SUMMARY_FILENAME)
+    leg_emis_sum: pd.DataFrame = get_summary_file(out_dir, oc.FileNames.EMIS_SUMMARY_FILENAME)
     program_dirs = [f.path for f in os.scandir(out_dir) if f.is_dir()]
     prog_ts_sum_dfs: list[pd.DataFrame] = []
     prog_emis_sum_dfs: list[pd.DataFrame] = []
@@ -262,10 +240,10 @@ def concat_output_data(out_dir: Path, clear_outputs: bool):
         new_ts_sum: pd.DataFrame = pd.concat(prog_ts_sum_dfs, ignore_index=True)
         prog_emis_sum_dfs.insert(0, leg_emis_sum)
         new_emis_sum: pd.DataFrame = pd.concat(prog_emis_sum_dfs, ignore_index=True)
-        save_summary_file(new_ts_sum, out_dir, output_constants.TS_SUMMARY_FILENAME)
-        save_summary_file(new_emis_sum, out_dir, output_constants.EMIS_SUMMARY_FILENAME)
+        save_summary_file(new_ts_sum, out_dir, oc.FileNames.TS_SUMMARY_FILENAME)
+        save_summary_file(new_emis_sum, out_dir, oc.FileNames.EMIS_SUMMARY_FILENAME)
     else:
         new_ts_sum: pd.DataFrame = pd.concat(prog_ts_sum_dfs, ignore_index=True)
         new_emis_sum: pd.DataFrame = pd.concat(prog_emis_sum_dfs, ignore_index=True)
-        save_summary_file(new_ts_sum, out_dir, output_constants.TS_SUMMARY_FILENAME)
-        save_summary_file(new_emis_sum, out_dir, output_constants.EMIS_SUMMARY_FILENAME)
+        save_summary_file(new_ts_sum, out_dir, oc.FileNames.TS_SUMMARY_FILENAME)
+        save_summary_file(new_emis_sum, out_dir, oc.FileNames.EMIS_SUMMARY_FILENAME)

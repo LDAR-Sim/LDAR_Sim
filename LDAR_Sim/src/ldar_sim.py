@@ -31,12 +31,14 @@ from virtual_world.infrastructure import Infrastructure
 from time_counter import TimeCounter
 from programs.program import Program
 from file_processing.output_processing.output_utils import (
-    EMIS_DATA_FINAL_COL_ORDER,
-    TIMESERIES_COLUMNS,
-    TIMESERIES_COL_ACCESSORS as tca,
     EmisInfo,
     TsEmisData,
     TsMethodData,
+)
+from constants.output_file_constants import (
+    EMIS_DATA_FINAL_COL_ORDER,
+    TIMESERIES_COLUMNS,
+    TIMESERIES_COL_ACCESSORS as tca,
 )
 
 

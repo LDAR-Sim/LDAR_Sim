@@ -55,3 +55,8 @@ class Input_Processing_Messages:
         "WARNING: The persistent field has not been provided for sources."
         "Assuming all sources are persistent."
     )
+
+
+class Output_Processing_Messages:
+    OPERAND_ADDITION_ERROR = "Unsupported operand type for addition"
+    OPERAND_INPLACE_ADDITION_ERROR = "Unsupported operand type for in-place addition"

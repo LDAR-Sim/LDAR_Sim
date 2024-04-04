@@ -1,8 +1,7 @@
 from pathlib import Path
 import pandas as pd
 import matplotlib.pyplot as plt
-from LDAR_Sim.src.constants.output_constants import ProgTsConstants as pts
-from file_processing.output_processing.output_utils import TIMESERIES_COL_ACCESSORS as tca
+from constants.output_file_constants import ProgTsConstants as pts, TIMESERIES_COL_ACCESSORS as tca
 
 
 def gen_prog_timeseries_plot(timeseries: pd.DataFrame, ts_filepath: Path, name_str: str):

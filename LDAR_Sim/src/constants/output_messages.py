@@ -1,8 +1,8 @@
 """
 ------------------------------------------------------------------------------
 Program:     The LDAR Simulator (LDAR-Sim)
-File:        input_processing_const.py
-Purpose:     Holds constants used in input processing
+File:        output_messages.py
+Purpose:     Holds messages used throughout the program
 
 
 This program is free software: you can redistribute it and/or modify
@@ -20,15 +20,4 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 ------------------------------------------------------------------------------
 """
 
-import re
-
-
-class Emissions_Source_Processing_Const:
-    EMISSION_FILE = "emissions_file"
-    EMISSION = "emissions"
-
-    SAMPLE_MATCH = r"\s*sample\s*"
-    DIST_MATCH = r"\s*dist\s*"
-
-    SAMPLE_REGEX = re.compile(SAMPLE_MATCH, re.IGNORECASE)
-    DIST_REGEX = re.compile(DIST_MATCH, re.IGNORECASE)
+SUMMARRY_PLOT_GENERATION_MESSAGE = "Generating cross-program summary plots"

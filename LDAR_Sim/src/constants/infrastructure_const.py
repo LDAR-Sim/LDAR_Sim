@@ -21,7 +21,9 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 class Infrastructure_Constants:
     class Virtual_World_Constants:
+        SOURCES = "sources"
         EQG = "equipment"
+        SITES = "sites"
         SITE_TYPE = "site_type"
 
     class Sites_File_Constants:

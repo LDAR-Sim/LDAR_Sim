@@ -25,37 +25,40 @@ from file_processing.input_processing.file_reader import file_reader
 
 from constants.infrastructure_const import Infrastructure_Constants as ic
 from constants.error_messages import Input_Processing_Messages as ipm
+from constants.param_default_const import Virtual_World_Params as VP
 
 
 def read_in_infrastructure_files(virtual_world, in_dir: Path) -> dict[str, DataFrame]:
     input_dict: dict[str, DataFrame] = {}
-    input_dict["sites"] = file_reader(in_dir / virtual_world["infrastructure"]["sites_file"])
+    input_dict[ic.Virtual_World_Constants.SITES] = file_reader(
+        in_dir / virtual_world[VP.INFRA][VP.SITE]
+    )
 
-    if virtual_world["infrastructure"]["site_type_file"]:
+    if virtual_world[VP.INFRA][VP.SITE_TYPE]:
         input_dict[ic.Virtual_World_Constants.SITE_TYPE] = file_reader(
-            in_dir / virtual_world["infrastructure"]["site_type_file"]
+            in_dir / virtual_world[VP.INFRA][VP.SITE_TYPE]
         )
 
-    if virtual_world["infrastructure"]["equipment_group_file"]:
+    if virtual_world[VP.INFRA][VP.EQUIP]:
         input_dict[ic.Virtual_World_Constants.EQG] = file_reader(
-            in_dir / virtual_world["infrastructure"]["equipment_group_file"]
+            in_dir / virtual_world[VP.INFRA][VP.EQUIP]
         )
 
-    if virtual_world["infrastructure"]["sources_file"]:
-        source_df: DataFrame = file_reader(in_dir / virtual_world["infrastructure"]["sources_file"])
+    if virtual_world[VP.INFRA][VP.SOURCE]:
+        source_df: DataFrame = file_reader(in_dir / virtual_world[VP.INFRA][VP.SOURCE])
         if ic.Sources_File_Constants.PERSISTENT not in source_df.columns:
             source_df[ic.Sources_File_Constants.PERSISTENT] = True
             source_df[ic.Sources_File_Constants.ACTIVE_DUR] = 1
             source_df[ic.Sources_File_Constants.INACTIVE_DUR] = 0
             print(ipm.NO_PERSISTENT_FIELD_FOR_SOURCES_WARNING)
-        input_dict["sources"] = source_df
+        input_dict[ic.Virtual_World_Constants.SOURCES] = source_df
 
     return input_dict
 
 
 def check_site_file(input_dict):
     for header in ic.Sites_File_Constants.REQUIRED_HEADERS:
-        if header not in input_dict["sites"]:
+        if header not in input_dict[ic.Virtual_World_Constants.SITES]:
             print(ipm.MISSING_SITES_FILE_HEADER_ERROR.format(header=header))
             sys.exit()
 
