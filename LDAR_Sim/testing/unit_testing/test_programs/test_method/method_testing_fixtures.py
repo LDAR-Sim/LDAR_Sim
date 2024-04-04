@@ -25,7 +25,7 @@ from src.programs.method import Method
 from src.virtual_world.infrastructure import Site
 from collections import defaultdict
 from scheduling.schedule_dataclasses import SiteSurveyReport
-from src.sensors.default_site_level_sensor import DefaultSiteLevelSensor
+from sensors.default_site_level_sensor import DefaultSiteLevelSensor
 from src.sensors.default_sensor import DefaultSensor
 from src.virtual_world.emissions import Emission
 from src.scheduling.workplan import Workplan
@@ -84,6 +84,9 @@ def mock_get_travel_time(self):
 
 
 def mock_detect_emissions(self, site, meth_name, survey_report):
+    survey_report.site_true_rate = 1
+    survey_report.survey_level = "site_level"
+    survey_report.site_measured_rate = 1.0
     return True
 
 
@@ -328,10 +331,11 @@ def simple_method_values4_fix(mocker):
         "sensor": "default",
         "max_workday": 8,
         "consider_daylight": False,
-        "t_bw_sites": [1],
+        "t_bw_sites": {"vals": [1]},
         "is_follow_up": False,
         "weather_envs": {"wind": [0, 10], "temp": [-30, 30], "precip": [0, 1]},
         "reporting_delay": 0,
+        "cost": {"upfront": 1000, "per_site": 500},
     }
     survey_report = SiteSurveyReport(site_id=1)
     current_date: date = date(2023, 1, 2)
@@ -382,10 +386,11 @@ def simple_method_values5_fix(mocker):
         "sensor": {"type": "default", "MDL": 1, "QE": 0},
         "max_workday": 8,
         "consider_daylight": False,
-        "t_bw_sites": [1],
+        "t_bw_sites": {"vals": [1]},
         "is_follow_up": False,
         "weather_envs": {"wind": [0, 10], "temp": [-30, 30], "precip": [0, 1]},
         "reporting_delay": 0,
+        "cost": {"upfront": 1000, "per_site": 500},
     }
     survey_report = SiteSurveyReport(site_id=1)
     current_date: date = date(2023, 1, 2)
