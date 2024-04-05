@@ -18,17 +18,12 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 ------------------------------------------------------------------------------
 """
 
-
 import sys
 from pandas import DataFrame, read_csv
 from pathlib import WindowsPath
 
-REPAIR = "repairs"
-DELAY = "delay"
-VALID_REPAIR_DELAY_TYPE_ERROR = (
-    "Error: Double check the contents of the repair delay file."
-    " A numerical value was provided as a repair delay"
-)
+from constants.error_messages import Input_Processing_Messages as imp
+from constants.param_default_const import Virtual_World_Params as vw, Common_Params as cp
 
 
 def read_in_repair_delay_sources_file(
@@ -42,14 +37,14 @@ def read_in_repair_delay_sources_file(
     Returns
 
     """
-    filename: str = virtual_world[REPAIR][DELAY]["file"]
+    filename: str = virtual_world[vw.REPAIR][vw.DELAY][cp.FILE]
     if filename is not None:
         filepath: WindowsPath = inputs_path / filename
         repair_delay_file: DataFrame = read_csv(filepath)
         valid_repair_delay_type = "int64"
         all_repair_types_valid = all(repair_delay_file.dtypes == valid_repair_delay_type)
         if not all_repair_types_valid:
-            print(VALID_REPAIR_DELAY_TYPE_ERROR)
+            print(imp.VALID_REPAIR_DELAY_TYPE_ERROR)
             sys.exit()
         return repair_delay_file
     return None

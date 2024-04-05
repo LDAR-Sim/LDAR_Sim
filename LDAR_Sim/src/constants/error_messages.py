@@ -56,13 +56,17 @@ class Input_Processing_Messages:
         "Assuming all sources are persistent."
     )
 
+    ERR_MSG_UNKNOWN_SENS_TYPE = (
+        "ERROR: LDAR-Sim could not resolve the provided sensor type for method: {method}."
+        " Please enter a valid sensor type and try again."
+    )
+
+    VALID_REPAIR_DELAY_TYPE_ERROR = (
+        "Error: Double check the contents of the repair delay file."
+        " A numerical value was provided as a repair delay"
+    )
+
 
 class Output_Processing_Messages:
     OPERAND_ADDITION_ERROR = "Unsupported operand type for addition"
     OPERAND_INPLACE_ADDITION_ERROR = "Unsupported operand type for in-place addition"
-
-
-ERR_MSG_UNKNOWN_SENS_TYPE = (
-    "ERROR: LDAR-Sim could not resolve the provided sensor type for method: {method}."
-    " Please enter a valid sensor type and try again."
-)

@@ -26,7 +26,7 @@ import sys
 from typing import Tuple
 
 import numpy as np
-from constants.error_messages import ERR_MSG_UNKNOWN_SENS_TYPE
+from constants.error_messages import Input_Processing_Messages as ipm
 from file_processing.output_processing.output_utils import CrewDeploymentStats, TaggingFlaggingStats
 from sensors.default_site_level_sensor import DefaultSiteLevelSensor
 from virtual_world.sites import Site
@@ -142,7 +142,7 @@ class Method:
         if sensor_info[mp.TYPE] == "default":
             self._sensor = DefaultSiteLevelSensor(sensor_info[mp.MDL], sensor_info[mp.QE])
         else:
-            print(ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
+            print(ipm.ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
             sys.exit()
 
     def _get_average_method_surveys_required(self, sites: "list[Site]") -> float:

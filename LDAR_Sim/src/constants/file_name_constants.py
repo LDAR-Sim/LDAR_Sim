@@ -1,21 +1,22 @@
-# ------------------------------------------------------------------------------
-# Program:     The LDAR Simulator (LDAR-Sim)
-# File:        utils.file_name_constats
-# Purpose:     Contains constants used to define file names
-#
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the MIT License as published
-# by the Free Software Foundation, version 3.
+"""
+------------------------------------------------------------------------------
+Program:     The LDAR Simulator (LDAR-Sim)
+File:   file_name_constats.py
+Purpose: Contains constants used to define file names
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# MIT License for more details.
-# You should have received a copy of the MIT License
-# along with this program.  If not, see <https://opensource.org/licenses/MIT>.
-#
-# ------------------------------------------------------------------------------
+This program is free software: you can redistribute it and/or modify
+it under the terms of the MIT License as published
+by the Free Software Foundation, version 3.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+MIT License for more details.
+You should have received a copy of the MIT License
+along with this program.  If not, see <https://opensource.org/licenses/MIT>.
+
+------------------------------------------------------------------------------
+"""
 
 PRESEED_FILE = "preseed.p"
 EMISSION_PRESEED_FILE = "emis_preseed.p"

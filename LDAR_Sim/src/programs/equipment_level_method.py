@@ -22,7 +22,7 @@ from datetime import date
 from queue import PriorityQueue
 import sys
 from typing import Tuple
-from constants.error_messages import ERR_MSG_UNKNOWN_SENS_TYPE
+from constants.error_messages import Input_Processing_Messages as ipm
 from file_processing.output_processing.output_utils import CrewDeploymentStats, TaggingFlaggingStats
 from programs.method import Method
 from scheduling.schedule_dataclasses import (
@@ -107,7 +107,7 @@ class EquipmentLevelMethod(Method):
         elif sensor_info[mp.TYPE] == "METEC_no_wind":
             self._sensor = METECNWEquipment(sensor_info[mp.MDL], sensor_info[mp.QE])
         else:
-            print(ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
+            print(ipm.ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
             sys.exit()
 
     def deploy_crews(self, workplan: Workplan, weather, daylight) -> CrewDeploymentStats:

@@ -1,7 +1,7 @@
 """
 ------------------------------------------------------------------------------
 Program:     The LDAR Simulator (LDAR-Sim)
-File:   infrastructure_const 
+File:   infrastructure_const.py
 Purpose: The file contains constants used for the infrastructure module
 
 This program is free software: you can redistribute it and/or modify

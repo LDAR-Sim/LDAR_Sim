@@ -22,7 +22,7 @@ from datetime import date, timedelta
 from math import ceil
 
 from sortedcontainers import SortedList
-from constants.error_messages import ERR_MSG_UNKNOWN_SENS_TYPE
+from constants.error_messages import Input_Processing_Messages as ipm
 from file_processing.output_processing.output_utils import TaggingFlaggingStats
 from programs.method import Method
 from scheduling.follow_up_mobile_schedule import FollowUpMobileSchedule
@@ -224,5 +224,5 @@ class SiteLevelMethod(Method):
         elif sensor_info[mp.TYPE] == "METEC_no_wind":
             self._sensor = METECNWSite(sensor_info[mp.MDL], sensor_info[mp.QE])
         else:
-            print(ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
+            print(ipm.ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
             sys.exit()
