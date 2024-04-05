@@ -5,7 +5,7 @@ import pytest
 from src.programs.site_level_method import SiteLevelMethod
 from LDAR_Sim.src.constants.infrastructure_const import Infrastructure_Constants
 from src.virtual_world.sites import Site
-from LDAR_Sim.src.constants.sensor_constant_mapping import SENS_TYPE, SENS_MDL, SENS_QE
+from src.constants.param_default_const import Method_Params as mp
 
 
 def mock_get_method_survey_time(method_name, *args, **kwargs):
@@ -51,7 +51,7 @@ def mock_values_for_simple_site_level_method_construction_fix(
     )
     name = "Test"
     method_info: dict = {
-        Method.DETEC_ACCESSOR: {SENS_TYPE: "default", SENS_MDL: 1.0, SENS_QE: 0.0},
+        Method.DETEC_ACCESSOR: {mp.TYPE: "default", mp.MDL: 1.0, mp.QE: 0.0},
         "max_workday": 8,
         "consider_daylight": False,
         "weather_envs": {"precip": [], "wind": [], "temp": []},

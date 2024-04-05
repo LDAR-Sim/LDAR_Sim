@@ -26,6 +26,7 @@ import sys
 from typing import Tuple
 
 import numpy as np
+from constants.error_messages import ERR_MSG_UNKNOWN_SENS_TYPE
 from file_processing.output_processing.output_utils import CrewDeploymentStats, TaggingFlaggingStats
 from sensors.default_site_level_sensor import DefaultSiteLevelSensor
 from virtual_world.sites import Site
@@ -36,12 +37,7 @@ from scheduling.schedule_dataclasses import (
     CrewDailyReport,
 )
 from scheduling.surveying_dataclasses import DetectionRecord
-from LDAR_Sim.src.constants.sensor_constant_mapping import (
-    SENS_TYPE,
-    SENS_MDL,
-    SENS_QE,
-    ERR_MSG_UNKNOWN_SENS_TYPE,
-)
+from constants.param_default_const import Method_Params as mp
 
 WEATHER_ERROR = "Error: Unrecognized weather type"
 
@@ -143,8 +139,8 @@ class Method:
         Args:
             sensor_into (dict): _description_
         """
-        if sensor_info[SENS_TYPE] == "default":
-            self._sensor = DefaultSiteLevelSensor(sensor_info[SENS_MDL], sensor_info[SENS_QE])
+        if sensor_info[mp.TYPE] == "default":
+            self._sensor = DefaultSiteLevelSensor(sensor_info[mp.MDL], sensor_info[mp.QE])
         else:
             print(ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
             sys.exit()

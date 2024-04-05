@@ -60,3 +60,9 @@ class Input_Processing_Messages:
 class Output_Processing_Messages:
     OPERAND_ADDITION_ERROR = "Unsupported operand type for addition"
     OPERAND_INPLACE_ADDITION_ERROR = "Unsupported operand type for in-place addition"
+
+
+ERR_MSG_UNKNOWN_SENS_TYPE = (
+    "ERROR: LDAR-Sim could not resolve the provided sensor type for method: {method}."
+    " Please enter a valid sensor type and try again."
+)

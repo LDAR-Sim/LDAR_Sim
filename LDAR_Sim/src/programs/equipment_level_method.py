@@ -22,6 +22,7 @@ from datetime import date
 from queue import PriorityQueue
 import sys
 from typing import Tuple
+from constants.error_messages import ERR_MSG_UNKNOWN_SENS_TYPE
 from file_processing.output_processing.output_utils import CrewDeploymentStats, TaggingFlaggingStats
 from programs.method import Method
 from scheduling.schedule_dataclasses import (
@@ -35,12 +36,7 @@ from sensors.OGI_camera_rk import OGICameraRKSensor
 from sensors.OGI_camera_zim import OGICameraZimSensor
 from sensors.METEC_NoWind_sensor import METECNWEquipment
 from virtual_world.sites import Site
-from LDAR_Sim.src.constants.sensor_constant_mapping import (
-    SENS_TYPE,
-    SENS_MDL,
-    SENS_QE,
-    ERR_MSG_UNKNOWN_SENS_TYPE,
-)
+from constants.param_default_const import Method_Params as mp
 
 
 class EquipmentLevelMethod(Method):
@@ -102,14 +98,14 @@ class EquipmentLevelMethod(Method):
         Args:
             sensor_into (dict): _description_
         """
-        if sensor_info[SENS_TYPE] == "default":
-            self._sensor = DefaultEquipmentLevelSensor(sensor_info[SENS_MDL], sensor_info[SENS_QE])
-        elif sensor_info[SENS_TYPE] == "OGI_camera_zim":
-            self._sensor = OGICameraZimSensor(sensor_info[SENS_MDL], sensor_info[SENS_QE])
-        elif sensor_info[SENS_TYPE] == "OGI_camera_rk":
-            self._sensor = OGICameraRKSensor(sensor_info[SENS_MDL], sensor_info[SENS_QE])
-        elif sensor_info[SENS_TYPE] == "METEC_no_wind":
-            self._sensor = METECNWEquipment(sensor_info[SENS_MDL], sensor_info[SENS_QE])
+        if sensor_info[mp.TYPE] == "default":
+            self._sensor = DefaultEquipmentLevelSensor(sensor_info[mp.MDL], sensor_info[mp.QE])
+        elif sensor_info[mp.TYPE] == "OGI_camera_zim":
+            self._sensor = OGICameraZimSensor(sensor_info[mp.MDL], sensor_info[mp.QE])
+        elif sensor_info[mp.TYPE] == "OGI_camera_rk":
+            self._sensor = OGICameraRKSensor(sensor_info[mp.MDL], sensor_info[mp.QE])
+        elif sensor_info[mp.TYPE] == "METEC_no_wind":
+            self._sensor = METECNWEquipment(sensor_info[mp.MDL], sensor_info[mp.QE])
         else:
             print(ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
             sys.exit()
