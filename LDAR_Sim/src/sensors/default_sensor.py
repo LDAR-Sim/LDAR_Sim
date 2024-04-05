@@ -25,6 +25,7 @@ from virtual_world.sites import Site
 
 class DefaultSensor:
     def __init__(self, mdl: Union[list[float], float], quantification_error: float) -> None:
+        # TODO revisit this implementation
         if isinstance(mdl, (float, int)):
             self._mdl: float = mdl
         elif isinstance(mdl, list):
