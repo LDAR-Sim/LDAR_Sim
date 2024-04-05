@@ -29,8 +29,8 @@ from numpy import exp as exponential
 
 from utils.unit_converter import gas_convert
 from constants.error_messages import Input_Processing_Messages as ipm
-from LDAR_Sim.src.constants.file_processing_const import Emissions_Source_Processing_Const as esp
-import LDAR_Sim.src.constants.general_const as gc
+from src.constants.file_processing_const import Emissions_Source_Processing_Const as esp
+import src.constants.general_const as gc
 
 
 # TODO add support for fitting a distribution to source data

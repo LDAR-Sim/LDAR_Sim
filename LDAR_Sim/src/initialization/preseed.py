@@ -22,7 +22,7 @@ import numpy as np
 from datetime import date, timedelta
 import pickle
 import os
-from LDAR_Sim.src.constants.file_name_constants import PRESEED_FILE, EMISSION_PRESEED_FILE
+from src.constants.file_name_constants import PRESEED_FILE, EMISSION_PRESEED_FILE
 
 
 def gen_seed_timeseries(sim_start_date: date, sim_end_date: date, gen_dir) -> list[int]:

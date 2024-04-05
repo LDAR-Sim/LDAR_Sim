@@ -25,7 +25,7 @@ from src.virtual_world.infrastructure import Infrastructure
 
 from hypothesis import given, strategies as st
 
-from src.virtual_world.infrastructure_const import (
+from src.constants.infrastructure_const import (
     Infrastructure_Constants,
     Virtual_World_To_Prop_Params_Mapping,
 )

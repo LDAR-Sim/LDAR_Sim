@@ -3,7 +3,7 @@ from typing import Tuple
 import pytest
 
 from src.virtual_world.sources import Source
-from src.virtual_world.infrastructure_const import Infrastructure_Constants
+from src.constants.infrastructure_const import Infrastructure_Constants
 
 
 @pytest.fixture(name="mock_simple_source_constructor_params")

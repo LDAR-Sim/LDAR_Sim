@@ -3,7 +3,7 @@ from typing import Tuple
 import pytest
 
 from src.programs.site_level_method import SiteLevelMethod
-from LDAR_Sim.src.constants.infrastructure_const import Infrastructure_Constants
+from src.constants.infrastructure_const import Infrastructure_Constants
 from src.virtual_world.sites import Site
 from src.constants.param_default_const import Method_Params as mp
 

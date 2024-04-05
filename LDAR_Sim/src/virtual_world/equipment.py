@@ -36,7 +36,7 @@ from constants.output_file_constants import EMIS_DATA_COL_ACCESSORS as eca
 from virtual_world.emissions import Emission
 from virtual_world.fugitive_emission import FugitiveEmission
 from virtual_world.nonfugitive_emissions import NonRepairableEmission
-from LDAR_Sim.src.constants.infrastructure_const import Infrastructure_Constants as IC
+from src.constants.infrastructure_const import Infrastructure_Constants as IC
 
 from virtual_world.sources import Source
 

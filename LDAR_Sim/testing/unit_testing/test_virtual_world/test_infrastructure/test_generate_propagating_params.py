@@ -19,7 +19,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 """
 
 from src.virtual_world.infrastructure import Infrastructure
-from src.virtual_world.infrastructure_const import (
+from src.constants.infrastructure_const import (
     Virtual_World_To_Prop_Params_Mapping,
 )
 from hypothesis import given, strategies as st

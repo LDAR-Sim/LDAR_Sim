@@ -30,7 +30,7 @@ from file_processing.input_processing.emissions_source_processing import (
 )
 from scheduling.schedule_dataclasses import TaggingInfo
 from virtual_world.emissions import Emission
-from LDAR_Sim.src.constants.infrastructure_const import Infrastructure_Constants as IC
+from src.constants.infrastructure_const import Infrastructure_Constants as IC
 from virtual_world.equipment import Equipment
 
 
