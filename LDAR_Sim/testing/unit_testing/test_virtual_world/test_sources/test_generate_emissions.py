@@ -65,6 +65,8 @@ def test_001_validate_date_randomness(mocker) -> None:
         emis_rate_source="test",
         meth_spat_covs={},
     )
+    # Fix a seed for testing so that the test is reproducible
+    np.random.seed(0)
     # Call the method to generate emissions
     emissions_dict: dict[str, list[Emission]] = test_source.generate_emissions(
         sim_start_date,
