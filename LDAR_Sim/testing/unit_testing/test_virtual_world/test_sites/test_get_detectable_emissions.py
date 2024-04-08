@@ -1,5 +1,5 @@
 from typing import Tuple
-from virtual_world.sites import Site
+from src.virtual_world.sites import Site
 from testing.unit_testing.test_virtual_world.test_sites.sites_testing_fixtures import (  # noqa
     mock_site_for_simple_get_detectable_emissions_fix,
 )

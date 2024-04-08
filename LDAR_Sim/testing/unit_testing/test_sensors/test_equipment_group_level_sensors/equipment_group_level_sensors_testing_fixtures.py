@@ -7,15 +7,13 @@ from src.virtual_world.sites import Site
 
 
 @pytest.fixture(name="sensor_info_for_default_eqg_level_sensor_construction_testing")
-def sensor_info_for_default_eqg_level_sensor_construction_testing_fix() -> (
-    dict[str, int]
-):
-    return {"mdl": 1, "QE": 0.0}
+def sensor_info_for_default_eqg_level_sensor_construction_testing_fix() -> dict[str, int]:
+    return {"mdl": [1], "QE": 0.0}
 
 
 @pytest.fixture(name="sensor_info_high_mdl_for_default_eqg_level_sensor_testing")
 def sensor_info_high_mdl_for_default_eqg_level_sensor_testing_fix() -> dict[str, int]:
-    return {"mdl": 2.0, "QE": 0.0}
+    return {"mdl": [2.0], "QE": 0.0}
 
 
 @pytest.fixture(name="mock_site_emis_for_eqg_level_detect_emissions_testing")
@@ -26,61 +24,43 @@ def mock_site_emis_for_eqg_level_detect_emissions_testing_fix(mocker):
     mock_site_emis: dict[str, dict[str, list[Emission]]] = {
         "test_eqg_1": {
             "test_equip_1": [
-                mocker.MagicMock(
-                    Emission, get_rate=mocker.MagicMock(return_value=retval)
-                )
+                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
                 for retval in ret_vals
             ],
             "test_equip_2": [
-                mocker.MagicMock(
-                    Emission, get_rate=mocker.MagicMock(return_value=retval)
-                )
+                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
                 for retval in ret_vals
             ],
             "test_equip_3": [
-                mocker.MagicMock(
-                    Emission, get_rate=mocker.MagicMock(return_value=retval)
-                )
+                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
                 for retval in ret_vals
             ],
         },
         "test_eqg_2": {
             "test_equip_1": [
-                mocker.MagicMock(
-                    Emission, get_rate=mocker.MagicMock(return_value=retval)
-                )
+                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
                 for retval in ret_vals2
             ],
             "test_equip_2": [
-                mocker.MagicMock(
-                    Emission, get_rate=mocker.MagicMock(return_value=retval)
-                )
+                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
                 for retval in ret_vals2
             ],
             "test_equip_3": [
-                mocker.MagicMock(
-                    Emission, get_rate=mocker.MagicMock(return_value=retval)
-                )
+                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
                 for retval in ret_vals2
             ],
         },
         "test_eqg_3": {
             "test_equip_1": [
-                mocker.MagicMock(
-                    Emission, get_rate=mocker.MagicMock(return_value=retval)
-                )
+                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
                 for retval in ret_vals3
             ],
             "test_equip_2": [
-                mocker.MagicMock(
-                    Emission, get_rate=mocker.MagicMock(return_value=retval)
-                )
+                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
                 for retval in ret_vals3
             ],
             "test_equip_3": [
-                mocker.MagicMock(
-                    Emission, get_rate=mocker.MagicMock(return_value=retval)
-                )
+                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
                 for retval in ret_vals3
             ],
         },
@@ -117,61 +97,43 @@ def mock_site_emis_for_eqg_level_detect_emissions_testing_lower_emis_fix(mocker)
     mock_site_emis: dict[str, dict[str, list[Emission]]] = {
         "test_eqg_1": {
             "test_equip_1": [
-                mocker.MagicMock(
-                    Emission, get_rate=mocker.MagicMock(return_value=retval)
-                )
+                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
                 for retval in ret_vals
             ],
             "test_equip_2": [
-                mocker.MagicMock(
-                    Emission, get_rate=mocker.MagicMock(return_value=retval)
-                )
+                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
                 for retval in ret_vals
             ],
             "test_equip_3": [
-                mocker.MagicMock(
-                    Emission, get_rate=mocker.MagicMock(return_value=retval)
-                )
+                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
                 for retval in ret_vals
             ],
         },
         "test_eqg_2": {
             "test_equip_1": [
-                mocker.MagicMock(
-                    Emission, get_rate=mocker.MagicMock(return_value=retval)
-                )
+                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
                 for retval in ret_vals2
             ],
             "test_equip_2": [
-                mocker.MagicMock(
-                    Emission, get_rate=mocker.MagicMock(return_value=retval)
-                )
+                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
                 for retval in ret_vals2
             ],
             "test_equip_3": [
-                mocker.MagicMock(
-                    Emission, get_rate=mocker.MagicMock(return_value=retval)
-                )
+                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
                 for retval in ret_vals2
             ],
         },
         "test_eqg_3": {
             "test_equip_1": [
-                mocker.MagicMock(
-                    Emission, get_rate=mocker.MagicMock(return_value=retval)
-                )
+                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
                 for retval in ret_vals3
             ],
             "test_equip_2": [
-                mocker.MagicMock(
-                    Emission, get_rate=mocker.MagicMock(return_value=retval)
-                )
+                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
                 for retval in ret_vals3
             ],
             "test_equip_3": [
-                mocker.MagicMock(
-                    Emission, get_rate=mocker.MagicMock(return_value=retval)
-                )
+                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
                 for retval in ret_vals3
             ],
         },
@@ -206,9 +168,7 @@ def mock_site_for_eqg_level_detect_emissions_testing_lower_emissions_fix(
     )
 
 
-@pytest.fixture(
-    name="mock_site_emis_for_eqg_level_detect_emissions_testing_mixed_detect"
-)
+@pytest.fixture(name="mock_site_emis_for_eqg_level_detect_emissions_testing_mixed_detect")
 def mock_site_emis_for_eqg_level_detect_emissions_testing_mixed_detect_fix(mocker):
     ret_vals: list[float] = [0.1, 0.15, 0.3]
     ret_vals2: list[float] = [0.2, 0.3, 0.1]
@@ -216,61 +176,43 @@ def mock_site_emis_for_eqg_level_detect_emissions_testing_mixed_detect_fix(mocke
     mock_site_emis: dict[str, dict[str, list[Emission]]] = {
         "test_eqg_1": {
             "test_equip_1": [
-                mocker.MagicMock(
-                    Emission, get_rate=mocker.MagicMock(return_value=retval)
-                )
+                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
                 for retval in ret_vals
             ],
             "test_equip_2": [
-                mocker.MagicMock(
-                    Emission, get_rate=mocker.MagicMock(return_value=retval)
-                )
+                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
                 for retval in ret_vals
             ],
             "test_equip_3": [
-                mocker.MagicMock(
-                    Emission, get_rate=mocker.MagicMock(return_value=retval)
-                )
+                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
                 for retval in ret_vals
             ],
         },
         "test_eqg_2": {
             "test_equip_1": [
-                mocker.MagicMock(
-                    Emission, get_rate=mocker.MagicMock(return_value=retval)
-                )
+                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
                 for retval in ret_vals2
             ],
             "test_equip_2": [
-                mocker.MagicMock(
-                    Emission, get_rate=mocker.MagicMock(return_value=retval)
-                )
+                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
                 for retval in ret_vals2
             ],
             "test_equip_3": [
-                mocker.MagicMock(
-                    Emission, get_rate=mocker.MagicMock(return_value=retval)
-                )
+                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
                 for retval in ret_vals2
             ],
         },
         "test_eqg_3": {
             "test_equip_1": [
-                mocker.MagicMock(
-                    Emission, get_rate=mocker.MagicMock(return_value=retval)
-                )
+                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
                 for retval in ret_vals3
             ],
             "test_equip_2": [
-                mocker.MagicMock(
-                    Emission, get_rate=mocker.MagicMock(return_value=retval)
-                )
+                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
                 for retval in ret_vals3
             ],
             "test_equip_3": [
-                mocker.MagicMock(
-                    Emission, get_rate=mocker.MagicMock(return_value=retval)
-                )
+                mocker.MagicMock(Emission, get_rate=mocker.MagicMock(return_value=retval))
                 for retval in ret_vals3
             ],
         },

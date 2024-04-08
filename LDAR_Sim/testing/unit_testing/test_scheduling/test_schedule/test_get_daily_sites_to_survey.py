@@ -17,6 +17,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 ------------------------------------------------------------------------------
 """
+
 from datetime import date
 from src.virtual_world.sites import Site
 from src.scheduling.generic_schedule import GenericSchedule
@@ -42,7 +43,12 @@ def test_000_get_daily_sites_to_survey_returns_expected_sites_for_survey(mocker)
     result = instance.get_workplan(date(2020, 1, 1))
     expected = Workplan(instance._survey_plans[:8], date(2020, 1, 1))
     assert expected.date == result.date
-    assert expected.site_survey_planners == result.site_survey_planners
+    for site_id, expected_survey_planner in expected.site_survey_planners.items():
+        assert site_id in result.site_survey_planners
+        result_survey_planner = result.site_survey_planners[site_id]
+        assert result_survey_planner._survey_plan == expected_survey_planner._survey_plan
+        assert result_survey_planner._current_date == expected_survey_planner._current_date
+        assert result_survey_planner._queued == expected_survey_planner._queued
 
 
 def test_000_get_daily_sites_to_survey_returns_expected_sites_for_survey2(

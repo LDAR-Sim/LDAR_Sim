@@ -2,7 +2,7 @@ from datetime import date
 from typing import Tuple
 import pytest
 
-from virtual_world.emissions import Emission
+from src.virtual_world.emissions import Emission
 
 
 @pytest.fixture(name="mock_simple_emission_1")
@@ -52,13 +52,20 @@ def mock_simple_emission_for_get_summary_dict_fix() -> Tuple[Emission, dict[str,
             {"M_OGI1": 1, "M_AIR1": 1, "M_OGI2": 0, "M_AIR2": 0},
         ),
         {
-            "Date Began": date(2018, 1, 1),
-            "Days Active": 0,
             "Emissions ID": "0000000001",
-            "Initially Detected By": None,
             "Status": "Inactive",
-            "Tagged": False,
-            "Tagged By": None,
-            "Volume Emitted": 0.0,
+            "Days Active": 0,
+            "Estimated Days Active": 0,
+            '"True" Volume Emitted (Kg Methane)': 0.0,
+            '"True" Rate (g/s)': 1,
+            '"Measured" Rate (g/s)': None,
+            "Date Began": date(2018, 1, 1),
+            "Initially Detected By": None,
+            "Initially Detected Date": None,
+            "Tagged": "N/A",
+            "Tagged By": "N/A",
+            "Recorded": "N/A",
+            "Recorded By": "N/A",
+            "Repairable": False,
         },
     )

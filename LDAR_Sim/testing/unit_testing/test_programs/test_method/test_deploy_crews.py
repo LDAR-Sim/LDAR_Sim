@@ -17,23 +17,25 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 ------------------------------------------------------------------------------
 """
+
 from datetime import date
+from file_processing.output_processing.output_utils import CrewDeploymentStats
 from src.programs.method import Method
-from src.virtual_world.sites import Site
-from testing.unit_testing.test_programs.test_method.method_testing_fixtures import (
+from testing.unit_testing.test_programs.test_method.method_testing_fixtures import (  # noqa
     deploy_crews_testing_fix,
     deploy_crews_testing2_fix,
 )
-from src.scheduling.schedule_dataclasses import (
+from scheduling.schedule_dataclasses import (
     SiteSurveyReport,
     CrewDailyReport,
 )
+from src.scheduling.workplan import Workplan
 
 
 def test_000_test_initialization_of_crews(
     deploy_crews_testing,
 ):
-    (sites, properties, state, workplan) = deploy_crews_testing
+    (sites, properties, weather, workplan, daylight) = deploy_crews_testing
     method = Method("test_method", properties, True, sites)
     assert len(method._crew_reports) == 1
     assert isinstance(method._crew_reports[0], CrewDailyReport)
@@ -43,21 +45,23 @@ def test_000_test_initialization_of_crews(
 def test_000_simple_deployment_of_crews_no_crews_deployed_no_valid_sites(
     deploy_crews_testing,
 ):
-    (sites, properties, state, workplan) = deploy_crews_testing
+    (sites, properties, weather, workplan, daylight) = deploy_crews_testing
+    workplan: Workplan
     method = Method("test_method", properties, True, sites)
-    method.deploy_crews(workplan, state)
+    method.deploy_crews(workplan, weather, daylight)
     assert isinstance(method._crew_reports[0], CrewDailyReport)
-    assert method._crew_reports[0].day_time_remaining == 8
+    assert method._crew_reports[0].day_time_remaining == 8 * 60
     expected = SiteSurveyReport(1)
     assert workplan._site_survey_reports[1] == expected
 
 
 def test_000_simple_deployment_of_crews_work_a_day(deploy_crews_testing2):
-    (sites, properties, state, workplan) = deploy_crews_testing2
+    (sites, properties, weather, workplan, daylight) = deploy_crews_testing2
+    workplan: Workplan
     method = Method("test_method", properties, True, sites)
     assert workplan._site_survey_reports == {}
     assert len(workplan.site_survey_planners) == 1
-    method.deploy_crews(workplan, state)
+    deploy_stats: CrewDeploymentStats = method.deploy_crews(workplan, weather, daylight)
     expected = SiteSurveyReport(
         1,
         120,
@@ -73,8 +77,10 @@ def test_000_simple_deployment_of_crews_work_a_day(deploy_crews_testing2):
         date(2023, 1, 1),
         "test_method",
     )
+    expected_deployment_stats = CrewDeploymentStats(500.0, 1, 2, 120)
     assert isinstance(method._crew_reports[0], CrewDailyReport)
     assert method._crew_reports[0].day_time_remaining == 0
     assert len(workplan._site_survey_reports) == 1
     assert len(workplan.site_survey_planners) == 1
     assert workplan._site_survey_reports[1] == expected
+    assert deploy_stats == expected_deployment_stats

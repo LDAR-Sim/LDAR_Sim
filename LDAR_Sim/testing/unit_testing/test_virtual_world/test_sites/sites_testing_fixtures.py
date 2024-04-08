@@ -3,6 +3,7 @@ from typing import Tuple
 
 from src.virtual_world.infrastructure_const import Infrastructure_Constants
 from src.virtual_world.sites import Site
+from src.file_processing.input_processing.emissions_source_processing import EmissionsSourceSample
 from datetime import date
 
 
@@ -15,9 +16,11 @@ def mock_values_for_simple_site_construction_fix() -> Tuple[str, float, float, i
     start_date: date = date(2023, 1, 1)
     equipment_groups: int = 1
     prop_params: dict = {
-        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ERS: None,
+        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ERS: {"test": [1]},
         Infrastructure_Constants.Sites_File_Constants.REP_EMIS_EPR: 1,
         Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ED: 1,
+        Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_EPR: None,
+        Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_ERS: None,
         Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RD: {"vals": 0},
         Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RC: {"vals": 100},
         "Method_Specific_Params": {
@@ -40,12 +43,15 @@ def mock_site_for_simple_generate_emissions_fix() -> Tuple[Site, date, date]:
     lat: float = 34.56
     lon: float = -44.56
     equipment_groups: int = 1
+    method: list[str] = []
     prop_params: dict = {
-        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ERS: None,
+        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ERS: "test",
         Infrastructure_Constants.Sites_File_Constants.REP_EMIS_EPR: 1,
         Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ED: 1,
         Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RD: {"vals": 0},
         Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RC: {"vals": 100},
+        Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_EPR: None,
+        Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_ERS: None,
         "Method_Specific_Params": {
             Infrastructure_Constants.Sites_File_Constants.SURVEY_FREQUENCY_PLACEHOLDER: {},
             Infrastructure_Constants.Sites_File_Constants.SPATIAL_PLACEHOLDER: {},
@@ -57,16 +63,18 @@ def mock_site_for_simple_generate_emissions_fix() -> Tuple[Site, date, date]:
         },
     }
     infra_inputs: dict = {}
+    simulation_start_date = date(*[2017, 1, 1])
+    simulation_end_date = date(*[2017, 1, 5])
     test_site = Site(
         id=id,
         lat=lat,
         long=lon,
+        start_date=simulation_start_date,
         equipment_groups=equipment_groups,
         propagating_params=prop_params,
         infrastructure_inputs=infra_inputs,
+        methods=method,
     )
-    simulation_start_date = date(*[2017, 1, 1])
-    simulation_end_date = date(*[2017, 1, 5])
     return test_site, simulation_start_date, simulation_end_date
 
 
@@ -78,9 +86,11 @@ def mock_site_for_simple_activate_emissions_fix() -> Tuple[Site, date, int]:
     equipment_groups: int = 1
     method: list[str] = []
     prop_params: dict = {
-        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ERS: None,
+        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ERS: "test",
         Infrastructure_Constants.Sites_File_Constants.REP_EMIS_EPR: 1,
         Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ED: 1,
+        Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_EPR: None,
+        Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_ERS: None,
         Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RD: {"vals": 0},
         Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RC: {"vals": 100},
         "Method_Specific_Params": {
@@ -107,7 +117,13 @@ def mock_site_for_simple_activate_emissions_fix() -> Tuple[Site, date, int]:
         start_date=simulation_start_date,
     )
     test_site.generate_emissions(
-        sim_start_date=simulation_start_date, sim_end_date=simulation_end_date, sim_number=1
+        sim_start_date=simulation_start_date,
+        sim_end_date=simulation_end_date,
+        sim_number=1,
+        emission_rate_source_dictionary={
+            "test": EmissionsSourceSample("test", "gram", "second", [1], 1000)
+        },
+        repair_delay_dataframe={},
     )
     activate_date: date = date(*[2017, 1, 1])
     return test_site, activate_date, 1
@@ -120,11 +136,13 @@ def mock_site_for_simple_get_detectable_emissions_fix() -> Tuple[Site, str]:
     lon: float = -44.56
     equipment_groups: int = 1
     prop_params: dict = {
-        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ERS: None,
+        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ERS: "test",
         Infrastructure_Constants.Sites_File_Constants.REP_EMIS_EPR: 1,
         Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ED: 1,
         Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RD: {"vals": 0},
         Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RC: {"vals": 100},
+        Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_EPR: None,
+        Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_ERS: None,
         "Method_Specific_Params": {
             Infrastructure_Constants.Sites_File_Constants.SURVEY_FREQUENCY_PLACEHOLDER: {},
             Infrastructure_Constants.Sites_File_Constants.DEPLOYMENT_MONTHS_PLACEHOLDER: {},
@@ -151,7 +169,13 @@ def mock_site_for_simple_get_detectable_emissions_fix() -> Tuple[Site, str]:
     )
     test_method: str = "test"
     test_site.generate_emissions(
-        sim_start_date=simulation_start_date, sim_end_date=simulation_end_date, sim_number=1
+        sim_start_date=simulation_start_date,
+        sim_end_date=simulation_end_date,
+        sim_number=1,
+        emission_rate_source_dictionary={
+            "test": EmissionsSourceSample("test", "gram", "second", [1], 1000)
+        },
+        repair_delay_dataframe={},
     )
     activate_date: date = date(*[2017, 1, 1])
     test_site.activate_emissions(activate_date, 1)

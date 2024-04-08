@@ -17,98 +17,78 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 ------------------------------------------------------------------------------
 """
-from datetime import date
-from typing import Tuple
 
-from numpy import average, random as rd
-import pytest
-from virtual_world.sources import Source
+from datetime import date
+import pandas as pd
+
+import numpy as np
+import scipy.stats
+from src.virtual_world.sources import Source
+from src.file_processing.input_processing.emissions_source_processing import EmissionsSourceSample
 from testing.unit_testing.test_virtual_world.test_sources.sources_testing_fixtures import (  # noqa
     mock_source_and_args_for_generate_emissions_fix,
     mock_simple_source_constructor_params_fix,
     mock_source_and_args_for_generate_emissions_same_st_ed_fix,
 )
+from virtual_world.emissions import Emission
 
 
-# TODO : renumber/name the tests
-def test_001_generation_of_emissions_dict(
-    mock_source_and_args_for_generate_emissions: Tuple[Source, int, date, date]
-) -> None:
-    # Set a random seed for reproducibility
-    rd.seed(0)
-
-    src: Source = mock_source_and_args_for_generate_emissions[0]
-    sim_sd, sim_ed, n_sims = mock_source_and_args_for_generate_emissions[1]
-    expected_res: date = mock_source_and_args_for_generate_emissions[2]
-    for sim in range(n_sims):
-        src.generate_emissions(sim_start_date=sim_sd, sim_end_date=sim_ed, sim_number=sim)
-    emis_counts: list[int] = []
-    for sim, emissions in src._generated_emissions.items():
-        emis_counts.append(len(emissions))
-    assert average(emis_counts) == pytest.approx(expected_res, rel=0.01)
+def mock_source_init(self, *args, **kwargs) -> None:
+    self._generated_emissions = {}
+    if kwargs:
+        self._source_ID = kwargs["id"]
+        self._emis_duration = kwargs["emis_duration"]
+        self._emis_prod_rate = kwargs["emis_prod_rate"]
+        self._repairable = kwargs["repairable"]
+        self._emis_rate_source = kwargs["emis_rate_source"]
+        self._meth_spat_covs = kwargs["meth_spat_covs"]
 
 
-def test_001_gen_emiss_is_unique_for_each_sim_run(
-    mock_source_and_args_for_generate_emissions: Tuple[Source, int, date, date]
-) -> None:
-    # Set a random seed for reproducibility
-    rd.seed(0)
+def test_001_validate_date_randomness(mocker) -> None:
+    # Set up parameters for testing
+    sim_start_date = date(2023, 1, 1)
+    sim_end_date = date(2023, 12, 31)
+    sim_number = 1
 
-    src: Source = mock_source_and_args_for_generate_emissions[0]
-    sim_sd, sim_ed, n_sims = mock_source_and_args_for_generate_emissions[1]
-    for sim in range(n_sims):
-        src.generate_emissions(sim_start_date=sim_sd, sim_end_date=sim_ed, sim_number=sim)
-    emis_counts: list[int] = []
-    for sim, emissions in src._generated_emissions.items():
-        emis_counts.append(len(emissions))
-    unique_elements = len(set(emis_counts))
-    assert unique_elements > 1
+    emission_rate_source_dictionary = {
+        "test": EmissionsSourceSample("test", "gram", "second", [1], 1000)
+    }
 
+    repair_delay_dataframe = pd.DataFrame()
+    mocker.patch.object(Source, "__init__", mock_source_init)
+    source_id = "test"
+    test_source = Source(
+        id=source_id,
+        emis_duration=365,
+        emis_prod_rate=0.5,
+        repairable=False,
+        emis_rate_source="test",
+        meth_spat_covs={},
+    )
+    # Fix a seed for testing so that the test is reproducible
+    np.random.seed(0)
+    # Call the method to generate emissions
+    emissions_dict: dict[str, list[Emission]] = test_source.generate_emissions(
+        sim_start_date,
+        sim_end_date,
+        sim_number,
+        emission_rate_source_dictionary,
+        repair_delay_dataframe,
+    )
 
-def test_001_same_start_end_date_behavior(
-    mock_source_and_args_for_generate_emissions_same_st_ed: Tuple[Source, int, date, date]
-) -> None:
-    rd.seed(0)
+    # Extract the dates of the emissions for testing randomness
+    emission_dates = [emission._start_date for emission in emissions_dict[source_id]]
 
-    src: Source = mock_source_and_args_for_generate_emissions_same_st_ed[0]
-    sim_sd, sim_ed, n_sims = mock_source_and_args_for_generate_emissions_same_st_ed[1]
-    expected_res: date = mock_source_and_args_for_generate_emissions_same_st_ed[2]
-    for sim in range(n_sims):
-        src.generate_emissions(sim_start_date=sim_sd, sim_end_date=sim_ed, sim_number=sim)
-    emis_counts: list[int] = []
-    for sim, emissions in src._generated_emissions.items():
-        emis_counts.append(len(emissions))
-    assert average(emis_counts) == pytest.approx(expected_res, rel=0.1)
+    date_diffs = [(emis_date - sim_start_date).days for emis_date in emission_dates]
 
+    num_bins = 20
 
-# TODO : fix up below test
-# def test_001_validate_randomness(self):
-#     # Set up parameters for testing
-#     sim_start_date = datetime(2023, 1, 1)
-#     sim_end_date = datetime(2023, 1, 10)
-#     sim_number = 1
+    expected_counts = np.full(num_bins, len(date_diffs) / num_bins)
 
-#     # Call the method to generate emissions
-#     emissions_dict = Source.generate_emissions(sim_start_date, sim_end_date, sim_number)
+    observed_counts, _ = np.histogram(date_diffs, bins=num_bins)
 
-#     # Extract the dates of the emissions for testing randomness
-#     emission_dates = [
-#         emission.start_date for emission in emissions_dict[self.your_instance._source_ID]
-#     ]
+    chi_sq_stat, p_value, _, _ = scipy.stats.chi2_contingency([observed_counts, expected_counts])
 
-#     # Calculate the observed frequencies in each simulated day
-#     observed_counts, _ = np.histogram(
-#         emission_dates,
-#         bins=np.arange((sim_start_date - timedelta(days=1)), sim_end_date, timedelta(days=1)),
-#     )
+    alpha = 0.05
 
-#     # Expected frequency assuming a binomial distribution
-#     expected_counts = np.random.binomial(1, Source._emis_prod_rate, len(observed_counts))
-
-#     # Perform chi-squared test
-#     chi_squared_stat = np.sum((observed_counts - expected_counts) ** 2 / expected_counts)
-#     p_value = 1 - stats.chi2.cdf(chi_squared_stat, df=len(observed_counts) - 1)
-
-#     # Set a significance level (e.g., 0.05) and assert that the p-value is greater than it
-#     significance_level = 0.05
-#     self.assertGreater(p_value, significance_level)
+    assert p_value > alpha

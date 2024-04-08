@@ -2,7 +2,7 @@ from datetime import date
 from typing import Tuple
 import pytest
 
-from virtual_world.fugitive_emission import FugitiveEmission
+from src.virtual_world.fugitive_emission import FugitiveEmission
 
 
 @pytest.fixture(name="mock_simple_fugitive_emission_for_activate_testing_1")
@@ -33,27 +33,36 @@ def mock_simple_fugitive_emission_for_check_if_repaired_testing_2_fix() -> Fugit
 @pytest.fixture(name="mock_simple_emission_for_get_summary_dict")
 def mock_simple_emission_for_get_summary_dict_1_fix() -> Tuple[FugitiveEmission, dict[str, int]]:
     return (
+        date(*[2020, 1, 1]),
         FugitiveEmission(
             1,
             1,
             date(*[2018, 1, 1]),
             date(*[2017, 1, 1]),
-            False,
+            True,
             {"M_OGI1": 1, "M_AIR1": 1, "M_OGI2": 0, "M_AIR2": 0},
             14,
             200,
             365,
         ),
         {
-            "Date Began": date(2018, 1, 1),
-            "Days Active": 0,
             "Emissions ID": "0000000001",
-            "Initially Detected By": None,
             "Status": "Inactive",
+            "Days Active": 0,
+            "Estimated Days Active": 0,
+            '"True" Volume Emitted (Kg Methane)': 0.0,
+            '"True" Rate (g/s)': 1,
+            '"Measured" Rate (g/s)': None,
+            "Date Began": date(2018, 1, 1),
+            "Initially Detected By": None,
+            "Initially Detected Date": None,
             "Tagged": False,
             "Tagged By": None,
-            "Volume Emitted": 0.0,
+            "Recorded": "N/A",
+            "Recorded By": "N/A",
+            "Repairable": True,
             "Date Repaired": None,
+            '"Estimated" Volume Emitted (Kg Methane)': 0.0,
         },
     )
 
@@ -71,12 +80,10 @@ def mock_simple_fugitive_emission_for_natural_repair_testing_1_fix() -> (
 
 
 @pytest.fixture(name="mock_simple_fugitive_emission_for_tag_leak_testing_1")
-def mock_simple_fugitive_emission_for_tag_leak_testing_1_fix() -> (
-    Tuple[
-        FugitiveEmission,
-        Tuple[float, date, int, str, str, int],
-    ]
-):
+def mock_simple_fugitive_emission_for_tag_leak_testing_1_fix() -> Tuple[
+    FugitiveEmission,
+    Tuple[float, date, int, str, str, int],
+]:
     to_ret = FugitiveEmission(
         1, 1, date(*[2018, 1, 1]), date(*[2017, 1, 1]), True, {}, 14, 200, 365
     )
@@ -85,12 +92,10 @@ def mock_simple_fugitive_emission_for_tag_leak_testing_1_fix() -> (
 
 
 @pytest.fixture(name="mock_simple_fugitive_emission_for_tag_leak_testing_already_tagged")
-def mock_simple_fugitive_emission_for_tag_leak_testing_already_tagged_fix() -> (
-    Tuple[
-        FugitiveEmission,
-        Tuple[float, date, int, str, str, int],
-    ]
-):
+def mock_simple_fugitive_emission_for_tag_leak_testing_already_tagged_fix() -> Tuple[
+    FugitiveEmission,
+    Tuple[float, date, int, str, str, int],
+]:
     to_ret = FugitiveEmission(
         1, 1, date(*[2018, 1, 1]), date(*[2017, 1, 1]), True, {}, 14, 200, 365
     )

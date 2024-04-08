@@ -24,6 +24,8 @@ from pathlib import Path
 import pandas as pd
 from src.file_processing.output_processing.multi_simulation_outputs import (
     gen_emissions_summary,
+)
+from src.file_processing.output_processing.output_constants import (
     EMIS_SUMMARY_COLUMNS_ACCESSORS as esca,
 )
 import os
@@ -54,13 +56,34 @@ def mock_read_csv(file_path: str):
 
 mock_csv_data = {
     "test_0_emissions_summary.csv": pd.DataFrame(
-        {eca.T_VOL_EMIT: [1, 2, 3, 4], eca.T_RATE: [10, 9, 8, 7]}
+        {
+            eca.T_VOL_EMIT: [1, 2, 3, 4],
+            eca.EST_VOL_EMIT: [0, 1, 2, 3],
+            eca.T_RATE: [10, 9, 8, 7],
+            eca.M_RATE: [9, 8, 7, 6],
+            eca.REPAIRABLE: [True, True, True, False],
+            eca.DATE_BEG: ["2024-01-01", "2024-01-01", "2025-01-01", "2025-01-01"],
+        }
     ),
     "test_1_emissions_summary.csv": pd.DataFrame(
-        {eca.T_VOL_EMIT: [5, 6, 7, 8], eca.T_RATE: [6, 5, 4, 3]}
+        {
+            eca.T_VOL_EMIT: [5, 6, 7, 8],
+            eca.EST_VOL_EMIT: [4, 5, 6, 7],
+            eca.T_RATE: [6, 5, 4, 3],
+            eca.M_RATE: [5, 4, 3, 2],
+            eca.REPAIRABLE: [True, True, True, False],
+            eca.DATE_BEG: ["2024-01-01", "2024-01-01", "2025-01-01", "2025-01-01"],
+        }
     ),
     "test_2_emissions_summary.csv": pd.DataFrame(
-        {eca.T_VOL_EMIT: [9, 10, 11, 12], eca.T_RATE: [3, 2, 1, 0]}
+        {
+            eca.T_VOL_EMIT: [9, 10, 11, 12],
+            eca.EST_VOL_EMIT: [8, 9, 10, 11],
+            eca.T_RATE: [3, 2, 1, 0],
+            eca.M_RATE: [2, 1, 0, 0],
+            eca.REPAIRABLE: [True, True, True, False],
+            eca.DATE_BEG: ["2024-01-01", "2024-01-01", "2025-01-01", "2025-01-01"],
+        }
     ),
 }
 
@@ -69,12 +92,19 @@ expected_summary_csv = pd.DataFrame(
         esca.PROG_NAME: ["test", "test", "test"],
         esca.SIM: ["0", "1", "2"],
         esca.T_TOTAL_EMIS: [10, 26, 42],
+        esca.EST_TOTAL_EMIS: [6, 22, 38],
+        esca.T_TOTAL_MIT_EMIS: [6, 18, 30],
+        esca.T_TOTAL_NON_MIT_EMIS: [4, 8, 12],
         esca.AVG_T_EMIS_RATE: [8.5, 4.5, 1.5],
         esca.T_EMIS_RATE_95: [10.0, 6.0, 3.0],
         esca.T_EMIS_RATE_5: [7.0, 3.0, 0.0],
         esca.T_AVG_EMIS_AMOUNT: [2.5, 6.5, 10.5],
         esca.T_EMIS_AMOUNT_95: [4.0, 8.0, 12.0],
         esca.T_EMIS_AMOUNT_5: [1.0, 5.0, 9.0],
+        esca.T_ANN_EMIS.format(2024): [3, 11, 19],
+        esca.T_ANN_EMIS.format(2025): [7, 15, 23],
+        esca.EST_ANN_EMIS.format(2024): [1, 9, 17],
+        esca.EST_ANN_EMIS.format(2025): [5, 13, 21],
     }
 )
 

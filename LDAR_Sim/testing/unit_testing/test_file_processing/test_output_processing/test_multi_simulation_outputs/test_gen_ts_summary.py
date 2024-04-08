@@ -24,6 +24,8 @@ from pathlib import Path
 import pandas as pd
 from src.file_processing.output_processing.multi_simulation_outputs import (
     gen_ts_summary,
+)
+from src.file_processing.output_processing.output_constants import (
     TS_SUMMARY_COLUMNS_ACCESSORS as tsca,
 )
 import os
@@ -53,9 +55,30 @@ def mock_read_csv(file_path: str):
 
 
 mock_csv_data = {
-    "test_0_timeseries.csv": pd.DataFrame({tca.EMIS: [1, 2, 3, 4], tca.COST: [10, 9, 8, 7]}),
-    "test_1_timeseries.csv": pd.DataFrame({tca.EMIS: [5, 6, 7, 8], tca.COST: [6, 5, 4, 3]}),
-    "test_2_timeseries.csv": pd.DataFrame({tca.EMIS: [9, 10, 11, 12], tca.COST: [3, 2, 1, 0]}),
+    "test_0_timeseries.csv": pd.DataFrame(
+        {
+            tca.EMIS: [1, 2, 3, 4],
+            tca.COST: [10, 9, 8, 7],
+            tca.EMIS_MIT: [1, 2, 2, 2],
+            tca.EMIS_NON_MIT: [0, 0, 1, 2],
+        }
+    ),
+    "test_1_timeseries.csv": pd.DataFrame(
+        {
+            tca.EMIS: [5, 6, 7, 8],
+            tca.COST: [6, 5, 4, 3],
+            tca.EMIS_MIT: [5, 6, 6, 6],
+            tca.EMIS_NON_MIT: [0, 0, 1, 2],
+        }
+    ),
+    "test_2_timeseries.csv": pd.DataFrame(
+        {
+            tca.EMIS: [9, 10, 11, 12],
+            tca.COST: [3, 2, 1, 0],
+            tca.EMIS_MIT: [9, 10, 10, 10],
+            tca.EMIS_NON_MIT: [0, 0, 1, 2],
+        }
+    ),
 }
 
 expected_summary_csv = pd.DataFrame(
@@ -63,8 +86,14 @@ expected_summary_csv = pd.DataFrame(
         tsca.PROG_NAME: ["test", "test", "test"],
         tsca.SIM: ["0", "1", "2"],
         tsca.AVG_T_DAILY_EMIS: [2.5, 6.5, 10.5],
+        tsca.AVG_T_MIT_DAILY_EMIS: [1.75, 5.75, 9.75],
+        tsca.AVG_T_NON_MIT_DAILY_EMIS: [0.75, 0.75, 0.75],
         tsca.T_DAILY_EMIS_95: [4.0, 8.0, 12.0],
+        tsca.T_MIT_DAILY_EMIS_95: [2.0, 6.0, 10.0],
+        tsca.T_NON_MIT_DAILY_EMIS_95: [2.0, 2.0, 2.0],
         tsca.T_DAILY_EMIS_5: [1.0, 5.0, 9.0],
+        tsca.T_MIT_DAILT_EMIS_5: [1.0, 5.0, 9.0],
+        tsca.T_NON_MIT_DAILY_EMIS_5: [0.0, 0.0, 0.0],
         tsca.AVG_DAILY_COST: [8.5, 4.5, 1.5],
         tsca.DAILY_COST_95: [10.0, 6.0, 3.0],
         tsca.DAILY_COST_5: [7.0, 3.0, 0.0],

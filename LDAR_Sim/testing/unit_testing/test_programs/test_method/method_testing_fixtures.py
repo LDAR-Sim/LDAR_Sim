@@ -20,15 +20,16 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 import pytest
 from datetime import date
+from src.weather.daylight_calculator import DaylightCalculatorAve
 from src.programs.method import Method
 from src.virtual_world.infrastructure import Site
 from collections import defaultdict
-from src.scheduling.schedule_dataclasses import SiteSurveyReport
-from src.sensors.default_site_level_sensor import DefaultSiteLevelSensor
+from scheduling.schedule_dataclasses import SiteSurveyReport
+from sensors.default_site_level_sensor import DefaultSiteLevelSensor
 from src.sensors.default_sensor import DefaultSensor
 from src.virtual_world.emissions import Emission
 from src.scheduling.workplan import Workplan
-from scheduling.scheduled_survey_planner import ScheduledSurveyPlanner
+from src.scheduling.scheduled_survey_planner import ScheduledSurveyPlanner
 
 
 @pytest.fixture
@@ -62,6 +63,10 @@ def mock_get_method_survey_time(method_name, *args, **kwargs):
     return 120
 
 
+def mock_get_survey_cost(self):
+    return 0
+
+
 def mock_check_weather(self, state, curr_date, site):
     return False
 
@@ -79,6 +84,9 @@ def mock_get_travel_time(self):
 
 
 def mock_detect_emissions(self, site, meth_name, survey_report):
+    survey_report.site_true_rate = 1
+    survey_report.survey_level = "site_level"
+    survey_report.site_measured_rate = 1.0
     return True
 
 
@@ -88,11 +96,11 @@ def mock_determine_if_site_survey_can_be_completed(
     return True
 
 
-def mock_false_survey_site(self, crew, survey_report, site_to_survey, state, curr_date):
+def mock_false_survey_site(self, crew, survey_report, site_to_survey, weather, curr_date):
     return SiteSurveyReport(1), 0, False
 
 
-def mock_survey_site(self, crew, survey_report, site_to_survey, state, curr_date):
+def mock_survey_site(self, crew, survey_report, site_to_survey, weather, curr_date):
     return (
         SiteSurveyReport(
             1,
@@ -109,7 +117,7 @@ def mock_survey_site(self, crew, survey_report, site_to_survey, state, curr_date
             date(2023, 1, 1),
             "test_method",
         ),
-        2,
+        1,
         True,
     )
 
@@ -122,6 +130,10 @@ def mock_get_detectable_emissions(method_name):
             ],
         },
     }
+
+
+def mock_daylight_calculator_ave_init(self):
+    return
 
 
 @pytest.fixture(name="simple_method_values")
@@ -158,10 +170,11 @@ def simple_method_values_fix(mocker):
         "sensor": "default",
         "max_workday": 8,
         "consider_daylight": False,
-        "t_bw_sites": [1],
+        "t_bw_sites": {"vals": [1]},
         "is_follow_up": False,
         "weather_envs": {"wind": [0, 10], "temp": [-30, 30], "precip": [0, 1]},
         "reporting_delay": 0,
+        "cost": {"upfront": 1000, "per_site": 500},
     }
     current_date: date = date(2023, 1, 2)
     state = {"weather": create_random_state(), "daylight": [], "t": []}
@@ -211,11 +224,12 @@ def simple_method_values2_fix(mocker):
         "n_crews": 5,
         "sensor": "default",
         "max_workday": 1,
-        "t_bw_sites": [1],
+        "t_bw_sites": {"vals": [1]},
         "is_follow_up": False,
         "consider_daylight": False,
         "weather_envs": {"wind": [0, 10], "temp": [-30, 30], "precip": [0, 1]},
         "reporting_delay": 0,
+        "cost": {"upfront": 1000, "per_site": 500},
     }
     current_date: date = date(2023, 1, 2)
     state = {"weather": create_random_state(), "daylight": [], "t": []}
@@ -265,11 +279,12 @@ def simple_method_values3_fix(mocker):
         "n_crews": 5,
         "sensor": "default",
         "max_workday": 1,
-        "t_bw_sites": [1],
+        "t_bw_sites": {"vals": [1]},
         "is_follow_up": True,
         "consider_daylight": False,
         "weather_envs": {"wind": [0, 10], "temp": [-30, 30], "precip": [0, 1]},
         "reporting_delay": 0,
+        "cost": {"upfront": 1000, "per_site": 500},
     }
     current_date: date = date(2023, 1, 2)
     state = {"weather": create_random_state(), "daylight": [], "t": []}
@@ -316,10 +331,11 @@ def simple_method_values4_fix(mocker):
         "sensor": "default",
         "max_workday": 8,
         "consider_daylight": False,
-        "t_bw_sites": [1],
+        "t_bw_sites": {"vals": [1]},
         "is_follow_up": False,
         "weather_envs": {"wind": [0, 10], "temp": [-30, 30], "precip": [0, 1]},
         "reporting_delay": 0,
+        "cost": {"upfront": 1000, "per_site": 500},
     }
     survey_report = SiteSurveyReport(site_id=1)
     current_date: date = date(2023, 1, 2)
@@ -370,10 +386,11 @@ def simple_method_values5_fix(mocker):
         "sensor": {"type": "default", "MDL": 1, "QE": 0},
         "max_workday": 8,
         "consider_daylight": False,
-        "t_bw_sites": [1],
+        "t_bw_sites": {"vals": [1]},
         "is_follow_up": False,
         "weather_envs": {"wind": [0, 10], "temp": [-30, 30], "precip": [0, 1]},
         "reporting_delay": 0,
+        "cost": {"upfront": 1000, "per_site": 500},
     }
     survey_report = SiteSurveyReport(site_id=1)
     current_date: date = date(2023, 1, 2)
@@ -428,13 +445,16 @@ def deploy_crews_testing_fix(mocker):
         "sensor": {"type": "default", "MDL": 1, "QE": 0},
         "max_workday": 8,
         "consider_daylight": False,
-        "t_bw_sites": [1],
+        "t_bw_sites": {"vals": [1]},
         "is_follow_up": False,
         "weather_envs": {"wind": [0, 10], "temp": [-30, 30], "precip": [0, 1]},
         "reporting_delay": 0,
+        "cost": {"upfront": 1000, "per_site": 500},
     }
-    state = {"weather": create_random_state(), "daylight": [], "t": []}
+    weather = create_random_state()
     sites = [site_mock]
+    mocker.patch.object(DaylightCalculatorAve, "__init__", mock_daylight_calculator_ave_init)
+    daylight: DaylightCalculatorAve = DaylightCalculatorAve()
 
     survey_plans = [
         ScheduledSurveyPlanner(
@@ -448,7 +468,7 @@ def deploy_crews_testing_fix(mocker):
         for site in sites
     ]
     workplan = Workplan(survey_plans, date=date(2023, 1, 1))
-    return (sites, properties, state, workplan)
+    return (sites, properties, weather, workplan, daylight)
 
 
 @pytest.fixture(name="deploy_crews_testing2")
@@ -458,6 +478,7 @@ def deploy_crews_testing2_fix(mocker):
     site_mock.id = 1
     mocker.patch.object(site_mock, "get_id", mock_get_ID)
     mocker.patch.object(site_mock, "get_method_survey_time", mock_get_method_survey_time)
+    mocker.patch.object(site_mock, "get_survey_cost", mock_get_survey_cost)
     mocker.patch.object(DefaultSensor, "detect_emissions", mock_detect_emissions)
     mocker.patch.object(
         Method,
@@ -493,13 +514,16 @@ def deploy_crews_testing2_fix(mocker):
         "sensor": {"type": "default", "MDL": 1, "QE": 0},
         "max_workday": 8,
         "consider_daylight": False,
-        "t_bw_sites": [1],
+        "t_bw_sites": {"vals": [1]},
         "is_follow_up": False,
         "weather_envs": {"wind": [0, 10], "temp": [-30, 30], "precip": [0, 1]},
         "reporting_delay": 0,
+        "cost": {"upfront": 1000, "per_site": 500},
     }
-    state = {"weather": create_random_state(), "daylight": [], "t": []}
+    weather = create_random_state()
     sites = [site_mock]
+    mocker.patch.object(DaylightCalculatorAve, "__init__", mock_daylight_calculator_ave_init)
+    daylight: DaylightCalculatorAve = DaylightCalculatorAve()
 
     survey_plans = [
         ScheduledSurveyPlanner(
@@ -513,7 +537,7 @@ def deploy_crews_testing2_fix(mocker):
         for site in sites
     ]
     workplan = Workplan(survey_plans, date=date(2023, 1, 1))
-    return (sites, properties, state, workplan)
+    return (sites, properties, weather, workplan, daylight)
 
 
 def create_random_state():

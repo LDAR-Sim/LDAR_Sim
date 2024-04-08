@@ -170,6 +170,11 @@ class CrewDeploymentStats:
     travel_time: int = 0
     survey_time: int = 0
 
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, CrewDeploymentStats):
+            return vars(self) == vars(other)
+        return False
+
 
 @dataclass
 class EmisInfo:

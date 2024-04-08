@@ -17,9 +17,10 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 ------------------------------------------------------------------------------
 """
+
 from datetime import date
 from src.programs.method import Method
-from src.scheduling.schedule_dataclasses import SiteSurveyReport
+from scheduling.schedule_dataclasses import SiteSurveyReport
 from testing.unit_testing.test_programs.test_method.method_testing_fixtures import (  # noqa
     simple_method_values4_fix,
     simple_method_values5_fix,
@@ -44,7 +45,7 @@ def test_000_simple_weather_fail_to_survey_site(simple_method_values4):
     )
     expected = survey_report
     assert surveyed_report == expected
-    assert last_survey == False
+    assert not last_survey
     assert travel_time == 0
 
 
@@ -71,7 +72,7 @@ def test_000_simple_weather_fail_to_finish_site(simple_method_values5):
         survey_start_date=date(2023, 1, 2),
     )
     assert surveyed_report == expected
-    assert last_survey == True
+    assert last_survey
     assert travel_time == 1
 
 
@@ -105,5 +106,5 @@ def test_000_simple_weather_finish_site(simple_method_values5):
         method="test_method",
     )
     assert surveyed_report == expected
-    assert last_survey == False
+    assert not last_survey
     assert travel_time == 1

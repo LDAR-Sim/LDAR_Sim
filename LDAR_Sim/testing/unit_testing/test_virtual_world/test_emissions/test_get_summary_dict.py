@@ -1,5 +1,5 @@
 from typing import Any, Tuple
-from virtual_world.emissions import Emission
+from src.virtual_world.emissions import Emission
 
 from testing.unit_testing.test_virtual_world.test_emissions.emissions_testing_fixtures import (  # Noqa
     mock_simple_emission_for_get_summary_dict_fix,
