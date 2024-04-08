@@ -4,7 +4,9 @@ from virtual_world.infrastructure import Infrastructure
 import hashlib
 import json
 import numpy as np
-from src.constants.file_name_constants import HASH_FILE, INFRA_FILE
+from constants.file_name_constants import HASH_FILE, INFRA_FILE
+import constants.param_default_const as pc
+from constants.output_messages import RuntimeMessages as rm
 
 
 def hash_file(file_path) -> str:
@@ -54,29 +56,38 @@ def initialize_infrastructure(
     # By Saving these and comparing them to previously saved values,
     # this allows us to know if the inputs that influence infrastructure have changed so that
     # we can generate new Infrastructure instead of using the old one in that case.
-    print("Hashing files")
-    sites_file_hash: str = hash_file(in_dir / virtual_world["infrastructure"]["sites_file"])
+    print(rm.HASHING)
+    sites_file_hash: str = hash_file(
+        in_dir / virtual_world[pc.Virtual_World_Params.INFRA][pc.Virtual_World_Params.SITE]
+    )
     site_type_file_hash: str = (
-        hash_file(in_dir / virtual_world["infrastructure"]["site_type_file"])
-        if virtual_world["infrastructure"]["site_type_file"] is not None
+        hash_file(
+            in_dir / virtual_world[pc.Virtual_World_Params.INFRA][pc.Virtual_World_Params.SITE_TYPE]
+        )
+        if virtual_world[pc.Virtual_World_Params.INFRA][pc.Virtual_World_Params.SITE_TYPE]
+        is not None
         else None
     )
     equip_group_file_hash: str = (
-        hash_file(in_dir / virtual_world["infrastructure"]["equipment_group_file"])
-        if virtual_world["infrastructure"]["equipment_group_file"] is not None
+        hash_file(
+            in_dir / virtual_world[pc.Virtual_World_Params.INFRA][pc.Virtual_World_Params.EQUIP]
+        )
+        if virtual_world[pc.Virtual_World_Params.INFRA][pc.Virtual_World_Params.EQUIP] is not None
         else None
     )
     sources_file_hash: str = (
-        hash_file(in_dir / virtual_world["infrastructure"]["sources_file"])
-        if virtual_world["infrastructure"]["sources_file"] is not None
+        hash_file(
+            in_dir / virtual_world[pc.Virtual_World_Params.INFRA][pc.Virtual_World_Params.SOURCE]
+        )
+        if virtual_world[pc.Virtual_World_Params.INFRA][pc.Virtual_World_Params.SOURCE] is not None
         else None
     )
     virtual_world_hash: str = hash_dict(virtual_world)
-    print("Done hashing files")
+    print(rm.HASHING_COMPLETE)
 
     if not os.path.isfile(hash_file_loc) or not os.path.isfile(infra_file_loc):
         # No previously generated Infrastructure found, generate new Infrastructure
-        print("Generating Infrastructure")
+        print(rm.GEN_INFRA)
         if preseed:
             np.random.seed(preseed_val[0])
 
@@ -88,27 +99,27 @@ def initialize_infrastructure(
         with open(hash_file_loc, "wb") as f:
             pickle.dump(
                 {
-                    "sites_file": sites_file_hash,
-                    "site_type_file": site_type_file_hash,
-                    "equipment_group_file": equip_group_file_hash,
-                    "sources_file": sources_file_hash,
-                    "virtual_world": virtual_world_hash,
+                    pc.Virtual_World_Params.SITE: sites_file_hash,
+                    pc.Virtual_World_Params.SITE_TYPE: site_type_file_hash,
+                    pc.Virtual_World_Params.EQUIP: equip_group_file_hash,
+                    pc.Virtual_World_Params.SOURCE: sources_file_hash,
+                    pc.Levels.VIRTUAL: virtual_world_hash,
                 },
                 f,
             )
         with open(infra_file_loc, "wb") as f:
-            pickle.dump({"infrastructure": infrastructure}, f)
+            pickle.dump({pc.Virtual_World_Params.INFRA: infrastructure}, f)
         hash_file_exist = False
     else:
         # Read in all the saved hashes from the infrastructure used to generate
         # the previously generated sites.
         with open(hash_file_loc, "rb") as f:
             gen_infra_hash_dict = pickle.load(f)
-        gen_sites_file_hash: str = gen_infra_hash_dict["sites_file"]
-        gen_site_type_file_hash: str = gen_infra_hash_dict["site_type_file"]
-        gen_equip_group_file_hash: str = gen_infra_hash_dict["equipment_group_file"]
-        gen_sources_file_hash: str = gen_infra_hash_dict["sources_file"]
-        gen_virtual_world_hash: str = gen_infra_hash_dict["virtual_world"]
+        gen_sites_file_hash: str = gen_infra_hash_dict[pc.Virtual_World_Params.SITE]
+        gen_site_type_file_hash: str = gen_infra_hash_dict[pc.Virtual_World_Params.SITE_TYPE]
+        gen_equip_group_file_hash: str = gen_infra_hash_dict[pc.Virtual_World_Params.EQUIP]
+        gen_sources_file_hash: str = gen_infra_hash_dict[pc.Virtual_World_Params.SOURCE]
+        gen_virtual_world_hash: str = gen_infra_hash_dict[pc.Levels.VIRTUAL]
 
         # Check if all previous hashes match current hashes
         hashes_match: bool = (
@@ -124,13 +135,13 @@ def initialize_infrastructure(
             # The hashes match, meaning it's okay to reuse the previously generated infrastructure,
             # and the previously generated emissions
             with open(infra_file_loc, "rb") as f:
-                infrastructure = pickle.load(f)["infrastructure"]
+                infrastructure = pickle.load(f)[pc.Virtual_World_Params.INFRA]
             hash_file_exist = True
         else:
             # The hashes do not match,
             # meaning something has changed with the infrastructure or virtual world.
             # Either way, the sites need to be generated anew.
-            print("Generating Infrastructure")
+            print(rm.GEN_INFRA)
 
             if preseed:
                 np.random.seed(preseed_val[0])
@@ -143,16 +154,16 @@ def initialize_infrastructure(
             with open(hash_file_loc, "wb") as f:
                 pickle.dump(
                     {
-                        "sites_file": sites_file_hash,
-                        "site_type_file": site_type_file_hash,
-                        "equipment_group_file": equip_group_file_hash,
-                        "sources_file": sources_file_hash,
-                        "virtual_world": virtual_world_hash,
+                        pc.Virtual_World_Params.SITE: sites_file_hash,
+                        pc.Virtual_World_Params.SITE_TYPE: site_type_file_hash,
+                        pc.Virtual_World_Params.EQUIP: equip_group_file_hash,
+                        pc.Virtual_World_Params.SOURCE: sources_file_hash,
+                        pc.Levels.VIRTUAL: virtual_world_hash,
                     },
                     f,
                 )
             with open(infra_file_loc, "wb") as f:
-                pickle.dump({"infrastructure": infrastructure}, f)
+                pickle.dump({pc.Virtual_World_Params.INFRA: infrastructure}, f)
 
             hash_file_exist = False
     return infrastructure, hash_file_exist

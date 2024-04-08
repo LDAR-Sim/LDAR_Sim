@@ -146,3 +146,25 @@ class Versioning_Messages:
         "Warning: interpreting parameters as "
         "version {current_version} because version key was missing"
     )
+
+
+class Initialization_Messages:
+    POTENTIAL_SOURCE_CREATION_ERROR_MESSAGE = (
+        "Error creating emissions sources, they were only partially defined. "
+        "Please input a value for the parameter '{rep} {const}' and rerun the simulation."
+    )
+    INVALID_REPAIR_DELAY_COL_MSG = "Error, Invalid repair delay column provided: {key}"
+    INVALID_REPAIR_DELAY_ERR_MSG = "Error, Invalid repair delay provided: {delay}"
+
+    PLACEHOLDER_CREATION_WARNING_MESSAGE = (
+        "Warning: Only {type} emissions sources were created for the site ID: {site}. "
+        "Check the production rate (LPR/EPR) if this is not intended."
+    )
+    EMISSION_PRODUCTION_RATE_ERROR = (
+        "No valid emissions production rates. Please check values and re-run the simulation."
+    )
+    BAD_EQUIPMENT_INPUT_ERROR = "Invalid equipment input: {}"
+
+    SOURCE_CREATION_ERROR_MESSAGE = (
+        "Invalid LDAR-Sim infrastructure inputs: Failure to read in sources infrastructure input"
+    )

@@ -53,7 +53,7 @@ def mock_simple_emission_for_get_summary_dict_fix() -> Tuple[Emission, dict[str,
         ),
         {
             "Emissions ID": "0000000001",
-            "Status": "Inactive",
+            "Status": "inactive",
             "Days Active": 0,
             "Estimated Days Active": 0,
             '"True" Volume Emitted (Kg Methane)': 0.0,

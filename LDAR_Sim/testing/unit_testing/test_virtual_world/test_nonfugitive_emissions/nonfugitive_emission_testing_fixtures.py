@@ -27,7 +27,7 @@ def mock_simple_emission_for_get_summary_dict_1_fix() -> (
         ),
         {
             "Emissions ID": "0000000001",
-            "Status": "Inactive",
+            "Status": "inactive",
             "Days Active": 0,
             '"True" Volume Emitted (Kg Methane)': 0.0,
             '"Estimated" Volume Emitted (Kg Methane)': 0.0,
@@ -60,7 +60,7 @@ def mock_simple_nonfugitive_emission_for_expire_testing_1_fix() -> (
 def mock_nonfugitive_emission_for_update_no_status_change_fix() -> NonRepairableEmission:
     to_ret = NonRepairableEmission(1, 1, date(*[2018, 1, 1]), date(*[2017, 1, 1]), True, {}, 365)
     to_ret._active_days = 60
-    to_ret._status = "Active"
+    to_ret._status = "active"
     return to_ret
 
 
@@ -70,7 +70,7 @@ def mock_nonfugitive_emission_for_update_no_status_change_emission_recorded_fix(
 ):
     to_ret = NonRepairableEmission(1, 1, date(*[2018, 1, 1]), date(*[2017, 1, 1]), True, {}, 365)
     to_ret._active_days = 60
-    to_ret._status = "Active"
+    to_ret._status = "active"
     to_ret._record = True
     to_ret._recorded_by_company = "Test"
     return to_ret
@@ -80,7 +80,7 @@ def mock_nonfugitive_emission_for_update_no_status_change_emission_recorded_fix(
 def mock_nonfugitive_emission_for_update_will_expire_fix() -> NonRepairableEmission:
     to_ret = NonRepairableEmission(1, 1, date(*[2018, 1, 1]), date(*[2017, 1, 1]), True, {}, 365)
     to_ret._active_days = 59
-    to_ret._status = "Active"
+    to_ret._status = "active"
     to_ret._duration = 60
     return to_ret
 

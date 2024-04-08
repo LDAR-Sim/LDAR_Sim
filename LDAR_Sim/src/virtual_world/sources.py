@@ -25,6 +25,7 @@ from typing import Literal
 
 import numpy as np
 import pandas as pd
+from constants.error_messages import Initialization_Messages as im
 from file_processing.input_processing.emissions_source_processing import (
     EmissionsSource,
 )
@@ -34,19 +35,10 @@ from virtual_world.nonfugitive_emissions import NonRepairableEmission
 from constants.infrastructure_const import (
     Infrastructure_Constants as IC,
 )
-
-
-POTENTIAL_SOURCE_CREATION_ERROR_MESSAGE = (
-    "Error creating emissions sources, they were only partially defined. "
-    "Please input a value for the parameter '{rep} {const}' and rerun the simulation."
-)
+from constants.general_const import Emission_Constants as ec
 
 
 class Source:
-    INVALID_REPAIR_DELAY_COL_MSG = "Error, Invalid repair delay column provided: {key}"
-    INVALID_REPAIR_DELAY_ERR_MSG = "Error, Invalid repair delay provided: {delay}"
-    REP_PREFIX = "repairable_"
-    NON_REP_PREFIX = "non_repairable_"
 
     def __init__(self, id: str, info, prop_params) -> None:
         self._source_ID: str = id
@@ -125,7 +117,7 @@ class Source:
 
     def _set_prefix(self) -> None:
         prefix: Literal["repairable", "non_repairable"] = (
-            Source.REP_PREFIX if self._repairable else Source.NON_REP_PREFIX
+            ec.REP_PREFIX if self._repairable else ec.NON_REP_PREFIX
         )
         self._prefix = prefix
 
@@ -154,14 +146,14 @@ class Source:
     def _set_source_properties(self, prop_params) -> None:
         if prop_params[IC.Sources_File_Constants.EMIS_ERS] is None:
             print(
-                POTENTIAL_SOURCE_CREATION_ERROR_MESSAGE.format(
+                im.POTENTIAL_SOURCE_CREATION_ERROR_MESSAGE.format(
                     rep=self._prefix, const=IC.Sources_File_Constants.EMIS_ERS
                 )
             )
             sys.exit()
         elif prop_params[IC.Sources_File_Constants.EMIS_EPR] is None:
             print(
-                POTENTIAL_SOURCE_CREATION_ERROR_MESSAGE.format(
+                im.POTENTIAL_SOURCE_CREATION_ERROR_MESSAGE.format(
                     rep=self._prefix, const=IC.Sources_File_Constants.EMIS_EPR
                 )
             )
@@ -194,10 +186,10 @@ class Source:
             if self._emis_rep_delay in repair_delay_dataframe:
                 return np.random.choice(repair_delay_dataframe[self._emis_rep_delay])
             else:
-                print(self.INVALID_REPAIR_DELAY_COL_MSG.format(key=self._emis_rep_delay))
+                print(im.INVALID_REPAIR_DELAY_COL_MSG.format(key=self._emis_rep_delay))
                 sys.exit()
         else:
-            print(self.INVALID_REPAIR_DELAY_ERR_MSG.format(delay=self._emis_rep_delay))
+            print(im.INVALID_REPAIR_DELAY_ERR_MSG.format(delay=self._emis_rep_delay))
             sys.exit()
 
     def _get_rep_cost(self):

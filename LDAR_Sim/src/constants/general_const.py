@@ -43,6 +43,10 @@ class Unit_Constants:
     YEAR = "year"
 
 
+class Conversion_Constants:
+    GRAMS_PER_SECOND_TO_KG_PER_DAY = 86.4
+
+
 class Dist_Constants:
     LOGNORM = "lognorm"
 
@@ -53,3 +57,21 @@ class File_Extension_Constants:
     YAML = ".yaml"
     JSON = ".json"
     CSV = ".csv"
+
+
+class Emission_Constants:
+    REPAIRABLE = "repairable"
+    NON_REPAIRABLE = "non-repairable"
+    REP_PREFIX = "repairable_"
+    NON_REP_PREFIX = "non_repairable_"
+    EXPIRE = "expired"
+    ACTIVE = "active"
+    INACTIVE = "inactive"
+    REPAIRED = "repaired"
+    NATURAL = "natural"
+
+
+class Placeholder_Constants:
+    PLACEHOLDER_EQUIPMENT = "Placeholder_Equipment"
+    PLACEHOLDER_REP_EQUIPMENT = "Placeholder_Rep_Equipment"
+    PLACEHOLDER_NON_EQUIPMENT = "Placeholder_NonRep_Equipment"

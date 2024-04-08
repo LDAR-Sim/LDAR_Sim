@@ -47,7 +47,7 @@ def mock_simple_emission_for_get_summary_dict_1_fix() -> Tuple[FugitiveEmission,
         ),
         {
             "Emissions ID": "0000000001",
-            "Status": "Inactive",
+            "Status": "inactive",
             "Days Active": 0,
             "Estimated Days Active": 0,
             '"True" Volume Emitted (Kg Methane)': 0.0,
@@ -176,7 +176,7 @@ def mock_fugitive_emission_for_update_ready_for_nat_repair_fix() -> FugitiveEmis
         1, 1, date(*[2018, 1, 1]), date(*[2017, 1, 1]), True, {}, 14, 200, 365
     )
     to_ret._active_days = 364
-    to_ret._status = "Active"
+    to_ret._status = "active"
     return to_ret
 
 
@@ -186,7 +186,7 @@ def mock_fugitive_emission_for_update_no_status_change_fix() -> FugitiveEmission
         1, 1, date(*[2018, 1, 1]), date(*[2017, 1, 1]), True, {}, 14, 200, 365
     )
     to_ret._active_days = 60
-    to_ret._status = "Active"
+    to_ret._status = "active"
     return to_ret
 
 
@@ -196,7 +196,7 @@ def mock_fugitive_emission_for_update_no_status_change_emission_tagged_fix() -> 
         1, 1, date(*[2018, 1, 1]), date(*[2017, 1, 1]), True, {}, 14, 200, 365
     )
     to_ret._active_days = 60
-    to_ret._status = "Active"
+    to_ret._status = "active"
     to_ret._tagged = True
     to_ret._days_since_tagged = 1
     return to_ret
@@ -208,7 +208,7 @@ def mock_fugitive_emission_for_update_newly_repaired_fix() -> FugitiveEmission:
         1, 1, date(*[2018, 1, 1]), date(*[2017, 1, 1]), True, {}, 14, 200, 365
     )
     to_ret._active_days = 60
-    to_ret._status = "Active"
+    to_ret._status = "active"
     to_ret._tagged = True
     to_ret._days_since_tagged = 13
     return to_ret

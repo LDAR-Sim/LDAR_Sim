@@ -38,7 +38,7 @@ def test_000_update_correctly_results_in_active_days_change_on_active_emission(
     mock_simple_emission_1: Emission,
 ):
     emis_info = EmisInfo(0, 0, 0, 0, 0)
-    mock_simple_emission_1._status = "Active"
+    mock_simple_emission_1._status = "active"
     mock_simple_emission_1.update(emis_info)
     assert mock_simple_emission_1._active_days == 1
     assert emis_info == EmisInfo(0, 0, 0, 0, 0)

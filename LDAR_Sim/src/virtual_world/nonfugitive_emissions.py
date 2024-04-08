@@ -28,8 +28,7 @@ from src.constants import conversion_constants as conv_const
 from virtual_world.emissions import Emission
 from file_processing.output_processing.output_utils import EmisInfo
 from constants.output_file_constants import EMIS_DATA_COL_ACCESSORS as eca
-
-EXPIRE = "expired"
+from constants.general_const import Emission_Constants as ec
 
 
 class NonRepairableEmission(Emission):
@@ -80,8 +79,8 @@ class NonRepairableEmission(Emission):
         Checks the days since start against the duration
         Ends the emission if possible
         """
-        self._recorded_by_company = EXPIRE
-        self._status = EXPIRE
+        self._recorded_by_company = ec.EXPIRE
+        self._status = ec.EXPIRE
         emis_info.emis_expired += 1
         self._expiry_date = self._start_date + timedelta(days=(self._active_days))
 
@@ -168,7 +167,7 @@ class NonRepairableEmission(Emission):
     @override
     def activate(self, date: date) -> bool:
         if self._start_date <= date:
-            self._status = "Active"
+            self._status = ec.ACTIVE
             return True
         else:
             return False
