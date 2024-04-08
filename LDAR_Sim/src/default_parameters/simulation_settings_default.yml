@@ -8,6 +8,8 @@ n_processes: 6 # Recommend: 6
 n_simulations: 2
 print_from_simulations: True # True/False
 preseed_random: False # True/False
+make_plots: True # True/False
+write_data: True # True/False
 outputs:
   site_visits: False
   leaks: True

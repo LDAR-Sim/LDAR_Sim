@@ -21,3 +21,30 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 """
 
 SUMMARRY_PLOT_GENERATION_MESSAGE = "Generating cross-program summary plots"
+
+
+class RuntimeMessages:
+
+    OPENING_MSG = """
+        You are running LDAR-Sim version 4.0.0 an open sourced software (MIT) license.
+        Provide any issues, comments, questions, or recommendations by
+        adding an issue to https://github.com/LDAR-Sim/LDAR_Sim.git
+        """
+
+    GEN_WARNING_MSG = """\
+        !!!Pre-generated initialization files exist!!!
+        LDAR-Sim may not create new emissions to model with
+        """
+
+    INIT_WEATHER = "...Initializing weather"
+    INIT_INFRA = "...Initializing infrastructure"
+    INIT_EMISS = "...Initializing emissions"
+    INIT_DAYLIGHT = "...Initializing daylight"
+
+    SIM_SET = "......Simulating set {simulation_number}"
+    SIM_PROG = ".........Simulating program: {prog_name}"
+    FIN_PROG = "......... Finished simulating program: {prog_name}"
+    FIN_SIM_SET = "...Finished simulating set {simulation_number}"
+    BATCH_CLEAN = "...Cleaning up batch {batch_count} data"
+
+    READING_FILE = "Reading in {file}"

@@ -26,30 +26,22 @@ from pathlib import Path
 from typing import Union
 
 import yaml
-from config.output_flag_mapping import (
-    BATCH_REPORTING,
-    LEAKS,
-    OUTPUTS,
-    PLOTS,
-    SITES,
-    TIMESERIES,
-)
+
 from initialization.versioning import (
     CURRENT_FULL_VERSION,
     CURRENT_MAJOR_VERSION,
     CURRENT_MINOR_VERSION,
-    LEGACY_PARAMETER_WARNING,
-    MAJOR_VERSION_ONLY_WARNING,
-    NEWER_PARAMETER_WARNING,
-    MINOR_VERSION_MISMATCH_WARNING,
     check_major_version,
 )
 from utils.check_parameter_types import check_types
+from constants.general_const import File_Extension_Constants as fc
+from constants.file_name_constants import VIRTUAL_DEF_FILE, PROG_DEF_FILE, METH_DEF_FILE
+from constants.error_messages import Input_Processing_Messages as ipm, Versioning_Messages as vm
+import constants.param_default_const as pc
+from constants.output_messages import RuntimeMessages as rm
 
 
 class InputManager:
-    MAKE_PLOTS = "make_plots"
-    WRITE_DATA = "write_data"
 
     def __init__(self) -> None:
         """Constructor creates a lookup of method defaults to run validation against"""
@@ -112,77 +104,70 @@ class InputManager:
         new_parameters = {}
 
         if not os.path.exists(param_file):
-            print("Parameter file " + str(param_file) + " does not exist")
+            print(ipm.MISSING_FILE_ERROR.format(param_file))
             if not param_file.is_absolute():
-                print(
-                    "Note that relative file paths must be relative to the root directory "
-                    "(see User Manual)"
-                )
+                print(ipm.RELATIVE_FILE_PATH_ERROR)
             sys.exit()
 
         with open(param_file, "r") as f:
-            print("Reading " + filename.name)
-            if extension == ".json":
+            print(rm.READING_FILE.format(filename.name))
+            if extension == fc.JSON:
                 new_parameters = json.loads(f.read())
-            elif extension == ".yaml" or extension == ".yml":
+            elif extension == fc.YML or extension == fc.YAML:
                 new_parameters = yaml.load(f.read(), Loader=yaml.SafeLoader)
             else:
-                sys.exit("Invalid parameter file format: " + filename)
+                sys.exit(ipm.INVALID_PARAM_FILE_FORMAT.format(filename))
 
         return new_parameters
 
     def handle_parameter_versioning(self, parameters) -> None:
         if not self.old_params:
-            if "version" not in parameters:
-                print(
-                    (
-                        "Warning: interpreting parameters as version "
-                        + CURRENT_FULL_VERSION
-                        + " because version key was missing"
-                    )
-                )
-                parameters["version"] = CURRENT_FULL_VERSION
+            if pc.Common_Params.VERSION not in parameters:
+                print(vm.VERSION_WARNING.format(CURRENT_FULL_VERSION))
+                parameters[pc.Common_Params.VERSION] = CURRENT_FULL_VERSION
 
             expected_version_string = ".".join([CURRENT_MAJOR_VERSION, CURRENT_MINOR_VERSION])
 
-            if str(parameters["version"]) != expected_version_string:
-                if str(parameters["version"]) == CURRENT_MAJOR_VERSION:
-                    print(MAJOR_VERSION_ONLY_WARNING)
+            if str(parameters[pc.Common_Params.VERSION]) != expected_version_string:
+                if str(parameters[pc.Common_Params.VERSION]) == CURRENT_MAJOR_VERSION:
+                    print(vm.MAJOR_VERSION_ONLY_WARNING)
                     sys.exit()
                 else:
                     major_version_check = check_major_version(
-                        str(parameters["version"]), CURRENT_MAJOR_VERSION
+                        str(parameters[pc.Common_Params.VERSION]), CURRENT_MAJOR_VERSION
                     )
                     if major_version_check == 1:
-                        print(NEWER_PARAMETER_WARNING)
+                        print(vm.NEWER_PARAMETER_WARNING)
                         sys.exit()
                     elif major_version_check == -1:
-                        print(LEGACY_PARAMETER_WARNING)
+                        print(vm.LEGACY_PARAMETER_WARNING)
                         sys.exit()
                     else:
-                        print(MINOR_VERSION_MISMATCH_WARNING)
+                        print(vm.MINOR_VERSION_MISMATCH_WARNING)
                         self.old_params = True
         return
 
     def map_simulation_settings(self, parameters) -> None:
-        outputs: Union[bool, None] = parameters.get(OUTPUTS)
+        outputs: Union[bool, None] = parameters.get(pc.Sim_Setting_Params.OUTPUTS)
 
         if outputs is None:
-            parameters[OUTPUTS] = {}
+            parameters[pc.Sim_Setting_Params.OUTPUTS] = {}
 
-        make_plots: Union[bool, None] = parameters.get(self.MAKE_PLOTS)
+        make_plots: Union[bool, None] = parameters.get(pc.Sim_Setting_Params.MAKE_PLOTS)
 
         if make_plots is not None:
-            parameters[OUTPUTS][PLOTS] = make_plots
-            del parameters[self.MAKE_PLOTS]
+            parameters[pc.Sim_Setting_Params.OUTPUTS][pc.Sim_Setting_Params.PLOTS] = make_plots
+            del parameters[pc.Sim_Setting_Params.MAKE_PLOTS]
 
-        write_data: Union[bool, None] = parameters.get(self.WRITE_DATA)
+        write_data: Union[bool, None] = parameters.get(pc.Sim_Setting_Params.WRITE_DATA)
 
         if write_data is not None:
-            parameters[OUTPUTS][BATCH_REPORTING] = write_data
-            parameters[OUTPUTS][SITES] = write_data
-            parameters[OUTPUTS][LEAKS] = write_data
-            parameters[OUTPUTS][TIMESERIES] = write_data
+            parameters[pc.Sim_Setting_Params.OUTPUTS][
+                pc.Sim_Setting_Params.BATCH_REPORTING
+            ] = write_data
+            parameters[pc.Sim_Setting_Params.OUTPUTS][pc.Sim_Setting_Params.SITES] = write_data
+            parameters[pc.Sim_Setting_Params.OUTPUTS][pc.Sim_Setting_Params.LEAKS] = write_data
+            parameters[pc.Sim_Setting_Params.OUTPUTS][pc.Sim_Setting_Params.TIMESERIES] = write_data
 
         return
 
@@ -194,7 +179,7 @@ class InputManager:
         """
         self.handle_parameter_versioning(parameters)
 
-        if parameters["parameter_level"] == "simulation_settings":
+        if parameters[pc.Common_Params.PARAM_LEVEL] == pc.Levels.SIMULATION:
             self.map_simulation_settings(parameters)
 
         return parameters
@@ -212,26 +197,25 @@ class InputManager:
         method_pool = {}
         for new_parameters in new_parameters_list:
             # Address unsupplied parameter level by defaulting it as simulation_settings
-            if "parameter_level" not in new_parameters:
-                new_parameters["parameter_level"] = "simulation_settings"
-                print(
-                    "Warning: parameter_level should be supplied to parameter files, LDAR-Sim "
-                    "interprets parameter files as simulation_settings level if unspecified"
-                )
+            if pc.Common_Params.PARAM_LEVEL not in new_parameters:
+                new_parameters[pc.Common_Params.PARAM_LEVEL] = pc.Levels.SIMULATION
+                print(ipm.PARAMETER_INTERPRET_WARNING)
 
-            if new_parameters["parameter_level"] == "simulation_settings":
+            if new_parameters[pc.Common_Params.PARAM_LEVEL] == pc.Levels.SIMULATION:
                 # Extract programs supplied in simulation_settings parameter files
                 # to build programs list
-                if "programs" in new_parameters:
-                    if len(new_parameters["programs"]) > 0:
-                        programs = programs + new_parameters.pop("programs")
+                if pc.Levels.PROGRAM in new_parameters:
+                    if len(new_parameters[pc.Levels.PROGRAM]) > 0:
+                        programs = programs + new_parameters.pop(pc.Levels.PROGRAM)
 
-                check_types(self.simulation_parameters, new_parameters, omit_keys=["programs"])
+                check_types(
+                    self.simulation_parameters, new_parameters, omit_keys=[pc.Levels.PROGRAM]
+                )
                 self.retain_update(self.simulation_parameters, new_parameters)
 
-            elif new_parameters["parameter_level"] == "virtual_world":
+            elif new_parameters[pc.Common_Params.PARAM_LEVEL] == pc.Levels.VIRTUAL:
                 if "default_parameters" not in new_parameters:
-                    def_file = "virtual_world_default.yml"
+                    def_file = VIRTUAL_DEF_FILE
                 else:
                     def_file = new_parameters["default_parameters"]
                 v_world_param_file = "./src/default_parameters/{}".format(def_file)
@@ -240,63 +224,65 @@ class InputManager:
                 check_types(default_v_world_params, new_parameters)
                 new_v_world = copy.deepcopy(default_v_world_params)
                 self.retain_update(new_v_world, new_parameters)
-                self.simulation_parameters["virtual_world"] = new_v_world
+                self.simulation_parameters[pc.Levels.VIRTUAL] = new_v_world
 
-            elif new_parameters["parameter_level"] == "program":
+            elif new_parameters[pc.Common_Params.PARAM_LEVEL] == pc.Levels.PROGRAM:
                 if "default_parameters" not in new_parameters:
-                    def_file = "p_default.yml"
+                    def_file = PROG_DEF_FILE
                 else:
                     def_file = new_parameters["default_parameters"]
                 p_param_file = "./src/default_parameters/{}".format(def_file)
                 with open(p_param_file, "r") as f:
                     default_program_parameters = yaml.load(f.read(), Loader=yaml.SafeLoader)
-                check_types(default_program_parameters, new_parameters, omit_keys=["methods"])
+                check_types(
+                    default_program_parameters, new_parameters, omit_keys=[pc.Levels.METHOD]
+                )
                 # Copy all default program parameters to build upon by calling update, then append
                 new_program = copy.deepcopy(default_program_parameters)
                 # HBD - Should be able to change single item in a dict and not the entire dict
                 self.retain_update(new_program, new_parameters)
-                programs.update({new_program["program_name"]: new_program})
+                programs.update({new_program[pc.Program_Params.NAME]: new_program})
 
-            elif new_parameters["parameter_level"] == "method":
+            elif new_parameters[pc.Common_Params.PARAM_LEVEL] == pc.Levels.METHOD:
                 # Create method pool entry that is referenced by the label
-                method_label = new_parameters["label"]
+                method_label = new_parameters[pc.Method_Params.NAME]
                 # self.retain_update(method_pool[method_label], new_parameters)
                 method_pool.update({method_label: new_parameters})
 
             else:
                 sys.exit(
-                    "Parameter_level of "
-                    + str(new_parameters["parameter_level"])
-                    + " is not possible to parse"
+                    ipm.PARAMETER_PARSING_ERROR.format(new_parameters[pc.Common_Params.PARAM_LEVEL])
                 )
 
         # Double check there is at least 1 program
         if len(programs) == 0:
-            sys.exit("No programs are supplied")
+            sys.exit(ipm.NO_PROGRAMS_WARNING)
 
         # Second, install the programs, checking for specified children methods
         for p_idx, program in programs.items():
-            programs[p_idx]["methods"] = {}
+            programs[p_idx][pc.Levels.METHOD] = {}
             # Install methods from the method labels into the program
-            if "method_labels" in program and program["method_labels"] is not None:
-                for method_label in program["method_labels"]:
+            if (
+                pc.Program_Params.METHODS in program
+                and program[pc.Program_Params.METHODS] is not None
+            ):
+                for method_label in program[pc.Program_Params.METHODS]:
                     method_found = False
                     for i in method_pool:
                         if method_label == i:
-                            programs[p_idx]["methods"].update({i: copy.deepcopy(method_pool[i])})
+                            programs[p_idx][pc.Levels.METHOD].update(
+                                {i: copy.deepcopy(method_pool[i])}
+                            )
                             method_found = True
 
                     if not method_found:
-                        print(
-                            "Warning, the following method was specified by not supplied "
-                            + method_label
-                        )
+                        print(ipm.MISSING_METHOD_ERROR.format(method_label))
 
             # Next, perform type checking and updating from default module parameters, even for
             # methods pre-specified
-            for midx, method in program["methods"].items():
+            for midx, method in program[pc.Levels.METHOD].items():
                 if "default_parameters" not in method:
-                    def_file = "m_default.yml"
+                    def_file = METH_DEF_FILE
                 else:
                     def_file = new_parameters["default_parameters"]
                 m_param_file = "./src/default_parameters/{}".format(def_file)
@@ -304,10 +290,10 @@ class InputManager:
                     default_module = yaml.load(f.read(), Loader=yaml.SafeLoader)
                 check_types(default_module, method, omit_keys=["default_parameters"])
                 self.retain_update(default_module, method)
-                programs[p_idx]["methods"][midx] = default_module
+                programs[p_idx][pc.Levels.METHOD][midx] = default_module
 
         # Third, install the programs into the simulation parameters
-        self.simulation_parameters["programs"] = programs
+        self.simulation_parameters[pc.Levels.PROGRAM] = programs
 
     def retain_update(self, obj, new_parameters):
         for idx, param in new_parameters.items():

@@ -26,6 +26,13 @@ class Common_Params:
     FILE = "file"
 
 
+class Levels:
+    SIMULATION = "simulation_settings"
+    VIRTUAL = "virtual_world"
+    PROGRAM = "program"
+    METHOD = "method"
+
+
 class Virtual_World_Params:
     START_DATE = "start_date"
     END_DATE = "end_date"
@@ -60,6 +67,15 @@ class Sim_Setting_Params:
     PROCESS = "n_processes"
     SIMS = "n_simulations"
     PRESEED = "preseed_random"
+    OUTPUTS = "outputs"
+    SITE_VISITS = "site_visits"
+    LEAKS = "leaks"
+    SITES = "sites"
+    TIMESERIES = "timeseries"
+    PLOTS = "plots"
+    BATCH_REPORTING = "batch_reporting"
+    MAKE_PLOTS = "make_plots"
+    WRITE_DATA = "write_data"
 
 
 class Program_Params:

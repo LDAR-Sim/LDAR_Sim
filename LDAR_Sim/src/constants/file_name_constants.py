@@ -18,6 +18,12 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 ------------------------------------------------------------------------------
 """
 
+PARAMETER_FILE = "parameters.yaml"
+VIRTUAL_DEF_FILE = "virtual_world_default.yml"
+SIM_SETTING_DEF_FILE = "simulation_settings_default.yml"
+PROG_DEF_FILE = "p_default.yml"
+METH_DEF_FILE = "m_default.yml"
+
 PRESEED_FILE = "preseed.p"
 EMISSION_PRESEED_FILE = "emis_preseed.p"
 N_SIM_SAVE_FILE = "n_sim_saved.p"
@@ -26,5 +32,10 @@ HASH_FILE = "gen_infrastructure_hashes.p"
 INFRA_FILE = "gen_infrastructure.p"
 
 PARAMETER_FILE = "parameters.yaml"
+
+GENERATOR_FOLDER = "generator"
+
+EMISSIONS_SUMMARY_FILE = "emissions_summary.csv"
+TIMESERIES_FILE = "timeseries.csv"
 
 GENERATOR_FOLDER = "generator"
