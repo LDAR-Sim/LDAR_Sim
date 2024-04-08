@@ -48,3 +48,25 @@ class RuntimeMessages:
     BATCH_CLEAN = "...Cleaning up batch {batch_count} data"
 
     READING_FILE = "Reading in {file}"
+
+    HASHING = "Hashing files"
+    HASHING_COMPLETE = "Done hashing files"
+
+    GEN_INFRA = "Generating infrastructure"
+
+
+class InputHelpText:
+    INPUT_FILE_HELP_TEXT = (
+        "Input files, separate with space, can be absolute path or relative to"
+        "root directory (LDAR_Sim). All files should have yaml, yml, or json extensions \n"
+        "ie. python ldar_sim_main.py ./file1.json c:/path/to/file/file2.json"
+    )
+    INPUT_DIR_HELP_TEXT = (
+        "Input Directory, folder containing input files, will input all files within"
+        "folder that have yaml, yml or json extensions \n"
+        "ie. python ldar_sim_main.py --in_dir ./folder_with_infiles",
+    )
+    OUTPUT_DIR_HELP_TEXT = (
+        "Output Directory, folder containing output files, will save all output files \n"
+        "ie. python ldar_sim_main.py --out_dir ./folder_for_save_outputs"
+    )
