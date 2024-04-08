@@ -32,10 +32,3 @@ def check_major_version(version_string, major_version):
             return 1
     except ValueError:
         return False
-
-
-CURRENT_MAJOR_VERSION = "4"
-
-CURRENT_MINOR_VERSION = "0"
-
-CURRENT_FULL_VERSION = "4.0"

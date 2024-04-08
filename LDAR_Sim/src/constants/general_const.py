@@ -22,6 +22,14 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 """
 
 
+class Version_Constants:
+    CURRENT_MAJOR_VERSION = "4"
+
+    CURRENT_MINOR_VERSION = "0"
+
+    CURRENT_FULL_VERSION = "4.0"
+
+
 class Unit_Constants:
     GRAM = "gram"
     KG = "kilogram"

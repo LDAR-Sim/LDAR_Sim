@@ -28,9 +28,6 @@ from typing import Union
 import yaml
 
 from initialization.versioning import (
-    CURRENT_FULL_VERSION,
-    CURRENT_MAJOR_VERSION,
-    CURRENT_MINOR_VERSION,
     check_major_version,
 )
 from utils.check_parameter_types import check_types
@@ -39,6 +36,7 @@ from constants.file_name_constants import VIRTUAL_DEF_FILE, PROG_DEF_FILE, METH_
 from constants.error_messages import Input_Processing_Messages as ipm, Versioning_Messages as vm
 import constants.param_default_const as pc
 from constants.output_messages import RuntimeMessages as rm
+from constants.general_const import Version_Constants as vc
 
 
 class InputManager:
@@ -123,18 +121,18 @@ class InputManager:
     def handle_parameter_versioning(self, parameters) -> None:
         if not self.old_params:
             if pc.Common_Params.VERSION not in parameters:
-                print(vm.VERSION_WARNING.format(CURRENT_FULL_VERSION))
-                parameters[pc.Common_Params.VERSION] = CURRENT_FULL_VERSION
+                print(vm.VERSION_WARNING.format(vc.CURRENT_FULL_VERSION))
+                parameters[pc.Common_Params.VERSION] = vc.CURRENT_FULL_VERSION
 
-            expected_version_string = ".".join([CURRENT_MAJOR_VERSION, CURRENT_MINOR_VERSION])
+            expected_version_string = ".".join([vc.CURRENT_MAJOR_VERSION, vc.CURRENT_MINOR_VERSION])
 
             if str(parameters[pc.Common_Params.VERSION]) != expected_version_string:
-                if str(parameters[pc.Common_Params.VERSION]) == CURRENT_MAJOR_VERSION:
+                if str(parameters[pc.Common_Params.VERSION]) == vc.CURRENT_MAJOR_VERSION:
                     print(vm.MAJOR_VERSION_ONLY_WARNING)
                     sys.exit()
                 else:
                     major_version_check = check_major_version(
-                        str(parameters[pc.Common_Params.VERSION]), CURRENT_MAJOR_VERSION
+                        str(parameters[pc.Common_Params.VERSION]), vc.CURRENT_MAJOR_VERSION
                     )
                     if major_version_check == 1:
                         print(vm.NEWER_PARAMETER_WARNING)
