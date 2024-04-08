@@ -1,4 +1,4 @@
-parameter_level: "method"
+parameter_level: "methods"
 version: "4.0"
 label: "_placeholder_str_"
 measurement_scale: "_placeholder_str_" # site/equipment/component

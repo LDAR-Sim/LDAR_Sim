@@ -40,6 +40,8 @@ from constants.output_file_constants import (
     TIMESERIES_COLUMNS,
     TIMESERIES_COL_ACCESSORS as tca,
 )
+import constants.file_name_constants as fnc
+from constants.param_default_const import Virtual_World_Params as vp
 
 
 class LdarSim:
@@ -59,7 +61,9 @@ class LdarSim:
         """
         Construct the simulation.
         """
-        self._tc: TimeCounter = TimeCounter(virtual_world["start_date"], virtual_world["end_date"])
+        self._tc: TimeCounter = TimeCounter(
+            virtual_world[vp.START_DATE], virtual_world[vp.END_DATE]
+        )
         self._sim_number: int = sim_number
         self._infrastructure: Infrastructure = infrastructure
         # TODO remove if unused
@@ -107,10 +111,10 @@ class LdarSim:
         self._infrastructure.gen_summary_emis_data(overall_emission_data, self._tc._end_date)
 
         self.gen_sim_directory()
-        summary_filename = "_".join([self.name_str, "emissions_summary.csv"])
+        summary_filename = "_".join([self.name_str, fnc.EMISSIONS_SUMMARY_FILE])
         self.save_results(overall_emission_data, summary_filename)
         self.gen_prog_spec_visualizations(timeseries=timeseries)
-        timeseries_filename = "_".join([self.name_str, "timeseries.csv"])
+        timeseries_filename = "_".join([self.name_str, fnc.TIMESERIES_FILE])
         self.save_results(timeseries, timeseries_filename)
 
     def _init_ts_columns(self) -> list[str]:

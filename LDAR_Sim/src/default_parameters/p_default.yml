@@ -1,5 +1,5 @@
 version: "4.0"
-parameter_level: "program"
+parameter_level: "programs"
 program_name: "default"
 method_labels: []
 economics:

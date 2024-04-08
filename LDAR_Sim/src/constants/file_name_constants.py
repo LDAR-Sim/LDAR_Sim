@@ -37,5 +37,3 @@ GENERATOR_FOLDER = "generator"
 
 EMISSIONS_SUMMARY_FILE = "emissions_summary.csv"
 TIMESERIES_FILE = "timeseries.csv"
-
-GENERATOR_FOLDER = "generator"

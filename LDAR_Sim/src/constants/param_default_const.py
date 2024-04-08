@@ -29,8 +29,8 @@ class Common_Params:
 class Levels:
     SIMULATION = "simulation_settings"
     VIRTUAL = "virtual_world"
-    PROGRAM = "program"
-    METHOD = "method"
+    PROGRAM = "programs"
+    METHOD = "methods"
 
 
 class Virtual_World_Params:
