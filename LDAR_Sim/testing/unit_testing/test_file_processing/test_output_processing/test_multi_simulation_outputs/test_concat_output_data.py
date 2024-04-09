@@ -22,8 +22,8 @@ import os
 from pathlib import Path
 
 import pandas as pd
+from src.constants.file_name_constants import Output_Files as fn
 from src.constants.output_file_constants import (
-    FileNames as fn,
     TS_SUMMARY_COLUMNS_ACCESSORS as tsca,
     EMIS_SUMMARY_COLUMNS_ACCESSORS as esca,
 )

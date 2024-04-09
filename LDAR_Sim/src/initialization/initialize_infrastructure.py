@@ -4,7 +4,7 @@ from virtual_world.infrastructure import Infrastructure
 import hashlib
 import json
 import numpy as np
-from constants.file_name_constants import HASH_FILE, INFRA_FILE
+from constants.file_name_constants import Generator_Files
 import constants.param_default_const as pc
 from constants.output_messages import RuntimeMessages as rm
 
@@ -43,8 +43,8 @@ def initialize_infrastructure(
 
     # Generate Infrastructure for all simulations.
     # If previously generated infrastructure exists, use it instead.
-    hash_file_loc = generator_dir / HASH_FILE
-    infra_file_loc = generator_dir / INFRA_FILE
+    hash_file_loc = generator_dir / Generator_Files.HASH_FILE
+    infra_file_loc = generator_dir / Generator_Files.INFRA_FILE
     # emis_file_loc = generator_dir / "gen_infrastructure_emissions.p"
     # TODO Also add logic to hash the emissions rate sources file. Add logic elsewhere to make
     # that a standard input.

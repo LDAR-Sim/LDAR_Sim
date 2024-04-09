@@ -27,7 +27,8 @@ from datetime import date
 import numpy as np
 from virtual_world.infrastructure import Infrastructure
 from initialization.preseed import gen_seed_timeseries
-from constants.file_name_constants import N_SIM_SAVE_FILE
+from constants.file_name_constants import Generator_Files
+from constants.output_messages import RuntimeMessages as rm
 
 
 def initialize_emissions(
@@ -40,7 +41,7 @@ def initialize_emissions(
     end_date: date,
     generator_dir: Path,
 ):
-    n_sim_loc = generator_dir / N_SIM_SAVE_FILE
+    n_sim_loc = generator_dir / Generator_Files.N_SIM_SAVE_FILE
     n_simulation_saved: int = 0
     # Store params used to generate the pickle files for change detection
     if not hash_file_exist:
@@ -49,8 +50,8 @@ def initialize_emissions(
             if preseed:
                 np.random.seed(emis_preseed_val[i])
             emissions: dict = {}
-            emis_file_loc = generator_dir / f"gen_infrastructure_emissions_{i}.p"
-            print(f"Generating emissions for Set_{i} simulations")
+            emis_file_loc = generator_dir / Generator_Files.GEN_INFRA_EMISS.format(i=i)
+            print(rm.GEN_EMISS.format(i=i))
             emissions.update(
                 infrastructure.generate_emissions(
                     sim_start_date=start_date,
@@ -77,8 +78,8 @@ def initialize_emissions(
             for i in range(n_simulation_saved, n_sims):
                 if preseed:
                     np.random.seed(emis_preseed_val[i])
-                print(f"Generating emissions for Set_{i} simulations")
-                emis_file_loc = generator_dir / f"gen_infrastructure_emissions_{i}.p"
+                print(rm.GEN_EMISS.format(i=i))
+                emis_file_loc = generator_dir / Generator_Files.GEN_INFRA_EMISS.format(i=i)
                 emissions: dict = {}
                 emissions.update(
                     infrastructure.generate_emissions(
@@ -102,7 +103,7 @@ def initialize_emissions(
 def read_in_emissions(infrastructure: Infrastructure, generator_dir: Path, sim_numb: int):
     # Load emissions into the pregenerated infrastructure
     emissions: dict = {}
-    emis_file_loc = generator_dir / f"gen_infrastructure_emissions_{sim_numb}.p"
+    emis_file_loc = generator_dir / Generator_Files.GEN_INFRA_EMISS.format(i=sim_numb)
     with open(emis_file_loc, "rb") as f:
         emissions: dict = pickle.load(f)
     infrastructure.set_pregen_emissions(emissions[sim_numb], sim_numb)

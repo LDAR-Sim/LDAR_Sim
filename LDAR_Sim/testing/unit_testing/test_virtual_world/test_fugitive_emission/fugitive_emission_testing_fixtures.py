@@ -3,6 +3,7 @@ from typing import Tuple
 import pytest
 
 from src.virtual_world.fugitive_emission import FugitiveEmission
+from src.constants.general_const import Emission_Constants as ec
 
 
 @pytest.fixture(name="mock_simple_fugitive_emission_for_activate_testing_1")
@@ -47,7 +48,7 @@ def mock_simple_emission_for_get_summary_dict_1_fix() -> Tuple[FugitiveEmission,
         ),
         {
             "Emissions ID": "0000000001",
-            "Status": "inactive",
+            "Status": ec.INACTIVE,
             "Days Active": 0,
             "Estimated Days Active": 0,
             '"True" Volume Emitted (Kg Methane)': 0.0,
@@ -146,7 +147,7 @@ def mock_simple_fugitive_emission_for_tagged_today_testing_tagged_by_natural_fix
     )
     to_ret._days_since_tagged = 0
     to_ret._tagged = True
-    to_ret._tagged_by_company = "natural"
+    to_ret._tagged_by_company = ec.NATURAL
     return to_ret
 
 
@@ -176,7 +177,7 @@ def mock_fugitive_emission_for_update_ready_for_nat_repair_fix() -> FugitiveEmis
         1, 1, date(*[2018, 1, 1]), date(*[2017, 1, 1]), True, {}, 14, 200, 365
     )
     to_ret._active_days = 364
-    to_ret._status = "active"
+    to_ret._status = ec.ACTIVE
     return to_ret
 
 
@@ -186,7 +187,7 @@ def mock_fugitive_emission_for_update_no_status_change_fix() -> FugitiveEmission
         1, 1, date(*[2018, 1, 1]), date(*[2017, 1, 1]), True, {}, 14, 200, 365
     )
     to_ret._active_days = 60
-    to_ret._status = "active"
+    to_ret._status = ec.ACTIVE
     return to_ret
 
 
@@ -196,7 +197,7 @@ def mock_fugitive_emission_for_update_no_status_change_emission_tagged_fix() -> 
         1, 1, date(*[2018, 1, 1]), date(*[2017, 1, 1]), True, {}, 14, 200, 365
     )
     to_ret._active_days = 60
-    to_ret._status = "active"
+    to_ret._status = ec.ACTIVE
     to_ret._tagged = True
     to_ret._days_since_tagged = 1
     return to_ret
@@ -208,7 +209,7 @@ def mock_fugitive_emission_for_update_newly_repaired_fix() -> FugitiveEmission:
         1, 1, date(*[2018, 1, 1]), date(*[2017, 1, 1]), True, {}, 14, 200, 365
     )
     to_ret._active_days = 60
-    to_ret._status = "active"
+    to_ret._status = ec.ACTIVE
     to_ret._tagged = True
     to_ret._days_since_tagged = 13
     return to_ret

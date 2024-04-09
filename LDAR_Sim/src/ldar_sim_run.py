@@ -40,7 +40,7 @@ from initialization.preseed import gen_seed_emis
 from virtual_world.infrastructure import Infrastructure
 from weather.daylight_calculator import DaylightCalculatorAve
 from weather.weather_lookup import WeatherLookup as WL
-from constants.file_name_constants import PARAMETER_FILE, GENERATOR_FOLDER
+from constants.file_name_constants import Generator_Files, Output_Files
 from utils.generic_functions import check_ERA5_file
 from file_processing.input_processing.input_manager import InputManager
 from initialization.args import (
@@ -200,9 +200,9 @@ if __name__ == "__main__":
     if os.path.exists(out_dir):
         shutil.rmtree(out_dir)
     os.makedirs(out_dir)
-    input_manager.write_parameters(out_dir / PARAMETER_FILE)
+    input_manager.write_parameters(out_dir / Output_Files.PARAMETER_FILE)
 
-    generator_dir = in_dir / GENERATOR_FOLDER
+    generator_dir = in_dir / Generator_Files.GENERATOR_FOLDER
     if os.path.exists(generator_dir):
         print(rm.GEN_WARNING_MSG)
     print(rm.INIT_INFRA)

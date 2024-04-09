@@ -32,7 +32,7 @@ from initialization.versioning import (
 )
 from utils.check_parameter_types import check_types
 from constants.general_const import File_Extension_Constants as fc
-from constants.file_name_constants import VIRTUAL_DEF_FILE, PROG_DEF_FILE, METH_DEF_FILE
+from constants.file_name_constants import Default_Files as df
 from constants.error_messages import Input_Processing_Messages as ipm, Versioning_Messages as vm
 import constants.param_default_const as pc
 from constants.output_messages import RuntimeMessages as rm
@@ -213,7 +213,7 @@ class InputManager:
 
             elif new_parameters[pc.Common_Params.PARAM_LEVEL] == pc.Levels.VIRTUAL:
                 if "default_parameters" not in new_parameters:
-                    def_file = VIRTUAL_DEF_FILE
+                    def_file = df.VIRTUAL_DEF_FILE
                 else:
                     def_file = new_parameters["default_parameters"]
                 v_world_param_file = "./src/default_parameters/{}".format(def_file)
@@ -226,7 +226,7 @@ class InputManager:
 
             elif new_parameters[pc.Common_Params.PARAM_LEVEL] == pc.Levels.PROGRAM:
                 if "default_parameters" not in new_parameters:
-                    def_file = PROG_DEF_FILE
+                    def_file = df.PROG_DEF_FILE
                 else:
                     def_file = new_parameters["default_parameters"]
                 p_param_file = "./src/default_parameters/{}".format(def_file)
@@ -282,7 +282,7 @@ class InputManager:
             # methods pre-specified
             for midx, method in program[pc.Levels.METHOD].items():
                 if "default_parameters" not in method:
-                    def_file = METH_DEF_FILE
+                    def_file = df.METH_DEF_FILE
                 else:
                     def_file = new_parameters["default_parameters"]
                 m_param_file = "./src/default_parameters/{}".format(def_file)

@@ -29,6 +29,7 @@ from constants.output_file_constants import (
     EMIS_DATA_COL_ACCESSORS as eca,
 )
 from constants.file_processing_const import Multi_Sim_Output_Const as mc
+from constants.file_name_constants import Output_Files
 
 
 def get_mean_val(df: pd.DataFrame, column: str) -> float:
@@ -223,8 +224,8 @@ def mark_outputs_to_keep(dir: Path):
 
 
 def concat_output_data(out_dir: Path, clear_outputs: bool):
-    leg_ts_sum: pd.DataFrame = get_summary_file(out_dir, oc.FileNames.TS_SUMMARY_FILENAME)
-    leg_emis_sum: pd.DataFrame = get_summary_file(out_dir, oc.FileNames.EMIS_SUMMARY_FILENAME)
+    leg_ts_sum: pd.DataFrame = get_summary_file(out_dir, Output_Files.TS_SUMMARY_FILENAME)
+    leg_emis_sum: pd.DataFrame = get_summary_file(out_dir, Output_Files.EMIS_SUMMARY_FILENAME)
     program_dirs = [f.path for f in os.scandir(out_dir) if f.is_dir()]
     prog_ts_sum_dfs: list[pd.DataFrame] = []
     prog_emis_sum_dfs: list[pd.DataFrame] = []
@@ -240,10 +241,26 @@ def concat_output_data(out_dir: Path, clear_outputs: bool):
         new_ts_sum: pd.DataFrame = pd.concat(prog_ts_sum_dfs, ignore_index=True)
         prog_emis_sum_dfs.insert(0, leg_emis_sum)
         new_emis_sum: pd.DataFrame = pd.concat(prog_emis_sum_dfs, ignore_index=True)
-        save_summary_file(new_ts_sum, out_dir, oc.FileNames.TS_SUMMARY_FILENAME)
-        save_summary_file(new_emis_sum, out_dir, oc.FileNames.EMIS_SUMMARY_FILENAME)
+        save_summary_file(
+            new_ts_sum,
+            out_dir,
+            Output_Files.TS_SUMMARY_FILENAME,
+        )
+        save_summary_file(
+            new_emis_sum,
+            out_dir,
+            Output_Files.EMIS_SUMMARY_FILENAME,
+        )
     else:
         new_ts_sum: pd.DataFrame = pd.concat(prog_ts_sum_dfs, ignore_index=True)
         new_emis_sum: pd.DataFrame = pd.concat(prog_emis_sum_dfs, ignore_index=True)
-        save_summary_file(new_ts_sum, out_dir, oc.FileNames.TS_SUMMARY_FILENAME)
-        save_summary_file(new_emis_sum, out_dir, oc.FileNames.EMIS_SUMMARY_FILENAME)
+        save_summary_file(
+            new_ts_sum,
+            out_dir,
+            Output_Files.TS_SUMMARY_FILENAME,
+        )
+        save_summary_file(
+            new_emis_sum,
+            out_dir,
+            Output_Files.EMIS_SUMMARY_FILENAME,
+        )

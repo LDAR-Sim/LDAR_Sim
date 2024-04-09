@@ -27,6 +27,7 @@ import seaborn as sns
 from matplotlib import pyplot as plt
 from matplotlib import ticker, lines
 
+from constants.file_name_constants import Output_Files
 from constants import output_file_constants as oc
 from constants import output_messages as om
 from file_processing.output_processing import output_utils
@@ -94,7 +95,7 @@ def gen_cross_program_summary_plots(out_dir: Path, baseline_program: str, n_site
 
     os.makedirs(summary_program_plots_directory)
 
-    emis_summary_info: pd.DataFrame = pd.read_csv(out_dir / oc.FileNames.EMIS_SUMMARY_FILENAME)
+    emis_summary_info: pd.DataFrame = pd.read_csv(out_dir / Output_Files.EMIS_SUMMARY_FILENAME)
 
     estimate_vs_true_constants = oc.ESTIMATE_VS_TRUE_PLOTTING_CONSTANTS
     gen_estimated_vs_true_emissions_percent_difference_plot(
@@ -251,7 +252,10 @@ def gen_estimated_vs_true_emissions_percent_difference_plot(
             )
             plt.legend(handles=[legend_elements[i]])
             save_path = out_dir / " ".join(
-                [program_name, oc.FileNames.TRUE_VS_ESTIMATED_PERCENT_DIFF_PLOT]
+                [
+                    program_name,
+                    Output_Files.TRUE_VS_ESTIMATED_PERCENT_DIFF_PLOT,
+                ]
             )
             plt.savefig(save_path)
             plt.close(fig_sep)
@@ -275,7 +279,7 @@ def gen_estimated_vs_true_emissions_percent_difference_plot(
         )
         comb_ax.xaxis.set_major_formatter(ticker.FuncFormatter(output_utils.percentage_formatter))
         plt.legend(handles=legend_elements)
-        save_path = out_dir / oc.FileNames.TRUE_VS_ESTIMATED_PERCENT_DIFF_PLOT
+        save_path = out_dir / Output_Files.TRUE_VS_ESTIMATED_PERCENT_DIFF_PLOT
         plt.savefig(save_path)
         plt.close(comb_fig)
 
@@ -338,7 +342,10 @@ def gen_estimated_vs_true_emissions_relative_difference_plot(
             plt.axvline(0, color=oc.PlottingConstants.AXIS_COLOR, linestyle="--")
             plt.legend(handles=[legend_elements[i]])
             save_path = out_dir / " ".join(
-                [program_name, oc.FileNames.TRUE_VS_ESTIMATED_RELATIVE_DIFF_PLOT]
+                [
+                    program_name,
+                    Output_Files.TRUE_VS_ESTIMATED_RELATIVE_DIFF_PLOT,
+                ]
             )
             plt.savefig(save_path)
             plt.close(fig_sep)
@@ -364,7 +371,7 @@ def gen_estimated_vs_true_emissions_relative_difference_plot(
         comb_ax.xaxis.set_major_formatter(ticker.FuncFormatter(output_utils.percentage_formatter))
         plt.axvline(0, color=oc.PlottingConstants.AXIS_COLOR, linestyle="--")
         plt.legend(handles=legend_elements)
-        save_path = out_dir / oc.FileNames.TRUE_VS_ESTIMATED_RELATIVE_DIFF_PLOT
+        save_path = out_dir / Output_Files.TRUE_VS_ESTIMATED_RELATIVE_DIFF_PLOT
         plt.savefig(save_path)
         plt.close(comb_fig)
 
@@ -451,7 +458,7 @@ def gen_paired_estimate_and_true_emission_distributions(
             save_path = out_dir / " ".join(
                 [
                     program_name,
-                    oc.FileNames.TRUE_AND_ESTIMATED_PAIRED_EMISSIONS_DISTRIBUTION_PLOT,
+                    Output_Files.TRUE_AND_ESTIMATED_PAIRED_EMISSIONS_DISTRIBUTION_PLOT,
                 ]
             )
             plt.savefig(save_path)
@@ -491,6 +498,6 @@ def gen_paired_estimate_and_true_emission_distributions(
             ylabel=oc.HistogramConstants.Y_AXIS_LABEL,
         )
         plt.legend(handles=legend_elements)
-        save_path = out_dir / oc.FileNames.TRUE_AND_ESTIMATED_PAIRED_EMISSIONS_DISTRIBUTION_PLOT
+        save_path = out_dir / Output_Files.TRUE_AND_ESTIMATED_PAIRED_EMISSIONS_DISTRIBUTION_PLOT
         plt.savefig(save_path)
         plt.close(comb_fig)

@@ -18,22 +18,35 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 ------------------------------------------------------------------------------
 """
 
-PARAMETER_FILE = "parameters.yaml"
-VIRTUAL_DEF_FILE = "virtual_world_default.yml"
-SIM_SETTING_DEF_FILE = "simulation_settings_default.yml"
-PROG_DEF_FILE = "p_default.yml"
-METH_DEF_FILE = "m_default.yml"
 
-PRESEED_FILE = "preseed.p"
-EMISSION_PRESEED_FILE = "emis_preseed.p"
-N_SIM_SAVE_FILE = "n_sim_saved.p"
+class Default_Files:
+    VIRTUAL_DEF_FILE = "virtual_world_default.yml"
+    SIM_SETTING_DEF_FILE = "simulation_settings_default.yml"
+    PROG_DEF_FILE = "p_default.yml"
+    METH_DEF_FILE = "m_default.yml"
 
-HASH_FILE = "gen_infrastructure_hashes.p"
-INFRA_FILE = "gen_infrastructure.p"
 
-PARAMETER_FILE = "parameters.yaml"
+class Generator_Files:
+    PRESEED_FILE = "preseed.p"
+    EMISSION_PRESEED_FILE = "emis_preseed.p"
+    N_SIM_SAVE_FILE = "n_sim_saved.p"
 
-GENERATOR_FOLDER = "generator"
+    HASH_FILE = "gen_infrastructure_hashes.p"
+    INFRA_FILE = "gen_infrastructure.p"
 
-EMISSIONS_SUMMARY_FILE = "emissions_summary.csv"
-TIMESERIES_FILE = "timeseries.csv"
+    GENERATOR_FOLDER = "generator"
+
+    GEN_INFRA_EMISS = "gen_infrastructure_emissions_{i}.p"
+
+
+class Output_Files:
+    TS_SUMMARY_FILENAME = "daily_summary_stats.csv"
+    EMIS_SUMMARY_FILENAME = "emissions_summary_stats.csv"
+    TRUE_VS_ESTIMATED_PERCENT_DIFF_PLOT = "True_vs_Estimated_Emissions_percent_differences.png"
+    TRUE_VS_ESTIMATED_RELATIVE_DIFF_PLOT = "True_vs_Estimated_Emissions_relative_differences.png"
+    TRUE_AND_ESTIMATED_PAIRED_EMISSIONS_DISTRIBUTION_PLOT = (
+        "True_and_Estimated_Paired_Emissions_Distribution.png"
+    )
+    EMISSIONS_SUMMARY_FILE = "emissions_summary.csv"
+    TIMESERIES_FILE = "timeseries.csv"
+    PARAMETER_FILE = "parameters.yaml"
