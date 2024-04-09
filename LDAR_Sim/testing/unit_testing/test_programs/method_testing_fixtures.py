@@ -5,7 +5,7 @@ import pytest
 from src.programs.site_level_method import SiteLevelMethod
 from src.constants.infrastructure_const import Infrastructure_Constants
 from src.virtual_world.sites import Site
-from src.constants.param_default_const import Method_Params as mp
+from src.constants.param_default_const import Method_Params as mp, Common_Params as cp
 
 
 def mock_get_method_survey_time(method_name, *args, **kwargs):
@@ -84,7 +84,7 @@ def mock_simple_site_for_survey_site_testing_fix() -> Site:
         Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ED: 1,
         Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RD: 0,
         Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RC: 100,
-        "Method_Specific_Params": {
+        cp.METH_SPECIFIC: {
             Infrastructure_Constants.Sites_File_Constants.SURVEY_FREQUENCY_PLACEHOLDER: {},
             Infrastructure_Constants.Sites_File_Constants.SPATIAL_PLACEHOLDER: {"Test": 1},
             Infrastructure_Constants.Equipment_Group_File_Constants.SURVEY_TIME_PLACEHOLDER: {},

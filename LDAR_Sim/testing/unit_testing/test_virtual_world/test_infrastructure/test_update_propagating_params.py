@@ -29,6 +29,7 @@ from src.constants.infrastructure_const import (
     Infrastructure_Constants,
     Virtual_World_To_Prop_Params_Mapping,
 )
+from src.constants.param_default_const import Common_Params as cp
 
 
 @st.composite
@@ -42,13 +43,11 @@ def generate_test_prop_params(draw, methods):
     to_ret = {}
     for key in Virtual_World_To_Prop_Params_Mapping.PROPAGATING_PARAMS.keys():
         to_ret[key] = draw(st.integers(min_value=0, max_value=10000))
-    to_ret["Method_Specific_Params"] = {}
+    to_ret[cp.METH_SPECIFIC] = {}
     for key in Virtual_World_To_Prop_Params_Mapping.METH_SPEC_PROP_PARAMS.keys():
-        to_ret["Method_Specific_Params"][key] = {}
+        to_ret[cp.METH_SPECIFIC][key] = {}
         for method in methods:
-            to_ret["Method_Specific_Params"][key][method] = draw(
-                st.integers(min_value=0, max_value=10000)
-            )
+            to_ret[cp.METH_SPECIFIC][key][method] = draw(st.integers(min_value=0, max_value=10000))
     return to_ret
 
 
@@ -104,7 +103,7 @@ def test_000_generate_propagating_params_correctly_updates_prop_params_dict_w_on
     result = copy.deepcopy(prop_params)
     infra = Infrastructure.__new__(Infrastructure)
     infra.update_propagating_params(result, site_info, site_type_info, methods)
-    meth_spec_prop_params = prop_params.pop("Method_Specific_Params")
+    meth_spec_prop_params = prop_params.pop(cp.METH_SPECIFIC)
 
     for param in prop_params:
         if param in site_info:
@@ -118,16 +117,14 @@ def test_000_generate_propagating_params_correctly_updates_prop_params_dict_w_on
         for method in methods:
             if "".join([method, param]) in site_info:
                 assert (
-                    result["Method_Specific_Params"][param][method]
-                    == site_info["".join([method, param])]
+                    result[cp.METH_SPECIFIC][param][method] == site_info["".join([method, param])]
                 )
             elif "".join([method, param]) in site_type_info:
                 assert (
-                    result["Method_Specific_Params"][param][method]
+                    result[cp.METH_SPECIFIC][param][method]
                     == site_type_info["".join([method, param])]
                 )
             else:
                 assert (
-                    result["Method_Specific_Params"][param][method]
-                    == meth_spec_prop_params[param][method]
+                    result[cp.METH_SPECIFIC][param][method] == meth_spec_prop_params[param][method]
                 )
