@@ -92,8 +92,8 @@ class Emission:
             return False
 
     def check_spatial_cov(self, method) -> int:
-        if method not in self._tech_spat_covs:
-            name_str: str = f"{method} Spatial Coverage"
+        name_str: str = f"{method} Spatial Coverage"
+        if name_str not in self._tech_spat_covs:
             cov_prob: float = self._tech_spat_cov_probs[method]
             self._tech_spat_covs[name_str] = binomial(1, cov_prob)
         return self._tech_spat_covs[name_str]
