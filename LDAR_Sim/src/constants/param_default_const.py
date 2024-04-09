@@ -24,6 +24,7 @@ class Common_Params:
     PARAM_LEVEL = "parameter_level"
     VAL = "vals"
     FILE = "file"
+    METH_SPECIFIC = "Method_Specific_Params"
 
 
 class Levels:

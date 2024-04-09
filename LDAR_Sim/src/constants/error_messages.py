@@ -168,3 +168,15 @@ class Initialization_Messages:
     SOURCE_CREATION_ERROR_MESSAGE = (
         "Invalid LDAR-Sim infrastructure inputs: Failure to read in sources infrastructure input"
     )
+    PARAMETER_CREATION_ERROR_MESSAGE = (
+        "Key {key} present in test parameters, but not in default parameters"
+    )
+    PARAMETER_TYPE_MISMATCH_ERROR_MESSAGE = (
+        "Parameter type mismatch. \nDefault parameter: {default} is {def_type}"
+        "\nTest parameter: {test} is {test_type}"
+    )
+    AWS_KEY_SEC_ERROR = (
+        "AWS_KEY and AWS_SEC environment variables have not been set,"
+        "refer to model documentation for configuration instructions."
+    )
+    ERA_AUTH_ERROR = "Authentication Failed or Server Unavailable. Exiting"

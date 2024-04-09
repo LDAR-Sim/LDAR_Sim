@@ -36,6 +36,7 @@ from constants.infrastructure_const import (
     Infrastructure_Constants as IC,
 )
 from constants.general_const import Emission_Constants as ec
+import constants.param_default_const as pdc
 
 
 class Source:
@@ -122,7 +123,7 @@ class Source:
         self._prefix = prefix
 
     def _update_prop_params(self, info, prop_params) -> None:
-        meth_specific_params = prop_params.pop("Method_Specific_Params")
+        meth_specific_params = prop_params.pop(pdc.Common_Params.METH_SPECIFIC)
 
         for param in meth_specific_params.keys():
             for method in meth_specific_params[param].keys():
@@ -141,7 +142,7 @@ class Source:
                     prop_val = prop_params[param]
                     prop_params[src_param] = prop_val
 
-        prop_params["Method_Specific_Params"] = meth_specific_params
+        prop_params[pdc.Common_Params.METH_SPECIFIC] = meth_specific_params
 
     def _set_source_properties(self, prop_params) -> None:
         if prop_params[IC.Sources_File_Constants.EMIS_ERS] is None:
@@ -162,14 +163,18 @@ class Source:
         self._emis_prod_rate = prop_params[IC.Sources_File_Constants.EMIS_EPR]
         self._emis_duration = prop_params[IC.Sources_File_Constants.EMIS_DUR]
 
-        self._meth_spat_covs = prop_params["Method_Specific_Params"][
+        self._meth_spat_covs = prop_params[pdc.Common_Params.METH_SPECIFIC][
             IC.Sources_File_Constants.SPATIAL_PLACEHOLDER
         ]
 
         if self._repairable:
             # TODO look at processing for these values
-            self._emis_rep_delay = prop_params[IC.Sources_File_Constants.REPAIR_DELAY]["vals"]
-            self._emis_rep_cost = prop_params[IC.Sources_File_Constants.REPAIR_COST]["vals"]
+            self._emis_rep_delay = prop_params[IC.Sources_File_Constants.REPAIR_DELAY][
+                pdc.Common_Params.VAL
+            ]
+            self._emis_rep_cost = prop_params[IC.Sources_File_Constants.REPAIR_COST][
+                pdc.Common_Params.VAL
+            ]
 
     def _get_rate(self, emission_rate_source_dictionary: dict[str, EmissionsSource]):
         return emission_rate_source_dictionary[self._emis_rate_source].get_a_rate()

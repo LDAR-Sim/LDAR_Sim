@@ -54,6 +54,10 @@ class RuntimeMessages:
 
     GEN_INFRA = "Generating infrastructure"
 
+    CHECK_WEATHER = "Weather data checked. Continuing simulation."
+    ATTEMPT_AWS_WEATHER_DOWNLOAD = "Weather data not found. Attempting to download from AWS now ..."
+    COMPLETE_WEATHER_DOWNLOAD = "Weather data download complete"
+
 
 class InputHelpText:
     INPUT_FILE_HELP_TEXT = (

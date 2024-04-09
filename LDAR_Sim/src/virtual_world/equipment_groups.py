@@ -32,6 +32,7 @@ from scheduling.schedule_dataclasses import TaggingInfo
 from virtual_world.emissions import Emission
 from src.constants.infrastructure_const import Infrastructure_Constants as IC
 from virtual_world.equipment import Equipment
+from constants.param_default_const import Common_Params as cp
 
 
 class Equipment_Group:
@@ -67,7 +68,7 @@ class Equipment_Group:
         return instance
 
     def _update_prop_params(self, info: dict, prop_params: dict) -> None:
-        meth_specific_params: dict = prop_params.pop("Method_Specific_Params")
+        meth_specific_params: dict = prop_params.pop(cp.METH_SPECIFIC)
 
         for param in meth_specific_params.keys():
             for method in meth_specific_params[param].keys():
@@ -80,7 +81,7 @@ class Equipment_Group:
             if eqg_val is not None:
                 prop_params[param] = eqg_val
 
-        prop_params["Method_Specific_Params"] = meth_specific_params
+        prop_params[cp.METH_SPECIFIC] = meth_specific_params
 
     def _create_equipment(self, infrastructure_inputs, prop_params, info) -> None:
         tot_equip = info.sum()
@@ -95,10 +96,10 @@ class Equipment_Group:
                 self._equipment.append(Equipment(col, count, infrastructure_inputs, prop_params))
 
     def _set_method_specific_params(self, prop_params):
-        self._meth_survey_times = prop_params["Method_Specific_Params"].pop(
+        self._meth_survey_times = prop_params[cp.METH_SPECIFIC].pop(
             IC.Equipment_Group_File_Constants.SURVEY_TIME_PLACEHOLDER
         )
-        self._meth_survey_costs = prop_params["Method_Specific_Params"].pop(
+        self._meth_survey_costs = prop_params[cp.METH_SPECIFIC].pop(
             IC.Equipment_Group_File_Constants.SURVEY_COST_PLACEHOLDER
         )
 

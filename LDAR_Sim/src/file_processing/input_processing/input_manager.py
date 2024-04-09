@@ -36,7 +36,7 @@ from constants.file_name_constants import VIRTUAL_DEF_FILE, PROG_DEF_FILE, METH_
 from constants.error_messages import Input_Processing_Messages as ipm, Versioning_Messages as vm
 import constants.param_default_const as pc
 from constants.output_messages import RuntimeMessages as rm
-from constants.general_const import Version_Constants as vc
+from constants.general_const import Version_Constants as vc, Placeholder_Constants as phc
 
 
 class InputManager:
@@ -302,7 +302,7 @@ class InputManager:
         return
 
     def remove_type_placeholders(self, obj):
-        placeholders = ["_placeholder_int_", "_placeholder_float_", "_placeholder_str_"]
+        placeholders = [phc.PLACEHOLDER_INT, phc.PLACEHOLDER_FLOAT, phc.PLACEHOLDER_STR]
         if isinstance(obj, list):
             iterator = enumerate(obj)
         elif isinstance(obj, dict):

@@ -38,6 +38,7 @@ from constants.infrastructure_const import (
 )
 from constants.error_messages import Initialization_Messages as im
 from constants.general_const import Emission_Constants as ec, Placeholder_Constants as pc
+import constants.param_default_const as pdc
 
 
 class Site:
@@ -61,13 +62,13 @@ class Site:
         self._weather_long: float = long
         self._site_type: str = site_type
         # TODO check that we use these
-        self._survey_frequencies: dict = propagating_params["Method_Specific_Params"].pop(
+        self._survey_frequencies: dict = propagating_params[pdc.Common_Params.METH_SPECIFIC].pop(
             Infrastructure_Constants.Sites_File_Constants.SURVEY_FREQUENCY_PLACEHOLDER
         )
-        self._deployment_months = propagating_params["Method_Specific_Params"].pop(
+        self._deployment_months = propagating_params[pdc.Common_Params.METH_SPECIFIC].pop(
             Infrastructure_Constants.Sites_File_Constants.DEPLOYMENT_MONTHS_PLACEHOLDER
         )
-        self._deployment_years = propagating_params["Method_Specific_Params"].pop(
+        self._deployment_years = propagating_params[pdc.Common_Params.METH_SPECIFIC].pop(
             Infrastructure_Constants.Sites_File_Constants.DEPLOYMENT_YEARS_PLACEHOLDER
         )
         self._equipment_groups: list[Equipment_Group] = []
@@ -139,7 +140,9 @@ class Site:
             ]
             equipment_groups = split_eqgs
         if isinstance(equipment_groups, list) and len(equipment_groups) > 0:
-            equip_groups_in: pd.DataFrame = infrastructure_inputs["equipment"]
+            equip_groups_in: pd.DataFrame = infrastructure_inputs[
+                Infrastructure_Constants.Virtual_World_Constants.EQG
+            ]
             equip_count = len(equipment_groups)
             for equipment_group in equipment_groups:
                 site_equipment_group = equip_groups_in.loc[

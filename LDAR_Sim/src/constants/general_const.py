@@ -75,3 +75,6 @@ class Placeholder_Constants:
     PLACEHOLDER_EQUIPMENT = "Placeholder_Equipment"
     PLACEHOLDER_REP_EQUIPMENT = "Placeholder_Rep_Equipment"
     PLACEHOLDER_NON_EQUIPMENT = "Placeholder_NonRep_Equipment"
+    PLACEHOLDER_INT = "_placeholder_int_"
+    PLACEHOLDER_FLOAT = "_placeholder_float_"
+    PLACEHOLDER_STR = "_placeholder_str_"

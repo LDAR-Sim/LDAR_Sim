@@ -24,7 +24,7 @@ from numpy import random
 from typing import Any
 from typing_extensions import override
 
-from src.constants import conversion_constants as conv_const
+from constants.general_const import Conversion_Constants as conv_const
 from file_processing.output_processing.output_utils import EmisInfo
 from constants.output_file_constants import EMIS_DATA_COL_ACCESSORS as eca
 from constants.general_const import Emission_Constants as ec, Conversion_Constants as cc
