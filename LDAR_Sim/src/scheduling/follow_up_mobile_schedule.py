@@ -23,6 +23,7 @@ from scheduling.follow_up_survey_planner import FollowUpSurveyPlanner
 from scheduling.generic_schedule import GenericSchedule
 from utils.queue import PriorityQueueWithFIFO
 from virtual_world.sites import Site
+from constants.param_default_const import Deployment_Types as dt
 
 
 class FollowUpMobileSchedule(GenericSchedule):
@@ -30,7 +31,7 @@ class FollowUpMobileSchedule(GenericSchedule):
     as the "mobile" type. Will overwrite GenericSchedule functionality as required.
     """
 
-    DEPLOY_TYPE_CODE = "mobile"
+    DEPLOY_TYPE_CODE = dt.MOBILE
 
     def __init__(
         self,

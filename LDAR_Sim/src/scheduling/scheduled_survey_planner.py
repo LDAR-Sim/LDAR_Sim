@@ -26,6 +26,7 @@ import math
 import copy
 from scheduling.survey_planner import SurveyPlanner
 from virtual_world.sites import Site
+from constants.general_const import Conversion_Constants as cc
 
 
 def get_inactive_months(active) -> list[int]:
@@ -164,7 +165,7 @@ class ScheduledSurveyPlanner(SurveyPlanner):
                 prev_inactive_count += 1
             inactive_counts += diff
             days_to_add: int = math.ceil(
-                30.437 * inactive_counts
+                cc.DAYS_IN_MONTH * inactive_counts
             )  # TODO : calculate the actual days instead of using placeholder 30
             evenly_spaced_dates[i] += timedelta(days=days_to_add)
 

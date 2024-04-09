@@ -92,6 +92,13 @@ class Output_Processing_Messages:
 class Runtime_Error_Messages:
     NO_REF_BASE_PROG_ERROR = "No reference or base program input...Exiting sim"
 
+    INVALID_REDUND_FILTER_ERROR = "Error: Invalid Redundancy filter: {filter} for method: {method}"
+
+    INVALID_DEPLOYMENT_TYPE_ERROR_MESSAGE = (
+        "Error: LDAR-Sim has detected an invalid method deployment type of:"
+        "{deploy_type} for method: {method}"
+    )
+
 
 class Versioning_Messages:
 

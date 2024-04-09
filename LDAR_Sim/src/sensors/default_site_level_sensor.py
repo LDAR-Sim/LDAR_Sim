@@ -23,10 +23,11 @@ from scheduling.schedule_dataclasses import SiteSurveyReport
 from sensors.default_sensor import DefaultSensor
 from virtual_world.emissions import Emission
 from virtual_world.sites import Site
+from constants.param_default_const import Levels
 
 
 class DefaultSiteLevelSensor(DefaultSensor):
-    SURVEY_LEVEL = "site_level"
+    SURVEY_LEVEL = Levels.SITE_LEVEL
 
     def __init__(self, mdl: Union[list[float], float], quantification_error: float) -> None:
         super().__init__(mdl, quantification_error)

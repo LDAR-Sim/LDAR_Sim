@@ -18,16 +18,17 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 ------------------------------------------------------------------------------
 """
+
 import math
 import numpy as np
 from sensors.default_equipment_level_sensor import DefaultEquipmentLevelSensor
-
-MDL_CONST1 = 0.01275
-MDL_CONST2 = 0.00000278
-GS_TO_GH = 3600
+from constants.general_const import Conversion_Constants as CC
 
 
 class OGICameraRKSensor(DefaultEquipmentLevelSensor):
+    MDL_CONST1 = 0.01275
+    MDL_CONST2 = 0.00000278
+
     def __init__(self, mdl: float, quantification_error: float) -> None:
         super().__init__(mdl, quantification_error)
 
@@ -35,14 +36,14 @@ class OGICameraRKSensor(DefaultEquipmentLevelSensor):
         k = np.random.normal(4.9, 0.3)
         # check if users are providing their own overwrite to the curve
         if len(self._mdl) < 2:
-            x0 = np.random.normal(MDL_CONST1, MDL_CONST2)
+            x0 = np.random.normal(OGICameraRKSensor.MDL_CONST1, OGICameraRKSensor.MDL_CONST2)
         else:
             x0 = np.random.normal(self._mdl[0], self._mdl[1])
-        x0 = math.log10(x0 * GS_TO_GH)
+        x0 = math.log10(x0 * CC.GS_TO_GH)
         if emis_rate == 0:
             return False
 
-        x = math.log10(emis_rate * GS_TO_GH)
+        x = math.log10(emis_rate * CC.GS_TO_GH)
         prob_detect = 1 / (1 + math.exp(-k * (x - x0)))
 
         return np.random.binomial(1, prob_detect) and self.check_min_threshold(emis_rate)

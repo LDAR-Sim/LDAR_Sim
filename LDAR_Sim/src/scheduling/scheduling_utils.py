@@ -17,19 +17,15 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 ------------------------------------------------------------------------------
 """
+
 from datetime import date
 from scheduling.follow_up_mobile_schedule import FollowUpMobileSchedule
 from scheduling.generic_schedule import GenericSchedule
 from scheduling.mobile_schedule import MobileSchedule
 from scheduling.stationary_schedule import StationarySchedule
 from virtual_world.sites import Site
-
-DEPLOY_TYPE_ACCESSOR = "deployment_type"
-FOLLOWUP_ACCSSOR = "is_follow_up"
-INVALID_DEPLOYMENT_TYPE_ERROR_MESSAGE = (
-    "Error: LDAR-Sim has detected an invalid method deployment type of:"
-    "{deploy_type} for method: {method}"
-)
+from constants.param_default_const import Method_Params as mp
+from constants.error_messages import Runtime_Error_Messages as rm
 
 
 def create_schedule(
@@ -55,8 +51,8 @@ def create_schedule(
         the given method deployment type. Should be treated as a generic schedule and will
         enforce the correct behavior through polymorphism.
     """
-    method_follow_up: bool = method_details[FOLLOWUP_ACCSSOR]
-    method_deployment_type: str = method_details[DEPLOY_TYPE_ACCESSOR]
+    method_follow_up: bool = method_details[mp.IS_FOLLOW_UP]
+    method_deployment_type: str = method_details[mp.DEPLOYMENT_TYPE]
     if not method_follow_up:
         if method_deployment_type == MobileSchedule.DEPLOY_TYPE_CODE:
             schedule: GenericSchedule = MobileSchedule(
@@ -78,7 +74,7 @@ def create_schedule(
             )
         else:
             print(
-                INVALID_DEPLOYMENT_TYPE_ERROR_MESSAGE.format(
+                rm.INVALID_DEPLOYMENT_TYPE_ERROR_MESSAGE.format(
                     deploy_type=method_deployment_type, method=method_name
                 )
             )
@@ -95,7 +91,7 @@ def create_schedule(
             )
         else:
             print(
-                INVALID_DEPLOYMENT_TYPE_ERROR_MESSAGE.format(
+                rm.INVALID_DEPLOYMENT_TYPE_ERROR_MESSAGE.format(
                     deploy_type=method_deployment_type, method=method_name
                 )
             )

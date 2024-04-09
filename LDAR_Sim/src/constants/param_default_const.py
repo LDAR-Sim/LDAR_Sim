@@ -33,6 +33,16 @@ class Levels:
     PROGRAM = "programs"
     METHOD = "methods"
 
+    SITE_LEVEL = "site_level"
+    EQUIP_LEVEL = "equipment_level"
+    COMPONENT_LEVEL = "component_level"
+
+
+class Deployment_Types:
+    MOBILE = "mobile"
+    STATIONARY = "stationary"
+    ORBIT = "orbital"
+
 
 class Virtual_World_Params:
     START_DATE = "start_date"

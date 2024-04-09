@@ -22,6 +22,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 from datetime import date
 from scheduling.generic_schedule import GenericSchedule
 from virtual_world.sites import Site
+from constants.param_default_const import Deployment_Types as dt
 
 
 class MobileSchedule(GenericSchedule):
@@ -29,7 +30,7 @@ class MobileSchedule(GenericSchedule):
     as the "mobile" type. Will overwrite GenericSchedule functionality as required.
     """
 
-    DEPLOY_TYPE_CODE = "mobile"
+    DEPLOY_TYPE_CODE = dt.MOBILE
 
     def __init__(
         self,

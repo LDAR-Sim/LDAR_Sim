@@ -45,6 +45,8 @@ class Unit_Constants:
 
 class Conversion_Constants:
     GRAMS_PER_SECOND_TO_KG_PER_DAY = 86.4
+    GS_TO_GH = 3600
+    DAYS_IN_MONTH = 30.437
 
 
 class Dist_Constants:
