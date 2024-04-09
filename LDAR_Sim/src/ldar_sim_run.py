@@ -40,7 +40,7 @@ from initialization.preseed import gen_seed_emis
 from virtual_world.infrastructure import Infrastructure
 from weather.daylight_calculator import DaylightCalculatorAve
 from weather.weather_lookup import WeatherLookup as WL
-from src.constants.file_name_constants import PARAMETER_FILE, GENERATOR_FOLDER
+from constants.file_name_constants import PARAMETER_FILE, GENERATOR_FOLDER
 from utils.generic_functions import check_ERA5_file
 from file_processing.input_processing.input_manager import InputManager
 from initialization.args import (
@@ -128,7 +128,7 @@ def simulate(
         virtual_world[pdc.Virtual_World_Params.CONSIDER_WEATHER],
     )
     infra.setup(program.get_method_names())
-    print(rm.SIM_PROG.format(prog_name))
+    print(rm.SIM_PROG.format(prog_name=prog_name))
     simulation: LdarSim = LdarSim(
         sim_num,
         sim_settings,
@@ -140,7 +140,7 @@ def simulate(
         preseed_timeseries,
     )
     simulation.run_simulation()
-    print(rm.FIN_PROG.format(prog_name))
+    print(rm.FIN_PROG.format(prog_name=prog_name))
     gc.collect()
     return
 
@@ -254,7 +254,7 @@ if __name__ == "__main__":
         for batch_count, sim_count in enumerate(sim_counts):
             for simulation in range(sim_count):
                 simulation_number: int = batch_count * 5 + simulation
-                print(rm.SIM_SET.format(simulation_number))
+                print(rm.SIM_SET.format(simulation_number=simulation_number))
                 # read in pregen emissions
                 infra = read_in_emissions(infrastructure, generator_dir, simulation_number)
                 # -- Run simulations --
@@ -286,10 +286,10 @@ if __name__ == "__main__":
                         prog_data,
                     )
                 gc.collect()
-                print(rm.FIN_SIM_SET.format(simulation_number))
+                print(rm.FIN_SIM_SET.format(simulation_number=simulation_number))
 
             # -- Batch Report --
-            print(rm.BATCH_CLEAN.format(batch_count))
+            print(rm.BATCH_CLEAN.format(batch_count=batch_count))
             concat_output_data(out_dir, batch_count != 0)
     gen_cross_program_summary_plots(
         out_dir, base_program, virtual_world[pdc.Virtual_World_Params.N_SITES]

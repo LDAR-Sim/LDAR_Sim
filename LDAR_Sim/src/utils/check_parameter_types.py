@@ -55,7 +55,7 @@ def check_types(default, test, omit_keys=None, fatal=False):
             for i in test:
                 if i not in omit_keys:
                     if i not in default:
-                        print(im.PARAMETER_CREATION_ERROR_MESSAGE.format(i))
+                        print(im.PARAMETER_CREATION_ERROR_MESSAGE.format(key=i))
                         if fatal:
                             sys.exit()
 

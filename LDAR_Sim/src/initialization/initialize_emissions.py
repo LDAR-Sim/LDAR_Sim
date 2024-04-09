@@ -27,7 +27,7 @@ from datetime import date
 import numpy as np
 from virtual_world.infrastructure import Infrastructure
 from initialization.preseed import gen_seed_timeseries
-from src.constants.file_name_constants import N_SIM_SAVE_FILE
+from constants.file_name_constants import N_SIM_SAVE_FILE
 
 
 def initialize_emissions(

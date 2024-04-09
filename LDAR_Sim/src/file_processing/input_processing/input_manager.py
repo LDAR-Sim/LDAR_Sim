@@ -102,26 +102,26 @@ class InputManager:
         new_parameters = {}
 
         if not os.path.exists(param_file):
-            print(ipm.MISSING_FILE_ERROR.format(param_file))
+            print(ipm.MISSING_FILE_ERROR.format(file=param_file))
             if not param_file.is_absolute():
                 print(ipm.RELATIVE_FILE_PATH_ERROR)
             sys.exit()
 
         with open(param_file, "r") as f:
-            print(rm.READING_FILE.format(filename.name))
+            print(rm.READING_FILE.format(file=filename.name))
             if extension == fc.JSON:
                 new_parameters = json.loads(f.read())
             elif extension == fc.YML or extension == fc.YAML:
                 new_parameters = yaml.load(f.read(), Loader=yaml.SafeLoader)
             else:
-                sys.exit(ipm.INVALID_PARAM_FILE_FORMAT.format(filename))
+                sys.exit(ipm.INVALID_PARAM_FILE_FORMAT.format(filename=filename))
 
         return new_parameters
 
     def handle_parameter_versioning(self, parameters) -> None:
         if not self.old_params:
             if pc.Common_Params.VERSION not in parameters:
-                print(vm.VERSION_WARNING.format(vc.CURRENT_FULL_VERSION))
+                print(vm.VERSION_WARNING.format(current_version=vc.CURRENT_FULL_VERSION))
                 parameters[pc.Common_Params.VERSION] = vc.CURRENT_FULL_VERSION
 
             expected_version_string = ".".join([vc.CURRENT_MAJOR_VERSION, vc.CURRENT_MINOR_VERSION])
@@ -249,7 +249,9 @@ class InputManager:
 
             else:
                 sys.exit(
-                    ipm.PARAMETER_PARSING_ERROR.format(new_parameters[pc.Common_Params.PARAM_LEVEL])
+                    ipm.PARAMETER_PARSING_ERROR.format(
+                        level=new_parameters[pc.Common_Params.PARAM_LEVEL]
+                    )
                 )
 
         # Double check there is at least 1 program
@@ -274,7 +276,7 @@ class InputManager:
                             method_found = True
 
                     if not method_found:
-                        print(ipm.MISSING_METHOD_ERROR.format(method_label))
+                        print(ipm.MISSING_METHOD_ERROR.format(method=method_label))
 
             # Next, perform type checking and updating from default module parameters, even for
             # methods pre-specified
