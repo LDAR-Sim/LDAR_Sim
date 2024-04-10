@@ -54,52 +54,6 @@ from constants.output_messages import RuntimeMessages as rm
 from constants.error_messages import Runtime_Error_Messages as rem
 import constants.param_default_const as pdc
 
-# def ldar_sim_run(simulation, weather, daylight):
-#     """
-#     The ldar sim run function takes a simulation dictionary
-#     simulation = a dictionary of simulation parameters necessary to run LDAR-Sim
-#     """
-
-#     simulation = copy.deepcopy(simulation)
-#     virtual_world = simulation["virtual_world"]
-#     program_parameters = simulation["program"]
-#     input_directory = simulation["input_directory"]
-#     output_directory = simulation["output_directory"] / program_parameters["program_name"]
-#     virtual_world["pregenerate_leaks"] = simulation["pregenerate_leaks"]
-#     infrastructure: Infrastructure = simulation["Infrastructure"]
-#     simulation_settings = simulation["simulation_settings"]
-
-#     if not os.path.exists(output_directory):
-#         try:
-#             os.makedirs(output_directory)
-#         except Exception:
-#             pass
-
-#     logfile = open(output_directory / "logfile.txt", "w")
-#     if "print_from_simulation" not in simulation or simulation["print_from_simulation"]:
-#         sys.stdout = stdout_redirect([sys.stdout, logfile])
-#     else:
-#         sys.stdout = stdout_redirect([logfile])
-#     gc.collect()
-
-#     sim = LdarSim(
-#         simulation_settings,
-#         weather,
-#         daylight,
-#         program_parameters,
-#         virtual_world,
-#         infrastructure,
-#         input_directory,
-#         output_directory,
-#     )
-
-#     # Clean up and write files
-#     sim_summary = sim.finalize()
-#     print(simulation["closing_message"])
-#     logfile.close()
-#     return sim_summary
-
-
 def simulate(
     daylight,
     weather,
