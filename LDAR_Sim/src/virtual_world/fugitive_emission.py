@@ -24,9 +24,10 @@ from numpy import random
 from typing import Any
 from typing_extensions import override
 
-from utils import conversion_constants as conv_const
-from file_processing.output_processing.output_utils import EmisInfo, EMIS_DATA_COL_ACCESSORS as eca
-
+from constants.general_const import Conversion_Constants as conv_const
+from file_processing.output_processing.output_utils import EmisInfo
+from constants.output_file_constants import EMIS_DATA_COL_ACCESSORS as eca
+from constants.general_const import Emission_Constants as ec, Conversion_Constants as cc
 from virtual_world.emissions import Emission
 
 
@@ -83,7 +84,7 @@ class FugitiveEmission(Emission):
         """
         if self._repairable:
             if self._days_since_tagged >= self._repair_delay + self._tagging_rep_delay:
-                self._status = "repaired"
+                self._status = ec.REPAIRED
                 emis_rep_info.leaks_repaired += 1
                 emis_rep_info.repair_cost += self.get_repair_cost()
                 self._repair_date = self._start_date + timedelta(
@@ -95,7 +96,7 @@ class FugitiveEmission(Emission):
     def tagged_today(self) -> bool:
         return (
             self._tagged and (self._days_since_tagged == 0)
-        ) and self._tagged_by_company != "natural"
+        ) and self._tagged_by_company != ec.NATURAL
 
     def get_repair_cost(self) -> float:
         if isinstance(self._repair_cost, (float, int)):
@@ -104,12 +105,12 @@ class FugitiveEmission(Emission):
             return random.choice(self._repair_cost)
 
     def get_daily_emissions(self) -> float:
-        return self._rate * 86.4
+        return self._rate * cc.GRAMS_PER_SECOND_TO_KG_PER_DAY
 
     def natural_repair(self, emis_rep_info: EmisInfo):
         self._tagged = True
-        self._tagged_by_company = "natural"
-        self._status = "repaired"
+        self._tagged_by_company = ec.NATURAL
+        self._status = ec.REPAIRED
         emis_rep_info.leaks_nat_repaired += 1
         emis_rep_info.nat_repair_cost += self.get_repair_cost()
         self._repair_date = self._start_date + timedelta(days=(self._active_days))
@@ -197,7 +198,7 @@ class FugitiveEmission(Emission):
     @override
     def activate(self, date: date) -> bool:
         if self._start_date <= date:
-            self._status = "Active"
+            self._status = ec.ACTIVE
             return True
         else:
             return False

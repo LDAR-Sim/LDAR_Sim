@@ -25,28 +25,21 @@ from typing import Literal
 
 import numpy as np
 import pandas as pd
+from constants.error_messages import Initialization_Messages as im
 from file_processing.input_processing.emissions_source_processing import (
     EmissionsSource,
 )
 from virtual_world.emissions import Emission
 from virtual_world.fugitive_emission import FugitiveEmission
 from virtual_world.nonfugitive_emissions import NonRepairableEmission
-from virtual_world.infrastructure_const import (
+from constants.infrastructure_const import (
     Infrastructure_Constants as IC,
 )
-
-
-POTENTIAL_SOURCE_CREATION_ERROR_MESSAGE = (
-    "Error creating emissions sources, they were only partially defined. "
-    "Please input a value for the parameter '{rep} {const}' and rerun the simulation."
-)
+from constants.general_const import Emission_Constants as ec
+import constants.param_default_const as pdc
 
 
 class Source:
-    INVALID_REPAIR_DELAY_COL_MSG = "Error, Invalid repair delay column provided: {key}"
-    INVALID_REPAIR_DELAY_ERR_MSG = "Error, Invalid repair delay provided: {delay}"
-    REP_PREFIX = "repairable_"
-    NON_REP_PREFIX = "non_repairable_"
 
     def __init__(self, id: str, info, prop_params) -> None:
         self._source_ID: str = id
@@ -125,12 +118,12 @@ class Source:
 
     def _set_prefix(self) -> None:
         prefix: Literal["repairable", "non_repairable"] = (
-            Source.REP_PREFIX if self._repairable else Source.NON_REP_PREFIX
+            ec.REP_PREFIX if self._repairable else ec.NON_REP_PREFIX
         )
         self._prefix = prefix
 
     def _update_prop_params(self, info, prop_params) -> None:
-        meth_specific_params = prop_params.pop("Method_Specific_Params")
+        meth_specific_params = prop_params.pop(pdc.Common_Params.METH_SPECIFIC)
 
         for param in meth_specific_params.keys():
             for method in meth_specific_params[param].keys():
@@ -149,19 +142,19 @@ class Source:
                     prop_val = prop_params[param]
                     prop_params[src_param] = prop_val
 
-        prop_params["Method_Specific_Params"] = meth_specific_params
+        prop_params[pdc.Common_Params.METH_SPECIFIC] = meth_specific_params
 
     def _set_source_properties(self, prop_params) -> None:
         if prop_params[IC.Sources_File_Constants.EMIS_ERS] is None:
             print(
-                POTENTIAL_SOURCE_CREATION_ERROR_MESSAGE.format(
+                im.POTENTIAL_SOURCE_CREATION_ERROR_MESSAGE.format(
                     rep=self._prefix, const=IC.Sources_File_Constants.EMIS_ERS
                 )
             )
             sys.exit()
         elif prop_params[IC.Sources_File_Constants.EMIS_EPR] is None:
             print(
-                POTENTIAL_SOURCE_CREATION_ERROR_MESSAGE.format(
+                im.POTENTIAL_SOURCE_CREATION_ERROR_MESSAGE.format(
                     rep=self._prefix, const=IC.Sources_File_Constants.EMIS_EPR
                 )
             )
@@ -170,14 +163,18 @@ class Source:
         self._emis_prod_rate = prop_params[IC.Sources_File_Constants.EMIS_EPR]
         self._emis_duration = prop_params[IC.Sources_File_Constants.EMIS_DUR]
 
-        self._meth_spat_covs = prop_params["Method_Specific_Params"][
+        self._meth_spat_covs = prop_params[pdc.Common_Params.METH_SPECIFIC][
             IC.Sources_File_Constants.SPATIAL_PLACEHOLDER
         ]
 
         if self._repairable:
             # TODO look at processing for these values
-            self._emis_rep_delay = prop_params[IC.Sources_File_Constants.REPAIR_DELAY]["vals"]
-            self._emis_rep_cost = prop_params[IC.Sources_File_Constants.REPAIR_COST]["vals"]
+            self._emis_rep_delay = prop_params[IC.Sources_File_Constants.REPAIR_DELAY][
+                pdc.Common_Params.VAL
+            ]
+            self._emis_rep_cost = prop_params[IC.Sources_File_Constants.REPAIR_COST][
+                pdc.Common_Params.VAL
+            ]
 
     def _get_rate(self, emission_rate_source_dictionary: dict[str, EmissionsSource]):
         return emission_rate_source_dictionary[self._emis_rate_source].get_a_rate()
@@ -194,10 +191,10 @@ class Source:
             if self._emis_rep_delay in repair_delay_dataframe:
                 return np.random.choice(repair_delay_dataframe[self._emis_rep_delay])
             else:
-                print(self.INVALID_REPAIR_DELAY_COL_MSG.format(key=self._emis_rep_delay))
+                print(im.INVALID_REPAIR_DELAY_COL_MSG.format(key=self._emis_rep_delay))
                 sys.exit()
         else:
-            print(self.INVALID_REPAIR_DELAY_ERR_MSG.format(delay=self._emis_rep_delay))
+            print(im.INVALID_REPAIR_DELAY_ERR_MSG.format(delay=self._emis_rep_delay))
             sys.exit()
 
     def _get_rep_cost(self):

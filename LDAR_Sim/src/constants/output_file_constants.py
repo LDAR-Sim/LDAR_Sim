@@ -19,6 +19,14 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 """
 
 
+class FileDirectory:
+    SUMMARY_PROGRAM_PLOTS_DIRECTORY = "program_summary_plots"
+
+
+class PlottingConstants:
+    AXIS_COLOR = "black"
+
+
 class HistogramConstants:
     Y_AXIS_LABEL = "Relative Frequency (%)"
     BINS = 30
@@ -32,18 +40,6 @@ class ProgTsConstants:
     X_AXIS_TITLE = "Date"
     Y_AXIS_TITLE = "Daily Emissions (kg Methane)"
     FILENAME = "Timeseries"
-
-
-TS_SUMMARY_FILENAME = "daily_summary_stats.csv"
-EMIS_SUMMARY_FILENAME = "emissions_summary_stats.csv"
-TRUE_VS_ESTIMATED_PERCENT_DIFF_PLOT = "True_vs_Estimated_Emissions_percent_differences.png"
-TRUE_VS_ESTIMATED_RELATIVE_DIFF_PLOT = "True_vs_Estimated_Emissions_relative_differences.png"
-TRUE_AND_ESTIMATED_PAIRED_EMISSIONS_DISTRIBUTION_PLOT = (
-    "True_and_Estimated_Paired_Emissions_Distribution.png"
-)
-SUMMARY_PROGRAM_PLOTS_DIRECTORY = "program_summary_plots"
-
-SUMMARRY_PLOT_GENERATION_MESSAGE = "Generating cross-program summary plots"
 
 
 class ESTIMATE_VS_TRUE_PLOTTING_CONSTANTS:
@@ -75,8 +71,8 @@ class EMIS_SUMMARY_COLUMNS_ACCESSORS:
     SIM = "Simulation"
     T_ANN_EMIS = 'Year {} "True" Emissions (Kg Methane)'
     EST_ANN_EMIS = 'Year {} "Estimated" Emissions (Kg Methane)'
-    REGX_T_ANN_EMIS = 'Year \d+ "True" Emissions \(Kg Methane\)'
-    REGX_EST_ANN_EMIS = 'Year \d+ "Estimated" Emissions \(Kg Methane\)'
+    REGX_T_ANN_EMIS = r'Year \d+ "True" Emissions \(Kg Methane\)'
+    REGX_EST_ANN_EMIS = r'Year \d+ "Estimated" Emissions \(Kg Methane\)'
     T_TOTAL_EMIS = 'Total "True" Emissions (Kg Methane)'
     EST_TOTAL_EMIS = 'Total "Estimated" Emissions (Kg Methane)'
     T_TOTAL_MIT_EMIS = 'Total "True" Mitigable Emissions (Kg Methane)'
@@ -120,3 +116,86 @@ EMIS_SUMMARY_COLUMNS = [
     EMIS_SUMMARY_COLUMNS_ACCESSORS.T_EMIS_AMOUNT_95,
     EMIS_SUMMARY_COLUMNS_ACCESSORS.T_EMIS_AMOUNT_5,
 ]
+
+
+class EMIS_DATA_COL_ACCESSORS:
+    EMIS_ID = "Emissions ID"
+    SITE_ID = "Site ID"
+    EQG = "Equipment"
+    STATUS = "Status"
+    DAYS_ACT = "Days Active"
+    EST_DAYS_ACT = "Estimated Days Active"
+    T_VOL_EMIT = '"True" Volume Emitted (Kg Methane)'
+    EST_VOL_EMIT = '"Estimated" Volume Emitted (Kg Methane)'
+    T_RATE = '"True" Rate (g/s)'
+    M_RATE = '"Measured" Rate (g/s)'
+    DATE_BEG = "Date Began"
+    DATE_REP = "Date Repaired"
+    INIT_DETECT_BY = "Initially Detected By"
+    INIT_DETECT_DATE = "Initially Detected Date"
+    TAGGED = "Tagged"
+    TAGGED_BY = "Tagged By"
+    COMP = "Component"
+    RECORDED = "Recorded"
+    RECORDED_BY = "Recorded By"
+    REPAIRABLE = "Repairable"
+
+
+EMIS_DATA_FINAL_COL_ORDER = [
+    EMIS_DATA_COL_ACCESSORS.EMIS_ID,
+    EMIS_DATA_COL_ACCESSORS.SITE_ID,
+    EMIS_DATA_COL_ACCESSORS.EQG,
+    EMIS_DATA_COL_ACCESSORS.COMP,
+    EMIS_DATA_COL_ACCESSORS.STATUS,
+    EMIS_DATA_COL_ACCESSORS.DAYS_ACT,
+    EMIS_DATA_COL_ACCESSORS.EST_DAYS_ACT,
+    EMIS_DATA_COL_ACCESSORS.DATE_BEG,
+    EMIS_DATA_COL_ACCESSORS.DATE_REP,
+    EMIS_DATA_COL_ACCESSORS.T_VOL_EMIT,
+    EMIS_DATA_COL_ACCESSORS.EST_VOL_EMIT,
+    EMIS_DATA_COL_ACCESSORS.T_RATE,
+    EMIS_DATA_COL_ACCESSORS.M_RATE,
+    EMIS_DATA_COL_ACCESSORS.INIT_DETECT_BY,
+    EMIS_DATA_COL_ACCESSORS.INIT_DETECT_DATE,
+    EMIS_DATA_COL_ACCESSORS.TAGGED,
+    EMIS_DATA_COL_ACCESSORS.TAGGED_BY,
+    EMIS_DATA_COL_ACCESSORS.RECORDED,
+    EMIS_DATA_COL_ACCESSORS.RECORDED_BY,
+    EMIS_DATA_COL_ACCESSORS.REPAIRABLE,
+]
+
+TIMESERIES_COLUMNS = [
+    "Date",
+    "Daily Emissions (Kg Methane)",
+    "Daily Mitigable Emissions (Kg Methane)",
+    "Daily Non-Mitigable Emissions (Kg Methane)",
+    "Daily Cost ($)",
+    "Active Leaks",
+    "New Leaks",
+    "Leaks Repaired",
+    "Leaks Naturally Repaired",
+    "Leaks Tagged",
+    "Daily Repair Cost ($)",
+    "Daily Natural Repair Cost ($)",
+]
+
+
+class TIMESERIES_COL_ACCESSORS:
+    DATE = "Date"
+    EMIS = "Daily Emissions (Kg Methane)"
+    EMIS_MIT = "Daily Mitigable Emissions (Kg Methane)"
+    EMIS_NON_MIT = "Daily Non-Mitigable Emissions (Kg Methane)"
+    COST = "Daily Cost ($)"
+    ACT_LEAKS = "Active Leaks"
+    NEW_LEAKS = "New Leaks"
+    REP_LEAKS = "Leaks Repaired"
+    NAT_REP_LEAKS = "Leaks Naturally Repaired"
+    TAGGED_LEAKS = "Leaks Tagged"
+    REP_COST = "Daily Repair Cost ($)"
+    NAT_REP_COST = "Daily Natural Repair Cost ($)"
+    METH_DAILY_DEPLOY_COST = "{method} Deployment Cost ($)"
+    METH_DAILY_TAGS = "{method} Leaks tagged for repair"
+    METH_DAILY_FLAGS = "{method} Sites flagged for Follow-Up"
+    METH_DAILY_SITES_VIS = "{method} Sites Visited"
+    METH_DAILY_TRAVEL_TIME = "{method} Travel Time (Minutes)"
+    METH_DAILY_SURVEY_TIME = "{method} Survey Time (Minutes)"

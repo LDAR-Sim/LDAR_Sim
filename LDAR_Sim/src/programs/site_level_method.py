@@ -22,6 +22,7 @@ from datetime import date, timedelta
 from math import ceil
 
 from sortedcontainers import SortedList
+from constants.error_messages import Input_Processing_Messages as ipm
 from file_processing.output_processing.output_utils import TaggingFlaggingStats
 from programs.method import Method
 from scheduling.follow_up_mobile_schedule import FollowUpMobileSchedule
@@ -29,12 +30,7 @@ from scheduling.follow_up_survey_planner import FollowUpSurveyPlanner
 from scheduling.surveying_dataclasses import DetectionRecord
 from sensors.default_site_level_sensor import DefaultSiteLevelSensor
 from sensors.METEC_NoWind_sensor import METECNWSite
-from sensors.sensor_constant_mapping import (
-    SENS_TYPE,
-    SENS_MDL,
-    SENS_QE,
-    ERR_MSG_UNKNOWN_SENS_TYPE,
-)
+from constants.param_default_const import Method_Params as mp
 import sys
 
 
@@ -223,10 +219,10 @@ class SiteLevelMethod(Method):
             sensor_into (dict): The dictionary of information the user has
             provided to the method about the sensor
         """
-        if sensor_info[SENS_TYPE] == "default":
-            self._sensor = DefaultSiteLevelSensor(sensor_info[SENS_MDL], sensor_info[SENS_QE])
-        elif sensor_info[SENS_TYPE] == "METEC_no_wind":
-            self._sensor = METECNWSite(sensor_info[SENS_MDL], sensor_info[SENS_QE])
+        if sensor_info[mp.TYPE] == "default":
+            self._sensor = DefaultSiteLevelSensor(sensor_info[mp.MDL], sensor_info[mp.QE])
+        elif sensor_info[mp.TYPE] == "METEC_no_wind":
+            self._sensor = METECNWSite(sensor_info[mp.MDL], sensor_info[mp.QE])
         else:
-            print(ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
+            print(ipm.ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
             sys.exit()

@@ -1,25 +1,23 @@
 import pandas as pd
-import numpy as np
-import pytest
 from src.file_processing.output_processing.multi_simulation_visualizations import (
     gen_annual_emissions_summary_list,
 )
-from src.file_processing.output_processing import output_constants
+from src.constants import output_file_constants
 
 
 def test_gen_annual_emissions_summary_list_one_year():
     # Define a sample DataFrame
     emis_summary_info = pd.DataFrame(
         {
-            output_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME: [
+            output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME: [
                 "prog1",
                 "prog2",
             ],
-            output_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_ANN_EMIS.format(2020): [
+            output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_ANN_EMIS.format(2020): [
                 1,
                 2,
             ],
-            output_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.EST_ANN_EMIS.format(2020): [
+            output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.EST_ANN_EMIS.format(2020): [
                 9,
                 10,
             ],
@@ -46,28 +44,43 @@ def test_gen_annual_emissions_summary_list_multi_years():
     # Define a sample DataFrame
     emis_summary_info = pd.DataFrame(
         {
-            output_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME: [
+            output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME: [
                 "prog1",
                 "prog2",
                 "prog3",
                 "prog4",
             ],
-            output_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_ANN_EMIS.format(2020): [1, 2, 3, 4],
-            output_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_ANN_EMIS.format(2021): [5, 6, 7, 8],
-            output_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_ANN_EMIS.format(2022): [5, 6, 7, 8],
-            output_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.EST_ANN_EMIS.format(2020): [
+            output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_ANN_EMIS.format(2020): [
+                1,
+                2,
+                3,
+                4,
+            ],
+            output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_ANN_EMIS.format(2021): [
+                5,
+                6,
+                7,
+                8,
+            ],
+            output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_ANN_EMIS.format(2022): [
+                5,
+                6,
+                7,
+                8,
+            ],
+            output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.EST_ANN_EMIS.format(2020): [
                 9,
                 10,
                 11,
                 12,
             ],
-            output_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.EST_ANN_EMIS.format(2021): [
+            output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.EST_ANN_EMIS.format(2021): [
                 13,
                 14,
                 15,
                 16,
             ],
-            output_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.EST_ANN_EMIS.format(2022): [
+            output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.EST_ANN_EMIS.format(2022): [
                 13,
                 14,
                 15,

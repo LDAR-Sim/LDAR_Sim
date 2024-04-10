@@ -19,6 +19,8 @@
 # ------------------------------------------------------------------------------
 
 import sys
+from constants.general_const import Placeholder_Constants as pc
+from constants.error_messages import Initialization_Messages as im
 
 
 def check_types(default, test, omit_keys=None, fatal=False):
@@ -38,11 +40,11 @@ def check_types(default, test, omit_keys=None, fatal=False):
         type_ok = True
     elif type(default) is float and type(test) is int:
         type_ok = True
-    elif default == "_placeholder_int_" and (type(test) is int):
+    elif default == pc.PLACEHOLDER_INT and (type(test) is int):
         type_ok = True
-    elif default == "_placeholder_float_" and (type(test) is int or type(test) is float):
+    elif default == pc.PLACEHOLDER_FLOAT and (type(test) is int or type(test) is float):
         type_ok = True
-    elif default == "_placeholder_str_" and type(test) is str:
+    elif default == pc.PLACEHOLDER_STR and type(test) is str:
         type_ok = True
     else:
         type_ok = False
@@ -53,11 +55,7 @@ def check_types(default, test, omit_keys=None, fatal=False):
             for i in test:
                 if i not in omit_keys:
                     if i not in default:
-                        print(
-                            "Key "
-                            + i
-                            + " present in test parameters, but not in default parameters"
-                        )
+                        print(im.PARAMETER_CREATION_ERROR_MESSAGE.format(key=i))
                         if fatal:
                             sys.exit()
 
@@ -70,8 +68,13 @@ def check_types(default, test, omit_keys=None, fatal=False):
                     check_types(default[0], test[i], omit_keys=omit_keys, fatal=fatal)
 
     else:
-        print("Parameter type mismatch")
-        print("Default parameter: " + str(default) + " is " + str(type(default)))
-        print("Test parameter: " + str(test) + " is " + str(type(test)))
+        print(
+            im.PARAMETER_TYPE_MISMATCH_ERROR_MESSAGE.format(
+                default=str(default),
+                def_type=str(type(default)),
+                test=str(test),
+                test_type=str(type(test)),
+            )
+        )
         if fatal:
             sys.exit()

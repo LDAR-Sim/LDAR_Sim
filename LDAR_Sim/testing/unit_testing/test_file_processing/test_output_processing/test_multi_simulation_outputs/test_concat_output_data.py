@@ -22,9 +22,8 @@ import os
 from pathlib import Path
 
 import pandas as pd
-from src.file_processing.output_processing.output_constants import (
-    EMIS_SUMMARY_FILENAME,
-    TS_SUMMARY_FILENAME,
+from src.constants.file_name_constants import Output_Files as fn
+from src.constants.output_file_constants import (
     TS_SUMMARY_COLUMNS_ACCESSORS as tsca,
     EMIS_SUMMARY_COLUMNS_ACCESSORS as esca,
 )
@@ -106,11 +105,11 @@ mock_current_emis_summary_csv = pd.DataFrame(
 
 class results_holder:
     def __init__(self):
-        self.results = {TS_SUMMARY_FILENAME: None, EMIS_SUMMARY_FILENAME: None}
+        self.results = {fn.TS_SUMMARY_FILENAME: None, fn.EMIS_SUMMARY_FILENAME: None}
 
 
 expected_results_for_concat = {
-    TS_SUMMARY_FILENAME: pd.DataFrame(
+    fn.TS_SUMMARY_FILENAME: pd.DataFrame(
         {
             tsca.PROG_NAME: ["test", "test", "test", "test", "test", "test"],
             tsca.SIM: ["0", "1", "2", "3", "4", "5"],
@@ -122,7 +121,7 @@ expected_results_for_concat = {
             tsca.DAILY_COST_5: [7.0, 3.0, 0.0, 7.0, 3.0, 0.0],
         }
     ),
-    EMIS_SUMMARY_FILENAME: pd.DataFrame(
+    fn.EMIS_SUMMARY_FILENAME: pd.DataFrame(
         {
             esca.PROG_NAME: ["test", "test", "test", "test", "test", "test"],
             esca.SIM: ["0", "1", "2", "3", "4", "5"],
@@ -138,7 +137,7 @@ expected_results_for_concat = {
 }
 
 expected_results_no_concat = {
-    TS_SUMMARY_FILENAME: pd.DataFrame(
+    fn.TS_SUMMARY_FILENAME: pd.DataFrame(
         {
             tsca.PROG_NAME: ["test", "test", "test"],
             tsca.SIM: ["3", "4", "5"],
@@ -150,7 +149,7 @@ expected_results_no_concat = {
             tsca.DAILY_COST_5: [7.0, 3.0, 0.0],
         }
     ),
-    EMIS_SUMMARY_FILENAME: pd.DataFrame(
+    fn.EMIS_SUMMARY_FILENAME: pd.DataFrame(
         {
             esca.PROG_NAME: ["test", "test", "test"],
             esca.SIM: ["3", "4", "5"],
@@ -179,7 +178,7 @@ def mock_gen_emis_summary(dir: Path):
 
 
 def mock_get_summary_file_prev_files(dir: Path, filename: str):
-    if filename == TS_SUMMARY_FILENAME:
+    if filename == fn.TS_SUMMARY_FILENAME:
         return mock_legacy_ts_summary_csv
     else:
         return mock_legacy_emis_summary_csv

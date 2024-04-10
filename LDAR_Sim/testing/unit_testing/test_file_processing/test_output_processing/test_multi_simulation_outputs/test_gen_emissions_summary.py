@@ -25,11 +25,11 @@ import pandas as pd
 from src.file_processing.output_processing.multi_simulation_outputs import (
     gen_emissions_summary,
 )
-from src.file_processing.output_processing.output_constants import (
+import os
+from src.constants.output_file_constants import (
+    EMIS_DATA_COL_ACCESSORS as eca,
     EMIS_SUMMARY_COLUMNS_ACCESSORS as esca,
 )
-import os
-from src.file_processing.output_processing.output_utils import EMIS_DATA_COL_ACCESSORS as eca
 
 
 class MockDirEntry:

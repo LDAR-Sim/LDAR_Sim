@@ -1,7 +1,7 @@
 """
 ------------------------------------------------------------------------------
 Program:     The LDAR Simulator (LDAR-Sim)
-File:   infrastructure_const 
+File:   infrastructure_const.py
 Purpose: The file contains constants used for the infrastructure module
 
 This program is free software: you can redistribute it and/or modify
@@ -21,7 +21,9 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 class Infrastructure_Constants:
     class Virtual_World_Constants:
+        SOURCES = "sources"
         EQG = "equipment"
+        SITES = "sites"
         SITE_TYPE = "site_type"
 
     class Sites_File_Constants:

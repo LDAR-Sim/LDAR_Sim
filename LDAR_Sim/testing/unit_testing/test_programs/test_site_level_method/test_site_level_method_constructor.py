@@ -5,7 +5,7 @@ from src.scheduling.follow_up_mobile_schedule import FollowUpMobileSchedule
 
 from src.programs.method import Method
 
-from src.sensors.sensor_constant_mapping import SENS_TYPE, SENS_MDL, SENS_QE
+from src.constants.param_default_const import Method_Params as mp
 
 
 @pytest.fixture
@@ -26,7 +26,7 @@ def test_site_level_method_creation(mock_follow_up_schedule):
             "instant_threshold": 1.0,
             "redundancy_filter": "some_filter",
         },
-        Method.DETEC_ACCESSOR: {SENS_TYPE: "default", SENS_MDL: 1.0, SENS_QE: 0.0},
+        Method.DETEC_ACCESSOR: {mp.TYPE: "default", mp.MDL: 1.0, mp.QE: 0.0},
         "max_workday": 8,
         "consider_daylight": False,
         "weather_envs": {"precip": [], "wind": [], "temp": []},

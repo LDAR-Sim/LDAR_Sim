@@ -27,24 +27,18 @@ import pandas as pd
 from file_processing.output_processing.output_utils import (
     EmisInfo,
     TsEmisData,
-    EMIS_DATA_COL_ACCESSORS as eca,
 )
 from file_processing.input_processing.emissions_source_processing import (
     EmissionsSource,
 )
 from scheduling.schedule_dataclasses import TaggingInfo
-
+from constants.output_file_constants import EMIS_DATA_COL_ACCESSORS as eca
 from virtual_world.emissions import Emission
 from virtual_world.fugitive_emission import FugitiveEmission
 from virtual_world.nonfugitive_emissions import NonRepairableEmission
-from virtual_world.infrastructure_const import Infrastructure_Constants as IC
-
+from constants.infrastructure_const import Infrastructure_Constants as IC
+from constants.error_messages import Initialization_Messages as im
 from virtual_world.sources import Source
-
-
-SOURCE_CREATION_ERROR_MESSAGE = (
-    "Invalid LDAR-Sim infrastructure inputs: Failure to read in sources infrastructure input"
-)
 
 
 class Equipment:
@@ -149,7 +143,7 @@ class Equipment:
             }
             self._sources.append(Source(src_id_nonrep, placeholder_nonrep_source_info, prop_params))
         else:
-            print(SOURCE_CREATION_ERROR_MESSAGE)
+            print(im.SOURCE_CREATION_ERROR_MESSAGE)
             sys.exit()
 
     def generate_emissions(

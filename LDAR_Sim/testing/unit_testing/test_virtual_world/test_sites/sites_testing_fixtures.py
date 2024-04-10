@@ -1,10 +1,11 @@
 import pytest
 from typing import Tuple
 
-from src.virtual_world.infrastructure_const import Infrastructure_Constants
+from src.constants.infrastructure_const import Infrastructure_Constants
 from src.virtual_world.sites import Site
 from src.file_processing.input_processing.emissions_source_processing import EmissionsSourceSample
 from datetime import date
+from src.constants.param_default_const import Common_Params as cp
 
 
 @pytest.fixture(name="mock_values_for_simple_site_construction")
@@ -21,9 +22,9 @@ def mock_values_for_simple_site_construction_fix() -> Tuple[str, float, float, i
         Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ED: 1,
         Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_EPR: None,
         Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_ERS: None,
-        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RD: {"vals": 0},
-        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RC: {"vals": 100},
-        "Method_Specific_Params": {
+        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RD: {cp.VAL: 0},
+        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RC: {cp.VAL: 100},
+        cp.METH_SPECIFIC: {
             Infrastructure_Constants.Sites_File_Constants.SURVEY_FREQUENCY_PLACEHOLDER: {},
             Infrastructure_Constants.Sites_File_Constants.SPATIAL_PLACEHOLDER: {},
             Infrastructure_Constants.Sites_File_Constants.DEPLOYMENT_MONTHS_PLACEHOLDER: {},
@@ -48,11 +49,11 @@ def mock_site_for_simple_generate_emissions_fix() -> Tuple[Site, date, date]:
         Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ERS: "test",
         Infrastructure_Constants.Sites_File_Constants.REP_EMIS_EPR: 1,
         Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ED: 1,
-        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RD: {"vals": 0},
-        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RC: {"vals": 100},
+        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RD: {cp.VAL: 0},
+        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RC: {cp.VAL: 100},
         Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_EPR: None,
         Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_ERS: None,
-        "Method_Specific_Params": {
+        cp.METH_SPECIFIC: {
             Infrastructure_Constants.Sites_File_Constants.SURVEY_FREQUENCY_PLACEHOLDER: {},
             Infrastructure_Constants.Sites_File_Constants.SPATIAL_PLACEHOLDER: {},
             Infrastructure_Constants.Sites_File_Constants.DEPLOYMENT_MONTHS_PLACEHOLDER: {},
@@ -91,9 +92,9 @@ def mock_site_for_simple_activate_emissions_fix() -> Tuple[Site, date, int]:
         Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ED: 1,
         Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_EPR: None,
         Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_ERS: None,
-        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RD: {"vals": 0},
-        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RC: {"vals": 100},
-        "Method_Specific_Params": {
+        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RD: {cp.VAL: 0},
+        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RC: {cp.VAL: 100},
+        cp.METH_SPECIFIC: {
             Infrastructure_Constants.Sites_File_Constants.SURVEY_FREQUENCY_PLACEHOLDER: {},
             Infrastructure_Constants.Sites_File_Constants.SPATIAL_PLACEHOLDER: {},
             Infrastructure_Constants.Sites_File_Constants.DEPLOYMENT_MONTHS_PLACEHOLDER: {},
@@ -139,11 +140,11 @@ def mock_site_for_simple_get_detectable_emissions_fix() -> Tuple[Site, str]:
         Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ERS: "test",
         Infrastructure_Constants.Sites_File_Constants.REP_EMIS_EPR: 1,
         Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ED: 1,
-        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RD: {"vals": 0},
-        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RC: {"vals": 100},
+        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RD: {cp.VAL: 0},
+        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RC: {cp.VAL: 100},
         Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_EPR: None,
         Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_ERS: None,
-        "Method_Specific_Params": {
+        cp.METH_SPECIFIC: {
             Infrastructure_Constants.Sites_File_Constants.SURVEY_FREQUENCY_PLACEHOLDER: {},
             Infrastructure_Constants.Sites_File_Constants.DEPLOYMENT_MONTHS_PLACEHOLDER: {},
             Infrastructure_Constants.Sites_File_Constants.DEPLOYMENT_YEARS_PLACEHOLDER: {},

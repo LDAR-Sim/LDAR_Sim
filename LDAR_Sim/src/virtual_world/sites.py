@@ -33,22 +33,12 @@ from scheduling.schedule_dataclasses import TaggingInfo
 from virtual_world.emissions import Emission
 from virtual_world.equipment_groups import Equipment_Group
 
-from virtual_world.infrastructure_const import (
+from constants.infrastructure_const import (
     Infrastructure_Constants,
 )
-
-PLACEHOLDER_EQUIPMENT = "Placeholder_Equipment"
-PLACEHOLDER_REP_EQUIPMENT = "Placeholder_Rep_Equipment"
-PLACEHOLDER_NON_EQUIPMENT = "Placeholder_NonRep_Equipment"
-BAD_EQUIPMENT_INPUT_ERROR = "Invalid equipment input: {}"
-EMISSION_PRODUCTION_RATE_ERROR = (
-    "No valid emissions production rates. Please check values and re-run the simulation."
-)
-
-PLACEHOLDER_CREATION_WARNING_MESSAGE = (
-    "Warning: Only {type} emissions sources were created for the site ID: {site}. "
-    "Check the production rate (LPR/EPR) if this is not intended."
-)
+from constants.error_messages import Initialization_Messages as im
+from constants.general_const import Emission_Constants as ec, Placeholder_Constants as pc
+import constants.param_default_const as pdc
 
 
 class Site:
@@ -72,13 +62,13 @@ class Site:
         self._weather_long: float = long
         self._site_type: str = site_type
         # TODO check that we use these
-        self._survey_frequencies: dict = propagating_params["Method_Specific_Params"].pop(
+        self._survey_frequencies: dict = propagating_params[pdc.Common_Params.METH_SPECIFIC].pop(
             Infrastructure_Constants.Sites_File_Constants.SURVEY_FREQUENCY_PLACEHOLDER
         )
-        self._deployment_months = propagating_params["Method_Specific_Params"].pop(
+        self._deployment_months = propagating_params[pdc.Common_Params.METH_SPECIFIC].pop(
             Infrastructure_Constants.Sites_File_Constants.DEPLOYMENT_MONTHS_PLACEHOLDER
         )
-        self._deployment_years = propagating_params["Method_Specific_Params"].pop(
+        self._deployment_years = propagating_params[pdc.Common_Params.METH_SPECIFIC].pop(
             Infrastructure_Constants.Sites_File_Constants.DEPLOYMENT_YEARS_PLACEHOLDER
         )
         self._equipment_groups: list[Equipment_Group] = []
@@ -150,7 +140,9 @@ class Site:
             ]
             equipment_groups = split_eqgs
         if isinstance(equipment_groups, list) and len(equipment_groups) > 0:
-            equip_groups_in: pd.DataFrame = infrastructure_inputs["equipment"]
+            equip_groups_in: pd.DataFrame = infrastructure_inputs[
+                Infrastructure_Constants.Virtual_World_Constants.EQG
+            ]
             equip_count = len(equipment_groups)
             for equipment_group in equipment_groups:
                 site_equipment_group = equip_groups_in.loc[
@@ -196,27 +188,27 @@ class Site:
             if (rep_emis_epr is None or rep_emis_epr <= 0) and (
                 nonrep_emis_epr is None or nonrep_emis_epr <= 0
             ):
-                print(EMISSION_PRODUCTION_RATE_ERROR)
+                print(im.EMISSION_PRODUCTION_RATE_ERROR)
                 sys.exit()
             elif nonrep_emis_epr is None and rep_emis_epr > 0:
                 prod_rate = rep_emis_epr
-                placeholder = PLACEHOLDER_REP_EQUIPMENT
+                placeholder = pc.PLACEHOLDER_REP_EQUIPMENT
                 print(
-                    PLACEHOLDER_CREATION_WARNING_MESSAGE.format(
-                        type="repairable", site=self._site_ID
+                    im.PLACEHOLDER_CREATION_WARNING_MESSAGE.format(
+                        type=ec.REPAIRABLE, site=self._site_ID
                     )
                 )
             elif rep_emis_epr is None and nonrep_emis_epr > 0:
                 prod_rate = nonrep_emis_epr
-                placeholder = PLACEHOLDER_NON_EQUIPMENT
+                placeholder = pc.PLACEHOLDER_NON_EQUIPMENT
                 print(
-                    PLACEHOLDER_CREATION_WARNING_MESSAGE.format(
-                        type="non-repairable", site=self._site_ID
+                    im.PLACEHOLDER_CREATION_WARNING_MESSAGE.format(
+                        type=ec.NON_REPAIRABLE, site=self._site_ID
                     )
                 )
             else:
                 prod_rate = max(nonrep_emis_epr, rep_emis_epr)
-                placeholder = PLACEHOLDER_EQUIPMENT
+                placeholder = pc.PLACEHOLDER_EQUIPMENT
             equip_count = math.ceil(prod_rate * 365 * 2)
             equip_group_info = pd.Series({placeholder: equip_count})
             prop_params = copy.deepcopy(propagating_params)
@@ -235,27 +227,27 @@ class Site:
             if (rep_emis_epr is None or rep_emis_epr <= 0) and (
                 nonrep_emis_epr is None or nonrep_emis_epr <= 0
             ):
-                print(EMISSION_PRODUCTION_RATE_ERROR)
+                print(im.EMISSION_PRODUCTION_RATE_ERROR)
                 sys.exit()
             elif nonrep_emis_epr is None and rep_emis_epr > 0:
                 prod_rate = rep_emis_epr
-                placeholder = PLACEHOLDER_REP_EQUIPMENT
+                placeholder = pc.PLACEHOLDER_REP_EQUIPMENT
                 print(
-                    PLACEHOLDER_CREATION_WARNING_MESSAGE.format(
-                        type="repairable", site=self._site_ID
+                    im.PLACEHOLDER_CREATION_WARNING_MESSAGE.format(
+                        type=ec.REPAIRABLE, site=self._site_ID
                     )
                 )
             elif rep_emis_epr is None and nonrep_emis_epr > 0:
                 prod_rate = nonrep_emis_epr
-                placeholder = PLACEHOLDER_NON_EQUIPMENT
+                placeholder = pc.PLACEHOLDER_NON_EQUIPMENT
                 print(
-                    PLACEHOLDER_CREATION_WARNING_MESSAGE.format(
-                        type="non-repairable", site=self._site_ID
+                    im.PLACEHOLDER_CREATION_WARNING_MESSAGE.format(
+                        type=ec.NON_REPAIRABLE, site=self._site_ID
                     )
                 )
             else:
                 prod_rate = max(rep_emis_epr, nonrep_emis_epr)
-                placeholder = PLACEHOLDER_EQUIPMENT
+                placeholder = pc.PLACEHOLDER_EQUIPMENT
             equip_count = math.ceil(prod_rate * 365 * 2)
             for i in range(0, int(equipment_groups)):
                 equip_group_info = pd.Series(
@@ -274,7 +266,7 @@ class Site:
                     Equipment_Group(i, infrastructure_inputs, prop_params, equip_group_info)
                 )
         else:
-            print(BAD_EQUIPMENT_INPUT_ERROR.format(equipment_groups))
+            print(im.BAD_EQUIPMENT_INPUT_ERROR.format(equipment_groups))
             sys.exit()
 
     def _set_survey_costs(self, methods: list[str]) -> float:

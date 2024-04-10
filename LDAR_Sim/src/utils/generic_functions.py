@@ -29,6 +29,9 @@ import ephem
 import numpy as np
 from botocore.exceptions import ClientError
 from shapely.geometry import Polygon
+from constants.error_messages import Initialization_Messages as im
+from constants.output_messages import RuntimeMessages as rm
+import constants.param_default_const as pdc
 
 
 def gap_calculator(condition_vector):
@@ -111,31 +114,28 @@ def get_prop_rate(proportion, rates):
 
 
 def check_ERA5_file(dir, v_world):
-    my_file = Path(dir / v_world["weather_file"])
+    my_file = Path(dir / v_world[pdc.Virtual_World_Params.WEATHER_FILE])
     if my_file.is_file():
-        print("Weather data checked. Continuing simulation.")
+        print(rm.CHECK_WEATHER)
     else:
-        print("Weather data not found. Downloading from AWS now ...")
+        print(rm.ATTEMPT_AWS_WEATHER_DOWNLOAD)
         try:
             access_key = os.getenv("AWS_KEY")
             secret_key = os.getenv("AWS_SEC")
         except Exception:
-            print(
-                "AWS_KEY and AWS_SEC environment variables have not been set,"
-                + "refer to model documentation for configuration instructions."
-            )
+            print(im.AWS_KEY_SEC_ERROR)
 
         try:
             s3 = boto3.client("s3", aws_access_key_id=access_key, aws_secret_access_key=secret_key)
             s3.download_file(
                 "im3sweather",
-                v_world["weather_file"],
-                r"{}/{}".format(dir, v_world["weather_file"]),
+                v_world[pdc.Virtual_World_Params.WEATHER_FILE],
+                r"{}/{}".format(dir, v_world[pdc.Virtual_World_Params.WEATHER_FILE]),
             )
         except ClientError:
-            print("Authentication Failed or Server Unavailable. Exiting")
+            print(im.ERA_AUTH_ERROR)
             sys.exit()
-        print("Weather data download complete")
+        print(rm.COMPLETE_WEATHER_DOWNLOAD)
 
 
 def geo_idx(dd, dd_array):

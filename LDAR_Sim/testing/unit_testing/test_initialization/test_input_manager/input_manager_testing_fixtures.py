@@ -1,31 +1,27 @@
 """Fixtures for testing input manager methods"""
 
 import pytest
-from initialization.versioning import (
-    CURRENT_MAJOR_VERSION,
-    CURRENT_MINOR_VERSION,
-    CURRENT_FULL_VERSION,
-)
+from src.constants.general_const import Version_Constants as vc
 
 
 @pytest.fixture(name="mock_parameter_correct_maj_min_ver")
 def mock_parameter_correct_maj_min_ver_fix() -> dict[str, str]:
-    return {"version": CURRENT_FULL_VERSION}
+    return {"version": vc.CURRENT_FULL_VERSION}
 
 
 @pytest.fixture(name="mock_parameter_incorrect_maj_ver")
 def mock_parameter_incorrect_maj_ver_fix() -> dict[str, str]:
-    return {"version": "2" + "." + CURRENT_MINOR_VERSION}
+    return {"version": "2" + "." + vc.CURRENT_MINOR_VERSION}
 
 
 @pytest.fixture(name="mock_parameter_incorrect_min_ver")
 def mock_parameter_incorrect_min_ver_fix() -> dict[str, str]:
-    return {"version": CURRENT_MAJOR_VERSION + "." + "100000"}
+    return {"version": vc.CURRENT_MAJOR_VERSION + "." + "100000"}
 
 
 @pytest.fixture(name="mock_parameter_maj_only_ver")
 def mock_parameter_maj_only_ver_fix() -> dict[str, str]:
-    return {"version": CURRENT_MAJOR_VERSION}
+    return {"version": vc.CURRENT_MAJOR_VERSION}
 
 
 @pytest.fixture(name="mock_parameter_sim_settings")

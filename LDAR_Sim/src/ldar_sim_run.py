@@ -40,7 +40,7 @@ from initialization.preseed import gen_seed_emis
 from virtual_world.infrastructure import Infrastructure
 from weather.daylight_calculator import DaylightCalculatorAve
 from weather.weather_lookup import WeatherLookup as WL
-from utils.file_name_constants import PARAMETER_FILE, GENERATOR_FOLDER
+from constants.file_name_constants import Generator_Files, Output_Files
 from utils.generic_functions import check_ERA5_file
 from file_processing.input_processing.input_manager import InputManager
 from initialization.args import (
@@ -50,13 +50,9 @@ from initialization.args import (
 from initialization.initialize_emissions import initialize_emissions, read_in_emissions
 from ldar_sim import LdarSim
 from programs.program import Program
-
-opening_msg = """
-You are running LDAR-Sim version 4.0.0 an open sourced software (MIT) license.
-Provide any issues, comments, questions, or recommendations by
-adding an issue to https://github.com/LDAR-Sim/LDAR_Sim.git
-"""
-
+from constants.output_messages import RuntimeMessages as rm
+from constants.error_messages import Runtime_Error_Messages as rem
+import constants.param_default_const as pdc
 
 # def ldar_sim_run(simulation, weather, daylight):
 #     """
@@ -127,12 +123,12 @@ def simulate(
         daylight,
         meth_params,
         infra._sites,
-        date(*virtual_world["start_date"]),
-        date(*virtual_world["end_date"]),
-        virtual_world["consider_weather"],
+        date(*virtual_world[pdc.Virtual_World_Params.START_DATE]),
+        date(*virtual_world[pdc.Virtual_World_Params.END_DATE]),
+        virtual_world[pdc.Virtual_World_Params.CONSIDER_WEATHER],
     )
     infra.setup(program.get_method_names())
-    print(f"......... Simulating program: {prog_name}")
+    print(rm.SIM_PROG.format(prog_name=prog_name))
     simulation: LdarSim = LdarSim(
         sim_num,
         sim_settings,
@@ -144,13 +140,13 @@ def simulate(
         preseed_timeseries,
     )
     simulation.run_simulation()
-    print(f"......... Finished simulating program: {prog_name}")
+    print(rm.FIN_PROG.format(prog_name=prog_name))
     gc.collect()
     return
 
 
 if __name__ == "__main__":
-    print(opening_msg)
+    print(rm.OPENING_MSG)
 
     root_dir: Path = Path(__file__).resolve().parent.parent
     os.chdir(root_dir)
@@ -172,25 +168,23 @@ if __name__ == "__main__":
         sim_params = input_manager.read_and_validate_parameters(
             parameter_filenames["parameter_files"]
         )
-        out_dir = get_abs_path(parameter_filenames["out_dir"])
+        out_dir = get_abs_path(parameter_filenames[pdc.Sim_Setting_Params.OUTPUT])
     else:
         sim_params = input_manager.read_and_validate_parameters(parameter_filenames)
-        out_dir = get_abs_path(sim_params["output_directory"])
+        out_dir = get_abs_path(sim_params[pdc.Sim_Setting_Params.OUTPUT])
 
     # --- Assign local variables
-    ref_program = sim_params["reference_program"]
-    base_program = sim_params["baseline_program"]
-    in_dir = get_abs_path(sim_params["input_directory"])
-    programs = sim_params.pop("programs")
-    virtual_world = sim_params.pop("virtual_world")
-    preseed_random = sim_params["preseed_random"]
+    ref_program = sim_params[pdc.Sim_Setting_Params.REFERENCE]
+    base_program = sim_params[pdc.Sim_Setting_Params.BASELINE]
+    in_dir = get_abs_path(sim_params[pdc.Sim_Setting_Params.INPUT])
+    programs = sim_params.pop(pdc.Levels.PROGRAM)
+    virtual_world = sim_params.pop(pdc.Levels.VIRTUAL)
+    preseed_random = sim_params[pdc.Sim_Setting_Params.PRESEED]
 
-    METHODS_ACCESSOR = "methods"
-    METHOD_LABELS_ACCESSOR = "method_labels"
     methods = {
-        method: programs[program][METHODS_ACCESSOR][method]
+        method: programs[program][pdc.Levels.METHOD][method]
         for program in programs
-        for method in programs[program][METHOD_LABELS_ACCESSOR]
+        for method in programs[program][pdc.Program_Params.METHODS]
     }
 
     # --- Run Checks ----
@@ -199,27 +193,20 @@ if __name__ == "__main__":
     has_base: bool = base_program in programs
 
     if not (has_ref and has_base):
-        print("No reference or base program input...Exiting sim")
+        print(rem.NO_REF_BASE_PROG_ERROR)
         sys.exit()
 
     # -- Setup Output folder --
     if os.path.exists(out_dir):
         shutil.rmtree(out_dir)
     os.makedirs(out_dir)
-    input_manager.write_parameters(out_dir / PARAMETER_FILE)
+    input_manager.write_parameters(out_dir / Output_Files.PARAMETER_FILE)
 
-    generator_dir = in_dir / GENERATOR_FOLDER
+    generator_dir = in_dir / Generator_Files.GENERATOR_FOLDER
     if os.path.exists(generator_dir):
-        print(
-            "\n".join(
-                [
-                    "!!!Pre-generated initialization files exist!!!",
-                    "LDAR-Sim may not create new emissions to model with",
-                ]
-            )
-        )
-    print("...Initializing infrastructure")
-    simulation_count: int = sim_params["n_simulations"]
+        print(rm.GEN_WARNING_MSG)
+    print(rm.INIT_INFRA)
+    simulation_count: int = sim_params[pdc.Sim_Setting_Params.SIMS]
     emis_preseed_val: list[int] = None
     if preseed_random:
         emis_preseed_val = gen_seed_emis(simulation_count, generator_dir)
@@ -228,7 +215,7 @@ if __name__ == "__main__":
     )
     infrastructure: Infrastructure
     hash_file_exist: bool
-    print("...Initializing emissions")
+    print(rm.INIT_EMISS)
     # Pregenerate emissions
     seed_timeseries = initialize_emissions(
         simulation_count,
@@ -236,19 +223,19 @@ if __name__ == "__main__":
         emis_preseed_val,
         hash_file_exist,
         infrastructure,
-        date(*virtual_world["start_date"]),
-        date(*virtual_world["end_date"]),
+        date(*virtual_world[pdc.Virtual_World_Params.START_DATE]),
+        date(*virtual_world[pdc.Virtual_World_Params.END_DATE]),
         generator_dir,
     )
     # Initialize objects
-    print("...Initializing weather")
+    print(rm.INIT_WEATHER)
     weather = WL(virtual_world, in_dir)
     infrastructure.set_weather_index(weather)
-    print("...Initializing daylight")
+    print(rm.INIT_DAYLIGHT)
     daylight = DaylightCalculatorAve(
         infrastructure.get_site_avrg_lat_lon(),
-        date(*virtual_world["start_date"]),
-        date(*virtual_world["end_date"]),
+        date(*virtual_world[pdc.Virtual_World_Params.START_DATE]),
+        date(*virtual_world[pdc.Virtual_World_Params.END_DATE]),
     )
     # IF the are more than 5 simulations, divide the simulations into batches
     if simulation_count > 5:
@@ -259,22 +246,22 @@ if __name__ == "__main__":
             sim_counts.append(remainder)
     else:
         sim_counts = [simulation_count]
-    n_process = sim_params["n_processes"]
-    if len(programs) < sim_params["n_processes"]:
+    n_process = sim_params[pdc.Sim_Setting_Params.PROCESS]
+    if len(programs) < sim_params[pdc.Sim_Setting_Params.PROCESS]:
         n_process = len(programs)
     with mp.Manager() as manager:
         lock = manager.Lock()
         for batch_count, sim_count in enumerate(sim_counts):
             for simulation in range(sim_count):
                 simulation_number: int = batch_count * 5 + simulation
-                print(f"......Simulating set {simulation_number}")
+                print(rm.SIM_SET.format(simulation_number=simulation_number))
                 # read in pregen emissions
                 infra = read_in_emissions(infrastructure, generator_dir, simulation_number)
                 # -- Run simulations --
                 prog_data = []
                 for program in programs:
                     meth_params = {}
-                    for meth in programs[program]["method_labels"]:
+                    for meth in programs[program][pdc.Program_Params.METHODS]:
                         meth_params[meth] = methods[meth]
                     prog_data.append(
                         (
@@ -299,9 +286,11 @@ if __name__ == "__main__":
                         prog_data,
                     )
                 gc.collect()
-                print(f"... Finished simulating set {simulation_number}")
+                print(rm.FIN_SIM_SET.format(simulation_number=simulation_number))
 
             # -- Batch Report --
-            print(f"...Cleaning up batch {batch_count} data")
+            print(rm.BATCH_CLEAN.format(batch_count=batch_count))
             concat_output_data(out_dir, batch_count != 0)
-    gen_cross_program_summary_plots(out_dir, base_program, virtual_world["site_samples"])
+    gen_cross_program_summary_plots(
+        out_dir, base_program, virtual_world[pdc.Virtual_World_Params.N_SITES]
+    )

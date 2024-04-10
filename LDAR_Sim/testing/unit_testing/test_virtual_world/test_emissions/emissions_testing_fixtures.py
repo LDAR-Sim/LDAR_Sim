@@ -3,6 +3,7 @@ from typing import Tuple
 import pytest
 
 from src.virtual_world.emissions import Emission
+from src.constants.general_const import Emission_Constants as ec
 
 
 @pytest.fixture(name="mock_simple_emission_1")
@@ -53,7 +54,7 @@ def mock_simple_emission_for_get_summary_dict_fix() -> Tuple[Emission, dict[str,
         ),
         {
             "Emissions ID": "0000000001",
-            "Status": "Inactive",
+            "Status": ec.INACTIVE,
             "Days Active": 0,
             "Estimated Days Active": 0,
             '"True" Volume Emitted (Kg Methane)': 0.0,

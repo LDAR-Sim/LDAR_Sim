@@ -23,6 +23,7 @@ from src.file_processing.output_processing.output_utils import EmisInfo
 from testing.unit_testing.test_virtual_world.test_emissions.emissions_testing_fixtures import (  # Noqa
     mock_simple_emission_1_fix,
 )
+from src.constants.general_const import Emission_Constants as ec
 
 
 def test_000_update_correctly_results_in_no_state_change_on_inactive_emission(
@@ -38,7 +39,7 @@ def test_000_update_correctly_results_in_active_days_change_on_active_emission(
     mock_simple_emission_1: Emission,
 ):
     emis_info = EmisInfo(0, 0, 0, 0, 0)
-    mock_simple_emission_1._status = "Active"
+    mock_simple_emission_1._status = ec.ACTIVE
     mock_simple_emission_1.update(emis_info)
     assert mock_simple_emission_1._active_days == 1
     assert emis_info == EmisInfo(0, 0, 0, 0, 0)

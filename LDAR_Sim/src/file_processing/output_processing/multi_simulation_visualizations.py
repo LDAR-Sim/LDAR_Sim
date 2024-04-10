@@ -27,16 +27,17 @@ import seaborn as sns
 from matplotlib import pyplot as plt
 from matplotlib import ticker, lines
 
-from file_processing.output_processing import output_constants, output_utils
+from constants.file_name_constants import Output_Files
+from constants import output_file_constants as oc
+from constants import output_messages as om
+from file_processing.output_processing import output_utils
 import numpy as np
 
 
 def get_non_baseline_prog_names(emis_summary_info, baseline_program) -> list:
     return [
         program_name
-        for program_name in emis_summary_info[
-            output_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME
-        ].unique()
+        for program_name in emis_summary_info[oc.EMIS_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME].unique()
         if program_name != baseline_program
     ]
 
@@ -47,14 +48,14 @@ def gen_annual_emissions_summary_list(emis_summary_info, program_names) -> dict[
         [
             column
             for column in emis_summary_info.columns
-            if re.match(output_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.REGX_T_ANN_EMIS, column)
+            if re.match(oc.EMIS_SUMMARY_COLUMNS_ACCESSORS.REGX_T_ANN_EMIS, column)
         ]
     )
     est_ann_columns = sorted(
         [
             column
             for column in emis_summary_info.columns
-            if re.match(output_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.REGX_EST_ANN_EMIS, column)
+            if re.match(oc.EMIS_SUMMARY_COLUMNS_ACCESSORS.REGX_EST_ANN_EMIS, column)
         ]
     )
 
@@ -70,16 +71,14 @@ def gen_annual_emissions_summary_list(emis_summary_info, program_names) -> dict[
     for program_name in program_names:
         true_emis_list = np.ravel(
             emis_summary_info.loc[
-                emis_summary_info[output_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME]
-                == program_name,
+                emis_summary_info[oc.EMIS_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME] == program_name,
                 t_ann_columns,
             ].values
         ).tolist()
 
         est_emis_list = np.ravel(
             emis_summary_info.loc[
-                emis_summary_info[output_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME]
-                == program_name,
+                emis_summary_info[oc.EMIS_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME] == program_name,
                 est_ann_columns,
             ].values
         ).tolist()
@@ -90,15 +89,15 @@ def gen_annual_emissions_summary_list(emis_summary_info, program_names) -> dict[
 
 def gen_cross_program_summary_plots(out_dir: Path, baseline_program: str, n_sites: int):
 
-    print(output_constants.SUMMARRY_PLOT_GENERATION_MESSAGE)
+    print(om.SUMMARRY_PLOT_GENERATION_MESSAGE)
 
-    summary_program_plots_directory = out_dir / output_constants.SUMMARY_PROGRAM_PLOTS_DIRECTORY
+    summary_program_plots_directory = out_dir / oc.FileDirectory.SUMMARY_PROGRAM_PLOTS_DIRECTORY
 
     os.makedirs(summary_program_plots_directory)
 
-    emis_summary_info: pd.DataFrame = pd.read_csv(out_dir / output_constants.EMIS_SUMMARY_FILENAME)
+    emis_summary_info: pd.DataFrame = pd.read_csv(out_dir / Output_Files.EMIS_SUMMARY_FILENAME)
 
-    estimate_vs_true_constants = output_constants.ESTIMATE_VS_TRUE_PLOTTING_CONSTANTS
+    estimate_vs_true_constants = oc.ESTIMATE_VS_TRUE_PLOTTING_CONSTANTS
     gen_estimated_vs_true_emissions_percent_difference_plot(
         emis_summary_info,
         summary_program_plots_directory,
@@ -205,7 +204,7 @@ def plot_hist(
 def gen_estimated_vs_true_emissions_percent_difference_plot(
     emis_summary_info: pd.DataFrame,
     out_dir: Path,
-    estimate_vs_true_constants: output_constants.ESTIMATE_VS_TRUE_PLOTTING_CONSTANTS,
+    estimate_vs_true_constants: oc.ESTIMATE_VS_TRUE_PLOTTING_CONSTANTS,
     baseline_program: str,
     combine_plots: bool = False,
     save_separate_plots: bool = True,
@@ -244,8 +243,8 @@ def gen_estimated_vs_true_emissions_percent_difference_plot(
                 color=colors[i],
                 bin_width=estimate_vs_true_constants.HISTOGRAM_BIN_WIDTH,
                 bin_range=(0, 200),
-                x_label=output_constants.HistogramConstants.X_AXIS_LABEL_PERCENT,
-                y_label=output_constants.HistogramConstants.Y_AXIS_LABEL,
+                x_label=oc.HistogramConstants.X_AXIS_LABEL_PERCENT,
+                y_label=oc.HistogramConstants.Y_AXIS_LABEL,
             )
 
             ax_sep.xaxis.set_major_formatter(
@@ -253,7 +252,10 @@ def gen_estimated_vs_true_emissions_percent_difference_plot(
             )
             plt.legend(handles=[legend_elements[i]])
             save_path = out_dir / " ".join(
-                [program_name, output_constants.TRUE_VS_ESTIMATED_PERCENT_DIFF_PLOT]
+                [
+                    program_name,
+                    Output_Files.TRUE_VS_ESTIMATED_PERCENT_DIFF_PLOT,
+                ]
             )
             plt.savefig(save_path)
             plt.close(fig_sep)
@@ -272,12 +274,12 @@ def gen_estimated_vs_true_emissions_percent_difference_plot(
 
     if combine_plots:
         comb_ax.set(
-            xlabel=output_constants.HistogramConstants.X_AXIS_LABEL_PERCENT,
-            ylabel=output_constants.HistogramConstants.Y_AXIS_LABEL,
+            xlabel=oc.HistogramConstants.X_AXIS_LABEL_PERCENT,
+            ylabel=oc.HistogramConstants.Y_AXIS_LABEL,
         )
         comb_ax.xaxis.set_major_formatter(ticker.FuncFormatter(output_utils.percentage_formatter))
         plt.legend(handles=legend_elements)
-        save_path = out_dir / output_constants.TRUE_VS_ESTIMATED_PERCENT_DIFF_PLOT
+        save_path = out_dir / Output_Files.TRUE_VS_ESTIMATED_PERCENT_DIFF_PLOT
         plt.savefig(save_path)
         plt.close(comb_fig)
 
@@ -285,7 +287,7 @@ def gen_estimated_vs_true_emissions_percent_difference_plot(
 def gen_estimated_vs_true_emissions_relative_difference_plot(
     emis_summary_info: pd.DataFrame,
     out_dir: Path,
-    estimate_vs_true_constants: output_constants.ESTIMATE_VS_TRUE_PLOTTING_CONSTANTS,
+    estimate_vs_true_constants: oc.ESTIMATE_VS_TRUE_PLOTTING_CONSTANTS,
     baseline_program: str,
     combine_plots: bool = False,
     save_separate_plots: bool = True,
@@ -329,18 +331,21 @@ def gen_estimated_vs_true_emissions_relative_difference_plot(
                 color=colors[i],
                 bin_width=estimate_vs_true_constants.HISTOGRAM_BIN_WIDTH,
                 bin_range=plot_bin_range,
-                x_label=output_constants.HistogramConstants.X_AXIS_LABEL_RELATIVE,
-                y_label=output_constants.HistogramConstants.Y_AXIS_LABEL,
+                x_label=oc.HistogramConstants.X_AXIS_LABEL_RELATIVE,
+                y_label=oc.HistogramConstants.Y_AXIS_LABEL,
                 x_locator=ticker.MaxNLocator(nbins="auto", prune=None),
             )
 
             ax_sep.xaxis.set_major_formatter(
                 ticker.FuncFormatter(output_utils.percentage_formatter)
             )
-            plt.axvline(0, color="black", linestyle="--")
+            plt.axvline(0, color=oc.PlottingConstants.AXIS_COLOR, linestyle="--")
             plt.legend(handles=[legend_elements[i]])
             save_path = out_dir / " ".join(
-                [program_name, output_constants.TRUE_VS_ESTIMATED_RELATIVE_DIFF_PLOT]
+                [
+                    program_name,
+                    Output_Files.TRUE_VS_ESTIMATED_RELATIVE_DIFF_PLOT,
+                ]
             )
             plt.savefig(save_path)
             plt.close(fig_sep)
@@ -360,13 +365,13 @@ def gen_estimated_vs_true_emissions_relative_difference_plot(
 
     if combine_plots:
         comb_ax.set(
-            xlabel=output_constants.HistogramConstants.X_AXIS_LABEL_RELATIVE,
-            ylabel=output_constants.HistogramConstants.Y_AXIS_LABEL,
+            xlabel=oc.HistogramConstants.X_AXIS_LABEL_RELATIVE,
+            ylabel=oc.HistogramConstants.Y_AXIS_LABEL,
         )
         comb_ax.xaxis.set_major_formatter(ticker.FuncFormatter(output_utils.percentage_formatter))
-        plt.axvline(0, color="black", linestyle="--")
+        plt.axvline(0, color=oc.PlottingConstants.AXIS_COLOR, linestyle="--")
         plt.legend(handles=legend_elements)
-        save_path = out_dir / output_constants.TRUE_VS_ESTIMATED_RELATIVE_DIFF_PLOT
+        save_path = out_dir / Output_Files.TRUE_VS_ESTIMATED_RELATIVE_DIFF_PLOT
         plt.savefig(save_path)
         plt.close(comb_fig)
 
@@ -374,7 +379,7 @@ def gen_estimated_vs_true_emissions_relative_difference_plot(
 def gen_paired_estimate_and_true_emission_distributions(
     emis_summary_info: pd.DataFrame,
     out_dir: Path,
-    estimate_vs_true_constants: output_constants.ESTIMATE_VS_TRUE_PLOTTING_CONSTANTS,
+    estimate_vs_true_constants: oc.ESTIMATE_VS_TRUE_PLOTTING_CONSTANTS,
     baseline_program: str,
     combine_plots: bool = False,
     save_separate_plots: bool = True,
@@ -413,7 +418,7 @@ def gen_paired_estimate_and_true_emission_distributions(
     )
 
     legend_elements = []
-    x_label = output_constants.HistogramConstants.X_AXIS_LABEL_PAIRED.format(n_sites=n_sites)
+    x_label = oc.HistogramConstants.X_AXIS_LABEL_PAIRED.format(n_sites=n_sites)
     for i, (program_name, paired_emis_list) in enumerate(paired_emissions_lists.items()):
         if save_separate_plots:
             fig_sep: plt.Figure = plt.figure()  # noqa: 481
@@ -427,8 +432,8 @@ def gen_paired_estimate_and_true_emission_distributions(
                 color=dark_pallete[i],
                 bin_range=plot_bin_range,
                 x_label=x_label,
-                y_label=output_constants.HistogramConstants.Y_AXIS_LABEL,
-                bins=30,
+                y_label=oc.HistogramConstants.Y_AXIS_LABEL,
+                bins=oc.HistogramConstants.BINS,
                 legend_label=" ".join(
                     [program_name, estimate_vs_true_constants.TRUE_EMISSIONS_SUFFIX]
                 ),
@@ -442,8 +447,8 @@ def gen_paired_estimate_and_true_emission_distributions(
                 color=light_pallete[i],
                 bin_range=plot_bin_range,
                 x_label=x_label,
-                y_label=output_constants.HistogramConstants.Y_AXIS_LABEL,
-                bins=30,
+                y_label=oc.HistogramConstants.Y_AXIS_LABEL,
+                bins=oc.HistogramConstants.BINS,
                 legend_label=" ".join(
                     [program_name, estimate_vs_true_constants.ESTIMATED_EMISSIONS_SUFFIX]
                 ),
@@ -453,7 +458,7 @@ def gen_paired_estimate_and_true_emission_distributions(
             save_path = out_dir / " ".join(
                 [
                     program_name,
-                    output_constants.TRUE_AND_ESTIMATED_PAIRED_EMISSIONS_DISTRIBUTION_PLOT,
+                    Output_Files.TRUE_AND_ESTIMATED_PAIRED_EMISSIONS_DISTRIBUTION_PLOT,
                 ]
             )
             plt.savefig(save_path)
@@ -468,7 +473,7 @@ def gen_paired_estimate_and_true_emission_distributions(
                 program_name=program_name,
                 color=dark_pallete[i],
                 bin_range=plot_bin_range,
-                bins=output_constants.HistogramConstants.BINS,
+                bins=oc.HistogramConstants.BINS,
                 legend_label=" ".join(
                     [program_name, estimate_vs_true_constants.TRUE_EMISSIONS_SUFFIX]
                 ),
@@ -481,7 +486,7 @@ def gen_paired_estimate_and_true_emission_distributions(
                 program_name=program_name,
                 color=light_pallete[i],
                 bin_range=plot_bin_range,
-                bins=output_constants.HistogramConstants.BINS,
+                bins=oc.HistogramConstants.BINS,
                 legend_label=" ".join(
                     [program_name, estimate_vs_true_constants.ESTIMATED_EMISSIONS_SUFFIX]
                 ),
@@ -490,9 +495,9 @@ def gen_paired_estimate_and_true_emission_distributions(
     if combine_plots:
         comb_ax.set(
             xlabel=x_label,
-            ylabel=output_constants.HistogramConstants.Y_AXIS_LABEL,
+            ylabel=oc.HistogramConstants.Y_AXIS_LABEL,
         )
         plt.legend(handles=legend_elements)
-        save_path = out_dir / output_constants.TRUE_AND_ESTIMATED_PAIRED_EMISSIONS_DISTRIBUTION_PLOT
+        save_path = out_dir / Output_Files.TRUE_AND_ESTIMATED_PAIRED_EMISSIONS_DISTRIBUTION_PLOT
         plt.savefig(save_path)
         plt.close(comb_fig)

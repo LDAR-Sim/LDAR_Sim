@@ -22,12 +22,12 @@ import numpy as np
 from datetime import date, timedelta
 import pickle
 import os
-from utils.file_name_constants import PRESEED_FILE, EMISSION_PRESEED_FILE
+from constants.file_name_constants import Generator_Files
 
 
 def gen_seed_timeseries(sim_start_date: date, sim_end_date: date, gen_dir) -> list[int]:
     seed_ts_dict: dict[date, int] = {}
-    preseed_loc = gen_dir / PRESEED_FILE
+    preseed_loc = gen_dir / Generator_Files.PRESEED_FILE
     current_date = sim_start_date
 
     if os.path.isfile(preseed_loc):
@@ -46,7 +46,7 @@ def gen_seed_timeseries(sim_start_date: date, sim_end_date: date, gen_dir) -> li
 
 
 def get_seed_timeseries(gen_dir) -> list[int]:
-    preseed_loc = gen_dir / PRESEED_FILE
+    preseed_loc = gen_dir / Generator_Files.PRESEED_FILE
     with open(preseed_loc, "rb") as f:
         seed_ts = pickle.load(f)
     return seed_ts
@@ -54,7 +54,7 @@ def get_seed_timeseries(gen_dir) -> list[int]:
 
 def gen_seed_emis(n_sim: int, gen_dir):
     preseed_val: list[int] = []
-    preseed_loc = gen_dir / EMISSION_PRESEED_FILE
+    preseed_loc = gen_dir / Generator_Files.EMISSION_PRESEED_FILE
     if not os.path.exists(gen_dir):
         os.mkdir(gen_dir)
 
@@ -78,7 +78,7 @@ def gen_seed_emis(n_sim: int, gen_dir):
 
 
 def get_emis_seed(gen_dir) -> list[int]:
-    preseed_loc = gen_dir / EMISSION_PRESEED_FILE
+    preseed_loc = gen_dir / Generator_Files.EMISSION_PRESEED_FILE
     with open(preseed_loc, "rb") as f:
         emis_seed = pickle.load(f)
     return emis_seed

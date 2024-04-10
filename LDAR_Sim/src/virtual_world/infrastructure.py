@@ -30,7 +30,8 @@ from file_processing.input_processing.emissions_source_processing import (
 from file_processing.input_processing.repair_delay_processing import (
     read_in_repair_delay_sources_file,
 )
-from virtual_world.infrastructure_const import (
+import constants.param_default_const as pdc
+from constants.infrastructure_const import (
     Infrastructure_Constants as IC,
     Virtual_World_To_Prop_Params_Mapping as VW,
 )
@@ -82,19 +83,19 @@ class Infrastructure:
             for path in access_path:
                 val = val[path]
             prop_params_dict[param] = val
-        prop_params_dict["Method_Specific_Params"] = {}
+        prop_params_dict[pdc.Common_Params.METH_SPECIFIC] = {}
         for (
             param,
             mapping,
         ) in VW.METH_SPEC_PROP_PARAMS.items():
-            prop_params_dict["Method_Specific_Params"][param] = {}
+            prop_params_dict[pdc.Common_Params.METH_SPECIFIC][param] = {}
             for method in methods:
                 access_path: list[str] = mapping.split(".")
                 val = None
                 val = methods[method]
                 for path in access_path:
                     val = val[path]
-                prop_params_dict["Method_Specific_Params"][param][method] = val
+                prop_params_dict[pdc.Common_Params.METH_SPECIFIC][param][method] = val
         return prop_params_dict
 
     def update_propagating_params(
@@ -115,7 +116,7 @@ class Infrastructure:
                 for param in IC.Site_Type_File_Constants.METH_SPEC_PROP_PARAMS:
                     site_type_val = site_type_info.get(method + param, None)
                     if site_type_val is not None:
-                        prop_params["Method_Specific_Params"][param][method] = site_type_val
+                        prop_params[pdc.Common_Params.METH_SPECIFIC][param][method] = site_type_val
 
             # Updating propagating parameters with site info
             for param in IC.Sites_File_Constants.PROPAGATING_PARAMS:
@@ -128,7 +129,7 @@ class Infrastructure:
                 for param in IC.Sites_File_Constants.METH_SPEC_PROP_PARAMS:
                     site_val = site_row_df_info.get(method + param, None)
                     if site_val is not None:
-                        prop_params["Method_Specific_Params"][param][method] = site_val
+                        prop_params[pdc.Common_Params.METH_SPECIFIC][param][method] = site_val
 
     def set_pregen_emissions(self, emissions, sim_number) -> None:
         for site in self._sites:
@@ -190,10 +191,10 @@ class Infrastructure:
         check_site_file(infrastructure_inputs)
         sites_types_provided: bool = IC.Site_Type_File_Constants.TYPE in infrastructure_inputs
 
-        sites_in: pd.DataFrame = infrastructure_inputs["sites"]
+        sites_in: pd.DataFrame = infrastructure_inputs[IC.Virtual_World_Constants.SITES]
 
         # Sample sites and shuffle
-        n_samples = virtual_world["site_samples"]
+        n_samples = virtual_world[pdc.Virtual_World_Params.N_SITES]
         if n_samples is None:
             n_samples = len(sites_in)
         # even if n_samples is None, the sample function is still used to shuffle
@@ -241,7 +242,7 @@ class Infrastructure:
                 equipment_groups=srow[IC.Sites_File_Constants.EQG],
                 propagating_params=propagating_params,
                 infrastructure_inputs=infrastructure_inputs,
-                start_date=date(*virtual_world["start_date"]),
+                start_date=date(*virtual_world[pdc.Virtual_World_Params.START_DATE]),
                 methods=methods,
             )
 

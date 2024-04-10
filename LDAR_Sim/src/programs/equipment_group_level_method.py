@@ -17,19 +17,16 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 ------------------------------------------------------------------------------
 """
+
 import sys
+from constants.error_messages import Input_Processing_Messages as ipm
 from programs.site_level_method import SiteLevelMethod
 from scheduling.follow_up_mobile_schedule import FollowUpMobileSchedule
 from sensors.METEC_NoWind_sensor import METECNWEquipmentGroup
 from sensors.default_equipment_group_level_sensor import (
     DefaultEquipmentGroupLevelSensor,
 )
-from sensors.sensor_constant_mapping import (
-    ERR_MSG_UNKNOWN_SENS_TYPE,
-    SENS_MDL,
-    SENS_QE,
-    SENS_TYPE,
-)
+from constants.param_default_const import Method_Params as mp
 
 
 class EquipmentGroupLevelMethod(SiteLevelMethod):
@@ -52,14 +49,10 @@ class EquipmentGroupLevelMethod(SiteLevelMethod):
         Args:
             sensor_into (dict): _description_
         """
-        if sensor_info[SENS_TYPE] == "default":
-            self._sensor = DefaultEquipmentGroupLevelSensor(
-                sensor_info[SENS_MDL], sensor_info[SENS_QE]
-            )
-        elif sensor_info[SENS_TYPE] == "METEC_no_wind":
-            self._sensor = METECNWEquipmentGroup(
-                sensor_info[SENS_MDL], sensor_info[SENS_QE]
-            )
+        if sensor_info[mp.TYPE] == "default":
+            self._sensor = DefaultEquipmentGroupLevelSensor(sensor_info[mp.MDL], sensor_info[mp.QE])
+        elif sensor_info[mp.TYPE] == "METEC_no_wind":
+            self._sensor = METECNWEquipmentGroup(sensor_info[mp.MDL], sensor_info[mp.QE])
         else:
-            print(ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
+            print(ipm.ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
             sys.exit()

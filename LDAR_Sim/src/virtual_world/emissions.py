@@ -22,12 +22,9 @@ from datetime import date
 from typing import Any
 
 from numpy.random import binomial
-from file_processing.output_processing.output_utils import (
-    EmisInfo,
-    EMIS_DATA_COL_ACCESSORS as eca,
-)
-
-from utils.conversion_constants import GRAMS_PER_SECOND_TO_KG_PER_DAY
+from file_processing.output_processing.output_utils import EmisInfo
+from constants.general_const import Conversion_Constants as cc, Emission_Constants as ec
+from constants.output_file_constants import EMIS_DATA_COL_ACCESSORS as eca
 
 
 class Emission:
@@ -70,7 +67,7 @@ class Emission:
         self._init_detect_date: date = None
         self._tech_spat_cov_probs: dict[str, float] = tech_spat_cov_probs
         self._tech_spat_covs: dict[str, int] = {}
-        self._status = "Inactive"
+        self._status = ec.INACTIVE
 
     def __reduce__(self):
         return (self.__class__._reconstruct_emissions, (self.__dict__,))
@@ -88,15 +85,15 @@ class Emission:
         """
         Increments duration values
         """
-        if self._status == "Active":
+        if self._status == ec.ACTIVE:
             self._active_days += 1
             return True
         else:
             return False
 
     def check_spatial_cov(self, method) -> int:
-        if method not in self._tech_spat_covs:
-            name_str: str = f"{method} Spatial Coverage"
+        name_str: str = f"{method} Spatial Coverage"
+        if name_str not in self._tech_spat_covs:
             cov_prob: float = self._tech_spat_cov_probs[method]
             self._tech_spat_covs[name_str] = binomial(1, cov_prob)
         return self._tech_spat_covs[name_str]
@@ -105,13 +102,13 @@ class Emission:
         return False
 
     def calc_true_emis_vol(self) -> float:
-        return self._active_days * self._rate * GRAMS_PER_SECOND_TO_KG_PER_DAY
+        return self._active_days * self._rate * cc.GRAMS_PER_SECOND_TO_KG_PER_DAY
 
     def calc_est_emis_vol(self) -> float:
         return (
             self._estimated_days_active
             * (self._measured_rate if self._measured_rate is not None else 0)
-            * GRAMS_PER_SECOND_TO_KG_PER_DAY
+            * cc.GRAMS_PER_SECOND_TO_KG_PER_DAY
         )
 
     def update_detection_records(self, company: str, detect_date: date):
@@ -135,7 +132,7 @@ class Emission:
         return self._status
 
     def get_daily_emis(self) -> float:
-        return self._rate * GRAMS_PER_SECOND_TO_KG_PER_DAY
+        return self._rate * cc.GRAMS_PER_SECOND_TO_KG_PER_DAY
 
     def get_summary_dict(self) -> dict[str, Any]:
         summary_dict = {}

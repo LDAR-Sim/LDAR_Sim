@@ -19,10 +19,11 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 """
 
 from src.virtual_world.infrastructure import Infrastructure
-from src.virtual_world.infrastructure_const import (
+from src.constants.infrastructure_const import (
     Virtual_World_To_Prop_Params_Mapping,
 )
 from hypothesis import given, strategies as st
+from src.constants.param_default_const import Common_Params as cp
 
 
 @st.composite
@@ -79,4 +80,4 @@ def test_000_generate_propagating_params_generates_correct_prop_params_dict_w_on
         assert result[key] == value
 
     for key2, value2 in meth[1].items():
-        assert result["Method_Specific_Params"][key2] == value2
+        assert result[cp.METH_SPECIFIC][key2] == value2
