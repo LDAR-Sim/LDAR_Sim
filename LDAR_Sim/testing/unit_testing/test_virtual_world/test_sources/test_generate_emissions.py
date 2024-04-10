@@ -42,6 +42,7 @@ def mock_source_init(self, *args, **kwargs) -> None:
         self._repairable = kwargs["repairable"]
         self._emis_rate_source = kwargs["emis_rate_source"]
         self._meth_spat_covs = kwargs["meth_spat_covs"]
+        self._multi_emissions = kwargs["multi_emissions"]
 
 
 def test_001_validate_date_randomness(mocker) -> None:
@@ -64,6 +65,7 @@ def test_001_validate_date_randomness(mocker) -> None:
         repairable=False,
         emis_rate_source="test",
         meth_spat_covs={},
+        multi_emissions=True,
     )
     # Fix a seed for testing so that the test is reproducible
     np.random.seed(0)
@@ -92,3 +94,71 @@ def test_001_validate_date_randomness(mocker) -> None:
     alpha = 0.05
 
     assert p_value > alpha
+
+
+def test_001_test_single_emission_creation(mocker) -> None:
+    # Set up parameters for testing
+    sim_start_date = date(2023, 1, 1)
+    sim_end_date = date(2024, 1, 31)
+    sim_number = 1
+
+    emission_rate_source_dictionary = {
+        "test": EmissionsSourceSample("test", "gram", "second", [1], 1000)
+    }
+    repair_delay_dataframe = pd.DataFrame()
+    mocker.patch.object(Source, "__init__", mock_source_init)
+    source_id = "test"
+    test_source = Source(
+        id=source_id,
+        emis_duration=365,
+        emis_prod_rate=1,
+        repairable=False,
+        emis_rate_source="test",
+        meth_spat_covs={},
+        multi_emissions=False,
+    )
+    # Fix a seed for testing so that the test is reproducible
+    np.random.seed(0)
+    # Call the method to generate emissions
+    emissions_dict: dict[str, list[Emission]] = test_source.generate_emissions(
+        sim_start_date,
+        sim_end_date,
+        sim_number,
+        emission_rate_source_dictionary,
+        repair_delay_dataframe,
+    )
+    assert len(emissions_dict["test"]) == 2
+
+
+def test_001_test_multi_emission_creation(mocker) -> None:
+    # Set up parameters for testing
+    sim_start_date = date(2023, 1, 1)
+    sim_end_date = date(2023, 12, 31)
+    sim_number = 1
+
+    emission_rate_source_dictionary = {
+        "test": EmissionsSourceSample("test", "gram", "second", [1], 1000)
+    }
+    repair_delay_dataframe = pd.DataFrame()
+    mocker.patch.object(Source, "__init__", mock_source_init)
+    source_id = "test"
+    test_source = Source(
+        id=source_id,
+        emis_duration=365,
+        emis_prod_rate=1,
+        repairable=False,
+        emis_rate_source="test",
+        meth_spat_covs={},
+        multi_emissions=True,
+    )
+    # Fix a seed for testing so that the test is reproducible
+    np.random.seed(0)
+    # Call the method to generate emissions
+    emissions_dict: dict[str, list[Emission]] = test_source.generate_emissions(
+        sim_start_date,
+        sim_end_date,
+        sim_number,
+        emission_rate_source_dictionary,
+        repair_delay_dataframe,
+    )
+    assert len(emissions_dict["test"]) == 729
