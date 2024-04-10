@@ -21,7 +21,10 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 ------------------------------------------------------------------------------
 """
 
+from dataclasses import dataclass
 
+
+@dataclass
 class Version_Constants:
     CURRENT_MAJOR_VERSION = "4"
 
@@ -30,6 +33,7 @@ class Version_Constants:
     CURRENT_FULL_VERSION = "4.0"
 
 
+@dataclass
 class Unit_Constants:
     GRAM = "gram"
     KG = "kilogram"
@@ -43,16 +47,19 @@ class Unit_Constants:
     YEAR = "year"
 
 
+@dataclass
 class Conversion_Constants:
     GRAMS_PER_SECOND_TO_KG_PER_DAY = 86.4
     GS_TO_GH = 3600
     DAYS_IN_MONTH = 30.437
 
 
+@dataclass
 class Dist_Constants:
     LOGNORM = "lognorm"
 
 
+@dataclass
 class File_Extension_Constants:
     PICKLE = ".p"
     YML = ".yml"
@@ -61,6 +68,7 @@ class File_Extension_Constants:
     CSV = ".csv"
 
 
+@dataclass
 class Emission_Constants:
     REPAIRABLE = "repairable"
     NON_REPAIRABLE = "non-repairable"
@@ -73,6 +81,7 @@ class Emission_Constants:
     NATURAL = "natural"
 
 
+@dataclass
 class Placeholder_Constants:
     PLACEHOLDER_EQUIPMENT = "Placeholder_Equipment"
     PLACEHOLDER_REP_EQUIPMENT = "Placeholder_Rep_Equipment"

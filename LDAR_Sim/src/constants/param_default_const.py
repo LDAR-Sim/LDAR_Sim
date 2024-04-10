@@ -18,7 +18,10 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 ------------------------------------------------------------------------------
 """
 
+from dataclasses import dataclass
 
+
+@dataclass
 class Common_Params:
     VERSION = "version"
     PARAM_LEVEL = "parameter_level"
@@ -27,6 +30,7 @@ class Common_Params:
     METH_SPECIFIC = "Method_Specific_Params"
 
 
+@dataclass
 class Levels:
     SIMULATION = "simulation_settings"
     VIRTUAL = "virtual_world"
@@ -38,12 +42,14 @@ class Levels:
     COMPONENT_LEVEL = "component_level"
 
 
+@dataclass
 class Deployment_Types:
     MOBILE = "mobile"
     STATIONARY = "stationary"
     ORBIT = "orbital"
 
 
+@dataclass
 class Virtual_World_Params:
     START_DATE = "start_date"
     END_DATE = "end_date"
@@ -70,6 +76,7 @@ class Virtual_World_Params:
     DURATION = "duration"
 
 
+@dataclass
 class Sim_Setting_Params:
     INPUT = "input_directory"
     OUTPUT = "output_directory"
@@ -89,6 +96,7 @@ class Sim_Setting_Params:
     WRITE_DATA = "write_data"
 
 
+@dataclass
 class Program_Params:
     NAME = "program_name"
     METHODS = "method_labels"
@@ -100,6 +108,7 @@ class Program_Params:
     VERIFICATION = "verification_cost"
 
 
+@dataclass
 class Method_Params:
     NAME = "label"
     MEASUREMENT_SCALE = "measurement_scale"

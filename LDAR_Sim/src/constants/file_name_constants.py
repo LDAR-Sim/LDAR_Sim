@@ -18,7 +18,10 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 ------------------------------------------------------------------------------
 """
 
+from dataclasses import dataclass
 
+
+@dataclass
 class Default_Files:
     VIRTUAL_DEF_FILE = "virtual_world_default.yml"
     SIM_SETTING_DEF_FILE = "simulation_settings_default.yml"
@@ -26,6 +29,7 @@ class Default_Files:
     METH_DEF_FILE = "m_default.yml"
 
 
+@dataclass
 class Generator_Files:
     PRESEED_FILE = "preseed.p"
     EMISSION_PRESEED_FILE = "emis_preseed.p"
@@ -39,6 +43,7 @@ class Generator_Files:
     GEN_INFRA_EMISS = "gen_infrastructure_emissions_{i}.p"
 
 
+@dataclass
 class Output_Files:
     TS_SUMMARY_FILENAME = "daily_summary_stats.csv"
     EMIS_SUMMARY_FILENAME = "emissions_summary_stats.csv"
