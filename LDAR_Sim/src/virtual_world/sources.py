@@ -259,6 +259,9 @@ class Source:
         # Generate Pre-Existing Emissions to exist at the start of simulation
         # The loop is working backwards in time, starting from 1 day before simulation start
 
+        # This first loop is to generate emissions that are already active at the start of the simulation
+        # If only one emission is allowed for the given source, the loop will break once the first is made,
+        # since no other emissions should exist
         last_emis_day: date = sim_start_date
         for day in range(1, self._emis_duration + 1):
             create_emis: int = np.random.binomial(1, self._emis_prod_rate)
@@ -287,6 +290,8 @@ class Source:
             if create_emis:
                 emis_start_date: date = sim_start_date + timedelta(days=day)
                 if not self._multi_emissions:
+                    # if only a single emission can be made, check that the emission start date is after
+                    # the last emission's end date, otherwise continue the loop
                     if emis_start_date <= last_emis_day:
                         continue
                 emission: Emission = self._create_emission(
@@ -299,6 +304,7 @@ class Source:
                 leak_count += 1
                 emissions_fifo.append(emission)
                 if not self._multi_emissions:
+                    # if only a single emission can be made, update the last_emis_day based on the new emission
                     last_emis_day = emis_start_date + timedelta(days=self._emis_duration)
         self._generated_emissions[sim_number] = emissions_fifo
         return {self._source_ID: emissions_fifo}
