@@ -1,6 +1,0 @@
-program_name,verification_cost,repair_cost,Continuous_cost,OGI_FU_cost,mobile_campaigns_cost,mobile_proportion_cost,mobile_threshold_cost,value_gas_sold,adjusted_program_cost
-P_continuous,0.0,0.5312,1.46,2.8672,,,,-18.153716922172034,-13.295316922172033
-P_mobile_campaigns,0.0,0.5304,,1.7555999999999998,0.4,,,-18.20772028641982,-15.521720286419823
-P_mobile_proportion,0.0,0.4664,,0.0,,0.4,,-0.0,0.8664
-P_mobile_threshold,0.0,0.4792,,0.1036,,,0.4,-5.674511505064784,-4.6917115050647835
-P_none,0.0,0.4664,,,,,,-0.0,0.4664

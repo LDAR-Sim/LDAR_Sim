@@ -1,6 +1,0 @@
-program_name: P_mobile_campaigns
-parameter_level: program
-version: "3.0"
-method_labels:
-  - mobile_campaigns
-  - OGI_FU

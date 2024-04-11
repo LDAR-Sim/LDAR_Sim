@@ -7,7 +7,7 @@ from testing.unit_testing.test_initialization.test_input_manager.input_manager_t
     mock_parameter_no_data_no_plots_fix,
 )
 
-from config.output_flag_mapping import OUTPUTS, SITES, TIMESERIES, LEAKS, PLOTS, BATCH_REPORTING
+from constants.param_default_const import Sim_Setting_Params as ssp
 
 from file_processing.input_processing.input_manager import InputManager
 
@@ -21,11 +21,11 @@ def test_045_make_plots_write_data(mocker, mock_parameter_write_data_make_plots)
 
     input_mngr.map_simulation_settings(parameters)
 
-    assert parameters[OUTPUTS][PLOTS] is True and (
-        parameters[OUTPUTS][SITES]
-        and parameters[OUTPUTS][TIMESERIES]
-        and parameters[OUTPUTS][LEAKS]
-        and parameters[OUTPUTS][BATCH_REPORTING]
+    assert parameters[ssp.OUTPUTS][ssp.PLOTS] is True and (
+        parameters[ssp.OUTPUTS][ssp.SITES]
+        and parameters[ssp.OUTPUTS][ssp.TIMESERIES]
+        and parameters[ssp.OUTPUTS][ssp.LEAKS]
+        and parameters[ssp.OUTPUTS][ssp.BATCH_REPORTING]
     )
 
 
@@ -38,11 +38,11 @@ def test_045_write_data_no_plots(mocker, mock_parameter_write_data_no_plots):
 
     input_mngr.map_simulation_settings(parameters)
 
-    assert parameters[OUTPUTS][PLOTS] is False and (
-        parameters[OUTPUTS][SITES]
-        and parameters[OUTPUTS][TIMESERIES]
-        and parameters[OUTPUTS][LEAKS]
-        and parameters[OUTPUTS][BATCH_REPORTING]
+    assert parameters[ssp.OUTPUTS][ssp.PLOTS] is False and (
+        parameters[ssp.OUTPUTS][ssp.SITES]
+        and parameters[ssp.OUTPUTS][ssp.TIMESERIES]
+        and parameters[ssp.OUTPUTS][ssp.LEAKS]
+        and parameters[ssp.OUTPUTS][ssp.BATCH_REPORTING]
     )
 
 
@@ -55,11 +55,11 @@ def test_045_make_plots_no_data(mocker, mock_parameter_make_plots_no_data):
 
     input_mngr.map_simulation_settings(parameters)
 
-    assert parameters[OUTPUTS][PLOTS] is True and (
-        not parameters[OUTPUTS][SITES]
-        and not parameters[OUTPUTS][TIMESERIES]
-        and not parameters[OUTPUTS][LEAKS]
-        and not parameters[OUTPUTS][BATCH_REPORTING]
+    assert parameters[ssp.OUTPUTS][ssp.PLOTS] is True and (
+        not parameters[ssp.OUTPUTS][ssp.SITES]
+        and not parameters[ssp.OUTPUTS][ssp.TIMESERIES]
+        and not parameters[ssp.OUTPUTS][ssp.LEAKS]
+        and not parameters[ssp.OUTPUTS][ssp.BATCH_REPORTING]
     )
 
 
@@ -72,9 +72,9 @@ def test_045_no_plots_no_write_data(mocker, mock_parameter_no_data_no_plots):
 
     input_mngr.map_simulation_settings(parameters)
 
-    assert parameters[OUTPUTS][PLOTS] is False and (
-        not parameters[OUTPUTS][SITES]
-        and not parameters[OUTPUTS][TIMESERIES]
-        and not parameters[OUTPUTS][LEAKS]
-        and not parameters[OUTPUTS][BATCH_REPORTING]
+    assert parameters[ssp.OUTPUTS][ssp.PLOTS] is False and (
+        not parameters[ssp.OUTPUTS][ssp.SITES]
+        and not parameters[ssp.OUTPUTS][ssp.TIMESERIES]
+        and not parameters[ssp.OUTPUTS][ssp.LEAKS]
+        and not parameters[ssp.OUTPUTS][ssp.BATCH_REPORTING]
     )
