@@ -54,6 +54,7 @@ from constants.output_messages import RuntimeMessages as rm
 from constants.error_messages import Runtime_Error_Messages as rem
 import constants.param_default_const as pdc
 
+
 def simulate(
     daylight,
     weather,
