@@ -1,2 +1,0 @@
-Simulating program: P_none ; simulation 1 of 1
-Finished simulating program P_none ; simulation 1 of 1 
