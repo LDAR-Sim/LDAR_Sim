@@ -20,6 +20,7 @@ def mock_simple_source_constructor_params_fix() -> Tuple[str, dict, dict]:
         Infrastructure_Constants.Sources_File_Constants.EMIS_ERS: "test",
         Infrastructure_Constants.Sources_File_Constants.EMIS_EPR: 1,
         Infrastructure_Constants.Sources_File_Constants.EMIS_DUR: 1,
+        Infrastructure_Constants.Sources_File_Constants.MULTI_EMISSIONS: False,
         Infrastructure_Constants.Sources_File_Constants.REPAIR_DELAY: {cp.VAL: [14]},
         Infrastructure_Constants.Sources_File_Constants.REPAIR_COST: {cp.VAL: [200]},
         cp.METH_SPECIFIC: {Infrastructure_Constants.Sources_File_Constants.SPATIAL_PLACEHOLDER: {}},

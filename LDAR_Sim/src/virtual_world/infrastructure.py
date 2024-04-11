@@ -214,7 +214,8 @@ class Infrastructure:
                     args=(infrastructure_inputs[IC.Site_Type_File_Constants.TYPE],),
                     axis=1,
                 )
-
+            elif header in sites_to_make.columns.to_list():
+                pass
             else:
                 sites_to_make[header] = 0
 
