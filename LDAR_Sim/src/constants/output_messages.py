@@ -20,7 +20,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 ------------------------------------------------------------------------------
 """
 
-SUMMARRY_PLOT_GENERATION_MESSAGE = "Generating cross-program summary plots"
+SUMMARY_PLOT_GENERATION_MESSAGE = "Generating cross-program summary plots"
 
 
 class RuntimeMessages:
