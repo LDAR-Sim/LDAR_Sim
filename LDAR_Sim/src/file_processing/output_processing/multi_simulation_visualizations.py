@@ -89,7 +89,7 @@ def gen_annual_emissions_summary_list(emis_summary_info, program_names) -> dict[
 
 def gen_cross_program_summary_plots(out_dir: Path, baseline_program: str, n_sites: int):
 
-    print(om.SUMMARRY_PLOT_GENERATION_MESSAGE)
+    print(om.SUMMARY_PLOT_GENERATION_MESSAGE)
 
     summary_program_plots_directory = out_dir / oc.FileDirectory.SUMMARY_PROGRAM_PLOTS_DIRECTORY
 
