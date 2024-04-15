@@ -43,6 +43,7 @@ def mock_simple_emission_for_get_summary_dict_1_fix() -> (
             "Recorded By": None,
             "Repairable": False,
             "Estimated Days Active": 0,
+            "Date Repaired or Expired": None,
         },
     )
 
