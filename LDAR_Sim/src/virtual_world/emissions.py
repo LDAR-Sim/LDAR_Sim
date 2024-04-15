@@ -41,7 +41,7 @@ class Emission:
         eca.INIT_DETECT_DATE: "datetime64",
         eca.TAGGED: "bool",
         eca.TAGGED_BY: "object",
-        eca.DATE_REP: "datetime64",
+        eca.DATE_REP_EXP: "datetime64",
     }
 
     def __init__(

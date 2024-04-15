@@ -27,6 +27,7 @@ class Default_Files:
     SIM_SETTING_DEF_FILE = "simulation_settings_default.yml"
     PROG_DEF_FILE = "p_default.yml"
     METH_DEF_FILE = "m_default.yml"
+    OUTPUT_DEF_FILE = "outputs_default.yml"
 
 
 @dataclass
