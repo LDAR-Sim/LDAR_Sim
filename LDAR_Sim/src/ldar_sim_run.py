@@ -27,12 +27,10 @@ import sys
 import shutil
 from pathlib import Path
 from datetime import date
-from file_processing.output_processing.multi_simulation_visualizations import (
-    gen_cross_program_summary_plots,
+from file_processing.output_processing.summary_visualization_manager import (
+    SummaryVisualizationManager,
 )
-from file_processing.output_processing.multi_simulation_outputs import (
-    concat_output_data,
-)
+from file_processing.output_processing.summary_output_manager import SummaryOutputManager
 
 
 from initialization.initialize_infrastructure import initialize_infrastructure
@@ -134,6 +132,7 @@ if __name__ == "__main__":
     in_dir = get_abs_path(sim_params[pdc.Sim_Setting_Params.INPUT])
     programs = sim_params.pop(pdc.Levels.PROGRAM)
     virtual_world = sim_params.pop(pdc.Levels.VIRTUAL)
+    output_params = sim_params.pop(pdc.Levels.OUTPUTS)
     preseed_random = sim_params[pdc.Sim_Setting_Params.PRESEED]
 
     methods = {
@@ -192,6 +191,26 @@ if __name__ == "__main__":
         date(*virtual_world[pdc.Virtual_World_Params.START_DATE]),
         date(*virtual_world[pdc.Virtual_World_Params.END_DATE]),
     )
+    # Calculate the simulation years
+    simulation_years: list[int] = [
+        year
+        for year in range(
+            virtual_world[pdc.Virtual_World_Params.START_DATE][0],
+            virtual_world[pdc.Virtual_World_Params.END_DATE][0] + 1,
+        )
+    ]
+    # Initialize output managers
+    summary_stats_manager: SummaryOutputManager = SummaryOutputManager(
+        output_path=out_dir,
+        output_config=output_params,
+        sim_years=simulation_years,
+    )
+    summary_visualization_manager: SummaryVisualizationManager = SummaryVisualizationManager(
+        output_config=output_params,
+        output_dir=out_dir,
+        baseline_program=base_program,
+        site_count=virtual_world[pdc.Virtual_World_Params.N_SITES],
+    )
     # IF the are more than 5 simulations, divide the simulations into batches
     if simulation_count > 5:
         simulation_batches = floor(simulation_count / 5.0)
@@ -245,7 +264,5 @@ if __name__ == "__main__":
 
             # -- Batch Report --
             print(rm.BATCH_CLEAN.format(batch_count=batch_count))
-            concat_output_data(out_dir, batch_count != 0)
-    gen_cross_program_summary_plots(
-        out_dir, base_program, virtual_world[pdc.Virtual_World_Params.N_SITES]
-    )
+            summary_stats_manager.gen_summary_outputs(batch_count != 0)
+    summary_visualization_manager.gen_visualizations()

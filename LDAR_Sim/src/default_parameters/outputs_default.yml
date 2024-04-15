@@ -1,0 +1,38 @@
+parameter_level: "outputs"
+version: "4.0"
+Program Outputs:
+  Program Emissions: true
+  Program Timeseries: true
+Summary Outputs:
+  Summary Files:
+    Timeseries Summary: true
+    Emissions Summary: true
+  Summary Stats:
+    Timeseries Summary:
+      Average "True" Daily Emissions (Kg Methane): true
+      Average "True" Mitigable Daily Emissions (Kg Methane): true
+      Average "True" Non-Mitigable Daily Emissions (Kg Methane): true
+      95th Percentile "True" Daily Emissions (Kg Methane): true
+      95th Percentile "True" Mitigable Daily Emissions (Kg Methane): true
+      95th Percentile "True" Non-Mitigable Daily Emissions (Kg Methane): true
+      5th Percentile "True" Daily Emissions (Kg Methane): true
+      5th Percentile "True" Mitigable Daily Emissions (Kg Methane): true
+      5th Percentile "True" Non-Mitigable Daily Emissions (Kg Methane): true
+      Average Daily Cost ($): true
+      95th Percentile Daily Cost ($): true
+      5th Percentile Daily Cost ($): true
+    Emissions Summary:
+      Total "True" Emissions (Kg Methane): true
+      Total "Estimated" Emissions (Kg Methane): true
+      Total "True" Mitigable Emissions (Kg Methane): true
+      Total "True" Non-Mitigable Emissions (Kg Methane): true
+      Average "True" Emissions Rate (g/s): true
+      95th Percentile "True" Emissions Rate (g/s): true
+      5th Percentile "True" Emissions Rate (g/s): true
+      Average "True" Emissions Amount (Kg Methane): true
+      95th Percentile "True" Emissions Amount (Kg Methane): true
+      5th Percentile "True" Emissions Amount (Kg Methane): true
+Summary Visualizations:
+  True_vs_Estimated_Emissions_percent_differences: true
+  True_vs_Estimated_Emissions_relative_differences: true
+  True_and_Estimated_Paired_Emissions_Distribution: true

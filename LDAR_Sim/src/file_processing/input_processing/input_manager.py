@@ -23,7 +23,6 @@ import json
 import os
 import sys
 from pathlib import Path
-from typing import Union
 
 import yaml
 
@@ -145,30 +144,6 @@ class InputManager:
                         self.old_params = True
         return
 
-    def map_simulation_settings(self, parameters) -> None:
-        outputs: Union[bool, None] = parameters.get(pc.Sim_Setting_Params.OUTPUTS)
-
-        if outputs is None:
-            parameters[pc.Sim_Setting_Params.OUTPUTS] = {}
-
-        make_plots: Union[bool, None] = parameters.get(pc.Sim_Setting_Params.MAKE_PLOTS)
-
-        if make_plots is not None:
-            parameters[pc.Sim_Setting_Params.OUTPUTS][pc.Sim_Setting_Params.PLOTS] = make_plots
-            del parameters[pc.Sim_Setting_Params.MAKE_PLOTS]
-
-        write_data: Union[bool, None] = parameters.get(pc.Sim_Setting_Params.WRITE_DATA)
-
-        if write_data is not None:
-            parameters[pc.Sim_Setting_Params.OUTPUTS][
-                pc.Sim_Setting_Params.BATCH_REPORTING
-            ] = write_data
-            parameters[pc.Sim_Setting_Params.OUTPUTS][pc.Sim_Setting_Params.SITES] = write_data
-            parameters[pc.Sim_Setting_Params.OUTPUTS][pc.Sim_Setting_Params.LEAKS] = write_data
-            parameters[pc.Sim_Setting_Params.OUTPUTS][pc.Sim_Setting_Params.TIMESERIES] = write_data
-
-        return
-
     def map_parameters(self, parameters):
         """Function to map parameters from older versions to the present version, all mappings are
         externally specified in the relevant function.
@@ -176,9 +151,6 @@ class InputManager:
         :return returns the compliant parameters dictionary, and optionally mined global parameters
         """
         self.handle_parameter_versioning(parameters)
-
-        if parameters[pc.Common_Params.PARAM_LEVEL] == pc.Levels.SIMULATION:
-            self.map_simulation_settings(parameters)
 
         return parameters
 
@@ -246,7 +218,18 @@ class InputManager:
                 method_label = new_parameters[pc.Method_Params.NAME]
                 # self.retain_update(method_pool[method_label], new_parameters)
                 method_pool.update({method_label: new_parameters})
-
+            elif new_parameters[pc.Common_Params.PARAM_LEVEL] == pc.Levels.OUTPUTS:
+                if "default_parameters" not in new_parameters:
+                    def_file = df.OUTPUT_DEF_FILE
+                else:
+                    def_file = new_parameters["default_parameters"]
+                output_param_file = "./src/default_parameters/{}".format(def_file)
+                with open(output_param_file, "r") as f:
+                    default_output_params = yaml.load(f.read(), Loader=yaml.SafeLoader)
+                check_types(default_output_params, new_parameters)
+                new_outputs = copy.deepcopy(default_output_params)
+                self.retain_update(default_output_params, new_parameters)
+                self.simulation_parameters[pc.Levels.OUTPUTS] = new_outputs
             else:
                 sys.exit(
                     ipm.PARAMETER_PARSING_ERROR.format(
