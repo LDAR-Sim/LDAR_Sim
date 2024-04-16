@@ -1,5 +1,5 @@
 import pandas as pd
-from src.file_processing.output_processing.multi_simulation_visualizations import (
+from src.file_processing.output_processing.summary_visualization_helpers import (
     get_non_baseline_prog_names,
 )
 from src.constants import output_file_constants

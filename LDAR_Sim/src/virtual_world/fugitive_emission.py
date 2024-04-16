@@ -189,7 +189,7 @@ class FugitiveEmission(Emission):
     def get_summary_dict(self, end_date: date) -> dict[str, Any]:
         estimated_vol_emitted: float = self.calc_est_emis_vol(end_date=end_date)
         summary_dict: dict[str, Any] = super().get_summary_dict()
-        summary_dict.update({(eca.DATE_REP, self._repair_date)})
+        summary_dict.update({(eca.DATE_REP_EXP, self._repair_date)})
         summary_dict.update({(eca.TAGGED, self._tagged)})
         summary_dict.update({(eca.TAGGED_BY, self._tagged_by_company)})
         summary_dict.update({(eca.EST_VOL_EMIT, estimated_vol_emitted)})

@@ -23,6 +23,11 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 import re
 
 
+class ParameterProcessingConst:
+    DEFAULT_PARAM_PATHWAY = "./src/default_parameters/{}"
+    DEFAULT_PARAM_STRING = "default_parameters"
+
+
 class Emissions_Source_Processing_Const:
     EMISSION_FILE = "emissions_file"
     EMISSION = "emissions"

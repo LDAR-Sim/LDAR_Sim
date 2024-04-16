@@ -62,7 +62,7 @@ def mock_simple_emission_for_get_summary_dict_1_fix() -> Tuple[FugitiveEmission,
             "Recorded": "N/A",
             "Recorded By": "N/A",
             "Repairable": True,
-            "Date Repaired": None,
+            "Date Repaired or Expired": None,
             '"Estimated" Volume Emitted (Kg Methane)': 0.0,
         },
     )

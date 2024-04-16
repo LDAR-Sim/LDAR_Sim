@@ -1,5 +1,5 @@
 program_name: P_air
-parameter_level: program
+parameter_level: programs
 version: "4.0"
 method_labels:
   - airH

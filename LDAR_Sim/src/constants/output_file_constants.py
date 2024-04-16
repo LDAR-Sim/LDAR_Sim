@@ -18,9 +18,45 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 ------------------------------------------------------------------------------
 """
 
+from dataclasses import dataclass
+
 
 class FileDirectory:
     SUMMARY_PROGRAM_PLOTS_DIRECTORY = "program_summary_plots"
+
+
+class FileNames:
+    TRUE_VS_ESTIMATED_PERCENT_DIFF_PLOT = "True_vs_Estimated_Emissions_percent_differences"
+    TRUE_VS_ESTIMATED_RELATIVE_DIFF_PLOT = "True_vs_Estimated_Emissions_relative_differences"
+    TRUE_AND_ESTIMATED_PAIRED_EMISSIONS_DISTRIBUTION_PLOT = (
+        "True_and_Estimated_Paired_Emissions_Distribution"
+    )
+
+
+@dataclass
+class OutputConfigCategories:
+    PROGRAM_OUTPUTS = "Program Outputs"
+    SUMMARY_OUTPUTS = "Summary Outputs"
+    SUMMARY_VISUALIZATIONS = "Summary Visualizations"
+
+    @dataclass
+    class SummaryOutputCatageories:
+        SUMMARY_FILES = "Summary Files"
+        SUMMARY_STATS = "Summary Stats"
+
+
+@dataclass
+class SummaryFileColumns:
+    @dataclass
+    class CommonColumns:
+        PROGRAM_NAME = "Program Name"
+        SIMULATION_NUMBER = "Simulation"
+
+
+@dataclass
+class SummaryVisualizationStatistics:
+    PERCENT_DIFFERENCE = "Percent Difference"
+    RELATIVE_DIFFERENCE = "Relative Difference"
 
 
 class PlottingConstants:
@@ -47,6 +83,7 @@ class ESTIMATE_VS_TRUE_PLOTTING_CONSTANTS:
     ESTIMATED_EMISSIONS_SUFFIX = '"Estimated" Total Emissions (Kg Methane)'
     # TODO Look into ways to allow users to chose from a set of bin width options
     HISTOGRAM_BIN_WIDTH = 8.0
+    HISTOGRAM_PERCENT_DIFF_BIN_RANGE = (0, 200)
 
 
 class TS_SUMMARY_COLUMNS_ACCESSORS:
@@ -80,7 +117,7 @@ class EMIS_SUMMARY_COLUMNS_ACCESSORS:
     AVG_T_EMIS_RATE = 'Average "True" Emissions Rate (g/s)'
     T_EMIS_RATE_95 = '95th Percentile "True" Emissions Rate (g/s)'
     T_EMIS_RATE_5 = '5th Percentile "True" Emissions Rate (g/s)'
-    T_AVG_EMIS_AMOUNT = '"True" Average Emissions Amount (Kg Methane)'
+    T_AVG_EMIS_AMOUNT = 'Average "True" Emissions Amount (Kg Methane)'
     T_EMIS_AMOUNT_95 = '95th Percentile "True" Emissions Amount (Kg Methane)'
     T_EMIS_AMOUNT_5 = '5th Percentile "True" Emissions Amount (Kg Methane)'
 
@@ -130,7 +167,7 @@ class EMIS_DATA_COL_ACCESSORS:
     T_RATE = '"True" Rate (g/s)'
     M_RATE = '"Measured" Rate (g/s)'
     DATE_BEG = "Date Began"
-    DATE_REP = "Date Repaired"
+    DATE_REP_EXP = "Date Repaired or Expired"
     INIT_DETECT_BY = "Initially Detected By"
     INIT_DETECT_DATE = "Initially Detected Date"
     TAGGED = "Tagged"
@@ -150,7 +187,7 @@ EMIS_DATA_FINAL_COL_ORDER = [
     EMIS_DATA_COL_ACCESSORS.DAYS_ACT,
     EMIS_DATA_COL_ACCESSORS.EST_DAYS_ACT,
     EMIS_DATA_COL_ACCESSORS.DATE_BEG,
-    EMIS_DATA_COL_ACCESSORS.DATE_REP,
+    EMIS_DATA_COL_ACCESSORS.DATE_REP_EXP,
     EMIS_DATA_COL_ACCESSORS.T_VOL_EMIT,
     EMIS_DATA_COL_ACCESSORS.EST_VOL_EMIT,
     EMIS_DATA_COL_ACCESSORS.T_RATE,

@@ -1,4 +1,4 @@
-site_ID,equipment_groups,lat,lon,subtype_code
+site_ID,equipment,lat,lon,site_type
 1,1,32.367,-101.8009,999
 2,1,32.21,-102.5609,999
 3,1,31.59,-103.4261,999

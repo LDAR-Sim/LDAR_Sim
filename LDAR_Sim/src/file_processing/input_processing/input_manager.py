@@ -23,7 +23,6 @@ import json
 import os
 import sys
 from pathlib import Path
-from typing import Union
 
 import yaml
 
@@ -34,6 +33,7 @@ from utils.check_parameter_types import check_types
 from constants.general_const import File_Extension_Constants as fc
 from constants.file_name_constants import Default_Files as df
 from constants.error_messages import Input_Processing_Messages as ipm, Versioning_Messages as vm
+from constants.file_processing_const import ParameterProcessingConst
 import constants.param_default_const as pc
 from constants.output_messages import RuntimeMessages as rm
 from constants.general_const import Version_Constants as vc, Placeholder_Constants as phc
@@ -145,30 +145,6 @@ class InputManager:
                         self.old_params = True
         return
 
-    def map_simulation_settings(self, parameters) -> None:
-        outputs: Union[bool, None] = parameters.get(pc.Sim_Setting_Params.OUTPUTS)
-
-        if outputs is None:
-            parameters[pc.Sim_Setting_Params.OUTPUTS] = {}
-
-        make_plots: Union[bool, None] = parameters.get(pc.Sim_Setting_Params.MAKE_PLOTS)
-
-        if make_plots is not None:
-            parameters[pc.Sim_Setting_Params.OUTPUTS][pc.Sim_Setting_Params.PLOTS] = make_plots
-            del parameters[pc.Sim_Setting_Params.MAKE_PLOTS]
-
-        write_data: Union[bool, None] = parameters.get(pc.Sim_Setting_Params.WRITE_DATA)
-
-        if write_data is not None:
-            parameters[pc.Sim_Setting_Params.OUTPUTS][
-                pc.Sim_Setting_Params.BATCH_REPORTING
-            ] = write_data
-            parameters[pc.Sim_Setting_Params.OUTPUTS][pc.Sim_Setting_Params.SITES] = write_data
-            parameters[pc.Sim_Setting_Params.OUTPUTS][pc.Sim_Setting_Params.LEAKS] = write_data
-            parameters[pc.Sim_Setting_Params.OUTPUTS][pc.Sim_Setting_Params.TIMESERIES] = write_data
-
-        return
-
     def map_parameters(self, parameters):
         """Function to map parameters from older versions to the present version, all mappings are
         externally specified in the relevant function.
@@ -177,12 +153,9 @@ class InputManager:
         """
         self.handle_parameter_versioning(parameters)
 
-        if parameters[pc.Common_Params.PARAM_LEVEL] == pc.Levels.SIMULATION:
-            self.map_simulation_settings(parameters)
-
         return parameters
 
-    def parse_parameters(self, new_parameters_list):
+    def parse_parameters(self, new_parameters_list: list[dict]):
         """Method to parse and validate new parameters, perform type checking, and organize for
         simulation.
 
@@ -193,6 +166,12 @@ class InputManager:
         """
         programs = {}
         method_pool = {}
+        if not any(
+            new_parameter.get(pc.Common_Params.PARAM_LEVEL) == pc.Levels.OUTPUTS
+            for new_parameter in new_parameters_list
+        ):
+            new_parameters_list.append({pc.Common_Params.PARAM_LEVEL: pc.Levels.OUTPUTS})
+
         for new_parameters in new_parameters_list:
             # Address unsupplied parameter level by defaulting it as simulation_settings
             if pc.Common_Params.PARAM_LEVEL not in new_parameters:
@@ -212,11 +191,11 @@ class InputManager:
                 self.retain_update(self.simulation_parameters, new_parameters)
 
             elif new_parameters[pc.Common_Params.PARAM_LEVEL] == pc.Levels.VIRTUAL:
-                if "default_parameters" not in new_parameters:
+                if ParameterProcessingConst.DEFAULT_PARAM_STRING not in new_parameters:
                     def_file = df.VIRTUAL_DEF_FILE
                 else:
-                    def_file = new_parameters["default_parameters"]
-                v_world_param_file = "./src/default_parameters/{}".format(def_file)
+                    def_file = new_parameters[ParameterProcessingConst.DEFAULT_PARAM_STRING]
+                v_world_param_file = ParameterProcessingConst.DEFAULT_PARAM_PATHWAY.format(def_file)
                 with open(v_world_param_file, "r") as f:
                     default_v_world_params = yaml.load(f.read(), Loader=yaml.SafeLoader)
                 check_types(default_v_world_params, new_parameters)
@@ -225,11 +204,11 @@ class InputManager:
                 self.simulation_parameters[pc.Levels.VIRTUAL] = new_v_world
 
             elif new_parameters[pc.Common_Params.PARAM_LEVEL] == pc.Levels.PROGRAM:
-                if "default_parameters" not in new_parameters:
+                if ParameterProcessingConst.DEFAULT_PARAM_STRING not in new_parameters:
                     def_file = df.PROG_DEF_FILE
                 else:
-                    def_file = new_parameters["default_parameters"]
-                p_param_file = "./src/default_parameters/{}".format(def_file)
+                    def_file = new_parameters[ParameterProcessingConst.DEFAULT_PARAM_STRING]
+                p_param_file = ParameterProcessingConst.DEFAULT_PARAM_PATHWAY.format(def_file)
                 with open(p_param_file, "r") as f:
                     default_program_parameters = yaml.load(f.read(), Loader=yaml.SafeLoader)
                 check_types(
@@ -246,7 +225,18 @@ class InputManager:
                 method_label = new_parameters[pc.Method_Params.NAME]
                 # self.retain_update(method_pool[method_label], new_parameters)
                 method_pool.update({method_label: new_parameters})
-
+            elif new_parameters[pc.Common_Params.PARAM_LEVEL] == pc.Levels.OUTPUTS:
+                if ParameterProcessingConst.DEFAULT_PARAM_STRING not in new_parameters:
+                    def_file = df.OUTPUT_DEF_FILE
+                else:
+                    def_file = new_parameters[ParameterProcessingConst.DEFAULT_PARAM_STRING]
+                output_param_file = ParameterProcessingConst.DEFAULT_PARAM_PATHWAY.format(def_file)
+                with open(output_param_file, "r") as f:
+                    default_output_params = yaml.load(f.read(), Loader=yaml.SafeLoader)
+                check_types(default_output_params, new_parameters)
+                new_outputs = copy.deepcopy(default_output_params)
+                self.retain_update(default_output_params, new_parameters)
+                self.simulation_parameters[pc.Levels.OUTPUTS] = new_outputs
             else:
                 sys.exit(
                     ipm.PARAMETER_PARSING_ERROR.format(
@@ -281,14 +271,18 @@ class InputManager:
             # Next, perform type checking and updating from default module parameters, even for
             # methods pre-specified
             for midx, method in program[pc.Levels.METHOD].items():
-                if "default_parameters" not in method:
+                if ParameterProcessingConst.DEFAULT_PARAM_STRING not in method:
                     def_file = df.METH_DEF_FILE
                 else:
-                    def_file = new_parameters["default_parameters"]
-                m_param_file = "./src/default_parameters/{}".format(def_file)
+                    def_file = new_parameters[ParameterProcessingConst.DEFAULT_PARAM_STRING]
+                m_param_file = ParameterProcessingConst.DEFAULT_PARAM_PATHWAY.format(def_file)
                 with open(m_param_file, "r") as f:
                     default_module = yaml.load(f.read(), Loader=yaml.SafeLoader)
-                check_types(default_module, method, omit_keys=["default_parameters"])
+                check_types(
+                    default_module,
+                    method,
+                    omit_keys=[ParameterProcessingConst.DEFAULT_PARAM_STRING],
+                )
                 self.retain_update(default_module, method)
                 programs[p_idx][pc.Levels.METHOD][midx] = default_module
 
