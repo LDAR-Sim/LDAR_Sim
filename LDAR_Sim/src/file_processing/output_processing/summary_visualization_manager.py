@@ -50,12 +50,13 @@ class SummaryVisualizationManager:
             output_config[output_file_constants.OutputConfigCategories.SUMMARY_VISUALIZATIONS]
         )
         self.baseline_program: str = baseline_program
-        self.site_count: int = site_count
         self.output_dir: Path = output_dir
         self.summary_visualizations_dir: Path = (
             output_dir / output_file_constants.FileDirectory.SUMMARY_PROGRAM_PLOTS_DIRECTORY
         )
-        self._visualization_mapper: SummaryVisualizationMapper = SummaryVisualizationMapper()
+        self._visualization_mapper: SummaryVisualizationMapper = SummaryVisualizationMapper(
+            site_count
+        )
 
     def gen_visualizations(self):
         # Print a message to the console indicating that
@@ -73,7 +74,6 @@ class SummaryVisualizationManager:
                     self.output_dir,
                     self.summary_visualizations_dir,
                     self.baseline_program,
-                    self.site_count,
                     False,
                     self._visualization_mapper,
                 )

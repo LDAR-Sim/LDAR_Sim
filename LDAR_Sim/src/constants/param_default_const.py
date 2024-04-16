@@ -162,35 +162,35 @@ class Output_Params:
     TIMESERIES_SUMMARY = "Timeseries Summary"
     EMISSIONS_SUMMARY = "Emissions Summary"
     SUMMARY_STATS = "Summary Stats"
-    AVERAGE_DAILY_EMISSIONS = "Average 'True' Daily Emissions (Kg Methane)"
-    AVERAGE_MITIGABLE_DAILY_EMISSIONS = "Average 'True' Mitigable Daily Emissions (Kg Methane)"
+    AVERAGE_DAILY_EMISSIONS = 'Average "True" Daily Emissions (Kg Methane)'
+    AVERAGE_MITIGABLE_DAILY_EMISSIONS = 'Average "True" Mitigable Daily Emissions (Kg Methane)'
     AVERAGE_NON_MITIGABLE_DAILY_EMISSIONS = (
-        "Average 'True' Non-Mitigable Daily Emissions (Kg Methane)"
+        'Average "True" Non-Mitigable Daily Emissions (Kg Methane)'
     )
-    PERCENTILE_95_DAILY_EMISSIONS = "95th Percentile 'True' Daily Emissions (Kg Methane)"
+    PERCENTILE_95_DAILY_EMISSIONS = '95th Percentile "True" Daily Emissions (Kg Methane)'
     PERCENTILE_95_MITIGABLE_DAILY_EMISSIONS = (
-        "95th Percentile 'True' Mitigable Daily Emissions (Kg Methane)"
+        '95th Percentile "True" Mitigable Daily Emissions (Kg Methane)'
     )
     PERCENTILE_95_NON_MITIGABLE_DAILY_EMISSIONS = (
-        "95th Percentile 'True' Non-Mitigable Daily Emissions (Kg Methane)"
+        '95th Percentile "True" Non-Mitigable Daily Emissions (Kg Methane)'
     )
-    PERCENTILE_5_DAILY_EMISSIONS = "5th Percentile 'True' Daily Emissions (Kg Methane)"
+    PERCENTILE_5_DAILY_EMISSIONS = '5th Percentile "True" Daily Emissions (Kg Methane)'
     PERCENTILE_5_MITIGABLE_DAILY_EMISSIONS = (
-        "5th Percentile 'True' Mitigable Daily Emissions (Kg Methane)"
+        '5th Percentile "True" Mitigable Daily Emissions (Kg Methane)'
     )
     PERCENTILE_5_NON_MITIGABLE_DAILY_EMISSIONS = (
-        "5th Percentile 'True' Non-Mitigable Daily Emissions (Kg Methane)"
+        '5th Percentile "True" Non-Mitigable Daily Emissions (Kg Methane)'
     )
     AVERAGE_DAILY_COST = "Average Daily Cost ($)"
     PERCENTILE_95_DAILY_COST = "95th Percentile Daily Cost ($)"
     PERCENTILE_5_DAILY_COST = "5th Percentile Daily Cost ($)"
-    EMISSIONS_SUMMARY_TOTAL_TRUE = "Total 'True' Emissions (Kg Methane)"
-    EMISSIONS_SUMMARY_TOTAL_ESTIMATED = "Total 'Estimated' Emissions (Kg Methane)"
-    EMISSIONS_SUMMARY_TOTAL_MITIGABLE = "Total 'True' Mitigable Emissions (Kg Methane)"
-    EMISSIONS_SUMMARY_TOTAL_NON_MITIGABLE = "Total 'True' Non-Mitigable Emissions (Kg Methane)"
-    EMISSIONS_SUMMARY_AVERAGE_RATE = "Average 'True' Emissions Rate (g/s)"
-    EMISSIONS_SUMMARY_PERCENTILE_95_RATE = "95th Percentile 'True' Emissions Rate (g/s)"
-    EMISSIONS_SUMMARY_PERCENTILE_5_RATE = "5th Percentile 'True' Emissions Rate (g/s)"
-    EMISSIONS_SUMMARY_AVERAGE_AMOUNT = "Average 'True' Emissions Amount (Kg Methane)"
-    EMISSIONS_SUMMARY_PERCENTILE_95_AMOUNT = "95th Percentile 'True' Emissions Amount (Kg Methane)"
-    EMISSIONS_SUMMARY_PERCENTILE_5_AMOUNT = "5th Percentile 'True' Emissions Amount (Kg Methane)"
+    EMISSIONS_SUMMARY_TOTAL_TRUE = 'Total "True" Emissions (Kg Methane)'
+    EMISSIONS_SUMMARY_TOTAL_ESTIMATED = 'Total "Estimated" Emissions (Kg Methane)'
+    EMISSIONS_SUMMARY_TOTAL_MITIGABLE = 'Total "True" Mitigable Emissions (Kg Methane)'
+    EMISSIONS_SUMMARY_TOTAL_NON_MITIGABLE = 'Total "True" Non-Mitigable Emissions (Kg Methane)'
+    EMISSIONS_SUMMARY_AVERAGE_RATE = 'Average "True" Emissions Rate (g/s)'
+    EMISSIONS_SUMMARY_PERCENTILE_95_RATE = '95th Percentile "True" Emissions Rate (g/s)'
+    EMISSIONS_SUMMARY_PERCENTILE_5_RATE = '5th Percentile "True" Emissions Rate (g/s)'
+    EMISSIONS_SUMMARY_AVERAGE_AMOUNT = 'Average "True" Emissions Amount (Kg Methane)'
+    EMISSIONS_SUMMARY_PERCENTILE_95_AMOUNT = '95th Percentile "True" Emissions Amount (Kg Methane)'
+    EMISSIONS_SUMMARY_PERCENTILE_5_AMOUNT = '5th Percentile "True" Emissions Amount (Kg Methane)'

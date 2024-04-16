@@ -1,5 +1,5 @@
 import pandas as pd
-from constants import output_file_constants
+from constants import output_file_constants, file_name_constants
 from file_processing.output_processing.summary_output_mapper import SummaryOutputMapper
 
 
@@ -8,7 +8,7 @@ def mock_summary_mapping_init(self):
 
 
 def test_add_yearly_mappings_set_expected_mappings(mocker):
-    summary_file = output_file_constants.SummaryFileNames.EMIS_SUMMARY
+    summary_file = file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY
     simulation_years = [2017, 2018, 2019]
     expected_keys = [
         output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_ANN_EMIS.format(2017),

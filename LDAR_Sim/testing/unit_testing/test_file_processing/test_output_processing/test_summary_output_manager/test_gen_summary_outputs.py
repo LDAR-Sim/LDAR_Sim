@@ -1,5 +1,5 @@
 from file_processing.output_processing.summary_output_manager import SummaryOutputManager
-from constants import output_file_constants
+from constants import output_file_constants, file_name_constants
 import pandas as pd
 from pathlib import Path
 
@@ -14,8 +14,8 @@ from file_processing.output_processing import summary_output_helpers
 
 def mock_summary_output_manager_init(self):
     self._summary_outputs_to_make = [
-        output_file_constants.SummaryFileNames.EMIS_SUMMARY,
-        output_file_constants.SummaryFileNames.TS_SUMMARY,
+        file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY,
+        file_name_constants.Output_Files.SummaryFileNames.TS_SUMMARY,
     ]
     self._output_path = Path("test")
     self._output_config = output_config = {
@@ -72,7 +72,7 @@ class MockDirEntry:
 
 
 mock_legacy_outputs: dict[str, pd.DataFrame] = {
-    output_file_constants.SummaryFileNames.TS_SUMMARY: pd.DataFrame(
+    file_name_constants.Output_Files.SummaryFileNames.TS_SUMMARY: pd.DataFrame(
         {
             tsca.PROG_NAME: ["test", "test", "test"],
             tsca.SIM: ["0", "1", "2"],
@@ -84,7 +84,7 @@ mock_legacy_outputs: dict[str, pd.DataFrame] = {
             tsca.DAILY_COST_5: [7.0, 3.0, 0.0],
         }
     ),
-    output_file_constants.SummaryFileNames.EMIS_SUMMARY: pd.DataFrame(
+    file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY: pd.DataFrame(
         {
             esca.PROG_NAME: ["test", "test", "test"],
             esca.SIM: ["0", "1", "2"],
@@ -127,7 +127,7 @@ mock_current_emis_summary_csv = pd.DataFrame(
 )
 
 expected_results_for_concat = {
-    output_file_constants.SummaryFileNames.TS_SUMMARY: pd.DataFrame(
+    file_name_constants.Output_Files.SummaryFileNames.TS_SUMMARY: pd.DataFrame(
         {
             tsca.PROG_NAME: ["test", "test", "test", "test", "test", "test"],
             tsca.SIM: ["0", "1", "2", "3", "4", "5"],
@@ -139,7 +139,7 @@ expected_results_for_concat = {
             tsca.DAILY_COST_5: [7.0, 3.0, 0.0, 7.0, 3.0, 0.0],
         }
     ),
-    output_file_constants.SummaryFileNames.EMIS_SUMMARY: pd.DataFrame(
+    file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY: pd.DataFrame(
         {
             esca.PROG_NAME: ["test", "test", "test", "test", "test", "test"],
             esca.SIM: ["0", "1", "2", "3", "4", "5"],
@@ -155,7 +155,7 @@ expected_results_for_concat = {
 }
 
 expected_results_no_concat = {
-    output_file_constants.SummaryFileNames.TS_SUMMARY: pd.DataFrame(
+    file_name_constants.Output_Files.SummaryFileNames.TS_SUMMARY: pd.DataFrame(
         {
             tsca.PROG_NAME: ["test", "test", "test"],
             tsca.SIM: ["3", "4", "5"],
@@ -167,7 +167,7 @@ expected_results_no_concat = {
             tsca.DAILY_COST_5: [7.0, 3.0, 0.0],
         }
     ),
-    output_file_constants.SummaryFileNames.EMIS_SUMMARY: pd.DataFrame(
+    file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY: pd.DataFrame(
         {
             esca.PROG_NAME: ["test", "test", "test"],
             esca.SIM: ["3", "4", "5"],
@@ -201,16 +201,16 @@ def mock_get_legacy_outputs(self):
 
 def mock_get_legacy_outputs_no_files(self):
     return {
-        output_file_constants.SummaryFileNames.TS_SUMMARY: pd.DataFrame(),
-        output_file_constants.SummaryFileNames.EMIS_SUMMARY: pd.DataFrame(),
+        file_name_constants.Output_Files.SummaryFileNames.TS_SUMMARY: pd.DataFrame(),
+        file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY: pd.DataFrame(),
     }
 
 
 class results_holder:
     def __init__(self):
         self.results = {
-            output_file_constants.SummaryFileNames.TS_SUMMARY: None,
-            output_file_constants.SummaryFileNames.EMIS_SUMMARY: None,
+            file_name_constants.Output_Files.SummaryFileNames.TS_SUMMARY: None,
+            file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY: None,
         }
 
 
@@ -245,12 +245,12 @@ def test_000_correct_outputs_when_previous_outputs_exist_and_clear_outputs(monke
 
     monkeypatch.setattr(SummaryOutputManager, "__init__", mock_summary_output_manager_init)
     output_manager: SummaryOutputManager = SummaryOutputManager()
-    output_manager.OUTPUT_FUNCTIONS_MAP[output_file_constants.SummaryFileNames.TS_SUMMARY] = (
-        mock_gen_ts_summary
-    )
-    output_manager.OUTPUT_FUNCTIONS_MAP[output_file_constants.SummaryFileNames.EMIS_SUMMARY] = (
-        mock_gen_emis_summary
-    )
+    output_manager.OUTPUT_FUNCTIONS_MAP[
+        file_name_constants.Output_Files.SummaryFileNames.TS_SUMMARY
+    ] = mock_gen_ts_summary
+    output_manager.OUTPUT_FUNCTIONS_MAP[
+        file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY
+    ] = mock_gen_emis_summary
     output_manager.gen_summary_outputs(True)
     assert clear_dir_called
     for file, result in results.results.items():
@@ -290,12 +290,12 @@ def test_000_correct_outputs_no_prev_outputs_and_clear_outputs(monkeypatch):
 
     monkeypatch.setattr(SummaryOutputManager, "__init__", mock_summary_output_manager_init)
     output_manager: SummaryOutputManager = SummaryOutputManager()
-    output_manager.OUTPUT_FUNCTIONS_MAP[output_file_constants.SummaryFileNames.TS_SUMMARY] = (
-        mock_gen_ts_summary
-    )
-    output_manager.OUTPUT_FUNCTIONS_MAP[output_file_constants.SummaryFileNames.EMIS_SUMMARY] = (
-        mock_gen_emis_summary
-    )
+    output_manager.OUTPUT_FUNCTIONS_MAP[
+        file_name_constants.Output_Files.SummaryFileNames.TS_SUMMARY
+    ] = mock_gen_ts_summary
+    output_manager.OUTPUT_FUNCTIONS_MAP[
+        file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY
+    ] = mock_gen_emis_summary
     output_manager.gen_summary_outputs(True)
     assert clear_dir_called
     for file, result in results.results.items():

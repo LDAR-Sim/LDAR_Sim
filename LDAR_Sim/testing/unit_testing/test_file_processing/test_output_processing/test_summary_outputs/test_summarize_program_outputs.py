@@ -3,6 +3,7 @@ from contextlib import contextmanager
 from pathlib import Path
 
 import os
+from constants import param_default_const
 from file_processing.output_processing.summary_output_mapper import SummaryOutputMapper
 from file_processing.output_processing.summary_outputs import (
     generate_emissions_summary,
@@ -19,31 +20,31 @@ from src.constants.output_file_constants import (
 def get_mock_summary_output_mapper():
     SummaryOutputsMapper: SummaryOutputMapper = SummaryOutputMapper(
         {
-            "Timeseries Summary": {
-                'Average "True" Daily Emissions (Kg Methane)': True,
-                'Average "True" Mitigable Daily Emissions (Kg Methane)': True,
-                'Average "True" Non-Mitigable Daily Emissions (Kg Methane)': True,
-                '95th Percentile "True" Daily Emissions (Kg Methane)': True,
-                '95th Percentile "True" Mitigable Daily Emissions (Kg Methane)': True,
-                '95th Percentile "True" Non-Mitigable Daily Emissions (Kg Methane)': True,
-                '5th Percentile "True" Daily Emissions (Kg Methane)': True,
-                '5th Percentile "True" Mitigable Daily Emissions (Kg Methane)': True,
-                '5th Percentile "True" Non-Mitigable Daily Emissions (Kg Methane)': True,
-                "Average Daily Cost ($)": True,
-                "95th Percentile Daily Cost ($)": True,
-                "5th Percentile Daily Cost ($)": True,
+            param_default_const.Output_Params.TIMESERIES_SUMMARY: {
+                param_default_const.Output_Params.AVERAGE_DAILY_EMISSIONS: True,
+                param_default_const.Output_Params.AVERAGE_MITIGABLE_DAILY_EMISSIONS: True,
+                param_default_const.Output_Params.AVERAGE_NON_MITIGABLE_DAILY_EMISSIONS: True,
+                param_default_const.Output_Params.PERCENTILE_95_DAILY_EMISSIONS: True,
+                param_default_const.Output_Params.PERCENTILE_95_MITIGABLE_DAILY_EMISSIONS: True,
+                param_default_const.Output_Params.PERCENTILE_95_NON_MITIGABLE_DAILY_EMISSIONS: True,
+                param_default_const.Output_Params.PERCENTILE_5_DAILY_EMISSIONS: True,
+                param_default_const.Output_Params.PERCENTILE_5_MITIGABLE_DAILY_EMISSIONS: True,
+                param_default_const.Output_Params.PERCENTILE_5_NON_MITIGABLE_DAILY_EMISSIONS: True,
+                param_default_const.Output_Params.AVERAGE_DAILY_COST: True,
+                param_default_const.Output_Params.PERCENTILE_95_DAILY_COST: True,
+                param_default_const.Output_Params.PERCENTILE_5_DAILY_COST: True,
             },
-            "Emissions Summary": {
-                'Total "True" Emissions (Kg Methane)': True,
-                'Total "Estimated" Emissions (Kg Methane)': True,
-                'Total "True" Mitigable Emissions (Kg Methane)': True,
-                'Total "True" Non-Mitigable Emissions (Kg Methane)': True,
-                'Average "True" Emissions Rate (g/s)': True,
-                '95th Percentile "True" Emissions Rate (g/s)': True,
-                '5th Percentile "True" Emissions Rate (g/s)': True,
-                'Average "True" Emissions Amount (Kg Methane)': True,
-                '95th Percentile "True" Emissions Amount (Kg Methane)': True,
-                '5th Percentile "True" Emissions Amount (Kg Methane)': True,
+            param_default_const.Output_Params.EMISSIONS_SUMMARY: {
+                param_default_const.Output_Params.EMISSIONS_SUMMARY_TOTAL_TRUE: True,
+                param_default_const.Output_Params.EMISSIONS_SUMMARY_TOTAL_ESTIMATED: True,
+                param_default_const.Output_Params.EMISSIONS_SUMMARY_TOTAL_MITIGABLE: True,
+                param_default_const.Output_Params.EMISSIONS_SUMMARY_TOTAL_NON_MITIGABLE: True,
+                param_default_const.Output_Params.EMISSIONS_SUMMARY_AVERAGE_RATE: True,
+                param_default_const.Output_Params.EMISSIONS_SUMMARY_PERCENTILE_95_RATE: True,
+                param_default_const.Output_Params.EMISSIONS_SUMMARY_PERCENTILE_5_RATE: True,
+                param_default_const.Output_Params.EMISSIONS_SUMMARY_AVERAGE_AMOUNT: True,
+                param_default_const.Output_Params.EMISSIONS_SUMMARY_PERCENTILE_95_AMOUNT: True,
+                param_default_const.Output_Params.EMISSIONS_SUMMARY_PERCENTILE_5_AMOUNT: True,
             },
         },
         [2024, 2025],

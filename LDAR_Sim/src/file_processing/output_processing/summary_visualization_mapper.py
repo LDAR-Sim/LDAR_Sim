@@ -5,7 +5,7 @@ from constants import output_file_constants
 
 
 class SummaryVisualizationMapper:
-    def __init__(self):
+    def __init__(self, site_count: int):
         self._summary_stat_functions = {
             (
                 output_file_constants.SummaryVisualizationStatistics.PERCENT_DIFFERENCE
@@ -45,7 +45,9 @@ class SummaryVisualizationMapper:
             },
             output_file_constants.FileNames.TRUE_AND_ESTIMATED_PAIRED_EMISSIONS_DISTRIBUTION_PLOT: {
                 "hist0": {
-                    "x_label": output_file_constants.HistogramConstants.X_AXIS_LABEL_PAIRED,
+                    "x_label": output_file_constants.HistogramConstants.X_AXIS_LABEL_PAIRED.format(
+                        n_sites=site_count
+                    ),
                     "y_label": output_file_constants.HistogramConstants.Y_AXIS_LABEL,
                     "bins": output_file_constants.HistogramConstants.BINS,
                     "bin_range": (None, None),
@@ -54,7 +56,9 @@ class SummaryVisualizationMapper:
                     ).TRUE_EMISSIONS_SUFFIX,
                 },
                 "hist1": {
-                    "x_label": output_file_constants.HistogramConstants.X_AXIS_LABEL_PAIRED,
+                    "x_label": output_file_constants.HistogramConstants.X_AXIS_LABEL_PAIRED.format(
+                        n_sites=site_count
+                    ),
                     "y_label": output_file_constants.HistogramConstants.Y_AXIS_LABEL,
                     "bins": output_file_constants.HistogramConstants.BINS,
                     "bin_range": (None, None),

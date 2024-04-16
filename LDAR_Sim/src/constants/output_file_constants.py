@@ -46,17 +46,6 @@ class OutputConfigCategories:
 
 
 @dataclass
-class SummaryFileNames:
-    TS_SUMMARY = "Timeseries Summary"
-    EMIS_SUMMARY = "Emissions Summary"
-
-    def __iter__(self):
-        for attr_name, attr_value in vars(self.__class__).items():
-            if not callable(attr_value) and not attr_name.startswith("__"):
-                yield attr_value
-
-
-@dataclass
 class SummaryFileColumns:
     @dataclass
     class CommonColumns:

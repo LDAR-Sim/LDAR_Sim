@@ -1,7 +1,9 @@
 version: "4.0"
 parameter_level: "virtual_world"
-start_date: [2023, 1, 1]
-end_date: [2027, 12, 31]
+start_date: [2023, 1, 1] # Start date of the simulation. 
+# CAUTION: A start date not on January 1st of a given year may cause error with the calculation of annual summary statistics.
+end_date: [2027, 12, 31] # End date of the simulation. 
+# CAUTION: An end date not on December 31st of a given year may cause error with the calculation of annual summary statistics.
 weather_file: "_placeholder_str_"
 consider_weather: False # True/False
 infrastructure:

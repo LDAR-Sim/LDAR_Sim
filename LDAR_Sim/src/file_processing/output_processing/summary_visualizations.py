@@ -23,7 +23,7 @@ from typing import Tuple
 
 from matplotlib import pyplot as plt, ticker
 import pandas as pd
-from constants import output_file_constants
+from constants import output_file_constants, file_name_constants
 from file_processing.output_processing import output_utils, summary_visualization_helpers
 from file_processing.output_processing.summary_visualization_mapper import (
     SummaryVisualizationMapper,
@@ -34,7 +34,6 @@ import seaborn as sns
 def plot_histograms(
     colors: Tuple[list[Tuple[float, float, float]]],
     program_hist_stats: dict[str, list[float] | Tuple[list[float], list[float]]],
-    site_count: int,
     combine_program_histograms: bool,
     visualization_dir: Path,
     visualization_name: str,
@@ -147,12 +146,11 @@ def gen_estimated_vs_true_emissions_percent_difference_plot(
     out_dir: Path,
     visualization_dir: Path,
     baseline_program: str,
-    site_count: int,
     combine_program_histograms: bool,
     viz_mapper: SummaryVisualizationMapper,
 ):
-    data_source: Path = out_dir / output_file_constants.SummaryFileNames.EMIS_SUMMARY
-    data: pd.DataFrame = pd.read_csv(data_source)
+    data_source: Path = out_dir / file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY
+    data: pd.DataFrame = pd.read_csv(data_source.with_suffix(".csv"))
     visualization_name: str = output_file_constants.FileNames.TRUE_VS_ESTIMATED_PERCENT_DIFF_PLOT
 
     program_names: list[str] = summary_visualization_helpers.get_non_baseline_prog_names(
@@ -174,7 +172,6 @@ def gen_estimated_vs_true_emissions_percent_difference_plot(
     plot_histograms(
         (colors,),
         true_and_estimated_percent_differences,
-        site_count,
         combine_program_histograms,
         visualization_dir,
         visualization_name,
@@ -186,12 +183,11 @@ def gen_estimated_vs_true_emissions_relative_difference_plot(
     out_dir: Path,
     visualization_dir: Path,
     baseline_program: str,
-    site_count: int,
     combine_program_histograms: bool,
     viz_mapper: SummaryVisualizationMapper,
 ):
-    data_source: Path = out_dir / output_file_constants.SummaryFileNames.EMIS_SUMMARY
-    data: pd.DataFrame = pd.read_csv(data_source)
+    data_source: Path = out_dir / file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY
+    data: pd.DataFrame = pd.read_csv(data_source.with_suffix(".csv"))
     visualization_name: str = output_file_constants.FileNames.TRUE_VS_ESTIMATED_RELATIVE_DIFF_PLOT
 
     program_names: list[str] = summary_visualization_helpers.get_non_baseline_prog_names(
@@ -213,7 +209,6 @@ def gen_estimated_vs_true_emissions_relative_difference_plot(
     plot_histograms(
         (colors,),
         true_and_estimated_relative_differences,
-        site_count,
         combine_program_histograms,
         visualization_dir,
         visualization_name,
@@ -225,12 +220,11 @@ def gen_true_and_estimated_paired_emissions_distribution_plot(
     out_dir: Path,
     visualization_dir: Path,
     baseline_program: str,
-    site_count: int,
     combine_program_histograms: bool,
     viz_mapper: SummaryVisualizationMapper,
 ):
-    data_source: Path = out_dir / output_file_constants.SummaryFileNames.EMIS_SUMMARY
-    data: pd.DataFrame = pd.read_csv(data_source)
+    data_source: Path = out_dir / file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY
+    data: pd.DataFrame = pd.read_csv(data_source.with_suffix(".csv"))
     visualization_name: str = (
         output_file_constants.FileNames.TRUE_AND_ESTIMATED_PAIRED_EMISSIONS_DISTRIBUTION_PLOT
     )
@@ -252,7 +246,6 @@ def gen_true_and_estimated_paired_emissions_distribution_plot(
     plot_histograms(
         colors_paired,
         annualized_emissions_data,
-        site_count,
         combine_program_histograms,
         visualization_dir,
         visualization_name,

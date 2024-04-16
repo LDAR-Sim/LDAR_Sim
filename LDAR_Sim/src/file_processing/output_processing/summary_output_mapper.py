@@ -18,14 +18,14 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 ------------------------------------------------------------------------------
 """
 
-from constants import output_file_constants, file_processing_const
+from constants import output_file_constants, file_processing_const, file_name_constants
 from file_processing.output_processing import summary_output_helpers
 
 
 class SummaryOutputMapper:
 
     SUMMARY_MAPPINGS = {
-        output_file_constants.SummaryFileNames.TS_SUMMARY: {
+        file_name_constants.Output_Files.SummaryFileNames.TS_SUMMARY: {
             output_file_constants.TS_SUMMARY_COLUMNS_ACCESSORS.AVG_T_DAILY_EMIS: lambda df: (
                 summary_output_helpers.get_mean_val(
                     df, output_file_constants.TIMESERIES_COL_ACCESSORS.EMIS
@@ -105,7 +105,7 @@ class SummaryOutputMapper:
                 )
             ),
         },
-        output_file_constants.SummaryFileNames.EMIS_SUMMARY: {
+        file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY: {
             output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_TOTAL_EMIS: lambda df: (
                 summary_output_helpers.get_sum(
                     df, output_file_constants.EMIS_DATA_COL_ACCESSORS.T_VOL_EMIT
@@ -170,7 +170,7 @@ class SummaryOutputMapper:
     }
 
     YEARLY_MAPPINGS = {
-        output_file_constants.SummaryFileNames.EMIS_SUMMARY: {
+        file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY: {
             output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_ANN_EMIS: lambda year: (
                 lambda df: (
                     summary_output_helpers.get_yearly_value_for_multi_day_stat(
@@ -198,8 +198,8 @@ class SummaryOutputMapper:
 
     def __init__(self, summary_config: dict[str, dict[str, bool]] = {}, sim_years: list[int] = []):
         self.summary_mapping: dict[str, dict[str, callable]] = {}
-        summary_files: output_file_constants.SummaryFileNames = (
-            output_file_constants.SummaryFileNames()
+        summary_files: file_name_constants.Output_Files.SummaryFileNames = (
+            file_name_constants.Output_Files.SummaryFileNames()
         )
         if summary_config:
             for summary_file in summary_files:

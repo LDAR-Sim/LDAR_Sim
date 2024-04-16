@@ -23,7 +23,7 @@ import re
 from typing import Any
 import pandas as pd
 from file_processing.output_processing.summary_output_mapper import SummaryOutputMapper
-from constants import output_file_constants, file_processing_const
+from constants import output_file_constants, file_processing_const, file_name_constants
 
 
 def summarize_program_outputs(
@@ -64,7 +64,7 @@ def summarize_program_outputs(
 
 def generate_timeseries_summary(directory: str, outputs_mapper: SummaryOutputMapper):
     summary_columns: list[str] = outputs_mapper.get_summary_columns(
-        output_file_constants.SummaryFileNames.TS_SUMMARY
+        file_name_constants.Output_Files.SummaryFileNames.TS_SUMMARY
     )
     summary_columns.insert(
         0, output_file_constants.SummaryFileColumns.CommonColumns.SIMULATION_NUMBER
@@ -74,7 +74,9 @@ def generate_timeseries_summary(directory: str, outputs_mapper: SummaryOutputMap
     summarize_program_outputs(
         directory,
         timeseries_summary_df,
-        outputs_mapper.get_summary_mappings(output_file_constants.SummaryFileNames.TS_SUMMARY),
+        outputs_mapper.get_summary_mappings(
+            file_name_constants.Output_Files.SummaryFileNames.TS_SUMMARY
+        ),
         file_processing_const.Multi_Sim_Output_Const.TS_PATTERN,
     )
     return timeseries_summary_df
@@ -82,7 +84,7 @@ def generate_timeseries_summary(directory: str, outputs_mapper: SummaryOutputMap
 
 def generate_emissions_summary(directory: str, outputs_mapper: SummaryOutputMapper):
     summary_columns: list[str] = outputs_mapper.get_summary_columns(
-        output_file_constants.SummaryFileNames.EMIS_SUMMARY
+        file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY
     )
     summary_columns.insert(
         0, output_file_constants.SummaryFileColumns.CommonColumns.SIMULATION_NUMBER
@@ -92,7 +94,9 @@ def generate_emissions_summary(directory: str, outputs_mapper: SummaryOutputMapp
     summarize_program_outputs(
         directory,
         emissions_summary_df,
-        outputs_mapper.get_summary_mappings(output_file_constants.SummaryFileNames.EMIS_SUMMARY),
+        outputs_mapper.get_summary_mappings(
+            file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY
+        ),
         file_processing_const.Multi_Sim_Output_Const.EMIS_PATTERN,
     )
     return emissions_summary_df

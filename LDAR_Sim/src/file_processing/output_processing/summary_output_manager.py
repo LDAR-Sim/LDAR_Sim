@@ -22,6 +22,7 @@ import os
 from pathlib import Path
 
 import pandas as pd
+from constants.file_name_constants import Output_Files
 from constants import output_file_constants
 from file_processing.output_processing import summary_outputs, summary_output_helpers
 from file_processing.output_processing.summary_output_mapper import SummaryOutputMapper
@@ -30,12 +31,8 @@ from file_processing.output_processing.summary_output_mapper import SummaryOutpu
 class SummaryOutputManager:
 
     OUTPUT_FUNCTIONS_MAP = {
-        output_file_constants.SummaryFileNames.TS_SUMMARY: (
-            summary_outputs.generate_timeseries_summary
-        ),
-        output_file_constants.SummaryFileNames.EMIS_SUMMARY: (
-            summary_outputs.generate_emissions_summary
-        ),
+        Output_Files.SummaryFileNames.TS_SUMMARY: (summary_outputs.generate_timeseries_summary),
+        Output_Files.SummaryFileNames.EMIS_SUMMARY: (summary_outputs.generate_emissions_summary),
     }
 
     def __init__(self, output_path: Path, output_config: dict, sim_years: list[int]):

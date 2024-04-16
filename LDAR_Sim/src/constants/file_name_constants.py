@@ -46,8 +46,16 @@ class Generator_Files:
 
 @dataclass
 class Output_Files:
-    TS_SUMMARY_FILENAME = "daily_summary_stats.csv"
-    EMIS_SUMMARY_FILENAME = "emissions_summary_stats.csv"
+    @dataclass
+    class SummaryFileNames:
+        TS_SUMMARY = "Timeseries Summary"
+        EMIS_SUMMARY = "Emissions Summary"
+
+        def __iter__(self):
+            for attr_name, attr_value in vars(self.__class__).items():
+                if not callable(attr_value) and not attr_name.startswith("__"):
+                    yield attr_value
+
     TRUE_VS_ESTIMATED_PERCENT_DIFF_PLOT = "True_vs_Estimated_Emissions_percent_differences.png"
     TRUE_VS_ESTIMATED_RELATIVE_DIFF_PLOT = "True_vs_Estimated_Emissions_relative_differences.png"
     TRUE_AND_ESTIMATED_PAIRED_EMISSIONS_DISTRIBUTION_PLOT = (
