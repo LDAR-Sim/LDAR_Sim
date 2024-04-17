@@ -1,4 +1,4 @@
-facility_ID,subtype_code,lat,lon,equipment_groups
+site_ID,site_type,lat,lon,equipment
 ABRAND00001,601,55.05,-119.99,1
 ABRAND00002,601,54.74,-119.98,3
 ABRAND00003,601,55.25,-119.96,1

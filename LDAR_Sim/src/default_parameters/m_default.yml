@@ -7,7 +7,6 @@ sensor:
   type: default # default/OGI_camera_zim(see User manual for MDL values)/OGI_camera_rk
   QE: 0.0
   MDL: [0.01]
-  mod_loc: "_placeholder_str_"
 coverage:
   spatial: 1.0 # 0.0 to 1.0
   temporal: 1.0 # 0.0 to 1.0
@@ -27,11 +26,6 @@ t_bw_sites:
 scheduling:
   deployment_months: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
   deployment_years: ["_placeholder_int_"]
-  LDAR_crew_init_location: [-114.062, 51.044]
-  home_bases_files: "Airport_AB_Coordinates.csv"
-  route_planning: False # True/False
-  travel_speeds: ["_placeholder_int_"]
-  min_time_bt_surveys: "_placeholder_int_"
 weather_envs:
   precip: [0.0, 0.5]
   temp: [-40.0, 40.0]
@@ -43,9 +37,6 @@ follow_up:
   instant_threshold: "_placeholder_float_" # g/s
   instant_threshold_type: "absolute" # absolute/relative
   interaction_priority: "threshold" # threshold/proportion
-  min_followups: ["_placeholder_float_"] # list of values between 0.0 and 1.0
-  min_followup_type: "annual" # annual/campaign
-  min_followup_days_to_end: 0 # days
   proportion: 1.0 # 0 to 1.0
   redundancy_filter: "recent" # recent/max/average
   sort_by_rate: True # True/False
