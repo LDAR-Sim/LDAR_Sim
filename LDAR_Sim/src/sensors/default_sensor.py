@@ -26,6 +26,7 @@ from virtual_world.sites import Site
 class DefaultSensor:
     def __init__(self, mdl: Union[list[float], float], quantification_error: float) -> None:
         # TODO revisit this implementation
+        self._min_threshold: float = None
         if isinstance(mdl, (float, int)):
             self._mdl: float = mdl
         elif isinstance(mdl, list):
@@ -45,6 +46,7 @@ class DefaultSensor:
     def check_min_threshold(self, emis_rate: float) -> bool:
         if self._min_threshold is not None:
             return emis_rate >= self._min_threshold
+        return True
 
     def _measure_rate(self, true_rate: float) -> float:
         quant_error: float = np.random.normal(0, self._quantification_error)

@@ -21,6 +21,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 ------------------------------------------------------------------------------
 """
+
 import numpy as np
 from sensors.default_equipment_level_sensor import DefaultEquipmentLevelSensor
 
@@ -32,6 +33,7 @@ GS_TO_SCFH = 187
 class OGICameraZimSensor(DefaultEquipmentLevelSensor):
     def __init__(self, mdl: float, quantification_error: float) -> None:
         super().__init__(mdl, quantification_error)
+        self._mdl = mdl
 
     def _rate_detected(self, emis_rate: float) -> bool:
         # check that the user provided an overwrite to the MDL values

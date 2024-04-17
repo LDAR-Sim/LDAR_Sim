@@ -31,6 +31,7 @@ class OGICameraRKSensor(DefaultEquipmentLevelSensor):
 
     def __init__(self, mdl: float, quantification_error: float) -> None:
         super().__init__(mdl, quantification_error)
+        self._mdl = mdl
 
     def _rate_detected(self, emis_rate: float) -> bool:
         k = np.random.normal(4.9, 0.3)
