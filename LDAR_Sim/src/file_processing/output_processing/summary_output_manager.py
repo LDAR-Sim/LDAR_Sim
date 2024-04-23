@@ -80,7 +80,7 @@ class SummaryOutputManager:
         legacy_outputs: dict[str, pd.DataFrame] = {}
         for summary_output in self._summary_outputs_to_make:
             legacy_outputs[summary_output] = summary_output_helpers.get_summary_file(
-                self._output_path, summary_output
+                self._output_path, summary_output + ".csv"
             )
         return legacy_outputs
 
