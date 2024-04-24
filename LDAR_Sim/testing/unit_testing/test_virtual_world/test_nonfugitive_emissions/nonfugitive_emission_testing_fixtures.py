@@ -30,8 +30,8 @@ def mock_simple_emission_for_get_summary_dict_1_fix() -> (
             "Emissions ID": "0000000001",
             "Status": ec.INACTIVE,
             "Days Active": 0,
+            "Estimated Days Active": 0,
             '"True" Volume Emitted (Kg Methane)': 0.0,
-            '"Estimated" Volume Emitted (Kg Methane)': 0.0,
             '"True" Rate (g/s)': 1,
             '"Measured" Rate (g/s)': None,
             "Date Began": date(2018, 1, 1),
@@ -42,7 +42,6 @@ def mock_simple_emission_for_get_summary_dict_1_fix() -> (
             "Recorded": False,
             "Recorded By": None,
             "Repairable": False,
-            "Estimated Days Active": 0,
             "Date Repaired or Expired": None,
         },
     )

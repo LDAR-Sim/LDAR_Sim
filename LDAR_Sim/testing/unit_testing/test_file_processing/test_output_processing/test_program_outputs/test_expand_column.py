@@ -1,0 +1,45 @@
+import pandas as pd
+from file_processing.output_processing.program_output_helpers import expand_column
+from constants.output_file_constants import EMIS_DATA_COL_ACCESSORS as eca
+
+
+def test_001_expand_column():
+    # Create a list of EquipmentGroupSurveyReport instances
+    data = [
+        {eca.SITE_ID: 1, eca.EQG: "eqg1", eca.COMP: [{eca.COMP: "comp1", eca.M_RATE: 1}]},
+        {eca.SITE_ID: 1, eca.EQG: "eqg2", eca.COMP: [{eca.COMP: "comp1", eca.M_RATE: 1}]},
+        {
+            eca.SITE_ID: 1,
+            eca.EQG: "eqg3",
+            eca.COMP: [{eca.COMP: "comp1", eca.M_RATE: 1}, {eca.COMP: "comp2", eca.M_RATE: 3}],
+        },
+    ]
+
+    expected_df_eqg = pd.DataFrame(
+        {
+            eca.SITE_ID: [1, 1, 1],
+            eca.EQG: ["eqg1", "eqg2", "eqg3"],
+            eca.COMP: [
+                [{eca.COMP: "comp1", eca.M_RATE: 1}],
+                [{eca.COMP: "comp1", eca.M_RATE: 1}],
+                [{eca.COMP: "comp1", eca.M_RATE: 1}, {eca.COMP: "comp2", eca.M_RATE: 3}],
+            ],
+            eca.M_RATE: [1, 1, 1],
+        }
+    )
+    expected_df_comp = pd.DataFrame(
+        {
+            eca.SITE_ID: [1, 1, 1, 1],
+            eca.EQG: ["eqg1", "eqg2", "eqg3", "eqg3"],
+            eca.COMP: ["comp1", "comp1", "comp1", "comp2"],
+            eca.M_RATE: [1, 1, 1, 3],
+        }
+    )
+    # Create a DataFrame
+    df = pd.DataFrame({eca.SITE_ID: [1], eca.M_RATE: [1], eca.EQG: [data]})
+    # Call the expand_column function
+    first_expanded_df = expand_column(df, eca.EQG)
+    second_expanded_df = expand_column(first_expanded_df, eca.COMP)
+
+    assert first_expanded_df.sort_index(axis=1).equals(expected_df_eqg.sort_index(axis=1))
+    assert second_expanded_df.sort_index(axis=1).equals(expected_df_comp.sort_index(axis=1))

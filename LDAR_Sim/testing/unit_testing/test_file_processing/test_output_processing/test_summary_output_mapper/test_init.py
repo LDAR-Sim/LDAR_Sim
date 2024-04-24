@@ -40,11 +40,8 @@ def test_summary_output_mapper_init():
     output_mapper: SummaryOutputMapper = SummaryOutputMapper(mock_output_config, mock_sim_years)
     expected_yearly_mapping_keys = [
         output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_ANN_EMIS.format(2020),
-        output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.EST_ANN_EMIS.format(2020),
         output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_ANN_EMIS.format(2021),
-        output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.EST_ANN_EMIS.format(2021),
         output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_ANN_EMIS.format(2022),
-        output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.EST_ANN_EMIS.format(2022),
     ]
     expected_emis_mapping_keys = list(
         SummaryOutputMapper.SUMMARY_MAPPINGS[

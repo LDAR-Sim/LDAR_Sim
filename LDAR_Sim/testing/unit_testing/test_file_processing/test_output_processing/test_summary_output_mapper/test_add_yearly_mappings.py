@@ -12,11 +12,8 @@ def test_add_yearly_mappings_set_expected_mappings(mocker):
     simulation_years = [2017, 2018, 2019]
     expected_keys = [
         output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_ANN_EMIS.format(2017),
-        output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.EST_ANN_EMIS.format(2017),
         output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_ANN_EMIS.format(2018),
-        output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.EST_ANN_EMIS.format(2018),
         output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_ANN_EMIS.format(2019),
-        output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.EST_ANN_EMIS.format(2019),
     ]
     mocker.patch.object(SummaryOutputMapper, "__init__", mock_summary_mapping_init)
     output_mapper: SummaryOutputMapper = SummaryOutputMapper()
