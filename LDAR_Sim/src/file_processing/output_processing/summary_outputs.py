@@ -99,4 +99,63 @@ def generate_emissions_summary(directory: str, outputs_mapper: SummaryOutputMapp
         ),
         file_processing_const.Multi_Sim_Output_Const.EMIS_PATTERN,
     )
-    return emissions_summary_df
+    estimated_df: pd.DataFrame = generate_emissions_estimation_summary(directory, outputs_mapper)
+    merged = pd.merge(
+        emissions_summary_df,
+        estimated_df,
+        on=[
+            output_file_constants.SummaryFileColumns.CommonColumns.PROGRAM_NAME,
+            output_file_constants.SummaryFileColumns.CommonColumns.SIMULATION_NUMBER,
+        ],
+        how="outer",
+    )
+    # Fill NaN values with zeros
+    merged.fillna(0, inplace=True)
+    return merged
+
+
+def generate_emissions_estimation_summary(directory: str, outputs_mapper: SummaryOutputMapper):
+    summary_columns: list[str] = outputs_mapper.get_summary_columns(
+        file_name_constants.Output_Files.SummaryFileNames.EMIS_EST_SUMMARY
+    )
+    summary_columns.insert(
+        0, output_file_constants.SummaryFileColumns.CommonColumns.SIMULATION_NUMBER
+    )
+    summary_columns.insert(0, output_file_constants.SummaryFileColumns.CommonColumns.PROGRAM_NAME)
+    est_emissions_summary_df = pd.DataFrame(columns=summary_columns)
+    est_rep_emissions_summary_df = pd.DataFrame(columns=summary_columns)
+    summarize_program_outputs(
+        directory,
+        est_emissions_summary_df,
+        outputs_mapper.get_summary_mappings(
+            file_name_constants.Output_Files.SummaryFileNames.EMIS_EST_SUMMARY
+        ),
+        file_processing_const.Multi_Sim_Output_Const.EST_PATTERN,
+    )
+    summarize_program_outputs(
+        directory,
+        est_rep_emissions_summary_df,
+        outputs_mapper.get_summary_mappings(
+            file_name_constants.Output_Files.SummaryFileNames.EMIS_FUG_EST_SUMMARY
+        ),
+        file_processing_const.Multi_Sim_Output_Const.EST_REP_PATTERN,
+    )
+    columns_to_subtract = [
+        col
+        for col in summary_columns
+        if col
+        not in [
+            output_file_constants.SummaryFileColumns.CommonColumns.PROGRAM_NAME,
+            output_file_constants.SummaryFileColumns.CommonColumns.SIMULATION_NUMBER,
+        ]
+    ]
+
+    subtracted_df = est_emissions_summary_df[columns_to_subtract].sub(
+        est_rep_emissions_summary_df[columns_to_subtract]
+    )
+
+    # Combine the result with columns not involved in subtraction
+    result = pd.concat(
+        [est_emissions_summary_df.drop(columns=columns_to_subtract), subtracted_df], axis=1
+    )
+    return result

@@ -42,6 +42,8 @@ class Emissions_Source_Processing_Const:
 class Multi_Sim_Output_Const:
     TS_PATTERN = re.compile(r".*timeseries\.csv$")
     EMIS_PATTERN = re.compile(r".*emissions_summary\.csv$")
+    EST_PATTERN = re.compile(r".*estimated_emissions\.csv$")
+    EST_REP_PATTERN = re.compile(r".*estimated_repaired_emissions_to_remove\.csv$")
 
     OUTPUTS_NAME_SIM_EXTRACTION_REGEX = re.compile(r"^(.*?)_(\d+)_.+.csv$")
 

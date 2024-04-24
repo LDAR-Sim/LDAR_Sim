@@ -51,6 +51,12 @@ class Deployment_Types:
 
 
 @dataclass
+class Duration_Method:
+    COMPONENT = "component-based"
+    MEASUREMENT_CONSERVATIVE = "measurement-based-conservative"
+
+
+@dataclass
 class Virtual_World_Params:
     START_DATE = "start_date"
     END_DATE = "end_date"
@@ -97,6 +103,9 @@ class Program_Params:
     GWP = "GWP_CH4"
     NATGAS = "sale_price_natgas"
     VERIFICATION = "verification_cost"
+    DURATION_ESTIMATE = "duration_estimate"
+    DURATION_FACTOR = "duration_factor"
+    DURATION_METHOD = "duration_method"
 
 
 @dataclass
@@ -151,6 +160,7 @@ class Output_Params:
     SUMMARY_FILES = "Summary Files"
     TIMESERIES_SUMMARY = "Timeseries Summary"
     EMISSIONS_SUMMARY = "Emissions Summary"
+    EST_EMISSIONS_SUMMARY = "Estimated Emissions Summary"
     SUMMARY_STATS = "Summary Stats"
     AVERAGE_DAILY_EMISSIONS = 'Average "True" Daily Emissions (Kg Methane)'
     AVERAGE_MITIGABLE_DAILY_EMISSIONS = 'Average "True" Mitigable Daily Emissions (Kg Methane)'

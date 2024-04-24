@@ -104,13 +104,6 @@ class Emission:
     def calc_true_emis_vol(self) -> float:
         return self._active_days * self._rate * cc.GRAMS_PER_SECOND_TO_KG_PER_DAY
 
-    def calc_est_emis_vol(self) -> float:
-        return (
-            self._estimated_days_active
-            * (self._measured_rate if self._measured_rate is not None else 0)
-            * cc.GRAMS_PER_SECOND_TO_KG_PER_DAY
-        )
-
     def update_detection_records(self, company: str, detect_date: date):
         if self._init_detect_by is None:
             self.set_init_detect_by(company)

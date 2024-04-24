@@ -33,14 +33,60 @@ from file_processing.output_processing.output_utils import (
     TsEmisData,
     TsMethodData,
 )
-from constants.output_file_constants import TIMESERIES_COL_ACCESSORS as tca, TIMESERIES_COLUMNS
+from constants.file_name_constants import Output_Files
+from constants.output_file_constants import (
+    TIMESERIES_COL_ACCESSORS as tca,
+    TIMESERIES_COLUMNS,
+    EMIS_DATA_COL_ACCESSORS as eca,
+    EMIS_INFO_COLUMNS_TO_KEEP_FOR_DURATION_ESTIMATION,
+)
+from programs.program import Program
+from constants.param_default_const import Duration_Method as dm
+import file_processing.output_processing.program_output as prog_output
 
 
 class ProgramOutputManager:
+    PROGRAM_FUNCTIONS_MAPPING = {
+        dm.COMPONENT: prog_output.gen_estimated_comp_emissions_report,
+        dm.MEASUREMENT_CONSERVATIVE: prog_output.gen_estimated_emissions_report,
+    }
+
     def __init__(self, path: WindowsPath, name_str: str, method_names: list[str]) -> None:
         self._output_dir: Path = path
         self.name_str: str = name_str
         self._method_names: list[str] = method_names
+
+    def summarize_program_outputs(
+        self,
+        overall_emission_data: pd.DataFrame,
+        timeseries: pd.DataFrame,
+        start_date: date,
+        end_date: date,
+        program: Program,
+    ) -> None:
+        self.gen_sim_directory()
+        summary_filename = self.generate_file_names(Output_Files.EMISSIONS_SUMMARY_FILE)
+        self.save_results(overall_emission_data, summary_filename)
+        self.gen_prog_spec_visualizations(timeseries=timeseries)
+        timeseries_filename = self.generate_file_names(Output_Files.TIMESERIES_FILE)
+        self.save_results(timeseries, timeseries_filename)
+
+        # 1. Trim Emissions data to only include necessary columns
+        emis_info_for_duration_estimation = overall_emission_data.loc[
+            overall_emission_data[eca.REPAIRABLE],
+            EMIS_INFO_COLUMNS_TO_KEEP_FOR_DURATION_ESTIMATION,
+        ]
+        function_to_call = self.PROGRAM_FUNCTIONS_MAPPING.get(program.duration_method)
+        if function_to_call:
+            function_to_call(
+                self,
+                program.aggregate_method_survey_reports(),
+                emis_info_for_duration_estimation,
+                start_date,
+                end_date,
+            )
+        else:
+            raise KeyError(f"No function found for program: {program}")
 
     def gen_sim_directory(self) -> None:
         if not os.path.exists(self._output_dir):
