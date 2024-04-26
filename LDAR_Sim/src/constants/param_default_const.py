@@ -160,7 +160,6 @@ class Output_Params:
     SUMMARY_FILES = "Summary Files"
     TIMESERIES_SUMMARY = "Timeseries Summary"
     EMISSIONS_SUMMARY = "Emissions Summary"
-    EST_EMISSIONS_SUMMARY = "Estimated Emissions Summary"
     SUMMARY_STATS = "Summary Stats"
     AVERAGE_DAILY_EMISSIONS = 'Average "True" Daily Emissions (Kg Methane)'
     AVERAGE_MITIGABLE_DAILY_EMISSIONS = 'Average "True" Mitigable Daily Emissions (Kg Methane)'

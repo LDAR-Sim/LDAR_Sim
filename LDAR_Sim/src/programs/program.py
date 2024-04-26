@@ -20,7 +20,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 import pandas as pd
 from datetime import date, timedelta
-from typing import Tuple
+from typing import Tuple, Any
 from file_processing.output_processing.output_utils import (
     CrewDeploymentStats,
     TaggingFlaggingStats,
@@ -36,7 +36,7 @@ from programs.method import Method
 from scheduling.generic_schedule import GenericSchedule
 from scheduling.workplan import Workplan
 
-from constants.param_default_const import Duration_Method as dm
+from constants.param_default_const import Duration_Method as dm, Program_Params
 
 
 class Program:
@@ -62,8 +62,7 @@ class Program:
         sim_start_date: date,
         sim_end_date: date,
         consider_weather: bool,
-        duration_factor: float,
-        duration_method: str,
+        prog_params: dict[str, Any]
     ) -> None:
         self.name: str = name
         self._survey_schedules: dict[str, GenericSchedule] = {}
@@ -74,8 +73,8 @@ class Program:
         self._current_date: date = sim_start_date
         self.weather = weather
         self.daylight = daylight
-        self.duration_factor = duration_factor
-        self.duration_method = duration_method
+        self.duration_factor = prog_params[Program_Params.DURATION_ESTIMATE][Program_Params.DURATION_FACTOR],
+        self.duration_method = prog_params[Program_Params.DURATION_ESTIMATE][Program_Params.DURATION_METHOD],
 
     def _init_methods_and_schedules(
         self,

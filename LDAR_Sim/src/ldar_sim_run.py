@@ -80,8 +80,7 @@ def simulate(
         date(*virtual_world[pdc.Virtual_World_Params.START_DATE]),
         date(*virtual_world[pdc.Virtual_World_Params.END_DATE]),
         virtual_world[pdc.Virtual_World_Params.CONSIDER_WEATHER],
-        prog_param[pdc.Program_Params.DURATION_ESTIMATE][pdc.Program_Params.DURATION_FACTOR],
-        prog_param[pdc.Program_Params.DURATION_ESTIMATE][pdc.Program_Params.DURATION_METHOD],
+        prog_param,
     )
     infra.setup(program.get_method_names())
     print(rm.SIM_PROG.format(prog_name=prog_name))

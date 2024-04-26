@@ -7,7 +7,6 @@ def test_calculate_end_date():
     # Create a mock DataFrame for row
     sorted_by_site_summary = pd.DataFrame(
         {
-            eca.PREV_CONDITION: [True, False, False, True, True],
             eca.NEXT_CONDITION: [True, True, False, False, False],
             eca.SURVEY_COMPLETION_DATE: pd.date_range(start="1/1/2022", periods=5),
         }
@@ -21,6 +20,6 @@ def test_calculate_end_date():
             pd.Timestamp("2022-01-05"),
         ]
     )
-    # Test when both conditions are True
+    # Test for the proper date calculation
     result = calculate_end_date(sorted_by_site_summary)
     pd.testing.assert_series_equal(expected, result)

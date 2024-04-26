@@ -1,3 +1,23 @@
+"""
+------------------------------------------------------------------------------
+Program:     The LDAR Simulator (LDAR-Sim)
+File:        test_summarize_program_outputs.py
+Purpose: Contains the unit tests for the summarize_program_outputs 
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the MIT License as published
+by the Free Software Foundation, version 3.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+MIT License for more details.
+You should have received a copy of the MIT License
+along with this program.  If not, see <https://opensource.org/licenses/MIT>.
+
+------------------------------------------------------------------------------
+"""
+
 import pandas as pd
 from contextlib import contextmanager
 from pathlib import Path
@@ -133,6 +153,26 @@ expected_emis_summary_csv = pd.DataFrame(
         esca.EST_ANN_EMIS.format(2025): [0, 0, 0],
     }
 )
+expected_emis_summary_csv2 = pd.DataFrame(
+    {
+        esca.PROG_NAME: ["test", "test", "test"],
+        esca.SIM: ["0", "1", "2"],
+        esca.T_TOTAL_EMIS: [10, 26, 42],
+        esca.EST_TOTAL_EMIS: [6, 22, 38],
+        esca.T_TOTAL_MIT_EMIS: [6, 18, 30],
+        esca.T_TOTAL_NON_MIT_EMIS: [4, 8, 12],
+        esca.AVG_T_EMIS_RATE: [8.5, 4.5, 1.5],
+        esca.T_EMIS_RATE_95: [10.0, 6.0, 3.0],
+        esca.T_EMIS_RATE_5: [7.0, 3.0, 0.0],
+        esca.T_AVG_EMIS_AMOUNT: [2.5, 6.5, 10.5],
+        esca.T_EMIS_AMOUNT_95: [4.0, 8.0, 12.0],
+        esca.T_EMIS_AMOUNT_5: [1.0, 5.0, 9.0],
+        esca.T_ANN_EMIS.format(2024): [3.0, 11.0, 19.0],
+        esca.T_ANN_EMIS.format(2025): [7.0, 15.0, 23.0],
+        esca.EST_ANN_EMIS.format(2024): [0.0, 7.0, 13.0],
+        esca.EST_ANN_EMIS.format(2025): [3.0, 11.0, 17.0],
+    }
+)
 
 
 @contextmanager
@@ -193,6 +233,14 @@ expected_ts_summary_csv = pd.DataFrame(
         tsca.DAILY_COST_5: [7.0, 3.0, 0.0],
     }
 )
+expected_emis_est = pd.DataFrame(
+    {
+        esca.PROG_NAME: ["test", "test", "test"],
+        esca.SIM: ["0", "1", "2"],
+        esca.EST_ANN_EMIS.format(2024): [0.0, 7.0, 13.0],
+        esca.EST_ANN_EMIS.format(2025): [3.0, 11.0, 17.0],
+    }
+)
 
 
 def test_000_correct_emissions_summary_generated_from_3_es(monkeypatch):
@@ -204,6 +252,22 @@ def test_000_correct_emissions_summary_generated_from_3_es(monkeypatch):
     )
     assert isinstance(test_es_summary, pd.DataFrame)
     assert test_es_summary.equals(expected_emis_summary_csv)
+
+
+def test_000_correct_emissions_summary_merg(monkeypatch, mocker):
+    monkeypatch.setattr(os, "scandir", mock_scandir_emis_sum)
+    monkeypatch.setattr(pd, "read_csv", mock_read_csv_emis_sum)
+    mock_generate_emis_est_summary = mocker.Mock(return_value=expected_emis_est)
+    monkeypatch.setattr(
+        "file_processing.output_processing.summary_outputs.generate_emissions_estimation_summary",
+        mock_generate_emis_est_summary,
+    )
+
+    test_es_summary: pd.DataFrame = generate_emissions_summary(
+        "test", get_mock_summary_output_mapper()
+    )
+    assert isinstance(test_es_summary, pd.DataFrame)
+    assert test_es_summary.equals(expected_emis_summary_csv2)
 
 
 def test_000_correct_timeseries_summary_generated_from_3_ts(monkeypatch):

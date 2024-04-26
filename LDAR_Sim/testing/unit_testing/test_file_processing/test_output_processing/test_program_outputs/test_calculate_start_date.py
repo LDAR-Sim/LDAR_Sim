@@ -8,12 +8,11 @@ def test_calculate_start_date():
     sorted_by_site_summary = pd.DataFrame(
         {
             eca.PREV_CONDITION: [False, False, False, True, True],
-            eca.NEXT_CONDITION: [True, True, False, False, True],
             eca.SURVEY_COMPLETION_DATE: pd.date_range(start="1/1/2022", periods=5),
         }
     )
 
-    # Test when both conditions are True
+    # Test for proper start date generation
     expected_result = pd.Series(
         [
             pd.Timestamp("2022-01-01"),
