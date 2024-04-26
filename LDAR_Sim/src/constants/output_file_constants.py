@@ -31,6 +31,7 @@ class FileNames:
     TRUE_AND_ESTIMATED_PAIRED_EMISSIONS_DISTRIBUTION_PLOT = (
         "True_and_Estimated_Paired_Emissions_Distribution"
     )
+    TRUE_AND_ESTIMATED_PAIRED_PROBIT_PLOT = "True and Estimated Emissions Probit"
 
 
 @dataclass
@@ -57,6 +58,19 @@ class SummaryFileColumns:
 class SummaryVisualizationStatistics:
     PERCENT_DIFFERENCE = "Percent Difference"
     RELATIVE_DIFFERENCE = "Relative Difference"
+
+
+class PlottingConstants:
+    AXIS_COLOR = "black"
+
+
+class ProbitConstants:
+    X_AXIS_LABEL = "Total Annual Emissions (Kg Methane) at all {n_sites} sites"
+    Y_AXIS_LABEL = (
+        "Probability of observing Total Annual Emissions \n at all {n_sites} sites greater than x"
+    )
+    TRUE_EMISSIONS_SUFFIX = '"True" Total Emissions'
+    ESTIMATED_EMISSIONS_SUFFIX = '"Estimated" Total Emissions'
 
 
 class HistogramConstants:

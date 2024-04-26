@@ -41,6 +41,9 @@ class SummaryVisualizationManager:
         output_file_constants.FileNames.TRUE_AND_ESTIMATED_PAIRED_EMISSIONS_DISTRIBUTION_PLOT: (
             summary_visualizations.gen_true_and_estimated_paired_emissions_distribution_plot
         ),
+        output_file_constants.FileNames.TRUE_AND_ESTIMATED_PAIRED_PROBIT_PLOT: (
+            summary_visualizations.gen_true_and_estimated_paired_probit_plot
+        ),
     }
 
     def __init__(

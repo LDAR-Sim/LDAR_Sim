@@ -209,3 +209,27 @@ def calculate_histogram_bin_range(
     else:
         min_val: float = histogram_properties["bin_range"][0]
     histogram_properties["bin_range"] = (min_val, max_val)
+
+
+def format_major_minor_ticks_log_scale(base: int, min_val: float, max_val: float):
+    # Calculate the number of major ticks
+    number_major_ticks = int(max_val - min_val + 1)
+
+    # Calculate the number of minor ticks per major interval
+    number_minor_ticks = int((max_val - min_val + 1) * 2)
+
+    if number_major_ticks > 10:
+        major_subs = np.arange(1, base, 2)
+    else:
+        major_subs = np.arange(1, base)
+
+    if number_minor_ticks > 10:
+        minor_subs = np.arange(1, base, 1)
+    else:
+        minor_subs = np.arange(1, base, 0.5)
+
+    # Create the major and minor locators
+    major_locator = ticker.LogLocator(base=base, subs=major_subs)
+    minor_locator = ticker.LogLocator(base=base, subs=minor_subs)
+
+    return major_locator, minor_locator

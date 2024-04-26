@@ -77,11 +77,41 @@ class SummaryVisualizationMapper:
             ),
         }
 
+        self._probit_properties_lookup = {
+            output_file_constants.FileNames.TRUE_AND_ESTIMATED_PAIRED_PROBIT_PLOT: {
+                "probit0": {
+                    "x_label": output_file_constants.ProbitConstants.X_AXIS_LABEL.format(
+                        n_sites=site_count
+                    ),
+                    "y_label": output_file_constants.ProbitConstants.Y_AXIS_LABEL.format(
+                        n_sites=site_count
+                    ),
+                    "legend_label": (
+                        output_file_constants.ESTIMATE_VS_TRUE_PLOTTING_CONSTANTS
+                    ).TRUE_EMISSIONS_SUFFIX,
+                },
+                "probit1": {
+                    "x_label": output_file_constants.ProbitConstants.X_AXIS_LABEL.format(
+                        n_sites=site_count
+                    ),
+                    "y_label": output_file_constants.ProbitConstants.Y_AXIS_LABEL.format(
+                        n_sites=site_count
+                    ),
+                    "legend_label": (
+                        output_file_constants.ESTIMATE_VS_TRUE_PLOTTING_CONSTANTS
+                    ).ESTIMATED_EMISSIONS_SUFFIX,
+                },
+            }
+        }
+
     def get_summary_stat_function(self, stat_type: str):
         return self._summary_stat_functions.get(stat_type)
 
     def get_histogram_properties(self, visualization_name: str):
         return self._histogram_properties_lookup.get(visualization_name)
+
+    def get_probit_properties(self, visualization_name: str):
+        return self._probit_properties_lookup.get(visualization_name)
 
     def get_x_axis_formatter(self, visualization_name: str):
         return self._axis_formatter_lookup.get(visualization_name)
