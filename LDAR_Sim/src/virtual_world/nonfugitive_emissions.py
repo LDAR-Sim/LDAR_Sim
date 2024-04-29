@@ -131,22 +131,6 @@ class NonRepairableEmission(Emission):
         return True
 
     @override
-    def calc_est_emis_vol(self, end_date: date) -> float:
-        if self._estimated_date_began is None:
-            return 0
-        total_estimated_days_active: int = (
-            self._estimated_days_active + self._estimated_days_active_after_detection
-        )
-        if self._estimated_date_began + timedelta(days=total_estimated_days_active) > end_date:
-            total_estimated_days_active = (end_date - self._estimated_date_began).days
-        self._estimated_days_active = total_estimated_days_active
-        return (
-            (total_estimated_days_active)
-            * (self._measured_rate if self._measured_rate is not None else 0)
-            * conv_const.GRAMS_PER_SECOND_TO_KG_PER_DAY
-        )
-
-    @override
     def update(self, emis_info: EmisInfo) -> bool:
         is_active: bool = super().update(emis_info)
         if is_active:
@@ -157,11 +141,9 @@ class NonRepairableEmission(Emission):
 
     @override
     def get_summary_dict(self, end_date: date) -> dict[str, Any]:
-        estimated_vol_emitted: float = self.calc_est_emis_vol(end_date=end_date)
         summary_dict: dict[str, Any] = super().get_summary_dict()
         summary_dict.update({(eca.RECORDED, self._record)})
         summary_dict.update({(eca.RECORDED_BY, self._recorded_by_company)})
-        summary_dict.update({(eca.EST_VOL_EMIT, estimated_vol_emitted)})
         summary_dict.update({(eca.DATE_REP_EXP, self._expiry_date)})
         return summary_dict
 

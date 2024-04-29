@@ -51,6 +51,12 @@ class Deployment_Types:
 
 
 @dataclass
+class Duration_Method:
+    COMPONENT = "component-based"
+    MEASUREMENT_CONSERVATIVE = "measurement-based-conservative"
+
+
+@dataclass
 class Virtual_World_Params:
     START_DATE = "start_date"
     END_DATE = "end_date"
@@ -97,6 +103,9 @@ class Program_Params:
     GWP = "GWP_CH4"
     NATGAS = "sale_price_natgas"
     VERIFICATION = "verification_cost"
+    DURATION_ESTIMATE = "duration_estimate"
+    DURATION_FACTOR = "duration_factor"
+    DURATION_METHOD = "duration_method"
 
 
 @dataclass

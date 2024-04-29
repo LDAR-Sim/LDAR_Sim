@@ -14,10 +14,10 @@ def mock_summary_output_manager_init(self):
 
 
 def mock_get_summary_file_files_exist(file_path: str, summary_output: str):
-    if summary_output == file_name_constants.Output_Files.SummaryFileNames.TS_SUMMARY:
-        return "ts_summary"
-    elif summary_output == file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY:
-        return "emis_summary"
+    if summary_output == file_name_constants.Output_Files.SummaryFileNames.TS_SUMMARY + ".csv":
+        return "Timeseries Summary"
+    elif summary_output == file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY + ".csv":
+        return "Emissions Summary"
 
 
 def test_get_legacy_outputs_returns_all_files_when_exist(monkeypatch):
@@ -30,8 +30,8 @@ def test_get_legacy_outputs_returns_all_files_when_exist(monkeypatch):
         mock_get_summary_file_files_exist,
     )
     expected_leg_outputs = {
-        file_name_constants.Output_Files.SummaryFileNames.TS_SUMMARY: "ts_summary",
-        file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY: "emis_summary",
+        file_name_constants.Output_Files.SummaryFileNames.TS_SUMMARY: "Timeseries Summary",
+        file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY: "Emissions Summary",
     }
     summary_output_manager: SummaryOutputManager = SummaryOutputManager()
     leg_outputs = summary_output_manager.get_legacy_outputs()

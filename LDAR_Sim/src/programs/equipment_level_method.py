@@ -98,6 +98,7 @@ class EquipmentLevelMethod(Method):
         Args:
             sensor_into (dict): _description_
         """
+        # TODO: change to mapping?
         if sensor_info[mp.TYPE] == "default":
             self._sensor = DefaultEquipmentLevelSensor(sensor_info[mp.MDL], sensor_info[mp.QE])
         elif sensor_info[mp.TYPE] == "OGI_camera_zim":
@@ -184,4 +185,6 @@ class EquipmentLevelMethod(Method):
             # Update the survey planner. If the survey was not finished, the update will
             # indicate that the particular site needs to be requeued with higher priority
             workplan.add_survey_report(survey_report, survey_plan)
+            if survey_report.survey_complete:
+                self._site_survey_reports.append(survey_report)
         return deploy_stats

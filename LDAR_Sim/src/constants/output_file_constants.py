@@ -59,10 +59,6 @@ class SummaryVisualizationStatistics:
     RELATIVE_DIFFERENCE = "Relative Difference"
 
 
-class PlottingConstants:
-    AXIS_COLOR = "black"
-
-
 class HistogramConstants:
     Y_AXIS_LABEL = "Relative Frequency (%)"
     BINS = 30
@@ -110,6 +106,7 @@ class EMIS_SUMMARY_COLUMNS_ACCESSORS:
     EST_ANN_EMIS = 'Year {} "Estimated" Emissions (Kg Methane)'
     REGX_T_ANN_EMIS = r'Year \d+ "True" Emissions \(Kg Methane\)'
     REGX_EST_ANN_EMIS = r'Year \d+ "Estimated" Emissions \(Kg Methane\)'
+    REGX_EST_FUG_ANN_EMIS = r'Year \d+ "Estimated" Fugitive Emissions \(Kg Methane\)'
     T_TOTAL_EMIS = 'Total "True" Emissions (Kg Methane)'
     EST_TOTAL_EMIS = 'Total "Estimated" Emissions (Kg Methane)'
     T_TOTAL_MIT_EMIS = 'Total "True" Mitigable Emissions (Kg Methane)'
@@ -172,11 +169,58 @@ class EMIS_DATA_COL_ACCESSORS:
     INIT_DETECT_DATE = "Initially Detected Date"
     TAGGED = "Tagged"
     TAGGED_BY = "Tagged By"
+    FLAGGED = "Flagged"
     COMP = "Component"
     RECORDED = "Recorded"
     RECORDED_BY = "Recorded By"
     REPAIRABLE = "Repairable"
+    SURVEY_LEVEL = "Survey Level"
+    SURVEY_START_DATE = "Survey Start Date"
+    SURVEY_COMPLETION_DATE = "Survey Completion Date"
+    METHOD = "Method"
+    START_DATE = "Start Date"
+    END_DATE = "End Date"
+    PREV_CONDITION = "Use Previous Condition"
+    NEXT_CONDITION = "Use Next Condition"
+    NEXT_SURVEY_DATE = "Next Survey Date"
 
+
+EMIS_ESTIMATION_OUTPUT_COLUMNS = [
+    EMIS_DATA_COL_ACCESSORS.SITE_ID,
+    EMIS_DATA_COL_ACCESSORS.SURVEY_LEVEL,
+    EMIS_DATA_COL_ACCESSORS.METHOD,
+    EMIS_DATA_COL_ACCESSORS.START_DATE,
+    EMIS_DATA_COL_ACCESSORS.END_DATE,
+    EMIS_DATA_COL_ACCESSORS.M_RATE,
+    EMIS_DATA_COL_ACCESSORS.EST_VOL_EMIT,
+]
+EST_FUG_OUTPUT_COLUMNS = [
+    EMIS_DATA_COL_ACCESSORS.SITE_ID,
+    EMIS_DATA_COL_ACCESSORS.M_RATE,
+    EMIS_DATA_COL_ACCESSORS.START_DATE,
+    EMIS_DATA_COL_ACCESSORS.END_DATE,
+    EMIS_DATA_COL_ACCESSORS.EST_VOL_EMIT,
+]
+
+EMIS_COMP_ESTIMATION_OUTPUT_COLUMNS = [
+    EMIS_DATA_COL_ACCESSORS.SITE_ID,
+    EMIS_DATA_COL_ACCESSORS.EQG,
+    EMIS_DATA_COL_ACCESSORS.COMP,
+    EMIS_DATA_COL_ACCESSORS.SURVEY_LEVEL,
+    EMIS_DATA_COL_ACCESSORS.SURVEY_COMPLETION_DATE,
+    EMIS_DATA_COL_ACCESSORS.METHOD,
+    EMIS_DATA_COL_ACCESSORS.START_DATE,
+    EMIS_DATA_COL_ACCESSORS.END_DATE,
+    EMIS_DATA_COL_ACCESSORS.M_RATE,
+    EMIS_DATA_COL_ACCESSORS.EST_VOL_EMIT,
+]
+
+EMIS_INFO_COLUMNS_TO_KEEP_FOR_DURATION_ESTIMATION = [
+    EMIS_DATA_COL_ACCESSORS.SITE_ID,
+    EMIS_DATA_COL_ACCESSORS.EMIS_ID,
+    EMIS_DATA_COL_ACCESSORS.DATE_REP_EXP,
+    EMIS_DATA_COL_ACCESSORS.M_RATE,
+]
 
 EMIS_DATA_FINAL_COL_ORDER = [
     EMIS_DATA_COL_ACCESSORS.EMIS_ID,

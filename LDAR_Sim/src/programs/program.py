@@ -18,8 +18,9 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 ------------------------------------------------------------------------------
 """
 
+import pandas as pd
 from datetime import date, timedelta
-from typing import Tuple
+from typing import Tuple, Any
 from file_processing.output_processing.output_utils import (
     CrewDeploymentStats,
     TaggingFlaggingStats,
@@ -35,11 +36,18 @@ from programs.method import Method
 from scheduling.generic_schedule import GenericSchedule
 from scheduling.workplan import Workplan
 
+from constants.param_default_const import Duration_Method as dm, Program_Params
+
 
 class Program:
     """An object responsible for scheduling surveys for all sites in the infrastructure.
     Uses other lower level objects to plan and schedule survey times and determine actual
     dynamic schedules based on weather and other impacting variables."""
+
+    PROGRAM_REPORT_EXPANSION_MAPPING = {
+        dm.COMPONENT: True,
+        dm.MEASUREMENT_CONSERVATIVE: False,
+    }
 
     def __init__(
         self,
@@ -54,6 +62,7 @@ class Program:
         sim_start_date: date,
         sim_end_date: date,
         consider_weather: bool,
+        prog_params: dict[str, Any]
     ) -> None:
         self.name: str = name
         self._survey_schedules: dict[str, GenericSchedule] = {}
@@ -64,6 +73,8 @@ class Program:
         self._current_date: date = sim_start_date
         self.weather = weather
         self.daylight = daylight
+        self.duration_factor = prog_params[Program_Params.DURATION_ESTIMATE][Program_Params.DURATION_FACTOR],
+        self.duration_method = prog_params[Program_Params.DURATION_ESTIMATE][Program_Params.DURATION_METHOD],
 
     def _init_methods_and_schedules(
         self,
@@ -202,3 +213,19 @@ class Program:
 
     def get_method_names(self) -> list[str]:
         return self.method_names
+
+    def aggregate_method_survey_reports(self) -> pd.DataFrame:
+        """Aggregate the survey reports from all methods"""
+
+        data: list[dict] = [
+            report.to_report_summary(
+                expand=Program.PROGRAM_REPORT_EXPANSION_MAPPING[self.duration_method]
+            )
+            | {"follow_up_method": method.get_follow_up_method_name()}
+            for method in self._methods
+            for report in method.site_survey_reports
+        ]
+
+        df: pd.DataFrame = pd.DataFrame(data)
+
+        return df

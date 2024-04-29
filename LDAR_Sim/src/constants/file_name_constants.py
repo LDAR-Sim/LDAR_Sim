@@ -50,6 +50,8 @@ class Output_Files:
     class SummaryFileNames:
         TS_SUMMARY = "Timeseries Summary"
         EMIS_SUMMARY = "Emissions Summary"
+        EMIS_EST_SUMMARY = "Estimated Emissions Summary"
+        EMIS_FUG_EST_SUMMARY = "Estimated Fugitive Emissions Summary"
 
         def __iter__(self):
             for attr_name, attr_value in vars(self.__class__).items():
@@ -62,5 +64,7 @@ class Output_Files:
         "True_and_Estimated_Paired_Emissions_Distribution.png"
     )
     EMISSIONS_SUMMARY_FILE = "emissions_summary.csv"
+    EST_EMISSIONS_FILE = "estimated_emissions.csv"
+    EST_REP_EMISSIONS_FILE = "estimated_repaired_emissions_to_remove.csv"
     TIMESERIES_FILE = "timeseries.csv"
     PARAMETER_FILE = "parameters.yaml"

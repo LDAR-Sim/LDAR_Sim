@@ -24,7 +24,7 @@ from queue import PriorityQueue
 from random import choice
 import sys
 from typing import Tuple
-
+import gc
 import numpy as np
 from constants.error_messages import Input_Processing_Messages as ipm
 from file_processing.output_processing.output_utils import CrewDeploymentStats, TaggingFlaggingStats
@@ -485,3 +485,19 @@ class Method:
 
     def get_name(self) -> str:
         return self._name
+
+    @property
+    def site_survey_reports(self) -> list[SiteSurveyReport]:
+        return self._site_survey_reports
+
+    @site_survey_reports.setter
+    def site_survey_reports(self, value: list[SiteSurveyReport]) -> None:
+        self._site_survey_reports = value
+
+    @site_survey_reports.deleter
+    def site_survey_reports(self) -> None:
+        del self._site_survey_reports
+        gc.collect()
+
+    def get_follow_up_method_name(self) -> str:
+        return "N/A"

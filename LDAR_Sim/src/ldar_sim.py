@@ -37,7 +37,6 @@ from constants.output_file_constants import (
     EMIS_DATA_FINAL_COL_ORDER,
     TIMESERIES_COL_ACCESSORS as tca,
 )
-from constants.file_name_constants import Output_Files
 from constants.param_default_const import Virtual_World_Params as vp
 
 
@@ -114,11 +113,10 @@ class LdarSim:
         )
         self._infrastructure.gen_summary_emis_data(overall_emission_data, self._tc._end_date)
 
-        self._output_manager.gen_sim_directory()
-        summary_filename = self._output_manager.generate_file_names(
-            Output_Files.EMISSIONS_SUMMARY_FILE
+        self._output_manager.summarize_program_outputs(
+            overall_emission_data,
+            timeseries,
+            self._tc._start_date,
+            self._tc._end_date,
+            self._program,
         )
-        self._output_manager.save_results(overall_emission_data, summary_filename)
-        self._output_manager.gen_prog_spec_visualizations(timeseries=timeseries)
-        timeseries_filename = self._output_manager.generate_file_names(Output_Files.TIMESERIES_FILE)
-        self._output_manager.save_results(timeseries, timeseries_filename)
