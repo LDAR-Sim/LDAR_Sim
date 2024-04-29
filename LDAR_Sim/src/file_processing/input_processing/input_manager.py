@@ -235,7 +235,7 @@ class InputManager:
                     default_output_params = yaml.load(f.read(), Loader=yaml.SafeLoader)
                 check_types(default_output_params, new_parameters)
                 new_outputs = copy.deepcopy(default_output_params)
-                self.retain_update(default_output_params, new_parameters)
+                self.retain_update(new_outputs, new_parameters)
                 self.simulation_parameters[pc.Levels.OUTPUTS] = new_outputs
             else:
                 sys.exit(
