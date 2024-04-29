@@ -62,7 +62,7 @@ class Program:
         sim_start_date: date,
         sim_end_date: date,
         consider_weather: bool,
-        prog_params: dict[str, Any]
+        prog_params: dict[str, Any],
     ) -> None:
         self.name: str = name
         self._survey_schedules: dict[str, GenericSchedule] = {}
@@ -73,8 +73,12 @@ class Program:
         self._current_date: date = sim_start_date
         self.weather = weather
         self.daylight = daylight
-        self.duration_factor = prog_params[Program_Params.DURATION_ESTIMATE][Program_Params.DURATION_FACTOR],
-        self.duration_method = prog_params[Program_Params.DURATION_ESTIMATE][Program_Params.DURATION_METHOD],
+        self.duration_factor = prog_params[Program_Params.DURATION_ESTIMATE][
+            Program_Params.DURATION_FACTOR
+        ]
+        self.duration_method = prog_params[Program_Params.DURATION_ESTIMATE][
+            Program_Params.DURATION_METHOD
+        ]
 
     def _init_methods_and_schedules(
         self,
