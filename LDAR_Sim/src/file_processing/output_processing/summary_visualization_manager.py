@@ -32,16 +32,18 @@ from file_processing.output_processing.summary_visualization_mapper import (
 
 class SummaryVisualizationManager:
     OUTPUT_VISUALIZATION_FUNCTIONS_MAP = {
-        output_file_constants.FileNames.TRUE_VS_ESTIMATED_PERCENT_DIFF_PLOT: (
+        output_file_constants.SummaryOutputVizFileNames.TRUE_VS_ESTIMATED_PERCENT_DIFF_PLOT: (
             summary_visualizations.gen_estimated_vs_true_emissions_percent_difference_plot
         ),
-        output_file_constants.FileNames.TRUE_VS_ESTIMATED_RELATIVE_DIFF_PLOT: (
+        output_file_constants.SummaryOutputVizFileNames.TRUE_VS_ESTIMATED_RELATIVE_DIFF_PLOT: (
             summary_visualizations.gen_estimated_vs_true_emissions_relative_difference_plot
         ),
-        output_file_constants.FileNames.TRUE_AND_ESTIMATED_PAIRED_EMISSIONS_DISTRIBUTION_PLOT: (
+        (
+            output_file_constants.SummaryOutputVizFileNames
+        ).TRUE_AND_ESTIMATED_PAIRED_EMISSIONS_DISTRIBUTION_PLOT: (
             summary_visualizations.gen_true_and_estimated_paired_emissions_distribution_plot
         ),
-        output_file_constants.FileNames.TRUE_AND_ESTIMATED_PAIRED_PROBIT_PLOT: (
+        output_file_constants.SummaryOutputVizFileNames.TRUE_AND_ESTIMATED_PAIRED_PROBIT_PLOT: (
             summary_visualizations.gen_true_and_estimated_paired_probit_plot
         ),
     }
@@ -59,6 +61,12 @@ class SummaryVisualizationManager:
         )
         self._visualization_mapper: SummaryVisualizationMapper = SummaryVisualizationMapper(
             site_count
+        )
+
+        self._visualization_mapper.update_with_user_defined_summary_settings(
+            output_config[
+                output_file_constants.OutputConfigCategories.SUMMARY_VISUALIZATION_SETTINGS
+            ]
         )
 
     def gen_visualizations(self):

@@ -25,7 +25,8 @@ class FileDirectory:
     SUMMARY_PROGRAM_PLOTS_DIRECTORY = "program_summary_plots"
 
 
-class FileNames:
+@dataclass
+class SummaryOutputVizFileNames:
     TRUE_VS_ESTIMATED_PERCENT_DIFF_PLOT = "True_vs_Estimated_Emissions_percent_differences"
     TRUE_VS_ESTIMATED_RELATIVE_DIFF_PLOT = "True_vs_Estimated_Emissions_relative_differences"
     TRUE_AND_ESTIMATED_PAIRED_EMISSIONS_DISTRIBUTION_PLOT = (
@@ -33,12 +34,30 @@ class FileNames:
     )
     TRUE_AND_ESTIMATED_PAIRED_PROBIT_PLOT = "True and Estimated Emissions Probit"
 
+    def __iter__(self):
+        for attr_name, attr_value in vars(self.__class__).items():
+            if not callable(attr_value) and not attr_name.startswith("__"):
+                yield attr_value
+
+
+@dataclass
+class SummaryVisualizationSettingsMapper:
+    class TrueEstimatedProbitSettings:
+        SHOW_MARKERS = "Show Markers"
+
+    MAPPINGS = {
+        SummaryOutputVizFileNames.TRUE_AND_ESTIMATED_PAIRED_PROBIT_PLOT: {
+            TrueEstimatedProbitSettings.SHOW_MARKERS: "show_markers"
+        },
+    }
+
 
 @dataclass
 class OutputConfigCategories:
     PROGRAM_OUTPUTS = "Program Outputs"
     SUMMARY_OUTPUTS = "Summary Outputs"
     SUMMARY_VISUALIZATIONS = "Summary Visualizations"
+    SUMMARY_VISUALIZATION_SETTINGS = "Summary Visualization Settings"
 
     @dataclass
     class SummaryOutputCatageories:
@@ -71,6 +90,14 @@ class ProbitConstants:
     )
     TRUE_EMISSIONS_SUFFIX = '"True" Total Emissions'
     ESTIMATED_EMISSIONS_SUFFIX = '"Estimated" Total Emissions'
+    Y_SCALE = "quantile"
+    X_SCALE = "log"
+    MARKER = "d"
+    X_LABEL_SIZE = 8
+    X_TICK_ROTATION = 45
+    BEST_FIT_LINE_STYLE = "--"
+    PLOTTING_POSITION_ALPHA = 1.0 / 3.0
+    PLOTTING_POSITION_BETA = 1.0 / 3.0
 
 
 class HistogramConstants:

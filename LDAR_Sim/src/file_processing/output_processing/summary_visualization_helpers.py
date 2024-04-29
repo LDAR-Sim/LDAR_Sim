@@ -19,6 +19,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 """
 
 from matplotlib import lines, pyplot as plt, ticker
+import scipy.stats
 from constants import output_file_constants
 import seaborn as sns
 from typing import Any, Tuple, Union
@@ -233,3 +234,86 @@ def format_major_minor_ticks_log_scale(base: int, min_val: float, max_val: float
     minor_locator = ticker.LogLocator(base=base, subs=minor_subs)
 
     return major_locator, minor_locator
+
+
+def plot_probabilities_lognormal_probit_with_best_fit(
+    x_vals: list[float],
+    color: Tuple[float, float, float],
+    legend_label: str,
+    axis: plt.Axes,
+    legend_elements: list,
+    x_label: str,
+    y_label: str,
+    show_markers: bool,
+):
+    x_values: np.ndarray = np.sort(x_vals)
+    x_values = x_values[x_values > 0]
+    y_values: np.ndarray = scipy.stats.mstats.plotting_positions(
+        x_values,
+        alpha=output_file_constants.ProbitConstants.PLOTTING_POSITION_ALPHA,
+        beta=output_file_constants.ProbitConstants.PLOTTING_POSITION_BETA,
+    )
+
+    if show_markers:
+
+        plt.scatter(
+            x_values,
+            y_values,
+            color=color,
+            label=legend_label,
+            marker=output_file_constants.ProbitConstants.MARKER,
+            facecolors="none",
+            edgecolors=color,
+            s=15,
+        )
+
+    axis.set_yscale(output_file_constants.ProbitConstants.Y_SCALE)
+    axis.set_xscale(output_file_constants.ProbitConstants.X_SCALE)
+
+    axis.xaxis.set_major_formatter(ticker.FuncFormatter(format_tick_labels_with_metric_prefix))
+    major_locator, minor_locator = format_major_minor_ticks_log_scale(
+        10, x_values.max(), x_values.min()
+    )
+    major_locator: ticker.LogLocator
+    minor_locator: ticker.LogLocator
+    axis.xaxis.set_major_locator(major_locator)
+    axis.xaxis.set_minor_locator(minor_locator)
+    axis.xaxis.set_minor_formatter(ticker.NullFormatter())
+    axis.tick_params(
+        axis="x", which="major", labelsize=output_file_constants.ProbitConstants.X_LABEL_SIZE
+    )
+
+    plt.xticks(rotation=45)
+
+    best_fit_coefficients: np.ndarray = np.polyfit(
+        np.log(x_values), scipy.stats.norm.ppf(y_values), 1
+    )
+
+    best_fit_line_y_intermediate: np.ndarray = (
+        best_fit_coefficients[0] * np.log(x_values) + best_fit_coefficients[1]
+    )
+
+    best_fit_line_y_values: np.ndarray = scipy.stats.norm.cdf(best_fit_line_y_intermediate)
+
+    plt.plot(
+        x_values,
+        best_fit_line_y_values,
+        color=color,
+        linestyle=output_file_constants.ProbitConstants.BEST_FIT_LINE_STYLE,
+    )
+
+    axis.set_xlabel(x_label)
+    axis.set_ylabel(y_label)
+
+    legend_elements.append(
+        lines.Line2D(
+            [0],
+            [0],
+            color=color,
+            label=legend_label,
+            markersize=15,
+        )
+    )
+
+    plt.tight_layout()
+    plt.grid(True)

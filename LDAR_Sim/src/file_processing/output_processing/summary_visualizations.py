@@ -21,20 +21,19 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 from pathlib import Path
 from typing import Tuple
 
-from matplotlib import lines, pyplot as plt, ticker
-import numpy as np
-import pandas as pd
 import matplotlib.scale as mscale
-import scipy.stats
+import pandas as pd
+import seaborn as sns
 
 # import scipy.stats
-from constants import output_file_constants, file_name_constants
+from constants import file_name_constants, output_file_constants
 from file_processing.output_processing import output_utils, summary_visualization_helpers
 from file_processing.output_processing.scaling import QuantileScale
 from file_processing.output_processing.summary_visualization_mapper import (
     SummaryVisualizationMapper,
 )
-import seaborn as sns
+from matplotlib import pyplot as plt
+from matplotlib import ticker
 
 
 def plot_histograms(
@@ -193,76 +192,14 @@ def plot_probit(
                 else:
                     legend_label_to_use = None
 
-                x_values: np.ndarray = np.sort(stat[val])
-                x_values = x_values[x_values > 0]
-                y_values: np.ndarray = scipy.stats.mstats.plotting_positions(
-                    x_values, alpha=(1.0 / 3.0), beta=(1.0 / 3.0)
-                )
-
-                plt.scatter(
-                    x_values,
-                    y_values,
+                summary_visualization_helpers.plot_probabilities_lognormal_probit_with_best_fit(
+                    x_vals=stat[val],
                     color=colors[val][accessor],
-                    label=legend_label_to_use,
-                    marker="d",
-                    facecolors="none",
-                    edgecolors=colors[val][accessor],
-                    s=15,
+                    legend_label=legend_label_to_use,
+                    axis=separated_plot_ax,
+                    legend_elements=legend_elements,
+                    **probit_properties[f"probit{val}"],
                 )
-
-                separated_plot_ax.set_yscale("quantile")
-                separated_plot_ax.set_xscale("log")
-
-                separated_plot_ax.xaxis.set_major_formatter(
-                    ticker.FuncFormatter(
-                        summary_visualization_helpers.format_tick_labels_with_metric_prefix
-                    )
-                )
-                major_locator, minor_locator = (
-                    summary_visualization_helpers.format_major_minor_ticks_log_scale(
-                        10, x_values.max(), x_values.min()
-                    )
-                )
-                major_locator: ticker.LogLocator
-                minor_locator: ticker.LogLocator
-                separated_plot_ax.xaxis.set_major_locator(major_locator)
-                separated_plot_ax.xaxis.set_minor_locator(minor_locator)
-                separated_plot_ax.xaxis.set_minor_formatter(ticker.NullFormatter())
-                separated_plot_ax.tick_params(axis="x", which="major", labelsize=8)
-
-                plt.xticks(rotation=45)
-
-                best_fit_coefficients: np.ndarray = np.polyfit(
-                    np.log(x_values), scipy.stats.norm.ppf(y_values), 1
-                )
-
-                best_fit_line_y_intermediate: np.ndarray = (
-                    best_fit_coefficients[0] * np.log(x_values) + best_fit_coefficients[1]
-                )
-
-                best_fit_line_y_values: np.ndarray = scipy.stats.norm.cdf(
-                    best_fit_line_y_intermediate
-                )
-
-                plt.plot(
-                    x_values, best_fit_line_y_values, color=colors[val][accessor], linestyle="--"
-                )
-
-                separated_plot_ax.set_xlabel(probit_properties[f"probit{val}"]["x_label"])
-                separated_plot_ax.set_ylabel(probit_properties[f"probit{val}"]["y_label"])
-
-                legend_elements.append(
-                    lines.Line2D(
-                        [0],
-                        [0],
-                        color=colors[val][accessor],
-                        label=legend_label_to_use,
-                        markersize=15,
-                    )
-                )
-
-                plt.tight_layout()
-                plt.grid(True)
 
             if probit_stat_dimensionality > 1:
                 plt.legend(
@@ -287,56 +224,14 @@ def plot_probit(
                 else:
                     legend_label_to_use = None
 
-                x_values: np.ndarray = np.sort(stat[val])
-                y_values: np.ndarray = scipy.stats.mstats.plotting_positions(
-                    x_values, alpha=(1.0 / 3.0), beta=(1.0 / 3.0)
-                )
-
-                plt.scatter(
-                    x_values,
-                    y_values,
+                summary_visualization_helpers.plot_probabilities_lognormal_probit_with_best_fit(
+                    x_vals=stat[val],
                     color=colors[val][accessor],
-                    label=legend_label_to_use,
-                    marker="d",
-                    facecolors="none",
-                    edgecolors=colors[val][accessor],
-                    s=15,
+                    legend_label=legend_label_to_use,
+                    axis=combined_plot_ax,
+                    legend_elements=legend_elements,
+                    **probit_properties[f"probit{val}"],
                 )
-
-                combined_plot_ax.set_yscale("quantile")
-                combined_plot_ax.set_xscale("log")
-
-                combined_plot_ax.xaxis.set_major_formatter(
-                    ticker.FuncFormatter(
-                        summary_visualization_helpers.format_tick_labels_with_metric_prefix
-                    )
-                )
-                combined_plot_ax.xaxis.set_major_locator(
-                    ticker.LogLocator(base=10, subs=np.arange(0, 20))
-                )
-                combined_plot_ax.xaxis.set_minor_locator(ticker.NullLocator())
-                combined_plot_ax.xaxis.set_minor_formatter(ticker.NullFormatter())
-
-                plt.xticks(rotation=-60)
-
-                best_fit_coefficients: np.ndarray = np.polyfit(
-                    np.log(x_values), scipy.stats.norm.ppf(y_values), 1
-                )
-
-                best_fit_line_y_intermediate: np.ndarray = (
-                    best_fit_coefficients[0] * np.log(x_values) + best_fit_coefficients[1]
-                )
-
-                best_fit_line_y_values: np.ndarray = scipy.stats.norm.cdf(
-                    best_fit_line_y_intermediate
-                )
-
-                plt.plot(
-                    x_values, best_fit_line_y_values, color=colors[val][accessor], linestyle="--"
-                )
-
-                plt.tight_layout()
-                plt.grid(True)
 
     if combine_program_plots:
         save_path: Path = visualization_dir / visualization_name
@@ -353,7 +248,9 @@ def gen_estimated_vs_true_emissions_percent_difference_plot(
 ):
     data_source: Path = out_dir / file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY
     data: pd.DataFrame = pd.read_csv(data_source.with_suffix(".csv"))
-    visualization_name: str = output_file_constants.FileNames.TRUE_VS_ESTIMATED_PERCENT_DIFF_PLOT
+    visualization_name: str = (
+        output_file_constants.SummaryOutputVizFileNames.TRUE_VS_ESTIMATED_PERCENT_DIFF_PLOT
+    )
 
     program_names: list[str] = summary_visualization_helpers.get_non_baseline_prog_names(
         data, baseline_program
@@ -390,7 +287,9 @@ def gen_estimated_vs_true_emissions_relative_difference_plot(
 ):
     data_source: Path = out_dir / file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY
     data: pd.DataFrame = pd.read_csv(data_source.with_suffix(".csv"))
-    visualization_name: str = output_file_constants.FileNames.TRUE_VS_ESTIMATED_RELATIVE_DIFF_PLOT
+    visualization_name: str = (
+        output_file_constants.SummaryOutputVizFileNames.TRUE_VS_ESTIMATED_RELATIVE_DIFF_PLOT
+    )
 
     program_names: list[str] = summary_visualization_helpers.get_non_baseline_prog_names(
         data, baseline_program
@@ -428,8 +327,8 @@ def gen_true_and_estimated_paired_emissions_distribution_plot(
     data_source: Path = out_dir / file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY
     data: pd.DataFrame = pd.read_csv(data_source.with_suffix(".csv"))
     visualization_name: str = (
-        output_file_constants.FileNames.TRUE_AND_ESTIMATED_PAIRED_EMISSIONS_DISTRIBUTION_PLOT
-    )
+        output_file_constants.SummaryOutputVizFileNames
+    ).TRUE_AND_ESTIMATED_PAIRED_EMISSIONS_DISTRIBUTION_PLOT
 
     program_names: list[str] = summary_visualization_helpers.get_non_baseline_prog_names(
         data, baseline_program
@@ -464,7 +363,9 @@ def gen_true_and_estimated_paired_probit_plot(
 ):
     data_source: Path = out_dir / file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY
     data: pd.DataFrame = pd.read_csv(data_source.with_suffix(".csv"))
-    visualization_name: str = output_file_constants.FileNames.TRUE_AND_ESTIMATED_PAIRED_PROBIT_PLOT
+    visualization_name: str = (
+        output_file_constants.SummaryOutputVizFileNames.TRUE_AND_ESTIMATED_PAIRED_PROBIT_PLOT
+    )
 
     program_names: list[str] = summary_visualization_helpers.get_non_baseline_prog_names(
         data, baseline_program
