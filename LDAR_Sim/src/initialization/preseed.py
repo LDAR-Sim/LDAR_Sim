@@ -23,6 +23,7 @@ from datetime import date, timedelta
 import pickle
 import os
 from constants.file_name_constants import Generator_Files
+from constants.output_messages import RuntimeMessages
 
 
 def gen_seed_timeseries(sim_start_date: date, sim_end_date: date, gen_dir) -> list[int]:
@@ -35,7 +36,7 @@ def gen_seed_timeseries(sim_start_date: date, sim_end_date: date, gen_dir) -> li
         # check that the sim length matches
         if (sim_end_date - sim_start_date).days + 1 == len(seed_ts_dict):
             return seed_ts_dict
-    print("Generating Random seed values for simulation...")
+    print(RuntimeMessages.GEN_PRESEED)
     while current_date <= sim_end_date:
         seed_ts_dict[current_date] = np.random.randint(0, 255)
         current_date += timedelta(days=1)
@@ -61,14 +62,14 @@ def gen_seed_emis(n_sim: int, gen_dir):
     if os.path.isfile(preseed_loc):
         preseed_val = get_emis_seed(gen_dir)
         if len(preseed_val) < n_sim:
-            print("Generating additional Random Seed values for emissions...")
+            print(RuntimeMessages.GEN_ADD_PRESEED_EMISS)
             for i in range(len(preseed_val), n_sim):
                 emis_preseed: int = np.random.randint(0, 255)
                 preseed_val.append(emis_preseed)
             with open(preseed_loc, "wb") as f:
                 pickle.dump(preseed_val, f)
     else:
-        print("Generating Random Seed values for emissions...")
+        print(RuntimeMessages.GEN_PRESEED_EMISS)
         for i in range(n_sim):
             emis_preseed: int = np.random.randint(0, 255)
             preseed_val.append(emis_preseed)

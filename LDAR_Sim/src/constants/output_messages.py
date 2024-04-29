@@ -60,6 +60,10 @@ class RuntimeMessages:
 
     GEN_EMISS = "Generating emissions for Set_{i} simulations"
 
+    GEN_PRESEED = "Generating Random seed values for simulation..."
+    GEN_PRESEED_EMISS = "Generating Random Seed values for emissions..."
+    GEN_ADD_PRESEED_EMISS = "Generating additional Random Seed values for emissions..."
+
 
 class InputHelpText:
     INPUT_FILE_HELP_TEXT = (
