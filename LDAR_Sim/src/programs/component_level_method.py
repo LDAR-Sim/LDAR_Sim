@@ -1,8 +1,8 @@
 """
 ------------------------------------------------------------------------------
 Program:     The LDAR Simulator (LDAR-Sim)
-File:        equipment_level_method
-Purpose: The module provides default behaviors for equipment level methods
+File:        component_level_method.py
+Purpose: The module provides default behaviors for component level methods
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the MIT License as published
@@ -31,15 +31,15 @@ from scheduling.schedule_dataclasses import (
     TaggingInfo,
 )
 from scheduling.workplan import Workplan
-from sensors.default_equipment_level_sensor import DefaultEquipmentLevelSensor
+from sensors.default_component_level_sensor import DefaultComponentLevelSensor
 from sensors.OGI_camera_rk import OGICameraRKSensor
 from sensors.OGI_camera_zim import OGICameraZimSensor
-from sensors.METEC_NoWind_sensor import METECNWEquipment
+from sensors.METEC_NoWind_sensor import METECNWComponent
 from virtual_world.sites import Site
 from constants.param_default_const import Method_Params as mp
 
 
-class EquipmentLevelMethod(Method):
+class ComponentLevelMethod(Method):
     MEASUREMENT_SCALE = "component"
 
     def __init__(self, name, properties, consider_weather, sites):
@@ -83,9 +83,9 @@ class EquipmentLevelMethod(Method):
                             crew=crew.crew_id,
                             report_delay=self._reporting_delay,
                         )
-                        site_to_survey.tag_emissions_at_equipment(
+                        site_to_survey.tag_emissions_at_component(
                             emission_detection_report.equipment_group,
-                            emission_detection_report.equipment,
+                            emission_detection_report.component,
                             tagging_info=tagging_info,
                         )
                         self._emissions_tagged_daily += 1
@@ -100,13 +100,13 @@ class EquipmentLevelMethod(Method):
         """
         # TODO: change to mapping?
         if sensor_info[mp.TYPE] == "default":
-            self._sensor = DefaultEquipmentLevelSensor(sensor_info[mp.MDL], sensor_info[mp.QE])
+            self._sensor = DefaultComponentLevelSensor(sensor_info[mp.MDL], sensor_info[mp.QE])
         elif sensor_info[mp.TYPE] == "OGI_camera_zim":
             self._sensor = OGICameraZimSensor(sensor_info[mp.MDL], sensor_info[mp.QE])
         elif sensor_info[mp.TYPE] == "OGI_camera_rk":
             self._sensor = OGICameraRKSensor(sensor_info[mp.MDL], sensor_info[mp.QE])
         elif sensor_info[mp.TYPE] == "METEC_no_wind":
-            self._sensor = METECNWEquipment(sensor_info[mp.MDL], sensor_info[mp.QE])
+            self._sensor = METECNWComponent(sensor_info[mp.MDL], sensor_info[mp.QE])
         else:
             print(ipm.ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
             sys.exit()

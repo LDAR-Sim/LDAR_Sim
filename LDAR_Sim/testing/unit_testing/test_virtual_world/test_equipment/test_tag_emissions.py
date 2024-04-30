@@ -19,8 +19,8 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 """
 
 from datetime import date
-from src.virtual_world.equipment import (
-    Equipment,
+from virtual_world.component import (
+    Component,
     TaggingInfo,
     FugitiveEmission,
     NonRepairableEmission,
@@ -64,16 +64,16 @@ def mock_equipment_init(self, *args, **kwargs):
 def setup_mock_equipment(mocker):
     mocker.patch.object(FugitiveEmission, "__init__", mock_fugitive_emission_init)
     mocker.patch.object(NonRepairableEmission, "__init__", mock_non_rep_emission_init)
-    mocker.patch.object(Equipment, "__init__", mock_equipment_init)
+    mocker.patch.object(Component, "__init__", mock_equipment_init)
 
 
 def test_tag_emissions_with_multiple_emissions(mocker):
     setup_mock_equipment(mocker)
     emissions = mock_active_emissions()
-    mock_equipment = Equipment(emissions=emissions)
+    mock_component = Component(emissions=emissions)
     tagging_info = mock_tagging_info()
     expected_rates = tagging_info.measured_rate / len(emissions)
-    mock_equipment.tag_emissions(tagging_info=tagging_info)
+    mock_component.tag_emissions(tagging_info=tagging_info)
 
     for emission in emissions:
         if isinstance(emission, FugitiveEmission):

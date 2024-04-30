@@ -27,7 +27,7 @@ from constants.output_file_constants import EMIS_DATA_COL_ACCESSORS as eca
 class EmissionDetectionReport:
     site: str
     equipment_group: str
-    equipment: str
+    component: str
     measured_rate: float
     true_rate: float
     current_date: date = None
@@ -36,7 +36,7 @@ class EmissionDetectionReport:
 
     def to_report_summary(self):
         return {
-            eca.COMP: self.equipment,
+            eca.COMP: self.component,
             eca.M_RATE: self.measured_rate,
         }
 

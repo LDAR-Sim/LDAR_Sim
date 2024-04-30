@@ -1,6 +1,6 @@
 from pytest import approx
 from src.scheduling.schedule_dataclasses import SiteSurveyReport, EmissionDetectionReport
-from src.sensors.default_equipment_level_sensor import DefaultEquipmentLevelSensor
+from sensors.default_component_level_sensor import DefaultComponentLevelSensor
 from src.virtual_world.sites import Site
 from testing.unit_testing.test_sensors.test_equipment_level_sensors.equipment_level_sensors_testing_fixtures import (  # noqa
     mock_site_emis_for_equip_level_detect_emissions_testing_fix,
@@ -36,7 +36,7 @@ def test_000_default_equip_level_sensor_detect_emissions_detects_emissions_at_si
     mock_site: Site = Site()
     mdl: float = sensor_info_for_default_equipment_level_sensor_construction_testing["mdl"]
     qe: float = sensor_info_for_default_equipment_level_sensor_construction_testing["QE"]
-    sensor = DefaultEquipmentLevelSensor(mdl, qe)
+    sensor = DefaultComponentLevelSensor(mdl, qe)
     report: SiteSurveyReport = SiteSurveyReport(1)
     emis_detected: bool = sensor.detect_emissions(mock_site, "test", report)
     expected_emis = mock_site_for_equip_level_detect_emissions_testing[1]
@@ -56,7 +56,7 @@ def test_000_default_equip_level_sensor_detect_emissions_does_not_detect_emissio
     mock_site: Site = Site()
     mdl: float = sensor_info_high_mdl_for_default_equipment_level_sensor_testing["mdl"]
     qe: float = sensor_info_high_mdl_for_default_equipment_level_sensor_testing["QE"]
-    sensor = DefaultEquipmentLevelSensor(mdl, qe)
+    sensor = DefaultComponentLevelSensor(mdl, qe)
     report: SiteSurveyReport = SiteSurveyReport(1)
     emis_detected: bool = sensor.detect_emissions(mock_site, "test", report)
     expected_true_emis = mock_site_for_equip_level_detect_emissions_testing_lower_emissions[1]
@@ -77,7 +77,7 @@ def test_000_default_eqg_level_sensor_detect_emissions_correctly_detects_only_em
     mock_site: Site = Site()
     mdl: float = sensor_info_high_mdl_for_default_equipment_level_sensor_testing["mdl"]
     qe: float = sensor_info_high_mdl_for_default_equipment_level_sensor_testing["QE"]
-    sensor = DefaultEquipmentLevelSensor(mdl, qe)
+    sensor = DefaultComponentLevelSensor(mdl, qe)
     report: SiteSurveyReport = SiteSurveyReport(1)
     emis_detected: bool = sensor.detect_emissions(mock_site, "test", report)
     expected_true_emis = mock_site_for_equip_level_detect_emissions_testing_mixed_detect[1]

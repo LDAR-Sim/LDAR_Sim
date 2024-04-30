@@ -21,11 +21,11 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 import math
 import numpy as np
-from sensors.default_equipment_level_sensor import DefaultEquipmentLevelSensor
+from sensors.default_component_level_sensor import DefaultComponentLevelSensor
 from constants.general_const import Conversion_Constants as CC
 
 
-class OGICameraRKSensor(DefaultEquipmentLevelSensor):
+class OGICameraRKSensor(DefaultComponentLevelSensor):
     MDL_CONST1 = 0.01275
     MDL_CONST2 = 0.00000278
 

@@ -1,8 +1,8 @@
 """
 ------------------------------------------------------------------------------
 Program:     The LDAR Simulator (LDAR-Sim)
-File:        equipment
-Purpose: The equipment module.
+File:        component.py
+Purpose: The component module.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the MIT License as published
@@ -41,12 +41,12 @@ from constants.error_messages import Initialization_Messages as im
 from virtual_world.sources import Source
 
 
-class Equipment:
+class Component:
     def __init__(self, equip_type, equip_id, infrastructure_inputs, prop_params) -> None:
         STR_FILTER = r"_equipment"
         pattern: re.Pattern[str] = re.compile(re.escape(STR_FILTER), re.IGNORECASE)
         self._equip_type: str = re.sub(pattern, "", equip_type)
-        self._equipment_ID: str = self._equip_type + "_" + str(equip_id)
+        self._component_ID: str = self._equip_type + "_" + str(equip_id)
         self._sources: list[Source] = []
         self._create_sources(infrastructure_inputs=infrastructure_inputs, prop_params=prop_params)
         self._active_emissions: list[Emission] = []
@@ -56,7 +56,7 @@ class Equipment:
     def __reduce__(self):
         args = (
             self._equip_type,
-            self._equipment_ID,
+            self._component_ID,
             self._sources,
             self._active_emissions,
             self._inactive_emissions,
@@ -68,7 +68,7 @@ class Equipment:
     def _reconstruct(
         cls,
         equip_type,
-        equipment_ID,
+        component_ID,
         sources,
         active_emissions,
         inactive_emissions,
@@ -76,7 +76,7 @@ class Equipment:
     ):
         instance = cls.__new__(cls)
         instance._equip_type = equip_type
-        instance._equipment_ID = equipment_ID
+        instance._component_ID = component_ID
         instance._sources = sources
         instance._active_emissions = active_emissions
         instance._inactive_emissions = inactive_emissions
@@ -166,11 +166,11 @@ class Equipment:
                 )
             )
 
-        return {self._equipment_ID: equip_emissions}
+        return {self._component_ID: equip_emissions}
 
     def activate_emissions(self, date: date, sim_number: int) -> int:
         """Activate any emissions that are due to begin on the current date for the given simulation
-        and add them to the active emissions list for the equipment at which they occur.
+        and add them to the active emissions list for the component at which they occur.
 
         Args:
             date (date): The current date in simulation.
@@ -243,7 +243,7 @@ class Equipment:
             src.set_pregen_emissions(equipment_emissions[src.get_id()], sim_number)
 
     def get_id(self) -> str:
-        return self._equipment_ID
+        return self._component_ID
 
     def gen_emis_data(
         self, emis_df: pd.DataFrame, site_id: str, eqg_id: str, row_index: int, end_date: date
@@ -252,7 +252,7 @@ class Equipment:
         for emission in self._active_emissions:
             summary_dict: dict[str, Any] = emission.get_summary_dict(end_date)
             summary_dict.update(
-                {eca.SITE_ID: site_id, eca.EQG: eqg_id, eca.COMP: self._equipment_ID}
+                {eca.SITE_ID: site_id, eca.EQG: eqg_id, eca.COMP: self._component_ID}
             )
             emis_df.loc[upd_row_index] = summary_dict
             upd_row_index += 1
@@ -260,7 +260,7 @@ class Equipment:
         for emission in self._inactive_emissions:
             summary_dict: dict[str, Any] = emission.get_summary_dict(end_date)
             summary_dict.update(
-                {eca.SITE_ID: site_id, eca.EQG: eqg_id, eca.COMP: self._equipment_ID}
+                {eca.SITE_ID: site_id, eca.EQG: eqg_id, eca.COMP: self._component_ID}
             )
             emis_df.loc[upd_row_index] = summary_dict
             upd_row_index += 1
