@@ -21,14 +21,18 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 from pathlib import Path
 from typing import Tuple
 
-from matplotlib import pyplot as plt, ticker
+import matplotlib.scale as mscale
 import pandas as pd
-from constants import output_file_constants, file_name_constants
+import seaborn as sns
+
+from constants import file_name_constants, output_file_constants
 from file_processing.output_processing import output_utils, summary_visualization_helpers
+from file_processing.output_processing.scaling import QuantileScale
 from file_processing.output_processing.summary_visualization_mapper import (
     SummaryVisualizationMapper,
 )
-import seaborn as sns
+from matplotlib import pyplot as plt
+from matplotlib import ticker
 
 
 def plot_histograms(
@@ -85,7 +89,7 @@ def plot_histograms(
 
             for val in range(hist_stat_dimensionality):
                 if legend_labels[val] is not None:
-                    legend_label_to_use = "".join([program_name, legend_labels[val]])
+                    legend_label_to_use = " ".join([program_name, legend_labels[val]])
                 else:
                     legend_label_to_use = None
                 # Plot the histogram for the program
@@ -119,7 +123,7 @@ def plot_histograms(
             plt.figure(combined_plot.number)
             for val in range(hist_stat_dimensionality):
                 if legend_labels[val] is not None:
-                    legend_label_to_use = "".join([program_name, legend_labels[val]])
+                    legend_label_to_use = " ".join([program_name, legend_labels[val]])
                 else:
                     legend_label_to_use = None
                 # Plot the histogram for the program on the combined plot
@@ -142,6 +146,98 @@ def plot_histograms(
         plt.close(combined_plot)
 
 
+def plot_probit(
+    colors: Tuple[list[Tuple[float, float, float]]],
+    probit_data: dict[str, list[float] | Tuple[list[float], list[float]]],
+    combine_program_plots: bool,
+    visualization_dir: Path,
+    visualization_name: str,
+    viz_mapper: SummaryVisualizationMapper,
+    save_separate_plots: bool = True,
+):
+    probit_stat_dimensionality: int = 1
+    for key, value in probit_data.items():
+        if not isinstance(value, tuple):
+            probit_data[key] = (value,)
+            value = probit_data[key]
+        probit_stat_dimensionality = len(value)
+
+    probit_properties: dict = viz_mapper.get_probit_properties(visualization_name)
+
+    legend_elements: list = []
+
+    mscale.register_scale(QuantileScale)
+
+    if combine_program_plots:
+        combined_plot: plt.Figure = plt.figure()
+        combined_plot_ax: plt.Axes = plt.gca()
+
+    if probit_stat_dimensionality > 1:
+        legend_labels: tuple = tuple(
+            probit_properties[f"probit{dim}"].pop("legend_label", None)
+            for dim in range(probit_stat_dimensionality)
+        )
+    else:
+        legend_labels: tuple = (probit_properties.pop("legend_label", None),)
+
+    for accessor, (program_name, stat) in enumerate(probit_data.items()):
+        if save_separate_plots:
+            separated_plot: plt.Figure = plt.figure()
+            separated_plot_ax: plt.Axes = plt.gca()
+
+            for val in range(probit_stat_dimensionality):
+                if legend_labels[val] is not None:
+                    legend_label_to_use = " ".join([program_name, legend_labels[val]])
+                else:
+                    legend_label_to_use = None
+
+                summary_visualization_helpers.plot_probabilities_lognormal_probit_with_best_fit(
+                    x_vals=stat[val],
+                    color=colors[val][accessor],
+                    legend_label=legend_label_to_use,
+                    axis=separated_plot_ax,
+                    legend_elements=legend_elements,
+                    **probit_properties[f"probit{val}"],
+                )
+
+            if probit_stat_dimensionality > 1:
+                plt.legend(
+                    handles=legend_elements[
+                        (accessor * probit_stat_dimensionality) : (  # noqa 481
+                            accessor * probit_stat_dimensionality
+                        )
+                        + probit_stat_dimensionality
+                    ]
+                )
+
+            save_path: Path = visualization_dir / f"{program_name}_{visualization_name}.png"
+            plt.savefig(save_path)
+            plt.close(separated_plot)
+
+        if combine_program_plots:
+            plt.figure(combined_plot.number)
+
+            for val in range(probit_stat_dimensionality):
+                if legend_labels[val] is not None:
+                    legend_label_to_use = " ".join([program_name, legend_labels[val]])
+                else:
+                    legend_label_to_use = None
+
+                summary_visualization_helpers.plot_probabilities_lognormal_probit_with_best_fit(
+                    x_vals=stat[val],
+                    color=colors[val][accessor],
+                    legend_label=legend_label_to_use,
+                    axis=combined_plot_ax,
+                    legend_elements=legend_elements,
+                    **probit_properties[f"probit{val}"],
+                )
+
+    if combine_program_plots:
+        save_path: Path = visualization_dir / visualization_name
+        plt.savefig(save_path)
+        plt.close(combined_plot)
+
+
 def gen_estimated_vs_true_emissions_percent_difference_plot(
     out_dir: Path,
     visualization_dir: Path,
@@ -151,7 +247,9 @@ def gen_estimated_vs_true_emissions_percent_difference_plot(
 ):
     data_source: Path = out_dir / file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY
     data: pd.DataFrame = pd.read_csv(data_source.with_suffix(".csv"))
-    visualization_name: str = output_file_constants.FileNames.TRUE_VS_ESTIMATED_PERCENT_DIFF_PLOT
+    visualization_name: str = (
+        output_file_constants.SummaryOutputVizFileNames.TRUE_VS_ESTIMATED_PERCENT_DIFF_PLOT
+    )
 
     program_names: list[str] = summary_visualization_helpers.get_non_baseline_prog_names(
         data, baseline_program
@@ -188,7 +286,9 @@ def gen_estimated_vs_true_emissions_relative_difference_plot(
 ):
     data_source: Path = out_dir / file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY
     data: pd.DataFrame = pd.read_csv(data_source.with_suffix(".csv"))
-    visualization_name: str = output_file_constants.FileNames.TRUE_VS_ESTIMATED_RELATIVE_DIFF_PLOT
+    visualization_name: str = (
+        output_file_constants.SummaryOutputVizFileNames.TRUE_VS_ESTIMATED_RELATIVE_DIFF_PLOT
+    )
 
     program_names: list[str] = summary_visualization_helpers.get_non_baseline_prog_names(
         data, baseline_program
@@ -226,8 +326,8 @@ def gen_true_and_estimated_paired_emissions_distribution_plot(
     data_source: Path = out_dir / file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY
     data: pd.DataFrame = pd.read_csv(data_source.with_suffix(".csv"))
     visualization_name: str = (
-        output_file_constants.FileNames.TRUE_AND_ESTIMATED_PAIRED_EMISSIONS_DISTRIBUTION_PLOT
-    )
+        output_file_constants.SummaryOutputVizFileNames
+    ).TRUE_AND_ESTIMATED_PAIRED_EMISSIONS_DISTRIBUTION_PLOT
 
     program_names: list[str] = summary_visualization_helpers.get_non_baseline_prog_names(
         data, baseline_program
@@ -247,6 +347,43 @@ def gen_true_and_estimated_paired_emissions_distribution_plot(
         colors_paired,
         annualized_emissions_data,
         combine_program_histograms,
+        visualization_dir,
+        visualization_name,
+        viz_mapper,
+    )
+
+
+def gen_true_and_estimated_paired_probit_plot(
+    out_dir: Path,
+    visualization_dir: Path,
+    baseline_program: str,
+    combine_program_plots: bool,
+    viz_mapper: SummaryVisualizationMapper,
+):
+    data_source: Path = out_dir / file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY
+    data: pd.DataFrame = pd.read_csv(data_source.with_suffix(".csv"))
+    visualization_name: str = (
+        output_file_constants.SummaryOutputVizFileNames.TRUE_AND_ESTIMATED_PAIRED_PROBIT_PLOT
+    )
+
+    program_names: list[str] = summary_visualization_helpers.get_non_baseline_prog_names(
+        data, baseline_program
+    )
+    annualized_emissions_data: dict[Tuple[list[float], list[float]]] = (
+        summary_visualization_helpers.gen_annual_emissions_summary_list(data, program_names)
+    )
+
+    colors = sns.color_palette("husl", n_colors=len(program_names))
+
+    colors_paired = (
+        [output_utils.luminance_shift(color, lighten=False) for color in colors],
+        [output_utils.luminance_shift(color, lighten=True) for color in colors],
+    )
+
+    plot_probit(
+        colors_paired,
+        annualized_emissions_data,
+        combine_program_plots,
         visualization_dir,
         visualization_name,
         viz_mapper,

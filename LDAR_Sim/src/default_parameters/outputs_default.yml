@@ -36,3 +36,7 @@ Summary Visualizations:
   True_vs_Estimated_Emissions_percent_differences: true
   True_vs_Estimated_Emissions_relative_differences: true
   True_and_Estimated_Paired_Emissions_Distribution: true
+  True and Estimated Emissions Probit: true
+Summary Visualization Settings:
+  True and Estimated Emissions Probit: 
+    Show Markers: true

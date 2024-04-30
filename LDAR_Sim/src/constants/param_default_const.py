@@ -157,6 +157,7 @@ class Output_Params:
     PROGRAM_EMISSIONS = "Program Emissions"
     PROGRAM_TIMESERIES = "Program Timeseries"
     SUMMARY_OUTPUTS = "Summary Outputs"
+    SUMMARY_VISUALIZATION_SETTINGS = "Summary Visualization Settings"
     SUMMARY_FILES = "Summary Files"
     TIMESERIES_SUMMARY = "Timeseries Summary"
     EMISSIONS_SUMMARY = "Emissions Summary"
@@ -193,3 +194,4 @@ class Output_Params:
     EMISSIONS_SUMMARY_AVERAGE_AMOUNT = 'Average "True" Emissions Amount (Kg Methane)'
     EMISSIONS_SUMMARY_PERCENTILE_95_AMOUNT = '95th Percentile "True" Emissions Amount (Kg Methane)'
     EMISSIONS_SUMMARY_PERCENTILE_5_AMOUNT = '5th Percentile "True" Emissions Amount (Kg Methane)'
+    SHOW_MARKERS = "Show Markers"
