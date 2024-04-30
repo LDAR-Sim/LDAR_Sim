@@ -25,7 +25,6 @@ import matplotlib.scale as mscale
 import pandas as pd
 import seaborn as sns
 
-# import scipy.stats
 from constants import file_name_constants, output_file_constants
 from file_processing.output_processing import output_utils, summary_visualization_helpers
 from file_processing.output_processing.scaling import QuantileScale

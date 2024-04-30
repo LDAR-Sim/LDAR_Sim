@@ -98,6 +98,7 @@ class ProbitConstants:
     BEST_FIT_LINE_STYLE = "--"
     PLOTTING_POSITION_ALPHA = 1.0 / 3.0
     PLOTTING_POSITION_BETA = 1.0 / 3.0
+    QUANTILES = [1, 2, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95, 98, 99]
 
 
 class HistogramConstants:

@@ -157,7 +157,7 @@ class Output_Params:
     PROGRAM_EMISSIONS = "Program Emissions"
     PROGRAM_TIMESERIES = "Program Timeseries"
     SUMMARY_OUTPUTS = "Summary Outputs"
-    SUMMARY_OUTPUT_SETTINGS = "Summary Output Settings"
+    SUMMARY_VISUALIZATION_SETTINGS = "Summary Visualization Settings"
     SUMMARY_FILES = "Summary Files"
     TIMESERIES_SUMMARY = "Timeseries Summary"
     EMISSIONS_SUMMARY = "Emissions Summary"

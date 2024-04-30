@@ -2,6 +2,7 @@ import matplotlib.scale as mscale
 import matplotlib.ticker
 import numpy as np
 from scipy import stats
+from constants.output_file_constants import ProbitConstants
 
 
 class QuantileFormatter(matplotlib.ticker.Formatter):
@@ -19,7 +20,7 @@ class QuantileScale(mscale.ScaleBase):
         self._transform = self.ProbabilityTransform()
 
     def _get_quantiles(self):
-        return np.array([1, 2, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95, 98, 99]) / 100.0
+        return np.array(ProbitConstants.QUANTILES) / 100.0
 
     def get_transform(self):
         return self._transform
