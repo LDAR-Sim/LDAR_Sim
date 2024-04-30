@@ -171,6 +171,7 @@ if __name__ == "__main__":
     hash_file_exist: bool
     infrastructure, hash_file_exist = initialize_infrastructure(
         methods,
+        programs,
         virtual_world,
         generator_dir,
         in_dir,
