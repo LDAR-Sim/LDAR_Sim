@@ -3,7 +3,5 @@ n_simulations: 3
 output_directory: ./outputs/simple_test_case_1
 parameter_level: simulation_settings
 preseed_random: true
-program_set_name: sample_simulations
 reference_program: P_OGI
 version: "4.0"
-write_data: true

@@ -35,7 +35,7 @@ def hash_dict(in_dict) -> str:
 
 
 def initialize_infrastructure(
-    methods, virtual_world, generator_dir, in_dir, preseed, preseed_val
+    methods, programs, virtual_world, generator_dir, in_dir, preseed, preseed_val, force_remake
 ) -> Infrastructure:
 
     if not os.path.exists(generator_dir):
@@ -45,9 +45,6 @@ def initialize_infrastructure(
     # If previously generated infrastructure exists, use it instead.
     hash_file_loc = generator_dir / Generator_Files.HASH_FILE
     infra_file_loc = generator_dir / Generator_Files.INFRA_FILE
-    # emis_file_loc = generator_dir / "gen_infrastructure_emissions.p"
-    # TODO Also add logic to hash the emissions rate sources file. Add logic elsewhere to make
-    # that a standard input.
 
     # Generate md5 hashes for files that can contain infrastructure defining information.
     # A md5 hash is a unique* number
@@ -83,9 +80,10 @@ def initialize_infrastructure(
         else None
     )
     virtual_world_hash: str = hash_dict(virtual_world)
+    program_hash: str = hash_dict(programs)
     print(rm.HASHING_COMPLETE)
 
-    if not os.path.isfile(hash_file_loc) or not os.path.isfile(infra_file_loc):
+    if not os.path.isfile(hash_file_loc) or not os.path.isfile(infra_file_loc) or force_remake:
         # No previously generated Infrastructure found, generate new Infrastructure
         print(rm.GEN_INFRA)
         if preseed:
@@ -104,6 +102,7 @@ def initialize_infrastructure(
                     pc.Virtual_World_Params.EQUIP: equip_group_file_hash,
                     pc.Virtual_World_Params.SOURCE: sources_file_hash,
                     pc.Levels.VIRTUAL: virtual_world_hash,
+                    pc.Levels.PROGRAM: program_hash,
                 },
                 f,
             )
@@ -120,6 +119,7 @@ def initialize_infrastructure(
         gen_equip_group_file_hash: str = gen_infra_hash_dict[pc.Virtual_World_Params.EQUIP]
         gen_sources_file_hash: str = gen_infra_hash_dict[pc.Virtual_World_Params.SOURCE]
         gen_virtual_world_hash: str = gen_infra_hash_dict[pc.Levels.VIRTUAL]
+        gen_program_hash: str = gen_infra_hash_dict[pc.Levels.PROGRAM]
 
         # Check if all previous hashes match current hashes
         hashes_match: bool = (
@@ -128,6 +128,7 @@ def initialize_infrastructure(
             and gen_equip_group_file_hash == equip_group_file_hash
             and gen_sources_file_hash == sources_file_hash
             and gen_virtual_world_hash == virtual_world_hash
+            and gen_program_hash == program_hash
         )
 
         # Determine what to do next based on if all current hashes match previous hashes
@@ -159,6 +160,7 @@ def initialize_infrastructure(
                         pc.Virtual_World_Params.EQUIP: equip_group_file_hash,
                         pc.Virtual_World_Params.SOURCE: sources_file_hash,
                         pc.Levels.VIRTUAL: virtual_world_hash,
+                        pc.Levels.PROGRAM: program_hash,
                     },
                     f,
                 )

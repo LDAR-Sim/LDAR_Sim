@@ -18,17 +18,16 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 ------------------------------------------------------------------------------
 """
 
-# TODO create logic to read in the generated emission file
-# TODO move over and cleanup all logic to read in previously
-# generated infrastructure and emissions
 from pathlib import Path
 import pickle
+import sys
 from datetime import date
 import numpy as np
 from virtual_world.infrastructure import Infrastructure
 from initialization.preseed import gen_seed_timeseries
 from constants.file_name_constants import Generator_Files
 from constants.output_messages import RuntimeMessages as rm
+from constants.error_messages import Input_Processing_Messages as ipm
 
 
 def initialize_emissions(
@@ -40,11 +39,12 @@ def initialize_emissions(
     start_date: date,
     end_date: date,
     generator_dir: Path,
+    force_remake: bool = False,
 ):
     n_sim_loc = generator_dir / Generator_Files.N_SIM_SAVE_FILE
     n_simulation_saved: int = 0
     # Store params used to generate the pickle files for change detection
-    if not hash_file_exist:
+    if not hash_file_exist or force_remake:
         # Generate emissions for all simulation sets
         for i in range(n_sims):
             if preseed:
@@ -65,8 +65,13 @@ def initialize_emissions(
         with open(n_sim_loc, "wb") as f:
             pickle.dump(n_sims, f)
     else:
-        with open(n_sim_loc, "rb") as f:
-            n_simulation_saved = pickle.load(f)
+        try:
+            with open(n_sim_loc, "rb") as f:
+                n_simulation_saved = pickle.load(f)
+        except FileNotFoundError:
+            # Handle the case when the file is missing
+            print(ipm.GENERATOR_ERROR.format(file=Generator_Files.N_SIM_SAVE_FILE))
+            sys.exit()
 
         if n_simulation_saved < n_sims:
             with open(n_sim_loc, "wb") as f:
