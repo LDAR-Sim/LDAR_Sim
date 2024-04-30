@@ -26,12 +26,14 @@ from constants.file_name_constants import Generator_Files
 from constants.output_messages import RuntimeMessages
 
 
-def gen_seed_timeseries(sim_start_date: date, sim_end_date: date, gen_dir) -> list[int]:
+def gen_seed_timeseries(
+    sim_start_date: date, sim_end_date: date, gen_dir, force_remake: bool = False
+) -> list[int]:
     seed_ts_dict: dict[date, int] = {}
     preseed_loc = gen_dir / Generator_Files.PRESEED_FILE
     current_date = sim_start_date
 
-    if os.path.isfile(preseed_loc):
+    if os.path.isfile(preseed_loc) and not force_remake:
         seed_ts_dict = get_seed_timeseries(gen_dir)
         # check that the sim length matches
         if (sim_end_date - sim_start_date).days + 1 == len(seed_ts_dict):
@@ -53,10 +55,12 @@ def get_seed_timeseries(gen_dir) -> list[int]:
     return seed_ts
 
 
-def gen_seed_emis(n_sim: int, gen_dir):
+def gen_seed_emis(n_sim: int, gen_dir) -> tuple[list[int], bool]:
     preseed_val: list[int] = []
     preseed_loc = gen_dir / Generator_Files.EMISSION_PRESEED_FILE
+    force_remake = False
     if not os.path.exists(gen_dir):
+        force_remake = True
         os.mkdir(gen_dir)
 
     if os.path.isfile(preseed_loc):
@@ -70,12 +74,13 @@ def gen_seed_emis(n_sim: int, gen_dir):
                 pickle.dump(preseed_val, f)
     else:
         print(RuntimeMessages.GEN_PRESEED_EMISS)
+        force_remake = True
         for i in range(n_sim):
             emis_preseed: int = np.random.randint(0, 255)
             preseed_val.append(emis_preseed)
         with open(preseed_loc, "wb") as f:
             pickle.dump(preseed_val, f)
-    return preseed_val
+    return preseed_val, force_remake
 
 
 def get_emis_seed(gen_dir) -> list[int]:

@@ -22,6 +22,12 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 
 class Input_Processing_Messages:
+    GENERATOR_ERROR = (
+        "Error: {file} file in the generator folder is missing. "
+        "Ensure the generator folder is correctly set up with the necessary files "
+        "or delete the folder to regenerate the files."
+    )
+
     INVALID_EMISSIONS_SOURCE_ERROR = (
         "Error, invalid emissions source information for source {source_name}"
     )

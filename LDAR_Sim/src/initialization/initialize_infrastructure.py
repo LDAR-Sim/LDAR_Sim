@@ -85,7 +85,7 @@ def initialize_infrastructure(
     virtual_world_hash: str = hash_dict(virtual_world)
     print(rm.HASHING_COMPLETE)
 
-    if not os.path.isfile(hash_file_loc) or not os.path.isfile(infra_file_loc):
+    if not os.path.isfile(hash_file_loc) or not os.path.isfile(infra_file_loc) or force_remake:
         # No previously generated Infrastructure found, generate new Infrastructure
         print(rm.GEN_INFRA)
         if preseed:
