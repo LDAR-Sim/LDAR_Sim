@@ -1,19 +1,19 @@
 from hypothesis import given, strategies as st
 from src.scheduling.schedule_dataclasses import EmissionDetectionReport, EquipmentGroupSurveyReport
-from src.sensors.default_equipment_level_sensor import DefaultEquipmentLevelSensor
+from sensors.default_component_level_sensor import DefaultComponentLevelSensor
 
 
-def get_sensor_for_default_equipment_level_sensor_testing() -> DefaultEquipmentLevelSensor:
+def get_sensor_for_default_equipment_level_sensor_testing() -> DefaultComponentLevelSensor:
     mdl: float = [1.0]
     QE: float = 0.0
-    return DefaultEquipmentLevelSensor(mdl=mdl, quantification_error=QE)
+    return DefaultComponentLevelSensor(mdl=mdl, quantification_error=QE)
 
 
 generate_emission_detection_reports_strategy: st.SearchStrategy = st.builds(
     EmissionDetectionReport,
     site=st.text(min_size=1),
     equipment_group=st.text(min_size=1),
-    equipment=st.text(min_size=1),
+    component=st.text(min_size=1),
     true_rate=st.floats(min_value=0),
     measured_rate=st.floats(min_value=0),
 )
@@ -36,7 +36,7 @@ gen_test_data = st.tuples(
 
 @given(test_data=gen_test_data)
 def test_000_gen_equipment_survey_report_return_expected_report(test_data):
-    sensor: DefaultEquipmentLevelSensor = get_sensor_for_default_equipment_level_sensor_testing()
+    sensor: DefaultComponentLevelSensor = get_sensor_for_default_equipment_level_sensor_testing()
     site_id: str = test_data[0]
     eqg_id: str = test_data[1]
     meas_rate: float = test_data[3]

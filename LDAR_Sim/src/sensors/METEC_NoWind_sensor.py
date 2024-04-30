@@ -21,7 +21,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 import numpy as np
 from sensors.default_sensor import DefaultSensor
-from sensors.default_equipment_level_sensor import DefaultEquipmentLevelSensor
+from sensors.default_component_level_sensor import DefaultComponentLevelSensor
 from sensors.default_equipment_group_level_sensor import DefaultEquipmentGroupLevelSensor
 
 
@@ -48,7 +48,7 @@ class METECNWEquipmentGroup(DefaultEquipmentGroupLevelSensor):
         return np.random.binomial(1, prob_detect) and self.check_min_threshold(emis_rate)
 
 
-class METECNWEquipment(DefaultEquipmentLevelSensor):
+class METECNWComponent(DefaultComponentLevelSensor):
     def __init__(self, mdl: float, quantification_error: float) -> None:
         super().__init__(mdl, quantification_error)
 

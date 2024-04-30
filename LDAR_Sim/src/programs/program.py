@@ -27,7 +27,7 @@ from file_processing.output_processing.output_utils import (
     TsMethodData,
 )
 from programs.equipment_group_level_method import EquipmentGroupLevelMethod
-from programs.equipment_level_method import EquipmentLevelMethod
+from programs.component_level_method import ComponentLevelMethod
 from programs.site_level_method import SiteLevelMethod
 from scheduling.scheduling_utils import create_schedule
 
@@ -97,7 +97,7 @@ class Program:
             method_name: str
             properties: dict
 
-            method: Method = EquipmentLevelMethod(method_name, properties, consider_weather, sites)
+            method: Method = ComponentLevelMethod(method_name, properties, consider_weather, sites)
 
             follow_up_method_list.append(method)
 
@@ -184,8 +184,8 @@ class Program:
                 sites=sites,
                 follow_up_schedule=follow_up_schedule,
             )
-        elif method_survey_level == EquipmentLevelMethod.MEASUREMENT_SCALE:
-            return EquipmentLevelMethod(method_name, properties, consider_weather, sites)
+        elif method_survey_level == ComponentLevelMethod.MEASUREMENT_SCALE:
+            return ComponentLevelMethod(method_name, properties, consider_weather, sites)
 
     def do_daily_program_deployment(self) -> list[TsMethodData]:
         timeseries_methods_data: list[TsMethodData] = []

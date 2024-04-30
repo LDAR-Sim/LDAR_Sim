@@ -152,7 +152,7 @@ class Infrastructure:
 
     def activate_emissions(self, date: date, sim_number: int) -> int:
         """Activate any emissions that are due to begin on the current date for the given simulation
-        and add them to the active emissions list for the equipment at which they occur.
+        and add them to the active emissions list for the component at which they occur.
 
         Args:
             date (date): The current date in simulation.

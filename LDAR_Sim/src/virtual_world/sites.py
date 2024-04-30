@@ -277,7 +277,7 @@ class Site:
 
     def activate_emissions(self, date: date, sim_number: int) -> int:
         """Activate any emissions that are due to begin on the current date for the given simulation
-        and add them to the active emissions list for the equipment at which they occur.
+        and add them to the active emissions list for the component at which they occur.
 
         Args:
             date (date): The current date in simulation.
@@ -359,8 +359,8 @@ class Site:
         for eqg in self._equipment_groups:
             eqg.set_pregen_emissions(site_emissions[eqg.get_id()], sim_number)
 
-    def tag_emissions_at_equipment(
-        self, equipment_group: str, equipment: str, tagging_info: TaggingInfo
+    def tag_emissions_at_component(
+        self, equipment_group: str, component: str, tagging_info: TaggingInfo
     ) -> None:
         target_equip_group: Equipment_Group | None = next(
             (
@@ -370,7 +370,7 @@ class Site:
             ),
             None,
         )
-        target_equip_group.tag_emissions_at_equipment(equipment, tagging_info)
+        target_equip_group.tag_emissions_at_component(component, tagging_info)
 
     def update_emissions_state(self, emis_rep_info: EmisInfo) -> TsEmisData:
         emis_data = TsEmisData()

@@ -1,8 +1,8 @@
 """
 ------------------------------------------------------------------------------
 Program:     The LDAR Simulator (LDAR-Sim)
-File:        default_equipment_level_sensor
-Purpose: The provides default behaviors for equipment level sensors
+File:        default_component_level_sensor.py
+Purpose: The provides default behaviors for component level sensors
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the MIT License as published
@@ -30,7 +30,7 @@ from virtual_world.sites import Site
 from constants.param_default_const import Levels
 
 
-class DefaultEquipmentLevelSensor(DefaultSensor):
+class DefaultComponentLevelSensor(DefaultSensor):
     SURVEY_LEVEL = Levels.COMPONENT_LEVEL
 
     def __init__(self, mdl: Union[list[float], float], quantification_error: float) -> None:
@@ -50,7 +50,7 @@ class DefaultEquipmentLevelSensor(DefaultSensor):
             eqg_level_measured_rate: float = 0.0
             emissions_detection_reports: list[EmissionDetectionReport] = []
 
-            for equip, emis_list in eq_emis_list.items():
+            for comp, emis_list in eq_emis_list.items():
                 equip_rate: float = sum([emission.get_rate() for emission in emis_list])
 
                 equip_emission_detected: bool = self._rate_detected(equip_rate)
@@ -62,7 +62,7 @@ class DefaultEquipmentLevelSensor(DefaultSensor):
 
                 emissions_detection_reports.append(
                     self._gen_emissions_detection_report(
-                        site.get_id(), eqg, equip, equip_measured_rate, equip_rate
+                        site.get_id(), eqg, comp, equip_measured_rate, equip_rate
                     )
                 )
 
@@ -118,12 +118,12 @@ class DefaultEquipmentLevelSensor(DefaultSensor):
         return eqg_survey_report
 
     def _gen_emissions_detection_report(
-        self, site_id: str, eqg_id: str, equip_id: str, measured_rate: float, true_rate: float
+        self, site_id: str, eqg_id: str, comp_id: str, measured_rate: float, true_rate: float
     ) -> EmissionDetectionReport:
         emis_detect_report = EmissionDetectionReport(
             site=site_id,
             equipment_group=eqg_id,
-            equipment=equip_id,
+            component=comp_id,
             measured_rate=measured_rate,
             true_rate=true_rate,
         )
