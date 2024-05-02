@@ -36,6 +36,33 @@ Email: <sally@highwoodemissions.com>
   - [9. Method Inputs](#9-method-inputs)
   - [10. Virtual World Defining Files](#10-virtual-world-defining-files)
   - [11. Legacy Inputs](#11-legacy-inputs)
+    - [Simulation Settings Parameters](#simulation-settings-parameters)
+      - [\<pregenerate\_leaks\>](#pregenerate_leaks)
+      - [\<print\_from\_simulation\>](#print_from_simulation)
+      - [\<outputs\>](#outputs)
+      - [\<site\_visits\>](#site_visits)
+      - [\<leaks\>](#leaks)
+      - [\<sites\>](#sites)
+      - [\<timeseries\>](#timeseries)
+      - [\<plots\>](#plots)
+      - [\<batch\_reporting\>](#batch_reporting)
+      - [\<make\_plots\>](#make_plots)
+    - [Virtual World Settings Parameters](#virtual-world-settings-parameters)
+      - [\<consider\_venting\>](#consider_venting)
+      - [\<weather\_is\_hourly\>](#weather_is_hourly)
+      - [\<infrastructure\_file\>](#infrastructure_file)
+      - [\<subtype\_file\>](#subtype_file)
+      - [\<leak\_dist\_params\>](#leak_dist_params)
+      - [\<leak\_dist\_type\>](#leak_dist_type)
+      - [\<leak\_file\>](#leak_file)
+      - [\<leak\_file\_use\>](#leak_file_use)
+      - [\<max\_leak\_rate\>](#max_leak_rate)
+      - [\<units\>](#units)
+      - [\<n\_init\_leaks\_prob\>](#n_init_leaks_prob)
+      - [\<n\_init\_days\>](#n_init_days)
+      - [\<subtype\_leak\_dist\_file\>](#subtype_leak_dist_file)
+      - [\<subtype\_times\_file\>](#subtype_times_file)
+      - [\<vent\_file\>](#vent_file)
   - [12. Data sources, modelling confidence and model sensitivity](#12-data-sources-modelling-confidence-and-model-sensitivity)
     - [Duty Holder / Operator (historical LDAR data)](#duty-holder--operator-historical-ldar-data)
     - [Duty Holder / Operator (organizational data)](#duty-holder--operator-organizational-data)
@@ -330,6 +357,156 @@ Content for the "Virtual World Defining Files" section goes here.
 --------------------------------------------------------------------------------
 
 ## 11\. Legacy Inputs
+
+As LDAR-Sim continues to advance, certain parameters may become obsolete and consequently removed from the current version. This section will comprehensively list such parameters, along with the version in which they were removed and, if applicable, their replacements.
+
+--------------------------------------------------------------------------------
+
+### Simulation Settings Parameters
+
+#### &lt;pregenerate_leaks&gt;
+
+- Removed as of version 4.0.0
+
+As of v4.0 to ensure a fair comparison of programs, the functionality to compare programs with differing emission levels has been omitted, ensuring a standardized evaluation across all programs.
+
+#### &lt;print_from_simulation&gt;
+
+- Removed as of version 4.0.0
+
+#### &lt;outputs&gt;
+
+- Removed as of version 4.0.0
+
+Version 4.0.0 introduces the new [Output Parameter defaults](#6-output-settings), offering a more detailed version of this feature.
+
+#### &lt;site_visits&gt;
+
+- Removed as of version 4.0.0
+
+Version 4.0.0 introduces the new [Output Parameter defaults](#6-output-settings), offering a more detailed version of this feature.
+
+#### &lt;leaks&gt;
+
+- Removed as of version 4.0.0
+
+Version 4.0.0 introduces the new [Output Parameter defaults](#6-output-settings), offering a more detailed version of this feature.
+
+#### &lt;sites&gt;
+
+- Removed as of version 4.0.0
+
+Version 4.0.0 introduces the new [Output Parameter defaults](#6-output-settings), offering a more detailed version of this feature.
+
+#### &lt;timeseries&gt;
+
+- Removed as of version 4.0.0
+
+Version 4.0.0 introduces the new [Output Parameter defaults](#6-output-settings), offering a more detailed version of this feature.
+
+#### &lt;plots&gt;
+
+- Removed as of version 4.0.0
+
+Version 4.0.0 introduces the new [Output Parameter defaults](#6-output-settings), offering a more detailed version of this feature.
+
+#### &lt;batch_reporting&gt;
+
+- Removed as of version 4.0.0
+
+Version 4.0.0 introduces the new [Output Parameter defaults](#6-output-settings), offering a more detailed version of this feature.
+
+#### &lt;make_plots&gt;
+
+- Removed as of version 3.2.0
+
+Version 4.0.0 introduces the new [Output Parameter defaults](#6-output-settings), offering a more detailed version of this feature.
+
+--------------------------------------------------------------------------------
+
+### Virtual World Settings Parameters
+
+#### &lt;consider_venting&gt;
+
+- Removed as of version 4.0.0
+
+This feature has been removed due to the implementation of non-repairable emissions.
+
+#### &lt;weather_is_hourly&gt;
+
+- Removed as of version 4.0.0
+
+This feature may be re-implemented in the future, however with the initial update, all weather is averaged per day.
+
+#### &lt;infrastructure_file&gt;
+
+- Removed as of version 4.0.0
+
+This parameter has been replaced with [sites_file](#sites_file).
+
+#### &lt;subtype_file&gt;
+
+- Removed as of version 4.0.0
+
+This parameter has been replaced with [site_type_file](#site_type_file).
+
+#### &lt;leak_dist_params&gt;
+
+- Removed as of version 4.0.0
+
+As of version 4.0.0, this parameter has been moved into the [emissions_file](#emissions_file).
+
+#### &lt;leak_dist_type&gt;
+
+- Removed as of version 4.0.0
+
+As of version 4.0.0, this parameter has been moved into the [emissions_file](#emissions_file).
+
+#### &lt;leak_file&gt;
+
+- Removed as of version 4.0.0
+
+As of version 4.0.0, the function of this file has been replaced by the [emissions_file](#emissions_file).
+
+#### &lt;leak_file_use&gt;
+
+- Removed as of version 4.0.0
+
+As of version 4.0.0, this parameter has been moved into the [emissions_file](#emissions_file).
+
+#### &lt;max_leak_rate&gt;
+
+- Removed as of version 4.0.0
+
+As of version 4.0.0, this parameter has been moved into the [emissions_file](#emissions_file).
+
+#### &lt;units&gt;
+
+- Removed as of version 4.0.0
+
+As of version 4.0.0, this parameter has been moved into the [emissions_file](#emissions_file).
+
+#### &lt;n_init_leaks_prob&gt;
+
+- Removed as of version 4.0.0
+
+#### &lt;n_init_days&gt;
+
+- Removed as of version 4.0.0
+
+#### &lt;subtype_leak_dist_file&gt;
+
+- Removed as of version 3.0.0
+
+Version 4.0.0 revamped the organization of all emissions-related values, consolidating them within the [emissions_file](#emissions_file).
+
+#### &lt;subtype_times_file&gt;
+
+- Removed as of version 2.4.0
+
+#### &lt;vent_file&gt;
+
+- Removed as of Version 2.1.2
 
 --------------------------------------------------------------------------------
 
