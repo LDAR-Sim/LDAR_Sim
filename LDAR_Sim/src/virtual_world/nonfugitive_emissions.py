@@ -147,6 +147,7 @@ class NonRepairableEmission(Emission):
         summary_dict.update({(eca.RECORDED, self._record)})
         summary_dict.update({(eca.RECORDED_BY, self._recorded_by_company)})
         summary_dict.update({(eca.DATE_REP_EXP, self._expiry_date)})
+        summary_dict.update({(eca.THEORY_DATE, self._expiry_date)})
         return summary_dict
 
     @override

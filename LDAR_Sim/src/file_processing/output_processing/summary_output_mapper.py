@@ -178,6 +178,17 @@ class SummaryOutputMapper:
 
     YEARLY_MAPPINGS = {
         file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY: {
+            output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_ANN_MIT: lambda year: (
+                lambda df: (
+                    summary_output_helpers.get_yearly_value_for_multi_day_stat(
+                        df,
+                        output_file_constants.EMIS_DATA_COL_ACCESSORS.MITIGATED,
+                        year,
+                        output_file_constants.EMIS_DATA_COL_ACCESSORS.DATE_REP_EXP,
+                        output_file_constants.EMIS_DATA_COL_ACCESSORS.THEORY_DATE,
+                    )
+                )
+            ),
             output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_ANN_EMIS: lambda year: (
                 lambda df: (
                     summary_output_helpers.get_yearly_value_for_multi_day_stat(

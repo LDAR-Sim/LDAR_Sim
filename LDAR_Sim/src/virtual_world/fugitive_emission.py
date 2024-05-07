@@ -166,6 +166,9 @@ class FugitiveEmission(Emission):
             return mit_days * self._rate * cc.GRAMS_PER_SECOND_TO_KG_PER_DAY
         return 0.0
 
+    def calc_theory_date(self) -> date:
+        return self._start_date + timedelta(days=self._nrd)
+
     @override
     def update(self, emis_rep_info: EmisInfo) -> bool:
         is_active: bool = super().update(emis_rep_info)
@@ -186,6 +189,7 @@ class FugitiveEmission(Emission):
         summary_dict.update({(eca.TAGGED, self._tagged)})
         summary_dict.update({(eca.TAGGED_BY, self._tagged_by_company)})
         summary_dict.update({(eca.MITIGATED, self.calc_mitigated())})
+        summary_dict.update({(eca.THEORY_DATE, self.calc_theory_date())})
         return summary_dict
 
     @override

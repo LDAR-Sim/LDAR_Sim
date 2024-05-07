@@ -33,6 +33,7 @@ class Emission:
         eca.STATUS: "object",
         eca.DAYS_ACT: "int32",
         eca.T_VOL_EMIT: "float64",
+        eca.MITIGATED: "float64",
         eca.EST_VOL_EMIT: "float64",
         eca.T_RATE: "float64",
         eca.M_RATE: "float64",
@@ -42,6 +43,7 @@ class Emission:
         eca.TAGGED: "bool",
         eca.TAGGED_BY: "object",
         eca.DATE_REP_EXP: "datetime64",
+        eca.THEORY_DATE: "datetime64",
     }
 
     def __init__(

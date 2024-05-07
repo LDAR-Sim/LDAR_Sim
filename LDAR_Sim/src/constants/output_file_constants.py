@@ -144,8 +144,10 @@ class TS_SUMMARY_COLUMNS_ACCESSORS:
 class EMIS_SUMMARY_COLUMNS_ACCESSORS:
     PROG_NAME = "Program Name"
     SIM = "Simulation"
+    T_ANN_MIT = 'Year {} "True" Mitigated Emissions (Kg Methane)'
     T_ANN_EMIS = 'Year {} "True" Emissions (Kg Methane)'
     EST_ANN_EMIS = 'Year {} "Estimated" Emissions (Kg Methane)'
+    REGX_T_ANN_MIT = r'Year \d+ "True" Mitigated Emissions \(Kg Methane\)'
     REGX_T_ANN_EMIS = r'Year \d+ "True" Emissions \(Kg Methane\)'
     REGX_EST_ANN_EMIS = r'Year \d+ "Estimated" Emissions \(Kg Methane\)'
     REGX_EST_FUG_ANN_EMIS = r'Year \d+ "Estimated" Fugitive Emissions \(Kg Methane\)'
@@ -210,6 +212,7 @@ class EMIS_DATA_COL_ACCESSORS:
     M_RATE = '"Measured" Rate (g/s)'
     DATE_BEG = "Date Began"
     DATE_REP_EXP = "Date Repaired or Expired"
+    THEORY_DATE = "Theoretical End Date"
     INIT_DETECT_BY = "Initially Detected By"
     INIT_DETECT_DATE = "Initially Detected Date"
     TAGGED = "Tagged"
@@ -277,6 +280,7 @@ EMIS_DATA_FINAL_COL_ORDER = [
     EMIS_DATA_COL_ACCESSORS.EST_DAYS_ACT,
     EMIS_DATA_COL_ACCESSORS.DATE_BEG,
     EMIS_DATA_COL_ACCESSORS.DATE_REP_EXP,
+    EMIS_DATA_COL_ACCESSORS.THEORY_DATE,
     EMIS_DATA_COL_ACCESSORS.MITIGATED,
     EMIS_DATA_COL_ACCESSORS.T_VOL_EMIT,
     EMIS_DATA_COL_ACCESSORS.EST_VOL_EMIT,
