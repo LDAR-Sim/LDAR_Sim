@@ -79,6 +79,18 @@ def mock_simple_fugitive_emission_for_natural_repair_testing_1_fix() -> (
     return to_ret, date(*[2018, 3, 2])
 
 
+@pytest.fixture(name="mock_simple_fugitive_emission_for_natural_repair_testing_2")
+def mock_simple_fugitive_emission_for_natural_repair_testing_2_fix() -> (
+    Tuple[FugitiveEmission, date]
+):
+    to_ret = FugitiveEmission(
+        1, 1, date(*[2016, 12, 31]), date(*[2017, 1, 1]), True, {}, 14, 200, 10
+    )
+    to_ret._days_since_tagged = 0
+    to_ret._active_days = 9
+    return to_ret, date(*[2017, 1, 10])
+
+
 @pytest.fixture(name="mock_simple_fugitive_emission_for_tag_leak_testing_1")
 def mock_simple_fugitive_emission_for_tag_leak_testing_1_fix() -> Tuple[
     FugitiveEmission,
