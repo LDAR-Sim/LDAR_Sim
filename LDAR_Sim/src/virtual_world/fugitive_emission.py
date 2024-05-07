@@ -24,7 +24,6 @@ from numpy import random
 from typing import Any
 from typing_extensions import override
 
-from constants.general_const import Conversion_Constants as conv_const
 from file_processing.output_processing.output_utils import EmisInfo
 from constants.output_file_constants import EMIS_DATA_COL_ACCESSORS as eca
 from constants.general_const import Emission_Constants as ec, Conversion_Constants as cc
@@ -161,6 +160,12 @@ class FugitiveEmission(Emission):
         self._tagging_rep_delay = tagging_rep_delay
         return True
 
+    def calc_mitigated(self) -> float:
+        mit_days = self._nrd - self._active_days
+        if self._tagged_by_company != ec.NATURAL and self._status == ec.REPAIRED and mit_days > 0:
+            return mit_days * self._rate * cc.GRAMS_PER_SECOND_TO_KG_PER_DAY
+        return 0.0
+
     @override
     def update(self, emis_rep_info: EmisInfo) -> bool:
         is_active: bool = super().update(emis_rep_info)
@@ -180,6 +185,7 @@ class FugitiveEmission(Emission):
         summary_dict.update({(eca.DATE_REP_EXP, self._repair_date)})
         summary_dict.update({(eca.TAGGED, self._tagged)})
         summary_dict.update({(eca.TAGGED_BY, self._tagged_by_company)})
+        summary_dict.update({(eca.MITIGATED, self.calc_mitigated())})
         return summary_dict
 
     @override

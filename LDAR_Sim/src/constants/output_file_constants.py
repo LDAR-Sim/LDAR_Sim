@@ -203,6 +203,7 @@ class EMIS_DATA_COL_ACCESSORS:
     EST_DAYS_ACT = "Estimated Days Active"
     T_VOL_EMIT = '"True" Volume Emitted (Kg Methane)'
     EST_VOL_EMIT = '"Estimated" Volume Emitted (Kg Methane)'
+    MITIGATED = "Mitigated Emissions (Kg Methane)"
     T_RATE = '"True" Rate (g/s)'
     M_RATE = '"Measured" Rate (g/s)'
     DATE_BEG = "Date Began"
@@ -274,6 +275,7 @@ EMIS_DATA_FINAL_COL_ORDER = [
     EMIS_DATA_COL_ACCESSORS.EST_DAYS_ACT,
     EMIS_DATA_COL_ACCESSORS.DATE_BEG,
     EMIS_DATA_COL_ACCESSORS.DATE_REP_EXP,
+    EMIS_DATA_COL_ACCESSORS.MITIGATED,
     EMIS_DATA_COL_ACCESSORS.T_VOL_EMIT,
     EMIS_DATA_COL_ACCESSORS.EST_VOL_EMIT,
     EMIS_DATA_COL_ACCESSORS.T_RATE,
