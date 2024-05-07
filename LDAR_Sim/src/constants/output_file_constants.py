@@ -149,6 +149,7 @@ class EMIS_SUMMARY_COLUMNS_ACCESSORS:
     REGX_T_ANN_EMIS = r'Year \d+ "True" Emissions \(Kg Methane\)'
     REGX_EST_ANN_EMIS = r'Year \d+ "Estimated" Emissions \(Kg Methane\)'
     REGX_EST_FUG_ANN_EMIS = r'Year \d+ "Estimated" Fugitive Emissions \(Kg Methane\)'
+    T_TOT_MIT = 'Total "True" Mitigated Emissions (Kg Methane)'
     T_TOTAL_EMIS = 'Total "True" Emissions (Kg Methane)'
     EST_TOTAL_EMIS = 'Total "Estimated" Emissions (Kg Methane)'
     T_TOTAL_MIT_EMIS = 'Total "True" Mitigable Emissions (Kg Methane)'
@@ -181,6 +182,7 @@ TS_SUMMARY_COLUMNS = [
 EMIS_SUMMARY_COLUMNS = [
     EMIS_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME,
     EMIS_SUMMARY_COLUMNS_ACCESSORS.SIM,
+    EMIS_SUMMARY_COLUMNS_ACCESSORS.T_TOT_MIT,
     EMIS_SUMMARY_COLUMNS_ACCESSORS.T_TOTAL_EMIS,
     EMIS_SUMMARY_COLUMNS_ACCESSORS.EST_TOTAL_EMIS,
     EMIS_SUMMARY_COLUMNS_ACCESSORS.T_TOTAL_MIT_EMIS,

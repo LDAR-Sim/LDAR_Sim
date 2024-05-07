@@ -106,6 +106,11 @@ class SummaryOutputMapper:
             ),
         },
         file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY: {
+            output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_TOT_MIT: lambda df: (
+                summary_output_helpers.get_sum(
+                    df, output_file_constants.EMIS_DATA_COL_ACCESSORS.MITIGATED
+                )
+            ),
             output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_TOTAL_EMIS: lambda df: (
                 summary_output_helpers.get_sum(
                     df, output_file_constants.EMIS_DATA_COL_ACCESSORS.T_VOL_EMIT

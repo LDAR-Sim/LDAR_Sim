@@ -184,6 +184,7 @@ class Output_Params:
     AVERAGE_DAILY_COST = "Average Daily Cost ($)"
     PERCENTILE_95_DAILY_COST = "95th Percentile Daily Cost ($)"
     PERCENTILE_5_DAILY_COST = "5th Percentile Daily Cost ($)"
+    EMISSIONS_SUMMARY_TOT_MITIGATION = 'Total "True" Mitigated Emissions (Kg Methane)'
     EMISSIONS_SUMMARY_TOTAL_TRUE = 'Total "True" Emissions (Kg Methane)'
     EMISSIONS_SUMMARY_TOTAL_ESTIMATED = 'Total "Estimated" Emissions (Kg Methane)'
     EMISSIONS_SUMMARY_TOTAL_MITIGABLE = 'Total "True" Mitigable Emissions (Kg Methane)'
