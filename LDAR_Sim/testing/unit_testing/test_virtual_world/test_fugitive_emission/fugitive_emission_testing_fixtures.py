@@ -84,6 +84,7 @@ def mock_simple_emission_for_get_summary_dict_1_fix() -> Tuple[FugitiveEmission,
             "Recorded By": "N/A",
             "Repairable": True,
             "Date Repaired or Expired": None,
+            "Theoretical End Date": date(2019, 1, 1),
         },
     )
 
