@@ -57,6 +57,16 @@ def mock_simple_nonfugitive_emission_for_expire_testing_1_fix() -> (
     return to_ret, date(*[2018, 3, 2])
 
 
+@pytest.fixture(name="mock_simple_nonfugitive_emission_for_expire_testing_2")
+def mock_simple_nonfugitive_emission_for_expire_testing_2_fix() -> (
+    Tuple[NonRepairableEmission, date]
+):
+    to_ret = NonRepairableEmission(1, 1, date(*[2016, 12, 31]), date(*[2017, 1, 1]), True, {}, 10)
+    to_ret._days_since_tagged = 30
+    to_ret._active_days = 9
+    return to_ret, date(*[2017, 1, 10])
+
+
 @pytest.fixture(name="mock_nonfugitive_emission_for_update_no_status_change")
 def mock_nonfugitive_emission_for_update_no_status_change_fix() -> NonRepairableEmission:
     to_ret = NonRepairableEmission(1, 1, date(*[2018, 1, 1]), date(*[2017, 1, 1]), True, {}, 365)

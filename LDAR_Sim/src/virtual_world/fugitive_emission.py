@@ -113,7 +113,9 @@ class FugitiveEmission(Emission):
         self._status = ec.REPAIRED
         emis_rep_info.leaks_nat_repaired += 1
         emis_rep_info.nat_repair_cost += self.get_repair_cost()
-        self._repair_date = self._start_date + timedelta(days=(self._active_days))
+        self._repair_date = self._start_date + timedelta(
+            days=(self._active_days + self._days_active_b4_sim)
+        )
 
     # TODO potentially move this into company later
     def estimate_start_date(self, cur_date: date, t_since_ldar: int) -> None:
