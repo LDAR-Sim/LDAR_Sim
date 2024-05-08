@@ -21,7 +21,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 """
 
 import numpy as np
-from sensors.default_equipment_level_sensor import DefaultEquipmentLevelSensor
+from sensors.default_component_level_sensor import DefaultComponentLevelSensor
 
 """
 PoD = 1/(1+exp(-(5.0221+0.139q - 0.1498c - 0.057s - (12.7024/L) - 0.4115U - 0.0807T )))
@@ -47,7 +47,7 @@ MDL values: [
 SECONDTOMINUTE = 60
 
 
-class MobilePipeline(DefaultEquipmentLevelSensor):
+class MobilePipeline(DefaultComponentLevelSensor):
     def __init__(self, mdl: float, quantification_error: float) -> None:
         super().__init__(mdl, quantification_error)
 
@@ -79,9 +79,10 @@ class MobilePipeline(DefaultEquipmentLevelSensor):
         return np.random.binomial(1, prob_detect)
 
 
-class MobilePipelineTruck(DefaultEquipmentLevelSensor):
+class MobilePipelineTruck(DefaultComponentLevelSensor):
     def __init__(self, mdl: float, quantification_error: float) -> None:
         super().__init__(mdl, quantification_error)
+        self._mdl = mdl
 
     def _rate_detected(self, emis_rate: float) -> bool:
         T = 15  # temperature in Celsius

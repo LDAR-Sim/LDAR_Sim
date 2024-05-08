@@ -35,6 +35,7 @@ from sensors.default_component_level_sensor import DefaultComponentLevelSensor
 from sensors.OGI_camera_rk import OGICameraRKSensor
 from sensors.OGI_camera_zim import OGICameraZimSensor
 from sensors.METEC_NoWind_sensor import METECNWComponent
+from sensors.generic_POD import GenericPOD_Comp
 from virtual_world.sites import Site
 from sensors.pipeline_sensor import MobilePipeline, MobilePipelineTruck
 from sensors.custom90 import CustomThreshold
@@ -124,6 +125,8 @@ class ComponentLevelMethod(Method):
             self._sensor = MobilePipelineTruck(sensor_info[mp.MDL], sensor_info[mp.QE])
         elif sensor_info[mp.TYPE] == "custom_threshold":
             self._sensor = CustomThreshold(sensor_info[mp.MDL], sensor_info[mp.QE])
+        elif sensor_info[mp.TYPE] == "generic":
+            self._sensor = GenericPOD_Comp(sensor_info[mp.MDL], sensor_info[mp.QE])
         else:
             print(ipm.ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
             sys.exit()

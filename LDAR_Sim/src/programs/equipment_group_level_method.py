@@ -26,6 +26,7 @@ from sensors.METEC_NoWind_sensor import METECNWEquipmentGroup
 from sensors.default_equipment_group_level_sensor import (
     DefaultEquipmentGroupLevelSensor,
 )
+from sensors.generic_POD import GenericPOD_Equip
 import constants.param_default_const as pdc
 
 
@@ -57,6 +58,8 @@ class EquipmentGroupLevelMethod(SiteLevelMethod):
             self._sensor = METECNWEquipmentGroup(
                 sensor_info[pdc.Method_Params.MDL], sensor_info[pdc.Method_Params.QE]
             )
+        elif sensor_info[mp.TYPE] == "generic":
+            self._sensor = GenericPOD_Equip(sensor_info[mp.MDL], sensor_info[mp.QE])
         else:
             print(ipm.ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
             sys.exit()

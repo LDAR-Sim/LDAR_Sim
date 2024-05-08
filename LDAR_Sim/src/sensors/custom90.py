@@ -21,7 +21,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 """
 
 import numpy as np
-from sensors.default_equipment_level_sensor import DefaultEquipmentLevelSensor
+from sensors.default_component_level_sensor import DefaultComponentLevelSensor
 
 """
 User input:
@@ -32,9 +32,10 @@ User input:
 """
 
 
-class CustomThreshold(DefaultEquipmentLevelSensor):
+class CustomThreshold(DefaultComponentLevelSensor):
     def __init__(self, mdl: float, quantification_error: float) -> None:
         super().__init__(mdl, quantification_error)
+        self._mdl = mdl
 
     def _rate_detected(self, emis_rate: float) -> bool:
         threshold = self._mdl[0]

@@ -33,6 +33,7 @@ from scheduling.follow_up_survey_planner import (
 from scheduling.surveying_dataclasses import DetectionRecord
 from sensors.default_site_level_sensor import DefaultSiteLevelSensor
 from sensors.METEC_NoWind_sensor import METECNWSite
+from sensors.generic_POD import GenericPOD_Site
 import constants.param_default_const as pdc
 import sys
 
@@ -332,6 +333,8 @@ class SiteLevelMethod(Method):
             self._sensor = METECNWSite(
                 sensor_info[pdc.Method_Params.MDL], sensor_info[pdc.Method_Params.QE]
             )
+        elif sensor_info[mp.TYPE] == "generic":
+            self._sensor = GenericPOD_Site(sensor_info[mp.MDL], sensor_info[mp.QE])
         else:
             print(ipm.ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
             sys.exit()
