@@ -160,10 +160,17 @@ class FugitiveEmission(Emission):
         self._tagging_rep_delay = tagging_rep_delay
         return True
 
-    def calc_mitigated(self) -> float:
-        mit_days = self._nrd - self._active_days
-        if self._tagged_by_company != ec.NATURAL and self._status == ec.REPAIRED and mit_days > 0:
-            return mit_days * self._rate * cc.GRAMS_PER_SECOND_TO_KG_PER_DAY
+    def calc_mitigated(self, end_date) -> float:
+        # Calculate the comparison date
+        comparison_date = self._start_date + timedelta(days=self._nrd)
+        # Calculate the number of days after _sim_end_date, set to 0 if negative
+        days_after_sim_end = max(0, (comparison_date - end_date).days)
+
+        if self._tagged_by_company != ec.NATURAL and self._status == ec.REPAIRED:
+            # Calculate mitigated days only if necessary
+            mit_days = self._nrd - self._active_days - self._days_active_b4_sim - days_after_sim_end
+            if mit_days > 0:
+                return mit_days * self._rate * cc.GRAMS_PER_SECOND_TO_KG_PER_DAY
         return 0.0
 
     def calc_theory_date(self) -> date:
@@ -188,7 +195,7 @@ class FugitiveEmission(Emission):
         summary_dict.update({(eca.DATE_REP_EXP, self._repair_date)})
         summary_dict.update({(eca.TAGGED, self._tagged)})
         summary_dict.update({(eca.TAGGED_BY, self._tagged_by_company)})
-        summary_dict.update({(eca.MITIGATED, self.calc_mitigated())})
+        summary_dict.update({(eca.MITIGATED, self.calc_mitigated(end_date))})
         summary_dict.update({(eca.THEORY_DATE, self.calc_theory_date())})
         return summary_dict
 
