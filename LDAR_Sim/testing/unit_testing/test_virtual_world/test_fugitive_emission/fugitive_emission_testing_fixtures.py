@@ -1,3 +1,23 @@
+"""
+------------------------------------------------------------------------------
+Program:     The LDAR Simulator (LDAR-Sim)
+File:        fugitive_emissions_testing_fixtures.py
+Purpose: Contains fixtures for fugitive emission testing unit tests
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the MIT License as published
+by the Free Software Foundation, version 3.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+MIT License for more details.
+You should have received a copy of the MIT License
+along with this program.  If not, see <https://opensource.org/licenses/MIT>.
+
+------------------------------------------------------------------------------
+"""
+
 from datetime import date
 from typing import Tuple
 import pytest
@@ -52,6 +72,7 @@ def mock_simple_emission_for_get_summary_dict_1_fix() -> Tuple[FugitiveEmission,
             "Days Active": 0,
             "Estimated Days Active": 0,
             '"True" Volume Emitted (Kg Methane)': 0.0,
+            "Mitigated Emissions (Kg Methane)": 0.0,
             '"True" Rate (g/s)': 1,
             '"Measured" Rate (g/s)': None,
             "Date Began": date(2018, 1, 1),
@@ -63,6 +84,7 @@ def mock_simple_emission_for_get_summary_dict_1_fix() -> Tuple[FugitiveEmission,
             "Recorded By": "N/A",
             "Repairable": True,
             "Date Repaired or Expired": None,
+            "Theoretical End Date": date(2019, 1, 1),
         },
     )
 

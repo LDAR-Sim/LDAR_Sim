@@ -32,7 +32,15 @@ def closest_future_date(date: pd.Timestamp, date_list: list[pd.Timestamp]) -> pd
 def find_df_row_value_w_match(
     value_to_match: Any, value_col: str, return_col: str, df: pd.DataFrame
 ):
-    return df.loc[df.loc[:, value_col] == value_to_match, return_col].values[0]
+    if not df.empty:
+        matching_rows = df.loc[df.loc[:, value_col] == value_to_match, return_col].values
+        if len(matching_rows) > 0:
+            return matching_rows[0]
+        else:
+            # Handle case where no matching rows were found
+            return False
+    else:
+        return False
 
 
 # Function to calculate start_date based on conditions

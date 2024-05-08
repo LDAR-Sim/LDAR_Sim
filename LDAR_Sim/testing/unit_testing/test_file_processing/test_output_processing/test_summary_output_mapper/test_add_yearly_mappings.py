@@ -11,6 +11,9 @@ def test_add_yearly_mappings_set_expected_mappings(mocker):
     summary_file = file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY
     simulation_years = [2017, 2018, 2019]
     expected_keys = [
+        output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_ANN_MIT.format(2017),
+        output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_ANN_MIT.format(2018),
+        output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_ANN_MIT.format(2019),
         output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_ANN_EMIS.format(2017),
         output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_ANN_EMIS.format(2018),
         output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_ANN_EMIS.format(2019),

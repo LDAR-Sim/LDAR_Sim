@@ -22,6 +22,7 @@ Summary Outputs:
       95th Percentile Daily Cost ($): true
       5th Percentile Daily Cost ($): true
     Emissions Summary:
+      Total "True" Mitigated Emissions (Kg Methane): true
       Total "True" Emissions (Kg Methane): true
       Total "Estimated" Emissions (Kg Methane): true
       Total "True" Mitigable Emissions (Kg Methane): true

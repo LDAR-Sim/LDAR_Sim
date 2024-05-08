@@ -55,6 +55,7 @@ def get_mock_summary_output_mapper():
                 param_default_const.Output_Params.PERCENTILE_5_DAILY_COST: True,
             },
             param_default_const.Output_Params.EMISSIONS_SUMMARY: {
+                param_default_const.Output_Params.EMISSIONS_SUMMARY_TOT_MITIGATION: True,
                 param_default_const.Output_Params.EMISSIONS_SUMMARY_TOTAL_TRUE: True,
                 param_default_const.Output_Params.EMISSIONS_SUMMARY_TOTAL_ESTIMATED: True,
                 param_default_const.Output_Params.EMISSIONS_SUMMARY_TOTAL_MITIGABLE: True,
@@ -102,33 +103,39 @@ mock_emis_csv_data = {
         {
             eca.T_VOL_EMIT: [1, 2, 3, 4],
             eca.EST_VOL_EMIT: [0, 1, 2, 3],
+            eca.MITIGATED: [0, 1, 1, 1],
             eca.T_RATE: [10, 9, 8, 7],
             eca.M_RATE: [9, 8, 7, 6],
             eca.REPAIRABLE: [True, True, True, False],
             eca.DATE_BEG: ["2024-01-01", "2024-01-01", "2025-01-01", "2025-01-01"],
             eca.DATE_REP_EXP: ["2024-01-01", "2024-01-01", "2025-01-01", "2025-01-01"],
+            eca.THEORY_DATE: ["2024-01-02", "2024-01-02", "2025-01-02", "2025-01-01"],
         }
     ),
     "test_1_emissions_summary.csv": pd.DataFrame(
         {
             eca.T_VOL_EMIT: [5, 6, 7, 8],
             eca.EST_VOL_EMIT: [4, 5, 6, 7],
+            eca.MITIGATED: [1, 1, 1, 0],
             eca.T_RATE: [6, 5, 4, 3],
             eca.M_RATE: [5, 4, 3, 2],
             eca.REPAIRABLE: [True, True, True, False],
             eca.DATE_BEG: ["2024-01-01", "2024-01-01", "2025-01-01", "2025-01-01"],
             eca.DATE_REP_EXP: ["2024-01-01", "2024-01-01", "2025-01-01", "2025-01-01"],
+            eca.THEORY_DATE: ["2024-01-02", "2024-01-02", "2025-01-02", "2025-01-01"],
         }
     ),
     "test_2_emissions_summary.csv": pd.DataFrame(
         {
             eca.T_VOL_EMIT: [9, 10, 11, 12],
             eca.EST_VOL_EMIT: [8, 9, 10, 11],
+            eca.MITIGATED: [1, 1, 1, 1],
             eca.T_RATE: [3, 2, 1, 0],
             eca.M_RATE: [2, 1, 0, 0],
             eca.REPAIRABLE: [True, True, True, False],
             eca.DATE_BEG: ["2024-01-01", "2024-01-01", "2025-01-01", "2025-01-01"],
             eca.DATE_REP_EXP: ["2024-01-01", "2024-01-01", "2025-01-01", "2025-01-01"],
+            eca.THEORY_DATE: ["2024-01-02", "2024-01-02", "2025-01-02", "2025-01-01"],
         }
     ),
 }
@@ -137,6 +144,7 @@ expected_emis_summary_csv = pd.DataFrame(
     {
         esca.PROG_NAME: ["test", "test", "test"],
         esca.SIM: ["0", "1", "2"],
+        esca.T_TOT_MIT: [3, 3, 4],
         esca.T_TOTAL_EMIS: [10, 26, 42],
         esca.EST_TOTAL_EMIS: [6, 22, 38],
         esca.T_TOTAL_MIT_EMIS: [6, 18, 30],
@@ -147,6 +155,8 @@ expected_emis_summary_csv = pd.DataFrame(
         esca.T_AVG_EMIS_AMOUNT: [2.5, 6.5, 10.5],
         esca.T_EMIS_AMOUNT_95: [4.0, 8.0, 12.0],
         esca.T_EMIS_AMOUNT_5: [1.0, 5.0, 9.0],
+        esca.T_ANN_MIT.format(2024): [1.0, 2.0, 2.0],
+        esca.T_ANN_MIT.format(2025): [2.0, 1.0, 2.0],
         esca.T_ANN_EMIS.format(2024): [3.0, 11.0, 19.0],
         esca.T_ANN_EMIS.format(2025): [7.0, 15.0, 23.0],
         esca.EST_ANN_EMIS.format(2024): [0, 0, 0],
@@ -157,6 +167,7 @@ expected_emis_summary_csv2 = pd.DataFrame(
     {
         esca.PROG_NAME: ["test", "test", "test"],
         esca.SIM: ["0", "1", "2"],
+        esca.T_TOT_MIT: [3, 3, 4],
         esca.T_TOTAL_EMIS: [10, 26, 42],
         esca.EST_TOTAL_EMIS: [6, 22, 38],
         esca.T_TOTAL_MIT_EMIS: [6, 18, 30],
@@ -167,6 +178,8 @@ expected_emis_summary_csv2 = pd.DataFrame(
         esca.T_AVG_EMIS_AMOUNT: [2.5, 6.5, 10.5],
         esca.T_EMIS_AMOUNT_95: [4.0, 8.0, 12.0],
         esca.T_EMIS_AMOUNT_5: [1.0, 5.0, 9.0],
+        esca.T_ANN_MIT.format(2024): [1.0, 2.0, 2.0],
+        esca.T_ANN_MIT.format(2025): [2.0, 1.0, 2.0],
         esca.T_ANN_EMIS.format(2024): [3.0, 11.0, 19.0],
         esca.T_ANN_EMIS.format(2025): [7.0, 15.0, 23.0],
         esca.EST_ANN_EMIS.format(2024): [0.0, 7.0, 13.0],

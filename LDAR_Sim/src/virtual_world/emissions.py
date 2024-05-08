@@ -33,6 +33,7 @@ class Emission:
         eca.STATUS: "object",
         eca.DAYS_ACT: "int32",
         eca.T_VOL_EMIT: "float64",
+        eca.MITIGATED: "float64",
         eca.EST_VOL_EMIT: "float64",
         eca.T_RATE: "float64",
         eca.M_RATE: "float64",
@@ -42,6 +43,7 @@ class Emission:
         eca.TAGGED: "bool",
         eca.TAGGED_BY: "object",
         eca.DATE_REP_EXP: "datetime64",
+        eca.THEORY_DATE: "datetime64",
     }
 
     def __init__(
@@ -134,6 +136,7 @@ class Emission:
         summary_dict.update({(eca.DAYS_ACT, self._active_days)})
         summary_dict.update({(eca.EST_DAYS_ACT, self._estimated_days_active)})
         summary_dict.update({(eca.T_VOL_EMIT, self.calc_true_emis_vol())})
+        summary_dict.update({(eca.MITIGATED, 0.0)})
         summary_dict.update({(eca.T_RATE, self._rate)})
         summary_dict.update({(eca.M_RATE, self._measured_rate)})
         summary_dict.update({(eca.DATE_BEG, self._start_date)})
