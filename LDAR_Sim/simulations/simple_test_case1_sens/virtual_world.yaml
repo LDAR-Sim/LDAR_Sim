@@ -1,0 +1,16 @@
+version: "4.0"
+parameter_level: virtual_world
+site_samples: 50
+emissions:
+  emissions_file: "emissions_file.csv" #File containing sample emissions rates or emissions distributions.
+  emissions_rate_source: "test1" # The name of a column in the emissions file
+  leak_production_rate: 0.0065
+infrastructure:
+  site_type_file: "_placeholder_str_" # Infrastructure file defining site types
+  sites_file: "facilities_Perm.csv" #Infrastructure file defining sites
+  equipment_group_file: "_placeholder_str_" #Infrastructure file defining equipment groups at sites
+  sources_file: "_placeholder_str_" #Infrastructure file defining emissions sources at equipment
+NRd: 365
+weather_file: "weather_permian.nc"
+start_date: [2017, 1, 1]
+end_date: [2021, 12, 31]

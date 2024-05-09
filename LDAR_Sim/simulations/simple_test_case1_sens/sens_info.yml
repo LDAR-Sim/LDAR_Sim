@@ -1,0 +1,13 @@
+Sensitivity Parameter Level: "methods" # Valid options - virtual_world, programs, methods
+Sensitivity Analysis Permutations: 6 # Number of permutations of parameters to vary to run
+# Below user need to provide a series of values for the parameters to vary in 
+# the sensitivity analysis in the same format as they are found in their parameter file.
+# If these are method level parameters, the user should provide the method name, and indent all 
+# parameters for that method under "Method Sensitivity Parameters".
+Sensitivity Parameter Variations:
+  - Method Name: "OGI" # Name of the method to run the sensitivity analysis on, if performing 
+  # sensitivity analysis at the method level
+    Method Sensitivity Parameters:
+      RS: [1,2,4,6,8,12] # List of values to vary the parameter RS over
+Sensitivity Summary Outputs Information:
+  Confidence Interval: [85] # The confidence interval to calculate for the sensitivity analysis
