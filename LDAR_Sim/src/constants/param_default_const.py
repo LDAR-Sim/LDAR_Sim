@@ -69,18 +69,20 @@ class Virtual_World_Params:
     SOURCE = "sources_file"
     N_SITES = "site_samples"
     REPAIR = "repairs"
-    COST = "cost"
-    DELAY = "delay"
-    EMISS = "emissions"
-    EMISS_FILE = "emissions_file"
-    ERS = "ERS"
-    LPR = "LPR"
-    NR_ERS = "NR_ERS"
-    NR_EPR = "NR_EPR"
+    REPAIR_COST = "cost"
+    REPAIR_DELAY = "delay"
+    EMIS = "emissions"
+    EMIS_FILE = "emissions_file"
+    ERS = "emissions_rate_source"
+    LPR = "leak_production_rate"
+    NR_ERS = "non_repairable_emissions_rate_source"
+    NR_EPR = "non_repairable_emissions_production_rate"
     MAX_RATE = "max_leak_rate"
     UNITS = "units"
-    NRD = "NRd"
+    NRD = "natural_repair_delay"
     DURATION = "duration"
+    MULTI_EMIS = "multiple_emissions_per_source"
+    MULTI_EMIS_NR = "multiple_emissions_per_source_non_repairable"
 
 
 @dataclass
@@ -89,8 +91,8 @@ class Sim_Setting_Params:
     OUTPUT = "output_directory"
     BASELINE = "baseline_program"
     REFERENCE = "reference_program"
-    PROCESS = "n_processes"
-    SIMS = "n_simulations"
+    PROCESS = "processes_count"
+    SIMS = "simulation_count"
     PRESEED = "preseed_random"
 
 
@@ -149,6 +151,7 @@ class Method_Params:
     REDUNDANCY_FILTER = "redundancy_filter"
     SORT_BY_RATE = "sort_by_rate"
     THRESHOLD = "threshold"
+    THRESHOLD_TYPE = "threshold_type"
 
 
 @dataclass
@@ -159,6 +162,7 @@ class Output_Params:
     SUMMARY_OUTPUTS = "Summary Outputs"
     SUMMARY_VISUALIZATION_SETTINGS = "Summary Visualization Settings"
     SUMMARY_FILES = "Summary Files"
+    SUMMARY_VISUALIZATIONS = "Summary Visualizations"
     TIMESERIES_SUMMARY = "Timeseries Summary"
     EMISSIONS_SUMMARY = "Emissions Summary"
     SUMMARY_STATS = "Summary Stats"
