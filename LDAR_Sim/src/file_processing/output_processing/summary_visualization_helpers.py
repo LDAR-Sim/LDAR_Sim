@@ -271,6 +271,7 @@ def plot_probabilities_lognormal_probit_with_best_fit(
     x_label: str,
     y_label: str,
     show_markers: bool,
+    best_fit_linestyle=output_file_constants.ProbitConstants.BEST_FIT_LINE_STYLE,
 ):
     x_values: np.ndarray = np.sort(x_vals)
     x_values = x_values[x_values > 0]
@@ -325,7 +326,7 @@ def plot_probabilities_lognormal_probit_with_best_fit(
         x_values,
         best_fit_line_y_values,
         color=color,
-        linestyle=output_file_constants.ProbitConstants.BEST_FIT_LINE_STYLE,
+        linestyle=best_fit_linestyle,
     )
 
     axis.set_xlabel(x_label)
@@ -338,6 +339,7 @@ def plot_probabilities_lognormal_probit_with_best_fit(
             color=color,
             label=legend_label,
             markersize=15,
+            linestyle=best_fit_linestyle,
         )
     )
 

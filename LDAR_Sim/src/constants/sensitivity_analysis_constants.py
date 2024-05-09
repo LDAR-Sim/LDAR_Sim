@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from constants import param_default_const
+from constants import param_default_const, output_file_constants
 
 
 @dataclass
@@ -64,3 +64,69 @@ class SensitivityAnalysisMapping:
         SENS_PARAM_VARIATIONS: PARAM_VARIATIONS,
         SENS_SUMMARY_INFO: SENS_SUMMARY_INFO,
     }
+
+
+class SensitivityAnalysisOutputs:
+    SENSITIVITY_TRUE_VS_ESTIMATED = "true_estimated_emissions_sensitivity_comparison"
+    SENSITIVITY_TRUE_VS_ESTIMATED_PD = (
+        "true_estimated_emissions_percent_difference_sensitivity_comparison"
+    )
+    SENSITIVITY_TRUE_VS_ESTIMATED_VIOLIN = "true_estimated_emissions_violin_sensitivity_comparison"
+    SENSITIVITY_VARIATIONS_MAPPING = "sensitivity_variations_mapping"
+    SENSITIVITY_TRUE_VS_ESTIMATED_CIS = (
+        "true_estimated_emissions_sensitivity_comparison_confidence_intervals"
+    )
+
+    class TrueEstimatedEmisionsSens:
+        FILE_NAME = "true_estimated_emissions_sensitivity_comparison"
+        SENSITIVITY_SET = "Sensitivity Set"
+        SIMULATION = "Simulation"
+        YEAR = "Year"
+        TRUE_EMISSIONS = "True Emissions"
+        ESTIMATED_EMISSIONS = "Estimated Emissions"
+        PERCENT_DIFFERENCE = "Percent Difference"
+        COLUMNS = [
+            SENSITIVITY_SET,
+            SIMULATION,
+            YEAR,
+            TRUE_EMISSIONS,
+            ESTIMATED_EMISSIONS,
+        ]
+        DATA_SOURCE_MAPPING = {
+            SIMULATION: output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.SIM,
+        }
+        YEARLY_EMIS_MATCH_REGEX = r"^Year \d+ .* Emissions \(Kg Methane\)$"
+        YEAR_EXTRACTION_REGEX = r"^Year (\d+).*"
+
+    class TrueEstimatedEmissionsPercentDiffSensPlot:
+        BIN_RANGE = (0, 200)
+        X_LABEL = 'Percent Difference between "Estimated" and "True" Emissions'
+        Y_LABEL = "Relative Frequency (%)"
+        BIN_WIDTH = 10.0
+
+    class TrueEstimatedEmissionsViolinSensPlot:
+        TRUE_EMISSIONS_LABEL = "T"
+        ESTIMATED_EMISSIONS_LABEL = "E"
+        X_LABEL = "Sensitivity Set"
+        Y_LABEL = "Annual Emissions (Kg Methane) at all sites"
+        TRUE_EMIS_LABEL = '"True" Emissions'
+        ESTIMATED_EMIS_LABEL = '"Estimated" Emissions'
+
+    class SensitivityVariationsMapping:
+        COLUMN_NAMES = ["Sensitivity Permutation", "Parameter", "Value"]
+
+    class SensitivityTrueVsEstimatedCIs:
+        def __init__(self, upper_ci, lower_ci):
+            self.lower_ci = self.LOWER_CI.format(ci=lower_ci)
+            self.upper_ci = self.UPPER_CI.format(ci=upper_ci)
+
+        UPPER_CI_ACCESSOR = "upper_confidence_interval"
+        LOWER_CI_ACCESSOR = "lower_confidence_interval"
+        SENSITIVITY_SET = "Sensitivity Set"
+        LOWER_CI = "{ci}th Percentile"
+        UPPER_CI = "{ci}th Percentile"
+        CONFIDENCE_INTERVAL = "Confidence Interval"
+
+        @property
+        def COLUMNS(self):
+            return [self.SENSITIVITY_SET, self.lower_ci, self.upper_ci]
