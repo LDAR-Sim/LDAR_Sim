@@ -174,6 +174,38 @@ def gen_annual_emissions_summary_list(
     return paired_emissions_lists
 
 
+def gen_annual_mitigation_summary_list(
+    emis_summary_info, program_names
+) -> dict[str, Tuple[list[float], list[float]]]:
+
+    mit_ann_columns = sorted(
+        [
+            column
+            for column in emis_summary_info.columns
+            if re.match(output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.REGX_T_ANN_MIT, column)
+        ]
+    )
+
+    # remove the first year "spin up" column if simulation is long enough
+    # TODO: update this logic with spin up changes...
+    if len(mit_ann_columns) > 1:
+        mit_ann_columns = mit_ann_columns[1:]
+
+    annual_mitigation_lists = {}
+
+    for program_name in program_names:
+        mitigation_list = np.ravel(
+            emis_summary_info.loc[
+                emis_summary_info[output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME]
+                == program_name,
+                mit_ann_columns,
+            ].values
+        ).tolist()
+
+        annual_mitigation_lists[program_name] = mitigation_list
+    return annual_mitigation_lists
+
+
 def gen_true_estimated_annualized_statistics(
     stat_type: str, paired_emissions_lists: dict, visualization_mapper: SummaryVisualizationMapper
 ) -> dict:

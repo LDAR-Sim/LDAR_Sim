@@ -33,6 +33,7 @@ class SummaryOutputVizFileNames:
         "True_and_Estimated_Paired_Emissions_Distribution"
     )
     TRUE_AND_ESTIMATED_PAIRED_PROBIT_PLOT = "True and Estimated Emissions Probit"
+    PROGRAM_MITIGATION_BAR_PLOT = "Program Mitigation Comparison"
 
     def __iter__(self):
         for attr_name, attr_value in vars(self.__class__).items():
@@ -99,6 +100,13 @@ class ProbitConstants:
     PLOTTING_POSITION_ALPHA = 1.0 / 3.0
     PLOTTING_POSITION_BETA = 1.0 / 3.0
     QUANTILES = [1, 2, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95, 98, 99]
+
+
+class MitigationBarConstants:
+    Y_LABEL = "Program Name"
+    X_LABEL = "Median Annual Mitigated Emissions (Kg Methane) at all sites"
+    COLOR = "blue"
+    HEIGHT = 0.75
 
 
 class HistogramConstants:

@@ -46,6 +46,9 @@ class SummaryVisualizationManager:
         output_file_constants.SummaryOutputVizFileNames.TRUE_AND_ESTIMATED_PAIRED_PROBIT_PLOT: (
             summary_visualizations.gen_true_and_estimated_paired_probit_plot
         ),
+        output_file_constants.SummaryOutputVizFileNames.PROGRAM_MITIGATION_BAR_PLOT: (
+            summary_visualizations.gen_program_mitigation_bars
+        ),
     }
 
     def __init__(
