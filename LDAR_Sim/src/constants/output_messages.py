@@ -89,3 +89,8 @@ class InputHelpText:
         "Will set to True if present"
         "ie. python ldar_sim_run.py --debug"
     )
+    SENSITIVITY_INFO_HELP_TEXT = (
+        "Sensitivity Analysis info file, can be absolute path or relative to"
+        "root directory (LDAR_Sim). All files should have yaml or yml extensions \n"
+        "ie. python ldar_sim_main.py --sensitivity_info ./sens_info.yml"
+    )

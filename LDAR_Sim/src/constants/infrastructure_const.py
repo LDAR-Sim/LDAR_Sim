@@ -18,6 +18,8 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 ------------------------------------------------------------------------------
 """
 
+from constants import param_default_const
+
 
 class Infrastructure_Constants:
     class Virtual_World_Constants:
@@ -176,32 +178,66 @@ class Infrastructure_Constants:
 
 class Virtual_World_To_Prop_Params_Mapping:
     PROPAGATING_PARAMS: dict[str, str] = {
-        (
-            Infrastructure_Constants.Sites_File_Constants
-        ).REP_EMIS_ERS: "emissions.repairable_emissions.emissions_rate_source",
-        (
-            Infrastructure_Constants.Sites_File_Constants
-        ).REP_EMIS_EPR: "emissions.repairable_emissions.emissions_production_rate",
-        (Infrastructure_Constants.Sites_File_Constants).REP_EMIS_RD: "repairs.delay",
-        (Infrastructure_Constants.Sites_File_Constants).REP_EMIS_RC: "repairs.cost",
-        (
-            Infrastructure_Constants.Sites_File_Constants
-        ).REP_EMIS_ED: "emissions.repairable_emissions.duration",
-        (
-            Infrastructure_Constants.Sites_File_Constants
-        ).REP_EMIS_MULTI: "emissions.repairable_emissions.multiple_emissions_per_source",
-        (
-            Infrastructure_Constants.Sites_File_Constants
-        ).NON_REP_EMIS_ERS: "emissions.non_repairable_emissions.emissions_rate_source",
-        (
-            Infrastructure_Constants.Sites_File_Constants
-        ).NON_REP_EMIS_EPR: "emissions.non_repairable_emissions.emissions_production_rate",
-        (
-            Infrastructure_Constants.Sites_File_Constants
-        ).NON_REP_EMIS_ED: "emissions.non_repairable_emissions.duration",
-        (
-            Infrastructure_Constants.Sites_File_Constants
-        ).NON_REP_EMIS_MULTI: "emissions.non_repairable_emissions.multiple_emissions_per_source",
+        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ERS: ".".join(
+            [
+                param_default_const.Virtual_World_Params.EMIS,
+                param_default_const.Virtual_World_Params.ERS,
+            ]
+        ),
+        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_EPR: ".".join(
+            [
+                param_default_const.Virtual_World_Params.EMIS,
+                param_default_const.Virtual_World_Params.LPR,
+            ]
+        ),
+        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RD: ".".join(
+            [
+                param_default_const.Virtual_World_Params.REPAIR,
+                param_default_const.Virtual_World_Params.REPAIR_DELAY,
+            ]
+        ),
+        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RC: ".".join(
+            [
+                param_default_const.Virtual_World_Params.REPAIR,
+                param_default_const.Virtual_World_Params.REPAIR_COST,
+            ]
+        ),
+        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ED: ".".join(
+            [
+                param_default_const.Virtual_World_Params.EMIS,
+                param_default_const.Virtual_World_Params.NRD,
+            ]
+        ),
+        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_MULTI: ".".join(
+            [
+                param_default_const.Virtual_World_Params.EMIS,
+                param_default_const.Virtual_World_Params.MULTI_EMIS,
+            ]
+        ),
+        Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_ERS: ".".join(
+            [
+                param_default_const.Virtual_World_Params.EMIS,
+                param_default_const.Virtual_World_Params.NR_ERS,
+            ]
+        ),
+        Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_EPR: ".".join(
+            [
+                param_default_const.Virtual_World_Params.EMIS,
+                param_default_const.Virtual_World_Params.NR_EPR,
+            ]
+        ),
+        Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_ED: ".".join(
+            [
+                param_default_const.Virtual_World_Params.EMIS,
+                param_default_const.Virtual_World_Params.DURATION,
+            ]
+        ),
+        Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_MULTI: ".".join(
+            [
+                param_default_const.Virtual_World_Params.EMIS,
+                param_default_const.Virtual_World_Params.MULTI_EMIS_NR,
+            ]
+        ),
     }
 
     METH_SPEC_PROP_PARAMS: dict[str, str] = {

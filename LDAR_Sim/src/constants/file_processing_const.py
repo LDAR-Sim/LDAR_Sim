@@ -45,7 +45,7 @@ class Multi_Sim_Output_Const:
     EST_PATTERN = re.compile(r".*estimated_emissions\.csv$")
     EST_REP_PATTERN = re.compile(r".*estimated_repaired_emissions_to_remove\.csv$")
 
-    OUTPUTS_NAME_SIM_EXTRACTION_REGEX = re.compile(r"^(.*?)_(\d+)_.+.csv$")
+    OUTPUTS_NAME_SIM_EXTRACTION_REGEX = re.compile(r"^(.*)_((?<=_)\d+)_.+.csv$")
 
     OUTPUT_KEEP_STR = "kept"
     OUTPUT_KEEP_REGEX = re.compile(re.escape(OUTPUT_KEEP_STR))

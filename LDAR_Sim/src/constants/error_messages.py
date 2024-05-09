@@ -82,6 +82,11 @@ class Input_Processing_Messages:
         "interprets parameter files as simulation_settings level if unspecified"
     )
     PARAMETER_PARSING_ERROR = "Parameter_level of {level} is not possible to parse."
+    MISSING_PARAMETER_LEVEL_ERROR = (
+        "Error: parameter_level is missing from one or more of the input parameter files. "
+        "If all file provided are intended to be parameter files,"
+        " please add the correct parameter_level."
+    )
 
     NO_PROGRAMS_WARNING = "No programs are supplied"
 
@@ -198,3 +203,14 @@ class Initialization_Messages:
         "refer to model documentation for configuration instructions."
     )
     ERA_AUTH_ERROR = "Authentication Failed or Server Unavailable. Exiting"
+
+
+class SensitivityAnalysisMessages:
+    INVALID_PARAMETER_LEVEL_ERROR = (
+        "Parameter level {parameter_level} not recognized for sensitivity analysis."
+    )
+    INVALID_SENSITIVITY_VARIATIONS_ERROR = "Invalid sensitivity analysis variations provided"
+
+
+class ParameterInteractionMessages:
+    INVALID_PARAMETER_LEVEL_ERROR = "Invalid parameter level: {level}"
