@@ -210,10 +210,18 @@ if __name__ == "__main__":
         print(rm.INIT_INFRA)
         simulation_count: int = simulation_setting[pdc.Sim_Setting_Params.SIMS]
         emis_preseed_val: list[int] = None
+        force_remake_gen: bool = False
         if preseed_random:
-            emis_preseed_val = gen_seed_emis(simulation_count, generator_dir)
+            emis_preseed_val, force_remake_gen = gen_seed_emis(simulation_count, generator_dir)
         infrastructure, hash_file_exist = initialize_infrastructure(
-            methods, virtual_world, generator_dir, in_dir, preseed_random, emis_preseed_val
+            methods,
+            programs,
+            virtual_world,
+            generator_dir,
+            in_dir,
+            preseed_random,
+            emis_preseed_val,
+            force_remake_gen,
         )
         infrastructure: Infrastructure
         hash_file_exist: bool
