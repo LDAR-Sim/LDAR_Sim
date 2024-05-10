@@ -94,8 +94,6 @@ class SensitivityAnalysisResultsManager:
         for sens_viz_func in self.SENSITIVITY_VISUALIZATIONS_FUNCS:
             sens_viz_func(
                 self._out_dir,
-                program,
-                varied_progs=not (self._sens_level == param_default_const.Levels.VIRTUAL),
             )
 
     def combine_outputs(self, outputs: dict[str, list[pd.DataFrame]]) -> dict[str, pd.DataFrame]:
