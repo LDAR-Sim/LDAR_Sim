@@ -1,6 +1,0 @@
-Sensitivity Parameter Level: "_placeholder_str_" # Valid options - virtual_world, programs, methods
-Sensitivity Analysis Permutations: 5 # Number of permutations of parameters to vary to run
-Method Name: "_placeholder_str_" # Name of the method to run the sensitivity analysis on, if performing 
-# sensitivity analysis at the method level
-# Below user need to provide a series of values for the parameters to vary in 
-# the sensitivity analysis in the same format as they are found in their parameter file
