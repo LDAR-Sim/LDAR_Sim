@@ -123,8 +123,8 @@ class SensitivityAnalysisOutputs:
         UPPER_CI_ACCESSOR = "upper_confidence_interval"
         LOWER_CI_ACCESSOR = "lower_confidence_interval"
         SENSITIVITY_SET = "Sensitivity Set"
-        LOWER_CI = "{ci}th Percentile"
-        UPPER_CI = "{ci}th Percentile"
+        LOWER_CI = "{ci}th Percentile Percent Difference between True and Estimated Emissions"
+        UPPER_CI = "{ci}th Percentile Percent Difference between True and Estimated Emissions"
         CONFIDENCE_INTERVAL = "Confidence Interval"
 
         @property
