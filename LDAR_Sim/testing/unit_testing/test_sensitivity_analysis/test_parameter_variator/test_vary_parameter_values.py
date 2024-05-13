@@ -172,6 +172,110 @@ def get_expected_vw_parameter_variations_1():
     ]
 
 
+def get_vw_parameter_variations_2():
+    return {
+        Virtual_World_Params.EMIS: [
+            {Virtual_World_Params.ERS: "test1"},
+            {Virtual_World_Params.ERS: "test2"},
+            {Virtual_World_Params.ERS: "test3"},
+            {Virtual_World_Params.LPR: 0.000275},
+            {Virtual_World_Params.LPR: 0.0065},
+            {Virtual_World_Params.LPR: 0.013},
+        ]
+    }, 3
+
+
+def get_expected_vw_parameter_variations_2():
+    return [
+        {
+            Common_Params.PARAM_LEVEL: Levels.VIRTUAL,
+            Common_Params.VERSION: "4.0",
+            Virtual_World_Params.WEATHER_FILE: "test_weather_file",
+            Virtual_World_Params.CONSIDER_WEATHER: True,
+            Virtual_World_Params.EMIS: {
+                Virtual_World_Params.LPR: 0.000275,
+                Virtual_World_Params.ERS: "test1",
+                Virtual_World_Params.NRD: 365,
+            },
+        },
+        {
+            Common_Params.PARAM_LEVEL: Levels.VIRTUAL,
+            Common_Params.VERSION: "4.0",
+            Virtual_World_Params.WEATHER_FILE: "test_weather_file",
+            Virtual_World_Params.CONSIDER_WEATHER: True,
+            Virtual_World_Params.EMIS: {
+                Virtual_World_Params.LPR: 0.0065,
+                Virtual_World_Params.ERS: "test2",
+                Virtual_World_Params.NRD: 365,
+            },
+        },
+        {
+            Common_Params.PARAM_LEVEL: Levels.VIRTUAL,
+            Common_Params.VERSION: "4.0",
+            Virtual_World_Params.WEATHER_FILE: "test_weather_file",
+            Virtual_World_Params.CONSIDER_WEATHER: True,
+            Virtual_World_Params.EMIS: {
+                Virtual_World_Params.LPR: 0.013,
+                Virtual_World_Params.ERS: "test3",
+                Virtual_World_Params.NRD: 365,
+            },
+        },
+    ]
+
+
+def get_vw_parameter_variations_3():
+    return {
+        Virtual_World_Params.WEATHER_FILE: [
+            "test_weather_file1",
+            "test_weather_file2",
+            "test_weather_file3",
+        ],
+        Virtual_World_Params.CONSIDER_WEATHER: [
+            False,
+            True,
+            False,
+        ],
+    }, 3
+
+
+def get_expected_vw_parameter_variations_3():
+    return [
+        {
+            Common_Params.PARAM_LEVEL: Levels.VIRTUAL,
+            Common_Params.VERSION: "4.0",
+            Virtual_World_Params.WEATHER_FILE: "test_weather_file1",
+            Virtual_World_Params.CONSIDER_WEATHER: False,
+            Virtual_World_Params.EMIS: {
+                Virtual_World_Params.LPR: 0.0065,
+                Virtual_World_Params.ERS: "test_ERS",
+                Virtual_World_Params.NRD: 365,
+            },
+        },
+        {
+            Common_Params.PARAM_LEVEL: Levels.VIRTUAL,
+            Common_Params.VERSION: "4.0",
+            Virtual_World_Params.WEATHER_FILE: "test_weather_file2",
+            Virtual_World_Params.CONSIDER_WEATHER: True,
+            Virtual_World_Params.EMIS: {
+                Virtual_World_Params.LPR: 0.0065,
+                Virtual_World_Params.ERS: "test_ERS",
+                Virtual_World_Params.NRD: 365,
+            },
+        },
+        {
+            Common_Params.PARAM_LEVEL: Levels.VIRTUAL,
+            Common_Params.VERSION: "4.0",
+            Virtual_World_Params.WEATHER_FILE: "test_weather_file3",
+            Virtual_World_Params.CONSIDER_WEATHER: False,
+            Virtual_World_Params.EMIS: {
+                Virtual_World_Params.LPR: 0.0065,
+                Virtual_World_Params.ERS: "test_ERS",
+                Virtual_World_Params.NRD: 365,
+            },
+        },
+    ]
+
+
 def get_program_parameter_variations_1():
     return (
         {
@@ -195,14 +299,24 @@ def get_program_parameter_variations_2():
                     {Program_Params.DURATION_FACTOR: 0.1},
                     {Program_Params.DURATION_FACTOR: 0.5},
                     {Program_Params.DURATION_FACTOR: 1.0},
-                ]
+                ],
+                Program_Params.ECONOMICS: [
+                    {Program_Params.TCO2E: 10},
+                    {Program_Params.TCO2E: 20},
+                    {Program_Params.TCO2E: 30},
+                ],
             },
             "test_prog2": {
                 Program_Params.DURATION_ESTIMATE: [
                     {Program_Params.DURATION_FACTOR: 0.1},
                     {Program_Params.DURATION_FACTOR: 0.2},
                     {Program_Params.DURATION_FACTOR: 0.3},
-                ]
+                ],
+                Program_Params.ECONOMICS: [
+                    {Program_Params.TCO2E: 20},
+                    {Program_Params.TCO2E: 40},
+                    {Program_Params.TCO2E: 60},
+                ],
             },
         },
         3,
@@ -353,7 +467,7 @@ def get_expected_program_parameter_variations_2():
                     Program_Params.DURATION_FACTOR: 0.1,
                 },
                 Program_Params.ECONOMICS: {
-                    Program_Params.TCO2E: 100,
+                    Program_Params.TCO2E: 10,
                 },
                 Levels.METHOD: {
                     "test_method1": {
@@ -395,7 +509,7 @@ def get_expected_program_parameter_variations_2():
                     Program_Params.DURATION_FACTOR: 0.1,
                 },
                 Program_Params.ECONOMICS: {
-                    Program_Params.TCO2E: 50,
+                    Program_Params.TCO2E: 20,
                 },
                 Levels.METHOD: {
                     "test_method3": {
@@ -437,7 +551,7 @@ def get_expected_program_parameter_variations_2():
                     Program_Params.DURATION_FACTOR: 0.5,
                 },
                 Program_Params.ECONOMICS: {
-                    Program_Params.TCO2E: 100,
+                    Program_Params.TCO2E: 20,
                 },
                 Levels.METHOD: {
                     "test_method1": {
@@ -479,7 +593,7 @@ def get_expected_program_parameter_variations_2():
                     Program_Params.DURATION_FACTOR: 0.2,
                 },
                 Program_Params.ECONOMICS: {
-                    Program_Params.TCO2E: 50,
+                    Program_Params.TCO2E: 40,
                 },
                 Levels.METHOD: {
                     "test_method3": {
@@ -521,7 +635,7 @@ def get_expected_program_parameter_variations_2():
                     Program_Params.DURATION_FACTOR: 1.0,
                 },
                 Program_Params.ECONOMICS: {
-                    Program_Params.TCO2E: 100,
+                    Program_Params.TCO2E: 30,
                 },
                 Levels.METHOD: {
                     "test_method1": {
@@ -563,7 +677,7 @@ def get_expected_program_parameter_variations_2():
                     Program_Params.DURATION_FACTOR: 0.3,
                 },
                 Program_Params.ECONOMICS: {
-                    Program_Params.TCO2E: 50,
+                    Program_Params.TCO2E: 60,
                 },
                 Levels.METHOD: {
                     "test_method3": {
@@ -602,7 +716,18 @@ def get_expected_program_parameter_variations_2():
 
 
 def get_method_parameter_variations_1():
-    return {"test_method3": {Method_Params.RS: [1, 2, 3, 4, 5]}}, 5
+    return {
+        "test_method3": {
+            Method_Params.COVERAGE: [
+                {Method_Params.SPATIAL: 0.1},
+                {Method_Params.SPATIAL: 0.2},
+                {Method_Params.SPATIAL: 0.3},
+                {Method_Params.TEMPORAL: 0.3},
+                {Method_Params.TEMPORAL: 0.5},
+                {Method_Params.TEMPORAL: 0.7},
+            ]
+        }
+    }, 3
 
 
 def get_expected_method_parameter_variations_1():
@@ -627,10 +752,10 @@ def get_expected_method_parameter_variations_1():
                             Method_Params.MDL: 0.5,
                         },
                         Method_Params.COVERAGE: {
-                            Method_Params.SPATIAL: 0.75,
-                            Method_Params.TEMPORAL: 0.75,
+                            Method_Params.SPATIAL: 0.1,
+                            Method_Params.TEMPORAL: 0.3,
                         },
-                        Method_Params.RS: 1,
+                        Method_Params.RS: 3,
                         Method_Params.T_BW_SITES: {Common_Params.VAL: [5, 10, 15]},
                     },
                     "test_method4": {
@@ -669,10 +794,10 @@ def get_expected_method_parameter_variations_1():
                             Method_Params.MDL: 0.5,
                         },
                         Method_Params.COVERAGE: {
-                            Method_Params.SPATIAL: 0.75,
-                            Method_Params.TEMPORAL: 0.75,
+                            Method_Params.SPATIAL: 0.2,
+                            Method_Params.TEMPORAL: 0.5,
                         },
-                        Method_Params.RS: 2,
+                        Method_Params.RS: 3,
                         Method_Params.T_BW_SITES: {Common_Params.VAL: [5, 10, 15]},
                     },
                     "test_method4": {
@@ -711,8 +836,8 @@ def get_expected_method_parameter_variations_1():
                             Method_Params.MDL: 0.5,
                         },
                         Method_Params.COVERAGE: {
-                            Method_Params.SPATIAL: 0.75,
-                            Method_Params.TEMPORAL: 0.75,
+                            Method_Params.SPATIAL: 0.3,
+                            Method_Params.TEMPORAL: 0.7,
                         },
                         Method_Params.RS: 3,
                         Method_Params.T_BW_SITES: {Common_Params.VAL: [5, 10, 15]},
@@ -733,90 +858,6 @@ def get_expected_method_parameter_variations_1():
                     },
                 },
                 Program_Params.METHODS: ["test_method4", "test_method3_2"],
-            },
-            "test_prog2_3": {
-                Common_Params.PARAM_LEVEL: Levels.PROGRAM,
-                Common_Params.VERSION: "4.0",
-                Program_Params.NAME: "test_prog2_3",
-                Program_Params.DURATION_ESTIMATE: {
-                    Program_Params.DURATION_FACTOR: 1,
-                },
-                Program_Params.ECONOMICS: {
-                    Program_Params.TCO2E: 50,
-                },
-                Levels.METHOD: {
-                    "test_method3_3": {
-                        Common_Params.PARAM_LEVEL: Levels.METHOD,
-                        Common_Params.VERSION: "4.0",
-                        Method_Params.NAME: "test_method3_3",
-                        Method_Params.SENSOR: {
-                            Method_Params.MDL: 0.5,
-                        },
-                        Method_Params.COVERAGE: {
-                            Method_Params.SPATIAL: 0.75,
-                            Method_Params.TEMPORAL: 0.75,
-                        },
-                        Method_Params.RS: 4,
-                        Method_Params.T_BW_SITES: {Common_Params.VAL: [5, 10, 15]},
-                    },
-                    "test_method4": {
-                        Common_Params.PARAM_LEVEL: Levels.METHOD,
-                        Common_Params.VERSION: "4.0",
-                        Method_Params.NAME: "test_method4",
-                        Method_Params.SENSOR: {
-                            Method_Params.MDL: 0.75,
-                        },
-                        Method_Params.COVERAGE: {
-                            Method_Params.SPATIAL: 0.9,
-                            Method_Params.TEMPORAL: 0.9,
-                        },
-                        Method_Params.RS: 4,
-                        Method_Params.T_BW_SITES: {Common_Params.VAL: [50, 100, 150]},
-                    },
-                },
-                Program_Params.METHODS: ["test_method4", "test_method3_3"],
-            },
-            "test_prog2_4": {
-                Common_Params.PARAM_LEVEL: Levels.PROGRAM,
-                Common_Params.VERSION: "4.0",
-                Program_Params.NAME: "test_prog2_4",
-                Program_Params.DURATION_ESTIMATE: {
-                    Program_Params.DURATION_FACTOR: 1,
-                },
-                Program_Params.ECONOMICS: {
-                    Program_Params.TCO2E: 50,
-                },
-                Levels.METHOD: {
-                    "test_method3_4": {
-                        Common_Params.PARAM_LEVEL: Levels.METHOD,
-                        Common_Params.VERSION: "4.0",
-                        Method_Params.NAME: "test_method3_4",
-                        Method_Params.SENSOR: {
-                            Method_Params.MDL: 0.5,
-                        },
-                        Method_Params.COVERAGE: {
-                            Method_Params.SPATIAL: 0.75,
-                            Method_Params.TEMPORAL: 0.75,
-                        },
-                        Method_Params.RS: 5,
-                        Method_Params.T_BW_SITES: {Common_Params.VAL: [5, 10, 15]},
-                    },
-                    "test_method4": {
-                        Common_Params.PARAM_LEVEL: Levels.METHOD,
-                        Common_Params.VERSION: "4.0",
-                        Method_Params.NAME: "test_method4",
-                        Method_Params.SENSOR: {
-                            Method_Params.MDL: 0.75,
-                        },
-                        Method_Params.COVERAGE: {
-                            Method_Params.SPATIAL: 0.9,
-                            Method_Params.TEMPORAL: 0.9,
-                        },
-                        Method_Params.RS: 4,
-                        Method_Params.T_BW_SITES: {Common_Params.VAL: [50, 100, 150]},
-                    },
-                },
-                Program_Params.METHODS: ["test_method4", "test_method3_4"],
             },
         },
     ]
@@ -1046,10 +1087,190 @@ def get_expected_method_parameter_variations_2():
     ]
 
 
-def test_vary_parameter_values_virtual_level():
+def get_method_parameter_variations_3():
+    return {
+        "test_method3": {
+            Method_Params.RS: [1, 2, 3],
+            Method_Params.COVERAGE: [
+                {Method_Params.SPATIAL: 0.1},
+                {Method_Params.SPATIAL: 0.2},
+                {Method_Params.SPATIAL: 0.3},
+            ],
+        },
+    }, 3
+
+
+def get_expected_method_parameter_variations_3():
+    return [
+        {
+            "test_prog2_0": {
+                Common_Params.PARAM_LEVEL: Levels.PROGRAM,
+                Common_Params.VERSION: "4.0",
+                Program_Params.NAME: "test_prog2_0",
+                Program_Params.DURATION_ESTIMATE: {
+                    Program_Params.DURATION_FACTOR: 1,
+                },
+                Program_Params.ECONOMICS: {
+                    Program_Params.TCO2E: 50,
+                },
+                Levels.METHOD: {
+                    "test_method3_0": {
+                        Common_Params.PARAM_LEVEL: Levels.METHOD,
+                        Common_Params.VERSION: "4.0",
+                        Method_Params.NAME: "test_method3_0",
+                        Method_Params.SENSOR: {
+                            Method_Params.MDL: 0.5,
+                        },
+                        Method_Params.COVERAGE: {
+                            Method_Params.SPATIAL: 0.1,
+                            Method_Params.TEMPORAL: 0.75,
+                        },
+                        Method_Params.RS: 1,
+                        Method_Params.T_BW_SITES: {Common_Params.VAL: [5, 10, 15]},
+                    },
+                    "test_method4": {
+                        Common_Params.PARAM_LEVEL: Levels.METHOD,
+                        Common_Params.VERSION: "4.0",
+                        Method_Params.NAME: "test_method4",
+                        Method_Params.SENSOR: {
+                            Method_Params.MDL: 0.75,
+                        },
+                        Method_Params.COVERAGE: {
+                            Method_Params.SPATIAL: 0.9,
+                            Method_Params.TEMPORAL: 0.9,
+                        },
+                        Method_Params.RS: 4,
+                        Method_Params.T_BW_SITES: {Common_Params.VAL: [50, 100, 150]},
+                    },
+                },
+                Program_Params.METHODS: ["test_method4", "test_method3_0"],
+            },
+            "test_prog2_1": {
+                Common_Params.PARAM_LEVEL: Levels.PROGRAM,
+                Common_Params.VERSION: "4.0",
+                Program_Params.NAME: "test_prog2_1",
+                Program_Params.DURATION_ESTIMATE: {
+                    Program_Params.DURATION_FACTOR: 1,
+                },
+                Program_Params.ECONOMICS: {
+                    Program_Params.TCO2E: 50,
+                },
+                Levels.METHOD: {
+                    "test_method3_1": {
+                        Common_Params.PARAM_LEVEL: Levels.METHOD,
+                        Common_Params.VERSION: "4.0",
+                        Method_Params.NAME: "test_method3_1",
+                        Method_Params.SENSOR: {
+                            Method_Params.MDL: 0.5,
+                        },
+                        Method_Params.COVERAGE: {
+                            Method_Params.SPATIAL: 0.2,
+                            Method_Params.TEMPORAL: 0.75,
+                        },
+                        Method_Params.RS: 2,
+                        Method_Params.T_BW_SITES: {Common_Params.VAL: [5, 10, 15]},
+                    },
+                    "test_method4": {
+                        Common_Params.PARAM_LEVEL: Levels.METHOD,
+                        Common_Params.VERSION: "4.0",
+                        Method_Params.NAME: "test_method4",
+                        Method_Params.SENSOR: {
+                            Method_Params.MDL: 0.75,
+                        },
+                        Method_Params.COVERAGE: {
+                            Method_Params.SPATIAL: 0.9,
+                            Method_Params.TEMPORAL: 0.9,
+                        },
+                        Method_Params.RS: 4,
+                        Method_Params.T_BW_SITES: {Common_Params.VAL: [50, 100, 150]},
+                    },
+                },
+                Program_Params.METHODS: ["test_method4", "test_method3_1"],
+            },
+            "test_prog2_2": {
+                Common_Params.PARAM_LEVEL: Levels.PROGRAM,
+                Common_Params.VERSION: "4.0",
+                Program_Params.NAME: "test_prog2_2",
+                Program_Params.DURATION_ESTIMATE: {
+                    Program_Params.DURATION_FACTOR: 1,
+                },
+                Program_Params.ECONOMICS: {
+                    Program_Params.TCO2E: 50,
+                },
+                Levels.METHOD: {
+                    "test_method3_2": {
+                        Common_Params.PARAM_LEVEL: Levels.METHOD,
+                        Common_Params.VERSION: "4.0",
+                        Method_Params.NAME: "test_method3_2",
+                        Method_Params.SENSOR: {
+                            Method_Params.MDL: 0.5,
+                        },
+                        Method_Params.COVERAGE: {
+                            Method_Params.SPATIAL: 0.3,
+                            Method_Params.TEMPORAL: 0.75,
+                        },
+                        Method_Params.RS: 3,
+                        Method_Params.T_BW_SITES: {Common_Params.VAL: [5, 10, 15]},
+                    },
+                    "test_method4": {
+                        Common_Params.PARAM_LEVEL: Levels.METHOD,
+                        Common_Params.VERSION: "4.0",
+                        Method_Params.NAME: "test_method4",
+                        Method_Params.SENSOR: {
+                            Method_Params.MDL: 0.75,
+                        },
+                        Method_Params.COVERAGE: {
+                            Method_Params.SPATIAL: 0.9,
+                            Method_Params.TEMPORAL: 0.9,
+                        },
+                        Method_Params.RS: 4,
+                        Method_Params.T_BW_SITES: {Common_Params.VAL: [50, 100, 150]},
+                    },
+                },
+                Program_Params.METHODS: ["test_method4", "test_method3_2"],
+            },
+        }
+    ]
+
+
+def test_vary_parameter_values_virtual_level_1_param():
     parameters: ParametersHolder = get_simulation_parameters_1()
     parameter_variations, number_of_variations = get_vw_parameter_variations_1()
     expected_parameters: list = get_expected_vw_parameter_variations_1()
+    varied_parameters: list[ParametersHolder] = vary_parameter_values(
+        simulation_parameters=parameters,
+        parameter_variations=parameter_variations,
+        number_of_variations=number_of_variations,
+        sensitivity_program=None,
+        parameter_level=Levels.VIRTUAL,
+    )
+    varied_parameters_dicts: list[dict] = [
+        varied_parameters[i].get_virtual_world() for i in range(len(varied_parameters))
+    ]
+    assert varied_parameters_dicts == expected_parameters
+
+
+def test_vary_parameter_values_virtual_level_2_params():
+    parameters: ParametersHolder = get_simulation_parameters_1()
+    parameter_variations, number_of_variations = get_vw_parameter_variations_2()
+    expected_parameters: list = get_expected_vw_parameter_variations_2()
+    varied_parameters: list[ParametersHolder] = vary_parameter_values(
+        simulation_parameters=parameters,
+        parameter_variations=parameter_variations,
+        number_of_variations=number_of_variations,
+        sensitivity_program=None,
+        parameter_level=Levels.VIRTUAL,
+    )
+    varied_parameters_dicts: list[dict] = [
+        varied_parameters[i].get_virtual_world() for i in range(len(varied_parameters))
+    ]
+    assert varied_parameters_dicts == expected_parameters
+
+
+def test_vary_parameters_values_virtual_level_2_params_2():
+    parameters: ParametersHolder = get_simulation_parameters_1()
+    parameter_variations, number_of_variations = get_vw_parameter_variations_3()
+    expected_parameters: list = get_expected_vw_parameter_variations_3()
     varied_parameters: list[ParametersHolder] = vary_parameter_values(
         simulation_parameters=parameters,
         parameter_variations=parameter_variations,
@@ -1097,10 +1318,27 @@ def test_vary_parameter_values_program_level_2_progs():
     assert varied_parameters_dicts == expected_parameters
 
 
-def test_vary_parameter_values_method_level():
+def test_vary_parameter_values_method_level_2_params():
     parameters: ParametersHolder = get_simulation_parameters_1()
     parameter_variations, number_of_variations = get_method_parameter_variations_1()
     expected_parameters: list = get_expected_method_parameter_variations_1()
+    varied_parameters: list[ParametersHolder] = vary_parameter_values(
+        simulation_parameters=parameters,
+        parameter_variations=parameter_variations,
+        number_of_variations=number_of_variations,
+        sensitivity_program="test_prog2",
+        parameter_level=Levels.METHOD,
+    )
+    varied_parameters_dicts: list[dict] = [
+        varied_parameters[i].get_programs() for i in range(len(varied_parameters))
+    ]
+    assert varied_parameters_dicts == expected_parameters
+
+
+def test_vary_parameter_values_method_level_2_params_2():
+    parameters: ParametersHolder = get_simulation_parameters_1()
+    parameter_variations, number_of_variations = get_method_parameter_variations_3()
+    expected_parameters: list = get_expected_method_parameter_variations_3()
     varied_parameters: list[ParametersHolder] = vary_parameter_values(
         simulation_parameters=parameters,
         parameter_variations=parameter_variations,

@@ -32,7 +32,12 @@ def expected_vw_parameter_variations_1():
 
 @pytest.fixture(name="vw_parameter_variations_2")
 def vw_parameter_variations_2():
-    return {Virtual_World_Params.EMIS: {Virtual_World_Params.ERS: ["test1", "test2"]}}
+    return {
+        Virtual_World_Params.EMIS: {
+            Virtual_World_Params.ERS: ["test1", "test2", "test3"],
+            Virtual_World_Params.LPR: [0.000275, 0.0065, 0.013],
+        }
+    }
 
 
 @pytest.fixture(name="expected_vw_parameter_variations_2")
@@ -41,7 +46,11 @@ def expected_vw_parameter_variations_2():
         Virtual_World_Params.EMIS: [
             {Virtual_World_Params.ERS: "test1"},
             {Virtual_World_Params.ERS: "test2"},
-        ]
+            {Virtual_World_Params.ERS: "test3"},
+            {Virtual_World_Params.LPR: 0.000275},
+            {Virtual_World_Params.LPR: 0.0065},
+            {Virtual_World_Params.LPR: 0.013},
+        ],
     }
 
 
@@ -113,7 +122,10 @@ def program_parameter_variations_2():
         {
             SensitivityAnalysisMapping.PROGRAM_NAME: "test",
             SensitivityAnalysisMapping.PROGRAM_SENS_PARAMS: {
-                Program_Params.ECONOMICS: {Program_Params.VERIFICATION: [100, 200]}
+                Program_Params.ECONOMICS: {
+                    Program_Params.VERIFICATION: [100, 200],
+                    Program_Params.NATGAS: [2, 4],
+                }
             },
         }
     ]
@@ -126,6 +138,8 @@ def expected_program_parameter_variations_2():
             Program_Params.ECONOMICS: [
                 {Program_Params.VERIFICATION: 100},
                 {Program_Params.VERIFICATION: 200},
+                {Program_Params.NATGAS: 2},
+                {Program_Params.NATGAS: 4},
             ]
         },
     }
@@ -190,14 +204,17 @@ def method_parameter_variations_1():
     return [
         {
             SensitivityAnalysisMapping.METHOD_NAME: "test1",
-            SensitivityAnalysisMapping.Method_SENS_PARAMS: {Method_Params.RS: [1, 2, 3, 4, 5]},
+            SensitivityAnalysisMapping.Method_SENS_PARAMS: {
+                Method_Params.RS: [1, 2, 3, 4, 5],
+                Method_Params.TIME: [10, 20, 30, 40, 50],
+            },
         }
     ]
 
 
 @pytest.fixture(name="expected_method_parameter_variations_1")
 def expected_method_parameter_variations_1():
-    return {"test1": {Method_Params.RS: [1, 2, 3, 4, 5]}}
+    return {"test1": {Method_Params.RS: [1, 2, 3, 4, 5], Method_Params.TIME: [10, 20, 30, 40, 50]}}
 
 
 @pytest.fixture(name="method_parameter_variations_2")

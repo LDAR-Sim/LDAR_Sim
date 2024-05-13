@@ -135,14 +135,18 @@ class SensitivityAnalysisResultsManager:
                     parameter, true_value = unpack_full_parameter_path(key, value[index])
                     rows.append([index, parameter, true_value])
 
+        columns = (
+            sensitivity_analysis_constants.SensitivityAnalysisOutputs
+        ).SensitivityVariationsMapping.COLUMN_NAMES.extend(
+            (
+                sensitivity_analysis_constants.SensitivityAnalysisOutputs
+            ).SensitivityVariationsMapping.COLUMN_NAMES
+            * len(self._parameter_variations)
+        )
         # Create a DataFrame from the list of rows
         df = pd.DataFrame(
             rows,
-            columns=(
-                (
-                    sensitivity_analysis_constants.SensitivityAnalysisOutputs
-                ).SensitivityVariationsMapping.COLUMN_NAMES
-            ),
+            columns=(),
         )
 
         # Write the DataFrame to a CSV file

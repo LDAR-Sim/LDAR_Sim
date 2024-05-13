@@ -40,7 +40,10 @@ def vary_parameter_values(
             parameters: ParametersHolder = copy.deepcopy(simulation_parameters)
             # Vary all the specified parameters
             for key, value in parameter_variations.items():
-                parameters.alter_parameter(param_default_const.Levels.VIRTUAL, key, value[i])
+                for index in range(i, len(value), number_of_variations):
+                    parameters.alter_parameter(
+                        param_default_const.Levels.VIRTUAL, key, value[index]
+                    )
             # Append the new parameters to the list
             new_simulation_parameters.append(parameters)
     # If the sensitivity analysis is at the program level
@@ -110,9 +113,16 @@ def vary_parameter_values(
                 alter_dict = {param_default_const.Levels.METHOD: {f"{method_name}_{i}": {}}}
 
                 for key, value in variations.items():
-                    alter_dict[param_default_const.Levels.METHOD][f"{method_name}_{i}"][key] = (
-                        value[i]
-                    )
+                    key_vals: dict | Any = {}
+                    for index in range(i, len(value), number_of_variations):
+                        if isinstance(value[index], dict):
+                            key_vals.update(value[index])
+                        else:
+                            key_vals = value[index]
+                    alter_dict[param_default_const.Levels.METHOD][f"{method_name}_{i}"][
+                        key
+                    ] = key_vals
+
                 # Alter the name of the method
                 alter_dict[param_default_const.Levels.METHOD][f"{method_name}_{i}"][
                     param_default_const.Method_Params.NAME

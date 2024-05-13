@@ -75,11 +75,12 @@ def unpack_parameter_variations(parameter_variations: dict[str, Any]) -> dict[st
     unpacked_variations: dict[str, Any] = {}
     for key, value in parameter_variations.items():
         if isinstance(value, dict):
+            unpacked_variations[key] = []
             for inner_key, inner_value in value.items():
                 if isinstance(inner_value, list):
-                    unpacked_variations[key] = [{inner_key: v} for v in inner_value]
+                    unpacked_variations[key].extend([{inner_key: v} for v in inner_value])
                 else:
-                    unpacked_variations[key] = unpack_parameter_variations(value)
+                    unpacked_variations[key].extend[unpack_parameter_variations(value)]
         else:
             unpacked_variations[key] = value
     return unpacked_variations
