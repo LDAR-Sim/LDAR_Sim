@@ -82,7 +82,7 @@ class NonRepairableEmission(Emission):
         self._status = ec.EXPIRE
         emis_info.emis_expired += 1
         self._expiry_date = self._start_date + timedelta(
-            days=(self._active_days + self._days_active_b4_sim)
+            days=int(self._active_days + self._days_active_b4_sim)
         )
 
     def estimate_start_date(self, cur_date: date, t_since_ldar: int) -> None:

@@ -87,7 +87,7 @@ class FugitiveEmission(Emission):
                 emis_rep_info.leaks_repaired += 1
                 emis_rep_info.repair_cost += self.get_repair_cost()
                 self._repair_date = self._start_date + timedelta(
-                    days=(self._active_days + self._days_active_b4_sim)
+                    days=int(self._active_days + self._days_active_b4_sim)
                 )
                 return True
         return False
@@ -113,7 +113,7 @@ class FugitiveEmission(Emission):
         emis_rep_info.leaks_nat_repaired += 1
         emis_rep_info.nat_repair_cost += self.get_repair_cost()
         self._repair_date = self._start_date + timedelta(
-            days=(self._active_days + self._days_active_b4_sim)
+            days=int(self._active_days + self._days_active_b4_sim)
         )
 
     # TODO potentially move this into company later
@@ -162,7 +162,7 @@ class FugitiveEmission(Emission):
 
     def calc_mitigated(self, end_date) -> float:
         # Calculate the comparison date
-        comparison_date = self._start_date + timedelta(days=self._nrd)
+        comparison_date = self._start_date + timedelta(days=int(self._nrd))
         # Calculate the number of days after _sim_end_date, set to 0 if negative
         days_after_sim_end = max(0, (comparison_date - end_date).days)
 
@@ -174,7 +174,7 @@ class FugitiveEmission(Emission):
         return 0.0
 
     def calc_theory_date(self) -> date:
-        return self._start_date + timedelta(days=self._nrd)
+        return self._start_date + timedelta(days=int(self._nrd))
 
     @override
     def update(self, emis_rep_info: EmisInfo) -> bool:

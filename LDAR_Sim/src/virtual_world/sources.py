@@ -278,7 +278,7 @@ class Source:
             leak_count += 1
             emissions_fifo.append(emission)
             if not self._multi_emissions:
-                last_emis_day = emis_start_date + timedelta(days=self._emis_duration)
+                last_emis_day = emis_start_date + timedelta(days=int(self._emis_duration))
                 # If only one emission is allowed, break the loop
                 break
 
@@ -305,7 +305,7 @@ class Source:
                 emissions_fifo.append(emission)
                 if not self._multi_emissions:
                     # if only a single emission can be made, update the last_emis_day based on the new emission
-                    last_emis_day = emis_start_date + timedelta(days=self._emis_duration)
+                    last_emis_day = emis_start_date + timedelta(days=int(self._emis_duration))
         self._generated_emissions[sim_number] = emissions_fifo
         return {self._source_ID: emissions_fifo}
 
