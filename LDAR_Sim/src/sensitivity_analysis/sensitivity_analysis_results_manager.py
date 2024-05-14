@@ -1,3 +1,4 @@
+import copy
 import os
 from typing import Any
 
@@ -117,36 +118,59 @@ class SensitivityAnalysisResultsManager:
             else:
                 return key, value
 
-        if self._sens_level == param_default_const.Levels.METHOD:
-            for method, variations in self._parameter_variations.items():
-                for index in range(parameter_permutation_count):
+        if (
+            self._sens_level == param_default_const.Levels.METHOD
+            or self._sens_level == param_default_const.Levels.PROGRAM
+        ):
+            for index in range(parameter_permutation_count):
+                row = [index]
+                for name, variations in self._parameter_variations.items():
                     for key, value in variations.items():
-                        parameter, true_value = unpack_full_parameter_path(key, value[index])
-                        rows.append(
-                            [
-                                index,
-                                ".".join([method, parameter]),
+                        for i in range(index, len(value), parameter_permutation_count):
+                            parameter, true_value = unpack_full_parameter_path(key, value[i])
+                            row += [
+                                ".".join([name, parameter]),
                                 true_value,
                             ]
-                        )
+                rows.append(row)
+
         else:
             for index in range(parameter_permutation_count):
+                row: list = [index]
                 for key, value in self._parameter_variations.items():
-                    parameter, true_value = unpack_full_parameter_path(key, value[index])
-                    rows.append([index, parameter, true_value])
+                    for i in range(index, len(value), parameter_permutation_count):
+                        parameter, true_value = unpack_full_parameter_path(key, value[i])
+                        row += [parameter, true_value]
+                rows.append(row)
 
-        columns = (
-            sensitivity_analysis_constants.SensitivityAnalysisOutputs
-        ).SensitivityVariationsMapping.COLUMN_NAMES.extend(
+        columns: list[str] = copy.deepcopy(
             (
                 sensitivity_analysis_constants.SensitivityAnalysisOutputs
-            ).SensitivityVariationsMapping.COLUMN_NAMES
-            * len(self._parameter_variations)
+            ).SensitivityVariationsMapping.FIXED_COLUMN_NAMES
+        )
+
+        columns.extend(
+            [
+                col_name.format(x=i)
+                for i in range(
+                    int(
+                        (len(rows[0]) - 1)
+                        / len(
+                            (
+                                sensitivity_analysis_constants.SensitivityAnalysisOutputs
+                            ).SensitivityVariationsMapping.FLEXIBLE_COLUMNS_NAMES
+                        )
+                    )
+                )
+                for col_name in (
+                    sensitivity_analysis_constants.SensitivityAnalysisOutputs
+                ).SensitivityVariationsMapping.FLEXIBLE_COLUMNS_NAMES
+            ]
         )
         # Create a DataFrame from the list of rows
         df = pd.DataFrame(
             rows,
-            columns=(),
+            columns=columns,
         )
 
         # Write the DataFrame to a CSV file

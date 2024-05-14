@@ -113,7 +113,8 @@ class SensitivityAnalysisOutputs:
         ESTIMATED_EMIS_LABEL = '"Estimated" Emissions'
 
     class SensitivityVariationsMapping:
-        COLUMN_NAMES = ["Sensitivity Permutation", "Parameter", "Value"]
+        FIXED_COLUMN_NAMES = ["Sensitivity Permutation"]
+        FLEXIBLE_COLUMNS_NAMES = ["Parameter_{x}", "Value_{x}"]
 
     class SensitivityTrueVsEstimatedCIs:
         def __init__(self, upper_ci, lower_ci):
