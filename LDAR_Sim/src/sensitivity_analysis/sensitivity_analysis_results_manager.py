@@ -34,6 +34,7 @@ class SensitivityAnalysisResultsManager:
     }
     SENSITIVITY_VISUALIZATIONS_FUNCS = [
         sensitivity_analysis_visualizations.gen_true_vs_est_emissions_percent_difference_sens_viz,
+        sensitivity_analysis_visualizations.gen_true_vs_est_emissions_violin_sens_viz,
     ]
 
     SENS_SUMMARY_INFO_PROCESSING_MAP = {
