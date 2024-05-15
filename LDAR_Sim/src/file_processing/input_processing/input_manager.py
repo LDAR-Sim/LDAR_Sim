@@ -63,6 +63,7 @@ class InputManager:
         # Add extra guards for other parts of the code that concatenate
         # strings to construct file paths, and expect trailing slashes
         self.remove_type_placeholders(self.simulation_parameters)
+        self.validate_names()
         return copy.deepcopy(self.simulation_parameters)
 
     def write_parameters(self, filename):
@@ -314,6 +315,15 @@ class InputManager:
             elif isinstance(param, (dict, list)):
                 self.remove_type_placeholders(obj[idx])
         return
+
+    def validate_names(self):
+        invalid_names = {"none", "null", "nan"}
+        for name in self.simulation_parameters["programs"].keys():
+            if name.lower() in invalid_names:
+                sys.exit(ipm.INVALID_NAME_ERROR.format(level=pc.Levels.PROGRAM, name=name))
+            for method in self.simulation_parameters["programs"][name][pc.Program_Params.METHODS]:
+                if method.lower() in invalid_names:
+                    sys.exit(ipm.INVALID_NAME_ERROR.format(level=pc.Levels.METHOD, name=method))
 
 
 class NoAliasDumper(yaml.SafeDumper):

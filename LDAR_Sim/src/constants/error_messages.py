@@ -89,6 +89,11 @@ class Input_Processing_Messages:
 
     MISSING_ARGUMENT_ERROR = "Error: Please provide at least one input argument"
 
+    INVALID_NAME_ERROR = (
+        "Error: Invalid {level} name provided: {name}. "
+        "Refer to the User Manual for further details."
+    )
+
 
 class Output_Processing_Messages:
     OPERAND_ADDITION_ERROR = "Unsupported operand type for addition"
