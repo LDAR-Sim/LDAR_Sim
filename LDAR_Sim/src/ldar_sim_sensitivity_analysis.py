@@ -147,8 +147,10 @@ if __name__ == "__main__":
         shutil.rmtree(original_out_dir)
     os.makedirs(original_out_dir)
 
+    base_program: str = sim_params[pdc.Sim_Setting_Params.BASELINE]
+
     parameter_holder = ParametersHolder(
-        sim_params, original_programs, original_virtual_world, original_output_params
+        sim_params, original_programs, original_virtual_world, original_output_params, base_program
     )
 
     sensitivity_program: str = parameter_holder.get_non_baseline_program()
@@ -191,11 +193,10 @@ if __name__ == "__main__":
 
         # --- Run Checks ----
         check_ERA5_file(in_dir, virtual_world)
-        has_ref: bool = ref_program in programs
         has_base: bool = base_program in programs
 
-        if not (has_ref and has_base):
-            print(rem.NO_REF_BASE_PROG_ERROR)
+        if not (has_base):
+            print(rem.NO_BASE_PROG_ERROR)
             sys.exit()
 
         # -- Setup Output folder --

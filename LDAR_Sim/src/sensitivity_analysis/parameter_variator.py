@@ -53,6 +53,10 @@ def vary_parameter_values(
         # Remove the original programs
         for program in simulation_parameters.get_programs():
             parameters.remove_program(program)
+        parameters.add_program(
+            simulation_parameters.baseline_program_name,
+            simulation_parameters.get_baseline_program(),
+        )
         # Loop through the number of variations
         for i in range(number_of_variations):
             for program_name, program_variations in parameter_variations.items():
@@ -138,6 +142,10 @@ def vary_parameter_values(
         # Remove the original programs
         for program in simulation_parameters.get_programs():
             parameters.remove_program(program)
+        parameters.add_program(
+            simulation_parameters.baseline_program_name,
+            simulation_parameters.get_baseline_program(),
+        )
         # Edit the base program
         parameters.alter_parameter(
             param_default_const.Levels.SIMULATION,

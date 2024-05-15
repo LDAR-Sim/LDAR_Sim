@@ -6,11 +6,9 @@ from parameters.high_level_parameters import HighLevelParameters
 
 
 from constants import param_default_const, error_messages
-import re
 
 
 class ParametersHolder:
-    BASELINE_PROGRAM_REGEX = re.compile(r"P[_\s]?None", re.IGNORECASE)
 
     VIRTUAL_WORLD_SUB_PARAMETER_MAPPING = {
         param_default_const.Virtual_World_Params.INFRA: None,
@@ -51,7 +49,9 @@ class ParametersHolder:
         programs: dict[dict[str, Any]],
         virtual_world: dict[str, dict[str, Any]],
         outputs: dict[str, Any],
+        baseline_program: str,
     ) -> None:
+        self._baseline = baseline_program
         self._simulation_settings: GenericParameters = GenericParameters(simulation_settings)
         self._virtual_world: HighLevelParameters = HighLevelParameters(
             virtual_world, self.VIRTUAL_WORLD_SUB_PARAMETER_MAPPING
@@ -84,11 +84,17 @@ class ParametersHolder:
 
     def get_non_baseline_program(self) -> HighLevelParameters:
         for name, program in self._programs.items():
-            if not re.match(
-                self.BASELINE_PROGRAM_REGEX,
-                program.get_parameter_value(param_default_const.Program_Params.NAME),
+            if not self._baseline == program.get_parameter_value(
+                param_default_const.Program_Params.NAME
             ):
                 return name
+
+    def get_baseline_program(self) -> HighLevelParameters:
+        return self._programs[self._baseline]
+
+    @property
+    def baseline_program_name(self) -> str:
+        return self._baseline
 
     def get_program(self, program_name: str) -> HighLevelParameters:
         return self._programs[program_name]

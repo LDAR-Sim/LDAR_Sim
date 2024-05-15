@@ -106,7 +106,7 @@ class Output_Processing_Messages:
 
 
 class Runtime_Error_Messages:
-    NO_REF_BASE_PROG_ERROR = "No reference or base program input...Exiting sim"
+    NO_BASE_PROG_ERROR = "No baseline program input...Exiting sim"
 
     INVALID_REDUND_FILTER_ERROR = "Error: Invalid Redundancy filter: {filter} for method: {method}"
 

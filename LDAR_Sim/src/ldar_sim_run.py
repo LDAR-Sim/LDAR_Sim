@@ -135,11 +135,10 @@ def run_ldar_sim(parameter_filenames, DEBUG=False):
 
     # --- Run Checks ----
     check_ERA5_file(in_dir, virtual_world)
-    has_ref: bool = ref_program in programs
     has_base: bool = base_program in programs
 
-    if not (has_ref and has_base):
-        print(rem.NO_REF_BASE_PROG_ERROR)
+    if not (has_base):
+        print(rem.NO_BASE_PROG_ERROR)
         sys.exit()
 
     # -- Setup Output folder --

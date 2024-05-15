@@ -36,6 +36,7 @@ def get_simulation_parameters_1():
             Program_Params.NAME: "test_prog1",
             Program_Params.DURATION_ESTIMATE: {
                 Program_Params.DURATION_FACTOR: 0.5,
+                Program_Params.DURATION_METHOD: "test_method",
             },
             Program_Params.ECONOMICS: {
                 Program_Params.TCO2E: 100,
@@ -78,6 +79,7 @@ def get_simulation_parameters_1():
             Program_Params.NAME: "test_prog2",
             Program_Params.DURATION_ESTIMATE: {
                 Program_Params.DURATION_FACTOR: 1,
+                Program_Params.DURATION_METHOD: "test_method",
             },
             Program_Params.ECONOMICS: {
                 Program_Params.TCO2E: 50,
@@ -114,6 +116,12 @@ def get_simulation_parameters_1():
             },
             Program_Params.METHODS: ["test_method3", "test_method4"],
         },
+        "P_None": {
+            Common_Params.PARAM_LEVEL: Levels.PROGRAM,
+            Common_Params.VERSION: "4.0",
+            Program_Params.NAME: "P_None",
+            Program_Params.METHODS: [],
+        },
     }
     outputs = {"test": "test"}
     return ParametersHolder(
@@ -121,6 +129,7 @@ def get_simulation_parameters_1():
         virtual_world=virtual_world,
         programs=programs,
         outputs=outputs,
+        baseline_program="P_None",
     )
 
 
@@ -326,12 +335,19 @@ def get_program_parameter_variations_2():
 def get_expected_program_parameter_variations_1():
     return [
         {
+            "P_None": {
+                Common_Params.PARAM_LEVEL: Levels.PROGRAM,
+                Common_Params.VERSION: "4.0",
+                Program_Params.NAME: "P_None",
+                Program_Params.METHODS: [],
+            },
             "test_prog1_0": {
                 Common_Params.PARAM_LEVEL: Levels.PROGRAM,
                 Common_Params.VERSION: "4.0",
                 Program_Params.NAME: "test_prog1_0",
                 Program_Params.DURATION_ESTIMATE: {
                     Program_Params.DURATION_FACTOR: 0.1,
+                    Program_Params.DURATION_METHOD: "test_method",
                 },
                 Program_Params.ECONOMICS: {
                     Program_Params.TCO2E: 100,
@@ -374,6 +390,7 @@ def get_expected_program_parameter_variations_1():
                 Program_Params.NAME: "test_prog1_1",
                 Program_Params.DURATION_ESTIMATE: {
                     Program_Params.DURATION_FACTOR: 0.5,
+                    Program_Params.DURATION_METHOD: "test_method",
                 },
                 Program_Params.ECONOMICS: {
                     Program_Params.TCO2E: 100,
@@ -416,6 +433,7 @@ def get_expected_program_parameter_variations_1():
                 Program_Params.NAME: "test_prog1_2",
                 Program_Params.DURATION_ESTIMATE: {
                     Program_Params.DURATION_FACTOR: 1.0,
+                    Program_Params.DURATION_METHOD: "test_method",
                 },
                 Program_Params.ECONOMICS: {
                     Program_Params.TCO2E: 100,
@@ -459,12 +477,19 @@ def get_expected_program_parameter_variations_1():
 def get_expected_program_parameter_variations_2():
     return [
         {
+            "P_None": {
+                Common_Params.PARAM_LEVEL: Levels.PROGRAM,
+                Common_Params.VERSION: "4.0",
+                Program_Params.NAME: "P_None",
+                Program_Params.METHODS: [],
+            },
             "test_prog1_0": {
                 Common_Params.PARAM_LEVEL: Levels.PROGRAM,
                 Common_Params.VERSION: "4.0",
                 Program_Params.NAME: "test_prog1_0",
                 Program_Params.DURATION_ESTIMATE: {
                     Program_Params.DURATION_FACTOR: 0.1,
+                    Program_Params.DURATION_METHOD: "test_method",
                 },
                 Program_Params.ECONOMICS: {
                     Program_Params.TCO2E: 10,
@@ -507,6 +532,7 @@ def get_expected_program_parameter_variations_2():
                 Program_Params.NAME: "test_prog2_0",
                 Program_Params.DURATION_ESTIMATE: {
                     Program_Params.DURATION_FACTOR: 0.1,
+                    Program_Params.DURATION_METHOD: "test_method",
                 },
                 Program_Params.ECONOMICS: {
                     Program_Params.TCO2E: 20,
@@ -549,6 +575,7 @@ def get_expected_program_parameter_variations_2():
                 Program_Params.NAME: "test_prog1_1",
                 Program_Params.DURATION_ESTIMATE: {
                     Program_Params.DURATION_FACTOR: 0.5,
+                    Program_Params.DURATION_METHOD: "test_method",
                 },
                 Program_Params.ECONOMICS: {
                     Program_Params.TCO2E: 20,
@@ -591,6 +618,7 @@ def get_expected_program_parameter_variations_2():
                 Program_Params.NAME: "test_prog2_1",
                 Program_Params.DURATION_ESTIMATE: {
                     Program_Params.DURATION_FACTOR: 0.2,
+                    Program_Params.DURATION_METHOD: "test_method",
                 },
                 Program_Params.ECONOMICS: {
                     Program_Params.TCO2E: 40,
@@ -633,6 +661,7 @@ def get_expected_program_parameter_variations_2():
                 Program_Params.NAME: "test_prog1_2",
                 Program_Params.DURATION_ESTIMATE: {
                     Program_Params.DURATION_FACTOR: 1.0,
+                    Program_Params.DURATION_METHOD: "test_method",
                 },
                 Program_Params.ECONOMICS: {
                     Program_Params.TCO2E: 30,
@@ -675,6 +704,7 @@ def get_expected_program_parameter_variations_2():
                 Program_Params.NAME: "test_prog2_2",
                 Program_Params.DURATION_ESTIMATE: {
                     Program_Params.DURATION_FACTOR: 0.3,
+                    Program_Params.DURATION_METHOD: "test_method",
                 },
                 Program_Params.ECONOMICS: {
                     Program_Params.TCO2E: 60,
@@ -739,6 +769,7 @@ def get_expected_method_parameter_variations_1():
                 Program_Params.NAME: "test_prog2_0",
                 Program_Params.DURATION_ESTIMATE: {
                     Program_Params.DURATION_FACTOR: 1,
+                    Program_Params.DURATION_METHOD: "test_method",
                 },
                 Program_Params.ECONOMICS: {
                     Program_Params.TCO2E: 50,
@@ -781,6 +812,7 @@ def get_expected_method_parameter_variations_1():
                 Program_Params.NAME: "test_prog2_1",
                 Program_Params.DURATION_ESTIMATE: {
                     Program_Params.DURATION_FACTOR: 1,
+                    Program_Params.DURATION_METHOD: "test_method",
                 },
                 Program_Params.ECONOMICS: {
                     Program_Params.TCO2E: 50,
@@ -823,6 +855,7 @@ def get_expected_method_parameter_variations_1():
                 Program_Params.NAME: "test_prog2_2",
                 Program_Params.DURATION_ESTIMATE: {
                     Program_Params.DURATION_FACTOR: 1,
+                    Program_Params.DURATION_METHOD: "test_method",
                 },
                 Program_Params.ECONOMICS: {
                     Program_Params.TCO2E: 50,
@@ -859,6 +892,12 @@ def get_expected_method_parameter_variations_1():
                 },
                 Program_Params.METHODS: ["test_method4", "test_method3_2"],
             },
+            "P_None": {
+                Common_Params.PARAM_LEVEL: Levels.PROGRAM,
+                Common_Params.VERSION: "4.0",
+                Program_Params.NAME: "P_None",
+                Program_Params.METHODS: [],
+            },
         },
     ]
 
@@ -879,6 +918,7 @@ def get_expected_method_parameter_variations_2():
                 Program_Params.NAME: "test_prog2_0",
                 Program_Params.DURATION_ESTIMATE: {
                     Program_Params.DURATION_FACTOR: 1,
+                    Program_Params.DURATION_METHOD: "test_method",
                 },
                 Program_Params.ECONOMICS: {
                     Program_Params.TCO2E: 50,
@@ -921,6 +961,7 @@ def get_expected_method_parameter_variations_2():
                 Program_Params.NAME: "test_prog2_1",
                 Program_Params.DURATION_ESTIMATE: {
                     Program_Params.DURATION_FACTOR: 1,
+                    Program_Params.DURATION_METHOD: "test_method",
                 },
                 Program_Params.ECONOMICS: {
                     Program_Params.TCO2E: 50,
@@ -963,6 +1004,7 @@ def get_expected_method_parameter_variations_2():
                 Program_Params.NAME: "test_prog2_2",
                 Program_Params.DURATION_ESTIMATE: {
                     Program_Params.DURATION_FACTOR: 1,
+                    Program_Params.DURATION_METHOD: "test_method",
                 },
                 Program_Params.ECONOMICS: {
                     Program_Params.TCO2E: 50,
@@ -1005,6 +1047,7 @@ def get_expected_method_parameter_variations_2():
                 Program_Params.NAME: "test_prog2_3",
                 Program_Params.DURATION_ESTIMATE: {
                     Program_Params.DURATION_FACTOR: 1,
+                    Program_Params.DURATION_METHOD: "test_method",
                 },
                 Program_Params.ECONOMICS: {
                     Program_Params.TCO2E: 50,
@@ -1047,6 +1090,7 @@ def get_expected_method_parameter_variations_2():
                 Program_Params.NAME: "test_prog2_4",
                 Program_Params.DURATION_ESTIMATE: {
                     Program_Params.DURATION_FACTOR: 1,
+                    Program_Params.DURATION_METHOD: "test_method",
                 },
                 Program_Params.ECONOMICS: {
                     Program_Params.TCO2E: 50,
@@ -1083,6 +1127,12 @@ def get_expected_method_parameter_variations_2():
                 },
                 Program_Params.METHODS: ["test_method3_4", "test_method4_4"],
             },
+            "P_None": {
+                Common_Params.PARAM_LEVEL: Levels.PROGRAM,
+                Common_Params.VERSION: "4.0",
+                Program_Params.NAME: "P_None",
+                Program_Params.METHODS: [],
+            },
         },
     ]
 
@@ -1109,6 +1159,7 @@ def get_expected_method_parameter_variations_3():
                 Program_Params.NAME: "test_prog2_0",
                 Program_Params.DURATION_ESTIMATE: {
                     Program_Params.DURATION_FACTOR: 1,
+                    Program_Params.DURATION_METHOD: "test_method",
                 },
                 Program_Params.ECONOMICS: {
                     Program_Params.TCO2E: 50,
@@ -1151,6 +1202,7 @@ def get_expected_method_parameter_variations_3():
                 Program_Params.NAME: "test_prog2_1",
                 Program_Params.DURATION_ESTIMATE: {
                     Program_Params.DURATION_FACTOR: 1,
+                    Program_Params.DURATION_METHOD: "test_method",
                 },
                 Program_Params.ECONOMICS: {
                     Program_Params.TCO2E: 50,
@@ -1193,6 +1245,7 @@ def get_expected_method_parameter_variations_3():
                 Program_Params.NAME: "test_prog2_2",
                 Program_Params.DURATION_ESTIMATE: {
                     Program_Params.DURATION_FACTOR: 1,
+                    Program_Params.DURATION_METHOD: "test_method",
                 },
                 Program_Params.ECONOMICS: {
                     Program_Params.TCO2E: 50,
@@ -1228,6 +1281,12 @@ def get_expected_method_parameter_variations_3():
                     },
                 },
                 Program_Params.METHODS: ["test_method4", "test_method3_2"],
+            },
+            "P_None": {
+                Common_Params.PARAM_LEVEL: Levels.PROGRAM,
+                Common_Params.VERSION: "4.0",
+                Program_Params.NAME: "P_None",
+                Program_Params.METHODS: [],
             },
         }
     ]

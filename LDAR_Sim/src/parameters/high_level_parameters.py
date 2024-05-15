@@ -36,6 +36,8 @@ class HighLevelParameters(GenericParameters):
             attr = getattr(self, f"_{key}")
             if hasattr(attr, "alter_parameters"):
                 attr.alter_parameters(value)
+            elif isinstance(attr, dict):
+                attr.update(value)
             else:
                 setattr(self, f"_{key}", value)
         else:
