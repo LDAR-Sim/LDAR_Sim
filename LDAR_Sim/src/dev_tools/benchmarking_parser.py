@@ -3,7 +3,6 @@
 # File:        benchmarking_parser.py
 # Purpose:     Parser for benchmarking results
 #
-# Copyright (C) 2018-2021  Intelligent Methane Monitoring and Management System (IM3S) Group
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the MIT License as published
@@ -16,7 +15,6 @@
 
 # You should have received a copy of the MIT License
 # along with this program.  If not, see <https://opensource.org/licenses/MIT>.
-#
 # ------------------------------------------------------------------------------
 import pstats
 import sys
@@ -25,9 +23,11 @@ import os
 benchmark_res_path = "Benchmarking"
 
 file_list = os.listdir(benchmark_res_path)
+FILE_NAME = "benchmark1_results"
+
 
 for filename in file_list:
-    if not filename.endswith(".py"):
+    if filename == FILE_NAME:
         with open(benchmark_res_path + "/" + filename + ".txt", "w") as file:
             old_stdout = sys.stdout
             sys.stdout = file

@@ -23,18 +23,7 @@ import os
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from ldar_sim_run import run_ldar_sim  # noqa: E402
-
-
-def profile_ldar_sim_run(sim):
-    profile = cProfile.Profile()
-    profile.enable()
-    res = run_ldar_sim(sim)
-    profile.disable()
-    profile.dump_stats(
-        (f"../Benchmarking/" f"benchmark1_results_{sim['program']['program_name']}{sim['i']}")
-    )
-    return res
+from ldar_sim_run import run_ldar_sim  # noqa: E402, F401
 
 
 if __name__ == "__main__":
