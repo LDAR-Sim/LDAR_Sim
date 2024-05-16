@@ -100,7 +100,7 @@ def simulate(
     return
 
 
-if __name__ == "__main__":
+def run_ldar_sim():
     print(rm.OPENING_MSG)
 
     root_dir: Path = Path(__file__).resolve().parent.parent
@@ -277,3 +277,7 @@ if __name__ == "__main__":
             print(rm.BATCH_CLEAN.format(batch_count=batch_count))
             summary_stats_manager.gen_summary_outputs(batch_count != 0)
     summary_visualization_manager.gen_visualizations()
+
+
+if __name__ == "__main__":
+    run_ldar_sim()
