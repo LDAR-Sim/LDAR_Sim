@@ -97,7 +97,7 @@ class SiteLevelMethod(Method):
     def update(self, current_date: date) -> TaggingFlaggingStats:
         # TODO add user configurable follow_up parameter to allow
         # for up to a certain % variation between rates
-        date_to_check: date = current_date - timedelta(days=self._reporting_delay)
+        date_to_check: date = current_date - timedelta(days=int(self._reporting_delay))
         new_detections: list[DetectionRecord] = self._detection_records.get(date_to_check, [])
         for detection_record in new_detections:
             # Check that the site hasn't gotten a survey with a method

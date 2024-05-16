@@ -67,7 +67,7 @@ class ScheduledSurveyPlanner(SurveyPlanner):
         self._survey_plan: dict[int, date] = self._gen_survey_plan(site_annual_rs)
         self._current_date: date = sim_start_date - timedelta(days=1)
         self._surveys_this_year: dict[int, Survey_Counter] = self._set_survey_per_year()
-        self._last_survey_dates: [date] = []
+        self._last_survey_dates: list[date] = []
         self._queued: bool = False
 
     def _set_deployment_years(self, deploy_yrs: list[int]):

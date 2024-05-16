@@ -127,15 +127,20 @@ def gen_estimated_emissions_report(
     site_ids: list = site_survey_reports_summary[eca.SITE_ID].unique()
 
     # For all sites, add a survey report for the start and end date of the simulation
-    for site_id in site_ids:
+    site_survey_data: list = []
 
-        site_survey_reports_summary.loc[len(site_survey_reports_summary)] = SiteSurveyReport(
+    for site_id in site_ids:
+        start_report = SiteSurveyReport(
             site_id=site_id, survey_start_date=start_date, survey_completion_date=start_date
         ).to_report_summary()
-
-        site_survey_reports_summary.loc[len(site_survey_reports_summary)] = SiteSurveyReport(
+        site_survey_data.append(start_report)
+        end_report = SiteSurveyReport(
             site_id=site_id, survey_start_date=end_date, survey_completion_date=end_date
         ).to_report_summary()
+        site_survey_data.append(end_report)
+
+    new_site_survey_data: pd.DataFrame = pd.DataFrame(site_survey_data)
+    site_survey_reports_summary = pd.concat([site_survey_reports_summary, new_site_survey_data])
 
     site_survey_reports_summary[eca.SURVEY_COMPLETION_DATE] = site_survey_reports_summary[
         eca.SURVEY_COMPLETION_DATE
@@ -252,9 +257,10 @@ def gen_estimated_comp_emissions_report(
                     eca.M_RATE: 0,
                 }
     # Adding start and end date for each unique component
+    new_data: list = []
     for site_id, eqg, comp in unique_combinations_list:
 
-        unpack_comp.loc[len(unpack_comp)] = {
+        new_row_1: dict = {
             eca.SITE_ID: site_id,
             eca.EQG: eqg,
             eca.COMP: comp,
@@ -263,7 +269,7 @@ def gen_estimated_comp_emissions_report(
             eca.M_RATE: 0,
         }
 
-        unpack_comp.loc[len(unpack_comp)] = {
+        new_row_2: dict = {
             eca.SITE_ID: site_id,
             eca.EQG: eqg,
             eca.COMP: comp,
@@ -271,6 +277,11 @@ def gen_estimated_comp_emissions_report(
             eca.SURVEY_COMPLETION_DATE: end_date,
             eca.M_RATE: 0,
         }
+        new_data.append(new_row_1)
+        new_data.append(new_row_2)
+
+    new_data_df: pd.DataFrame = pd.DataFrame(new_data)
+    unpack_comp = pd.concat([unpack_comp, new_data_df], ignore_index=True)
 
     unpack_comp[eca.SURVEY_COMPLETION_DATE] = unpack_comp[eca.SURVEY_COMPLETION_DATE].astype(
         "datetime64[ns]"
