@@ -23,6 +23,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 import pandas as pd
 from datetime import date
 
+from dev_tools.profiling_tools import profile_function
 from file_processing.output_processing import program_output_helpers
 from scheduling.schedule_dataclasses import (
     SiteSurveyReport,
@@ -197,6 +198,20 @@ def gen_estimated_emissions_report(
     fugitive_emissions_to_remove.to_csv(pm._output_dir / rep_filename, index=False)
 
 
+def gen_estimated_fugitive_emissions_to_remove_wrapper(
+    pm,
+    site_survey_reports_summary: pd.DataFrame,
+    fugitive_emissions_rates_and_repair_dates: pd.DataFrame,
+):
+    with profile_function(pm.name_str + "_fug_emissions"):
+        result = gen_estimated_fugitive_emissions_to_remove(
+            site_survey_reports_summary,
+            fugitive_emissions_rates_and_repair_dates,
+        )
+
+    return result
+
+
 def gen_estimated_comp_emissions_report(
     pm,
     site_survey_reports_summary: pd.DataFrame,
@@ -314,7 +329,8 @@ def gen_estimated_comp_emissions_report(
         program_output_helpers.calculate_end_date
     ).reset_index(drop=True)
 
-    fugitive_emissions_to_remove: pd.DataFrame = gen_estimated_fugitive_emissions_to_remove(
+    fugitive_emissions_to_remove: pd.DataFrame = gen_estimated_fugitive_emissions_to_remove_wrapper(
+        pm=pm,
         site_survey_reports_summary=sorted_by_site_summary,
         fugitive_emissions_rates_and_repair_dates=fugutive_emissions_rates_and_repair_dates,
     )
