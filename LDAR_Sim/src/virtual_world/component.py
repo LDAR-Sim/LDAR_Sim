@@ -184,9 +184,8 @@ class Component:
             new_emissions_count += len(new_emissions)
         return new_emissions_count
 
-    def update_emissions_state(self, emis_rep_info: EmisInfo) -> TsEmisData:
+    def update_emissions_state(self, emis_rep_info: EmisInfo, emis_data: TsEmisData) -> None:
         updated_active_emissions: list[Emission] = []
-        emis_data: TsEmisData = TsEmisData()
         for emission in self._active_emissions:
             if emission.update(emis_rep_info):
                 updated_active_emissions.append(emission)
@@ -200,7 +199,6 @@ class Component:
                 self._inactive_emissions.append(emission)
         self._active_emissions = updated_active_emissions
         emis_data.active_leaks += len(self._active_emissions)
-        return emis_data
 
     def tag_emissions(self, tagging_info: TaggingInfo) -> None:
         # TODO improve this logic
