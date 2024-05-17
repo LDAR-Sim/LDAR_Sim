@@ -393,3 +393,7 @@ class Site:
 
     def get_weather_long(self) -> float:
         return self._weather_long
+
+    @property
+    def equipment_groups(self):
+        return self._equipment_groups

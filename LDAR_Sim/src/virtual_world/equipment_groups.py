@@ -186,3 +186,7 @@ class Equipment_Group:
     def setup(self, methods: list[str]):
         for component in self._component:
             component.set_emis_sum_dtypes(methods)
+
+    @property
+    def component(self):
+        return self._component
