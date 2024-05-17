@@ -108,12 +108,11 @@ def gen_estimated_fugitive_emissions_to_remove(
 
 
 def gen_estimated_emissions_report(
-    pm,
     site_survey_reports_summary: pd.DataFrame,
     fugutive_emissions_rates_and_repair_dates: pd.DataFrame,
     start_date: date,
     end_date: date,
-) -> None:
+) -> tuple[pd.DataFrame, pd.DataFrame]:
     """Generate a report of yearly estimated emissions based on site survey reports
     Args:
         site_survey_reports (pd.DataFrame): The site survey reports
@@ -189,21 +188,15 @@ def gen_estimated_emissions_report(
 
     # Select only the predefined columns
     selected_sorted_by_site_summary = sorted_by_site_summary[EMIS_ESTIMATION_OUTPUT_COLUMNS]
-
-    rep_filename: str = pm.generate_file_names(Output_Files.EST_REP_EMISSIONS_FILE)
-    filename: str = pm.generate_file_names(Output_Files.EST_EMISSIONS_FILE)
-
-    selected_sorted_by_site_summary.to_csv(pm._output_dir / filename, index=False)
-    fugitive_emissions_to_remove.to_csv(pm._output_dir / rep_filename, index=False)
+    return (selected_sorted_by_site_summary, fugitive_emissions_to_remove)
 
 
 def gen_estimated_comp_emissions_report(
-    pm,
     site_survey_reports_summary: pd.DataFrame,
     fugutive_emissions_rates_and_repair_dates: pd.DataFrame,
     start_date: date,
     end_date: date,
-) -> None:
+) -> tuple[pd.DataFrame, pd.DataFrame]:
     """Generate a report of yearly estimated emissions based on only component level surveys
     Args:
         site_survey_reports (pd.DataFrame): The site survey reports
@@ -325,9 +318,5 @@ def gen_estimated_comp_emissions_report(
 
     # Filter out only the predefined columns
     select_sorted_by_site_summary = sorted_by_site_summary[EMIS_COMP_ESTIMATION_OUTPUT_COLUMNS]
-    # Save files
-    rep_filename: str = pm.generate_file_names(Output_Files.EST_REP_EMISSIONS_FILE)
-    filename: str = pm.generate_file_names(Output_Files.EST_EMISSIONS_FILE)
 
-    select_sorted_by_site_summary.to_csv(pm._output_dir / filename, index=False)
-    fugitive_emissions_to_remove.to_csv(pm._output_dir / rep_filename, index=False)
+    return (select_sorted_by_site_summary, fugitive_emissions_to_remove)
