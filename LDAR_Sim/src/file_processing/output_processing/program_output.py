@@ -57,23 +57,21 @@ def gen_estimated_fugitive_emissions_to_remove(
     # Populate a new column in the fugitive emissions rates and repair dates dataframe
     # with the closest future survey date. This wil be used to compute the estimated
     # fugitive emissions to remove to avoid double counting
-    fugitive_emissions_rates_and_repair_dates.loc[
-        :, eca.NEXT_SURVEY_DATE
-    ] = fugitive_emissions_rates_and_repair_dates.loc[
-        :,
-        [
-            eca.DATE_REP_EXP,
-            eca.SITE_ID,
-        ],
-    ].apply(
-        lambda x: program_output_helpers.closest_future_date(
-            x[eca.DATE_REP_EXP],
-            site_survey_reports_summary.loc[
-                site_survey_reports_summary[eca.SITE_ID] == x[eca.SITE_ID],
-                eca.SURVEY_COMPLETION_DATE,
-            ].unique(),
-        ),
-        axis=1,
+    # Create a dictionary to store the unique survey completion dates for each site
+    site_survey_dates = (
+        site_survey_reports_summary.groupby(eca.SITE_ID)[eca.SURVEY_COMPLETION_DATE]
+        .unique()
+        .to_dict()
+    )
+
+    # Use the dictionary to map the closest future survey date for each row
+    fugitive_emissions_rates_and_repair_dates[eca.NEXT_SURVEY_DATE] = (
+        fugitive_emissions_rates_and_repair_dates.apply(
+            lambda x: program_output_helpers.closest_future_date(
+                x[eca.DATE_REP_EXP], site_survey_dates[x[eca.SITE_ID]]
+            ),
+            axis=1,
+        )
     )
     fugitive_emissions_rates_and_repair_dates.loc[
         :, "account_for_fugitives"
