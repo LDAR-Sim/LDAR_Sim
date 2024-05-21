@@ -78,13 +78,21 @@ class ProgramOutputManager:
         ]
         function_to_call = self.PROGRAM_FUNCTIONS_MAPPING.get(program.duration_method)
         if function_to_call:
-            function_to_call(
-                self,
+            result = function_to_call(
                 program.aggregate_method_survey_reports(),
                 emis_info_for_duration_estimation,
                 start_date,
                 end_date,
             )
+            if result:
+                emis_estimation: pd.DataFrame
+                fug_to_remove: pd.DataFrame
+                emis_estimation, fug_to_remove = result
+                emis_file_name = self.generate_file_names(Output_Files.EST_EMISSIONS_FILE)
+                fug_file_name = self.generate_file_names(Output_Files.EST_REP_EMISSIONS_FILE)
+
+                emis_estimation.to_csv(self._output_dir / emis_file_name, index=False)
+                fug_to_remove.to_csv(self._output_dir / fug_file_name, index=False)
         else:
             raise KeyError(f"No function found for program: {program}")
 
