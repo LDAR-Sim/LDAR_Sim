@@ -28,12 +28,13 @@ Email: <sally@highwoodemissions.com>
   - [5. Simulation Settings](#5-simulation-settings)
     - [\<parameter\_level\> (simulation\_settings)](#parameter_level-simulation_settings)
     - [\<version\> (simulation\_settings)](#version-simulation_settings)
-    - [\<n\_processes\>](#n_processes)
-    - [\<n\_simulations\>](#n_simulations)
-    - [\<preseed\_random\>](#preseed_random)
     - [\<input\_directory\>](#input_directory)
     - [\<output\_directory\>](#output_directory)
     - [\<baseline\_program\>](#baseline_program)
+    - [\<reference\_program\> WIP](#reference_program-wip)
+    - [\<processes\_count\>](#processes_count)
+    - [\<simulation\_count\>](#simulation_count)
+    - [\<preseed\_random\>](#preseed_random)
   - [6. Output Settings](#6-output-settings)
     - [\<parameter\_level\> (outputs)](#parameter_level-outputs)
     - [\<version\> (outputs)](#version-outputs)
@@ -306,46 +307,6 @@ Note that programs are interpreted as a flat list of parameters that are incorpo
 
 **Notes of caution:** Improper versioning will prevent simulator from executing.
 
-### &lt;n_processes&gt;
-
-**Data type:** Integer (Numeric)
-
-**Default input:** 6
-
-**Description:** The maximum number of parallel tasks/processes that the simulator is allowed to use at a given time.
-
-**Notes on acquisition:** In general, many modern computers can effectively handle around 6 concurrent processes without significant performance issues. This number is influenced by factors such as the computer's hardware specifications, operating system efficiency, and the resource demands of the individual processes.
-
-**Notes of caution:** Python is limited and cannot achieve true simultaneous execution of Python code. Therefore, generating too many processes may cause slower performance due to excessive context switching between the different processes.
-
-A minimum of a single process is required for the simulation to run.
-
-### &lt;n_simulations&gt;
-
-**Data type:** Integer (Numeric)
-
-**Default input:** 2
-
-**Description:** The quantity of simulation iterations to execute for the given programs.
-
-**Notes on acquisition:** Increasing the number of simulations improves result accuracy but extends the runtime.
-
-**Notes of caution:** For critical scenarios intended to guide decision-making, we advise employing 50 or more simulations for each modeled scenario. At least two simulations are necessary to compare different LDAR programs effectively.
-
-To constrain uncertainty, and generate meaningful data output from the simulator, aim for 400 or more annual data points. Achieve this by increasing the simulation iterations to 100 for 4-year-long simulations, or by employing any suitable combination.
-
-### &lt;preseed_random&gt;
-
-**Data type:** Boolean
-
-**Default input:** False
-
-**Description:** If enabled, a series of random integers, acting as the 'seed', will be generated. These integers guarantee the reproducibility of all randomly generated values. For instance, future simulations utilizing the same virtual world parameters alongside the specified 'seed' will produce identical emission sets.
-
-**Notes on acquisition:** N/A
-
-**Notes of caution:** It is advisable to set `preseed_random: True` for any simulation results that will require referencing and duplication in the future.
-
 ### &lt;input_directory&gt;
 
 **Data type:** String
@@ -378,9 +339,61 @@ To constrain uncertainty, and generate meaningful data output from the simulator
 
 **Description:** Refers to a [name of a program](#program_name) that is a part of the simulation. Results requiring a reference point for comparison, such as mitigation efforts, will be derived by comparing the output values from this program.
 
-**Notes on acquisition:** Typically a program that represents a scenario where there is no formal LDAR or that has no LDAR method is recommended as the baseline program.
+**Notes on acquisition:** Typically a program that represents a scenario where there is no formal LDAR or that has no LDAR method is recommended as the baseline program. Simply put, create a program with no methods.
 
 **Notes of caution:** A baseline program is required to successfully run the simulation.
+
+### &lt;reference_program&gt; WIP
+
+**Data type:** String
+
+**Default input:** 'P_OGI'
+
+**Description:** Refers to a [name of a program](#program_name), against which alternative programs are compared.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** N/A
+
+### &lt;processes_count&gt;
+
+**Data type:** Integer (Numeric)
+
+**Default input:** 6
+
+**Description:** The maximum number of parallel tasks or processes that the simulator can use simultaneously. To simplify, this is the limit of how many different tasks the simulator can handle at a given time.
+
+**Notes on acquisition:** In general, many modern computers can effectively handle around 6 concurrent processes without significant performance issues. This number is influenced by factors such as the computer's hardware specifications, operating system efficiency, and the resource demands of the individual processes.
+
+**Notes of caution:** Python is limited and cannot achieve true simultaneous execution of Python code. Therefore, generating too many processes may cause slower performance due to excessive context switching between the different processes.
+
+A minimum of a single process is required for the simulation to run.
+
+### &lt;simulation_count&gt;
+
+**Data type:** Integer (Numeric)
+
+**Default input:** 2
+
+**Description:** The number of simulation rounds to execute for the given programs.
+
+**Notes on acquisition:** Increasing the number of simulations improves result accuracy but extends the runtime.
+
+**Notes of caution:** For critical scenarios that are intended to guide decision-making, we recommend running a significant number of simulations for each modeled scenario. A minimum of 50 simulations is advised to ensure a robust comparison of different LDAR programs.
+
+To generate meaningful and reliable data output from the simulator, it's important to aim for a substantial number of annual data points. We recommend aiming for at least 400 annual data points. This can be achieved by adjusting the number of simulation iterations and the duration of the simulations. For instance, you could run 100 iterations of a 4-year-long simulation. Alternatively, you can employ any combination that suits your specific needs, as long as it results in a sufficient number of data points.
+
+### &lt;preseed_random&gt;
+
+**Data type:** Boolean
+
+**Default input:** False
+
+**Description:** If enabled, a series of random integers, acting as the 'seed', will be generated. These integers guarantee the reproducibility of all randomly generated values. For instance, future simulations utilizing the same virtual world parameters alongside the specified 'seed' will produce identical emission sets.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** It is advisable to set `preseed_random: True` for any simulation results that will require referencing and duplication in the future.
 
 --------------------------------------------------------------------------------
 
