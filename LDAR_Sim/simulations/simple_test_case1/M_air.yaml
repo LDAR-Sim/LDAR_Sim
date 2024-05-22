@@ -1,16 +1,16 @@
 parameter_level: methods
 version: "4.0"
-label: airH
+method_name: airH
 deployment_type: mobile
 measurement_scale: site
 sensor:
   type: default
-  MDL: [5.55]
+  minimum_detection_limit: [5.55]
 is_follow_up: False
 cost:
   per_day: 0
   per_site: 100
-t_bw_sites:
-  vals: [5]
-RS: 4
-time: 5
+time_between_sites:
+  values: [5]
+surveys_per_year: 4
+travel_time: 5

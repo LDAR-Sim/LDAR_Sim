@@ -1,5 +1,5 @@
 input_directory: ./inputs/simple_test_case_1
-n_simulations: 3
+simulation_count: 3
 output_directory: ./outputs/simple_test_case_1
 parameter_level: simulation_settings
 preseed_random: true

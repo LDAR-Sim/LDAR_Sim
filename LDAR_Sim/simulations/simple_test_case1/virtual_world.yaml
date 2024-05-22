@@ -4,7 +4,7 @@ site_samples: 50
 emissions:
   emissions_file: "emissions_file.csv" #File containing sample emissions rates or emissions distributions.
   emissions_rate_source: "test1" # The name of a column in the emissions file
-  leak_production_rate: 0.0065
+  repairable_emissions_production_rate: 0.0065
 infrastructure:
   site_type_file: "_placeholder_str_" # Infrastructure file defining site types
   sites_file: "facilities_Perm.csv" #Infrastructure file defining sites

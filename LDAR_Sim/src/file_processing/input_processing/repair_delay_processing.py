@@ -37,7 +37,7 @@ def read_in_repair_delay_sources_file(
     Returns
 
     """
-    filename: str = virtual_world[vw.REPAIR][vw.DELAY][cp.FILE]
+    filename: str = virtual_world[vw.REPAIR][vw.REPAIR_DELAY][cp.FILE]
     if filename is not None:
         filepath: WindowsPath = inputs_path / filename
         repair_delay_file: DataFrame = read_csv(filepath)

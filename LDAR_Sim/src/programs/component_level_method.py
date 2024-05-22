@@ -36,7 +36,7 @@ from sensors.OGI_camera_rk import OGICameraRKSensor
 from sensors.OGI_camera_zim import OGICameraZimSensor
 from sensors.METEC_NoWind_sensor import METECNWComponent
 from virtual_world.sites import Site
-from constants.param_default_const import Method_Params as mp
+import constants.param_default_const as pdc
 
 
 class ComponentLevelMethod(Method):
@@ -99,14 +99,22 @@ class ComponentLevelMethod(Method):
             sensor_into (dict): _description_
         """
         # TODO: change to mapping?
-        if sensor_info[mp.TYPE] == "default":
-            self._sensor = DefaultComponentLevelSensor(sensor_info[mp.MDL], sensor_info[mp.QE])
-        elif sensor_info[mp.TYPE] == "OGI_camera_zim":
-            self._sensor = OGICameraZimSensor(sensor_info[mp.MDL], sensor_info[mp.QE])
-        elif sensor_info[mp.TYPE] == "OGI_camera_rk":
-            self._sensor = OGICameraRKSensor(sensor_info[mp.MDL], sensor_info[mp.QE])
-        elif sensor_info[mp.TYPE] == "METEC_no_wind":
-            self._sensor = METECNWComponent(sensor_info[mp.MDL], sensor_info[mp.QE])
+        if sensor_info[pdc.Method_Params.TYPE] == "default":
+            self._sensor = DefaultComponentLevelSensor(
+                sensor_info[pdc.Method_Params.MDL], sensor_info[pdc.Method_Params.QE]
+            )
+        elif sensor_info[pdc.Method_Params.TYPE] == "OGI_camera_zim":
+            self._sensor = OGICameraZimSensor(
+                sensor_info[pdc.Method_Params.MDL], sensor_info[pdc.Method_Params.QE]
+            )
+        elif sensor_info[pdc.Method_Params.TYPE] == "OGI_camera_rk":
+            self._sensor = OGICameraRKSensor(
+                sensor_info[pdc.Method_Params.MDL], sensor_info[pdc.Method_Params.QE]
+            )
+        elif sensor_info[pdc.Method_Params.TYPE] == "METEC_no_wind":
+            self._sensor = METECNWComponent(
+                sensor_info[pdc.Method_Params.MDL], sensor_info[pdc.Method_Params.QE]
+            )
         else:
             print(ipm.ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
             sys.exit()
@@ -130,7 +138,7 @@ class ComponentLevelMethod(Method):
 
         # If the cost type for the method is per day, calculate the deployment cost for day
         # based off the number of crews being deployed
-        if self.cost_type == self.METHOD_COST_PER_DAY:
+        if self.cost_type == self.PER_DAY_COST:
             deploy_stats.deployment_cost = self.cost * len(self._crew_reports)
         # pop the site with the longest remaining hours to assign the next crew
         # while there are crews that can work

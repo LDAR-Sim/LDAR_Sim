@@ -32,24 +32,30 @@ class Infrastructure_Constants:
         ID = "site_ID"  # Site ID
         TYPE = "site_type"  # Site Type
         EQG = "equipment"  # Equipment Group
-        REP_EMIS_ERS = "repairable_ERS"  # Repairable Emissions: Emissions Rate Source
-        REP_EMIS_EPR = "repairable_EPR"  # Repairable Emissions : Emission Production Rate
-        REP_EMIS_RD = "repairable_RD"  # Repairable Emissions : Repair Delay
-        REP_EMIS_RC = "repairable_RC"  # Repairable Emissions : Repair Cost
-        REP_EMIS_ED = "repairable_ED"  # Repairable Emissions : Emissions Duration
-        REP_EMIS_MULTI = "repairable_multi"  # Repairable Emissions : Multiple Emissions
-        NON_REP_EMIS_ERS = "non_repairable_ERS"  # Non-Repairable Emissions: Emissions Rate Source
-        NON_REP_EMIS_EPR = (
-            "non_repairable_EPR"  # Non-Repairable Emissions: Emissions Production Rate
+        REP_EMIS_ERS = (
+            "repairable_emissions_rate_source"  # Repairable Emissions: Emissions Rate Source
         )
-        NON_REP_EMIS_ED = "non_repairable_ED"  # Non-Repairable Emissions: Emissions Duration
-        NON_REP_EMIS_MULTI = "non_repairable_multi"  # Non-Repairable Emissions: Multiple Emissions
-        SURVEY_FREQUENCY_PLACEHOLDER = "_surveyfreq"  # Survey Frequency - Method specific
+        # Repairable Emissions : Emission Production Rate
+        REP_EMIS_EPR = "repairable_emissions_production_rate"
+        REP_EMIS_RD = "repairable_repair_delay"  # Repairable Emissions : Repair Delay
+        REP_EMIS_RC = "repairable_repair_cost"  # Repairable Emissions : Repair Cost
+        REP_EMIS_ED = "repairable_natural_repair_delay"  # Repairable Emissions : Emissions Duration
+        REP_EMIS_MULTI = (
+            "repairable_multiple_emissions_per_source"  # Repairable Emissions : Multiple Emissions
+        )
+        # Non-Repairable Emissions: Emissions Rate Source
+        NON_REP_EMIS_ERS = "non_repairable_emissions_rate_source"
+        # Non-Repairable Emissions: Emissions Production Rate
+        NON_REP_EMIS_EPR = "non_repairable_emissions_production_rate"
+        NON_REP_EMIS_ED = "non_repairable_duration"  # Non-Repairable Emissions: Emissions Duration
+        # Non-Repairable Emissions: Multiple Emissions
+        NON_REP_EMIS_MULTI = "non_repairable_multiple_emissions_per_source_non_repairable"
+        SURVEY_FREQUENCY_PLACEHOLDER = "_surveys_per_year"  # Survey Frequency - Method specific
         DEPLOYMENT_YEARS_PLACEHOLDER = "_deploy_year"  # Deployment Year - Method specific
         DEPLOYMENT_MONTHS_PLACEHOLDER = "_deploy_month"  # Deployment Month - Method specific
         SPATIAL_PLACEHOLDER = "_spatial"  # Spatial coverage - Method specific
-        SURVEY_TIME_PLACEHOLDER = "_surveytime"  # Survey Time - Method specific
-        SURVEY_COST_PLACEHOLDER = "_surveycost"  # Survey Cost - Method specific
+        SURVEY_TIME_PLACEHOLDER = "_survey_time"  # Survey Time - Method specific
+        SURVEY_COST_PLACEHOLDER = "_survey_cost"  # Survey Cost - Method specific
 
         PROPAGATING_PARAMS: list[str] = [
             REP_EMIS_ERS,
@@ -77,56 +83,71 @@ class Infrastructure_Constants:
 
     class Equipment_Group_File_Constants:
         EQUIPMENT_GROUP = "equipment"  # Equipment Group
-        REP_EMIS_ERS = "repairable_ERS"  # Repairable Emissions Rate Source
-        REP_EMIS_EPR = "repairable_EPR"  # Repairable Emissions Production Rate
-        REP_EMIS_RD = "repairable_RD"  # Repairable Emissions Repair Delay
-        REP_EMIS_RC = "repairable_RC"  # Repairable Emissions Repair Cost
-        REP_EMIS_ED = "repairable_ED"  # Repairable Emissions Emissions Duration
-        REP_EMIS_MULTI = "repairable_multi"  # Repairable Emissions Multiple Emissions
-        NON_REP_EMIS_ERS = "non_repairable_ERS"  # Non-Repairable Emissions Rate Source
-        NON_REP_EMIS_EPR = "non_repairable_EPR"  # Non-Repairable Emissions Production Rate
-        NON_REP_EMIS_ED = "non_repairable_ED"  # Non-Repairable Emissions: Emissions Duration
-        NON_REP_EMIS_MULTI = "non_repairable_multi"  # Non-Repairable Emissions Multiple Emissions
-        SURVEY_TIME_PLACEHOLDER = "_surveytime"  # Survey Time - Method specific
-        SURVEY_COST_PLACEHOLDER = "_surveycost"  # Survey Cost - Method specific
+        REP_EMIS_ERS = "repairable_emissions_rate_source"  # Repairable Emissions Rate Source
+        REP_EMIS_EPR = (
+            "repairable_emissions_production_rate"  # Repairable Emissions Production Rate
+        )
+        REP_EMIS_RD = "repairable_repair_delay"  # Repairable Emissions Repair Delay
+        REP_EMIS_RC = "repairable_repair_cost"  # Repairable Emissions Repair Cost
+        REP_EMIS_ED = "repairable_emissions_duration"  # Repairable Emissions Emissions Duration
+        REP_EMIS_MULTI = (
+            "repairable_multiple_emissions_per_source"  # Repairable Emissions Multiple Emissions
+        )
+        NON_REP_EMIS_ERS = (
+            "non_repairable_emissions_rate_source"  # Non-Repairable Emissions Rate Source
+        )
+        NON_REP_EMIS_EPR = (
+            "non_repairable_emissions_production_rate"  # Non-Repairable Emissions Production Rate
+        )
+        NON_REP_EMIS_ED = "non_repairable_duration"  # Non-Repairable Emissions: Emissions Duration
+        # Non-Repairable Emissions Multiple Emissions
+        NON_REP_EMIS_MULTI = "non_repairable_multiple_emissions_per_source"
+        SURVEY_TIME_PLACEHOLDER = "_survey_time"  # Survey Time - Method specific
+        SURVEY_COST_PLACEHOLDER = "_survey_cost"  # Survey Cost - Method specific
         SPATIAL_PLACEHOLDER = "_spatial"  # Spatial coverage - Method specific
 
     class Sources_File_Constants:
         COMPONENT = "component"
         SOURCE = "source"
-        EMIS_EPR = "EPR"
-        EMIS_ERS = "ERS"  # Emission rate source
-        EMIS_DUR = "ED"  # Emission Duration
-        REPAIR_DELAY = "RD"  # Repair Delay
-        REPAIR_COST = "RC"  # Repair Cost
+        EMIS_EPR = "emissions_production_rate"
+        EMIS_ERS = "emissions_rate_source"  # Emission rate source
+        EMIS_DUR = "duration"  # Emission Duration
+        REPAIR_DELAY = "repair_delay"  # Repair Delay
+        REPAIR_COST = "repair_cost"  # Repair Cost
         PERSISTENT = "persistent"  # Persistent (Y/N)
         REPAIRABLE = "repairable"  # Repairable (Y/N)
-        ACTIVE_DUR = "active_dur"  # Active Duration
-        INACTIVE_DUR = "inactive_dur"  # Inactive Duration
-        SURVEY_TIME_PLACEHOLDER = "_surveytime"  # Survey Time - Method specific
-        SURVEY_COST_PLACEHOLDER = "_surveycost"  # Survey Cost - Method specific
+        ACTIVE_DUR = "active_duration"  # Active Duration
+        INACTIVE_DUR = "inactive_duration"  # Inactive Duration
+        SURVEY_TIME_PLACEHOLDER = "_survey_time"  # Survey Time - Method specific
+        SURVEY_COST_PLACEHOLDER = "_survey_cost"  # Survey Cost - Method specific
         SPATIAL_PLACEHOLDER = "_spatial"  # Spatial coverage - Method specific
-        MULTI_EMISSIONS = "multi"  # Multiple Emissions (Y/N)
+        MULTI_EMISSIONS = "multiple_emissions_per_source"  # Multiple Emissions (Y/N)
 
     class Site_Type_File_Constants:
         TYPE = "site_type"  # Site Type
         EQG = "equipment"  # Equipment Group
-        REP_EMIS_ERS = "repairable_ERS"  # Repairable Emissions: Emissions Rate Source
-        REP_EMIS_EPR = "repairable_EPR"  # Repairable Emissions : Emission Production Rate
-        REP_EMIS_RD = "repairable_RD"  # Repairable Emissions : Repair Delay
-        REP_EMIS_RC = "repairable_RC"  # Repairable Emissions : Repair Cost
-        REP_EMIS_ED = "repairable_ED"  # Repairable Emissions : Emissions Duration
-        REP_EMIS_MULTI = "repairable_multi"  # Repairable Emissions : Multiple Emissions
-        NON_REP_EMIS_ERS = "non_repairable_ERS"  # Non-Repairable Emissions: Emissions Rate Source
-        NON_REP_EMIS_EPR = (
-            "non_repairable_EPR"  # Non-Repairable Emissions: Emissions Production Rate
+        REP_EMIS_ERS = (
+            "repairable_emissions_rate_source"  # Repairable Emissions: Emissions Rate Source
         )
-        NON_REP_EMIS_ED = "non_repairable_ED"  # Non-Repairable Emissions: Emissions Duration
-        NON_REP_EMIS_MULTI = "non_repairable_multi"  # Non-Repairable Emissions: Multiple Emissions
-        SURVEY_FREQUENCY_PLACEHOLDER = "_surveyfreq"  # Survey Frequency - Method specific
+        # Repairable Emissions : Emission Production Rate
+        REP_EMIS_EPR = "repairable_emissions_production_rate"
+        REP_EMIS_RD = "repairable_repairs_delay"  # Repairable Emissions : Repair Delay
+        REP_EMIS_RC = "repairable_repairs_cost"  # Repairable Emissions : Repair Cost
+        REP_EMIS_ED = "repairable_duration"  # Repairable Emissions : Emissions Duration
+        REP_EMIS_MULTI = (
+            "repairable_multiple_emissions_per_source"  # Repairable Emissions : Multiple Emissions
+        )
+        # Non-Repairable Emissions: Emissions Rate Source
+        NON_REP_EMIS_ERS = "non_repairable_emissions_rate_source"
+        # Non-Repairable Emissions: Emissions Production Rate
+        NON_REP_EMIS_EPR = "non_repairable_emissions_production_rate"
+        NON_REP_EMIS_ED = "non_repairable_duration"  # Non-Repairable Emissions: Emissions Duration
+        # Non-Repairable Emissions: Multiple Emissions
+        NON_REP_EMIS_MULTI = "non_repairable_multiple_emissions_per_source"
+        SURVEY_FREQUENCY_PLACEHOLDER = "_surveys_per_year"  # Survey Frequency - Method specific
         SPATIAL_PLACEHOLDER = "_spatial"  # Spatial coverage - Method specific
-        SURVEY_TIME_PLACEHOLDER = "_surveytime"  # Survey Time - Method specific
-        SURVEY_COST_PLACEHOLDER = "_surveycost"  # Survey Cost - Method specific
+        SURVEY_TIME_PLACEHOLDER = "_survey_time"  # Survey Time - Method specific
+        SURVEY_COST_PLACEHOLDER = "_survey_cost"  # Survey Cost - Method specific
         DEPLOYMENT_YEARS_PLACEHOLDER = "_deploy_year"  # Deployment Year - Method specific
         DEPLOYMENT_MONTHS_PLACEHOLDER = "_deploy_month"  # Deployment Month - Method specific
 
@@ -155,23 +176,45 @@ class Infrastructure_Constants:
 
 class Virtual_World_To_Prop_Params_Mapping:
     PROPAGATING_PARAMS: dict[str, str] = {
-        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ERS: "emissions.ERS",
-        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_EPR: "emissions.LPR",
-        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RD: "repairs.delay",
-        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RC: "repairs.cost",
-        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ED: "emissions.NRd",
-        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_MULTI: "emissions.multi",
-        Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_ERS: "emissions.NR_ERS",
-        Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_EPR: "emissions.NR_EPR",
-        Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_ED: "emissions.duration",
-        Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_MULTI: "emissions.NR_multi",
+        (
+            Infrastructure_Constants.Sites_File_Constants
+        ).REP_EMIS_ERS: "emissions.emissions_rate_source",
+        (
+            Infrastructure_Constants.Sites_File_Constants
+        ).REP_EMIS_EPR: "emissions.repairable_emissions_production_rate",
+        (Infrastructure_Constants.Sites_File_Constants).REP_EMIS_RD: "repairs.delay",
+        (Infrastructure_Constants.Sites_File_Constants).REP_EMIS_RC: "repairs.cost",
+        (
+            Infrastructure_Constants.Sites_File_Constants
+        ).REP_EMIS_ED: "emissions.natural_repair_delay",
+        (
+            Infrastructure_Constants.Sites_File_Constants
+        ).REP_EMIS_MULTI: "emissions.multiple_emissions_per_source",
+        (
+            Infrastructure_Constants.Sites_File_Constants
+        ).NON_REP_EMIS_ERS: "emissions.non_repairable_emissions_rate_source",
+        (
+            Infrastructure_Constants.Sites_File_Constants
+        ).NON_REP_EMIS_EPR: "emissions.non_repairable_emissions_production_rate",
+        (Infrastructure_Constants.Sites_File_Constants).NON_REP_EMIS_ED: "emissions.duration",
+        (
+            Infrastructure_Constants.Sites_File_Constants
+        ).NON_REP_EMIS_MULTI: "emissions.multiple_emissions_per_source_non_repairable",
     }
 
     METH_SPEC_PROP_PARAMS: dict[str, str] = {
-        Infrastructure_Constants.Sites_File_Constants.SPATIAL_PLACEHOLDER: "coverage.spatial",  # noqa
-        Infrastructure_Constants.Sites_File_Constants.SURVEY_FREQUENCY_PLACEHOLDER: "RS",
-        Infrastructure_Constants.Sites_File_Constants.SURVEY_COST_PLACEHOLDER: "cost.per_site",
-        Infrastructure_Constants.Sites_File_Constants.SURVEY_TIME_PLACEHOLDER: "time",
-        Infrastructure_Constants.Site_Type_File_Constants.DEPLOYMENT_MONTHS_PLACEHOLDER: "scheduling.deployment_months",  # noqa
-        Infrastructure_Constants.Site_Type_File_Constants.DEPLOYMENT_YEARS_PLACEHOLDER: "scheduling.deployment_years",  # noqa
+        (
+            Infrastructure_Constants.Sites_File_Constants
+        ).SPATIAL_PLACEHOLDER: "coverage.spatial",  # noqa
+        (
+            Infrastructure_Constants.Sites_File_Constants
+        ).SURVEY_FREQUENCY_PLACEHOLDER: "surveys_per_year",
+        (Infrastructure_Constants.Sites_File_Constants).SURVEY_COST_PLACEHOLDER: "cost.per_site",
+        (Infrastructure_Constants.Sites_File_Constants).SURVEY_TIME_PLACEHOLDER: "survey_time",
+        (
+            Infrastructure_Constants.Site_Type_File_Constants
+        ).DEPLOYMENT_MONTHS_PLACEHOLDER: "scheduling.deployment_months",
+        (
+            Infrastructure_Constants.Site_Type_File_Constants
+        ).DEPLOYMENT_YEARS_PLACEHOLDER: "scheduling.deployment_years",
     }
