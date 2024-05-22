@@ -3,9 +3,8 @@ from unittest.mock import patch
 from src.programs.site_level_method import SiteLevelMethod
 from src.scheduling.follow_up_mobile_schedule import FollowUpMobileSchedule
 
-from src.programs.method import Method
 
-from src.constants.param_default_const import Method_Params as mp
+from src.constants import param_default_const as pdc
 
 
 @pytest.fixture
@@ -18,23 +17,31 @@ def mock_follow_up_schedule(mocker):
 def test_site_level_method_creation(mock_follow_up_schedule):
     # Define properties dictionary for the method
     properties = {
-        "follow_up": {
-            "interaction_priority": "threshold",
-            "delay": 10,
-            "proportion": 0.5,
-            "threshold": 0.8,
-            "instant_threshold": 1.0,
-            "redundancy_filter": "some_filter",
+        pdc.Method_Params.FOLLOW_UP: {
+            pdc.Method_Params.INTERACTION_PRIORITY: "threshold",
+            pdc.Method_Params.DELAY: 10,
+            pdc.Method_Params.PROPORTION: 0.5,
+            pdc.Method_Params.THRESHOLD: 0.8,
+            pdc.Method_Params.INSTANT_THRESHOLD: 1.0,
+            pdc.Method_Params.REDUNDANCY_FILTER: "some_filter",
         },
-        Method.DETEC_ACCESSOR: {mp.TYPE: "default", mp.MDL: 1.0, mp.QE: 0.0},
-        "max_workday": 8,
-        "consider_daylight": False,
-        "weather_envs": {"precip": [], "wind": [], "temp": []},
-        "is_follow_up": False,
-        "t_bw_sites": {"vals": []},
-        "n_crews": 5,
-        "reporting_delay": 7,
-        "cost": {"per_site": 10, "upfront": 5},
+        pdc.Method_Params.SENSOR: {
+            pdc.Method_Params.TYPE: "default",
+            pdc.Method_Params.MDL: 1.0,
+            pdc.Method_Params.QE: 0.0,
+        },
+        pdc.Method_Params.MAX_WORKDAY: 8,
+        pdc.Method_Params.CONSIDER_DAYLIGHT: False,
+        pdc.Method_Params.WEATHER_ENVS: {
+            pdc.Method_Params.PRECIP: [],
+            pdc.Method_Params.WIND: [],
+            pdc.Method_Params.TEMP: [],
+        },
+        pdc.Method_Params.IS_FOLLOW_UP: False,
+        pdc.Method_Params.T_BW_SITES: {pdc.Common_Params.VAL: []},
+        pdc.Method_Params.N_CREWS: 5,
+        pdc.Method_Params.REPORTING_DELAY: 7,
+        pdc.Method_Params.COST: {pdc.Method_Params.PER_SITE: 10, pdc.Method_Params.UPFRONT: 5},
         # Include other properties as needed
     }
 
@@ -54,4 +61,4 @@ def test_site_level_method_creation(mock_follow_up_schedule):
         assert site_method._name == method_name
         assert site_method._max_work_hours == properties["max_workday"]
         assert site_method._weather == consider_weather
-        assert site_method._is_follow_up == False
+        assert site_method._is_follow_up is False
