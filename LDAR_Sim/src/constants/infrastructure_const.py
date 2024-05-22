@@ -181,7 +181,7 @@ class Virtual_World_To_Prop_Params_Mapping:
         ).REP_EMIS_ERS: "emissions.repairable_emissions.emissions_rate_source",
         (
             Infrastructure_Constants.Sites_File_Constants
-        ).REP_EMIS_EPR: "emissions.repairable_emissions.production_rate",
+        ).REP_EMIS_EPR: "emissions.repairable_emissions.emissions_production_rate",
         (Infrastructure_Constants.Sites_File_Constants).REP_EMIS_RD: "repairs.delay",
         (Infrastructure_Constants.Sites_File_Constants).REP_EMIS_RC: "repairs.cost",
         (
@@ -195,7 +195,7 @@ class Virtual_World_To_Prop_Params_Mapping:
         ).NON_REP_EMIS_ERS: "emissions.non_repairable_emissions.emissions_rate_source",
         (
             Infrastructure_Constants.Sites_File_Constants
-        ).NON_REP_EMIS_EPR: "emissions.non_repairable_emissions.production_rate",
+        ).NON_REP_EMIS_EPR: "emissions.non_repairable_emissions.emissions_production_rate",
         (
             Infrastructure_Constants.Sites_File_Constants
         ).NON_REP_EMIS_ED: "emissions.non_repairable_emissions.duration",

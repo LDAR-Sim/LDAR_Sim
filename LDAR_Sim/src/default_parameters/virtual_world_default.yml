@@ -23,12 +23,12 @@ repairs:
 emissions:
   emissions_file: "_placeholder_str_" # File containing sample emissions rates or emissions distributions.
   repairable_emissions:
-    production_rate: "_placeholder_float_" # The production rate of repairable emissions
+    emissions_production_rate: "_placeholder_float_" # The production rate of repairable emissions
     emissions_rate_source: "_placeholder_str_" # The name of a column in the emissions file
     duration: 365 # Natural repair delay of repairable emissions
     multiple_emissions_per_source: True # True/False of whether repairable emission source can produce multiple emissions
   non_repairable_emissions:
-    production_rate: "_placeholder_float_" # The production rate of non-repairable emissions
+    emissions_production_rate: "_placeholder_float_" # The production rate of non-repairable emissions
     emissions_rate_source: "_placeholder_str_" # The name of a column in the emissions file
     duration: 365 # Natural repair delay of non-repairable emissions
     multiple_emissions_per_source: True # True/False of whether non-repairable emission source can produce multiple emissions

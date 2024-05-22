@@ -76,7 +76,7 @@ class Virtual_World_Params:
     REPAIRABLE = "repairable_emissions"
     NON_REPAIRABLE = "non_repairable_emissions"
     ERS = "emissions_rate_source"
-    PR = "production_rate"
+    PR = "emissions_production_rate"
     DURATION = "duration"
     MULTI_EMIS = "multiple_emissions_per_source"
     MAX_RATE = "max_leak_rate"
