@@ -13,4 +13,4 @@ cost:
 time_between_sites:
   values: [5]
 surveys_per_year: 4
-travel_time: 5
+survey_time: 5

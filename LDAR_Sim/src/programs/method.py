@@ -68,7 +68,7 @@ class Method:
         self._weather: bool = consider_weather
         self._weather_envs: dict = properties[pdc.Method_Params.WEATHER_ENVS]
         self._is_follow_up: bool = properties[pdc.Method_Params.IS_FOLLOW_UP]
-        self._travel_times = properties[pdc.Method_Params.TIME][
+        self._travel_times = properties[pdc.Method_Params.T_BW_SITES][
             pdc.Common_Params.VAL
         ]  # TODO: update this to not use just vals
         self._reporting_delay: int = properties[pdc.Method_Params.REPORTING_DELAY]
@@ -204,7 +204,7 @@ class Method:
 
         # If the cost type for the method is per day, calculate the deployment cost for day
         # based off the number of crews being deployed
-        if self.cost_type == self.METHOD_COST_PER_DAY:
+        if self.cost_type == self.PER_DAY_COST:
             deploy_stats.deployment_cost = self.cost * len(self._crew_reports)
         # pop the site with the longest remaining hours to assign the next crew
         # while there are crews that can work

@@ -36,7 +36,7 @@ from programs.method import Method
 from scheduling.generic_schedule import GenericSchedule
 from scheduling.workplan import Workplan
 
-from constants.param_default_const import Duration_Method as dm, Program_Params
+from constants.param_default_const import Duration_Method as dm, Program_Params, Method_Params
 
 
 class Program:
@@ -133,7 +133,7 @@ class Program:
         follow_up_methods: dict = {}
         other_methods: dict = {}
         for method, properties in methods.items():
-            if properties[Method.FOLLOW_UP_ACCESSOR]:
+            if properties[Method_Params.IS_FOLLOW_UP]:
                 follow_up_methods[method] = properties
             else:
                 other_methods[method] = properties
@@ -146,11 +146,11 @@ class Program:
         consider_weather: bool,
         sites: list[Site],
     ) -> Method:
-        method_survey_level: str = properties[Method.MEASUREMENT_SCALE_ACCESSOR]
+        method_survey_level: str = properties[Method_Params.MEASUREMENT_SCALE]
 
         if method_survey_level == SiteLevelMethod.MEASUREMENT_SCALE:
-            meth_pref_follow_up = properties[Method.METHOD_FOLLOW_UP_PROPERTIES_ACCESSOR][
-                Method.METHOD_FOLLOW_UP_PROPERTIES_PREF_FU_ACCESSOR
+            meth_pref_follow_up = properties[Method_Params.FOLLOW_UP][
+                Method_Params.PREFERRED_METHOD
             ]
 
             if isinstance(meth_pref_follow_up, str) and meth_pref_follow_up != "_placeholder_str_":
@@ -167,8 +167,8 @@ class Program:
                 follow_up_schedule=follow_up_schedule,
             )
         elif method_survey_level == EquipmentGroupLevelMethod.MEASUREMENT_SCALE:
-            meth_pref_follow_up = properties[Method.METHOD_FOLLOW_UP_PROPERTIES_ACCESSOR][
-                Method.METHOD_FOLLOW_UP_PROPERTIES_PREF_FU_ACCESSOR
+            meth_pref_follow_up = properties[Method_Params.FOLLOW_UP][
+                Method_Params.PREFERRED_METHOD
             ]
 
             if isinstance(meth_pref_follow_up, str) and meth_pref_follow_up != "_placeholder_str_":

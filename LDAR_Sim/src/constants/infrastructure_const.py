@@ -39,7 +39,7 @@ class Infrastructure_Constants:
         REP_EMIS_EPR = "repairable_emissions_production_rate"
         REP_EMIS_RD = "repairable_repair_delay"  # Repairable Emissions : Repair Delay
         REP_EMIS_RC = "repairable_repair_cost"  # Repairable Emissions : Repair Cost
-        REP_EMIS_ED = "repairable_natural_repair_delay"  # Repairable Emissions : Emissions Duration
+        REP_EMIS_ED = "repairable_duration"  # Repairable Emissions : Emissions Duration
         REP_EMIS_MULTI = (
             "repairable_multiple_emissions_per_source"  # Repairable Emissions : Multiple Emissions
         )
@@ -49,7 +49,7 @@ class Infrastructure_Constants:
         NON_REP_EMIS_EPR = "non_repairable_emissions_production_rate"
         NON_REP_EMIS_ED = "non_repairable_duration"  # Non-Repairable Emissions: Emissions Duration
         # Non-Repairable Emissions: Multiple Emissions
-        NON_REP_EMIS_MULTI = "non_repairable_multiple_emissions_per_source_non_repairable"
+        NON_REP_EMIS_MULTI = "non_repairable_multiple_emissions_per_source"
         SURVEY_FREQUENCY_PLACEHOLDER = "_surveys_per_year"  # Survey Frequency - Method specific
         DEPLOYMENT_YEARS_PLACEHOLDER = "_deploy_year"  # Deployment Year - Method specific
         DEPLOYMENT_MONTHS_PLACEHOLDER = "_deploy_month"  # Deployment Month - Method specific
@@ -89,7 +89,7 @@ class Infrastructure_Constants:
         )
         REP_EMIS_RD = "repairable_repair_delay"  # Repairable Emissions Repair Delay
         REP_EMIS_RC = "repairable_repair_cost"  # Repairable Emissions Repair Cost
-        REP_EMIS_ED = "repairable_emissions_duration"  # Repairable Emissions Emissions Duration
+        REP_EMIS_ED = "repairable_duration"  # Repairable Emissions Emissions Duration
         REP_EMIS_MULTI = (
             "repairable_multiple_emissions_per_source"  # Repairable Emissions Multiple Emissions
         )
@@ -178,28 +178,30 @@ class Virtual_World_To_Prop_Params_Mapping:
     PROPAGATING_PARAMS: dict[str, str] = {
         (
             Infrastructure_Constants.Sites_File_Constants
-        ).REP_EMIS_ERS: "emissions.emissions_rate_source",
+        ).REP_EMIS_ERS: "emissions.repairable_emissions.emissions_rate_source",
         (
             Infrastructure_Constants.Sites_File_Constants
-        ).REP_EMIS_EPR: "emissions.repairable_emissions_production_rate",
+        ).REP_EMIS_EPR: "emissions.repairable_emissions.production_rate",
         (Infrastructure_Constants.Sites_File_Constants).REP_EMIS_RD: "repairs.delay",
         (Infrastructure_Constants.Sites_File_Constants).REP_EMIS_RC: "repairs.cost",
         (
             Infrastructure_Constants.Sites_File_Constants
-        ).REP_EMIS_ED: "emissions.natural_repair_delay",
+        ).REP_EMIS_ED: "emissions.repairable_emissions.duration",
         (
             Infrastructure_Constants.Sites_File_Constants
-        ).REP_EMIS_MULTI: "emissions.multiple_emissions_per_source",
+        ).REP_EMIS_MULTI: "emissions.repairable_emissions.multiple_emissions_per_source",
         (
             Infrastructure_Constants.Sites_File_Constants
-        ).NON_REP_EMIS_ERS: "emissions.non_repairable_emissions_rate_source",
+        ).NON_REP_EMIS_ERS: "emissions.non_repairable_emissions.emissions_rate_source",
         (
             Infrastructure_Constants.Sites_File_Constants
-        ).NON_REP_EMIS_EPR: "emissions.non_repairable_emissions_production_rate",
-        (Infrastructure_Constants.Sites_File_Constants).NON_REP_EMIS_ED: "emissions.duration",
+        ).NON_REP_EMIS_EPR: "emissions.non_repairable_emissions.production_rate",
         (
             Infrastructure_Constants.Sites_File_Constants
-        ).NON_REP_EMIS_MULTI: "emissions.multiple_emissions_per_source_non_repairable",
+        ).NON_REP_EMIS_ED: "emissions.non_repairable_emissions.duration",
+        (
+            Infrastructure_Constants.Sites_File_Constants
+        ).NON_REP_EMIS_MULTI: "emissions.non_repairable_emissions.multiple_emissions_per_source",
     }
 
     METH_SPEC_PROP_PARAMS: dict[str, str] = {

@@ -73,16 +73,14 @@ class Virtual_World_Params:
     REPAIR_DELAY = "delay"
     EMIS = "emissions"
     EMIS_FILE = "emissions_file"
+    REPAIRABLE = "repairable_emissions"
+    NON_REPAIRABLE = "non_repairable_emissions"
     ERS = "emissions_rate_source"
-    LPR = "emissions_production_rate"
-    NR_ERS = "non_repairable_emissions_rate_source"
-    NR_EPR = "non_repairable_emissions_production_rate"
-    MAX_RATE = "max_leak_rate"
-    UNITS = "units"
-    NRD = "natural_repair_delay"
+    PR = "production_rate"
     DURATION = "duration"
     MULTI_EMIS = "multiple_emissions_per_source"
-    MULTI_EMIS_NR = "multiple_emissions_per_source_non_repairable"
+    MAX_RATE = "max_leak_rate"
+    UNITS = "units"
 
 
 @dataclass
