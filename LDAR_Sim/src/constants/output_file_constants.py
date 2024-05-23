@@ -105,7 +105,7 @@ class ProbitConstants:
 class MitigationBarConstants:
     Y_LABEL = "Program Name"
     X_LABEL = "Median Annual Mitigated Emissions (Kg Methane) at all sites"
-    COLOR = "blue"
+    COLOR = "#0277BD"
     HEIGHT = 0.75
 
 
