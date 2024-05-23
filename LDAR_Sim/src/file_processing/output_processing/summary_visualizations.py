@@ -297,11 +297,14 @@ def gen_estimated_vs_true_emissions_percent_difference_plot(
     annualized_emissions_data: dict[Tuple[list[float], list[float]]] = (
         summary_visualization_helpers.gen_annual_emissions_summary_list(data, program_names)
     )
+
+    stat_function: callable = viz_mapper.get_summary_stat_function(
+        output_file_constants.SummaryVisualizationStatistics.PERCENT_DIFFERENCE
+    )
     true_and_estimated_percent_differences: dict = (
         summary_visualization_helpers.gen_true_estimated_annualized_statistics(
-            output_file_constants.SummaryVisualizationStatistics.PERCENT_DIFFERENCE,
+            stat_function,
             annualized_emissions_data,
-            viz_mapper,
         )
     )
 
@@ -336,11 +339,14 @@ def gen_estimated_vs_true_emissions_relative_difference_plot(
     annualized_emissions_data: dict[Tuple[list[float], list[float]]] = (
         summary_visualization_helpers.gen_annual_emissions_summary_list(data, program_names)
     )
+
+    stat_function: callable = viz_mapper.get_summary_stat_function(
+        output_file_constants.SummaryVisualizationStatistics.RELATIVE_DIFFERENCE
+    )
     true_and_estimated_relative_differences: dict = (
         summary_visualization_helpers.gen_true_estimated_annualized_statistics(
-            output_file_constants.SummaryVisualizationStatistics.RELATIVE_DIFFERENCE,
+            stat_function,
             annualized_emissions_data,
-            viz_mapper,
         )
     )
 

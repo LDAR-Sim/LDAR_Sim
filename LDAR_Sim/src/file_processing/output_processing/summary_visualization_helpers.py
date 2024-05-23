@@ -26,10 +26,6 @@ from typing import Any, Tuple, Union
 import numpy as np
 import re
 
-from file_processing.output_processing.summary_visualization_mapper import (
-    SummaryVisualizationMapper,
-)
-
 
 def get_non_baseline_prog_names(emis_summary_info, baseline_program) -> list:
     return [
@@ -207,12 +203,10 @@ def gen_annual_mitigation_summary_list(
 
 
 def gen_true_estimated_annualized_statistics(
-    stat_type: str, paired_emissions_lists: dict, visualization_mapper: SummaryVisualizationMapper
+    stat_function: callable, paired_emissions_lists: dict
 ) -> dict:
 
-    program_stat_lists = {}
-
-    stat_function = visualization_mapper.get_summary_stat_function(stat_type)
+    program_stat_lists: dict = {}
 
     for program, (t_total_emis, est_total_emis) in paired_emissions_lists.items():
         percent_diff = [stat_function(est, true) for est, true in zip(est_total_emis, t_total_emis)]
