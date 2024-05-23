@@ -167,15 +167,8 @@ class Infrastructure:
     def update_emissions_state(self, emis_rep_info: EmisInfo) -> TsEmisData:
         emis_data = TsEmisData()
         for site in self._sites:
-            for equipment_group in site.equipment_groups:
-                for component in equipment_group.component:
-                    emis_data += component.update_emissions_state(emis_rep_info)
-
+            site.update_emissions_state(emis_rep_info, emis_data)
         return emis_data
-        # emis_data = TsEmisData()
-        # for site in self._sites:
-        #     emis_data += site.update_emissions_state(emis_rep_info)
-        # return emis_data
 
     def generate_infrastructure(
         self,

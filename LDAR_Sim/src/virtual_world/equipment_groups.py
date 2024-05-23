@@ -139,11 +139,9 @@ class Equipment_Group:
             new_emissions += component.activate_emissions(date, sim_number)
         return new_emissions
 
-    def update_emissions_state(self, emis_rep_info: EmisInfo) -> TsEmisData:
-        emis_data = TsEmisData()
+    def update_emissions_state(self, emis_rep_info: EmisInfo, emis_data: TsEmisData) -> None:
         for comp in self._component:
-            emis_data += comp.update_emissions_state(emis_rep_info)
-        return emis_data
+            comp.update_emissions_state(emis_rep_info, emis_data)
 
     def tag_emissions_at_component(self, component: str, tagging_info: TaggingInfo) -> None:
         target_comp: Component | None = next(

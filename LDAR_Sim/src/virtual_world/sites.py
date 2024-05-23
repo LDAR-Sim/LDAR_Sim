@@ -372,11 +372,9 @@ class Site:
         )
         target_equip_group.tag_emissions_at_component(component, tagging_info)
 
-    def update_emissions_state(self, emis_rep_info: EmisInfo) -> TsEmisData:
-        emis_data = TsEmisData()
+    def update_emissions_state(self, emis_rep_info: EmisInfo, emis_data: TsEmisData) -> None:
         for eqg in self._equipment_groups:
-            emis_data += eqg.update_emissions_state(emis_rep_info)
-        return emis_data
+            eqg.update_emissions_state(emis_rep_info, emis_data)
 
     def setup(self, methods: list[str]):
         for eqg in self._equipment_groups:

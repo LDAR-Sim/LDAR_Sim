@@ -3,7 +3,7 @@
 Program:     The LDAR Simulator (LDAR-Sim)
 File:        program_output.py
 Purpose: This is where the functions to define how duration estimation reports
-are stored. Users would want to add to this file and the mapper in the 
+are stored. Users would want to add to this file and the mapper in the
 program_output_manager.py file if they want to add new reports.
 
 This program is free software: you can redistribute it and/or modify
@@ -150,7 +150,8 @@ def gen_estimated_emissions_report(
 
     grouped_by_site_summary = sorted_by_site_summary.groupby(eca.SITE_ID)
 
-    # Calculate the days since last survey and days till next survey based on the survey completion date
+    # Calculate the days since last survey and days
+    # till next survey based on the survey completion date
     sorted_by_site_summary["days_since_last_survey"] = (
         grouped_by_site_summary[eca.SURVEY_COMPLETION_DATE].diff().dt.days
     )
@@ -236,9 +237,9 @@ def gen_estimated_comp_emissions_report(
             unpack_comp[eca.SURVEY_COMPLETION_DATE],
         )
     )
-
-    # For each site/equipment/component combination, add in the missing reports for when there were 0
-    # detections for a given component at a given date
+    new_rows = []
+    # For each site/equipment/component combination, add in the missing reports
+    # for when there were no detections for a given component at a given date
     for site_id, eqg, comp in unique_combinations_list:
         # Get the unique dates for the current site_id from unique_site_survey_dates
         site_dates = set(u_date for site, u_date in unique_site_survey_dates if site == site_id)
@@ -247,13 +248,16 @@ def gen_estimated_comp_emissions_report(
         for s_date in site_dates:
             if (site_id, eqg, comp, s_date) not in existing_combinations:
                 # If the date does not exist, add a new row with the current combination and date
-                unpack_comp.loc[len(unpack_comp)] = {
-                    eca.SITE_ID: site_id,
-                    eca.EQG: eqg,
-                    eca.COMP: comp,
-                    eca.SURVEY_COMPLETION_DATE: s_date,
-                    eca.M_RATE: 0,
-                }
+                new_rows.append(
+                    {
+                        eca.SITE_ID: site_id,
+                        eca.EQG: eqg,
+                        eca.COMP: comp,
+                        eca.SURVEY_COMPLETION_DATE: s_date,
+                        eca.M_RATE: 0,
+                    }
+                )
+    unpack_comp = pd.concat([unpack_comp, pd.DataFrame(new_rows)], ignore_index=True)
     # Adding start and end date for each unique component
     new_data: list = []
     for site_id, eqg, comp in unique_combinations_list:
