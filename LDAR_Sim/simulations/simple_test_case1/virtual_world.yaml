@@ -5,7 +5,7 @@ emissions:
   emissions_file: "emissions_file.csv" #File containing sample emissions rates or emissions distributions.  
   repairable_emissions:
     emissions_rate_source: "test1" # The name of a column in the emissions file
-    production_rate: 0.0065
+    emissions_production_rate: 0.0065
     duration: 365 # Natural repair delay of repairable emissions
 infrastructure:
   site_type_file: "_placeholder_str_" # Infrastructure file defining site types
