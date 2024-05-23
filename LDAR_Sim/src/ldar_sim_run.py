@@ -310,11 +310,6 @@ if __name__ == "__main__":
     src_dir: Path = root_dir / "src"
     sys.path.insert(1, str(src_dir))
 
-    # Add the external sensors directory
-    # TODO update external sensors
-    # ext_sens_dir: Path = root_dir / "external_sensors"
-    # sys.path.append(str(ext_sens_dir))
-
     # -- Retrieve input parameters from commandline argument and parse --
     parameter_filenames, _DEBUG = files_from_args(root_dir)
 
