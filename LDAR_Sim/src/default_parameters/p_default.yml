@@ -3,7 +3,7 @@ parameter_level: "programs"
 program_name: "default"
 method_labels: []
 economics:
-  carbon_price_tonnes_CO2_equivalent: 40.0
+  carbon_price_tonnes_CO2_equivalent: 65.0
   global_warming_potential_CH4: 28.0
   sale_price_of_natural_gas: 3.0
   verification_cost: 0
