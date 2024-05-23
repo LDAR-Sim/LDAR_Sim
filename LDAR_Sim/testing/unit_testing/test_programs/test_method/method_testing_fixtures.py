@@ -30,6 +30,7 @@ from src.sensors.default_sensor import DefaultSensor
 from src.virtual_world.emissions import Emission
 from src.scheduling.workplan import Workplan
 from src.scheduling.scheduled_survey_planner import ScheduledSurveyPlanner
+from constants import param_default_const as pdc
 
 
 @pytest.fixture
@@ -85,7 +86,7 @@ def mock_get_travel_time(self):
 
 def mock_detect_emissions(self, site, meth_name, survey_report):
     survey_report.site_true_rate = 1
-    survey_report.survey_level = "site_level"
+    survey_report.survey_level = pdc.Levels.SITE_LEVEL
     survey_report.site_measured_rate = 1.0
     return True
 
@@ -166,15 +167,19 @@ def simple_method_values_fix(mocker):
         mock_get_method_survey_time,
     )
     properties: dict = {
-        "n_crews": 5,
-        "sensor": "default",
-        "max_workday": 8,
-        "consider_daylight": False,
-        "t_bw_sites": {"vals": [1]},
-        "is_follow_up": False,
-        "weather_envs": {"wind": [0, 10], "temp": [-30, 30], "precip": [0, 1]},
-        "reporting_delay": 0,
-        "cost": {"upfront": 1000, "per_site": 500},
+        pdc.Method_Params.N_CREWS: 5,
+        pdc.Method_Params.SENSOR: "default",
+        pdc.Method_Params.MAX_WORKDAY: 8,
+        pdc.Method_Params.CONSIDER_DAYLIGHT: False,
+        pdc.Method_Params.T_BW_SITES: {pdc.Common_Params.VAL: [1]},
+        pdc.Method_Params.IS_FOLLOW_UP: False,
+        pdc.Method_Params.WEATHER_ENVS: {
+            pdc.Method_Params.WIND: [0, 10],
+            pdc.Method_Params.TEMP: [-30, 30],
+            pdc.Method_Params.PRECIP: [0, 1],
+        },
+        pdc.Method_Params.REPORTING_DELAY: 0,
+        pdc.Method_Params.COST: {pdc.Method_Params.UPFRONT: 1000, pdc.Method_Params.PER_SITE: 500},
     }
     current_date: date = date(2023, 1, 2)
     state = {"weather": create_random_state(), "daylight": [], "t": []}
@@ -221,15 +226,19 @@ def simple_method_values2_fix(mocker):
         mock_get_method_survey_time,
     )
     properties: dict = {
-        "n_crews": 5,
-        "sensor": "default",
-        "max_workday": 1,
-        "t_bw_sites": {"vals": [1]},
-        "is_follow_up": False,
-        "consider_daylight": False,
-        "weather_envs": {"wind": [0, 10], "temp": [-30, 30], "precip": [0, 1]},
-        "reporting_delay": 0,
-        "cost": {"upfront": 1000, "per_site": 500},
+        pdc.Method_Params.N_CREWS: 5,
+        pdc.Method_Params.SENSOR: "default",
+        pdc.Method_Params.MAX_WORKDAY: 1,
+        pdc.Method_Params.T_BW_SITES: {pdc.Common_Params.VAL: [1]},
+        pdc.Method_Params.IS_FOLLOW_UP: False,
+        pdc.Method_Params.CONSIDER_DAYLIGHT: False,
+        pdc.Method_Params.WEATHER_ENVS: {
+            pdc.Method_Params.WIND: [0, 10],
+            pdc.Method_Params.TEMP: [-30, 30],
+            pdc.Method_Params.PRECIP: [0, 1],
+        },
+        pdc.Method_Params.REPORTING_DELAY: 0,
+        pdc.Method_Params.COST: {pdc.Method_Params.UPFRONT: 1000, pdc.Method_Params.PER_SITE: 500},
     }
     current_date: date = date(2023, 1, 2)
     state = {"weather": create_random_state(), "daylight": [], "t": []}
@@ -276,15 +285,19 @@ def simple_method_values3_fix(mocker):
         mock_get_method_survey_time,
     )
     properties: dict = {
-        "n_crews": 5,
-        "sensor": "default",
-        "max_workday": 1,
-        "t_bw_sites": {"vals": [1]},
-        "is_follow_up": True,
-        "consider_daylight": False,
-        "weather_envs": {"wind": [0, 10], "temp": [-30, 30], "precip": [0, 1]},
-        "reporting_delay": 0,
-        "cost": {"upfront": 1000, "per_site": 500},
+        pdc.Method_Params.N_CREWS: 5,
+        pdc.Method_Params.SENSOR: "default",
+        pdc.Method_Params.MAX_WORKDAY: 1,
+        pdc.Method_Params.T_BW_SITES: {pdc.Common_Params.VAL: [1]},
+        pdc.Method_Params.IS_FOLLOW_UP: True,
+        pdc.Method_Params.CONSIDER_DAYLIGHT: False,
+        pdc.Method_Params.WEATHER_ENVS: {
+            pdc.Method_Params.WIND: [0, 10],
+            pdc.Method_Params.TEMP: [-30, 30],
+            pdc.Method_Params.PRECIP: [0, 1],
+        },
+        pdc.Method_Params.REPORTING_DELAY: 0,
+        pdc.Method_Params.COST: {pdc.Method_Params.UPFRONT: 1000, pdc.Method_Params.PER_SITE: 500},
     }
     current_date: date = date(2023, 1, 2)
     state = {"weather": create_random_state(), "daylight": [], "t": []}
@@ -327,15 +340,19 @@ def simple_method_values4_fix(mocker):
         mock_get_method_survey_time,
     )
     properties: dict = {
-        "n_crews": 5,
-        "sensor": "default",
-        "max_workday": 8,
-        "consider_daylight": False,
-        "t_bw_sites": {"vals": [1]},
-        "is_follow_up": False,
-        "weather_envs": {"wind": [0, 10], "temp": [-30, 30], "precip": [0, 1]},
-        "reporting_delay": 0,
-        "cost": {"upfront": 1000, "per_site": 500},
+        pdc.Method_Params.N_CREWS: 5,
+        pdc.Method_Params.SENSOR: "default",
+        pdc.Method_Params.MAX_WORKDAY: 8,
+        pdc.Method_Params.CONSIDER_DAYLIGHT: False,
+        pdc.Method_Params.T_BW_SITES: {pdc.Common_Params.VAL: [1]},
+        pdc.Method_Params.IS_FOLLOW_UP: False,
+        pdc.Method_Params.WEATHER_ENVS: {
+            pdc.Method_Params.WIND: [0, 10],
+            pdc.Method_Params.TEMP: [-30, 30],
+            pdc.Method_Params.PRECIP: [0, 1],
+        },
+        pdc.Method_Params.REPORTING_DELAY: 0,
+        pdc.Method_Params.COST: {pdc.Method_Params.UPFRONT: 1000, pdc.Method_Params.PER_SITE: 500},
     }
     survey_report = SiteSurveyReport(site_id=1)
     current_date: date = date(2023, 1, 2)
@@ -382,15 +399,23 @@ def simple_method_values5_fix(mocker):
     mocker.patch.object(DefaultSiteLevelSensor, "detect_emissions", mock_detect_emissions)
     mocker.patch.object(site_mock, "get_detectable_emissions", mock_get_detectable_emissions)
     properties: dict = {
-        "n_crews": 5,
-        "sensor": {"type": "default", "MDL": 1, "QE": 0},
-        "max_workday": 8,
-        "consider_daylight": False,
-        "t_bw_sites": {"vals": [1]},
-        "is_follow_up": False,
-        "weather_envs": {"wind": [0, 10], "temp": [-30, 30], "precip": [0, 1]},
-        "reporting_delay": 0,
-        "cost": {"upfront": 1000, "per_site": 500},
+        pdc.Method_Params.N_CREWS: 5,
+        pdc.Method_Params.SENSOR: {
+            pdc.Method_Params.TYPE: "default",
+            pdc.Method_Params.MDL: 1,
+            pdc.Method_Params.QE: 0,
+        },
+        pdc.Method_Params.MAX_WORKDAY: 8,
+        pdc.Method_Params.CONSIDER_DAYLIGHT: False,
+        pdc.Method_Params.T_BW_SITES: {pdc.Common_Params.VAL: [1]},
+        pdc.Method_Params.IS_FOLLOW_UP: False,
+        pdc.Method_Params.WEATHER_ENVS: {
+            pdc.Method_Params.WIND: [0, 10],
+            pdc.Method_Params.TEMP: [-30, 30],
+            pdc.Method_Params.PRECIP: [0, 1],
+        },
+        pdc.Method_Params.REPORTING_DELAY: 0,
+        pdc.Method_Params.COST: {pdc.Method_Params.UPFRONT: 1000, pdc.Method_Params.PER_SITE: 500},
     }
     survey_report = SiteSurveyReport(site_id=1)
     current_date: date = date(2023, 1, 2)
@@ -441,15 +466,23 @@ def deploy_crews_testing_fix(mocker):
     mocker.patch.object(site_mock, "get_detectable_emissions", mock_get_detectable_emissions)
     mocker.patch.object(site_mock, "get_id", mock_get_ID)
     properties: dict = {
-        "n_crews": 5,
-        "sensor": {"type": "default", "MDL": 1, "QE": 0},
-        "max_workday": 8,
-        "consider_daylight": False,
-        "t_bw_sites": {"vals": [1]},
-        "is_follow_up": False,
-        "weather_envs": {"wind": [0, 10], "temp": [-30, 30], "precip": [0, 1]},
-        "reporting_delay": 0,
-        "cost": {"upfront": 1000, "per_site": 500},
+        pdc.Method_Params.N_CREWS: 5,
+        pdc.Method_Params.SENSOR: {
+            pdc.Method_Params.TYPE: "default",
+            pdc.Method_Params.MDL: 1,
+            pdc.Method_Params.QE: 0,
+        },
+        pdc.Method_Params.MAX_WORKDAY: 8,
+        pdc.Method_Params.CONSIDER_DAYLIGHT: False,
+        pdc.Method_Params.T_BW_SITES: {pdc.Common_Params.VAL: [1]},
+        pdc.Method_Params.IS_FOLLOW_UP: False,
+        pdc.Method_Params.WEATHER_ENVS: {
+            pdc.Method_Params.WIND: [0, 10],
+            pdc.Method_Params.TEMP: [-30, 30],
+            pdc.Method_Params.PRECIP: [0, 1],
+        },
+        pdc.Method_Params.REPORTING_DELAY: 0,
+        pdc.Method_Params.COST: {pdc.Method_Params.UPFRONT: 1000, pdc.Method_Params.PER_SITE: 500},
     }
     weather = create_random_state()
     sites = [site_mock]
@@ -510,15 +543,23 @@ def deploy_crews_testing2_fix(mocker):
     mocker.patch.object(site_mock, "get_detectable_emissions", mock_get_detectable_emissions)
     mocker.patch.object(Method, "survey_site", mock_survey_site)
     properties: dict = {
-        "n_crews": 5,
-        "sensor": {"type": "default", "MDL": 1, "QE": 0},
-        "max_workday": 8,
-        "consider_daylight": False,
-        "t_bw_sites": {"vals": [1]},
-        "is_follow_up": False,
-        "weather_envs": {"wind": [0, 10], "temp": [-30, 30], "precip": [0, 1]},
-        "reporting_delay": 0,
-        "cost": {"upfront": 1000, "per_site": 500},
+        pdc.Method_Params.N_CREWS: 5,
+        pdc.Method_Params.SENSOR: {
+            pdc.Method_Params.TYPE: "default",
+            pdc.Method_Params.MDL: 1,
+            pdc.Method_Params.QE: 0,
+        },
+        pdc.Method_Params.MAX_WORKDAY: 8,
+        pdc.Method_Params.CONSIDER_DAYLIGHT: False,
+        pdc.Method_Params.T_BW_SITES: {pdc.Common_Params.VAL: [1]},
+        pdc.Method_Params.IS_FOLLOW_UP: False,
+        pdc.Method_Params.WEATHER_ENVS: {
+            pdc.Method_Params.WIND: [0, 10],
+            pdc.Method_Params.TEMP: [-30, 30],
+            pdc.Method_Params.PRECIP: [0, 1],
+        },
+        pdc.Method_Params.REPORTING_DELAY: 0,
+        pdc.Method_Params.COST: {pdc.Method_Params.UPFRONT: 1000, pdc.Method_Params.PER_SITE: 500},
     }
     weather = create_random_state()
     sites = [site_mock]

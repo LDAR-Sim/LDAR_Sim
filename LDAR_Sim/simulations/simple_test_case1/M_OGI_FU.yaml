@@ -1,15 +1,15 @@
 parameter_level: methods
 version: "4.0"
-label: OGI_FU
+method_name: OGI_FU
 deployment_type: mobile
 measurement_scale: component
 sensor:
   type: OGI_camera_zim
-  MDL: [0.24, 0.39] 
+  minimum_detection_limit: [0.24, 0.39] 
 is_follow_up: True
 cost:
   per_day: 0
   per_site: 500
-t_bw_sites:
-  vals: [30]
-time: 120
+time_between_sites:
+  values: [30]
+survey_time: 120

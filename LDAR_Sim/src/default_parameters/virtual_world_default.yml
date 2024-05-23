@@ -12,21 +12,23 @@ infrastructure:
 site_samples: "_placeholder_int_"
 consider_weather: False # True/False
 weather_file: "_placeholder_str_"
-emissions:
-  emissions_file: "_placeholder_str_" # File containing sample emissions rates or emissions distributions.
-  ERS: "_placeholder_str_" # The name of a column in the emissions file
-  LPR: "_placeholder_float_" # The production rate of repairable emissions
-  NRd: 365 # Natural repair delay of repairable emissions
-  multi: True # True/False of whether repairable emission source can produce multiple emissions
-  NR_ERS: "_placeholder_str_" # The name of a column in the emissions file
-  NR_EPR: "_placeholder_float_" # The production rate of non-repairable emissions
-  duration: 365 # Duration of non-repairable emissions
-  NR_multi: False # True/False of whether non-repairable emission source can produce multiple emissions
 repairs:
   cost:
-    vals: [200]
+    values: [200]
     file: "_placeholder_str_"
   delay:
     file: "_placeholder_str_" # The file containing sample repair delays, if it exists
-    vals: [14.0] # Can either be a single number, a list of numbers (for example [1,2,3]) 
+    values: [14.0] # Can either be a single number, a list of numbers (for example [1,2,3]) 
     # or the name of a column in the repair delays file to sample from
+emissions:
+  emissions_file: "_placeholder_str_" # File containing sample emissions rates or emissions distributions.
+  repairable_emissions:
+    emissions_production_rate: "_placeholder_float_" # The production rate of repairable emissions
+    emissions_rate_source: "_placeholder_str_" # The name of a column in the emissions file
+    duration: 365 # Natural repair delay of repairable emissions
+    multiple_emissions_per_source: True # True/False of whether repairable emission source can produce multiple emissions
+  non_repairable_emissions:
+    emissions_production_rate: "_placeholder_float_" # The production rate of non-repairable emissions
+    emissions_rate_source: "_placeholder_str_" # The name of a column in the emissions file
+    duration: 365 # Natural repair delay of non-repairable emissions
+    multiple_emissions_per_source: True # True/False of whether non-repairable emission source can produce multiple emissions

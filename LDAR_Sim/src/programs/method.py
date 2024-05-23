@@ -26,6 +26,7 @@ import sys
 from typing import Tuple
 import gc
 import numpy as np
+import constants.param_default_const as pdc
 from constants.error_messages import Input_Processing_Messages as ipm
 from file_processing.output_processing.output_utils import CrewDeploymentStats, TaggingFlaggingStats
 from sensors.default_site_level_sensor import DefaultSiteLevelSensor
@@ -37,41 +38,13 @@ from scheduling.schedule_dataclasses import (
     CrewDailyReport,
 )
 from scheduling.surveying_dataclasses import DetectionRecord
-from constants.param_default_const import Method_Params as mp
 
 WEATHER_ERROR = "Error: Unrecognized weather type"
 
 
 class Method:
-    TEMP = "temp"
-    WIND = "wind"
-    PRECIP = "precip"
-    # Used to return the weather value
+
     HOUR = 8
-
-    SURVEY_TIME_ACCESSOR = "time"
-    TRAVEL_TIME_ACCESSOR = "t_bw_sites"
-    DETEC_ACCESSOR = "sensor"
-    CREW_COUNT = "n_crews"
-    MAX_WORK_HOURS = "max_workday"
-    DAYLIGHT = "consider_daylight"
-    WEATHER = "weather_envs"
-    FOLLOW_UP_ACCESSOR = "is_follow_up"
-    MEASUREMENT_SCALE_ACCESSOR = "measurement_scale"
-    REPORTING_DELAY_ACCESSOR = "reporting_delay"
-    METHOD_FOLLOW_UP_PROPERTIES_ACCESSOR = "follow_up"
-    METHOD_FOLLOW_UP_PROPERTIES_PREF_FU_ACCESSOR = "preferred_method"
-    METHOD_FOLLOW_UP_PROPERTIES_INTERACT_PRIO_ACCESSOR = "interaction_priority"
-    METHOD_FOLLOW_UP_PROPERTIES_INST_THRESH_ACCESSOR = "instant_threshold"
-    METHOD_FOLLOW_UP_PROPERTIES_PROP_ACCESSOR = "proportion"
-    METHOD_FOLLOW_UP_PROPERTIES_THRESH_ACCESSOR = "threshold"
-    METHOD_FOLLOW_UP_PROPERTIES_DELAY_ACCESSOR = "delay"
-    METHOD_FOLLOW_UP_PROPERTIES_REDUND_FILTER_ACCESSOR = "redundancy_filter"
-
-    METHOD_COST_ACESSOR = "cost"
-    METHOD_COST_PER_DAY = "per_day"
-    METHOD_COST_PER_SITE = "per_site"
-    METHOD_COST_UPFRONT = "upfront"
 
     PER_SITE_COST = "site"
     PER_DAY_COST = "day"
@@ -89,22 +62,22 @@ class Method:
         sites: "list[Site]",
     ) -> None:
         self._name: str = name
-        self._initialize_sensor(properties[self.DETEC_ACCESSOR])
-        self._max_work_hours: int = properties[self.MAX_WORK_HOURS]
-        self._daylight_sensitive = properties[self.DAYLIGHT]
+        self._initialize_sensor(properties[pdc.Method_Params.SENSOR])
+        self._max_work_hours: int = properties[pdc.Method_Params.MAX_WORKDAY]
+        self._daylight_sensitive = properties[pdc.Method_Params.CONSIDER_DAYLIGHT]
         self._weather: bool = consider_weather
-        self._weather_envs: dict = properties[self.WEATHER]
-        self._is_follow_up: bool = properties[self.FOLLOW_UP_ACCESSOR]
-        self._travel_times = properties[self.TRAVEL_TIME_ACCESSOR][
-            "vals"
+        self._weather_envs: dict = properties[pdc.Method_Params.WEATHER_ENVS]
+        self._is_follow_up: bool = properties[pdc.Method_Params.IS_FOLLOW_UP]
+        self._travel_times = properties[pdc.Method_Params.T_BW_SITES][
+            pdc.Common_Params.VAL
         ]  # TODO: update this to not use just vals
-        self._reporting_delay: int = properties[self.REPORTING_DELAY_ACCESSOR]
-        crews: int = properties[self.CREW_COUNT]
+        self._reporting_delay: int = properties[pdc.Method_Params.REPORTING_DELAY]
+        crews: int = properties[pdc.Method_Params.N_CREWS]
         # TODO Check where these should be saved
         self._site_survey_reports: list[SiteSurveyReport] = []
         self._detection_records: dict[date, list[DetectionRecord]] = {}
         self.initialize_crews(crews, sites)
-        self.initialize_cost_tracking(properties[self.METHOD_COST_ACESSOR])
+        self.initialize_cost_tracking(properties[pdc.Method_Params.COST])
 
     def initialize_crews(self, crews, sites: "list[Site]") -> None:
         """Initialize the daily crew reports that the method will use
@@ -121,13 +94,13 @@ class Method:
         return
 
     def initialize_cost_tracking(self, cost_properties: dict[str, float]):
-        self.upfront_cost = cost_properties[self.METHOD_COST_UPFRONT]
-        if cost_properties[self.METHOD_COST_PER_SITE] > 0:
+        self.upfront_cost = cost_properties[pdc.Method_Params.UPFRONT]
+        if cost_properties[pdc.Method_Params.PER_SITE] > 0:
             self.cost_type = self.PER_SITE_COST
-            self.cost = cost_properties[self.METHOD_COST_PER_SITE]
-        elif cost_properties[self.METHOD_COST_PER_DAY] > 0:
+            self.cost = cost_properties[pdc.Method_Params.PER_SITE]
+        elif cost_properties[pdc.Method_Params.PER_DAY] > 0:
             self.cost_type = self.PER_DAY_COST
-            self.cost = cost_properties[self.METHOD_COST_PER_DAY]
+            self.cost = cost_properties[pdc.Method_Params.PER_DAY]
         else:
             self.cost_type = self.PER_SITE_COST
             self.cost = -1
@@ -139,8 +112,10 @@ class Method:
         Args:
             sensor_into (dict): _description_
         """
-        if sensor_info[mp.TYPE] == "default":
-            self._sensor = DefaultSiteLevelSensor(sensor_info[mp.MDL], sensor_info[mp.QE])
+        if sensor_info[pdc.Method_Params.TYPE] == "default":
+            self._sensor = DefaultSiteLevelSensor(
+                sensor_info[pdc.Method_Params.MDL], sensor_info[pdc.Method_Params.QE]
+            )
         else:
             print(ipm.ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
             sys.exit()
@@ -229,7 +204,7 @@ class Method:
 
         # If the cost type for the method is per day, calculate the deployment cost for day
         # based off the number of crews being deployed
-        if self.cost_type == self.METHOD_COST_PER_DAY:
+        if self.cost_type == self.PER_DAY_COST:
             deploy_stats.deployment_cost = self.cost * len(self._crew_reports)
         # pop the site with the longest remaining hours to assign the next crew
         # while there are crews that can work
@@ -465,14 +440,22 @@ class Method:
         wind_val = self.get_weather_val(wind_seg)
         precip_val = self.get_weather_val(precip_seg)
 
-        if self._weather_envs[Method.TEMP][0] <= temp_val <= self._weather_envs[Method.TEMP][1]:
+        if (
+            self._weather_envs[pdc.Method_Params.TEMP][0]
+            <= temp_val
+            <= self._weather_envs[pdc.Method_Params.TEMP][1]
+        ):
             bool_temp = True
-        if self._weather_envs[Method.WIND][0] <= wind_val <= self._weather_envs[Method.WIND][1]:
+        if (
+            self._weather_envs[pdc.Method_Params.WIND][0]
+            <= wind_val
+            <= self._weather_envs[pdc.Method_Params.WIND][1]
+        ):
             bool_wind = True
         if (
-            self._weather_envs[Method.PRECIP][0]
+            self._weather_envs[pdc.Method_Params.PRECIP][0]
             <= precip_val
-            <= self._weather_envs[Method.PRECIP][1]
+            <= self._weather_envs[pdc.Method_Params.PRECIP][1]
         ):
             bool_precip = True
 

@@ -30,7 +30,7 @@ from scheduling.follow_up_survey_planner import FollowUpSurveyPlanner
 from scheduling.surveying_dataclasses import DetectionRecord
 from sensors.default_site_level_sensor import DefaultSiteLevelSensor
 from sensors.METEC_NoWind_sensor import METECNWSite
-from constants.param_default_const import Method_Params as mp
+import constants.param_default_const as pdc
 import sys
 
 
@@ -52,8 +52,8 @@ class SiteLevelMethod(Method):
         follow_up_schedule: FollowUpMobileSchedule,
     ) -> None:
         super().__init__(name, properties, consider_weather, sites)
-        interaction_priority: str = properties[Method.METHOD_FOLLOW_UP_PROPERTIES_ACCESSOR][
-            Method.METHOD_FOLLOW_UP_PROPERTIES_INTERACT_PRIO_ACCESSOR
+        interaction_priority: str = properties[pdc.Method_Params.FOLLOW_UP][
+            pdc.Method_Params.INTERACTION_PRIORITY
         ]
         if interaction_priority == self.THRESHOLD_INT_PRIO:
             self._threshold_first: bool = True
@@ -74,22 +74,20 @@ class SiteLevelMethod(Method):
             follow_up_schedule.get_site_id_queue_list()
         )
         self._first_candidate_date: date = None
-        self._delay: int = properties[Method.METHOD_FOLLOW_UP_PROPERTIES_ACCESSOR][
-            Method.METHOD_FOLLOW_UP_PROPERTIES_DELAY_ACCESSOR
+        self._delay: int = properties[pdc.Method_Params.FOLLOW_UP][pdc.Method_Params.DELAY]
+        self._proportion: float = properties[pdc.Method_Params.FOLLOW_UP][
+            pdc.Method_Params.PROPORTION
         ]
-        self._proportion: float = properties[Method.METHOD_FOLLOW_UP_PROPERTIES_ACCESSOR][
-            Method.METHOD_FOLLOW_UP_PROPERTIES_PROP_ACCESSOR
+        self._threshold: float = properties[pdc.Method_Params.FOLLOW_UP][
+            pdc.Method_Params.THRESHOLD
         ]
-        self._threshold: float = properties[Method.METHOD_FOLLOW_UP_PROPERTIES_ACCESSOR][
-            Method.METHOD_FOLLOW_UP_PROPERTIES_THRESH_ACCESSOR
-        ]
-        self._inst_threshold: float = properties[Method.METHOD_FOLLOW_UP_PROPERTIES_ACCESSOR][
-            Method.METHOD_FOLLOW_UP_PROPERTIES_INST_THRESH_ACCESSOR
+        self._inst_threshold: float = properties[pdc.Method_Params.FOLLOW_UP][
+            pdc.Method_Params.INSTANT_THRESHOLD
         ]
         if self._inst_threshold is None:
             self._inst_threshold = float("inf")
-        self._redund_filter: str = properties[Method.METHOD_FOLLOW_UP_PROPERTIES_ACCESSOR][
-            Method.METHOD_FOLLOW_UP_PROPERTIES_REDUND_FILTER_ACCESSOR
+        self._redund_filter: str = properties[pdc.Method_Params.FOLLOW_UP][
+            pdc.Method_Params.REDUNDANCY_FILTER
         ]
         self._follow_up_schedule: FollowUpMobileSchedule = follow_up_schedule
         self._detection_count = 0
@@ -219,10 +217,14 @@ class SiteLevelMethod(Method):
             sensor_into (dict): The dictionary of information the user has
             provided to the method about the sensor
         """
-        if sensor_info[mp.TYPE] == "default":
-            self._sensor = DefaultSiteLevelSensor(sensor_info[mp.MDL], sensor_info[mp.QE])
-        elif sensor_info[mp.TYPE] == "METEC_no_wind":
-            self._sensor = METECNWSite(sensor_info[mp.MDL], sensor_info[mp.QE])
+        if sensor_info[pdc.Method_Params.TYPE] == "default":
+            self._sensor = DefaultSiteLevelSensor(
+                sensor_info[pdc.Method_Params.MDL], sensor_info[pdc.Method_Params.QE]
+            )
+        elif sensor_info[pdc.Method_Params.TYPE] == "METEC_no_wind":
+            self._sensor = METECNWSite(
+                sensor_info[pdc.Method_Params.MDL], sensor_info[pdc.Method_Params.QE]
+            )
         else:
             print(ipm.ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
             sys.exit()

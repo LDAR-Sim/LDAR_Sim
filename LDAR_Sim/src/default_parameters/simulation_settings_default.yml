@@ -1,9 +1,9 @@
 parameter_level: "simulation_settings"
 version: "4.0"
-n_processes: 6 # Recommend: 6
-n_simulations: 2
-preseed_random: False # True/False
 input_directory: "./inputs"
 output_directory: "./outputs"
 baseline_program: P_none
 reference_program: P_OGI
+processes_count: 6 # Recommend: 6
+simulation_count: 2
+preseed_random: False # True/False

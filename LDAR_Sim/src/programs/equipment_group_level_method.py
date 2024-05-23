@@ -26,7 +26,7 @@ from sensors.METEC_NoWind_sensor import METECNWEquipmentGroup
 from sensors.default_equipment_group_level_sensor import (
     DefaultEquipmentGroupLevelSensor,
 )
-from constants.param_default_const import Method_Params as mp
+import constants.param_default_const as pdc
 
 
 class EquipmentGroupLevelMethod(SiteLevelMethod):
@@ -49,10 +49,14 @@ class EquipmentGroupLevelMethod(SiteLevelMethod):
         Args:
             sensor_into (dict): _description_
         """
-        if sensor_info[mp.TYPE] == "default":
-            self._sensor = DefaultEquipmentGroupLevelSensor(sensor_info[mp.MDL], sensor_info[mp.QE])
-        elif sensor_info[mp.TYPE] == "METEC_no_wind":
-            self._sensor = METECNWEquipmentGroup(sensor_info[mp.MDL], sensor_info[mp.QE])
+        if sensor_info[pdc.Method_Params.TYPE] == "default":
+            self._sensor = DefaultEquipmentGroupLevelSensor(
+                sensor_info[pdc.Method_Params.MDL], sensor_info[pdc.Method_Params.QE]
+            )
+        elif sensor_info[pdc.Method_Params.TYPE] == "METEC_no_wind":
+            self._sensor = METECNWEquipmentGroup(
+                sensor_info[pdc.Method_Params.MDL], sensor_info[pdc.Method_Params.QE]
+            )
         else:
             print(ipm.ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
             sys.exit()
