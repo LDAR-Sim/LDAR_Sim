@@ -22,6 +22,7 @@ from pathlib import Path
 from typing import Tuple
 
 import matplotlib.scale as mscale
+import numpy as np
 import pandas as pd
 import seaborn as sns
 
@@ -238,6 +239,45 @@ def plot_probit(
         plt.close(combined_plot)
 
 
+def plot_bar_chart(
+    mitigation_data: dict[str, list[float]],
+    visualization_dir: Path,
+    visualization_name: str,
+    viz_mapper: SummaryVisualizationMapper,
+):
+    x_axis_formatter: ticker.FuncFormatter | None = viz_mapper.get_x_axis_formatter(
+        visualization_name
+    )
+
+    bar_chart_properties: dict = viz_mapper.get_bar_chart_properties(visualization_name)
+
+    x_label: str = bar_chart_properties.pop("x_label")
+    y_label: str = bar_chart_properties.pop("y_label")
+
+    figure: plt.Figure = plt.figure(figsize=(11, 7))  # noqa 841
+    ax: plt.Axes = plt.gca()
+    for index, (program_name, mitigation_values) in enumerate(mitigation_data.items()):
+        ax.barh(
+            y=index,
+            width=np.mean(mitigation_values),
+            label=program_name,
+            **bar_chart_properties,
+        )
+
+    ax.set_yticks(range(len(mitigation_data.keys())))
+    ax.set_yticklabels(mitigation_data.keys())
+    ax.xaxis.set_major_formatter(x_axis_formatter)
+
+    ax.set_xlabel(x_label)
+    ax.set_ylabel(y_label)
+
+    plt.tight_layout()
+
+    save_path: Path = visualization_dir / visualization_name
+    plt.savefig(save_path)
+    plt.close(figure)
+
+
 def gen_estimated_vs_true_emissions_percent_difference_plot(
     out_dir: Path,
     visualization_dir: Path,
@@ -257,11 +297,14 @@ def gen_estimated_vs_true_emissions_percent_difference_plot(
     annualized_emissions_data: dict[Tuple[list[float], list[float]]] = (
         summary_visualization_helpers.gen_annual_emissions_summary_list(data, program_names)
     )
+
+    stat_function: callable = viz_mapper.get_summary_stat_function(
+        output_file_constants.SummaryVisualizationStatistics.PERCENT_DIFFERENCE
+    )
     true_and_estimated_percent_differences: dict = (
         summary_visualization_helpers.gen_true_estimated_annualized_statistics(
-            output_file_constants.SummaryVisualizationStatistics.PERCENT_DIFFERENCE,
+            stat_function,
             annualized_emissions_data,
-            viz_mapper,
         )
     )
 
@@ -296,11 +339,14 @@ def gen_estimated_vs_true_emissions_relative_difference_plot(
     annualized_emissions_data: dict[Tuple[list[float], list[float]]] = (
         summary_visualization_helpers.gen_annual_emissions_summary_list(data, program_names)
     )
+
+    stat_function: callable = viz_mapper.get_summary_stat_function(
+        output_file_constants.SummaryVisualizationStatistics.RELATIVE_DIFFERENCE
+    )
     true_and_estimated_relative_differences: dict = (
         summary_visualization_helpers.gen_true_estimated_annualized_statistics(
-            output_file_constants.SummaryVisualizationStatistics.RELATIVE_DIFFERENCE,
+            stat_function,
             annualized_emissions_data,
-            viz_mapper,
         )
     )
 
@@ -384,6 +430,33 @@ def gen_true_and_estimated_paired_probit_plot(
         colors_paired,
         annualized_emissions_data,
         combine_program_plots,
+        visualization_dir,
+        visualization_name,
+        viz_mapper,
+    )
+
+
+def gen_program_mitigation_bars(
+    out_dir: Path,
+    visualization_dir: Path,
+    baseline_program: str,
+    _,
+    viz_mapper: SummaryVisualizationMapper,
+):
+    data_source: Path = out_dir / file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY
+    data: pd.DataFrame = pd.read_csv(data_source.with_suffix(".csv"))
+    visualization_name: str = (
+        output_file_constants.SummaryOutputVizFileNames.PROGRAM_MITIGATION_BAR_PLOT
+    )
+    program_names: list[str] = summary_visualization_helpers.get_non_baseline_prog_names(
+        data, baseline_program
+    )
+    annual_mitigation_data: dict[str, list[float]] = (
+        summary_visualization_helpers.gen_annual_mitigation_summary_list(data, program_names)
+    )
+
+    plot_bar_chart(
+        annual_mitigation_data,
         visualization_dir,
         visualization_name,
         viz_mapper,

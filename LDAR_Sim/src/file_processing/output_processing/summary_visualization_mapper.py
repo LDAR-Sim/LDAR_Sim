@@ -3,6 +3,7 @@ from matplotlib import ticker
 from file_processing.output_processing import output_utils
 from file_processing.output_processing.output_utils import percent_difference, relative_difference
 from constants import output_file_constants
+from file_processing.output_processing import summary_visualization_helpers
 
 
 class SummaryVisualizationMapper:
@@ -78,6 +79,11 @@ class SummaryVisualizationMapper:
             output_file_constants.SummaryOutputVizFileNames.TRUE_VS_ESTIMATED_PERCENT_DIFF_PLOT: (
                 ticker.FuncFormatter(output_utils.percentage_formatter)
             ),
+            output_file_constants.SummaryOutputVizFileNames.PROGRAM_MITIGATION_BAR_PLOT: (
+                ticker.FuncFormatter(
+                    summary_visualization_helpers.format_tick_labels_with_metric_prefix
+                )
+            ),
         }
 
         self._probit_properties_lookup = {
@@ -109,6 +115,16 @@ class SummaryVisualizationMapper:
             }
         }
 
+        self._bar_chart_properties_lookup = {
+            output_file_constants.SummaryOutputVizFileNames.PROGRAM_MITIGATION_BAR_PLOT: {
+                "align": "center",
+                "x_label": output_file_constants.MitigationBarConstants.X_LABEL,
+                "y_label": output_file_constants.MitigationBarConstants.Y_LABEL,
+                "color": output_file_constants.MitigationBarConstants.COLOR,
+                "height": output_file_constants.MitigationBarConstants.HEIGHT,
+            },
+        }
+
     def _get_summary_visualization_lookups(
         self,
     ) -> list[dict[str, dict[str, dict[str, Any]]]]:
@@ -122,6 +138,9 @@ class SummaryVisualizationMapper:
 
     def get_probit_properties(self, visualization_name: str):
         return self._probit_properties_lookup.get(visualization_name)
+
+    def get_bar_chart_properties(self, visualization_name: str):
+        return self._bar_chart_properties_lookup.get(visualization_name)
 
     def get_x_axis_formatter(self, visualization_name: str):
         return self._axis_formatter_lookup.get(visualization_name)
