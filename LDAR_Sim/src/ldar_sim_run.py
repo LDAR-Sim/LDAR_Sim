@@ -13,15 +13,17 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # MIT License for more details.
 
-import copy
-import gc
-from math import floor
 
 # You should have received a copy of the MIT License
 # along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 #
 # ------------------------------------------------------------------------------
 import os
+
+import copy
+import gc
+from math import floor
+import cProfile
 import multiprocessing as mp
 import sys
 import shutil
@@ -68,7 +70,10 @@ def simulate(
     preseed_timeseries,
     lock,
 ):
-    with lock:
+    if lock is not None:
+        with lock:
+            infra = copy.deepcopy(infrastructure)
+    else:
         infra = copy.deepcopy(infrastructure)
     gc.collect()
     program: Program = Program(
@@ -100,22 +105,7 @@ def simulate(
     return
 
 
-def run_ldar_sim():
-    print(rm.OPENING_MSG)
-
-    root_dir: Path = Path(__file__).resolve().parent.parent
-    os.chdir(root_dir)
-
-    src_dir: Path = root_dir / "src"
-    sys.path.insert(1, str(src_dir))
-
-    # Add the external sensors directory
-    # TODO update external sensors
-    # ext_sens_dir: Path = root_dir / "external_sensors"
-    # sys.path.append(str(ext_sens_dir))
-
-    # -- Retrieve input parameters from commandline argument and parse --
-    parameter_filenames = files_from_args(root_dir)
+def run_ldar_sim(parameter_filenames, DEBUG=False):
 
     input_manager = InputManager()
 
@@ -230,11 +220,7 @@ def run_ldar_sim():
             sim_counts.append(remainder)
     else:
         sim_counts = [simulation_count]
-    n_process = sim_params[pdc.Sim_Setting_Params.PROCESS]
-    if len(programs) < sim_params[pdc.Sim_Setting_Params.PROCESS]:
-        n_process = len(programs)
-    with mp.Manager() as manager:
-        lock = manager.Lock()
+    if _DEBUG:
         for batch_count, sim_count in enumerate(sim_counts):
             for simulation in range(sim_count):
                 simulation_number: int = batch_count * 5 + simulation
@@ -242,42 +228,97 @@ def run_ldar_sim():
                 # read in pregen emissions
                 infra = read_in_emissions(infrastructure, generator_dir, simulation_number)
                 # -- Run simulations --
-                prog_data = []
                 for program in programs:
                     meth_params = {}
                     for meth in programs[program][pdc.Program_Params.METHODS]:
                         meth_params[meth] = methods[meth]
-                    prog_data.append(
-                        (
-                            daylight,
-                            weather,
-                            simulation_number,
-                            program,
-                            meth_params,
-                            programs[program],
-                            sim_params,
-                            virtual_world,
-                            infra,
-                            in_dir,
-                            out_dir,
-                            seed_timeseries,
-                            lock,
-                        )
+                    simulate(
+                        daylight,
+                        weather,
+                        simulation_number,
+                        program,
+                        meth_params,
+                        programs[program],
+                        sim_params,
+                        virtual_world,
+                        infra,
+                        in_dir,
+                        out_dir,
+                        seed_timeseries,
+                        None,
                     )
-
-                with mp.Pool(processes=n_process) as p:
-                    sim_outputs = p.starmap(
-                        simulate,
-                        prog_data,
-                    )
-                gc.collect()
                 print(rm.FIN_SIM_SET.format(simulation_number=simulation_number))
-
             # -- Batch Report --
             print(rm.BATCH_CLEAN.format(batch_count=batch_count))
             summary_stats_manager.gen_summary_outputs(batch_count != 0)
+    else:
+        n_process = sim_params[pdc.Sim_Setting_Params.PROCESS]
+        if len(programs) < sim_params[pdc.Sim_Setting_Params.PROCESS]:
+            n_process = len(programs)
+        with mp.Manager() as manager:
+            lock = manager.Lock()
+            for batch_count, sim_count in enumerate(sim_counts):
+                for simulation in range(sim_count):
+                    simulation_number: int = batch_count * 5 + simulation
+                    print(rm.SIM_SET.format(simulation_number=simulation_number))
+                    # read in pregen emissions
+                    infra = read_in_emissions(infrastructure, generator_dir, simulation_number)
+                    # -- Run simulations --
+                    prog_data = []
+                    for program in programs:
+                        meth_params = {}
+                        for meth in programs[program][pdc.Program_Params.METHODS]:
+                            meth_params[meth] = methods[meth]
+                        prog_data.append(
+                            (
+                                daylight,
+                                weather,
+                                simulation_number,
+                                program,
+                                meth_params,
+                                programs[program],
+                                sim_params,
+                                virtual_world,
+                                infra,
+                                in_dir,
+                                out_dir,
+                                seed_timeseries,
+                                lock,
+                            )
+                        )
+
+                    with mp.Pool(processes=n_process) as p:
+                        _ = p.starmap(
+                            simulate,
+                            prog_data,
+                        )
+                    gc.collect()
+                    print(rm.FIN_SIM_SET.format(simulation_number=simulation_number))
+
+                # -- Batch Report --
+                print(rm.BATCH_CLEAN.format(batch_count=batch_count))
+                summary_stats_manager.gen_summary_outputs(batch_count != 0)
     summary_visualization_manager.gen_visualizations()
 
 
 if __name__ == "__main__":
-    run_ldar_sim()
+    print(rm.OPENING_MSG)
+
+    root_dir: Path = Path(__file__).resolve().parent.parent
+    os.chdir(root_dir)
+
+    src_dir: Path = root_dir / "src"
+    sys.path.insert(1, str(src_dir))
+
+    # -- Retrieve input parameters from commandline argument and parse --
+    parameter_filenames, _DEBUG = files_from_args(root_dir)
+
+    if _DEBUG:
+        print(rm.DEBUG_MODE_ON)
+        cProfile.run(
+            "run_ldar_sim(parameter_filenames, _DEBUG)",
+            "../Benchmarking/benchmark1_results",
+            "cumulative",
+        )
+    else:
+        run_ldar_sim(parameter_filenames)

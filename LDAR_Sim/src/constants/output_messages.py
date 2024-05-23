@@ -24,7 +24,11 @@ SUMMARY_PLOT_GENERATION_MESSAGE = "Generating cross-program summary plots"
 
 
 class RuntimeMessages:
-
+    DEBUG_MODE_ON = """
+        !!! Warning !!!
+            Debug mode is on.
+            This mode disables multiprocessing!!!
+    """
     OPENING_MSG = """
         You are running LDAR-Sim version 4.0.0 an open sourced software (MIT) license.
         Provide any issues, comments, questions, or recommendations by
@@ -79,4 +83,9 @@ class InputHelpText:
     OUTPUT_DIR_HELP_TEXT = (
         "Output Directory, folder containing output files, will save all output files \n"
         "ie. python ldar_sim_main.py --out_dir ./folder_for_save_outputs"
+    )
+    DEBUG_HELP_TEXT = (
+        "Debug mode, will print out additional information for debugging purposes"
+        "Will set to True if present"
+        "ie. python ldar_sim_run.py --debug"
     )

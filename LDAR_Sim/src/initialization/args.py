@@ -77,9 +77,11 @@ def files_from_args(ref_path):
         "--out_dir",
         help=iht.OUTPUT_DIR_HELP_TEXT,
     )
+    parser.add_argument(
+        "-D", "--debug", action="store_true", help=iht.DEBUG_HELP_TEXT, default=False
+    )
 
     args = parser.parse_args()
-
     if args.in_dir is not None:
         # if an input directory is specified, get all files within that are in the directory
         # Get all yaml or json files in specified folder
@@ -102,7 +104,7 @@ def files_from_args(ref_path):
         out_dir = get_abs_path(args.out_dir, ref_path)
         return {"parameter_files": parameter_files, "out_dir": str(out_dir)}
 
-    return parameter_files
+    return parameter_files, args.debug
 
 
 def files_from_path(in_path):
