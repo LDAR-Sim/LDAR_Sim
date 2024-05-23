@@ -36,7 +36,8 @@ from programs.method import Method
 from scheduling.generic_schedule import GenericSchedule
 from scheduling.workplan import Workplan
 
-from constants.param_default_const import Duration_Method as dm, Program_Params, Method_Params
+
+import constants.param_default_const as pdc
 
 
 class Program:
@@ -45,8 +46,8 @@ class Program:
     dynamic schedules based on weather and other impacting variables."""
 
     PROGRAM_REPORT_EXPANSION_MAPPING = {
-        dm.COMPONENT: True,
-        dm.MEASUREMENT_CONSERVATIVE: False,
+        pdc.Duration_Method.COMPONENT: True,
+        pdc.Duration_Method.MEASUREMENT_CONSERVATIVE: False,
     }
 
     def __init__(
@@ -73,11 +74,11 @@ class Program:
         self._current_date: date = sim_start_date
         self.weather = weather
         self.daylight = daylight
-        self.duration_factor = prog_params[Program_Params.DURATION_ESTIMATE][
-            Program_Params.DURATION_FACTOR
+        self.duration_factor = prog_params[pdc.Program_Params.DURATION_ESTIMATE][
+            pdc.Program_Params.DURATION_FACTOR
         ]
-        self.duration_method = prog_params[Program_Params.DURATION_ESTIMATE][
-            Program_Params.DURATION_METHOD
+        self.duration_method = prog_params[pdc.Program_Params.DURATION_ESTIMATE][
+            pdc.Program_Params.DURATION_METHOD
         ]
 
     def _init_methods_and_schedules(
@@ -133,7 +134,7 @@ class Program:
         follow_up_methods: dict = {}
         other_methods: dict = {}
         for method, properties in methods.items():
-            if properties[Method_Params.IS_FOLLOW_UP]:
+            if properties[pdc.Method_Params.IS_FOLLOW_UP]:
                 follow_up_methods[method] = properties
             else:
                 other_methods[method] = properties
@@ -146,11 +147,11 @@ class Program:
         consider_weather: bool,
         sites: list[Site],
     ) -> Method:
-        method_survey_level: str = properties[Method_Params.MEASUREMENT_SCALE]
+        method_survey_level: str = properties[pdc.Method_Params.MEASUREMENT_SCALE]
 
         if method_survey_level == SiteLevelMethod.MEASUREMENT_SCALE:
-            meth_pref_follow_up = properties[Method_Params.FOLLOW_UP][
-                Method_Params.PREFERRED_METHOD
+            meth_pref_follow_up = properties[pdc.Method_Params.FOLLOW_UP][
+                pdc.Method_Params.PREFERRED_METHOD
             ]
 
             if isinstance(meth_pref_follow_up, str) and meth_pref_follow_up != "_placeholder_str_":
@@ -167,8 +168,8 @@ class Program:
                 follow_up_schedule=follow_up_schedule,
             )
         elif method_survey_level == EquipmentGroupLevelMethod.MEASUREMENT_SCALE:
-            meth_pref_follow_up = properties[Method_Params.FOLLOW_UP][
-                Method_Params.PREFERRED_METHOD
+            meth_pref_follow_up = properties[pdc.Method_Params.FOLLOW_UP][
+                pdc.Method_Params.PREFERRED_METHOD
             ]
 
             if isinstance(meth_pref_follow_up, str) and meth_pref_follow_up != "_placeholder_str_":

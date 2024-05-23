@@ -6,5 +6,4 @@ baseline_program: P_none
 reference_program: P_OGI
 processes_count: 6 # Recommend: 6
 simulation_count: 2
-print_from_simulations: True # True/False
 preseed_random: False # True/False
