@@ -1,3 +1,22 @@
+# ------------------------------------------------------------------------------
+# Program:     The LDAR Simulator (LDAR-Sim)
+# File:        test_gen_estimated_fugitive_emissions_to_remove.py
+# Purpose:     Tests the gen_estimated_fugitive_emissions_to_remove method
+#              in the program_output module
+
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the MIT License as published
+# by the Free Software Foundation, version 3.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MIT License for more details.
+# You should have received a copy of the MIT License
+# along with this program.  If not, see <https://opensource.org/licenses/MIT>.
+
+# ------------------------------------------------------------------------------
 import pandas as pd
 from file_processing.output_processing import program_output
 from constants import output_file_constants
