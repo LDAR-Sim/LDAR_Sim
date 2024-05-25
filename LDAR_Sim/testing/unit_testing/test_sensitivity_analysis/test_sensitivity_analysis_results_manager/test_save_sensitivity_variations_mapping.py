@@ -24,9 +24,9 @@ def mock_init_sensitivity_analysis_results_manager(
 def get_vw_params_mapping1():
     return {
         Virtual_World_Params.EMIS: [
-            {Virtual_World_Params.LPR: 0.000275},
-            {Virtual_World_Params.LPR: 0.0065},
-            {Virtual_World_Params.LPR: 0.013},
+            {Virtual_World_Params.REPAIRABLE: {Virtual_World_Params.PR: 0.000275}},
+            {Virtual_World_Params.REPAIRABLE: {Virtual_World_Params.PR: 0.0065}},
+            {Virtual_World_Params.REPAIRABLE: {Virtual_World_Params.PR: 0.013}},
         ]
     }, 3
 
@@ -41,7 +41,13 @@ def get_expected_vw_Sens_mappings_1():
             ],
             SensitivityAnalysisOutputs.SensitivityVariationsMapping.FLEXIBLE_COLUMNS_NAMES[
                 0
-            ].format(x=0): [Virtual_World_Params.EMIS + "." + Virtual_World_Params.LPR]
+            ].format(x=0): [
+                Virtual_World_Params.EMIS
+                + "."
+                + Virtual_World_Params.REPAIRABLE
+                + "."
+                + Virtual_World_Params.PR
+            ]
             * 3,
             SensitivityAnalysisOutputs.SensitivityVariationsMapping.FLEXIBLE_COLUMNS_NAMES[
                 1
@@ -53,12 +59,12 @@ def get_expected_vw_Sens_mappings_1():
 def get_vw_params_mapping2():
     return {
         Virtual_World_Params.EMIS: [
-            {Virtual_World_Params.ERS: "test1"},
-            {Virtual_World_Params.ERS: "test2"},
-            {Virtual_World_Params.ERS: "test3"},
-            {Virtual_World_Params.LPR: 0.000275},
-            {Virtual_World_Params.LPR: 0.0065},
-            {Virtual_World_Params.LPR: 0.013},
+            {Virtual_World_Params.REPAIRABLE: {Virtual_World_Params.ERS: "test1"}},
+            {Virtual_World_Params.REPAIRABLE: {Virtual_World_Params.ERS: "test2"}},
+            {Virtual_World_Params.REPAIRABLE: {Virtual_World_Params.ERS: "test3"}},
+            {Virtual_World_Params.REPAIRABLE: {Virtual_World_Params.PR: 0.000275}},
+            {Virtual_World_Params.REPAIRABLE: {Virtual_World_Params.PR: 0.0065}},
+            {Virtual_World_Params.REPAIRABLE: {Virtual_World_Params.PR: 0.013}},
         ]
     }, 3
 
@@ -73,14 +79,26 @@ def get_expected_vw_Sens_mappings_2():
             ],
             SensitivityAnalysisOutputs.SensitivityVariationsMapping.FLEXIBLE_COLUMNS_NAMES[
                 0
-            ].format(x=0): [Virtual_World_Params.EMIS + "." + Virtual_World_Params.ERS]
+            ].format(x=0): [
+                Virtual_World_Params.EMIS
+                + "."
+                + Virtual_World_Params.REPAIRABLE
+                + "."
+                + Virtual_World_Params.ERS
+            ]
             * 3,
             SensitivityAnalysisOutputs.SensitivityVariationsMapping.FLEXIBLE_COLUMNS_NAMES[
                 1
             ].format(x=0): ["test1", "test2", "test3"],
             SensitivityAnalysisOutputs.SensitivityVariationsMapping.FLEXIBLE_COLUMNS_NAMES[
                 0
-            ].format(x=1): [Virtual_World_Params.EMIS + "." + Virtual_World_Params.LPR]
+            ].format(x=1): [
+                Virtual_World_Params.EMIS
+                + "."
+                + Virtual_World_Params.REPAIRABLE
+                + "."
+                + Virtual_World_Params.PR
+            ]
             * 3,
             SensitivityAnalysisOutputs.SensitivityVariationsMapping.FLEXIBLE_COLUMNS_NAMES[
                 1

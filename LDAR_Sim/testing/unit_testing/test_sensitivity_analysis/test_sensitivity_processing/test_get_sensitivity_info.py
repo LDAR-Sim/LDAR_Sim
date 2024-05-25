@@ -6,7 +6,9 @@ from constants.sensitivity_analysis_constants import (
 )
 
 
-def mock_process_parameter_variations(param_variations: dict, param_level: str):
+def mock_process_parameter_variations(
+    param_variations: dict, param_level: str, num_variations: int
+):
     return param_variations
 
 

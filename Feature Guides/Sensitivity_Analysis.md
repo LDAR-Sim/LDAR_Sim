@@ -12,24 +12,27 @@ Multiple parameters can be varied at once for sensitivity analysis, however it i
 
 ```yml
 emissions:
-    LPR: [0.0065, 0.013]
-    NRd: [365, 730]
+  repairable_emissions:
+    production_rate: [0.0065, 0.013]
+    duration: [365, 730]
 ```
 
 is a potential input to the Sensitivity Analysis file, which will generate two sets of simulations. The first set will have:
 
 ```yml
-emissions: 
-    LPR: 0.0065
-    NRd: 365
+emissions:
+  repairable_emissions:
+    production_rate: 0.0065
+    duration: 365
 ```
 
 and the second set will have:
 
 ```yml
-emissions: 
-    LPR: 0.013
-    NRd: 730
+emissions:
+  repairable_emissions:
+    production_rate: 0.013
+    duration: 730
 ```
 
 ### On Having Multiple Program
@@ -76,8 +79,9 @@ Sensitivity Parameter Level: "virtual_world"
 Sensitivity Analysis Permutations: 3
 Sensitivity Parameter Variations:
   emissions:
-    LPR: [0.00325, 0.0065, 0.013]
-    NRd: [182, 365, 730]
+    repairable_emissions:
+      production_rate: [0.00325, 0.0065, 0.013]
+      duration: [182, 365, 730]
 Sensitivity Summary Outputs Information:
   Confidence Interval: [85]
 ```

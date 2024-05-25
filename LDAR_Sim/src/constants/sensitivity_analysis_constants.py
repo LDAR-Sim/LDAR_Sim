@@ -15,14 +15,10 @@ class ValidParametersForSensitivityAnalysis:
         param_default_const.Virtual_World_Params.REPAIR_DELAY,
         param_default_const.Virtual_World_Params.EMIS_FILE,
         param_default_const.Virtual_World_Params.ERS,
-        param_default_const.Virtual_World_Params.LPR,
-        param_default_const.Virtual_World_Params.NR_ERS,
-        param_default_const.Virtual_World_Params.NR_EPR,
+        param_default_const.Virtual_World_Params.PR,
         param_default_const.Virtual_World_Params.MAX_RATE,
-        param_default_const.Virtual_World_Params.NRD,
         param_default_const.Virtual_World_Params.DURATION,
         param_default_const.Virtual_World_Params.MULTI_EMIS,
-        param_default_const.Virtual_World_Params.MULTI_EMIS_NR,
     ]
     PROGRAMS = [
         param_default_const.Program_Params.TCO2E,

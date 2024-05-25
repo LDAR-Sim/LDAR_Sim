@@ -13,7 +13,10 @@ class ParametersHolder:
     VIRTUAL_WORLD_SUB_PARAMETER_MAPPING = {
         param_default_const.Virtual_World_Params.INFRA: None,
         param_default_const.Virtual_World_Params.REPAIR: None,
-        param_default_const.Virtual_World_Params.EMIS: None,
+        param_default_const.Virtual_World_Params.EMIS: {
+            param_default_const.Virtual_World_Params.REPAIRABLE: None,
+            param_default_const.Virtual_World_Params.NON_REPAIRABLE: None,
+        },
     }
 
     OUTPUTS_SUB_PARAMETER_MAPPING = {

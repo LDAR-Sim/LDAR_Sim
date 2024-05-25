@@ -181,13 +181,15 @@ class Virtual_World_To_Prop_Params_Mapping:
         Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ERS: ".".join(
             [
                 param_default_const.Virtual_World_Params.EMIS,
+                param_default_const.Virtual_World_Params.REPAIRABLE,
                 param_default_const.Virtual_World_Params.ERS,
             ]
         ),
         Infrastructure_Constants.Sites_File_Constants.REP_EMIS_EPR: ".".join(
             [
                 param_default_const.Virtual_World_Params.EMIS,
-                param_default_const.Virtual_World_Params.LPR,
+                param_default_const.Virtual_World_Params.REPAIRABLE,
+                param_default_const.Virtual_World_Params.PR,
             ]
         ),
         Infrastructure_Constants.Sites_File_Constants.REP_EMIS_RD: ".".join(
@@ -205,37 +207,43 @@ class Virtual_World_To_Prop_Params_Mapping:
         Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ED: ".".join(
             [
                 param_default_const.Virtual_World_Params.EMIS,
-                param_default_const.Virtual_World_Params.NRD,
+                param_default_const.Virtual_World_Params.REPAIRABLE,
+                param_default_const.Virtual_World_Params.DURATION,
             ]
         ),
         Infrastructure_Constants.Sites_File_Constants.REP_EMIS_MULTI: ".".join(
             [
                 param_default_const.Virtual_World_Params.EMIS,
+                param_default_const.Virtual_World_Params.REPAIRABLE,
                 param_default_const.Virtual_World_Params.MULTI_EMIS,
             ]
         ),
         Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_ERS: ".".join(
             [
                 param_default_const.Virtual_World_Params.EMIS,
-                param_default_const.Virtual_World_Params.NR_ERS,
+                param_default_const.Virtual_World_Params.NON_REPAIRABLE,
+                param_default_const.Virtual_World_Params.ERS,
             ]
         ),
         Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_EPR: ".".join(
             [
                 param_default_const.Virtual_World_Params.EMIS,
-                param_default_const.Virtual_World_Params.NR_EPR,
+                param_default_const.Virtual_World_Params.NON_REPAIRABLE,
+                param_default_const.Virtual_World_Params.PR,
             ]
         ),
         Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_ED: ".".join(
             [
                 param_default_const.Virtual_World_Params.EMIS,
+                param_default_const.Virtual_World_Params.NON_REPAIRABLE,
                 param_default_const.Virtual_World_Params.DURATION,
             ]
         ),
         Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_MULTI: ".".join(
             [
                 param_default_const.Virtual_World_Params.EMIS,
-                param_default_const.Virtual_World_Params.MULTI_EMIS_NR,
+                param_default_const.Virtual_World_Params.NON_REPAIRABLE,
+                param_default_const.Virtual_World_Params.MULTI_EMIS,
             ]
         ),
     }

@@ -181,7 +181,7 @@ class Initialization_Messages:
 
     PLACEHOLDER_CREATION_WARNING_MESSAGE = (
         "Warning: Only {type} emissions sources were created for the site ID: {site}. "
-        "Check the production rate (LPR/EPR) if this is not intended."
+        "Check the production rate(s) if this is not intended."
     )
     EMISSION_PRODUCTION_RATE_ERROR = (
         "No valid emissions production rates. Please check values and re-run the simulation."

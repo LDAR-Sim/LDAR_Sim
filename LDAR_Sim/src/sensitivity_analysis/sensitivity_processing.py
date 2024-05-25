@@ -25,7 +25,9 @@ def read_in_sensitivity_parameters(
 
 
 def process_parameter_variations(
-    parameter_variations: dict[str, Any] | list[dict[str, Any]], parameter_level: str
+    parameter_variations: dict[str, Any] | list[dict[str, Any]],
+    parameter_level: str,
+    num_variations: int,
 ) -> dict[str, Any]:
     if parameter_level == param_default_const.Levels.METHOD:
         if isinstance(parameter_variations, list):
@@ -35,7 +37,8 @@ def process_parameter_variations(
                 ]: unpack_parameter_variations(
                     method[
                         sensitivity_analysis_constants.SensitivityAnalysisMapping.Method_SENS_PARAMS
-                    ]
+                    ],
+                    num_variations,
                 )
                 for method in parameter_variations
             }
@@ -52,7 +55,8 @@ def process_parameter_variations(
                         (
                             sensitivity_analysis_constants.SensitivityAnalysisMapping
                         ).PROGRAM_SENS_PARAMS
-                    ]
+                    ],
+                    num_variations,
                 )
                 for program in parameter_variations
             }
@@ -60,10 +64,12 @@ def process_parameter_variations(
             print(error_messages.SensitivityAnalysisMessages.INVALID_SENSITIVITY_VARIATIONS_ERROR)
             sys.exit()
     else:
-        return unpack_parameter_variations(parameter_variations)
+        return unpack_parameter_variations(parameter_variations, num_variations)
 
 
-def unpack_parameter_variations(parameter_variations: dict[str, Any]) -> dict[str, Any]:
+def unpack_parameter_variations(
+    parameter_variations: dict[str, Any], num_variations: int
+) -> dict[str, Any]:
     """
     Unpack the parameter variations to get the actual values
 
@@ -72,17 +78,33 @@ def unpack_parameter_variations(parameter_variations: dict[str, Any]) -> dict[st
     dict[str, Any]
         The unpacked parameter variations
     """
-    unpacked_variations: dict[str, Any] = {}
+    unpacked_variations: dict[str, list[dict]] = {}
+    for key, value in parameter_variations.items():
+        unpacked_variations[key] = []
+        if isinstance(value, dict):
+            for variation in range(num_variations):
+                unpacked_variations[key].extend(
+                    unpack_nested_parameter_variations(value, variation)
+                )
+        elif isinstance(value, list):
+            unpacked_variations[key] = value
+    return unpacked_variations
+
+
+def unpack_nested_parameter_variations(
+    parameter_variations: dict[str, Any], variation_index: int
+) -> dict[str, Any]:
+    unpacked_variations: list = []
     for key, value in parameter_variations.items():
         if isinstance(value, dict):
-            unpacked_variations[key] = []
-            for inner_key, inner_value in value.items():
-                if isinstance(inner_value, list):
-                    unpacked_variations[key].extend([{inner_key: v} for v in inner_value])
-                else:
-                    unpacked_variations[key].extend[unpack_parameter_variations(value)]
-        else:
-            unpacked_variations[key] = value
+            unpacked_sub_variations: list = unpack_nested_parameter_variations(
+                value, variation_index
+            )
+            unpacked_variations.extend(
+                [{key: sub_variation} for sub_variation in unpacked_sub_variations]
+            )
+        elif isinstance(value, list):
+            unpacked_variations.append({key: value[variation_index]})
     return unpacked_variations
 
 
@@ -121,6 +143,9 @@ def get_sensitivity_info(
                 sensitivity_analysis_constants.SensitivityAnalysisMapping.PARAM_VARIATIONS
             ],
             sens_info_dict[sensitivity_analysis_constants.SensitivityAnalysisMapping.PARAM_LEVEL],
+            sens_info_dict[
+                sensitivity_analysis_constants.SensitivityAnalysisMapping.NUM_VARIATIONS
+            ],
         )
     )
     return sens_info_dict

@@ -40,7 +40,11 @@ def vary_parameter_values(
             parameters: ParametersHolder = copy.deepcopy(simulation_parameters)
             # Vary all the specified parameters
             for key, value in parameter_variations.items():
-                for index in range(i, len(value), number_of_variations):
+                unique_parameter_variations: int = int(len(value) / number_of_variations)
+                for index in range(
+                    i * unique_parameter_variations,
+                    (i * unique_parameter_variations) + unique_parameter_variations,
+                ):
                     parameters.alter_parameter(
                         param_default_const.Levels.VIRTUAL, key, value[index]
                     )
@@ -70,7 +74,12 @@ def vary_parameter_values(
                 )
                 # Vary all the specified parameters
                 for key, value in program_variations.items():
-                    program_parameters.alter_parameter(key, value[i])
+                    unique_parameter_variations: int = int(len(value) / number_of_variations)
+                    for index in range(
+                        i * unique_parameter_variations,
+                        (i * unique_parameter_variations) + unique_parameter_variations,
+                    ):
+                        program_parameters.alter_parameter(key, value[index])
                 # Add the new program to the parameters
                 parameters.add_program(f"{program_name}_{i}", program_parameters)
         # Append the new parameters to the list
@@ -118,7 +127,11 @@ def vary_parameter_values(
 
                 for key, value in variations.items():
                     key_vals: dict | Any = {}
-                    for index in range(i, len(value), number_of_variations):
+                    unique_parameter_variations: int = int(len(value) / number_of_variations)
+                    for index in range(
+                        i * unique_parameter_variations,
+                        (i * unique_parameter_variations) + unique_parameter_variations,
+                    ):
                         if isinstance(value[index], dict):
                             key_vals.update(value[index])
                         else:

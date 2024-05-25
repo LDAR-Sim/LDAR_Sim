@@ -24,9 +24,11 @@ def get_simulation_parameters_1():
         Virtual_World_Params.WEATHER_FILE: "test_weather_file",
         Virtual_World_Params.CONSIDER_WEATHER: True,
         Virtual_World_Params.EMIS: {
-            Virtual_World_Params.LPR: 0.0065,
-            Virtual_World_Params.ERS: "test_ERS",
-            Virtual_World_Params.NRD: 365,
+            Virtual_World_Params.REPAIRABLE: {
+                Virtual_World_Params.PR: 0.0065,
+                Virtual_World_Params.ERS: "test_ERS",
+                Virtual_World_Params.DURATION: 365,
+            }
         },
     }
     programs = {
@@ -136,9 +138,9 @@ def get_simulation_parameters_1():
 def get_vw_parameter_variations_1():
     return {
         Virtual_World_Params.EMIS: [
-            {Virtual_World_Params.LPR: 0.000275},
-            {Virtual_World_Params.LPR: 0.0065},
-            {Virtual_World_Params.LPR: 0.013},
+            {Virtual_World_Params.REPAIRABLE: {Virtual_World_Params.PR: 0.000275}},
+            {Virtual_World_Params.REPAIRABLE: {Virtual_World_Params.PR: 0.0065}},
+            {Virtual_World_Params.REPAIRABLE: {Virtual_World_Params.PR: 0.013}},
         ]
     }, 3
 
@@ -151,9 +153,11 @@ def get_expected_vw_parameter_variations_1():
             Virtual_World_Params.WEATHER_FILE: "test_weather_file",
             Virtual_World_Params.CONSIDER_WEATHER: True,
             Virtual_World_Params.EMIS: {
-                Virtual_World_Params.LPR: 0.000275,
-                Virtual_World_Params.ERS: "test_ERS",
-                Virtual_World_Params.NRD: 365,
+                Virtual_World_Params.REPAIRABLE: {
+                    Virtual_World_Params.PR: 0.000275,
+                    Virtual_World_Params.ERS: "test_ERS",
+                    Virtual_World_Params.DURATION: 365,
+                }
             },
         },
         {
@@ -162,9 +166,11 @@ def get_expected_vw_parameter_variations_1():
             Virtual_World_Params.WEATHER_FILE: "test_weather_file",
             Virtual_World_Params.CONSIDER_WEATHER: True,
             Virtual_World_Params.EMIS: {
-                Virtual_World_Params.LPR: 0.0065,
-                Virtual_World_Params.ERS: "test_ERS",
-                Virtual_World_Params.NRD: 365,
+                Virtual_World_Params.REPAIRABLE: {
+                    Virtual_World_Params.PR: 0.0065,
+                    Virtual_World_Params.ERS: "test_ERS",
+                    Virtual_World_Params.DURATION: 365,
+                }
             },
         },
         {
@@ -173,9 +179,11 @@ def get_expected_vw_parameter_variations_1():
             Virtual_World_Params.WEATHER_FILE: "test_weather_file",
             Virtual_World_Params.CONSIDER_WEATHER: True,
             Virtual_World_Params.EMIS: {
-                Virtual_World_Params.LPR: 0.013,
-                Virtual_World_Params.ERS: "test_ERS",
-                Virtual_World_Params.NRD: 365,
+                Virtual_World_Params.REPAIRABLE: {
+                    Virtual_World_Params.PR: 0.013,
+                    Virtual_World_Params.ERS: "test_ERS",
+                    Virtual_World_Params.DURATION: 365,
+                }
             },
         },
     ]
@@ -184,12 +192,12 @@ def get_expected_vw_parameter_variations_1():
 def get_vw_parameter_variations_2():
     return {
         Virtual_World_Params.EMIS: [
-            {Virtual_World_Params.ERS: "test1"},
-            {Virtual_World_Params.ERS: "test2"},
-            {Virtual_World_Params.ERS: "test3"},
-            {Virtual_World_Params.LPR: 0.000275},
-            {Virtual_World_Params.LPR: 0.0065},
-            {Virtual_World_Params.LPR: 0.013},
+            {Virtual_World_Params.REPAIRABLE: {Virtual_World_Params.ERS: "test1"}},
+            {Virtual_World_Params.REPAIRABLE: {Virtual_World_Params.PR: 0.000275}},
+            {Virtual_World_Params.REPAIRABLE: {Virtual_World_Params.ERS: "test2"}},
+            {Virtual_World_Params.REPAIRABLE: {Virtual_World_Params.PR: 0.0065}},
+            {Virtual_World_Params.REPAIRABLE: {Virtual_World_Params.ERS: "test3"}},
+            {Virtual_World_Params.REPAIRABLE: {Virtual_World_Params.PR: 0.013}},
         ]
     }, 3
 
@@ -197,37 +205,43 @@ def get_vw_parameter_variations_2():
 def get_expected_vw_parameter_variations_2():
     return [
         {
+            Virtual_World_Params.EMIS: {
+                Virtual_World_Params.REPAIRABLE: {
+                    Virtual_World_Params.PR: 0.000275,
+                    Virtual_World_Params.ERS: "test1",
+                    Virtual_World_Params.DURATION: 365,
+                }
+            },
             Common_Params.PARAM_LEVEL: Levels.VIRTUAL,
             Common_Params.VERSION: "4.0",
             Virtual_World_Params.WEATHER_FILE: "test_weather_file",
             Virtual_World_Params.CONSIDER_WEATHER: True,
-            Virtual_World_Params.EMIS: {
-                Virtual_World_Params.LPR: 0.000275,
-                Virtual_World_Params.ERS: "test1",
-                Virtual_World_Params.NRD: 365,
-            },
         },
         {
+            Virtual_World_Params.EMIS: {
+                Virtual_World_Params.REPAIRABLE: {
+                    Virtual_World_Params.PR: 0.0065,
+                    Virtual_World_Params.ERS: "test2",
+                    Virtual_World_Params.DURATION: 365,
+                }
+            },
             Common_Params.PARAM_LEVEL: Levels.VIRTUAL,
             Common_Params.VERSION: "4.0",
             Virtual_World_Params.WEATHER_FILE: "test_weather_file",
             Virtual_World_Params.CONSIDER_WEATHER: True,
-            Virtual_World_Params.EMIS: {
-                Virtual_World_Params.LPR: 0.0065,
-                Virtual_World_Params.ERS: "test2",
-                Virtual_World_Params.NRD: 365,
-            },
         },
         {
+            Virtual_World_Params.EMIS: {
+                Virtual_World_Params.REPAIRABLE: {
+                    Virtual_World_Params.PR: 0.013,
+                    Virtual_World_Params.ERS: "test3",
+                    Virtual_World_Params.DURATION: 365,
+                }
+            },
             Common_Params.PARAM_LEVEL: Levels.VIRTUAL,
             Common_Params.VERSION: "4.0",
             Virtual_World_Params.WEATHER_FILE: "test_weather_file",
             Virtual_World_Params.CONSIDER_WEATHER: True,
-            Virtual_World_Params.EMIS: {
-                Virtual_World_Params.LPR: 0.013,
-                Virtual_World_Params.ERS: "test3",
-                Virtual_World_Params.NRD: 365,
-            },
         },
     ]
 
@@ -255,9 +269,11 @@ def get_expected_vw_parameter_variations_3():
             Virtual_World_Params.WEATHER_FILE: "test_weather_file1",
             Virtual_World_Params.CONSIDER_WEATHER: False,
             Virtual_World_Params.EMIS: {
-                Virtual_World_Params.LPR: 0.0065,
-                Virtual_World_Params.ERS: "test_ERS",
-                Virtual_World_Params.NRD: 365,
+                Virtual_World_Params.REPAIRABLE: {
+                    Virtual_World_Params.PR: 0.0065,
+                    Virtual_World_Params.ERS: "test_ERS",
+                    Virtual_World_Params.DURATION: 365,
+                }
             },
         },
         {
@@ -266,9 +282,11 @@ def get_expected_vw_parameter_variations_3():
             Virtual_World_Params.WEATHER_FILE: "test_weather_file2",
             Virtual_World_Params.CONSIDER_WEATHER: True,
             Virtual_World_Params.EMIS: {
-                Virtual_World_Params.LPR: 0.0065,
-                Virtual_World_Params.ERS: "test_ERS",
-                Virtual_World_Params.NRD: 365,
+                Virtual_World_Params.REPAIRABLE: {
+                    Virtual_World_Params.PR: 0.0065,
+                    Virtual_World_Params.ERS: "test_ERS",
+                    Virtual_World_Params.DURATION: 365,
+                }
             },
         },
         {
@@ -277,9 +295,11 @@ def get_expected_vw_parameter_variations_3():
             Virtual_World_Params.WEATHER_FILE: "test_weather_file3",
             Virtual_World_Params.CONSIDER_WEATHER: False,
             Virtual_World_Params.EMIS: {
-                Virtual_World_Params.LPR: 0.0065,
-                Virtual_World_Params.ERS: "test_ERS",
-                Virtual_World_Params.NRD: 365,
+                Virtual_World_Params.REPAIRABLE: {
+                    Virtual_World_Params.PR: 0.0065,
+                    Virtual_World_Params.ERS: "test_ERS",
+                    Virtual_World_Params.DURATION: 365,
+                }
             },
         },
     ]
@@ -326,6 +346,24 @@ def get_program_parameter_variations_2():
                     {Program_Params.TCO2E: 40},
                     {Program_Params.TCO2E: 60},
                 ],
+            },
+        },
+        3,
+    )
+
+
+def get_program_parameter_variations_3():
+    return (
+        {
+            "test_prog1": {
+                Program_Params.DURATION_ESTIMATE: [
+                    {Program_Params.DURATION_FACTOR: 0.1},
+                    {Program_Params.DURATION_METHOD: "test1"},
+                    {Program_Params.DURATION_FACTOR: 0.5},
+                    {Program_Params.DURATION_METHOD: "test2"},
+                    {Program_Params.DURATION_FACTOR: 1.0},
+                    {Program_Params.DURATION_METHOD: "test3"},
+                ]
             },
         },
         3,
@@ -745,15 +783,157 @@ def get_expected_program_parameter_variations_2():
     ]
 
 
+def get_expected_program_parameter_variations_3():
+    return [
+        {
+            "P_None": {
+                Common_Params.PARAM_LEVEL: Levels.PROGRAM,
+                Common_Params.VERSION: "4.0",
+                Program_Params.NAME: "P_None",
+                Program_Params.METHODS: [],
+            },
+            "test_prog1_0": {
+                Common_Params.PARAM_LEVEL: Levels.PROGRAM,
+                Common_Params.VERSION: "4.0",
+                Program_Params.NAME: "test_prog1_0",
+                Program_Params.DURATION_ESTIMATE: {
+                    Program_Params.DURATION_FACTOR: 0.1,
+                    Program_Params.DURATION_METHOD: "test1",
+                },
+                Program_Params.ECONOMICS: {
+                    Program_Params.TCO2E: 100,
+                },
+                Levels.METHOD: {
+                    "test_method1": {
+                        Common_Params.PARAM_LEVEL: Levels.METHOD,
+                        Common_Params.VERSION: "4.0",
+                        Method_Params.NAME: "test_method1",
+                        Method_Params.SENSOR: {
+                            Method_Params.MDL: 0.1,
+                        },
+                        Method_Params.COVERAGE: {
+                            Method_Params.SPATIAL: 0.5,
+                            Method_Params.TEMPORAL: 0.5,
+                        },
+                        Method_Params.RS: 1,
+                        Method_Params.T_BW_SITES: {Common_Params.VAL: [1, 2, 3]},
+                    },
+                    "test_method2": {
+                        Common_Params.PARAM_LEVEL: Levels.METHOD,
+                        Common_Params.VERSION: "4.0",
+                        Method_Params.NAME: "test_method2",
+                        Method_Params.SENSOR: {
+                            Method_Params.MDL: 1,
+                        },
+                        Method_Params.COVERAGE: {
+                            Method_Params.SPATIAL: 1,
+                            Method_Params.TEMPORAL: 1,
+                        },
+                        Method_Params.RS: 2,
+                        Method_Params.T_BW_SITES: {Common_Params.VAL: [10, 20, 30]},
+                    },
+                },
+                Program_Params.METHODS: ["test_method1", "test_method2"],
+            },
+            "test_prog1_1": {
+                Common_Params.PARAM_LEVEL: Levels.PROGRAM,
+                Common_Params.VERSION: "4.0",
+                Program_Params.NAME: "test_prog1_1",
+                Program_Params.DURATION_ESTIMATE: {
+                    Program_Params.DURATION_FACTOR: 0.5,
+                    Program_Params.DURATION_METHOD: "test2",
+                },
+                Program_Params.ECONOMICS: {
+                    Program_Params.TCO2E: 100,
+                },
+                Levels.METHOD: {
+                    "test_method1": {
+                        Common_Params.PARAM_LEVEL: Levels.METHOD,
+                        Common_Params.VERSION: "4.0",
+                        Method_Params.NAME: "test_method1",
+                        Method_Params.SENSOR: {
+                            Method_Params.MDL: 0.1,
+                        },
+                        Method_Params.COVERAGE: {
+                            Method_Params.SPATIAL: 0.5,
+                            Method_Params.TEMPORAL: 0.5,
+                        },
+                        Method_Params.RS: 1,
+                        Method_Params.T_BW_SITES: {Common_Params.VAL: [1, 2, 3]},
+                    },
+                    "test_method2": {
+                        Common_Params.PARAM_LEVEL: Levels.METHOD,
+                        Common_Params.VERSION: "4.0",
+                        Method_Params.NAME: "test_method2",
+                        Method_Params.SENSOR: {
+                            Method_Params.MDL: 1,
+                        },
+                        Method_Params.COVERAGE: {
+                            Method_Params.SPATIAL: 1,
+                            Method_Params.TEMPORAL: 1,
+                        },
+                        Method_Params.RS: 2,
+                        Method_Params.T_BW_SITES: {Common_Params.VAL: [10, 20, 30]},
+                    },
+                },
+                Program_Params.METHODS: ["test_method1", "test_method2"],
+            },
+            "test_prog1_2": {
+                Common_Params.PARAM_LEVEL: Levels.PROGRAM,
+                Common_Params.VERSION: "4.0",
+                Program_Params.NAME: "test_prog1_2",
+                Program_Params.DURATION_ESTIMATE: {
+                    Program_Params.DURATION_FACTOR: 1.0,
+                    Program_Params.DURATION_METHOD: "test3",
+                },
+                Program_Params.ECONOMICS: {
+                    Program_Params.TCO2E: 100,
+                },
+                Levels.METHOD: {
+                    "test_method1": {
+                        Common_Params.PARAM_LEVEL: Levels.METHOD,
+                        Common_Params.VERSION: "4.0",
+                        Method_Params.NAME: "test_method1",
+                        Method_Params.SENSOR: {
+                            Method_Params.MDL: 0.1,
+                        },
+                        Method_Params.COVERAGE: {
+                            Method_Params.SPATIAL: 0.5,
+                            Method_Params.TEMPORAL: 0.5,
+                        },
+                        Method_Params.RS: 1,
+                        Method_Params.T_BW_SITES: {Common_Params.VAL: [1, 2, 3]},
+                    },
+                    "test_method2": {
+                        Common_Params.PARAM_LEVEL: Levels.METHOD,
+                        Common_Params.VERSION: "4.0",
+                        Method_Params.NAME: "test_method2",
+                        Method_Params.SENSOR: {
+                            Method_Params.MDL: 1,
+                        },
+                        Method_Params.COVERAGE: {
+                            Method_Params.SPATIAL: 1,
+                            Method_Params.TEMPORAL: 1,
+                        },
+                        Method_Params.RS: 2,
+                        Method_Params.T_BW_SITES: {Common_Params.VAL: [10, 20, 30]},
+                    },
+                },
+                Program_Params.METHODS: ["test_method1", "test_method2"],
+            },
+        },
+    ]
+
+
 def get_method_parameter_variations_1():
     return {
         "test_method3": {
             Method_Params.COVERAGE: [
                 {Method_Params.SPATIAL: 0.1},
-                {Method_Params.SPATIAL: 0.2},
-                {Method_Params.SPATIAL: 0.3},
                 {Method_Params.TEMPORAL: 0.3},
+                {Method_Params.SPATIAL: 0.2},
                 {Method_Params.TEMPORAL: 0.5},
+                {Method_Params.SPATIAL: 0.3},
                 {Method_Params.TEMPORAL: 0.7},
             ]
         }
@@ -1364,6 +1544,23 @@ def test_vary_parameter_values_program_level_2_progs():
     parameters: ParametersHolder = get_simulation_parameters_1()
     parameter_variations, number_of_variations = get_program_parameter_variations_2()
     expected_parameters: list = get_expected_program_parameter_variations_2()
+    varied_parameters: list[ParametersHolder] = vary_parameter_values(
+        simulation_parameters=parameters,
+        parameter_variations=parameter_variations,
+        number_of_variations=number_of_variations,
+        sensitivity_program=None,
+        parameter_level=Levels.PROGRAM,
+    )
+    varied_parameters_dicts: list[dict] = [
+        varied_parameters[i].get_programs() for i in range(len(varied_parameters))
+    ]
+    assert varied_parameters_dicts == expected_parameters
+
+
+def test_vary_parameter_values_program_level_2_params():
+    parameters: ParametersHolder = get_simulation_parameters_1()
+    parameter_variations, number_of_variations = get_program_parameter_variations_3()
+    expected_parameters: list = get_expected_program_parameter_variations_3()
     varied_parameters: list[ParametersHolder] = vary_parameter_values(
         simulation_parameters=parameters,
         parameter_variations=parameter_variations,
