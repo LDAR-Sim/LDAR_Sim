@@ -23,6 +23,7 @@ import numpy as np
 from sensors.default_sensor import DefaultSensor
 from sensors.default_component_level_sensor import DefaultComponentLevelSensor
 from sensors.default_equipment_group_level_sensor import DefaultEquipmentGroupLevelSensor
+from constants.general_const import Conversion_Constants as CC
 
 
 class METECNWSite(DefaultSensor):
@@ -31,7 +32,7 @@ class METECNWSite(DefaultSensor):
         self._mdl = mdl
 
     def _rate_detected(self, emis_rate: float) -> bool:
-        prob_detect = 1 / (1 + np.exp(self._mdl[0] - self._mdl[1] * emis_rate))
+        prob_detect = 1 / (1 + np.exp(self._mdl[0] - self._mdl[1] * (emis_rate * CC.GS_TO_KGHR)))
         if prob_detect >= 1:
             return True
         return np.random.binomial(1, prob_detect) and self.check_min_threshold(emis_rate)
@@ -42,7 +43,7 @@ class METECNWEquipmentGroup(DefaultEquipmentGroupLevelSensor):
         super().__init__(mdl, quantification_error)
 
     def _rate_detected(self, emis_rate: float) -> bool:
-        prob_detect = 1 / (1 + np.exp(self._mdl[0] - self._mdl[1] * emis_rate))
+        prob_detect = 1 / (1 + np.exp(self._mdl[0] - self._mdl[1] * (emis_rate * CC.GS_TO_KGHR)))
         if prob_detect >= 1:
             return True
         return np.random.binomial(1, prob_detect) and self.check_min_threshold(emis_rate)
@@ -53,7 +54,7 @@ class METECNWComponent(DefaultComponentLevelSensor):
         super().__init__(mdl, quantification_error)
 
     def _rate_detected(self, emis_rate: float) -> bool:
-        prob_detect = 1 / (1 + np.exp(self._mdl[0] - self._mdl[1] * emis_rate))
+        prob_detect = 1 / (1 + np.exp(self._mdl[0] - self._mdl[1] * (emis_rate * CC.GS_TO_KGHR)))
         if prob_detect >= 1:
             return True
         return np.random.binomial(1, prob_detect) and self.check_min_threshold(emis_rate)

@@ -53,6 +53,51 @@ Email: <sally@highwoodemissions.com>
       - [\<duration\_factor\> WIP](#duration_factor-wip)
       - [\<duration\_method\>](#duration_method)
   - [9. Method Inputs](#9-method-inputs)
+    - [\<parameter\_level\> (methods)](#parameter_level-methods)
+    - [\<version\> (methods)](#version-methods)
+    - [\<method\_name\>](#method_name)
+    - [\<measurement\_scale\>](#measurement_scale)
+    - [\<deployment\_type\>](#deployment_type)
+    - [\<sensor\>](#sensor)
+      - [\<type\>](#type)
+      - [\<quantification\_error\>](#quantification_error)
+      - [\<minimum\_detection\_limit\> (default)](#minimum_detection_limit-default)
+      - [\<minimum\_detection\_limit\> (OGI\_camera\_rk)](#minimum_detection_limit-ogi_camera_rk)
+      - [\<minimum\_detection\_limit\> (OGI\_camera\_zim)](#minimum_detection_limit-ogi_camera_zim)
+      - [\<minimum\_detection\_limit\> (METEC\_no\_wind)](#minimum_detection_limit-metec_no_wind)
+    - [\<coverage\>](#coverage)
+      - [\<spatial\>](#spatial)
+      - [\<temporal\>](#temporal)
+    - [\<cost\>](#cost)
+      - [\<per\_day\>](#per_day)
+      - [\<per\_site\>](#per_site)
+      - [\<upfront\>](#upfront)
+    - [\<crew\_count\>](#crew_count)
+    - [\<consider\_daylight\>](#consider_daylight)
+    - [\<surveys\_per\_year\> _(propagating parameter)_](#surveys_per_year-propagating-parameter)
+    - [\<survey\_time\> _(propagating parameter)_](#survey_time-propagating-parameter)
+    - [\<max\_workday\>](#max_workday)
+    - [\<reporting\_delay\>](#reporting_delay)
+    - [\<time\_between\_sites\>](#time_between_sites)
+      - [file (time\_between\_sites)](#file-time_between_sites)
+      - [values (time\_between\_sites)](#values-time_between_sites)
+    - [\<scheduling\>](#scheduling)
+      - [\<deployment\_months\>](#deployment_months)
+      - [\<deployment\_years\>](#deployment_years)
+    - [\<weather\_envelopes\>](#weather_envelopes)
+      - [\<precipitation\>](#precipitation)
+      - [\<temperature\>](#temperature)
+      - [\<wind\>](#wind)
+    - [\<is\_follow\_up\>](#is_follow_up)
+    - [\<follow\_up\>](#follow_up)
+      - [\<preferred\_method\>](#preferred_method)
+      - [\<delay\> (follow\_up)](#delay-follow_up)
+      - [\<instant\_threshold\>](#instant_threshold)
+      - [\<interaction\_priority\>](#interaction_priority)
+      - [\<proportion\>](#proportion)
+      - [\<redundancy\_filter\>](#redundancy_filter)
+      - [\<sort\_by\_rate\>](#sort_by_rate)
+      - [\<threshold\>](#threshold)
   - [10. Virtual World Defining Files](#10-virtual-world-defining-files)
   - [11. Legacy Inputs](#11-legacy-inputs)
     - [Simulation Settings Parameters](#simulation-settings-parameters)
@@ -156,7 +201,7 @@ The LDAR-Sim software is organized using the following structure:
 
 The **Root** folder includes all code, inputs, and outputs necessary to run LDAR-Sim. From a software perspective, the root folder is the parent to the src folder (folder containing LDAR_sim_main). This folder will be always be the root folder when making relative references in LDAR-Sim. For example, if input_directory is specified as _./inputs_ from anywhere in the code, the targeted folder will be _{absolute_path_to} / Root / inputs_.
 
-The **inputs** folder contains input files required to run LDAR-Sim. These include weather files, empirical leak and vent data, facility lists, and other inputs.
+The **inputs** folder contains input files required to run LDAR-Sim. These include weather files, empirical emission and vent data, facility lists, and other inputs.
 
 The **outputs** folder stores all output data files produced by LDAR-Sim. The folder is cleaned, and added if required each time ldar_sim_main is run.
 
@@ -205,7 +250,7 @@ Parameter files are all key-value pairs (i.e., Python dictionary), with multiple
 
 A typical simulation would compare at least two programs: a reference program and one or more test programs. Including a baseline program is also necessary.
 
-- `baseline program`: The program against which mitigation is estimated for reference and test programs (mitigation = baseline emissions - LDAR emissions). Typically involves running LDAR-Sim in the absence of a formal LDAR program (commonly denoted as 'P_none'). Even without a formal LDAR program, leaks are eventually removed from the simulation due to operator rounds (e.g., AVO), routine maintenance, refits and retrofits, or other factors.
+- `baseline program`: The program against which mitigation is estimated for reference and test programs (mitigation = baseline emissions - LDAR emissions). Typically involves running LDAR-Sim in the absence of a formal LDAR program (commonly denoted as 'P_none'). Even without a formal LDAR program, emissions are eventually removed from the simulation due to operator rounds (e.g., AVO), routine maintenance, refits and retrofits, or other factors.
 - `reference program`: The program against which test programs are compared (e.g., to establish equivalency). The reference program is often defined by regulations that require the use of OGI (commonly denoted 'P_OGI').
 - `test programs`: A custom alternative program that the user wants to evaluate. Commonly denoted using 'P_' + program name (e.g., 'P_aircraft', 'P_GasCompanyX', 'P_drone', etc.).
 
@@ -369,7 +414,7 @@ Note that programs are interpreted as a flat list of parameters that are incorpo
 
 ### &lt;processes_count&gt;
 
-**Data type:** Integer (Numeric)
+**Data type:** Numeric (Integer)
 
 **Default input:** 6
 
@@ -383,7 +428,7 @@ A minimum of a single process is required for the simulation to run.
 
 ### &lt;simulation_count&gt;
 
-**Data type:** Integer (Numeric)
+**Data type:** Numeric (Integer)
 
 **Default input:** 2
 
@@ -628,7 +673,526 @@ The measured total site level emission rate on January 30th is assumed to have l
 
 ## 9\. Method Inputs
 
-Content for the "Method Inputs" section goes here.
+### &lt;parameter_level&gt; (methods)
+
+**Data Type:** String
+
+**Default input:** 'methods'
+
+**Description:** A string indicating the parameters in file are at the methods settings level
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** Must be set to ```parameter_level: methods``` for a methods setting parameter file.
+
+### &lt;version&gt; (methods)
+
+**Data type:** String
+
+**Default input:** 4.0
+
+**Description:** Specify version of LDAR-Sim. See section _[Versioning of Parameter Files](#versioning-of-parameter-files)_ for more information.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** Improper versioning will prevent simulator from executing.
+
+### &lt;method_name&gt;
+
+**Data type:** String
+
+**Default input:** _placeholder_str_ (Required to be set for each method added to program)
+
+**Description:** A character string denoting the label of the method.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** Must match the label name specified in the program input parameter file, and any supplementary files, such as the infrastructure file. This is a case sensitive parameter.
+
+### &lt;measurement_scale&gt;
+
+**Data type:** String
+
+**Default input:** _placeholder_str_ (Required to be set for each method added to program)
+
+**Description:** A character string describing the measurements scale. Possible inputs are `"component"`, `"equipment"`, and `"site"`.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** Only component scale methods are able to tag emissions for repair.
+
+### &lt;deployment_type&gt;
+
+**Data type:** String
+
+**Default input:** _placeholder_str_ (Required to be set for each method added to program)
+
+**Description:** Methods are comprised of both a deployment type and a sensor type. The deployment type is a character string denoting the deployment type used in the method. For instance, `'mobile'` or `'stationary'`. Custom deployment types can be added and referenced here.
+
+Valid deployment types:
+
+- `mobile`: Agent moves between sites. Surveys occur when a site is "ready" for a survey and a crew is available to survey.
+- `stationary`: Each site has one or more _fixed_ sensors. Surveys are carried out daily.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** N/A
+
+### &lt;sensor&gt;
+
+**Description:** _TODO_
+
+#### &lt;type&gt;
+
+**Data type:** String
+
+**Default input:** "default"
+
+**Description:** Methods are comprised of both a deployment type and a sensor type. the sensor type is a character string denoting the sensor used in the method. For instance, `'OGI_camera_zim'`,`'OGI_camera_rk'`, or `'default'`. The `'default'` sensor uses the minimum detection limit (MDL) as a threshold to detect emissions based on the measurement scale of the method. Custom sensors can be added and referenced here. Built in sensors are:
+
+- `default`: Uses a simple threshold where the emission rate is based on the measurement scale, for example if `measurement_scale = site` then the site's total emissions will be considered measured if greater than the sensors MDL.
+- `OGI_camera_rk`: Uses detection curve based on Ravikumar, 2018. Requires [measurement_scale](#measurement_scale) = `'component'`.
+- `OGI_camera_zim`: Uses detection curve based on Zimmerle 2020. Requires [measurement_scale](#measurement_scale) = `'component'`.
+- `METEC_no_wind`: Uses a detection curve formula based on a typical METEC report where wind is normalized.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** N/A
+
+#### &lt;quantification_error&gt;
+
+**Data type:** Numeric
+
+**Default input:** 0
+
+**Description:** _TODO_ The standard deviation of a normal distribution with a mean of zero from which a quantification error multiplier is drawn each time an emission rate is estimated. For example, for a value of 2.2, ~35\% of measured emission rates will fall within a factor of two of the true emission rate. For a value of 7.5, ~82\% of measurements will fall within an order of magnitude of the true emission rate. When QE = 0, the measured emission rate equals the true emission rate. As QE increases, so does the average absolute difference between measured and true emission rates. See Fox et al. (2021) for more information and Ravikumar et al. (2019) for empirical quantification error estimates.
+
+**Notes on acquisition:** We recommend extensive controlled release testing under a range of representative release rates, distances, and conditions to establish quantification error. Given the amount of work required to collect this information, we recommend using historical estimates.
+
+**Notes of caution:** As facility-scale quantification error remains poorly constrained for LDAR screening methods, and likely depends on work practice, dispersion modeling, and environment, screening programs should be evaluated using a range of possible quantification errors. We recommend understanding exactly how quantification error works before making use of this functionality. Alternatively, we suggest using literature values of 2.2 and 7.5.
+
+#### &lt;minimum_detection_limit&gt; (default)
+
+**Data type:** List of integers
+
+**Default input:** [0.01] (Should be set for each Method)
+
+**Description:** Minimum detection limit of the screening method in grams per second. Probability curves or surfaces as a function of emission rate, wind speed, distance, etc. must be hard coded.
+
+**Notes on acquisition:** We recommend extensive controlled release testing under a range of representative release rates, distances, and conditions to establish detection limits. Given the amount of work required to collect this information, we recommend using historical estimates.
+
+**Notes of caution:** A single value for MDL is used here, although a parameter list could be used that defines a sigmoidal probability of detection curve. These are examples and with more experimental data, probability of detection surfaces can be generated that can estimate detection probabilities as a function of numerous relevant variables (e.g., distance, wind speed, emission rate, etc.)
+
+#### &lt;minimum_detection_limit&gt; (OGI_camera_rk)
+
+**Data type:** List of floats
+
+**Default input:** [0.01275, 0.00000278]
+
+**Description:** A list of parameters [_xₒ_, σ] that define the minimum detection limit of OGI. The two parameters define a sigmoidal Gaussian cumulative probability function as described in Ravikumar et al. (2018), where _xₒ_ is the emission rate (in grams per second) at which 50% of emissions are detected (i.e., median detection limit), and σ is one standard deviation of  _xₒ_. The probability detection of an emission with OGI is calculated using a sigmoidal probability function:
+
+$$
+f = \frac{1}{(1+exp(-k(log(x)-log(x_0))))}
+$$
+
+where f = is the fraction of emissions detected, _x_ is the emission rate in grams of methane per hour, _xₒ_ is the median detection limit (f = 0.5) and _k_ is the steepness of the sigmoid curve. Ravikumar et al. (2018) found that at 3 m _k_ =  4.9 g/hr +/- 3, and _xₒ_ = 0.47 +/- 0.1. However, detection limits were found to be an order of magnitude higher in the Zimmerle study. As such, LDAR-Sim assumes an _xₒ_ of 0.01275 g/s. For reasons listed below, we note that this is likely a conservative estimate. Also, this approach assumes a constant distance of 3 meters from camera to source.
+
+**Notes on acquisition:** If no input is provided for the minimum detection limit `minimum_detection_limit: []`, the values [0.01275, 0.00000278] will be used for the constants.
+
+We recommend extensive controlled release testing under a range of representative release rates and conditions to establish detection limits. Given the amount of work required to collect this information, we recommend using historical estimates.
+
+**Notes of caution:** Detection probabilities for OGI cameras have been shown to vary with operator experience, wind speed, scene background, and other variables. Estimates from Ravikumar et al. (2018) are experimentally derived but are likely low because (i) the OGI inspector knew where to look, (ii) measurements were performed over only 1 week of good conditions, (iii) OGI cameras were tripod mounted, and (iv) videos were analyzed by experts after data collection. Estimates from Zimmerle et al. (2020) are an order of magnitude higher, and likely closer to reality. However, this estimate applies only to experienced inspectors with over 700 site inspections under their belts, so the true median detection across all inspectors may be lower. Furthermore, the Zimmerle study for experienced inspectors could still represent an underestimate as (i) weather conditions were relatively good, (ii) OGI inspectors were participating in a formal study and were likely very focused, and (iii) many of the emissions were odorized. These results would therefore not include laziness, neglect, or missing of emissions from difficult to access areas. See [minimum_detection_limit(default)](#minimum_detection_limit-default) for more information on detection limits, including the use of single values or probability surfaces.
+
+#### &lt;minimum_detection_limit&gt; (OGI_camera_zim)
+
+**Data type:** List of floats
+
+**Default input:** [0.24, 0.39]
+
+**Description:** A list of parameters [a, b] that define the emissions rate based probability of detection of a emissions. The two parameters define power law cumulative probability function as described in Zimmerle (2020), where both a and b are empirical parameters that define the shape of the curve, and are based on the camera crew experience. The probability detection of an emission with OGI is calculated using the following function:
+
+$$
+p = a*x^{b}
+$$
+
+where p is the probability of detection, _x_ is the emission rate in grams of methane per second. The default
+parameters used are that associated with the moderate ability to detect.
+
+**Notes on acquisition:** If not input is provided for the minimum detection limit (`minimum_detection_limit: []`), the values [0.24, 0.39] will be used.
+
+We recommend extensive controlled release testing under a range of representative release rates and conditions to establish detection limits. Given the amount of work required to collect this information, we recommend using historical estimates.
+
+**Notes of caution:** Detection probabilities for OGI cameras have been shown to vary with operator experience, wind speed, scene background, and other variables. Parameters are experimentally derived. The Zimmerle study for experienced inspectors could still represent an underestimate as (i) weather conditions were relatively good, (ii) OGI inspectors were participating in a formal study and were likely very focused, and (iii) many of the emissions were odorized. These results would therefore not include laziness, neglect, or missing of emissions from difficult to access areas. See Section 3.8 for more information on detection limits, including the use of single values or probability surfaces.
+
+#### &lt;minimum_detection_limit&gt; (METEC_no_wind)
+
+**Data type:** List of floats
+
+**Default input:** []
+
+**Description:** A list of parameters [a, b, _, c] where a and b are constants in the following formula:
+
+$$
+p = \frac{1}{1 + e^{a - b * x}}
+$$
+
+and `c` represents the optional minimum threshold that the rate must exceed to be considered for detection and `x` represents the emission rate in kilograms of methane per hour.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** Detection probabilities have been shown to vary with wind speed, scene background, and other variables. The METEC studies may still underestimate these probabilities, as not all variables can be accounted for in a controlled environment compared to real life working conditions.
+
+### &lt;coverage&gt;
+
+#### &lt;spatial&gt;
+
+**Data type:** Numeric
+
+**Default input:** 1.0
+
+**Description:** Probability (0-1) that a work practice can locate an emission. Internally, each emission will be randomly assigned a True or False value based on this probability indicating whether or not the emission can be detected by the work practice. This value is rolled only once for each emission and work practice pair and remains consistent for subsequent surveys. Spatial coverage is also not affected by emission size.
+
+`eg. coverage.spatial = 0.25`. The emission has a 25% chance of being detected regardless of the number of surveys.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** Future research is required!
+
+#### &lt;temporal&gt;
+
+**Data type:** Numeric
+
+**Default input:** 1.0
+
+**Description:** Probability (0-1) that an agent can locate an emission during a survey. Internally, each emission will be randomly assigned a True or False based on this probability increasing survey will improve the chances of the emission being detected.
+
+`eg. coverage.temporal = 0.25`. The emission has a 25% chance of being detected **every time** it is surveyed.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** Future research is required!
+
+### &lt;cost&gt;
+
+**Description:** The cost to deploy a given method. The type of currency is not factored but must be consistent across all cost inputs.
+
+#### &lt;per_day&gt;
+
+**Data type:** Numeric
+
+**Default input:** 0
+
+**Description:** The daily cost charged by the service provider (per crew). It is charged each time a crew is deployed, regardless of how many sites they survey that day.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** N/A
+
+#### &lt;per_site&gt;
+
+**Data type:** Numeric
+
+**Default input:** 0
+
+**Description:** The cost charged by the service provider (per crew per site). It is charged each time a crew is deployed at a site.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** N/A
+
+#### &lt;upfront&gt;
+
+**Data type:** Numeric
+
+**Default input:** 0
+
+**Description:** The initial up-front cost of each crew. This cost is only charged once.
+
+**Notes on acquisition:** Consult service provider.
+
+**Notes of caution:** Does not account for maintenance activities or the cost of replacing devices at the end of their lifetime.
+
+### &lt;crew_count&gt;
+
+**Data type:**  Numeric (Integer)
+
+**Default input:** 0
+
+**Description:** The maximum number of distinct, independent crews that will be deployed using the same method. If the `crew_count` is not provided, LDAR-Sim will provide crews as needed.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** Unless explicitly evaluating labour constraints, ensure that sufficient crews are available to perform LDAR according to the requirements set out in the infrastructure_file. For example, if 2000 facilities require LDAR, and each takes an average of 300 minutes, ~10,000 work hours are required, or 3-4 crews working full time.
+
+### &lt;consider_daylight&gt;
+
+**Data type:** Boolean
+
+**Default input:** False
+
+**Description:** A binary True/False to indicate whether crews should only work during daylight hours. If False, crews work the number of hours specified by the [max_workday](#max_workday) input variable used for each method. If True, crews work the shorter of either [max_workday](#max_workday) or the number of daylight hours calculated using the PyEphem package in python using latitude, longitude of each site, for each day of the year.
+
+**Notes on acquisition:** Acquisition is automated using required latitude and longitude coordinates for each facility (see infrastructure_file input) at each time step.
+
+**Notes of caution:** In most cases, True and False will yield similar results. Use of daylight constraints should be considered for companies that do not wish to deploy crews in the dark for safety reasons, especially for locations at high latitudes during winter months (e.g., Northern Alberta). However, this functionality should not be used to determine whether sunlight is available for passive remote sensing methods or other technologies that require sunlight operate, as the sun has already set when civil twilight occurs (see obs.horizon). Solar flux will vary with topography and cloud cover (use ERA5 data).
+
+### &lt;surveys_per_year&gt; _(propagating parameter)_
+
+**Data type:**  Numeric (Integer)
+
+**Default input:** N/A
+
+**Description:** An integer indicating the number of required surveys at each facility per calendar year.
+
+**Notes on acquisition:** Survey frequencies can be based on regulatory requirements, company policies, or can be fabricated by the modeler to explore different scenarios.
+
+**Notes of caution:** Note that just because a number of surveys is prescribed, it does not mean that this number of surveys will necessarily be performed. For example, if labour limitations exist (i.e., not enough crews are available to inspect the number of facilities in the program) or if environmental conditions are unsuitable (i.e., a particular facility is in a cloudy location that cannot be accessed by satellite), the performed number of surveys may be less than the prescribed number. This variable is not required for continuous measurement methods.
+
+**Note:** this parameter may also be set more granularly using the infrastructure files.
+
+### &lt;survey_time&gt; _(propagating parameter)_
+
+**Data type:**  Numeric (Integer)
+
+**Default input:** N/A
+
+**Description:** The number in minutes required to complete a survey or screening at each facility.
+
+**Notes on acquisition:** In most cases, an estimate will be made as data will not exist for the specific combination of facility and unique method. However, as new methods and programs are implemented, data will become available to better refine modeling estimates and develop more intelligent programs.
+
+**Notes of caution:** This variable is an empirical estimate of how much time is required for a given mobile method to complete a survey at a given facility. This includes anything that happens onsite (e.g., calibrations, interfacing with the operator, etc.) but _does not include_ driving time between facilities or any other account of time spent offsite. This variable is simply the amount of time that passes from the start of a facility survey to the end. If a facility takes longer than there is time left in a day, then the agent/crew returns the following day to continue work, and so on and so forth, until the facility is completed. This variable is not required for continuous measurement methods.
+
+**Note:** this parameter may also be set more granularly using the infrastructure files.
+
+### &lt;max_workday&gt;
+
+**Data type:**  Numeric (Integer)
+
+**Default input:** 8
+
+**Description:** The maximum number of hours a crew can work in day (includes travel time).
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** This can be overridden if [consider_daylight](#consider_daylight) is True and the valid daylight hours are shorter.
+
+### &lt;reporting_delay&gt;
+
+**Data type:** Numeric (Integer)
+
+**Default input:** 2
+
+**Description:** The number of days that pass between the end of a survey (when a site is flagged or emissions are tagged) and when the duty holder is informed. The reporting delay is then followed by the [repair delay](#delay).
+
+**Notes on acquisition:** Get this information from the service provider.
+
+**Notes of caution:** Many service providers have automated systems for reporting emissions as soon as they are found and tagged. However, some companies still provide paper or pdf reports days or even weeks later. It is important to understand the expectations between the duty holder and the service provider.
+
+### &lt;time_between_sites&gt;
+
+**Description:** The time between sites can be specified as a list in the parameter file or provided in a CSV file format.
+
+#### file (time_between_sites)
+
+**Data type:** String
+
+**Default input:** None
+
+**Description:** A string denoting the filename of a csv file containing travel times. The file should include one row, with a column header in row 1 of `time_between_sites`
+
+**Notes on acquisition:** Each value should represent not only driving time, but all time spent not conducting surveys (driving, breaks, meals, break downs, trains, etc.) This data should be scraped from historical GPS data associated with LDAR survey crews, ideally for the facilities under evaluation.
+
+**Notes of caution:** These data may be difficult to acquire and may lack representativeness.
+
+#### values (time_between_sites)
+
+**Data type:** List of Integers
+
+**Default input:** [30]
+
+**Description:** The list of numbers denotes the time in minutes required to plan, travel, setup, take down, required in between surveys. A value is selected at random from the provided list.
+
+### &lt;scheduling&gt;
+
+#### &lt;deployment_months&gt;
+
+**Data type:** List of integers
+
+**Default input:** [1,2,3,4,5,6,7,8,9,10,11,12]
+
+**Description:** A list of months used for scheduling. Methods can only be deployed during these months. For example, [8,9] indicates methods can only be deployed in August and September. If not defined, LDAR-Sim assumes methods can be deployed every month.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** Only `mobile` [methods](#deployment_type) can use this functionality.
+
+#### &lt;deployment_years&gt;
+
+**Data type:** List of integers
+
+**Default input:** N/A
+
+**Description:** A list of years used for scheduling. Methods can only be deployed during these years. For example, [2017,2018] indicates methods can only be deployed in 2017 and 2018\. If not defined, LDAR-Sim assumes methods can be deployed every year.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** Only `mobile` [methods](#deployment_type) can use this functionality.
+
+### &lt;weather_envelopes&gt;
+
+**Description:** The following parameters define the valid weather conditions for the given method.
+
+#### &lt;precipitation&gt;
+
+**Data type:** List of floats
+
+**Default input:** [0, 0.5]
+
+**Description:** The range of precipitation accumulation allowed (mm) over one hour.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** N/A
+
+#### &lt;temperature&gt;
+
+**Data type:** List of floats
+
+**Default input:** [-40, 40]
+
+**Description:** The range of average hourly temperature (°C) between which crews will work.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** Units are in degrees Celsius, not Fahrenheit.
+
+#### &lt;wind&gt;
+
+**Data type:** List of floats
+
+**Default input:** [0, 10]
+
+**Description:** The bounding range of maximum average hourly wind speed (m/s at 10m) between which crews will work.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** N/A
+
+### &lt;is_follow_up&gt;
+
+**Data type:** Boolean
+
+**Default input:** False (Required to be set for each method added to program)
+
+**Description:** A binary True/False to indicate whether the method is used to survey sites previously flagged by screening technologies. If true this method will only visit sites flagged.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** No data acquisition required.
+
+### &lt;follow_up&gt;
+
+**Description:** The following parameters are used to specify the work practices that enforce the scheduling of the relevant follow-up method .
+
+#### &lt;preferred_method&gt;
+
+**Data type:** String
+
+**Default input:** N/A
+
+**Description:** This parameter allows surveying methods to determine which follow-up method to trigger if multiples are present. If not set, LDAR-Sim will expect only one follow-up method to be present for a single program. Leveraging this parameter enables the use of alternative site or equipment level follow-up methods, facilitating subsequent rounds of screenings based on initial screening results.
+
+Moreover, this feature can model work practices involving multiple screenings to increase confidence in fugitive emissions, measurement accuracy, etc. Each method in the follow-up chain must have the preferred_method set to the corresponding method it triggers.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** If a method within a program is set to have a preferred follow-up method, all methods requiring a follow-up in the program should also be set with a preferred method to avoid ambiguity regarding which follow-up method is being used. Moreover, the last follow-up method in a work practice must be at a component level for leaks to be tagged and repaired. The value of this parameter must be identical to an existing[method name](#method_name).
+
+#### &lt;delay&gt; (follow_up)
+
+**Data type:** Numeric (Integer)
+
+**Default input:** 0
+
+**Description:** The number of days required to have passed since the first site added to the site watch list before a site can be flagged. The company will hold all measurements in a site watch list. The emissions rate used to triage flagging based on follow-up threshold and proportion are specified with [redundancy filter](#redundancy_filter).
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** N/A
+
+#### &lt;instant_threshold&gt;
+
+**Data type:** Numeric (Float)
+
+**Default input:** 0.0
+
+**Description:** The follow-up instant threshold in grams per second. Measured site-level emissions must be above the follow-up threshold before a candidate site becomes immediately available for flagging. If _follow_up.instant_threshold_type_ is "absolute", the numeric value indicates the follow-up threshold in grams per second. If "relative", the numeric value is passed to a function that calculates the emission rate that corresponds to a desired proportion of total emissions for a given leak size distribution. The function estimates the MDL needed to find the top X percent of sources for a given leak size distribution. For example, given a proportion of 0.01 and a leak-size distribution, this function will return an estimate of the follow-up threshold that will ensure that all leaks in the top 1% of leak sizes are found.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** Follow-up thresholds are explored in detail in Fox et al. 2021\. Choosing follow-up rules is complex and work practices should be developed following extensive analysis of different scenarios. It is important to understand how follow-up thresholds and follow-up ratios interact, especially if both are to be used in the same program. Note that follow-up thresholds are similar to minimum detection limits but that the former is checked against the measured emission rate (which is a function of quantification error) while the latter is checked against the true emission rate.
+
+#### &lt;interaction_priority&gt;
+
+**Data type:** String
+
+**Default input:** "threshold"
+
+**Description:** Specifies which algorithm to run first on candidate sites when determining which to flag. If the value is _threshold_ the proportion of sites to follow up with will be taken from all sites over the threshold. If the value is _proportion_ the proportion of sites will be taken from the candidate sites, then from those sites follow-up will occur at sites above the threshold.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** N/A
+
+#### &lt;proportion&gt;
+
+**Data type:** Numeric
+
+**Default input:** 1.0
+
+**Description:** A single value that defines the proportion of candidate flags to receive follow-up. For example, if the follow-up ratio is 0.5, the top 50% of candidate flags (ranked by measured emission rate) will receive follow-up. Candidate flags have already been checked against the minimum detection limit.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** The follow-up proportion ranks sites based on their measured emission rate, which may differ from the true emission rate if quantification error is used. The effect of follow_up.proportion will depend on the temporal interval over which sites accumulate in the candidate flags pool.
+
+#### &lt;redundancy_filter&gt;
+
+**Data type:** String
+
+**Default input:** "recent"
+
+**Description:** Specifies which measured emissions rate to use to identify which candidate sites to follow up at if individual sites have multiple independent measurements that have accumulated in the candidate flag pool. If the _follow\_up.delay_ is not zero, crews can survey the site several times before flagging the site. If this value is set to _recent_, the most recent site measurement will be used to check follow-up threshold and proportion. If the value is set to _max_, the highest emissions rate will be used. If the value is set to _average_ the average emissions from all surveys will be used.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** N/A
+
+#### &lt;sort_by_rate&gt;
+
+**Data type:** Boolean
+
+**Default input:** True
+
+**Description:** Indicates whether the sites flagged for follow-up will be sorted by their emission rates for subsequent follow-up survey methods. If set to True, follow-ups will sorted based on the observed site emission rates, prioritizing the largest emitting sites first.
+
+**Notes on acquisition:** Based on operator work practices.
+
+**Notes of caution:** For the intended follow-up `interaction_priority:proportion` use case, it's advisable to enable sorting by setting `sort_by_rate: True`. This ensures that the original purpose of using `interaction_priority:proportion` is maintained.
+
+#### &lt;threshold&gt;
+
+**Data type:** Float
+
+**Default input:** 0.0
+
+**Description:** The follow-up threshold in grams per second. Measured site-level emissions must be above the follow-up threshold before a site can be flagged. If _follow_up.threshold_type_ is "absolute", the numeric value indicates the follow-up threshold in grams per second. If "relative", the numeric value is passed to a function that calculates an emission rate that corresponds to a desired proportion of total emissions for a given leak size distribution. The function estimates the MDL needed to find the top X percent of sources for a given leak size distribution. For example, given a proportion of 0.01 and a leak-size distribution, this function will return an estimate of the follow-up threshold that will ensure that all leaks in the top 1% of leak sizes are found.
+
+The follow-up delay parameter can be set to require multiple measurements for a site above threshold before a site is flagged.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** Follow-up thresholds are explored in detail in Fox et al. 2021\. Choosing follow-up rules is complex and work practices should be developed following extensive analysis of different scenarios. It is important to understand how follow-up thresholds and follow-up ratios interact, especially if both are to be used in the same program. Note that follow-up thresholds are similar to minimum detection limits but that the former is checked against to the measured emission rate (which is a function of quantification error) while the latter is checked against the true emission rate.
 
 --------------------------------------------------------------------------------
 
