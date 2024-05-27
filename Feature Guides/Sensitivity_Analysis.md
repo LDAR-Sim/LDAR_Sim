@@ -2,7 +2,21 @@
 
 ## Introduction
 
-The purpose of this guide is to provide users with instructions and examples on how to run the LDAR-Sim Sensitivity Analysis module. Sensitivity Analysis with the LDAR-Sim.
+The purpose of this guide is to provide users with instructions and examples on how to run the LDAR-Sim Sensitivity Analysis module.
+
+## Table of Contents
+
+- [Introduction](#introduction)
+- [Table of Contents](#table-of-contents)
+- [Key Sensitivity Analysis Information](#key-sensitivity-analysis-information)
+  - [On Having Multiple Programs](#on-having-multiple-programs)
+- [Setup](#setup)
+  - [Creating the Sensitivity Analysis Information File](#creating-the-sensitivity-analysis-information-file)
+    - [Virtual World Level Sensitivity Analysis](#virtual-world-level-sensitivity-analysis)
+    - [Program Level Sensitivity Analysis](#program-level-sensitivity-analysis)
+    - [Method Level Sensitivity Analysis](#method-level-sensitivity-analysis)
+- [Running LDAR-Sim Sensitivity Analysis](#running-ldar-sim-sensitivity-analysis)
+  - [Example Command](#example-command)
 
 ## Key Sensitivity Analysis Information
 
@@ -35,7 +49,7 @@ emissions:
     duration: 730
 ```
 
-### On Having Multiple Program
+### On Having Multiple Programs
 
 One key intricacy of LDAR-Sim Sensitivity Analysis functionality is that it is intended to support only a single program at time. If the simulation parameters include more than one program, one will be chosen at random for sensitivity analysis.
 
