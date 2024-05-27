@@ -83,6 +83,11 @@ Email: <sally@highwoodemissions.com>
       - [\<duration\_method\>](#duration_method)
   - [9. Method Inputs](#9-method-inputs)
   - [10. Virtual World Defining Files](#10-virtual-world-defining-files)
+    - [Sites File](#sites-file)
+    - [Site Type File](#site-type-file)
+    - [Equipment File](#equipment-file)
+    - [Source File](#source-file)
+    - [Emissions File](#emissions-file)
   - [11. Legacy Inputs](#11-legacy-inputs)
     - [Simulation Settings Parameters](#simulation-settings-parameters)
       - [\<pregenerate\_leaks\>](#pregenerate_leaks)
@@ -1003,6 +1008,58 @@ In LDAR-Sim, the virtual world is defined by a combination of the virtual world 
 The following figure offers a visual guideline for the various parameters that can be propagated and set at more granular levels to define a virtual world, outlining the lowest adjustable property level for each parameter.
 
 ![data structure](doc-images/input_data_structure.png)
+
+--------------------------------------------------------------------------------
+
+### Sites File
+
+This file defines the individual sites that are simulated by LDAR-Sim.
+
+At a minimum it must contain the following columns:
+
+- site_ID
+- lat
+- lon
+- site_type
+
+Other optional columns consist of the following:
+
+- equipment
+- repairable_emissions_rate_source
+- repairable_emissions_production_rate
+- repairable_repair_delay
+- repairable_repair_cost
+- repairable_duration
+- repairable_multiple_emissions_per_source
+- non_repairable_emissions_rate_source
+- non_repairable_emissions_production_rate
+- non_repairable_duration
+- non_repairable_multiple_emissions_per_source
+
+Method specific columns:
+
+- {method}_surveys_per_year
+- {method}_deploy_year
+- {method}_deploy_month
+- {method}_spatial
+- {method}_survey_time
+- {method}_survey_cost
+
+--------------------------------------------------------------------------------
+
+### Site Type File
+
+--------------------------------------------------------------------------------
+
+### Equipment File
+
+--------------------------------------------------------------------------------
+
+### Source File
+
+--------------------------------------------------------------------------------
+
+### Emissions File
 
 --------------------------------------------------------------------------------
 
