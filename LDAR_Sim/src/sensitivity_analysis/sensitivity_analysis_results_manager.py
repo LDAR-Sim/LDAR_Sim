@@ -148,7 +148,13 @@ class SensitivityAnalysisResultsManager:
                 row = [index]
                 for name, variations in self._parameter_variations.items():
                     for key, value in variations.items():
-                        for i in range(index, len(value), parameter_permutation_count):
+                        unique_parameter_permutations: int = int(
+                            len(value) / parameter_permutation_count
+                        )
+                        for i in range(
+                            index * unique_parameter_permutations,
+                            (index * unique_parameter_permutations) + unique_parameter_permutations,
+                        ):
                             parameter, true_value = self.unpack_full_parameter_path(key, value[i])
                             row += [
                                 ".".join([name, parameter]),
@@ -160,7 +166,13 @@ class SensitivityAnalysisResultsManager:
             for index in range(parameter_permutation_count):
                 row: list = [index]
                 for key, value in self._parameter_variations.items():
-                    for i in range(index, len(value), parameter_permutation_count):
+                    unique_parameter_permutations: int = int(
+                        len(value) / parameter_permutation_count
+                    )
+                    for i in range(
+                        index * unique_parameter_permutations,
+                        (index * unique_parameter_permutations) + unique_parameter_permutations,
+                    ):
                         parameter, true_value = self.unpack_full_parameter_path(key, value[i])
                         row += [parameter, true_value]
                 rows.append(row)

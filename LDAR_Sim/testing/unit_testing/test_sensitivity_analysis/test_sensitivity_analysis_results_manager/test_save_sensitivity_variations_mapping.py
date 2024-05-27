@@ -82,10 +82,10 @@ def get_vw_params_mapping2():
     return {
         Virtual_World_Params.EMIS: [
             {Virtual_World_Params.REPAIRABLE: {Virtual_World_Params.ERS: "test1"}},
-            {Virtual_World_Params.REPAIRABLE: {Virtual_World_Params.ERS: "test2"}},
-            {Virtual_World_Params.REPAIRABLE: {Virtual_World_Params.ERS: "test3"}},
             {Virtual_World_Params.REPAIRABLE: {Virtual_World_Params.PR: 0.000275}},
+            {Virtual_World_Params.REPAIRABLE: {Virtual_World_Params.ERS: "test2"}},
             {Virtual_World_Params.REPAIRABLE: {Virtual_World_Params.PR: 0.0065}},
+            {Virtual_World_Params.REPAIRABLE: {Virtual_World_Params.ERS: "test3"}},
             {Virtual_World_Params.REPAIRABLE: {Virtual_World_Params.PR: 0.013}},
         ]
     }, 3
@@ -300,10 +300,10 @@ def get_method_params_mapping_1():
         "test_method3": {
             Method_Params.COVERAGE: [
                 {Method_Params.SPATIAL: 0.1},
-                {Method_Params.SPATIAL: 0.2},
-                {Method_Params.SPATIAL: 0.3},
                 {Method_Params.TEMPORAL: 0.3},
+                {Method_Params.SPATIAL: 0.2},
                 {Method_Params.TEMPORAL: 0.5},
+                {Method_Params.SPATIAL: 0.3},
                 {Method_Params.TEMPORAL: 0.7},
             ]
         }
