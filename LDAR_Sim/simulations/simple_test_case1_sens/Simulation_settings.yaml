@@ -1,6 +1,6 @@
 input_directory: ./inputs/simple_test_case_1
 simulation_count: 10
-output_directory: ./outputs/sens_test_case1
+output_directory: ./outputs/sens_test_case1_vw
 parameter_level: simulation_settings
 preseed_random: true
 program_set_name: sample_simulations
