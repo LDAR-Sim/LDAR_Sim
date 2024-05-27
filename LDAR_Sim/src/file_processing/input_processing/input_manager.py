@@ -176,8 +176,8 @@ class InputManager:
         for new_parameters in new_parameters_list:
             # Address unsupplied parameter level by defaulting it as simulation_settings
             if pc.Common_Params.PARAM_LEVEL not in new_parameters:
-                new_parameters[pc.Common_Params.PARAM_LEVEL] = pc.Levels.SIMULATION
-                print(ipm.PARAMETER_INTERPRET_WARNING)
+                print(ipm.MISSING_PARAMETER_LEVEL_ERROR)
+                sys.exit()
 
             if new_parameters[pc.Common_Params.PARAM_LEVEL] == pc.Levels.SIMULATION:
                 # Extract programs supplied in simulation_settings parameter files

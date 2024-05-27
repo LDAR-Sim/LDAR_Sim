@@ -82,6 +82,11 @@ class Input_Processing_Messages:
         "interprets parameter files as simulation_settings level if unspecified"
     )
     PARAMETER_PARSING_ERROR = "Parameter_level of {level} is not possible to parse."
+    MISSING_PARAMETER_LEVEL_ERROR = (
+        "Error: parameter_level is missing from one or more of the input parameter files. "
+        "If all file provided are intended to be parameter files,"
+        " please add the correct parameter_level."
+    )
 
     NO_PROGRAMS_WARNING = "No programs are supplied"
 
@@ -101,7 +106,7 @@ class Output_Processing_Messages:
 
 
 class Runtime_Error_Messages:
-    NO_REF_BASE_PROG_ERROR = "No reference or base program input...Exiting sim"
+    NO_BASE_PROG_ERROR = "No baseline program input...Exiting sim"
 
     INVALID_REDUND_FILTER_ERROR = "Error: Invalid Redundancy filter: {filter} for method: {method}"
 
@@ -176,7 +181,7 @@ class Initialization_Messages:
 
     PLACEHOLDER_CREATION_WARNING_MESSAGE = (
         "Warning: Only {type} emissions sources were created for the site ID: {site}. "
-        "Check the production rate (LPR/EPR) if this is not intended."
+        "Check the production rate(s) if this is not intended."
     )
     EMISSION_PRODUCTION_RATE_ERROR = (
         "No valid emissions production rates. Please check values and re-run the simulation."
@@ -198,3 +203,15 @@ class Initialization_Messages:
         "refer to model documentation for configuration instructions."
     )
     ERA_AUTH_ERROR = "Authentication Failed or Server Unavailable. Exiting"
+
+
+class SensitivityAnalysisMessages:
+    INVALID_PARAMETER_LEVEL_ERROR = (
+        "Parameter level {parameter_level} not recognized for sensitivity analysis."
+    )
+    MISSING_SENSITIVITY_INFO = "Missing required sensitivity analysis information: {key}"
+    INVALID_SENSITIVITY_VARIATIONS_ERROR = "Invalid sensitivity analysis variations provided"
+
+
+class ParameterInteractionMessages:
+    INVALID_PARAMETER_LEVEL_ERROR = "Invalid parameter level: {level}"

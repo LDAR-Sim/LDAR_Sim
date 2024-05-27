@@ -15,7 +15,7 @@ def test_000_simple_site_correctly_activates_emissions(
     test_site.activate_emissions(activate_date, sim_num)
     active_emission = False
     # Don't know which equipment component the emission will be added to.
-    # But with LPR of 1, there should be at least 1 emission active
+    # But with production_rate of 1, there should be at least 1 emission active
     for eqg in test_site._equipment_groups:
         for comp in eqg._component:
             if len(comp._active_emissions) > 0:
