@@ -260,17 +260,11 @@ Programs:
 
 We recommend supplying LDAR-Sim with a full set of parameters, copied from the default parameters in the `default_parameters` folder and modified for your purposes. This will ensure you are familiar with the parameters you have chosen to run the model.
 
-However, it may be more convenient once you are familiar with how parameter files update each other to use multiple parameter files to create your simulations and rely upon the default parameters.
-
-All simulations using multiple parameter files are created the following way:
-
-_TODO_ Possibly insert the data flow chart here?
-
 --------------------------------------------------------------------------------
 
 ### Parameter Hierarchy
 
-As noted previously, LDAR-Sim usues a 4 level hierarchy of simulations, virtual world, programs and methods parameters. To tell LDAR_Sim what level in the hierarchy your parameter file is destined for, you must specify a `parameter\_level` parameter that will specify what level your paremeter file is aimed at.
+As noted previously, LDAR-Sim uses a 4 level hierarchy of simulations, virtual world, programs and methods parameters. To tell LDAR_Sim what level in the hierarchy your parameter file is destined for, you must specify a `parameter\_level` parameter that will specify what level your parameter file is aimed at.
 
 The `parameter_level` parameter can be one of three values:
 
@@ -278,6 +272,8 @@ The `parameter_level` parameter can be one of three values:
 - `virtual_world`: parameters are used to define the virtual world.
 - `program`: parameters are used to define a program.
 - `method`: parameters are used to define a method and update a given method by name.
+
+In addition to the parameter hierarchy, LDAR-Sim requires several csv files to provide the properties of the virtual world, such as the individual site's ID, latitude, and longitude values. These files will be covered in further detail in the [virtual world defining files](#10-virtual-world-defining-files).
 
 --------------------------------------------------------------------------------
 
@@ -1002,7 +998,11 @@ Content for the "Method Inputs" section goes here.
 
 ## 10\. Virtual World Defining Files
 
-Content for the "Virtual World Defining Files" section goes here.
+In LDAR-Sim, the virtual world is defined by a combination of the virtual world parameter file and corresponding CSV files that contain the specific properties, as discussed in the [virtual world parameters](#7-virtual-world-setting).
+
+The following figure offers a visual guideline for the various parameters that can be propagated and set at more granular levels to define a virtual world, outlining the lowest adjustable property level for each parameter.
+
+![data structure](doc-images/input_data_structure.png)
 
 --------------------------------------------------------------------------------
 
