@@ -1,4 +1,4 @@
-# LDAR-Sim Documentation for Input Parameters and Data
+﻿# LDAR-Sim Documentation for Input Parameters and Data
 
 Github Repository: LDAR-Sim
 
@@ -33,6 +33,18 @@ Email: <sally@highwoodemissions.com>
     - [\<version\> (outputs)](#version-outputs)
   - [7. Virtual World Setting](#7-virtual-world-setting)
   - [8. Program Inputs](#8-program-inputs)
+    - [\<parameter\_level\> (programs)](#parameter_level-programs)
+    - [\<version\> (programs)](#version-programs)
+    - [\<program\_name\>](#program_name)
+    - [\<method\_labels\>](#method_labels)
+    - [\<economics\>](#economics)
+      - [\<carbon\_price\_tonnes\_CO2\_equivalent\> WIP](#carbon_price_tonnes_co2_equivalent-wip)
+      - [\<global\_warming\_potential\_CH4\> WIP](#global_warming_potential_ch4-wip)
+      - [\<sale\_price\_of\_natural\_gas\> WIP](#sale_price_of_natural_gas-wip)
+      - [\<verification\_cost\> WIP](#verification_cost-wip)
+    - [\<duration\_estimate\>](#duration_estimate)
+      - [\<duration\_factor\> WIP](#duration_factor-wip)
+      - [\<duration\_method\>](#duration_method)
   - [9. Method Inputs](#9-method-inputs)
   - [10. Virtual World Defining Files](#10-virtual-world-defining-files)
   - [11. Legacy Inputs](#11-legacy-inputs)
@@ -340,7 +352,184 @@ _TODO_
 
 ## 8\. Program Inputs
 
-Content for the "Program Inputs" section goes here.
+### &lt;parameter_level&gt; (programs)
+
+**Data Type:** String
+
+**Default input:** 'programs'
+
+**Description:** A string indicating the parameters in file are at the program settings level
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** Must be set to ```parameter_level: programs``` for an output setting parameter file.
+
+### &lt;version&gt; (programs)
+
+**Data type:** String
+
+**Default input:** 4.0
+
+**Description:** Specify version of LDAR-Sim. See section _[Versioning of Parameter Files](#versioning-of-parameter-files)_ for more information.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** Improper versioning will prevent simulator from executing.
+
+### &lt;program_name&gt;
+
+**Data Type:** String
+
+**Default input:** "default"
+
+**Description:** The name of the program. Typical naming convention is to include "P_" before a name.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** Each program must have a unique program name. If names are duplicated, they will override each other.
+
+### &lt;method_labels&gt;
+
+**Data Type:** List[strings]
+
+**Default input:** []
+
+**Description:** A list of the methods used within the program. For example, the following will use the aircraft and the OGI_FU methods:
+
+```yaml
+method_labels:
+- aircraft
+- OGI_FU
+```
+
+The following is an alternative format for the same example:
+
+```yaml
+method_labels: ["aircraft","OGI_FU"]
+```
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** The method labels that are referenced must be identical to an existing [method_name](#method_name), it is case sensitive.
+
+### &lt;economics&gt;
+
+**Description** Economic values that are used to generate cost related figures.
+
+**Note:** The following economics parameters are currently placeholders and will be reimplemented in a future patch.
+
+#### &lt;carbon_price_tonnes_CO2_equivalent&gt; WIP
+
+**Data Type:** Numeric
+
+**Default input:** 65.0
+
+**Description:** The federal price on carbon in Canada of $65/tonne CO2e (as of April 2023) is input as a default metric to compare the cost to mitigation ratios of LDAR programs to.
+
+**Notes of acquisition:** The current fuel charge rates for Canada can be found [here](https://www.canada.ca/en/revenue-agency/services/forms-publications/publications/fcrates/fuel-charge-rates.html), and the rates for the United States can be found [here](https://www.eia.gov/petroleum/gasdiesel/).
+
+**Notes of caution:**  This rate rises annually and should be updated in the model to reflect changes in the price.
+
+#### &lt;global_warming_potential_CH4&gt; WIP
+
+**Data Type:** Numeric
+
+**Default input:** 28.0
+
+**Description:** GWP of 28 over a 100-year time period was chosen as a default input. The model uses this value to convert between CH4 and CO2e when required. This value can be changed to 84-86 over 20 years to explore the impact that GWP has on mitigation costs.
+
+**Notes of acquisition:** This value is from [Chapter 8](https://www.ipcc.ch/site/assets/uploads/2018/02/WG1AR5_Chapter08_FINAL.pdf) in the IPCC's Assessment Report 5 from Working Group 1 page 714, 2018.
+
+**Notes of caution:** Using a GWP of CH4 for a 20-year time period may dramatically change results but all options should be explored.
+
+#### &lt;sale_price_of_natural_gas&gt; WIP
+
+**Data Type:** Numeric
+
+**Default input:** 3.0
+
+**Description:** The sale price of natural gas per thousand cubic foot (mcf) which is used to calculate the potential value of gas sold when captured as part of an LDAR program. LDAR-Sim takes the difference in emissions from a baseline scenario and multiplies this by the price of natural gas.
+
+**Notes of acquisition:** This value can be taken from local distribution companies or natural gas trading hubs. The U.S. Energy Information Administration is a good source for this information but units need to be converted to mcf before input into the model.
+
+**Notes of caution:** The default value of $3/mcf is a conservative estimate and users of LDAR-Sim will see different cost/benefit and cost/mitigation results if the price of natural gas is changed.
+
+#### &lt;verification_cost&gt; WIP
+
+**Data Type:** Numeric
+
+**Default input:** 0
+
+**Description:** The average cost of repair verification. This value is added to the total program cost each time a repair is verified. Some regulations require verification of successful repair within a certain number of days following repair. If the operator is already onsite and can easily verify the repair with readily available instruments (e.g., FID), the cost of verification could be negligible. If the operator has to drive long distances or engage an independent service provider to verify repairs, costs could be high.
+
+**Notes of acquisition:** The duty holder should have data on cost of verification.
+
+**Notes of caution:** N/A
+
+### &lt;duration_estimate&gt;
+
+**Description:** The following parameters are used to estimate the total emission amount according to the specified program's work practices.
+
+#### &lt;duration_factor&gt; WIP
+
+**Data Type:** Numeric
+
+**Default input:** 1
+
+**Description:** A decimal number representing the ratio of time since the last survey or screening at a given site, used to estimate the duration of a given measurement.
+
+For example, a value of 0.5 means that all measurements are based on the assumption that half the time since the last survey or screening at a given site is used to estimate the duration of the measured emission.
+
+By default(1), it assumes that the estimated emission has been emitting since the last screening or survey.
+
+```txt
+Scenario
+- A given site was surveyed January 1st, and 31st.
+- It recorded 0kg/day and 5kg/day for the respective dates.
+
+If duration_factor is set to 0.5:
+  - The estimated volume emitted would be calculated by the following
+      ((31 - 1) * 0.5)days * 5kg/day = 75 kg
+
+If the duration_factor is set to 1:
+  - The estimated volume emitted for the same period would be 
+      ((31 - 1) * 1)days * 5kg/day = 150 kg
+
+```
+
+**Notes of acquisition:** N/A
+
+**Notes of caution:** This is currently a placeholder parameter.
+
+#### &lt;duration_method&gt;
+
+**Data Type:** String
+
+**Default input:** "component-based"
+
+**Description:** A string that specifies how the program as a whole will estimate the total emissions measured.
+
+**`component-based`**- Only component level measurement work practices will be considered for estimating total emissions.
+
+For example, if a given program uses two mobile methods, `A` and `B`, where `A` is a component-level survey and `B` is a site-level screening:
+
+- `A` surveys `site_1` on January 1st and 30th, finding an emission on the 30th.
+- `B` surveys `site_1` on January 15th.
+
+The emission would be estimated to have lasted since January 1st, as that is the last valid component-level measurement conducted.
+
+**`measurement-based-conservative`**- All methods are considered valid for estimating the total emissions measured.
+
+For example, if a given program uses two mobile methods, `A` and `B`, where `A` is a component-level survey and `B` is a site-level screening:
+
+- `A` surveys `site_1` on January 1st and 30th, finding an emission on the 30th.
+- `B` surveys `site_1` on January 15th.
+
+The measured total site level emission rate on January 30th is assumed to have lasted since January 15th.
+
+**Notes of acquisition:** Currently the two valid duration estimation methods are `component-based` and `measurement-based-conservative`.
+
+**Notes of caution:** All emissions estimation in simulation is based on the assumption that technologies quantify emissions.
 
 --------------------------------------------------------------------------------
 
