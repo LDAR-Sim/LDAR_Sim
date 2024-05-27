@@ -3,6 +3,24 @@ from constants import param_default_const, output_file_constants
 
 
 @dataclass
+class SensitivityParameterParsingConstants:
+    MISSING_SENS_FILE = "Sensitivity info file not found"
+    FILE_READ_ERROR = "Error reading sensitivity info file: {filepath}"
+
+
+@dataclass
+class ParameterParsingConstants:
+    KEY_NOT_FOUND = "Attribute {key} not found"
+    TYPE_MISMATCH = "Type mismatch for attribute {key}"
+
+
+@dataclass
+class ParameterVariationConstants:
+    METHOD_RENAMING_STR = "{method_name}_{i}"
+    PROGRAM_RENAMING_STR = "{program_name}_{i}"
+
+
+@dataclass
 class ValidParametersForSensitivityAnalysis:
     VIRTUAL_WORLD = [
         param_default_const.Virtual_World_Params.WEATHER_FILE,
@@ -123,6 +141,8 @@ class SensitivityAnalysisOutputs:
         LOWER_CI = "{ci}th Percentile Percent Difference between True and Estimated Emissions"
         UPPER_CI = "{ci}th Percentile Percent Difference between True and Estimated Emissions"
         CONFIDENCE_INTERVAL = "Confidence Interval"
+        DEFAULT_UPPER_CI = 97.5
+        DEFAULT_LOWER_CI = 2.5
 
         @property
         def COLUMNS(self):

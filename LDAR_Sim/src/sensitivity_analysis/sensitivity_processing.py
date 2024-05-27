@@ -1,3 +1,25 @@
+# ------------------------------------------------------------------------------
+# Program:     The LDAR Simulator (LDAR-Sim)
+# File:        sensitivity_processing.py
+# Purpose:     Logic to process sensitivity analysis parameters from the
+#              sensitivity info file into a useful format
+#
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the MIT License as published
+# by the Free Software Foundation, version 3.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MIT License for more details.
+
+
+# You should have received a copy of the MIT License
+# along with this program.  If not, see <https://opensource.org/licenses/MIT>.
+#
+# ------------------------------------------------------------------------------
+
 from pathlib import Path
 import sys
 from typing import Any
@@ -19,8 +41,21 @@ def read_in_sensitivity_parameters(
         if parameter_file == real_sensitive_info_filepath:
             del parameter_files[index]
 
-    with open(real_sensitive_info_filepath, "r") as file:
-        sens_parameters: dict = yaml.load(file.read(), Loader=yaml.FullLoader)
+    try:
+        with open(real_sensitive_info_filepath, "r") as file:
+            sens_parameters: dict = yaml.load(file.read(), Loader=yaml.FullLoader)
+    except FileNotFoundError:
+        print(sensitivity_analysis_constants.SensitivityParameterParsingConstants.MISSING_SENS_FILE)
+        sys.exit()
+    except Exception as e:
+        print(
+            (
+                sensitivity_analysis_constants.SensitivityParameterParsingConstants
+            ).FILE_READ_ERROR.format(real_sensitive_info_filepath),
+            str(e),
+        )
+        sys.exit()
+
     return sens_parameters
 
 
@@ -63,8 +98,11 @@ def process_parameter_variations(
         else:
             print(error_messages.SensitivityAnalysisMessages.INVALID_SENSITIVITY_VARIATIONS_ERROR)
             sys.exit()
-    else:
+    elif parameter_level == param_default_const.Levels.VIRTUAL:
         return unpack_parameter_variations(parameter_variations, num_variations)
+    else:
+        print(error_messages.SensitivityAnalysisMessages.INVALID_PARAMETER_LEVEL_ERROR)
+        sys.exit()
 
 
 def unpack_parameter_variations(
@@ -133,9 +171,8 @@ def get_sensitivity_info(
                 sensitivity_analysis_constants.SensitivityAnalysisMapping.SENS_PARAM_MAPPING[key]
             ] = sens_parameters.pop(key)
         else:
-            sens_info_dict[
-                sensitivity_analysis_constants.SensitivityAnalysisMapping.SENS_PARAM_MAPPING[key]
-            ] = None
+            print(error_messages.SensitivityAnalysisMessages.MISSING_SENSITIVITY_INFO.format(key))
+            sys.exit()
 
     sens_info_dict[sensitivity_analysis_constants.SensitivityAnalysisMapping.PARAM_VARIATIONS] = (
         process_parameter_variations(

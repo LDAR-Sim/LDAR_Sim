@@ -73,16 +73,16 @@ class InputHelpText:
     INPUT_FILE_HELP_TEXT = (
         "Input files, separate with space, can be absolute path or relative to"
         "root directory (LDAR_Sim). All files should have yaml, yml, or json extensions \n"
-        "ie. python ldar_sim_main.py ./file1.json c:/path/to/file/file2.json"
+        "ie. python ldar_sim_run.py ./file1.json c:/path/to/file/file2.json"
     )
     INPUT_DIR_HELP_TEXT = (
         "Input Directory, folder containing input files, will input all files within"
         "folder that have yaml, yml or json extensions \n"
-        "ie. python ldar_sim_main.py --in_dir ./folder_with_infiles",
+        "ie. python ldar_sim_run.py --in_dir ./folder_with_infiles",
     )
     OUTPUT_DIR_HELP_TEXT = (
         "Output Directory, folder containing output files, will save all output files \n"
-        "ie. python ldar_sim_main.py --out_dir ./folder_for_save_outputs"
+        "ie. python ldar_sim_run.py --out_dir ./folder_for_save_outputs"
     )
     DEBUG_HELP_TEXT = (
         "Debug mode, will print out additional information for debugging purposes"
@@ -92,5 +92,5 @@ class InputHelpText:
     SENSITIVITY_INFO_HELP_TEXT = (
         "Sensitivity Analysis info file, can be absolute path or relative to"
         "root directory (LDAR_Sim). All files should have yaml or yml extensions \n"
-        "ie. python ldar_sim_main.py --sensitivity_info ./sens_info.yml"
+        "ie. python ldar_sim_sensitivity_analysis.py --sensitivity_info ./sens_info.yml"
     )

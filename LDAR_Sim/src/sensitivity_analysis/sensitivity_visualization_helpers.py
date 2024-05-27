@@ -1,19 +1,57 @@
+# ------------------------------------------------------------------------------
+# Program:     The LDAR Simulator (LDAR-Sim)
+# File:        sensitivity_visualization_helpers.py
+# Purpose:     Logic to help with preprocessing, calculations and filtering
+#             of sensitivity analysis data for visualization
+#
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the MIT License as published
+# by the Free Software Foundation, version 3.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MIT License for more details.
+
+
+# You should have received a copy of the MIT License
+# along with this program.  If not, see <https://opensource.org/licenses/MIT>.
+#
+# ------------------------------------------------------------------------------
+
+from typing import Tuple, Union
+
 import matplotlib.patches
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
-from matplotlib import ticker
-from matplotlib import lines
-from typing import Tuple, Union
 from constants import sensitivity_analysis_constants
 from file_processing.output_processing import summary_visualization_helpers
 from file_processing.output_processing.summary_visualization_helpers import (
     format_tick_labels_with_metric_prefix,
 )
+from matplotlib import lines, ticker
 
 
 def extract_sensitivity_data(data_source: pd.DataFrame, metrics: list[str]):
+    """
+    Extracts sensitivity data from the given data source for the specified metrics.
+    The sensitivity data is extracted for each unique sensitivity set.
+
+    Args:
+        data_source (pd.DataFrame): The data source containing the sensitivity data.
+        metrics (list[str]): The list of metrics to extract sensitivity data for.
+        A metric is a string that corresponds to a column in the data source.
+
+    Returns:
+        dict[str, dict[str, list[float]]]: A dictionary containing the extracted sensitivity data.
+            The keys of the outer dictionary are the unique sensitivity sets.
+            The keys of the inner dictionary are the metrics.
+            The values of the inner dictionary are lists of sensitivity data for each metric.
+    """
+
     sens_data_for_plotting: dict[str, dict[str, list[float]]] = {}
 
     unique_sens_sets: np.ndarray = data_source[

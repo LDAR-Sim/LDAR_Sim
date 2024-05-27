@@ -1,19 +1,37 @@
+# ------------------------------------------------------------------------------
+# Program:     The LDAR Simulator (LDAR-Sim)
+# File:        sensitivity_analysis_visualizations.py
+# Purpose:     Core logic for generating sensitivity analysis visualizations
+#
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the MIT License as published
+# by the Free Software Foundation, version 3.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MIT License for more details.
+
+
+# You should have received a copy of the MIT License
+# along with this program.  If not, see <https://opensource.org/licenses/MIT>.
+#
+# ------------------------------------------------------------------------------
+
 import os
 from typing import Tuple
 
-import numpy as np
-import pandas as pd
-
-from constants import sensitivity_analysis_constants
-
-from matplotlib import pyplot as plt
-from matplotlib import ticker
 import matplotlib.colors
 import matplotlib.patches
-from file_processing.output_processing import output_utils
-
-from sensitivity_analysis import sensitivity_visualization_helpers
+import numpy as np
+import pandas as pd
 import seaborn as sns
+from constants import sensitivity_analysis_constants
+from file_processing.output_processing import output_utils
+from matplotlib import pyplot as plt
+from matplotlib import ticker
+from sensitivity_analysis import sensitivity_visualization_helpers
 
 
 def gen_true_vs_est_emissions_percent_difference_sens_viz(

@@ -209,6 +209,7 @@ class SensitivityAnalysisMessages:
     INVALID_PARAMETER_LEVEL_ERROR = (
         "Parameter level {parameter_level} not recognized for sensitivity analysis."
     )
+    MISSING_SENSITIVITY_INFO = "Missing required sensitivity analysis information: {key}"
     INVALID_SENSITIVITY_VARIATIONS_ERROR = "Invalid sensitivity analysis variations provided"
 
 

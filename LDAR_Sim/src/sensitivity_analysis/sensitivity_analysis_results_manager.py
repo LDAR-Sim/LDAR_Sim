@@ -1,3 +1,24 @@
+# ------------------------------------------------------------------------------
+# Program:     The LDAR Simulator (LDAR-Sim)
+# File:        sensitivity_analysis_results_manager.py
+# Purpose:     A class to manage generating and saving sensitivity analysis results
+#
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the MIT License as published
+# by the Free Software Foundation, version 3.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MIT License for more details.
+
+
+# You should have received a copy of the MIT License
+# along with this program.  If not, see <https://opensource.org/licenses/MIT>.
+#
+# ------------------------------------------------------------------------------
+
 import copy
 import os
 from typing import Any
@@ -108,16 +129,16 @@ class SensitivityAnalysisResultsManager:
         for key, value in outputs.items():
             value.to_csv(os.path.join(self._out_dir, f"{key}.csv"), index=False)
 
+    def unpack_full_parameter_path(self, key: str, value: Any) -> tuple[str, Any]:
+        if isinstance(value, dict):
+            inner_key, inner_value = list(value.items())[0]
+            return self.unpack_full_parameter_path(".".join([key, inner_key]), inner_value)
+        else:
+            return key, value
+
     def save_sensitivity_variations_mapping(self, parameter_permutation_count: int) -> None:
         # Unpack the dictionary and create a list of rows
         rows = []
-
-        def unpack_full_parameter_path(key: str, value: Any) -> tuple[str, Any]:
-            if isinstance(value, dict):
-                inner_key, inner_value = list(value.items())[0]
-                return unpack_full_parameter_path(".".join([key, inner_key]), inner_value)
-            else:
-                return key, value
 
         if (
             self._sens_level == param_default_const.Levels.METHOD
@@ -128,7 +149,7 @@ class SensitivityAnalysisResultsManager:
                 for name, variations in self._parameter_variations.items():
                     for key, value in variations.items():
                         for i in range(index, len(value), parameter_permutation_count):
-                            parameter, true_value = unpack_full_parameter_path(key, value[i])
+                            parameter, true_value = self.unpack_full_parameter_path(key, value[i])
                             row += [
                                 ".".join([name, parameter]),
                                 true_value,
@@ -140,7 +161,7 @@ class SensitivityAnalysisResultsManager:
                 row: list = [index]
                 for key, value in self._parameter_variations.items():
                     for i in range(index, len(value), parameter_permutation_count):
-                        parameter, true_value = unpack_full_parameter_path(key, value[i])
+                        parameter, true_value = self.unpack_full_parameter_path(key, value[i])
                         row += [parameter, true_value]
                 rows.append(row)
 

@@ -1,7 +1,30 @@
+# ------------------------------------------------------------------------------
+# Program:     The LDAR Simulator (LDAR-Sim)
+# File:        parameter_variator.py
+# Purpose:     A module to vary the parameter values for sensitivity analysis based
+#              on provided sensitivity analysis parameters.
+#
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the MIT License as published
+# by the Free Software Foundation, version 3.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MIT License for more details.
+
+
+# You should have received a copy of the MIT License
+# along with this program.  If not, see <https://opensource.org/licenses/MIT>.
+#
+# ------------------------------------------------------------------------------
+
 import copy
 from typing import Any
 from parameters.parameters_holder import ParametersHolder
 from constants import param_default_const, error_messages
+from constants.sensitivity_analysis_constants import ParameterVariationConstants
 from parameters.genric_parameters import GenericParameters
 
 
@@ -70,7 +93,10 @@ def vary_parameter_values(
                 )
                 # Alter the name of the program
                 program_parameters.alter_parameter(
-                    param_default_const.Program_Params.NAME, f"{program_name}_{i}"
+                    param_default_const.Program_Params.NAME,
+                    ParameterVariationConstants.PROGRAM_RENAMING_STR.format(
+                        program_name=program_name, i=i
+                    ),
                 )
                 # Vary all the specified parameters
                 for key, value in program_variations.items():
@@ -81,7 +107,12 @@ def vary_parameter_values(
                     ):
                         program_parameters.alter_parameter(key, value[index])
                 # Add the new program to the parameters
-                parameters.add_program(f"{program_name}_{i}", program_parameters)
+                parameters.add_program(
+                    ParameterVariationConstants.PROGRAM_RENAMING_STR.format(
+                        program_name=program_name, i=i
+                    ),
+                    program_parameters,
+                )
         # Append the new parameters to the list
         new_simulation_parameters.append(parameters)
     # If the sensitivity analysis is at the method level
@@ -99,7 +130,7 @@ def vary_parameter_values(
                 param_default_const.Program_Params.NAME, f"{sensitivity_program}_{i}"
             )
 
-            method_names: list[str] = program_parameters.get_parameter(
+            method_names: list[str] = program_parameters.get_parameter_value(
                 param_default_const.Program_Params.METHODS
             )
 
@@ -112,7 +143,12 @@ def vary_parameter_values(
 
                 prog_methods.delete_parameter(method_name)
 
-                prog_methods.add_parameter(f"{method_name}_{i}", target_method)
+                prog_methods.add_parameter(
+                    ParameterVariationConstants.METHOD_RENAMING_STR.format(
+                        method_name=method_name, i=i
+                    ),
+                    target_method,
+                )
 
                 program_parameters.override_parameter(
                     param_default_const.Levels.METHOD, prog_methods
@@ -120,10 +156,20 @@ def vary_parameter_values(
 
                 method_names.remove(method_name)
 
-                method_names.append(f"{method_name}_{i}")
+                method_names.append(
+                    ParameterVariationConstants.METHOD_RENAMING_STR.format(
+                        method_name=method_name, i=i
+                    ),
+                )
 
                 # Create a new dictionary with the method name and the parameter variations
-                alter_dict = {param_default_const.Levels.METHOD: {f"{method_name}_{i}": {}}}
+                alter_dict = {
+                    param_default_const.Levels.METHOD: {
+                        ParameterVariationConstants.METHOD_RENAMING_STR.format(
+                            method_name=method_name, i=i
+                        ): {}
+                    }
+                }
 
                 for key, value in variations.items():
                     key_vals: dict | Any = {}
@@ -136,18 +182,31 @@ def vary_parameter_values(
                             key_vals.update(value[index])
                         else:
                             key_vals = value[index]
-                    alter_dict[param_default_const.Levels.METHOD][f"{method_name}_{i}"][
-                        key
-                    ] = key_vals
+                    alter_dict[param_default_const.Levels.METHOD][
+                        ParameterVariationConstants.METHOD_RENAMING_STR.format(
+                            method_name=method_name, i=i
+                        )
+                    ][key] = key_vals
 
                 # Alter the name of the method
-                alter_dict[param_default_const.Levels.METHOD][f"{method_name}_{i}"][
+                alter_dict[param_default_const.Levels.METHOD][
+                    ParameterVariationConstants.METHOD_RENAMING_STR.format(
+                        method_name=method_name, i=i
+                    )
+                ][
                     param_default_const.Method_Params.NAME
-                ] = f"{method_name}_{i}"
+                ] = ParameterVariationConstants.METHOD_RENAMING_STR.format(
+                    method_name=method_name, i=i
+                )
                 # Alter the parameters of the method
                 program_parameters.alter_parameters(alter_dict)
                 # Add the new program to the parameters
-                parameters.add_program(f"{sensitivity_program}_{i}", program_parameters)
+                parameters.add_program(
+                    ParameterVariationConstants.PROGRAM_RENAMING_STR.format(
+                        program_name=sensitivity_program, i=i
+                    ),
+                    program_parameters,
+                )
             # Update the method names in the program
             program_parameters.alter_parameter(
                 param_default_const.Program_Params.METHODS, method_names

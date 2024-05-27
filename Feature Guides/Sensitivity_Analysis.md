@@ -80,7 +80,7 @@ Sensitivity Analysis Permutations: 3
 Sensitivity Parameter Variations:
   emissions:
     repairable_emissions:
-      production_rate: [0.00325, 0.0065, 0.013]
+      emissions_production_rate: [0.00325, 0.0065, 0.013]
       duration: [182, 365, 730]
 Sensitivity Summary Outputs Information:
   Confidence Interval: [85]
@@ -110,7 +110,7 @@ Sensitivity Analysis Permutations: 3
 Sensitivity Parameter Variations:
   - Method Name: "Example_Method"
     Method Sensitivity Parameters:
-      RS: [1,2,3]
+      surveys_per_year: [1,2,3]
 Sensitivity Summary Outputs Information:
   Confidence Interval: [85]
 ```
@@ -123,10 +123,10 @@ Sensitivity Analysis Permutations: 3
 Sensitivity Parameter Variations:
   - Method Name: "Example_Method"
     Method Sensitivity Parameters:
-      RS: [1,2,3]
+      surveys_per_year: [1,2,3]
   - Method Name: "Example_Method_2"
     Method Sensitivity Parameters:
-      RS: [2,4,6]
+      surveys_per_year: [2,4,6]
 Sensitivity Summary Outputs Information:
   Confidence Interval: [85]
 ```
@@ -165,3 +165,9 @@ The fourth argument must be the path to the sensitivity info file, for example:
 
 For sensitivity information file named sens_info located in the simulations folder in the inner LDAR-SIm folder.
 **Note: Remember to include the file extension in the file path for the sensitivity info file (.yml)**
+
+### Example Command
+
+```cmd
+-p simulations/example_sensitivity_analysis --sensitivity_info simulations/example_sensitivity_analysis/sensitivity_info.yml
+```

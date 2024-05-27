@@ -1,7 +1,7 @@
 # ------------------------------------------------------------------------------
 # Program:     The LDAR Simulator (LDAR-Sim)
-# File:        LDAR-Sim run
-# Purpose:     Main simulation sequence
+# File:        ldar_sim_sensitivity_analysis.py
+# Purpose:     Script to run LDAR-Sim sensitivity analysis.
 #
 #
 # This program is free software: you can redistribute it and/or modify
@@ -13,99 +13,49 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # MIT License for more details.
 
-import copy
-import gc
-from math import floor
 
 # You should have received a copy of the MIT License
 # along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 #
 # ------------------------------------------------------------------------------
-import os
+import copy
+import gc
 import multiprocessing as mp
-import sys
+import os
 import shutil
-from pathlib import Path
+import sys
 from datetime import date
+from math import floor
+from pathlib import Path
+
+import constants.param_default_const as pdc
+import sensitivity_analysis.parameter_variator
+import sensitivity_analysis.sensitivity_processing
+from constants.error_messages import Runtime_Error_Messages as rem
+from constants.file_name_constants import Generator_Files, Output_Files
+from constants.output_messages import RuntimeMessages as rm
+from constants.sensitivity_analysis_constants import SensitivityAnalysisMapping as sens_map
+from file_processing.input_processing.input_manager import InputManager
+from file_processing.output_processing.summary_output_manager import SummaryOutputManager
 from file_processing.output_processing.summary_visualization_manager import (
     SummaryVisualizationManager,
 )
-from file_processing.output_processing.summary_output_manager import SummaryOutputManager
-
-
-from initialization.initialize_infrastructure import initialize_infrastructure
-from initialization.preseed import gen_seed_emis
-import sensitivity_analysis.parameter_variator
-import sensitivity_analysis.sensitivity_processing
-from virtual_world.infrastructure import Infrastructure
-from weather.daylight_calculator import DaylightCalculatorAve
-from weather.weather_lookup import WeatherLookup as WL
-from constants.file_name_constants import Generator_Files, Output_Files
-from utils.generic_functions import check_ERA5_file
-from file_processing.input_processing.input_manager import InputManager
-from initialization.args import (
+from initialization.args import (  # TODO: move this over to input_processing?
     files_from_args_sens,
     get_abs_path,
-)  # TODO: move this over to input_processing?
+)
 from initialization.initialize_emissions import initialize_emissions, read_in_emissions
-from ldar_sim import LdarSim
-from programs.program import Program
-from constants.output_messages import RuntimeMessages as rm
-from constants.error_messages import Runtime_Error_Messages as rem
-import constants.param_default_const as pdc
+from initialization.initialize_infrastructure import initialize_infrastructure
+from initialization.preseed import gen_seed_emis
+from ldar_sim_run import simulate
 from parameters.parameters_holder import ParametersHolder
 from sensitivity_analysis.sensitivity_analysis_results_manager import (
     SensitivityAnalysisResultsManager,
 )
-from constants.sensitivity_analysis_constants import SensitivityAnalysisMapping as sens_map
-
-
-def simulate(
-    daylight,
-    weather,
-    sim_num: int,
-    prog_name: str,
-    meth_params,
-    prog_params,
-    sim_settings,
-    virtual_world,
-    infrastructure: Infrastructure,
-    input_dir: Path,
-    output_dir: Path,
-    preseed_timeseries,
-    lock,
-):
-    with lock:
-        infra = copy.deepcopy(infrastructure)
-    gc.collect()
-    program: Program = Program(
-        prog_name,
-        weather,
-        daylight,
-        meth_params,
-        infra._sites,
-        date(*virtual_world[pdc.Virtual_World_Params.START_DATE]),
-        date(*virtual_world[pdc.Virtual_World_Params.END_DATE]),
-        virtual_world[pdc.Virtual_World_Params.CONSIDER_WEATHER],
-        prog_params=prog_params,
-    )
-    infra.setup(program.get_method_names())
-    print(rm.SIM_PROG.format(prog_name=prog_name))
-    simulation: LdarSim = LdarSim(
-        sim_num,
-        sim_settings,
-        virtual_world,
-        program,
-        infra,
-        input_dir,
-        output_dir,
-        preseed_timeseries,
-    )
-    simulation.run_simulation()
-    print(rm.FIN_PROG.format(prog_name=prog_name))
-    gc.collect()
-    return
-
+from utils.generic_functions import check_ERA5_file
+from virtual_world.infrastructure import Infrastructure
+from weather.daylight_calculator import DaylightCalculatorAve
+from weather.weather_lookup import WeatherLookup as WL
 
 if __name__ == "__main__":
     print(rm.OPENING_MSG)

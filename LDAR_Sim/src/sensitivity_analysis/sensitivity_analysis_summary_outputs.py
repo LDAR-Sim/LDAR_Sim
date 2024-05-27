@@ -1,3 +1,24 @@
+# ------------------------------------------------------------------------------
+# Program:     The LDAR Simulator (LDAR-Sim)
+# File:        sensitivity_analysis_summary_outputs.py
+# Purpose:     Core logic for generating sensitivity analysis summary outputs
+#
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the MIT License as published
+# by the Free Software Foundation, version 3.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MIT License for more details.
+
+
+# You should have received a copy of the MIT License
+# along with this program.  If not, see <https://opensource.org/licenses/MIT>.
+#
+# ------------------------------------------------------------------------------
+
 from pathlib import Path
 import pandas as pd
 from constants import sensitivity_analysis_constants
@@ -38,13 +59,17 @@ def gen_true_vs_est_sens_cis(output_dir: str, data_source: str, **kwargs) -> pd.
         (
             sensitivity_analysis_constants.SensitivityAnalysisOutputs
         ).SensitivityTrueVsEstimatedCIs.UPPER_CI_ACCESSOR,
-        97.5,
+        (
+            sensitivity_analysis_constants.SensitivityAnalysisOutputs
+        ).SensitivityTrueVsEstimatedCIs.DEFAULT_UPPER_CI,
     )
     lower_ci = confidence_interval_info.get(
         (
             sensitivity_analysis_constants.SensitivityAnalysisOutputs
         ).SensitivityTrueVsEstimatedCIs.LOWER_CI_ACCESSOR,
-        2.5,
+        (
+            sensitivity_analysis_constants.SensitivityAnalysisOutputs
+        ).SensitivityTrueVsEstimatedCIs.DEFAULT_LOWER_CI,
     )
 
     constants: (

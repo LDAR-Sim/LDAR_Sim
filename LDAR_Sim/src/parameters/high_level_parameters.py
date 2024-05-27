@@ -1,6 +1,28 @@
+# ------------------------------------------------------------------------------
+# Program:     The LDAR Simulator (LDAR-Sim)
+# File:        high_level_parameters.py
+# Purpose:     A class to hold nested LDAR-Sim parameters
+#
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the MIT License as published
+# by the Free Software Foundation, version 3.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MIT License for more details.
+
+
+# You should have received a copy of the MIT License
+# along with this program.  If not, see <https://opensource.org/licenses/MIT>.
+#
+# ------------------------------------------------------------------------------
+
 from typing import Any, override
 
 from parameters.genric_parameters import GenericParameters
+from constants import sensitivity_analysis_constants as sens_const
 
 
 class HighLevelParameters(GenericParameters):
@@ -41,7 +63,7 @@ class HighLevelParameters(GenericParameters):
             else:
                 setattr(self, f"_{key}", value)
         else:
-            raise AttributeError(f"Attribute {key} not found")
+            raise AttributeError(sens_const.ParameterParsingConstants.KEY_NOT_FOUND.format(key=key))
 
     @override
     def alter_parameters(self, parameters: dict[str, Any]):
@@ -64,4 +86,4 @@ class HighLevelParameters(GenericParameters):
                             return value.get_parameter_value(key)
                         except AttributeError:
                             pass
-            raise AttributeError(f"Attribute {key} not found")
+            raise AttributeError(sens_const.ParameterParsingConstants.KEY_NOT_FOUND.format(key=key))
