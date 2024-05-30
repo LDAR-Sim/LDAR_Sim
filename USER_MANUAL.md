@@ -707,7 +707,7 @@ The measured total site level emission rate on January 30th is assumed to have l
 
 **Notes on acquisition:** No data acquisition required.
 
-**Notes of caution:** Must match the label name specified in the program input parameter file, and any supplementary files, such as the infrastructure file. This is a case sensitive parameter.
+**Notes of caution:** Must match the label name specified in the program input parameter file, and any supplementary files, such as the infrastructure file. This is a case sensitive parameter. It is important to note that different programs can call the same method files, provided that the work practices and technology involved are parameterized identically.
 
 ### &lt;measurement_scale&gt;
 
@@ -716,6 +716,14 @@ The measured total site level emission rate on January 30th is assumed to have l
 **Default input:** _placeholder_str_ (Required to be set for each method added to program)
 
 **Description:** A character string describing the measurements scale. Possible inputs are `"component"`, `"equipment"`, and `"site"`.
+
+- `component` level measurement scale technologies are able to measure the sum of emissions at a given component
+- `equipment` level measurement scale technologies are able to measure the sum of emissions at a given equipment of a site
+- `site` level measurement scale technologies measure the sum of the emissions of a given site
+
+The following figure shows a graphical representation:
+
+![emissions_behavior](doc-images/emissions_behavior.png)
 
 **Notes on acquisition:** No data acquisition required.
 
@@ -740,7 +748,7 @@ Valid deployment types:
 
 ### &lt;sensor&gt;
 
-**Description:** _TODO_
+**Description:** The parameters within this section are for specifying the measurement technology utilized in the simulation.
 
 #### &lt;type&gt;
 
@@ -797,7 +805,7 @@ $$
 
 where f = is the fraction of emissions detected, _x_ is the emission rate in grams of methane per hour, _xₒ_ is the median detection limit (f = 0.5) and _k_ is the steepness of the sigmoid curve. Ravikumar et al. (2018) found that at 3 m _k_ =  4.9 g/hr +/- 3, and _xₒ_ = 0.47 +/- 0.1. However, detection limits were found to be an order of magnitude higher in the Zimmerle study. As such, LDAR-Sim assumes an _xₒ_ of 0.01275 g/s. For reasons listed below, we note that this is likely a conservative estimate. Also, this approach assumes a constant distance of 3 meters from camera to source.
 
-**Notes on acquisition:** If no input is provided for the minimum detection limit `minimum_detection_limit: []`, the values [0.01275, 0.00000278] will be used for the constants.
+**Notes on acquisition:** If no input is provided for the minimum detection limit (`minimum_detection_limit: []`), the values [0.01275, 0.00000278] will be used for the constants.
 
 We recommend extensive controlled release testing under a range of representative release rates and conditions to establish detection limits. Given the amount of work required to collect this information, we recommend using historical estimates.
 
