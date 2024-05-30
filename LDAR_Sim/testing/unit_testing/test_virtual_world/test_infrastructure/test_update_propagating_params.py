@@ -48,6 +48,13 @@ def generate_test_prop_params(draw, methods):
         to_ret[cp.METH_SPECIFIC][key] = {}
         for method in methods:
             to_ret[cp.METH_SPECIFIC][key][method] = draw(st.integers(min_value=0, max_value=10000))
+    to_ret[cp.METH_SPECIFIC][
+        Infrastructure_Constants.Sites_File_Constants.SITE_DEPLOYMENT_PLACEHOLDER
+    ] = {}
+    for method in methods:
+        to_ret[cp.METH_SPECIFIC][
+            Infrastructure_Constants.Sites_File_Constants.SITE_DEPLOYMENT_PLACEHOLDER
+        ][method] = {}
     return to_ret
 
 
@@ -57,14 +64,22 @@ def generate_test_site_info(draw, methods):
     for param in Infrastructure_Constants.Sites_File_Constants.PROPAGATING_PARAMS:
         param_exists = draw(st.booleans())
         if param_exists:
-            to_ret[param] = draw(st.integers(min_value=0, max_value=10000))
+            if param == Infrastructure_Constants.Sites_File_Constants.SITE_DEPLOYMENT_PLACEHOLDER:
+                to_ret[param] = draw(st.booleans())
+            else:
+                to_ret[param] = draw(st.integers(min_value=0, max_value=10000))
     for method in methods:
         for meth_param in Infrastructure_Constants.Sites_File_Constants.METH_SPEC_PROP_PARAMS:
             meth_param_exists = draw(st.booleans())
             if meth_param_exists:
                 acess_key = "".join([method, meth_param])
-                to_ret[acess_key] = draw(st.integers(min_value=0, max_value=10000))
-
+                if (
+                    meth_param
+                    == Infrastructure_Constants.Sites_File_Constants.SITE_DEPLOYMENT_PLACEHOLDER
+                ):
+                    to_ret[acess_key] = draw(st.booleans())
+                else:
+                    to_ret[acess_key] = draw(st.integers(min_value=0, max_value=10000))
     return pd.Series(to_ret)
 
 
@@ -74,14 +89,25 @@ def generate_test_site_type_info(draw, methods):
     for param in Infrastructure_Constants.Site_Type_File_Constants.PROPAGATING_PARAMS:
         param_exists = draw(st.booleans())
         if param_exists:
-            to_ret[param] = draw(st.integers(min_value=0, max_value=10000))
+            if (
+                param
+                == Infrastructure_Constants.Site_Type_File_Constants.SITE_DEPLOYMENT_PLACEHOLDER
+            ):
+                to_ret[param] = draw(st.booleans())
+            else:
+                to_ret[param] = draw(st.integers(min_value=0, max_value=10000))
     for method in methods:
         for meth_param in Infrastructure_Constants.Site_Type_File_Constants.METH_SPEC_PROP_PARAMS:
             meth_param_exists = draw(st.booleans())
             if meth_param_exists:
                 acess_key = "".join([method, meth_param])
-                to_ret[acess_key] = draw(st.integers(min_value=0, max_value=10000))
-
+                if (
+                    meth_param
+                    == Infrastructure_Constants.Site_Type_File_Constants.SITE_DEPLOYMENT_PLACEHOLDER
+                ):
+                    to_ret[acess_key] = draw(st.booleans())
+                else:
+                    to_ret[acess_key] = draw(st.integers(min_value=0, max_value=10000))
     return pd.Series(to_ret)
 
 
@@ -112,7 +138,6 @@ def test_000_generate_propagating_params_correctly_updates_prop_params_dict_w_on
             assert result[param] == site_type_info[param]
         else:
             assert result[param] == prop_params[param]
-
     for param in meth_spec_prop_params:
         for method in methods:
             if "".join([method, param]) in site_info:

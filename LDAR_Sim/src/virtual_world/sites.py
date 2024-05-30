@@ -76,6 +76,9 @@ class Site:
         self._create_equipment_groups(equipment_groups, infrastructure_inputs, propagating_params)
         self._set_survey_costs(methods=methods)
         self._latest_tagging_survey_date: date = start_date
+        self._deploy_method: dict[str, bool] = propagating_params[
+            pdc.Common_Params.METH_SPECIFIC
+        ].pop(Infrastructure_Constants.Sites_File_Constants.SITE_DEPLOYMENT_PLACEHOLDER)
 
     def __reduce__(self):
         args = (
@@ -91,6 +94,7 @@ class Site:
             self._site_type,
             self._latest_tagging_survey_date,
             self._survey_costs,
+            self._deploy_method,
         )
         return (self.__class__._reconstruct, args)
 
@@ -109,6 +113,7 @@ class Site:
         site_type,
         latest_tagging_survey_date,
         survey_costs,
+        deploy_method,
     ):
         instance = cls.__new__(cls)
         instance._site_ID = site_ID
@@ -123,6 +128,7 @@ class Site:
         instance._site_type = site_type
         instance._latest_tagging_survey_date = latest_tagging_survey_date
         instance._survey_costs = survey_costs
+        instance._deploy_method = deploy_method
         return instance
 
     def _create_equipment_groups(
@@ -321,6 +327,9 @@ class Site:
 
     def get_required_surveys(self, method_name) -> int:
         return self._survey_frequencies[method_name]
+
+    def check_site_deployable(self, method_name) -> bool:
+        return self._deploy_method[method_name]
 
     def get_method_survey_time(self, method_name) -> float:
         survey_time: float = 0

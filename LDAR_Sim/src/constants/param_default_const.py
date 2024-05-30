@@ -148,6 +148,7 @@ class Method_Params:
     REDUNDANCY_FILTER = "redundancy_filter"
     SORT_BY_RATE = "sort_by_rate"
     THRESHOLD = "threshold"
+    DEPLOY_SITE = "site_deployment"
 
 
 @dataclass

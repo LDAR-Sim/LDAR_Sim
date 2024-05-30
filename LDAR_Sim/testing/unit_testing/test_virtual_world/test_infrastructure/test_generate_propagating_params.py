@@ -23,7 +23,7 @@ from src.constants.infrastructure_const import (
     Virtual_World_To_Prop_Params_Mapping,
 )
 from hypothesis import given, strategies as st
-from src.constants.param_default_const import Common_Params as cp
+from src.constants.param_default_const import Common_Params as cp, Method_Params as mp
 
 
 @st.composite
@@ -41,6 +41,7 @@ def generate_test_virtual_world(draw):
                 dict_to_edit[sub] = draw(st.integers(min_value=0, max_value=10000))
             dict_to_edit = dict_to_edit[sub]
         answer[key] = dict_to_edit
+
     return to_ret, answer
 
 
@@ -60,8 +61,11 @@ def generate_test_methods(draw):
                 if sub not in dict_to_edit:
                     dict_to_edit[sub] = {}
                 if counter == len(sub_dict) - 1:
-                    # Use draw to generate a random integer for the most inner nested value
-                    dict_to_edit[sub] = draw(st.integers(min_value=0, max_value=10000))
+                    if sub == mp.DEPLOY_SITE:
+                        dict_to_edit[sub] = True
+                    else:
+                        # Use draw to generate a random integer for the most inner nested value
+                        dict_to_edit[sub] = draw(st.integers(min_value=0, max_value=10000))
                 dict_to_edit = dict_to_edit[sub]
             answer[key][method] = dict_to_edit
     return to_ret, answer
