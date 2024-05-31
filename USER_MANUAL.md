@@ -66,12 +66,12 @@ Email: <sally@highwoodemissions.com>
       - [\<minimum\_detection\_limit\> (OGI\_camera\_zim)](#minimum_detection_limit-ogi_camera_zim)
       - [\<minimum\_detection\_limit\> (METEC\_no\_wind)](#minimum_detection_limit-metec_no_wind)
     - [\<coverage\>](#coverage)
-      - [\<spatial\>](#spatial)
+      - [\<spatial\> _(propagating parameter)_](#spatial-propagating-parameter)
       - [\<temporal\>](#temporal)
-    - [\<cost\>](#cost)
+    - [\<cost\>  _(propagating parameter)_](#cost--propagating-parameter)
       - [\<per\_day\>](#per_day)
-      - [\<per\_site\>](#per_site)
-      - [\<upfront\>](#upfront)
+      - [\<per\_site\>  _(propagating parameter)_](#per_site--propagating-parameter)
+      - [\<upfront\>  _(propagating parameter)_](#upfront--propagating-parameter)
     - [\<crew\_count\>](#crew_count)
     - [\<consider\_daylight\>](#consider_daylight)
     - [\<surveys\_per\_year\> _(propagating parameter)_](#surveys_per_year-propagating-parameter)
@@ -81,9 +81,9 @@ Email: <sally@highwoodemissions.com>
     - [\<time\_between\_sites\>](#time_between_sites)
       - [file (time\_between\_sites)](#file-time_between_sites)
       - [values (time\_between\_sites)](#values-time_between_sites)
-    - [\<scheduling\>](#scheduling)
-      - [\<deployment\_months\>](#deployment_months)
-      - [\<deployment\_years\>](#deployment_years)
+    - [\<scheduling\>  _(propagating parameter)_](#scheduling--propagating-parameter)
+      - [\<deployment\_months\>  _(propagating parameter)_](#deployment_months--propagating-parameter)
+      - [\<deployment\_years\>  _(propagating parameter)_](#deployment_years--propagating-parameter)
     - [\<weather\_envelopes\>](#weather_envelopes)
       - [\<precipitation\>](#precipitation)
       - [\<temperature\>](#temperature)
@@ -758,7 +758,7 @@ Valid deployment types:
 
 **Description:** Methods are comprised of both a deployment type and a sensor type. the sensor type is a character string denoting the sensor used in the method. For instance, `'OGI_camera_zim'`,`'OGI_camera_rk'`, or `'default'`. The `'default'` sensor uses the minimum detection limit (MDL) as a threshold to detect emissions based on the measurement scale of the method. Custom sensors can be added and referenced here. Built in sensors are:
 
-- `default`: Uses a simple threshold where the emission rate is based on the measurement scale, for example if `measurement_scale = site` then the site's total emissions will be considered measured if greater than the sensors MDL.
+- `default`: Uses a simple threshold where the emission rate is based on the [measurement_scale](#measurement_scale), for example if `measurement_scale = site` then the site's total emissions will be considered measured if greater than the sensors MDL.
 - `OGI_camera_rk`: Uses detection curve based on Ravikumar, 2018. Requires [measurement_scale](#measurement_scale) = `'component'`.
 - `OGI_camera_zim`: Uses detection curve based on Zimmerle 2020. Requires [measurement_scale](#measurement_scale) = `'component'`.
 - `METEC_no_wind`: Uses a detection curve formula based on a typical METEC report where wind is normalized.
@@ -781,7 +781,7 @@ Valid deployment types:
 
 #### &lt;minimum_detection_limit&gt; (default)
 
-**Data type:** List of integers
+**Data type:** Numeric or List of integers
 
 **Default input:** [0.01] (Should be set for each Method)
 
@@ -852,13 +852,13 @@ and `c` represents the optional minimum threshold that the rate must exceed to b
 
 ### &lt;coverage&gt;
 
-#### &lt;spatial&gt;
+#### &lt;spatial&gt; _(propagating parameter)_
 
 **Data type:** Numeric
 
 **Default input:** 1.0
 
-**Description:** Probability (0-1) that a work practice can locate an emission. Internally, each emission will be randomly assigned a True or False value based on this probability indicating whether or not the emission can be detected by the work practice. This value is rolled only once for each emission and work practice pair and remains consistent for subsequent surveys. Spatial coverage is also not affected by emission size.
+**Description:** Probability (0-1) that a technology and work practice can locate an emission. Internally, each emission will be randomly assigned a True or False value based on this probability indicating whether or not the emission can be detected by the technology and work practice. This value is rolled only once for each emission and technology-work practice pair, and remains consistent for subsequent surveys. Spatial coverage is also not affected by emission size.
 
 `eg. coverage.spatial = 0.25`. The emission has a 25% chance of being detected regardless of the number of surveys.
 
@@ -872,7 +872,7 @@ and `c` represents the optional minimum threshold that the rate must exceed to b
 
 **Default input:** 1.0
 
-**Description:** Probability (0-1) that an agent can locate an emission during a survey. Internally, each emission will be randomly assigned a True or False based on this probability increasing survey will improve the chances of the emission being detected.
+**Description:** Probability (0-1) that a crew can locate an emission during a survey. Internally, each emission will be randomly assigned a True or False based on this probability increasing survey will improve the chances of the emission being detected.
 
 `eg. coverage.temporal = 0.25`. The emission has a 25% chance of being detected **every time** it is surveyed.
 
@@ -880,9 +880,9 @@ and `c` represents the optional minimum threshold that the rate must exceed to b
 
 **Notes of caution:** Future research is required!
 
-### &lt;cost&gt;
+### &lt;cost&gt;  _(propagating parameter)_
 
-**Description:** The cost to deploy a given method. The type of currency is not factored but must be consistent across all cost inputs.
+**Description:** The cost to deploy a given method. The type of currency is not considered, but it must be consistent across all cost inputs.
 
 #### &lt;per_day&gt;
 
@@ -896,7 +896,7 @@ and `c` represents the optional minimum threshold that the rate must exceed to b
 
 **Notes of caution:** N/A
 
-#### &lt;per_site&gt;
+#### &lt;per_site&gt;  _(propagating parameter)_
 
 **Data type:** Numeric
 
@@ -908,7 +908,7 @@ and `c` represents the optional minimum threshold that the rate must exceed to b
 
 **Notes of caution:** N/A
 
-#### &lt;upfront&gt;
+#### &lt;upfront&gt;  _(propagating parameter)_
 
 **Data type:** Numeric
 
@@ -990,7 +990,7 @@ and `c` represents the optional minimum threshold that the rate must exceed to b
 
 **Default input:** 2
 
-**Description:** The number of days that pass between the end of a survey (when a site is flagged or emissions are tagged) and when the duty holder is informed. The reporting delay is then followed by the [repair delay](#delay).
+**Description:** The number of days that pass between the end of a survey (when a site is flagged or emissions are tagged) and when the duty holder is informed. The reporting delay is then followed by either the [repair delay](#repairs) or [follow-up delay](#delay-follow_up) based on the simulated work practice.
 
 **Notes on acquisition:** Get this information from the service provider.
 
@@ -998,7 +998,7 @@ and `c` represents the optional minimum threshold that the rate must exceed to b
 
 ### &lt;time_between_sites&gt;
 
-**Description:** The time between sites can be specified as a list in the parameter file or provided in a CSV file format.
+**Description:** The following parameters specify the time required between surveys for planning, travel, setup, and takedown. This includes all the time not spent on the actual site survey, but the time needed between each site survey by a crew.
 
 #### file (time_between_sites)
 
@@ -1020,9 +1020,9 @@ and `c` represents the optional minimum threshold that the rate must exceed to b
 
 **Description:** The list of numbers denotes the time in minutes required to plan, travel, setup, take down, required in between surveys. A value is selected at random from the provided list.
 
-### &lt;scheduling&gt;
+### &lt;scheduling&gt;  _(propagating parameter)_
 
-#### &lt;deployment_months&gt;
+#### &lt;deployment_months&gt;  _(propagating parameter)_
 
 **Data type:** List of integers
 
@@ -1034,7 +1034,7 @@ and `c` represents the optional minimum threshold that the rate must exceed to b
 
 **Notes of caution:** Only `mobile` [methods](#deployment_type) can use this functionality.
 
-#### &lt;deployment_years&gt;
+#### &lt;deployment_years&gt;  _(propagating parameter)_
 
 **Data type:** List of integers
 
@@ -1048,7 +1048,7 @@ and `c` represents the optional minimum threshold that the rate must exceed to b
 
 ### &lt;weather_envelopes&gt;
 
-**Description:** The following parameters define the valid weather conditions for the given method.
+**Description:** The following parameters define the valid weather conditions for the given method. If the average weather condition for a given day falls outside of these valid conditions, the crews for the specified method will not be deployed and will attempt to conduct the survey the following day.
 
 #### &lt;precipitation&gt;
 
@@ -1122,7 +1122,7 @@ Moreover, this feature can model work practices involving multiple screenings to
 
 **Default input:** 0
 
-**Description:** The number of days required to have passed since the first site added to the site watch list before a site can be flagged. The company will hold all measurements in a site watch list. The emissions rate used to triage flagging based on follow-up threshold and proportion are specified with [redundancy filter](#redundancy_filter).
+**Description:** The number of days required to have passed since the first site added to the site candidate flagged pool before a site can be flagged. The company will hold all measurements in a site candidate flagged pool. The emissions rate used to triage flagging based on follow-up threshold and proportion are specified with [redundancy filter](#redundancy_filter).
 
 **Notes on acquisition:** N/A
 
@@ -1134,11 +1134,13 @@ Moreover, this feature can model work practices involving multiple screenings to
 
 **Default input:** 0.0
 
-**Description:** The follow-up instant threshold in grams per second. Measured site-level emissions must be above the follow-up threshold before a candidate site becomes immediately available for flagging. If _follow_up.instant_threshold_type_ is "absolute", the numeric value indicates the follow-up threshold in grams per second. If "relative", the numeric value is passed to a function that calculates the emission rate that corresponds to a desired proportion of total emissions for a given leak size distribution. The function estimates the MDL needed to find the top X percent of sources for a given leak size distribution. For example, given a proportion of 0.01 and a leak-size distribution, this function will return an estimate of the follow-up threshold that will ensure that all leaks in the top 1% of leak sizes are found.
+**Description:** The follow-up instant threshold in grams per second. Measured site-level emissions must be above this threshold if the site is to be immediately be flagged for follow-ups, instead of being added to the pool of candidate flagged sites.
 
 **Notes on acquisition:** No data acquisition required.
 
-**Notes of caution:** Follow-up thresholds are explored in detail in Fox et al. 2021\. Choosing follow-up rules is complex and work practices should be developed following extensive analysis of different scenarios. It is important to understand how follow-up thresholds and follow-up ratios interact, especially if both are to be used in the same program. Note that follow-up thresholds are similar to minimum detection limits but that the former is checked against the measured emission rate (which is a function of quantification error) while the latter is checked against the true emission rate.
+**Notes of caution:** The instant threshold should be set above the [follow-up threshold](#threshold), as this is the minimum emission rate that a site must reach to be flagged.
+
+Follow-up thresholds are explored in detail in Fox et al. 2021\. Choosing follow-up rules is complex and work practices should be developed following extensive analysis of different scenarios. It is important to understand how follow-up thresholds and follow-up ratios interact, especially if both are to be used in the same program. Note that follow-up thresholds are similar to minimum detection limits but that the former is checked against the measured emission rate (which is a function of quantification error) while the latter is checked against the true emission rate.
 
 #### &lt;interaction_priority&gt;
 
@@ -1146,7 +1148,10 @@ Moreover, this feature can model work practices involving multiple screenings to
 
 **Default input:** "threshold"
 
-**Description:** Specifies which algorithm to run first on candidate sites when determining which to flag. If the value is _threshold_ the proportion of sites to follow up with will be taken from all sites over the threshold. If the value is _proportion_ the proportion of sites will be taken from the candidate sites, then from those sites follow-up will occur at sites above the threshold.
+**Description:** Specifies which algorithm to run first on candidate sites when determining which to flag. The following are the valid options for this parameter:
+
+- `threshold`: The proportion of sites to follow up with will be taken from all sites over the threshold
+- `proportion`: The proportion of sites will be taken from the candidate sites, then from those sites follow-up will occur at sites above the threshold.
 
 **Notes on acquisition:** No data acquisition required.
 
@@ -1158,11 +1163,11 @@ Moreover, this feature can model work practices involving multiple screenings to
 
 **Default input:** 1.0
 
-**Description:** A single value that defines the proportion of candidate flags to receive follow-up. For example, if the follow-up ratio is 0.5, the top 50% of candidate flags (ranked by measured emission rate) will receive follow-up. Candidate flags have already been checked against the minimum detection limit.
+**Description:** A ratio (0 to 1.0) defines the proportion or percentage of flagged sites that will receive follow-ups. For example, if the follow-up ratio is 0.5, the top 50% of flagged sites (ranked by measured emission rate) will receive follow-up. Candidate flagged sites have already been checked against the minimum detection limit.
 
 **Notes on acquisition:** No data acquisition required.
 
-**Notes of caution:** The follow-up proportion ranks sites based on their measured emission rate, which may differ from the true emission rate if quantification error is used. The effect of follow_up.proportion will depend on the temporal interval over which sites accumulate in the candidate flags pool.
+**Notes of caution:** Specifies which measured emission rates to use when identifying flagged candidate sites for follow-up. This is relevant for individual sites that have had multiple independent measurements during the given period, resulting in the sites being added to a candidate pool of potentially flagged sites. The following are the three options available for this parameter:
 
 #### &lt;redundancy_filter&gt;
 
@@ -1170,11 +1175,15 @@ Moreover, this feature can model work practices involving multiple screenings to
 
 **Default input:** "recent"
 
-**Description:** Specifies which measured emissions rate to use to identify which candidate sites to follow up at if individual sites have multiple independent measurements that have accumulated in the candidate flag pool. If the _follow\_up.delay_ is not zero, crews can survey the site several times before flagging the site. If this value is set to _recent_, the most recent site measurement will be used to check follow-up threshold and proportion. If the value is set to _max_, the highest emissions rate will be used. If the value is set to _average_ the average emissions from all surveys will be used.
+**Description:** Specifies which measured emission rates to utilize when identifying flagged candidate sites for follow-up. This is relevant for individual sites that have had multiple independent measurements in the given period where the candidate flagged site pool has been accumulating. The following are the 3 options available for this parameter:
 
-**Notes on acquisition:** No data acquisition required.
+- `recent`(default): The most recent measurement for a given site in the "flagged pool" will be used to check the follow-up threshold and proportion.
+- `max`: The highest measured emission rates will be used.
+- `average`: The average emission from all surveys for a given site will be used.
 
-**Notes of caution:** N/A
+**Notes on acquisition:** N/A
+
+**Notes of caution:** If the [follow\_up.delay](#delay-follow_up) is not zero, crews may survey a given site multiple times, adding to the candidate flagged site pool. This parameter becomes especially relevant in stationary deployments or any methods involving frequent deployments.
 
 #### &lt;sort_by_rate&gt;
 
@@ -1182,7 +1191,7 @@ Moreover, this feature can model work practices involving multiple screenings to
 
 **Default input:** True
 
-**Description:** Indicates whether the sites flagged for follow-up will be sorted by their emission rates for subsequent follow-up survey methods. If set to True, follow-ups will sorted based on the observed site emission rates, prioritizing the largest emitting sites first.
+**Description:** Indicates whether the schedule of the follow-ups for the sites flagged will be sorted by their emission rates. If set to True, follow-up schedules will be sorted based on the observed site emission rates, prioritizing the largest emitting sites first. If set to False, the follow-ups will be scheduled based on the a first flagged basis.
 
 **Notes on acquisition:** Based on operator work practices.
 
@@ -1194,9 +1203,9 @@ Moreover, this feature can model work practices involving multiple screenings to
 
 **Default input:** 0.0
 
-**Description:** The follow-up threshold in grams per second. Measured site-level emissions must be above the follow-up threshold before a site can be flagged. If _follow_up.threshold_type_ is "absolute", the numeric value indicates the follow-up threshold in grams per second. If "relative", the numeric value is passed to a function that calculates an emission rate that corresponds to a desired proportion of total emissions for a given leak size distribution. The function estimates the MDL needed to find the top X percent of sources for a given leak size distribution. For example, given a proportion of 0.01 and a leak-size distribution, this function will return an estimate of the follow-up threshold that will ensure that all leaks in the top 1% of leak sizes are found.
+**Description:** The follow-up threshold in grams per second. Measured site-level emissions must be above the follow-up threshold before a site can be flagged.
 
-The follow-up delay parameter can be set to require multiple measurements for a site above threshold before a site is flagged.
+The follow-up [delay](#delay-follow_up) parameter can be set to require multiple measurements for a site above threshold before a site is flagged.
 
 **Notes on acquisition:** No data acquisition required.
 
@@ -1410,4 +1419,3 @@ Ravikumar, Arvind P., Sindhu Sreedhara, Jingfan Wang, Jacob Englander, Daniel Ro
 Ravikumar, Arvind P., Jingfan Wang, Mike McGuire, Clay S. Bell, Daniel Zimmerle, and Adam R. Brandt. 2018\. "Good versus Good Enough? Empirical Tests of Methane Leak Detection Sensitivity of a Commercial Infrared Camera." _Environmental Science & Technology_.
 
 Zimmerle, Daniel, Timothy Vaughn, Clay Bell, Kristine Bennett, Parik Deshmukh, and Eben Thoma. 2020\. "Detection Limits of Optical Gas Imaging for Natural Gas Leak Detection in Realistic Controlled Conditions." _Environmental Science & Technology_ 54 (18): 11506–14.
-
