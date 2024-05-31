@@ -293,6 +293,42 @@ class StationarySurveyPlanner(ScheduledSurveyPlanner):
             deployment_months=deployment_months,
         )
 
+    def _set_survey_per_year(self) -> dict[int, dataclass]:
+        """Creates the dictionary used to check for number of surveys done each year"""
+        _surveys_this_year: dict[int, Survey_Counter] = {}
+        for year in self._sim_years:
+            if year in self._deployment_years:
+                _surveys_this_year[year] = Survey_Counter(Required_surveys=365, Surveys_done=0)
+            else:
+                _surveys_this_year[year] = Survey_Counter(Required_surveys=0, Surveys_done=0)
+
+        return _surveys_this_year
+
+    def _gen_survey_plan(
+        self,
+        site_annual_rs: int,
+    ) -> None:
+        """Not needed for stationary, placeholder to reduce computation when not needed"""
+        return None
+
+    def queue_site_for_survey(self) -> bool:
+        """Method to determine if the site for which this survey plan was generated
+        should be queued to be surveyed. Will return True if the site should be
+        queued to be surveyed, False otherwise.
+
+        Returns:
+            bool: Boolean indicating if the site should be queued to be surveyed.
+            True if the site should be queued to be surveyed, False otherwise.
+        """
+        if self._check_deployable_year() is False:
+            return False
+        if self._check_deployable_month() is False:
+            return False
+        elif self._queued is False:
+            self._queued = True
+            return True
+        return False
+
 
 @dataclass
 class Survey_Counter:

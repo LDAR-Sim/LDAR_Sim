@@ -69,7 +69,7 @@ def create_schedule(
                 sites,
                 sim_start_date,
                 sim_end_date,
-                est_meth_daily_surveys,
+                len(sites),
                 method_avail_crews,
             )
         else:
