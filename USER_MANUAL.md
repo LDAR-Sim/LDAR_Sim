@@ -126,9 +126,19 @@ Email: <sally@highwoodemissions.com>
       - [\<threshold\>](#threshold)
   - [10. Virtual World Defining Files](#10-virtual-world-defining-files)
     - [Sites File](#sites-file)
+      - [site\_ID](#site_id)
+      - [lat](#lat)
+      - [lon](#lon)
+      - [site\_type (Sites file)](#site_type-sites-file)
+      - [equipment (Sites file)](#equipment-sites-file)
+      - [{method}\_site\_deployment](#method_site_deployment)
     - [Site Type File](#site-type-file)
     - [Equipment File](#equipment-file)
+      - [equipment (Equipment File)](#equipment-equipment-file)
     - [Source File](#source-file)
+      - [component (Source File)](#component-source-file)
+      - [source (Source File)](#source-source-file)
+      - [repairable (Source File)](#repairable-source-file)
     - [Emissions File](#emissions-file)
       - [Header](#header)
     - [Data Use](#data-use)
@@ -136,7 +146,7 @@ Email: <sally@highwoodemissions.com>
       - [Maximum Emission Rate](#maximum-emission-rate)
       - [Units (amount)](#units-amount)
       - [Units (time)](#units-time)
-      - [Source](#source)
+      - [Source (Emission file)](#source-emission-file)
   - [11. Legacy Inputs](#11-legacy-inputs)
     - [Simulation Settings Parameters](#simulation-settings-parameters)
       - [\<pregenerate\_leaks\>](#pregenerate_leaks)
@@ -1556,6 +1566,8 @@ The following figure offers a visual guideline for the various parameters that c
 
 ![data structure](doc-images/input_data_structure.png)
 
+**Note:** It is important to understand that for all the virtual world defining files, all optional columns have their values internally propagated down and set at the most granular level based on the provided higher-level values where relevant.
+
 --------------------------------------------------------------------------------
 
 ### Sites File
@@ -1564,38 +1576,72 @@ This file defines the individual sites that are simulated by LDAR-Sim.
 
 At a minimum it must contain the following columns:
 
-- site_ID
-- lat
-- lon
-- site_type
+- [site_ID](#site_id)
+- [lat](#lat)
+- [lon](#lon)
+- [site_type](#site_type-sites-file)
 
 Other optional columns consist of the following:
 
-- equipment
-- repairable_emissions_rate_source
-- repairable_emissions_production_rate
-- repairable_repair_delay
-- repairable_repair_cost
-- repairable_duration
-- repairable_multiple_emissions_per_source
-- non_repairable_emissions_rate_source
-- non_repairable_emissions_production_rate
-- non_repairable_duration
-- non_repairable_multiple_emissions_per_source
+- [equipment](#equipment-sites-file)
+- [repairable_repair_delay](#delay-repairs)
+- [repairable_repair_cost](#cost-repairs)
+- [repairable_emissions_rate_source](#emissions_rate_source-repairable)
+- [repairable_emissions_production_rate](#emissions_production_rate-repairable)
+- [repairable_duration](#duration-repairable)
+- [repairable_multiple_emissions_per_source](#multiple_emissions_per_source-repairable)
+- [non_repairable_emissions_rate_source](#emissions_rate_source_non-repairable)
+- [non_repairable_emissions_production_rate](#emissions_production_rate-non-repairable)
+- [non_repairable_duration](#duration-non-repairable)
+- [non_repairable_multiple_emissions_per_source](#multiple_emissions_per_source-non-repairable)
 
 Method specific columns:
 
-- {method}_surveys_per_year
-- {method}_deploy_year
-- {method}_deploy_month
-- {method}_spatial
-- {method}_survey_time
-- {method}_survey_cost
-- {method}_site_deployment
+- {method}_[surveys_per_year](#surveys_per_year)
+- {method}_[deploy_year](#deployment_year)
+- {method}_[deploy_month](#deployment_month)
+- {method}_[spatial](#spatial)
+- {method}_[survey_time](#survey_time)
+- {method}_[survey_cost](#per_site-cost)
+- [{method}_site_deployment](#method_site_deployment)
 
 **Note:** As with most name-related parameters in LDAR-Sim, the values in the `site_type` and `equipment` columns are case-sensitive and must be consistent across all related files. Any method specific parameters also require the same care with the case-sensitivity and consistency in all relevant files with the method name.
 
 See [sites file](#sites-file) for details on how to set the parameter for simulation.
+
+--------------------------------------------------------------------------------
+
+#### site_ID
+
+**Description:** A unique, user-defined value that identifies the given site.
+
+#### lat
+
+**Description:** The latitude of the given site.
+
+**Note of caution:** The latitude of the given site must be within the boundaries of the given weather file.
+
+#### lon
+
+**Description:** The longitude of the given site.
+
+**Note of caution:** The longitude of the given site must be within the boundaries of the given weather file.
+
+#### site_type (Sites file)
+
+**Description:** A user-defined value that identifies and groups a particular site type.
+
+**Note:** It is case-sensitive and must remain consistent when provided in other infrastructure files.
+
+#### equipment (Sites file)
+
+**Description:** A user-defined value or values that provides groupings. Users are able to provide a list of equipment groups that define the given site by separating each equipment with a comma(,).
+
+**Note:** It is case-sensitive and must remain consistent when provided in other infrastructure files, specifically the [equipment file](#equipment-file).
+
+#### {method}_site_deployment
+
+**Description:** A True/False column that defines if the given method will be deployed at the given site type.
 
 --------------------------------------------------------------------------------
 
@@ -1605,27 +1651,27 @@ This is an optional file that is used to define groups of sites. It must contain
 
 Possible column headers:
 
-- equipment
-- repairable_emissions_rate_source
-- repairable_emissions_production_rate
-- repairable_repair_delay
-- repairable_repair_cost
-- repairable_duration
-- repairable_multiple_emissions_per_source
-- non_repairable_emissions_rate_source
-- non_repairable_emissions_production_rate
-- non_repairable_duration
-- non_repairable_multiple_emissions_per_source
+- [equipment](#equipment-sites-file)
+- [repairable_repair_delay](#delay-repairs)
+- [repairable_repair_cost](#cost-repairs)
+- [repairable_emissions_rate_source](#emissions_rate_source-repairable)
+- [repairable_emissions_production_rate](#emissions_production_rate-repairable)
+- [repairable_duration](#duration-repairable)
+- [repairable_multiple_emissions_per_source](#multiple_emissions_per_source-repairable)
+- [non_repairable_emissions_rate_source](#emissions_rate_source_non-repairable)
+- [non_repairable_emissions_production_rate](#emissions_production_rate-non-repairable)
+- [non_repairable_duration](#duration-non-repairable)
+- [non_repairable_multiple_emissions_per_source](#multiple_emissions_per_source-non-repairable)
 
 Method specific columns:
   
-- {method}_surveys_per_year
-- {method}_deploy_year
-- {method}_deploy_month
-- {method}_spatial
-- {method}_survey_time
-- {method}_survey_cost
-- {method}_site_deployment
+- {method}_[surveys_per_year](#surveys_per_year)
+- {method}_[deploy_year](#deployment_year)
+- {method}_[deploy_month](#deployment_month)
+- {method}_[spatial](#spatial)
+- {method}_[survey_time](#survey_time)
+- {method}_[survey_cost](#per_site-cost)
+- [{method}_site_deployment](#method_site_deployment)
 
 **Note:** As with most name-related parameters in LDAR-Sim, the values in the `site_type` and `equipment` columns are case-sensitive and must be consistent across all related files. Any method specific parameters also require the same care with the case-sensitivity and consistency in all relevant files with the method name.
 
@@ -1635,11 +1681,12 @@ See [site type file](#site-type-file) for details on how to set the parameter fo
 
 ### Equipment File
 
-This optional file enables **users to define equipment groups** for the simulation.
+This optional file enables **users to define _equipment_ or equipment groups** for the simulation.
 
-These equipment groups influence how  `equipment level` [measurement scale](#measurement-scale)  methods detect and measure emissions. By using this file, users can specify the counts of _components_ that constitute each _equipment group_. In addition to influencing how different methods may detect and measure emissions, these equipment groups can be come a building block for particular sites.
+The structure of the file consists of a column defining an _[equipment](#equipment-equipment-file)_, followed by user-defined components and their respective counts per the given equipment.
+Through this file, users can specify the counts of _components_ that make up each _equipment_ group. These _equipment_ groups serve as building blocks for constructing complex sites.
 
-Below is an example of how an equipment file that defines 3 different groups:
+Below is an example of an equipment file that defines 3 different groups:
 
 | equipment |flare|tank|pump|
 |----|----|----|----|
@@ -1647,9 +1694,17 @@ Below is an example of how an equipment file that defines 3 different groups:
 |group2|0|0|2|
 |group3|3|0|0|
 
-**Note:** As with most name-related parameters in LDAR-Sim, the values in the `equipment` and the user defined _component_ columns are case-sensitive and must be consistent across all related files.
+**Note:** As with most name-related parameters in LDAR-Sim, the values in the `equipment` and the user defined _component_ columns are case-sensitive and must be consistent across all related files. Any method specific parameters also require the same care with the case-sensitivity and consistency in all relevant files with the method name.
 
-See [equipment file](#equipment-file) for details on how to set the parameter for simulation. Any method specific parameters also require the same care with the case-sensitivity and consistency in all relevant files with the method name.
+See [equipment file](#equipment-file) for details on how to set the parameter for simulation.
+
+--------------------------------------------------------------------------------
+
+#### equipment (Equipment File)
+
+**Description:** A user-defined value that defines a specific equipment group for the simulation. These equipment groups influence how  `equipment level` [measurement scale](#measurement_scale)  methods detect and measure emissions.
+
+**Note:** It is case-sensitive and must remain consistent when provided in other infrastructure files
 
 --------------------------------------------------------------------------------
 
@@ -1657,9 +1712,62 @@ See [equipment file](#equipment-file) for details on how to set the parameter fo
 
 This is an optional file that allows users to define individual components and the different sources a component may have.
 
-**Note:** As with most name-related parameters in LDAR-Sim, the values in the `component` and `source` columns are case-sensitive and must be consistent across all related files. Any method specific parameters also require the same care with the case-sensitivity and consistency in all relevant files with the method name.
+The sources file has a few mandatory predefined column headers:
+
+- [component](#component-source-file)
+- [source](#source-source-file)
+- [repairable](#repairable-source-file)
+
+**Note of caution:** The `component` and `source` columns together act as a compound key. In simple terms, each component/source pair must be unique and exist only once.
+
+And optional column headers that define the emissions:
+
+- emissions_production_rate - see [repairable emission production rate](#emissions-production-rate-repairable) or [non-repairable](#emissions-production-rate-non-repairable) for more details
+- emissions_rate_source - see [repairable emission rate_source](#emissions-rate-source-repairable) or [non-repairable](#emissions-rate-source-non-repairable) for more details
+- duration - see [repairable duration](#duration-repairable) or [non-repairable](#duration-non-repairable) for more details
+- multiple_emissions_per_source - see [repairable multiple emissions per source](#multiple-emissions-per-source-repairable) or [non-repairable](#multiple-emissions-per-source-non-repairable) for more details
+
+And optional method specific columns:
+
+- {method}_[spatial_coverage](#spatial)
+  
+As mentioned above, if the optional columns are not provided, they will be populated with any existing higher-level values. For example, if the duration column is missing but is provided in the virtual world parameter file, LDAR-Sim will populate the durations of the specified component-source with the relevant durations from the virtual world parameter file.
+
+Below is an example of a source file that defines two different components and their relevant sources.
+
+|component|source|emissions_rate_source|repairable|
+|----------|----------|----------|----------|
+|tank|fugitive|fugitive_rates|TRUE|
+|tank|non-repairable|operational|FALSE|
+|well|fugitive|fugitive_rates|TRUE|
+
+**Note:** As with most name-related parameters in LDAR-Sim, the values in the `component` and `emissions_rate_source` columns are case-sensitive and must be consistent across all related files. Any method specific parameters also require the same care with the case-sensitivity and consistency in all relevant files with the method name.
 
 See [source file](#source-file) for details on how to set the parameter for simulation.
+
+--------------------------------------------------------------------------------
+
+#### component (Source File)
+
+**Description:** A user-defined component represents the smallest item that the highest resolution technology would be able to decipher and detect emissions from in real life.
+
+**Note:** A `component`can have multiple emission sources, each potentially producing emissions at the same time. A _component level_ [measurement strategy](#measurement_scale) measures the total sum of all emissions from these sources at any given moment.
+
+**Note of caution:** The `component` and `source` columns together act as a compound key. In simple terms, each component/source pair must be unique and exist only once.
+
+This column is case-sensitive and must match the corresponding columns provided in other infrastructure files.
+
+#### source (Source File)
+
+**Description:** A user-defined source represents a potential emission source for a given component. It is the smallest granular level considered for emission production.
+
+**Note:** The `source` column is often identical to the `emissions_rate_source` column. However it is in there incase users would like to use the same `emission_rate_sources`, for different `sources`.
+
+**Note of caution:** The `component` and `source` columns together act as a compound key. In simple terms, each component/source pair must be unique and exist only once.
+
+#### repairable (Source File)
+
+**Description:** A True/False column that defines if the given emission source produces repairable or non-repairable emission.
 
 --------------------------------------------------------------------------------
 
@@ -1669,13 +1777,13 @@ This is a mandatory file that describes emission rate characteristics. See [emis
 
 Each column in the emissions file represents a single emissions source. Each row represents a specific value, in the following order:
 
-- Header
-- Data Use
-- Distribution type
-- Maximum emission rate
-- Units (amount)
-- Units (time)
-- Source
+- [Header](#header)
+- [Data Use](#data-use)
+- [Distribution type](#distribution-type)
+- [Maximum emission rate](#maximum-emission-rate)
+- [Units (amount)](#units-amount)
+- [Units (time)](#units-time)
+- [Source](#source-emission-file)
 
 For example:
 
@@ -1691,9 +1799,11 @@ For example:
 | | 1.2|
 | | 2.2|
 
+--------------------------------------------------------------------------------
+
 #### Header
 
-**Description:** A user define row name, that corresponds to the [emission rate source](#emission-rate-source) references used in the virtual world parameters or in the infrastructure files.
+**Description:** A user define row name, that corresponds to the [repairable emission rate source](#emission_rate_source-repairable)(or [non-repairable](#emission_rate_source-non-repairable)) references used in the virtual world parameters or in the infrastructure files.
 
 **Notes on acquisition:** User defined
 
@@ -1749,7 +1859,7 @@ For example:
 
 **Notes of caution:** All units are converted into base grams per second. Conversions are based on standard atmospheric temperature and pressure conditions and may have slight variations.
 
-#### Source
+#### Source (Emission file)
 
 **Description:** Each row defines a single input. Depending on the [data use](#data-use) input, the values specify either individual emission rates (`sample`),  or the shape and scale of the distribution (`dist`).
 
