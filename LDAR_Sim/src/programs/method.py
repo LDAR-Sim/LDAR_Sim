@@ -221,7 +221,11 @@ class Method:
         # If the cost type for the method is per day, calculate the deployment cost for day
         # based off the number of crews being deployed
         if self.cost_type == self.PER_DAY_COST:
-            deploy_stats.deployment_cost = self.cost * len(self._crew_reports)
+            if self._deployment_type == pdc.Deployment_Types.STATIONARY:
+                deploy_stats.deployment_cost = self.cost * len(workplan.site_survey_planners)
+            else:
+                deploy_stats.deployment_cost = self.cost * len(self._crew_reports)
+
         # pop the site with the longest remaining hours to assign the next crew
         # while there are crews that can work
         for survey_plan in workplan.site_survey_planners.values():
