@@ -98,7 +98,7 @@ def mock_determine_if_site_survey_can_be_completed(
 
 
 def mock_false_survey_site(self, crew, survey_report, site_to_survey, weather, curr_date):
-    return SiteSurveyReport(1), 0, False
+    return SiteSurveyReport(1), 0, False, 0
 
 
 def mock_survey_site(self, crew, survey_report, site_to_survey, weather, curr_date):
@@ -120,6 +120,7 @@ def mock_survey_site(self, crew, survey_report, site_to_survey, weather, curr_da
         ),
         1,
         True,
+        1,
     )
 
 

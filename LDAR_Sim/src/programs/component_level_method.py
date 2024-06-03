@@ -61,7 +61,7 @@ class ComponentLevelMethod(Method):
         weather,
         curr_date: date,
     ) -> Tuple[SiteSurveyReport, float]:
-        survey_report, site_travel_time, last_site_survey = super().survey_site(
+        survey_report, site_travel_time, last_site_survey, site_visit = super().survey_site(
             crew=crew,
             survey_report=survey_report,
             site_to_survey=site_to_survey,
@@ -89,7 +89,7 @@ class ComponentLevelMethod(Method):
                             tagging_info=tagging_info,
                         )
                         self._emissions_tagged_daily += 1
-        return survey_report, site_travel_time, last_site_survey
+        return survey_report, site_travel_time, last_site_survey, site_visit
 
     def _initialize_sensor(self, sensor_info: dict) -> None:
         """Will initialize a sensor of the correct type based
@@ -152,7 +152,7 @@ class ComponentLevelMethod(Method):
                 assigned_crew: CrewDailyReport
 
                 # Send the crew to attempt to survey the site
-                survey_report, travel_time, last_site_survey = self.survey_site(
+                survey_report, travel_time, last_site_survey, n_site_visited = self.survey_site(
                     crew=assigned_crew,
                     survey_report=survey_report,
                     site_to_survey=site_to_survey,
@@ -163,7 +163,7 @@ class ComponentLevelMethod(Method):
                 travel_time: float
                 last_site_survey: bool
                 # Tracking Deployment statistics
-                deploy_stats.sites_visited += 1
+                deploy_stats.sites_visited += n_site_visited
                 deploy_stats.travel_time += travel_time
                 deploy_stats.survey_time += survey_report.time_surveyed
 

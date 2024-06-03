@@ -78,15 +78,3 @@ class StationarySchedule(GenericSchedule):
             prio, _, survey_plan = self._survey_queue.get()
             daily_plan.append(survey_plan)
         return daily_plan
-
-    def get_workplan(self, current_date) -> Workplan:
-        """
-        Updates the survey plans,
-        Adds necessary sites to the queue
-        Returns:
-            The list sites that the method should do on the given day
-        """
-        for survey_plan in self._survey_plans:
-            survey_plan.update_date(current_date)
-            if survey_plan.queue_site_for_survey():
-                self.add_to_survey_queue(survey_plan)
