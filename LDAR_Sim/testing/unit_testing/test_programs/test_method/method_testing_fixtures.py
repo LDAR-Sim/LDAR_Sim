@@ -169,6 +169,7 @@ def simple_method_values_fix(mocker):
     properties: dict = {
         pdc.Method_Params.N_CREWS: 5,
         pdc.Method_Params.SENSOR: "default",
+        pdc.Method_Params.DEPLOYMENT_TYPE: "mobile",
         pdc.Method_Params.MAX_WORKDAY: 8,
         pdc.Method_Params.CONSIDER_DAYLIGHT: False,
         pdc.Method_Params.T_BW_SITES: {pdc.Common_Params.VAL: [1]},
@@ -228,6 +229,7 @@ def simple_method_values2_fix(mocker):
     properties: dict = {
         pdc.Method_Params.N_CREWS: 5,
         pdc.Method_Params.SENSOR: "default",
+        pdc.Method_Params.DEPLOYMENT_TYPE: "mobile",
         pdc.Method_Params.MAX_WORKDAY: 1,
         pdc.Method_Params.T_BW_SITES: {pdc.Common_Params.VAL: [1]},
         pdc.Method_Params.IS_FOLLOW_UP: False,
@@ -287,6 +289,7 @@ def simple_method_values3_fix(mocker):
     properties: dict = {
         pdc.Method_Params.N_CREWS: 5,
         pdc.Method_Params.SENSOR: "default",
+        pdc.Method_Params.DEPLOYMENT_TYPE: "mobile",
         pdc.Method_Params.MAX_WORKDAY: 1,
         pdc.Method_Params.T_BW_SITES: {pdc.Common_Params.VAL: [1]},
         pdc.Method_Params.IS_FOLLOW_UP: True,
@@ -342,6 +345,7 @@ def simple_method_values4_fix(mocker):
     properties: dict = {
         pdc.Method_Params.N_CREWS: 5,
         pdc.Method_Params.SENSOR: "default",
+        pdc.Method_Params.DEPLOYMENT_TYPE: "mobile",
         pdc.Method_Params.MAX_WORKDAY: 8,
         pdc.Method_Params.CONSIDER_DAYLIGHT: False,
         pdc.Method_Params.T_BW_SITES: {pdc.Common_Params.VAL: [1]},
@@ -405,6 +409,7 @@ def simple_method_values5_fix(mocker):
             pdc.Method_Params.MDL: 1,
             pdc.Method_Params.QE: 0,
         },
+        pdc.Method_Params.DEPLOYMENT_TYPE: "mobile",
         pdc.Method_Params.MAX_WORKDAY: 8,
         pdc.Method_Params.CONSIDER_DAYLIGHT: False,
         pdc.Method_Params.T_BW_SITES: {pdc.Common_Params.VAL: [1]},
@@ -472,6 +477,7 @@ def deploy_crews_testing_fix(mocker):
             pdc.Method_Params.MDL: 1,
             pdc.Method_Params.QE: 0,
         },
+        pdc.Method_Params.DEPLOYMENT_TYPE: "mobile",
         pdc.Method_Params.MAX_WORKDAY: 8,
         pdc.Method_Params.CONSIDER_DAYLIGHT: False,
         pdc.Method_Params.T_BW_SITES: {pdc.Common_Params.VAL: [1]},
@@ -549,6 +555,7 @@ def deploy_crews_testing2_fix(mocker):
             pdc.Method_Params.MDL: 1,
             pdc.Method_Params.QE: 0,
         },
+        pdc.Method_Params.DEPLOYMENT_TYPE: "mobile",
         pdc.Method_Params.MAX_WORKDAY: 8,
         pdc.Method_Params.CONSIDER_DAYLIGHT: False,
         pdc.Method_Params.T_BW_SITES: {pdc.Common_Params.VAL: [1]},
