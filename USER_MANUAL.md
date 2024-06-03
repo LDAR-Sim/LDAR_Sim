@@ -53,20 +53,17 @@ Email: <sally@highwoodemissions.com>
     - [\<weather\_file\>](#weather_file)
     - [\<emissions\>](#emissions)
       - [\<emissions\_file\>](#emissions_file)
-      - [\<ERS\>](#ers)
-      - [\<LPR\>](#lpr)
-      - [\<NRd\>](#nrd)
-      - [\<multi\>](#multi)
-      - [\<NR\_ERS\>](#nr_ers)
-      - [\<NR\_EPR\>](#nr_epr)
-      - [\<duration\>](#duration)
-      - [\<NR\_multi\>](#nr_multi)
+    - [repairable\_emissions / non\_repairable\_emissions](#repairable_emissions--non_repairable_emissions)
+      - [\<emission\_rate\_source\> _(propagating parameter)_](#emission_rate_source-propagating-parameter)
+      - [\<emissions\_production\_rate\> _(propagating parameter)_](#emissions_production_rate-propagating-parameter)
+      - [\<duration\> _(propagating parameter)_](#duration-propagating-parameter)
+      - [\<multiple\_emissions\_per\_source\> _(propagating parameter)_](#multiple_emissions_per_source-propagating-parameter)
     - [\<Repairs\>](#repairs)
-    - [\<cost\>](#cost)
-      - [\<vals\> (cost)](#vals-cost)
+    - [\<cost\>(repairs) _(propagating parameter)_](#costrepairs-propagating-parameter)
+      - [\<values\> (cost)](#values-cost)
       - [\<file\> (cost)](#file-cost)
-    - [\<delay\>](#delay)
-      - [\<vals\> (delay)](#vals-delay)
+    - [\<delay\>(repairs) _(propagating parameter)_](#delayrepairs-propagating-parameter)
+      - [\<values\> (delay)](#values-delay)
       - [\<file\> (delay)](#file-delay)
   - [8. Program Inputs](#8-program-inputs)
     - [\<parameter\_level\> (programs)](#parameter_level-programs)
@@ -369,7 +366,7 @@ Note that programs are interpreted as a flat list of parameters that are incorpo
 
 **Description:** Specifies the folder/directory to generate output files into. Accepts either an absolute path or a relative path from the root folder.
 
-**Notes on acquisition:** It is recommended for the `output_directoy` be specified for each simulation that is ran.
+**Notes on acquisition:** It is recommended for the `output_directory` be specified for each simulation that is ran.
 
 **Notes of caution:** The contents of the existing folder is **removed** and **overwritten**. Rename folders to ensure that old output files are not lost.
 
@@ -553,7 +550,7 @@ _TODO_
 
 **Default input:** None
 
-**Description:** This parameter is defined by a string specifying the name of the CSV file containing data on the equipments in the simulation. It's an _optional_ file designed to refine site characteristics and reduce the need for redundant definitions of equipment groups.
+**Description:** This parameter is defined by a string specifying the name of the CSV file containing data on the equipment in the simulation. It's an _optional_ file intended to refine site characteristics and minimize the need for redundant definitions of similar equipment. In simpler terms, the equipment file streamlines the process of defining granular sites by reducing the manual repetition required to define similar equipment multiple times.
 
 **Notes on acquisition:** Refer to the section [Virtual World Defining Files](#10-virtual-world-defining-files) for comprehensive instructions on setting up this file.
 
@@ -573,11 +570,11 @@ _TODO_
 
 ### &lt;site_samples&gt;
 
-**Data Type:** Integer
+**Data Type:** Numeric (Integer)
 
 **Default input:** None
 
-**Description:** This variable is a integer indicating the number of sites to subset.
+**Description:** This variable is an integer indicating the number of sites to be selected as a subset. It allows users to specify how many sites they want to include in their analysis or simulation.
 
 **Notes on acquisition:** No data acquisition required.
 
@@ -589,7 +586,7 @@ _TODO_
 
 **Default input:** False
 
-**Description:** Specify if the weather envelopes will be considered when determining the different methods work hours per each day.
+**Description:** Specify whether weather envelopes will influence the selection of potential deployment sites for each method. If the weather on a given day falls outside the valid [weather envelope](#weather_envelope), crews for the respective method will not be deployed to the site on that day.
 
 **Notes on acquisition:** N/A
 
@@ -611,7 +608,7 @@ _TODO_
 
 _TODO_ check if these work
 
-In addition, the following files are included in the GitHub repository:
+In addition, the following files are included in the GitHub repository for generic weather data covering Canada or the United States, as well as specific data for Alberta, the Marcellus shale, and the Permian basin:
 
 - "weather_alberta.nc"
 - "weather_marcellus.nc"
@@ -627,15 +624,9 @@ See [weather_readme](LDAR_Sim/src/weather/weather_readme.md) documentation for f
 
 Weather file sizes can become quite large, especially when spatial and temporal resolution increase (maximum resolutions of 1.25 degrees and 1 hour, respectively). Modelers must decide how to navigate these tradeoffs, and understand the implications of the resolutions chosen.
 
-If using different weather files for different programs (e.g., when comparing different regions), weather data must be downloaded manually and saved to the inputs folder before beginning simulations, as the automatic downloader built into LDAR-Sim will only download one file at a time.
-
 ### &lt;emissions&gt;
 
 **Description:** This parameter doesn't necessitate user-defined input. Its purpose is to offer a broader categorization for parameters that define the emission characteristics of the virtual world.
-
-**Notes of caution:** The following parameters for defining emissions can be specified at multiple levels of granularity. The values set will always be overwritten by the most detailed level.
-
-_TODO_ maybe link in the flowchart here?
 
 #### &lt;emissions_file&gt;
 
@@ -643,119 +634,85 @@ _TODO_ maybe link in the flowchart here?
 
 **Default input:** None
 
-**Description:** This parameter is specifies the name of the csv file that is used to describe the emissions rate characteristics. Refer to the section [Virtual World Defining Files](#10-virtual-world-defining-files) for comprehensive instructions on setting up this file.
+**Description:** This parameter specifies the name of the CSV file used to describe the emissions rate characteristics, such as the actual emission rates and the units. Please refer to the section [Virtual World Defining Files](#10-virtual-world-defining-files) for comprehensive instructions on setting up this file.
 
 **Notes on acquisition:** N/A
 
-**Notes of caution:** Column headers in the file must correspond to an [emission rate source(ERS)](#ers), [non-repairable emission rate source(NR_ERS)](#nr_ers), or their equivalent when provided in a more granular setting.
+**Notes of caution:** N/A
 
-#### &lt;ERS&gt;
+### repairable_emissions / non_repairable_emissions
+
+**Description:** These parameters do not require user-defined input. Its purpose is to provide a broader categorization for parameters that define the emission characteristics of the virtual world. The following sub-parameters:  `emissions_production_rate`, `emissions_rate_source`, `duration` and `multiple_emissions_per_source`, can be set for either repairable emissions and/or non-repairable emissions.
+
+**Note:** Ensure to use the correct category before defining the emission characteristics.
+
+**Notes of caution:** The following parameters for defining emissions can be specified at multiple levels of granularity. However, the values set will always be overwritten by the most granular level. For further details and a flowchart, please refer to the section[Virtual World Defining Files](#10-virtual-world-defining-files).
+
+#### &lt;emission_rate_source&gt; _(propagating parameter)_
 
 **Data Type:** String
 
 **Default input:** None
 
-**Description:** The name of a column in the [emissions file](#emissions_file) that is used to parameterize the emissions characteristics of all the general repairable emissions. This parameter will be overwritten by the equivalent value, when provided at a more granular scale.
+**Description:** The name of a column in the [emissions file](#emissions_file) that is used to define the row that parameterize the emissions characteristics of all the corresponding repairable or non-repairable emissions. This parameter will be overwritten by the equivalent value, when provided at a more granular scale in one of the [Virtual world defining files](#10-virtual-world-defining-files).
 
 **Notes on acquisition:** N/A
 
 **Notes of caution:** The column headers are case sensitive.
 
-#### &lt;LPR&gt;
+Both [emissions production rate](#emissions_production_rate-propagating-parameter) and [emissions rate source](#emission_rate_source-propagating-parameter) must be set for a given repairable or non-repairable emission. The simulator will error out if only one of the two values are provided.
+
+#### &lt;emissions_production_rate&gt; _(propagating parameter)_
 
 **Data Type:** Float (Numeric)
 
 **Default input:** None
 
-**Description:**  A numeric scalar representing the Leak Production Rate (LPR), which denotes the emission production rate for repairable emissions. New repairable emissions are generated using a site-level empirical LPR. LPR is the probability that a new repairable emission will arise, each day, for each site.  The LPR encapsulates various factors contributing to emission occurrences, such as facility age, management practices, predictive maintenance, and random chance. By setting the LPR in the virtual world parameter file, a uniform LPR is applied across all facility types, production types, facility ages, etc., unless specified otherwise at a more detailed level. For an extended discussion on LPR, see Fox et al. (2021).
+**Description:**  A numeric scalar representing the emissions production rate, for repairable or non-repairable emissions. New emissions are generated using a site-level empirical production rate if not specified at a more granular level. The emission production rate, if set at the virtual world setting parameter file only, is the probability that a new emission will arise, each day, for each site. The emission production rate encapsulates various factors contributing to emission occurrences, such as facility age, management practices, predictive maintenance, and random chance. By setting the emission production rate in the virtual world parameter file, a uniform production rate is applied across all facility types, production types, facility ages, etc., unless specified otherwise at a more detailed level. This parameter replaces the old leak production rate (LPR) from previous versions of LDAR-Sim, and for an extended discussion on this topic, see Fox et al. (2021).
 
-**Notes on acquisition:** While the "true" LPR is elusive, it can be estimated by dividing the number of leaks found during an LDAR survey at a facility by the number of days that have passed since the previous LDAR survey at the same facility. If this is done for a large number of survey intervals at a large number of facilities, one should eventually converge on a representative estimate. When LDAR-Sim is used, operator-specific LPR values should be estimated if sufficient data exist to do so.
+**Notes on acquisition:** While the "true" emissions production rate is elusive, it can be estimated by dividing the number of emissions found during an LDAR survey at a facility by the number of days that have passed since the previous LDAR survey at the same facility. If this is done for a large number of survey intervals at a large number of facilities, one should eventually converge on a representative estimate. When LDAR-Sim is used, operator-specific emissions production rate values should be estimated if sufficient data exist to do so.
 
-**Notes of caution:**  Available techniques for estimating LPR make a number of problematic assumptions. Ultimately, we have relatively poor data on LPR and the relationship between LPR and NRd. Modeling results are extremely sensitive to LPR. Given that LPR is elusive, we strongly recommend that a broad range of LPR values is evaluated in LDAR-Sim before any decisions are made. For more information, refer to discussions in the main text and supplementary information of Fox et al. (2021).
+**Notes of caution:**  Available techniques for estimating emissions production rate make a number of problematic assumptions. Ultimately, we have relatively poor data on the emissions production rate and the relationship between the _emission production rate_ and the [maximum duration](#duration-propagating-parameter) of emissions. Modeling results are extremely sensitive to the production rate. Given that the emissions production rate is elusive, we strongly recommend that a broad range of the emissions production rate value is evaluated in LDAR-Sim before any decisions are made. For more information, refer to discussions in the main text and supplementary information of Fox et al. (2021).
 
-When the parameter [multi](#multi) is set to false, it will affect the emission production rate observed in the simulation. In this scenario, new emissions won't be generated if there's already an existing emission for the specified emission source.
+When the parameter [multiple emissions per source](#multiple_emissions_per_source-propagating-parameter) is set to False, it will affect the emission production rate observed in the simulation. In this scenario, new emissions won't be generated if there's already an existing emission for the specified [emission source](#emission_rate_source-propagating-parameter).
 
-#### &lt;NRd&gt;
+Both [emissions production rate](#emissions_production_rate-propagating-parameter) and [emissions rate source](#emission_rate_source-propagating-parameter) must be set for a given repairable or non-repairable emission. The simulator will error out if only one of the two values are provided.
+
+#### &lt;duration&gt; _(propagating parameter)_
 
 **Data Type:** Integer (Numeric)
 
 **Default input:** 365
 
-**Description:** The natural repair duration or day(NRd) of each repairable emission in number of days. Represents emission removal from the repairable emission pool due to routine maintenance, refits, retrofits, and other unintentional emission repairs.
+**Description:** The maximum duration of each emission in number of days. Represents emission removal from the emission pool due to routine maintenance, refits, retrofits, and other reasons.
 
 **Notes on acquisition:** Estimate from empirical data or use previously published value.
 
-**Notes of caution:** This value is highly uncertain and likely depends on context. Sensitivity analyses should be used to explore the impact of different NRd values.
+**Notes of caution:** This value is highly uncertain and likely depends on context. Sensitivity analyses should be used to explore the impact of different _duration_ values.
 
-The NRd value should be the same for **all** programs
-
-#### &lt;multi&gt;
+#### &lt;multiple_emissions_per_source&gt; _(propagating parameter)_
 
 **Data Type:** Boolean
 
 **Default input:** True
 
-**Description:** Specifies whether a repairable emission source can generate multiple emissions simultaneously. For instance, a flare that's unlit can't produce additional unlit emissions simultaneously.
+**Description:** Specifies whether an emission source can generate multiple emissions simultaneously. For instance, a flare that's unlit can't produce additional unlit emissions simultaneously.
 
 **Notes on acquisition:** Users are encouraged to undertake an exercise to assess whether it's logical for a particular source to generate multiple emissions simultaneously.
 
-**Notes of caution:** When set to false, it's possible to observe lower emission production rates than what has been parameterized, as existing emissions inhibit the generation of new emissions.
-
-#### &lt;NR_ERS&gt;
-
-**Data Type:** String
-
-**Default input:** The name of a column in the [emissions file](#emissions_file) that is used to parameterize the emissions characteristics of all the general non-repairable emissions. This parameter will be overwritten by the equivalent value, when provided at a more granular scale.
-
-**Notes on acquisition:** `NR_ERS` serves as the counter part to [ERS](#ers) for non-repairable emissions.
-
-**Notes of caution:** The column headers are case sensitive.
-
-#### &lt;NR_EPR&gt;
-
-**Data Type:** Float (Numeric)
-
-**Default input:** None
-
-**Description:** A numeric scalar representing the non-repairable emissions production rate (NR_EPR), which denotes the emission production rate for non-repairable emissions. New non-repairable emissions are generated using a site-level empirical NR_EPR. NR_EPR is the probability that a new non-repairable emission will arise, each day, for each site.
-
-**Notes on acquisition:** `NR_EPR` serves as the counter part to [LPR](#lpr) for non-repairable emissions. Refer to [LPR](#lpr) for more details.
-
-**Notes of caution:** When the parameter [NR_multi](#nr_multi) is set to false, it will affect the non-repairable emission production rate observed in the simulation. In this scenario, new emissions won't be generated if there's already an existing emission for the specified emission source.
-
-#### &lt;duration&gt;
-
-**Data Type:** Integer (Numeric)
-
-**Default input:** 365
-
-**Description:** The duration or number of days of each of the non-repairable emission lasts. Represents emission removal from the non-repairable emission pool.
-
-**Notes on acquisition:** `duration` serves to act as the counter part of [NRd](#nrd) for non-repairable emissions.
-
-**Notes of caution:** N/A
-
-#### &lt;NR_multi&gt;
-
-**Data Type:** Boolean
-
-**Default input:** False
-
-**Description:** Specifies whether a non-repairable emission source can generate multiple emissions simultaneously. For instance, a flare that's unlit can't produce additional unlit emissions simultaneously.
-
-**Notes on acquisition:** `NR_multi` serves to act as the counter part of [multi](#multi) for non-repairable emissions.
-
-**Notes of caution:** When set to false, it's possible to observe lower emission production rates than what has been parameterized, as existing emissions inhibit the generation of new emissions.
+**Notes of caution:** When set to false, it's possible to observe lower [emission production rates](#emissions_production_rate-propagating-parameter) than what has been parameterized, as existing emissions inhibit the generation of new emissions.
 
 ### &lt;Repairs&gt;
 
 **Description:** This parameter doesn't necessitate user-defined input. Its purpose is to offer a broader categorization for parameters that define the repair characteristics of the virtual world.
 
-### &lt;cost&gt;
+### &lt;cost&gt;(repairs) _(propagating parameter)_
 
 **Description:** This parameter doesn't necessitate user-defined input. Its purpose is to offer a broader categorization for parameters that define the repair cost characteristics of the virtual world.
 
-#### &lt;vals&gt; (cost)
+**Note:** The repair cost parameter can be specifically set at a more granular level through the [virtual world defining files](#10-virtual-world-defining-files).
+
+#### &lt;values&gt; (cost)
 
 **Data Type:** List of floats/numerics
 
@@ -768,7 +725,7 @@ The NRd value should be the same for **all** programs
 **Notes of caution:**
 Cost of repair is highly variable and not well characterized by a single value. For example, a percentage of leaks will have near-zero repair costs if it is just a matter of tightening a valve. Other repairs, especially if specialized equipment is involved, could be extremely expensive – especially if a shutdown is required and production declines, leading to indirect costs.
 
-When specified in the virtual world parameter file, repair costs are independent of emission size or infrastructure. Moreover, these costs are still applicable even when emissions are naturally repaired ([NRd](#nrd)).
+When specified in the virtual world parameter file, repair costs are independent of emission size or infrastructure. Moreover, these costs are still applicable even when emissions are terminated based on their maximum duration([duration](#duration-propagating-parameter)).
 
 #### &lt;file&gt; (cost)
 
@@ -782,11 +739,13 @@ When specified in the virtual world parameter file, repair costs are independent
 
 **Notes of caution:**  It is assumed that this file is located in the same folder as the [infrastructure](#infrastructure) files.
 
-### &lt;delay&gt;
+### &lt;delay&gt;(repairs) _(propagating parameter)_
 
 **Description:** This parameter doesn't necessitate user-defined input. Its purpose is to offer a broader categorization for parameters that define the repair delay characteristics of the virtual world.
 
-#### &lt;vals&gt; (delay)
+**Note:** The repair delay parameter can be specifically set at a more granular level through the [virtual world defining files](#10-virtual-world-defining-files)
+
+#### &lt;values&gt; (delay)
 
 **Data Type:** List of integers/numerics, or string
 
@@ -1232,7 +1191,7 @@ Below are some examples of common sources of LDAR-Sim data. Not all parameters a
 ### Duty Holder / Operator (historical LDAR data)
 
 - [emissions_file](#emissions_file)*
-- [LPR](#lpr)*
+- [emission production rate](#emissions_production_rate-propagating-parameter)*
 
 ### Duty Holder / Operator (organizational data)
 
