@@ -51,13 +51,6 @@ Email: <sally@highwoodemissions.com>
     - [\<site\_samples\>](#site_samples)
     - [\<consider\_weather\>](#consider_weather)
     - [\<weather\_file\>](#weather_file)
-    - [\<emissions\>](#emissions)
-      - [\<emissions\_file\>](#emissions_file)
-    - [repairable\_emissions / non\_repairable\_emissions](#repairable_emissions--non_repairable_emissions)
-      - [\<emission\_rate\_source\> _(propagating parameter)_](#emission_rate_source-propagating-parameter)
-      - [\<emissions\_production\_rate\> _(propagating parameter)_](#emissions_production_rate-propagating-parameter)
-      - [\<duration\> _(propagating parameter)_](#duration-propagating-parameter)
-      - [\<multiple\_emissions\_per\_source\> _(propagating parameter)_](#multiple_emissions_per_source-propagating-parameter)
     - [\<Repairs\>](#repairs)
     - [\<cost\>(repairs) _(propagating parameter)_](#costrepairs-propagating-parameter)
       - [\<values\> (cost)](#values-cost)
@@ -65,6 +58,13 @@ Email: <sally@highwoodemissions.com>
     - [\<delay\>(repairs) _(propagating parameter)_](#delayrepairs-propagating-parameter)
       - [\<values\> (delay)](#values-delay)
       - [\<file\> (delay)](#file-delay)
+    - [\<emissions\>](#emissions)
+      - [\<emissions\_file\>](#emissions_file)
+    - [repairable\_emissions / non\_repairable\_emissions](#repairable_emissions--non_repairable_emissions)
+      - [\<emission\_rate\_source\> _(propagating parameter)_](#emission_rate_source-propagating-parameter)
+      - [\<emissions\_production\_rate\> _(propagating parameter)_](#emissions_production_rate-propagating-parameter)
+      - [\<duration\> _(propagating parameter)_](#duration-propagating-parameter)
+      - [\<multiple\_emissions\_per\_source\> _(propagating parameter)_](#multiple_emissions_per_source-propagating-parameter)
   - [8. Program Inputs](#8-program-inputs)
     - [\<parameter\_level\> (programs)](#parameter_level-programs)
     - [\<version\> (programs)](#version-programs)
@@ -624,6 +624,73 @@ See [weather_readme](LDAR_Sim/src/weather/weather_readme.md) documentation for f
 
 Weather file sizes can become quite large, especially when spatial and temporal resolution increase (maximum resolutions of 1.25 degrees and 1 hour, respectively). Modelers must decide how to navigate these tradeoffs, and understand the implications of the resolutions chosen.
 
+### &lt;Repairs&gt;
+
+**Description:** This parameter doesn't necessitate user-defined input. Its purpose is to offer a broader categorization for parameters that define the repair characteristics of the virtual world.
+
+### &lt;cost&gt;(repairs) _(propagating parameter)_
+
+**Description:** This parameter doesn't necessitate user-defined input. Its purpose is to offer a broader categorization for parameters that define the repair cost characteristics of the virtual world.
+
+**Note:** The repair cost parameter can be specifically set at a more granular level through the [virtual world defining files](#10-virtual-world-defining-files).
+
+#### &lt;values&gt; (cost)
+
+**Data Type:** List of floats/numerics
+
+**Default input:** [200]
+
+**Description:** The cost associated with repairing repairable emissions.
+
+**Notes on acquisition:** The duty holder should have data on cost of repairs.
+
+**Notes of caution:**
+Cost of repair is highly variable and not well characterized by a single value. For example, a percentage of leaks will have near-zero repair costs if it is just a matter of tightening a valve. Other repairs, especially if specialized equipment is involved, could be extremely expensive – especially if a shutdown is required and production declines, leading to indirect costs.
+
+When specified in the virtual world parameter file, repair costs are independent of emission size or infrastructure. Moreover, these costs are still applicable even when emissions are terminated based on their maximum duration([duration](#duration-propagating-parameter)).
+
+#### &lt;file&gt; (cost)
+
+**Data Type:** String
+
+**Default input:** None
+
+**Description:** The string name of the csv file in which the repair cost values are stored, if it exists.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:**  It is assumed that this file is located in the same folder as the [infrastructure](#infrastructure) files.
+
+### &lt;delay&gt;(repairs) _(propagating parameter)_
+
+**Description:** This parameter doesn't necessitate user-defined input. Its purpose is to offer a broader categorization for parameters that define the repair delay characteristics of the virtual world.
+
+**Note:** The repair delay parameter can be specifically set at a more granular level through the [virtual world defining files](#10-virtual-world-defining-files)
+
+#### &lt;values&gt; (delay)
+
+**Data Type:** List of integers/numerics, or string
+
+**Default input:** [14]
+
+**Description:** The number of days that pass between the end of a survey when a site is tagged for repairs and when the repairable emission(s) are fixed. This value can also be a column header in the [repair delays file](#file-delay) for sampling purposes.
+
+**Notes on acquisition:** Get this information from the service provider.
+
+**Notes of caution:**  When specified in the virtual world parameter file, repair delays are independent of emission size or infrastructure.
+
+#### &lt;file&gt; (delay)
+
+**Data Type:** String
+
+**Default input:** None
+
+**Description:** The string name of the file containing sample repair delays, if it exists.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** It is assumed that this file is located in the same folder as the [infrastructure](#infrastructure) files.
+
 ### &lt;emissions&gt;
 
 **Description:** This parameter doesn't necessitate user-defined input. Its purpose is to offer a broader categorization for parameters that define the emission characteristics of the virtual world.
@@ -701,73 +768,6 @@ Both [emissions production rate](#emissions_production_rate-propagating-paramete
 **Notes on acquisition:** Users are encouraged to undertake an exercise to assess whether it's logical for a particular source to generate multiple emissions simultaneously.
 
 **Notes of caution:** When set to false, it's possible to observe lower [emission production rates](#emissions_production_rate-propagating-parameter) than what has been parameterized, as existing emissions inhibit the generation of new emissions.
-
-### &lt;Repairs&gt;
-
-**Description:** This parameter doesn't necessitate user-defined input. Its purpose is to offer a broader categorization for parameters that define the repair characteristics of the virtual world.
-
-### &lt;cost&gt;(repairs) _(propagating parameter)_
-
-**Description:** This parameter doesn't necessitate user-defined input. Its purpose is to offer a broader categorization for parameters that define the repair cost characteristics of the virtual world.
-
-**Note:** The repair cost parameter can be specifically set at a more granular level through the [virtual world defining files](#10-virtual-world-defining-files).
-
-#### &lt;values&gt; (cost)
-
-**Data Type:** List of floats/numerics
-
-**Default input:** [200]
-
-**Description:** The cost associated with repairing repairable emissions.
-
-**Notes on acquisition:** The duty holder should have data on cost of repairs.
-
-**Notes of caution:**
-Cost of repair is highly variable and not well characterized by a single value. For example, a percentage of leaks will have near-zero repair costs if it is just a matter of tightening a valve. Other repairs, especially if specialized equipment is involved, could be extremely expensive – especially if a shutdown is required and production declines, leading to indirect costs.
-
-When specified in the virtual world parameter file, repair costs are independent of emission size or infrastructure. Moreover, these costs are still applicable even when emissions are terminated based on their maximum duration([duration](#duration-propagating-parameter)).
-
-#### &lt;file&gt; (cost)
-
-**Data Type:** String
-
-**Default input:** None
-
-**Description:** The string name of the csv file in which the repair cost values are stored, if it exists.
-
-**Notes on acquisition:** N/A
-
-**Notes of caution:**  It is assumed that this file is located in the same folder as the [infrastructure](#infrastructure) files.
-
-### &lt;delay&gt;(repairs) _(propagating parameter)_
-
-**Description:** This parameter doesn't necessitate user-defined input. Its purpose is to offer a broader categorization for parameters that define the repair delay characteristics of the virtual world.
-
-**Note:** The repair delay parameter can be specifically set at a more granular level through the [virtual world defining files](#10-virtual-world-defining-files)
-
-#### &lt;values&gt; (delay)
-
-**Data Type:** List of integers/numerics, or string
-
-**Default input:** [14]
-
-**Description:** The number of days that pass between the end of a survey when a site is tagged for repairs and when the repairable emission(s) are fixed. This value can also be a column header in the [repair delays file](#file-delay) for sampling purposes.
-
-**Notes on acquisition:** Get this information from the service provider.
-
-**Notes of caution:**  When specified in the virtual world parameter file, repair delays are independent of emission size or infrastructure.
-
-#### &lt;file&gt; (delay)
-
-**Data Type:** String
-
-**Default input:** None
-
-**Description:** The string name of the file containing sample repair delays, if it exists.
-
-**Notes on acquisition:** N/A
-
-**Notes of caution:** It is assumed that this file is located in the same folder as the [infrastructure](#infrastructure) files.
 
 --------------------------------------------------------------------------------
 
