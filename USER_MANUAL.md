@@ -130,6 +130,13 @@ Email: <sally@highwoodemissions.com>
     - [Equipment File](#equipment-file)
     - [Source File](#source-file)
     - [Emissions File](#emissions-file)
+      - [Header](#header)
+    - [Data Use](#data-use)
+      - [Distribution Type](#distribution-type)
+      - [Maximum Emission Rate](#maximum-emission-rate)
+      - [Units (amount)](#units-amount)
+      - [Units (time)](#units-time)
+      - [Source](#source)
   - [11. Legacy Inputs](#11-legacy-inputs)
     - [Simulation Settings Parameters](#simulation-settings-parameters)
       - [\<pregenerate\_leaks\>](#pregenerate_leaks)
@@ -1584,22 +1591,153 @@ Method specific columns:
 - {method}_spatial
 - {method}_survey_time
 - {method}_survey_cost
+- {method}_site_deployment
+
+**Note:** As with most name-related parameters in LDAR-Sim, the values in the `site_type` and `equipment` columns are case-sensitive and must be consistent across all related files. Any method specific parameters also require the same care with the case-sensitivity and consistency in all relevant files with the method name.
+
+See [sites file](#sites-file) for details on how to set the parameter for simulation.
 
 --------------------------------------------------------------------------------
 
 ### Site Type File
 
+This is an optional file that is used to define groups of sites. It must contain the `site_type` column. All other columns are optional and based on the user's needs.
+
+Possible column headers:
+
+- equipment
+- repairable_emissions_rate_source
+- repairable_emissions_production_rate
+- repairable_repair_delay
+- repairable_repair_cost
+- repairable_duration
+- repairable_multiple_emissions_per_source
+- non_repairable_emissions_rate_source
+- non_repairable_emissions_production_rate
+- non_repairable_duration
+- non_repairable_multiple_emissions_per_source
+
+Method specific columns:
+  
+- {method}_surveys_per_year
+- {method}_deploy_year
+- {method}_deploy_month
+- {method}_spatial
+- {method}_survey_time
+- {method}_survey_cost
+- {method}_site_deployment
+
+**Note:** As with most name-related parameters in LDAR-Sim, the values in the `site_type` and `equipment` columns are case-sensitive and must be consistent across all related files. Any method specific parameters also require the same care with the case-sensitivity and consistency in all relevant files with the method name.
+
+See [site type file](#site-type-file) for details on how to set the parameter for simulation.
+
 --------------------------------------------------------------------------------
 
 ### Equipment File
+
+This is an optional file that 
+
+See [equipment file](#equipment-file) for details on how to set the parameter for simulation.
 
 --------------------------------------------------------------------------------
 
 ### Source File
 
+See [source file](#source-file) for details on how to set the parameter for simulation.
+
 --------------------------------------------------------------------------------
 
 ### Emissions File
+
+This is a mandatory file that describes emission rate characteristics. See [emissions file](#emissions-file) for details on how to set the parameter for simulation.
+
+Each column in the emissions file represents a single emissions source. Each row represents a specific value, in the following order:
+
+- Header
+- Data Use
+- Distribution type
+- Maximum emission rate
+- Units (amount)
+- Units (time)
+- Source
+
+For example:
+
+| Bottom-Up Fugitive Emissions | Top-Down Fugitive Emission Rates |
+|----------|----------|
+| dist | sample |
+| lognormal | n/a |
+| 100000 | 100000 |
+| kilogram | gram |
+| hour | second |
+| -1.79 | 10 |
+| 2.17 | 4 |
+| | 1.2|
+| | 2.2|
+
+#### Header
+
+**Description:** A user define row name, that corresponds to the [emission rate source](#emission-rate-source) references used in the virtual world parameters or in the infrastructure files.
+
+**Notes on acquisition:** User defined
+
+### Data Use
+
+**Description:** Describes way the numerical information in the column is utilized. Valid inputs are:
+
+- `sample`: Sample random values as emission rates from the list provided
+- `dist`: Generate random values to use as emissions based on the distribution shape and scale provided
+
+**Notes on acquisition:** User defined. In the future, the ``fit`` functionality will be reimplemented to enable fitting of sample data to the most appropriate statistical curve.
+
+#### Distribution Type
+
+**Description:** The name of a distribution from the scipy library, only relevant if the row above is set to `dist`.
+
+**Notes on acquisition:** See [scipy documentation](https://docs.scipy.org/doc/scipy/reference/stats.html) for more details.
+
+#### Maximum Emission Rate
+
+**Description:** The maximum possible leak rate that can be sampled from a distribution, in grams per second.
+
+#### Units (amount)
+
+**Description:** Units of the amount measurement used for inputs of emissions.  Can be one of:
+
+- gram
+- kilogram
+- cubic meter
+- tonne
+- pound
+- cubic feet
+- liter
+- mscf
+
+**Notes on acquisition:** User defined
+
+**Notes of caution:** All units are converted into base grams per second. Conversions are based on standard atmospheric temperature and pressure conditions and may have slight variations.
+
+#### Units (time)
+
+**Description:** The time units for the inputs of emissions. Can be one of:
+
+- second
+- minute
+- hour
+- day
+- week
+- month
+- year
+
+**Notes on acquisition:** User defined
+
+**Notes of caution:** All units are converted into base grams per second. Conversions are based on standard atmospheric temperature and pressure conditions and may have slight variations.
+
+#### Source
+
+**Description:** Each row defines a single input. Depending on the [data use](#data-use) input, the values specify either individual emission rates (`sample`),  or the shape and scale of the distribution (`dist`).
+
+**Notes of caution:** The sources of emissions should align with the [emission production rates](#emission-production-rate).  For instance, if the emission sources identified here originate from a screening that only detects emissions above a minimum threshold of 10 kg/hr and occurs infrequently, the [emission production rates](#emission-production-rate) should also be derived from these specific screenings. They should not be based on surveys conducted at the same site that reported a significantly higher number of emissions, with different rates.
 
 --------------------------------------------------------------------------------
 
