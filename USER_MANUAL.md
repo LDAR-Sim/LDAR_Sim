@@ -1635,13 +1635,29 @@ See [site type file](#site-type-file) for details on how to set the parameter fo
 
 ### Equipment File
 
-This is an optional file that 
+This optional file enables **users to define equipment groups** for the simulation.
 
-See [equipment file](#equipment-file) for details on how to set the parameter for simulation.
+These equipment groups influence how  `equipment level` [measurement scale](#measurement-scale)  methods detect and measure emissions. By using this file, users can specify the counts of _components_ that constitute each _equipment group_. In addition to influencing how different methods may detect and measure emissions, these equipment groups can be come a building block for particular sites.
+
+Below is an example of how an equipment file that defines 3 different groups:
+
+| equipment |flare|tank|pump|
+|----|----|----|----|
+|group1|1|1|0|
+|group2|0|0|2|
+|group3|3|0|0|
+
+**Note:** As with most name-related parameters in LDAR-Sim, the values in the `equipment` and the user defined _component_ columns are case-sensitive and must be consistent across all related files.
+
+See [equipment file](#equipment-file) for details on how to set the parameter for simulation. Any method specific parameters also require the same care with the case-sensitivity and consistency in all relevant files with the method name.
 
 --------------------------------------------------------------------------------
 
 ### Source File
+
+This is an optional file that allows users to define individual components and the different sources a component may have.
+
+**Note:** As with most name-related parameters in LDAR-Sim, the values in the `component` and `source` columns are case-sensitive and must be consistent across all related files. Any method specific parameters also require the same care with the case-sensitivity and consistency in all relevant files with the method name.
 
 See [source file](#source-file) for details on how to set the parameter for simulation.
 
