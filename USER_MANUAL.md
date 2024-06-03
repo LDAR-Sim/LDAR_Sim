@@ -286,7 +286,7 @@ _TODO_ Possibly insert the data flow chart here?
 
 ### Parameter Hierarchy
 
-As noted previously, LDAR-Sim usues a 4 level hierarchy of simulations, virtual world, programs and methods parameters. To tell LDAR_Sim what level in the hierarchy your parameter file is destined for, you must specify a `parameter\_level` parameter that will specify what level your paremeter file is aimed at.
+As noted previously, LDAR-Sim uses a 4 level hierarchy of simulations, virtual world, programs and methods parameters. To tell LDAR_Sim what level in the hierarchy your parameter file is destined for, you must specify a `parameter\_level` parameter that will specify what level your parameter file is aimed at.
 
 The `parameter_level` parameter can be one of three values:
 
@@ -384,7 +384,7 @@ Note that programs are interpreted as a flat list of parameters that are incorpo
 
 **Description:** Specifies the folder/directory to generate output files into. Accepts either an absolute path or a relative path from the root folder.
 
-**Notes on acquisition:** It is recommended for the `output_directoy` be specified for each simulation that is ran.
+**Notes on acquisition:** It is recommended for the `output_directory` be specified for each simulation that is ran.
 
 **Notes of caution:** The contents of the existing folder is **removed** and **overwritten**. Rename folders to ensure that old output files are not lost.
 
