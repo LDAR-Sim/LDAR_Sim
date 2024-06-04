@@ -124,6 +124,11 @@ Email: <sally@highwoodemissions.com>
       - [\<redundancy\_filter\>](#redundancy_filter)
       - [\<sort\_by\_rate\>](#sort_by_rate)
       - [\<threshold\>](#threshold)
+    - [rolling\_average](#rolling_average)
+      - [small\_window](#small_window)
+      - [large\_window](#large_window)
+      - [small\_window\_threshold](#small_window_threshold)
+      - [large\_window\_threshold](#large_window_threshold)
   - [10. Virtual World Defining Files](#10-virtual-world-defining-files)
     - [Sites File](#sites-file)
       - [site\_ID](#site_id)
@@ -1729,6 +1734,58 @@ The follow-up [delay](#delay-follow_up) parameter can be set to require multiple
 **Notes on acquisition:** No data acquisition required.
 
 **Notes of caution:** Follow-up thresholds are explored in detail in Fox et al. 2021\. Choosing follow-up rules is complex and work practices should be developed following extensive analysis of different scenarios. It is important to understand how follow-up thresholds and follow-up ratios interact, especially if both are to be used in the same program. Note that follow-up thresholds are similar to minimum detection limits but that the former is checked against to the measured emission rate (which is a function of quantification error) while the latter is checked against the true emission rate.
+
+### rolling_average
+
+**Description:** This parameter provides the overarching heading for the nested parameters related to rolling averages. The following parameters are only relevant when [deployment type](#deployment_type) is set to `stationary`.
+
+#### small_window
+
+**Data Type:** Numeric(Integer)
+
+**Default input:** 7
+
+**Description:** The number of days to consider when taking the rolling average for the [small threshold](#small_window_threshold).
+
+**Notes of acquisition:** N/A
+
+**Notes of caution:** N/A
+
+#### large_window
+
+**Data Type:** Numeric(Integer)
+
+**Default input:** 30
+
+**Description:** The number of days to consider when taking the rolling average for the [large threshold](#large_window_threshold).
+
+**Notes of acquisition:** N/A
+
+**Notes of caution:** N/A
+
+#### small_window_threshold
+
+**Data Type:** Numeric(Float)
+
+**Default input:** 0.0
+
+**Description:** The threshold in grams per second to consider when triggering follow-up work practices, based on the smaller window rolling average.
+
+**Notes of acquisition:** N/A
+
+**Notes of caution:** N/A
+
+#### large_window_threshold
+
+**Data Type:** Numeric(Float)
+
+**Default input:** 0.0
+
+**Description:** The threshold in grams per second to consider when triggering follow-up work practices, based on the larger window rolling average.
+
+**Notes of acquisition:** N/A
+
+**Notes of caution:** N/A
 
 --------------------------------------------------------------------------------
 
