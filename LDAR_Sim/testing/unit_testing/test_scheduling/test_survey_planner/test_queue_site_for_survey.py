@@ -17,6 +17,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 ------------------------------------------------------------------------------
 """
+
 from datetime import date
 from src.virtual_world.sites import Site
 from scheduling.scheduled_survey_planner import ScheduledSurveyPlanner
@@ -56,7 +57,7 @@ def test_000_queue_site_for_survey_returns_false_when_site_it_has_yet_to_reach_s
         deploy_months,
     )
     result = planner.queue_site_for_survey()
-    assert result == False
+    assert result is False
 
 
 def test_000_queue_site_for_survey_returns_false_when_site_is_not_due_to_be_queued_for_survey(

@@ -40,3 +40,8 @@ follow_up:
   redundancy_filter: "recent" # recent/max/average
   sort_by_rate: True # True/False
   threshold: 0.0 # g/s
+rolling_average:
+  small_window: 7 # days
+  large_window: 30 # days
+  small_window_threshold: 0.0 # g/s
+  large_window_threshold: 0.0 # g/s

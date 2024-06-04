@@ -25,6 +25,10 @@ def test_site_level_method_creation(mock_follow_up_schedule):
             pdc.Method_Params.INSTANT_THRESHOLD: 1.0,
             pdc.Method_Params.REDUNDANCY_FILTER: "some_filter",
         },
+        pdc.Method_Params.ROLLING_AVRG: {
+            pdc.Method_Params.SMALL_WINDOW: 7,
+            pdc.Method_Params.LARGE_WINDOW: 30,
+        },
         pdc.Method_Params.DEPLOYMENT_TYPE: "mobile",
         pdc.Method_Params.SENSOR: {
             pdc.Method_Params.TYPE: "default",
