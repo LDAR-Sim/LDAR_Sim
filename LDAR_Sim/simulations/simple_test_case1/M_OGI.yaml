@@ -5,7 +5,6 @@ deployment_type: mobile
 measurement_scale: component
 sensor:
   type: OGI_camera_zim
-  minimum_detection_limit: [0.24, 0.39] 
 is_follow_up: False
 cost:
   per_day: 0
