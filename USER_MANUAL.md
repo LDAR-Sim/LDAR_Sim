@@ -39,6 +39,32 @@ Email: <sally@highwoodemissions.com>
     - [\<parameter\_level\> (outputs)](#parameter_level-outputs)
     - [\<version\> (outputs)](#version-outputs)
   - [7. Virtual World Setting](#7-virtual-world-setting)
+    - [\<parameter\_level\> (virtual\_world)](#parameter_level-virtual_world)
+    - [\<version\> (virtual world)](#version-virtual-world)
+    - [\<start\_date\>](#start_date)
+    - [\<end\_date\>](#end_date)
+    - [\<infrastructure\>](#infrastructure)
+      - [\<sites\_file\>](#sites_file)
+      - [\<site\_type\_file\>](#site_type_file)
+      - [\<equipment\_group\_file\>](#equipment_group_file)
+      - [\<sources\_file\>](#sources_file)
+    - [\<site\_samples\>](#site_samples)
+    - [\<consider\_weather\>](#consider_weather)
+    - [\<weather\_file\>](#weather_file)
+    - [\<Repairs\>](#repairs)
+    - [\<cost\>(repairs) _(propagating parameter)_](#costrepairs-propagating-parameter)
+      - [\<values\> (cost)](#values-cost)
+      - [\<file\> (cost)](#file-cost)
+    - [\<delay\>(repairs) _(propagating parameter)_](#delayrepairs-propagating-parameter)
+      - [\<values\> (delay)](#values-delay)
+      - [\<file\> (delay)](#file-delay)
+    - [\<emissions\>](#emissions)
+      - [\<emissions\_file\>](#emissions_file)
+    - [repairable\_emissions / non\_repairable\_emissions](#repairable_emissions--non_repairable_emissions)
+      - [\<emission\_rate\_source\> _(propagating parameter)_](#emission_rate_source-propagating-parameter)
+      - [\<emissions\_production\_rate\> _(propagating parameter)_](#emissions_production_rate-propagating-parameter)
+      - [\<duration\> _(propagating parameter)_](#duration-propagating-parameter)
+      - [\<multiple\_emissions\_per\_source\> _(propagating parameter)_](#multiple_emissions_per_source-propagating-parameter)
   - [8. Program Inputs](#8-program-inputs)
     - [\<parameter\_level\> (programs)](#parameter_level-programs)
     - [\<version\> (programs)](#version-programs)
@@ -54,6 +80,11 @@ Email: <sally@highwoodemissions.com>
       - [\<duration\_method\>](#duration_method)
   - [9. Method Inputs](#9-method-inputs)
   - [10. Virtual World Defining Files](#10-virtual-world-defining-files)
+    - [Sites File](#sites-file)
+    - [Site Type File](#site-type-file)
+    - [Equipment File](#equipment-file)
+    - [Source File](#source-file)
+    - [Emissions File](#emissions-file)
   - [11. Legacy Inputs](#11-legacy-inputs)
     - [Simulation Settings Parameters](#simulation-settings-parameters)
       - [\<pregenerate\_leaks\>](#pregenerate_leaks)
@@ -231,17 +262,11 @@ Programs:
 
 We recommend supplying LDAR-Sim with a full set of parameters, copied from the default parameters in the `default_parameters` folder and modified for your purposes. This will ensure you are familiar with the parameters you have chosen to run the model.
 
-However, it may be more convenient once you are familiar with how parameter files update each other to use multiple parameter files to create your simulations and rely upon the default parameters.
-
-All simulations using multiple parameter files are created the following way:
-
-_TODO_ Possibly insert the data flow chart here?
-
 --------------------------------------------------------------------------------
 
 ### Parameter Hierarchy
 
-As noted previously, LDAR-Sim usues a 4 level hierarchy of simulations, virtual world, programs and methods parameters. To tell LDAR_Sim what level in the hierarchy your parameter file is destined for, you must specify a `parameter\_level` parameter that will specify what level your paremeter file is aimed at.
+As noted previously, LDAR-Sim uses a 4 level hierarchy of simulations, virtual world, programs and methods parameters. To tell LDAR_Sim what level in the hierarchy your parameter file is destined for, you must specify a `parameter\_level` parameter that will specify what level your parameter file is aimed at.
 
 The `parameter_level` parameter can be one of three values:
 
@@ -249,6 +274,8 @@ The `parameter_level` parameter can be one of three values:
 - `virtual_world`: parameters are used to define the virtual world.
 - `program`: parameters are used to define a program.
 - `method`: parameters are used to define a method and update a given method by name.
+
+In addition to the parameter hierarchy, LDAR-Sim requires several csv files to provide the properties of the virtual world, such as the individual site's ID, latitude, and longitude values. These files will be covered in further detail in the [virtual world defining files](#10-virtual-world-defining-files).
 
 --------------------------------------------------------------------------------
 
@@ -339,7 +366,7 @@ Note that programs are interpreted as a flat list of parameters that are incorpo
 
 **Description:** Specifies the folder/directory to generate output files into. Accepts either an absolute path or a relative path from the root folder.
 
-**Notes on acquisition:** It is recommended for the `output_directoy` be specified for each simulation that is ran.
+**Notes on acquisition:** It is recommended for the `output_directory` be specified for each simulation that is ran.
 
 **Notes of caution:** The contents of the existing folder is **removed** and **overwritten**. Rename folders to ensure that old output files are not lost.
 
@@ -440,6 +467,307 @@ _TODO_
 --------------------------------------------------------------------------------
 
 ## 7\. Virtual World Setting
+
+### &lt;parameter_level&gt; (virtual_world)
+
+**Data Type:** String
+
+**Default input:** 'virtual_world'
+
+**Description:** A string indicating the parameters in file are at the virtual world level
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** Must be set to ```parameter_level: virtual_world``` for a virtual world parameter file.
+
+### &lt;version&gt; (virtual world)
+
+**Data type:** String
+
+**Default input:** 4.0
+
+**Description:** Specify version of LDAR-Sim. See section _[Versioning of Parameter Files](#versioning-of-parameter-files)_ for more information.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** Improper versioning will prevent simulator from executing.
+
+### &lt;start_date&gt;
+
+**Data type:** List of integers [year, month, day]
+
+**Default input:** [2023,1,1]
+
+**Description:** The date at which the simulations begins.
+
+**Notes on acquisition:** We recommend running the simulation for several years due to the stochastic nature of LDAR systems and the periods of time over which leaks arise and are repaired.
+
+**Notes of caution:** A start date not on January 1st of a given year may cause error with the calculation of annual summary statistics.
+
+### &lt;end_date&gt;
+
+**Data type:** List of integers [year, month, day]
+
+**Default input:** [2027,12,31]
+
+**Description:** The date at which the simulations ends.
+
+**Notes on acquisition:** We recommend running the simulation for several years due to the stochastic nature of LDAR systems and the periods of time over which leaks arise and are repaired.
+
+**Notes of caution:** An end date not on December 31st of a given year may cause error with the calculation of annual summary statistics.
+
+### &lt;infrastructure&gt;
+
+**Description:** This parameter does not require user input. It serves to provide a more comprehensive categorization for parameters that specify the files used to construct the virtual world.
+
+#### &lt;sites_file&gt;
+
+**Data Type:** String
+
+**Default input:** None
+
+**Description:** This parameter is defined by a string specifying the name of the CSV file containing data on the sites participating in the simulation. It is a **mandatory** file that must, at a minimum, include unique site IDs, latitude and longitude values, along with corresponding site types for each row.
+
+**Notes on acquisition:** Refer to the section [Virtual World Defining Files](#10-virtual-world-defining-files) for comprehensive instructions on setting up this file.
+
+**Notes of caution:** The number of unique sites provided in this file must be equal or greater than the [site_samples](#site_samples) parameter.
+
+#### &lt;site_type_file&gt;
+
+**Data type:** String
+
+**Default input:** None
+
+**Description:** This parameter is defined by a string that specifies the name of the CSV file containing data on the site types involved in the simulator. It's optional and aims to minimize the redundancy of repeatedly defining site types.
+
+**Notes on acquisition:** Refer to the section [Virtual World Defining Files](#10-virtual-world-defining-files) for comprehensive instructions on setting up this file.
+
+**Notes of caution:** The site types defined in this file must correspond to the values in the [sites_file](#sites_file). Refer to the [Virtual World Defining Files](#10-virtual-world-defining-files) for more details.
+
+#### &lt;equipment_group_file&gt;
+
+**Data Type:** String
+
+**Default input:** None
+
+**Description:** This parameter is defined by a string specifying the name of the CSV file containing data on the equipment in the simulation. It's an _optional_ file intended to refine site characteristics and minimize the need for redundant definitions of similar equipment. In simpler terms, the equipment file streamlines the process of defining granular sites by reducing the manual repetition required to define similar equipment multiple times.
+
+**Notes on acquisition:** Refer to the section [Virtual World Defining Files](#10-virtual-world-defining-files) for comprehensive instructions on setting up this file.
+
+**Notes of caution:** The equipment defined in this file must correspond to equipment defined in the [sites_file](#sites_file). Refer to the [Virtual World Defining Files](#10-virtual-world-defining-files) for more details.
+
+#### &lt;sources_file&gt;
+
+**Data Type:** String
+
+**Default input:** None
+
+**Description:** This parameter is determined by a string indicating the name of the CSV file containing information about the components and sources in the simulation. It's an _optional_ file that enables users to provide more detailed data regarding individual components and the types of sources associated with each component.
+
+**Notes on acquisition:** Refer to the section [Virtual World Defining Files](#10-virtual-world-defining-files) for comprehensive instructions on setting up this file.
+
+**Notes of caution:** The component and sources must correspond to the values found in the [equipment_group_file](#equipment_group_file) and [emissions_file](#emissions_file). Refer to the [Virtual World Defining Files](#10-virtual-world-defining-files) for more details.
+
+### &lt;site_samples&gt;
+
+**Data Type:** Numeric (Integer)
+
+**Default input:** None
+
+**Description:** This variable is an integer indicating the number of sites to be selected as a subset. It allows users to specify how many sites they want to include in their analysis or simulation.
+
+**Notes on acquisition:** No data acquisition required.
+
+**Notes of caution:** The number of site sampled must be equal to or less than the number of unique sites provided in the [sites_file](#sites_file).
+
+### &lt;consider_weather&gt;
+
+**Data type:** Boolean
+
+**Default input:** False
+
+**Description:** Specify whether weather envelopes will influence the selection of potential deployment sites for each method. If the weather on a given day falls outside the valid [weather envelope](#weather_envelope), crews for the respective method will not be deployed to the site on that day.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** Even if weather is considered false, [weather_file](#weather_file) must be present and valid.
+
+### &lt;weather_file&gt;
+
+**Data type:** String
+
+**Default input:** None
+
+**Description:** Specifies the name of the ERA5 NetCDF4 file that contains all weather data to be used in the analysis. Generally, at a minimum, OGI requires wind, temperature, and precipitation data. LDAR-Sim reads in temperature data in degrees Celsius at 2 meters above ground, wind in meters per second at 10 meters above ground, and total precipitation in millimeters accumulated per hour. Other weather variables are freely available for download.
+
+**Notes on acquisition:** Raw data are available from the European Centre for Medium-Range Weather Forecasts. Pre-processed and ready to use weather data have been prepared and are available for download on AWS for Alberta, Colorado, and New Mexico. LDAR-Sim will access these files directly if the file names are specified correctly in the program file. Currently available files are:
+
+- Alberta: "ERA5_AB_1x1_hourly_2015_2019.nc"
+- Colorado: "ERA5_CO_1x1_hourly_2015_2019.nc"
+- New Mexico: "ERA5_NM_1x1_hourly_2015_2019.nc"
+
+_TODO_ check if these work
+
+In addition, the following files are included in the GitHub repository for generic weather data covering Canada or the United States, as well as specific data for Alberta, the Marcellus shale, and the Permian basin:
+
+- "weather_alberta.nc"
+- "weather_marcellus.nc"
+- "weather_permian.nc"
+- "ERA5_2020_2020_Canada_2xRes.nc"
+- "ERA5_2020_2020_US_2xRes.nc"
+
+Each of these files provides hourly weather (wind, temp, precipitation) data spanning the years specified at a spatial resolution of 1 degree latitude and 1 degree longitude. If custom configurations are needed for different regions, spatial resolutions, temporal resolutions, dates, or weather variables (e.g., clouds, snow cover, etc.), they must be downloaded manually from the ERA5 database. The 'ERA5_downloader' python file in the model code folder provides code and guidance for accessing custom weather data.
+
+See [weather_readme](LDAR_Sim/src/weather/weather_readme.md) documentation for further details regarding weather in LDAR-Sim.
+
+**Notes of caution:**
+
+Weather file sizes can become quite large, especially when spatial and temporal resolution increase (maximum resolutions of 1.25 degrees and 1 hour, respectively). Modelers must decide how to navigate these tradeoffs, and understand the implications of the resolutions chosen.
+
+### &lt;Repairs&gt;
+
+**Description:** This parameter doesn't necessitate user-defined input. Its purpose is to offer a broader categorization for parameters that define the repair characteristics of the virtual world.
+
+### &lt;cost&gt;(repairs) _(propagating parameter)_
+
+**Description:** This parameter doesn't necessitate user-defined input. Its purpose is to offer a broader categorization for parameters that define the repair cost characteristics of the virtual world.
+
+**Note:** The repair cost parameter can be specifically set at a more granular level through the [virtual world defining files](#10-virtual-world-defining-files).
+
+#### &lt;values&gt; (cost)
+
+**Data Type:** List of floats/numerics
+
+**Default input:** [200]
+
+**Description:** The cost associated with repairing repairable emissions.
+
+**Notes on acquisition:** The duty holder should have data on cost of repairs.
+
+**Notes of caution:**
+Cost of repair is highly variable and not well characterized by a single value. For example, a percentage of leaks will have near-zero repair costs if it is just a matter of tightening a valve. Other repairs, especially if specialized equipment is involved, could be extremely expensive – especially if a shutdown is required and production declines, leading to indirect costs.
+
+When specified in the virtual world parameter file, repair costs are independent of emission size or infrastructure. Moreover, these costs are still applicable even when emissions are terminated based on their maximum duration([duration](#duration-propagating-parameter)).
+
+#### &lt;file&gt; (cost)
+
+**Data Type:** String
+
+**Default input:** None
+
+**Description:** The string name of the csv file in which the repair cost values are stored, if it exists.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:**  It is assumed that this file is located in the same folder as the [infrastructure](#infrastructure) files.
+
+### &lt;delay&gt;(repairs) _(propagating parameter)_
+
+**Description:** This parameter doesn't necessitate user-defined input. Its purpose is to offer a broader categorization for parameters that define the repair delay characteristics of the virtual world.
+
+**Note:** The repair delay parameter can be specifically set at a more granular level through the [virtual world defining files](#10-virtual-world-defining-files)
+
+#### &lt;values&gt; (delay)
+
+**Data Type:** List of integers/numerics, or string
+
+**Default input:** [14]
+
+**Description:** The number of days that pass between the end of a survey when a site is tagged for repairs and when the repairable emission(s) are fixed. This value can also be a column header in the [repair delays file](#file-delay) for sampling purposes.
+
+**Notes on acquisition:** Get this information from the service provider.
+
+**Notes of caution:**  When specified in the virtual world parameter file, repair delays are independent of emission size or infrastructure.
+
+#### &lt;file&gt; (delay)
+
+**Data Type:** String
+
+**Default input:** None
+
+**Description:** The string name of the file containing sample repair delays, if it exists.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** It is assumed that this file is located in the same folder as the [infrastructure](#infrastructure) files.
+
+### &lt;emissions&gt;
+
+**Description:** This parameter doesn't necessitate user-defined input. Its purpose is to offer a broader categorization for parameters that define the emission characteristics of the virtual world.
+
+#### &lt;emissions_file&gt;
+
+**Data Type:** String
+
+**Default input:** None
+
+**Description:** This parameter specifies the name of the CSV file used to describe the emissions rate characteristics, such as the actual emission rates and the units. Please refer to the section [Virtual World Defining Files](#10-virtual-world-defining-files) for comprehensive instructions on setting up this file.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** N/A
+
+### repairable_emissions / non_repairable_emissions
+
+**Description:** These parameters do not require user-defined input. Its purpose is to provide a broader categorization for parameters that define the emission characteristics of the virtual world. The following sub-parameters:  `emissions_production_rate`, `emissions_rate_source`, `duration` and `multiple_emissions_per_source`, can be set for either repairable emissions and/or non-repairable emissions.
+
+**Note:** Ensure to use the correct category before defining the emission characteristics.
+
+**Notes of caution:** The following parameters for defining emissions can be specified at multiple levels of granularity. However, the values set will always be overwritten by the most granular level. For further details and a flowchart, please refer to the section[Virtual World Defining Files](#10-virtual-world-defining-files).
+
+#### &lt;emission_rate_source&gt; _(propagating parameter)_
+
+**Data Type:** String
+
+**Default input:** None
+
+**Description:** The name of a column in the [emissions file](#emissions_file) that is used to define the row that parameterize the emissions characteristics of all the corresponding repairable or non-repairable emissions. This parameter will be overwritten by the equivalent value, when provided at a more granular scale in one of the [Virtual world defining files](#10-virtual-world-defining-files).
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** The column headers are case sensitive.
+
+Both [emissions production rate](#emissions_production_rate-propagating-parameter) and [emissions rate source](#emission_rate_source-propagating-parameter) must be set for a given repairable or non-repairable emission. The simulator will error out if only one of the two values are provided.
+
+#### &lt;emissions_production_rate&gt; _(propagating parameter)_
+
+**Data Type:** Float (Numeric)
+
+**Default input:** None
+
+**Description:**  A numeric scalar representing the emissions production rate, for repairable or non-repairable emissions. New emissions are generated using a site-level empirical production rate if not specified at a more granular level. The emission production rate, if set at the virtual world setting parameter file only, is the probability that a new emission will arise, each day, for each site. The emission production rate encapsulates various factors contributing to emission occurrences, such as facility age, management practices, predictive maintenance, and random chance. By setting the emission production rate in the virtual world parameter file, a uniform production rate is applied across all facility types, production types, facility ages, etc., unless specified otherwise at a more detailed level. This parameter replaces the old leak production rate (LPR) from previous versions of LDAR-Sim, and for an extended discussion on this topic, see Fox et al. (2021).
+
+**Notes on acquisition:** While the "true" emissions production rate is elusive, it can be estimated by dividing the number of emissions found during an LDAR survey at a facility by the number of days that have passed since the previous LDAR survey at the same facility. If this is done for a large number of survey intervals at a large number of facilities, one should eventually converge on a representative estimate. When LDAR-Sim is used, operator-specific emissions production rate values should be estimated if sufficient data exist to do so.
+
+**Notes of caution:**  Available techniques for estimating emissions production rate make a number of problematic assumptions. Ultimately, we have relatively poor data on the emissions production rate and the relationship between the _emission production rate_ and the [maximum duration](#duration-propagating-parameter) of emissions. Modeling results are extremely sensitive to the production rate. Given that the emissions production rate is elusive, we strongly recommend that a broad range of the emissions production rate value is evaluated in LDAR-Sim before any decisions are made. For more information, refer to discussions in the main text and supplementary information of Fox et al. (2021).
+
+When the parameter [multiple emissions per source](#multiple_emissions_per_source-propagating-parameter) is set to False, it will affect the emission production rate observed in the simulation. In this scenario, new emissions won't be generated if there's already an existing emission for the specified [emission source](#emission_rate_source-propagating-parameter).
+
+Both [emissions production rate](#emissions_production_rate-propagating-parameter) and [emissions rate source](#emission_rate_source-propagating-parameter) must be set for a given repairable or non-repairable emission. The simulator will error out if only one of the two values are provided.
+
+#### &lt;duration&gt; _(propagating parameter)_
+
+**Data Type:** Integer (Numeric)
+
+**Default input:** 365
+
+**Description:** The maximum duration of each emission in number of days. Represents emission removal from the emission pool due to routine maintenance, refits, retrofits, and other reasons.
+
+**Notes on acquisition:** Estimate from empirical data or use previously published value.
+
+**Notes of caution:** This value is highly uncertain and likely depends on context. Sensitivity analyses should be used to explore the impact of different _duration_ values.
+
+#### &lt;multiple_emissions_per_source&gt; _(propagating parameter)_
+
+**Data Type:** Boolean
+
+**Default input:** True
+
+**Description:** Specifies whether an emission source can generate multiple emissions simultaneously. For instance, a flare that's unlit can't produce additional unlit emissions simultaneously.
+
+**Notes on acquisition:** Users are encouraged to undertake an exercise to assess whether it's logical for a particular source to generate multiple emissions simultaneously.
+
+**Notes of caution:** When set to false, it's possible to observe lower [emission production rates](#emissions_production_rate-propagating-parameter) than what has been parameterized, as existing emissions inhibit the generation of new emissions.
 
 --------------------------------------------------------------------------------
 
@@ -634,7 +962,63 @@ Content for the "Method Inputs" section goes here.
 
 ## 10\. Virtual World Defining Files
 
-Content for the "Virtual World Defining Files" section goes here.
+In LDAR-Sim, the virtual world is defined by a combination of the virtual world parameter file and corresponding CSV files that contain the specific properties, as discussed in the [virtual world parameters](#7-virtual-world-setting).
+
+The following figure offers a visual guideline for the various parameters that can be propagated and set at more granular levels to define a virtual world, outlining the lowest adjustable property level for each parameter.
+
+![data structure](doc-images/input_data_structure.png)
+
+--------------------------------------------------------------------------------
+
+### Sites File
+
+This file defines the individual sites that are simulated by LDAR-Sim.
+
+At a minimum it must contain the following columns:
+
+- site_ID
+- lat
+- lon
+- site_type
+
+Other optional columns consist of the following:
+
+- equipment
+- repairable_emissions_rate_source
+- repairable_emissions_production_rate
+- repairable_repair_delay
+- repairable_repair_cost
+- repairable_duration
+- repairable_multiple_emissions_per_source
+- non_repairable_emissions_rate_source
+- non_repairable_emissions_production_rate
+- non_repairable_duration
+- non_repairable_multiple_emissions_per_source
+
+Method specific columns:
+
+- {method}_surveys_per_year
+- {method}_deploy_year
+- {method}_deploy_month
+- {method}_spatial
+- {method}_survey_time
+- {method}_survey_cost
+
+--------------------------------------------------------------------------------
+
+### Site Type File
+
+--------------------------------------------------------------------------------
+
+### Equipment File
+
+--------------------------------------------------------------------------------
+
+### Source File
+
+--------------------------------------------------------------------------------
+
+### Emissions File
 
 --------------------------------------------------------------------------------
 
@@ -807,7 +1191,7 @@ Below are some examples of common sources of LDAR-Sim data. Not all parameters a
 ### Duty Holder / Operator (historical LDAR data)
 
 - [emissions_file](#emissions_file)*
-- [LPR](#lpr)*
+- [emission production rate](#emissions_production_rate-propagating-parameter)*
 
 ### Duty Holder / Operator (organizational data)
 
@@ -838,4 +1222,3 @@ Ravikumar, Arvind P., Sindhu Sreedhara, Jingfan Wang, Jacob Englander, Daniel Ro
 Ravikumar, Arvind P., Jingfan Wang, Mike McGuire, Clay S. Bell, Daniel Zimmerle, and Adam R. Brandt. 2018\. "Good versus Good Enough? Empirical Tests of Methane Leak Detection Sensitivity of a Commercial Infrared Camera." _Environmental Science & Technology_.
 
 Zimmerle, Daniel, Timothy Vaughn, Clay Bell, Kristine Bennett, Parik Deshmukh, and Eben Thoma. 2020\. "Detection Limits of Optical Gas Imaging for Natural Gas Leak Detection in Realistic Controlled Conditions." _Environmental Science & Technology_ 54 (18): 11506–14.
-
