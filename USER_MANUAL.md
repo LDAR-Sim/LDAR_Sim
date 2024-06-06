@@ -52,16 +52,16 @@ Email: <sally@highwoodemissions.com>
     - [\<consider\_weather\>](#consider_weather)
     - [\<weather\_file\>](#weather_file)
     - [\<Repairs\>](#repairs)
-    - [\<cost\>(repairs) _(propagating parameter)_](#costrepairs-propagating-parameter)
-      - [\<values\> (cost)](#values-cost)
+    - [\<cost\>(repairs)](#costrepairs)
+      - [\<values\> (cost) _(propagating parameter)_](#values-cost-propagating-parameter)
       - [\<file\> (cost)](#file-cost)
-    - [\<delay\>(repairs) _(propagating parameter)_](#delayrepairs-propagating-parameter)
-      - [\<values\> (delay)](#values-delay)
+    - [\<delay\>(repairs)](#delayrepairs)
+      - [\<values\> (delay)_(propagating parameter)_](#values-delaypropagating-parameter)
       - [\<file\> (delay)](#file-delay)
     - [\<emissions\>](#emissions)
       - [\<emissions\_file\>](#emissions_file)
     - [repairable\_emissions / non\_repairable\_emissions](#repairable_emissions--non_repairable_emissions)
-      - [\<emission\_rate\_source\> _(propagating parameter)_](#emission_rate_source-propagating-parameter)
+      - [\<emissions\_rate\_source\> _(propagating parameter)_](#emissions_rate_source-propagating-parameter)
       - [\<emissions\_production\_rate\> _(propagating parameter)_](#emissions_production_rate-propagating-parameter)
       - [\<duration\> _(propagating parameter)_](#duration-propagating-parameter)
       - [\<multiple\_emissions\_per\_source\> _(propagating parameter)_](#multiple_emissions_per_source-propagating-parameter)
@@ -94,7 +94,7 @@ Email: <sally@highwoodemissions.com>
     - [\<coverage\>](#coverage)
       - [\<spatial\> _(propagating parameter)_](#spatial-propagating-parameter)
       - [\<temporal\>](#temporal)
-    - [\<cost\>  _(propagating parameter)_](#cost--propagating-parameter)
+    - [\<cost\>](#cost)
       - [\<per\_day\>](#per_day)
       - [\<per\_site\>  _(propagating parameter)_](#per_site--propagating-parameter)
       - [\<upfront\>  _(propagating parameter)_](#upfront--propagating-parameter)
@@ -107,7 +107,7 @@ Email: <sally@highwoodemissions.com>
     - [\<time\_between\_sites\>](#time_between_sites)
       - [file (time\_between\_sites)](#file-time_between_sites)
       - [values (time\_between\_sites)](#values-time_between_sites)
-    - [\<scheduling\>  _(propagating parameter)_](#scheduling--propagating-parameter)
+    - [\<scheduling\>](#scheduling)
       - [\<deployment\_months\>  _(propagating parameter)_](#deployment_months--propagating-parameter)
       - [\<deployment\_years\>  _(propagating parameter)_](#deployment_years--propagating-parameter)
     - [\<weather\_envelopes\>](#weather_envelopes)
@@ -131,20 +131,67 @@ Email: <sally@highwoodemissions.com>
       - [lon](#lon)
       - [site\_type (Sites file)](#site_type-sites-file)
       - [equipment (Sites file)](#equipment-sites-file)
-      - [{method}\_site\_deployment](#method_site_deployment)
+      - [repairable\_repair\_delay (Sites file)](#repairable_repair_delay-sites-file)
+      - [repairable\_repair\_cost (Sites file)](#repairable_repair_cost-sites-file)
+      - [repairable\_emissions\_rate\_source (Sites file)](#repairable_emissions_rate_source-sites-file)
+      - [repairable\_emissions\_production\_rate (Sites file)](#repairable_emissions_production_rate-sites-file)
+      - [repairable\_duration (Sites file)](#repairable_duration-sites-file)
+      - [repairable\_multiple\_emissions\_per\_source (Sites file)](#repairable_multiple_emissions_per_source-sites-file)
+      - [non\_repairable\_emissions\_rate\_source (Sites file)](#non_repairable_emissions_rate_source-sites-file)
+      - [non\_repairable\_emissions\_production\_rate (Sites file)](#non_repairable_emissions_production_rate-sites-file)
+      - [non\_repairable\_duration (Sites file)](#non_repairable_duration-sites-file)
+      - [non\_repairable\_multiple\_emissions\_per\_source (Sites file)](#non_repairable_multiple_emissions_per_source-sites-file)
+      - [{method}\_surveys\_per\_year (Sites file)](#method_surveys_per_year-sites-file)
+      - [{method}\_deploy\_years (Sites file)](#method_deploy_years-sites-file)
+      - [{method}\_deploy\_months (Sites file)](#method_deploy_months-sites-file)
+      - [{method}\_spatial (Sites file)](#method_spatial-sites-file)
+      - [{method}\_survey\_time (Sites file)](#method_survey_time-sites-file)
+      - [{method}\_survey\_cost (Sites file)](#method_survey_cost-sites-file)
+      - [{method}\_site\_deployment (Sites file)](#method_site_deployment-sites-file)
     - [Site Type File](#site-type-file)
       - [site\_type (Site type file)](#site_type-site-type-file)
       - [equipment (Site type file)](#equipment-site-type-file)
+      - [repairable\_repair\_delay (Site type file)](#repairable_repair_delay-site-type-file)
+      - [repairable\_repair\_cost (Site type file)](#repairable_repair_cost-site-type-file)
+      - [repairable\_emissions\_rate\_source (Site type file)](#repairable_emissions_rate_source-site-type-file)
+      - [repairable\_emissions\_production\_rate (Site type file)](#repairable_emissions_production_rate-site-type-file)
+      - [repairable\_duration (Site type file)](#repairable_duration-site-type-file)
+      - [repairable\_multiple\_emissions\_per\_source (Site type file)](#repairable_multiple_emissions_per_source-site-type-file)
+      - [non\_repairable\_emissions\_rate\_source (Site type file)](#non_repairable_emissions_rate_source-site-type-file)
+      - [non\_repairable\_emissions\_production\_rate (Site type file)](#non_repairable_emissions_production_rate-site-type-file)
+      - [non\_repairable\_duration (Site type file)](#non_repairable_duration-site-type-file)
+      - [non\_repairable\_multiple\_emissions\_per\_source (Site type file)](#non_repairable_multiple_emissions_per_source-site-type-file)
+      - [{method}\_surveys\_per\_year (Site type file)](#method_surveys_per_year-site-type-file)
+      - [{method}\_deploy\_years (Site type file)](#method_deploy_years-site-type-file)
+      - [{method}\_deploy\_months (Site type file)](#method_deploy_months-site-type-file)
+      - [{method}\_spatial (Site type file)](#method_spatial-site-type-file)
+      - [{method}\_survey\_time (Site type file)](#method_survey_time-site-type-file)
+      - [{method}\_survey\_cost (Site type file)](#method_survey_cost-site-type-file)
+      - [{method}\_site\_deployment (Site type file)](#method_site_deployment-site-type-file)
     - [Equipment File](#equipment-file)
       - [equipment (Equipment File)](#equipment-equipment-file)
       - [{component} (Equipment File)](#component-equipment-file)
+      - [repairable\_emissions\_rate\_source (Equipment file)](#repairable_emissions_rate_source-equipment-file)
+      - [repairable\_emissions\_production\_rate (Equipment file)](#repairable_emissions_production_rate-equipment-file)
+      - [repairable\_duration (Equipment file)](#repairable_duration-equipment-file)
+      - [repairable\_multiple\_emissions\_per\_source (Equipment file)](#repairable_multiple_emissions_per_source-equipment-file)
+      - [non\_repairable\_emissions\_rate\_source (Equipment file)](#non_repairable_emissions_rate_source-equipment-file)
+      - [non\_repairable\_emissions\_production\_rate (Equipment file)](#non_repairable_emissions_production_rate-equipment-file)
+      - [non\_repairable\_duration (Equipment file)](#non_repairable_duration-equipment-file)
+      - [non\_repairable\_multiple\_emissions\_per\_source (Equipment file)](#non_repairable_multiple_emissions_per_source-equipment-file)
+      - [{method}\_spatial (Equipment file)](#method_spatial-equipment-file)
     - [Source File](#source-file)
       - [component (Source File)](#component-source-file)
       - [source (Source File)](#source-source-file)
       - [repairable (Source File)](#repairable-source-file)
+      - [emissions\_rate\_source (Source file)](#emissions_rate_source-source-file)
+      - [emissions\_production\_rate (Source file)](#emissions_production_rate-source-file)
+      - [duration (Source file)](#duration-source-file)
+      - [multiple\_emissions\_per\_source (Source file)](#multiple_emissions_per_source-source-file)
+      - [{method}\_spatial (Source file)](#method_spatial-source-file)
     - [Emissions File](#emissions-file)
       - [Header](#header)
-    - [Data Use](#data-use)
+      - [Data Use](#data-use)
       - [Distribution Type](#distribution-type)
       - [Maximum Emission Rate](#maximum-emission-rate)
       - [Units (amount)](#units-amount)
@@ -527,7 +574,7 @@ To generate meaningful and reliable data output from the simulator, it's importa
 
 **Notes of caution:** Improper versioning will prevent simulator from executing.
 
-_TODO_
+_TODO_ fill out later
 
 --------------------------------------------------------------------------------
 
@@ -651,7 +698,7 @@ _TODO_
 
 **Default input:** False
 
-**Description:** Specify whether weather envelopes will influence the selection of potential deployment sites for each method. If the weather on a given day falls outside the valid [weather envelope](#weather_envelope), crews for the respective method will not be deployed to the site on that day.
+**Description:** Specify whether weather envelopes will influence the selection of potential deployment sites for each method. If the weather on a given day falls outside the valid [weather envelopes](#weather_envelopes), crews for the respective method will not be deployed to the site on that day.
 
 **Notes on acquisition:** N/A
 
@@ -693,19 +740,24 @@ Weather file sizes can become quite large, especially when spatial and temporal 
 
 **Description:** This parameter doesn't necessitate user-defined input. Its purpose is to offer a broader categorization for parameters that define the repair characteristics of the virtual world.
 
-### &lt;cost&gt;(repairs) _(propagating parameter)_
+### &lt;cost&gt;(repairs)
 
 **Description:** This parameter doesn't necessitate user-defined input. Its purpose is to offer a broader categorization for parameters that define the repair cost characteristics of the virtual world.
 
 **Note:** The repair cost parameter can be specifically set at a more granular level through the [virtual world defining files](#10-virtual-world-defining-files).
 
-#### &lt;values&gt; (cost)
+#### &lt;values&gt; (cost) _(propagating parameter)_
 
 **Data Type:** List of floats/numerics
 
 **Default input:** [200]
 
 **Description:** The cost associated with repairing repairable emissions.
+
+See the following files for examples on setting this value at a more granular level:
+
+- [Sites File](#method_survey_cost-sites-file)
+- [Site type File](#method_survey_cost-site-type-file)
 
 **Notes on acquisition:** The duty holder should have data on cost of repairs.
 
@@ -726,19 +778,24 @@ When specified in the virtual world parameter file, repair costs are independent
 
 **Notes of caution:**  It is assumed that this file is located in the same folder as the [infrastructure](#infrastructure) files.
 
-### &lt;delay&gt;(repairs) _(propagating parameter)_
+### &lt;delay&gt;(repairs)
 
 **Description:** This parameter doesn't necessitate user-defined input. Its purpose is to offer a broader categorization for parameters that define the repair delay characteristics of the virtual world.
 
 **Note:** The repair delay parameter can be specifically set at a more granular level through the [virtual world defining files](#10-virtual-world-defining-files)
 
-#### &lt;values&gt; (delay)
+#### &lt;values&gt; (delay)_(propagating parameter)_
 
 **Data Type:** List of integers/numerics, or string
 
 **Default input:** [14]
 
 **Description:** The number of days that pass between the end of a survey when a site is tagged for repairs and when the repairable emission(s) are fixed. This value can also be a column header in the [repair delays file](#file-delay) for sampling purposes.
+
+See the following files for examples on setting this value at a more granular level:
+
+- [Sites File](#repairable_repair_delay-sites-file)
+- [Site type File](#repairable_repair_delay-site-type-file)
 
 **Notes on acquisition:** Get this information from the service provider.
 
@@ -780,7 +837,7 @@ When specified in the virtual world parameter file, repair costs are independent
 
 **Notes of caution:** The following parameters for defining emissions can be specified at multiple levels of granularity. However, the values set will always be overwritten by the most granular level. For further details and a flowchart, please refer to the section[Virtual World Defining Files](#10-virtual-world-defining-files).
 
-#### &lt;emission_rate_source&gt; _(propagating parameter)_
+#### &lt;emissions_rate_source&gt; _(propagating parameter)_
 
 **Data Type:** String
 
@@ -788,11 +845,27 @@ When specified in the virtual world parameter file, repair costs are independent
 
 **Description:** The name of a column in the [emissions file](#emissions_file) that is used to define the row that parameterize the emissions characteristics of all the corresponding repairable or non-repairable emissions. This parameter will be overwritten by the equivalent value, when provided at a more granular scale in one of the [Virtual world defining files](#10-virtual-world-defining-files).
 
+See the following files for examples on setting this value at a more granular level:
+
+Repairable emissions:
+
+- [Sites File](#repairable_emissions_rate_source-sites-file)
+- [Site type File](#repairable_emissions_rate_source-site-type-file)
+- [Equipment File](#repairable_emissions_rate_source-equipment-file)
+- [Sources File](#emissions_rate_source-source-file)
+
+Non-Repairable emissions:
+
+- [Sites File](#non_repairable_emissions_rate_source-sites-file)
+- [Site type File](#non_repairable_emissions_rate_source-site-type-file)
+- [Equipment File](#non_repairable_emissions_rate_source-equipment-file)
+- [Sources File](#emissions_rate_source-source-file)
+
 **Notes on acquisition:** N/A
 
 **Notes of caution:** The column headers are case sensitive.
 
-Both [emissions production rate](#emissions_production_rate-propagating-parameter) and [emissions rate source](#emission_rate_source-propagating-parameter) must be set for a given repairable or non-repairable emission. The simulator will error out if only one of the two values are provided.
+Both [emissions production rate](#emissions_production_rate-propagating-parameter) and [emissions rate source](#emissions_rate_source-propagating-parameter) must be set for a given repairable or non-repairable emission. The simulator will error out if only one of the two values are provided.
 
 #### &lt;emissions_production_rate&gt; _(propagating parameter)_
 
@@ -802,13 +875,29 @@ Both [emissions production rate](#emissions_production_rate-propagating-paramete
 
 **Description:**  A numeric scalar representing the emissions production rate, for repairable or non-repairable emissions. New emissions are generated using a site-level empirical production rate if not specified at a more granular level. The emission production rate, if set at the virtual world setting parameter file only, is the probability that a new emission will arise, each day, for each site. The emission production rate encapsulates various factors contributing to emission occurrences, such as facility age, management practices, predictive maintenance, and random chance. By setting the emission production rate in the virtual world parameter file, a uniform production rate is applied across all facility types, production types, facility ages, etc., unless specified otherwise at a more detailed level. This parameter replaces the old leak production rate (LPR) from previous versions of LDAR-Sim, and for an extended discussion on this topic, see Fox et al. (2021).
 
+See the following files for examples on setting this value at a more granular level:
+
+Repairable emissions:
+
+- [Sites File](#repairable_emissions_production_rate-sites-file)
+- [Site type File](#repairable_emissions_production_rate-site-type-file)
+- [Equipment File](#repairable_emissions_production_rate-equipment-file)
+- [Sources File](#emissions_production_rate-source-file)
+
+Non-Repairable emissions:
+
+- [Sites File](#non_repairable_emissions_production_rate-sites-file)
+- [Site type File](#non_repairable_emissions_production_rate-site-type-file)
+- [Equipment File](#non_repairable_emissions_production_rate-equipment-file)
+- [Sources File](#emissions_production_rate-source-file)
+
 **Notes on acquisition:** While the "true" emissions production rate is elusive, it can be estimated by dividing the number of emissions found during an LDAR survey at a facility by the number of days that have passed since the previous LDAR survey at the same facility. If this is done for a large number of survey intervals at a large number of facilities, one should eventually converge on a representative estimate. When LDAR-Sim is used, operator-specific emissions production rate values should be estimated if sufficient data exist to do so.
 
 **Notes of caution:**  Available techniques for estimating emissions production rate make a number of problematic assumptions. Ultimately, we have relatively poor data on the emissions production rate and the relationship between the _emission production rate_ and the [maximum duration](#duration-propagating-parameter) of emissions. Modeling results are extremely sensitive to the production rate. Given that the emissions production rate is elusive, we strongly recommend that a broad range of the emissions production rate value is evaluated in LDAR-Sim before any decisions are made. For more information, refer to discussions in the main text and supplementary information of Fox et al. (2021).
 
-When the parameter [multiple emissions per source](#multiple_emissions_per_source-propagating-parameter) is set to False, it will affect the emission production rate observed in the simulation. In this scenario, new emissions won't be generated if there's already an existing emission for the specified [emission source](#emission_rate_source-propagating-parameter).
+When the parameter [multiple emissions per source](#multiple_emissions_per_source-propagating-parameter) is set to False, it will affect the emission production rate observed in the simulation. In this scenario, new emissions won't be generated if there's already an existing emission for the specified [emission source](#emissions_rate_source-propagating-parameter).
 
-Both [emissions production rate](#emissions_production_rate-propagating-parameter) and [emissions rate source](#emission_rate_source-propagating-parameter) must be set for a given repairable or non-repairable emission. The simulator will error out if only one of the two values are provided.
+Both [emissions production rate](#emissions_production_rate-propagating-parameter) and [emissions rate source](#emissions_rate_source-propagating-parameter) must be set for a given repairable or non-repairable emission. The simulator will error out if only one of the two values are provided.
 
 #### &lt;duration&gt; _(propagating parameter)_
 
@@ -817,6 +906,22 @@ Both [emissions production rate](#emissions_production_rate-propagating-paramete
 **Default input:** 365
 
 **Description:** The maximum duration of each emission in number of days. Represents emission removal from the emission pool due to routine maintenance, refits, retrofits, and other reasons.
+
+See the following files for examples on setting this value at a more granular level:
+
+Repairable emissions:
+
+- [Sites File](#repairable_duration-sites-file)
+- [Site type File](#repairable_duration-site-type-file)
+- [Equipment File](#repairable_duration-equipment-file)
+- [Sources File](#duration-source-file)
+
+Non-Repairable emissions:
+
+- [Sites File](#non_repairable_duration-sites-file)
+- [Site type File](#non_repairable_duration-site-type-file)
+- [Equipment File](#non_repairable_duration-equipment-file)
+- [Sources File](#duration-source-file)
 
 **Notes on acquisition:** Estimate from empirical data or use previously published value.
 
@@ -829,6 +934,22 @@ Both [emissions production rate](#emissions_production_rate-propagating-paramete
 **Default input:** True
 
 **Description:** Specifies whether an emission source can generate multiple emissions simultaneously. For instance, a flare that's unlit can't produce additional unlit emissions simultaneously.
+
+See the following files for examples on setting this value at a more granular level:
+
+Repairable emissions:
+
+- [Sites File](#repairable_multiple_emissions_per_source-sites-file)
+- [Site type File](#repairable_multiple_emissions_per_source-site-type-file)
+- [Equipment File](#repairable_multiple_emissions_per_source-equipment-file)
+- [Sources File](#multiple_emissions_per_source-source-file)
+
+Non-Repairable emissions:
+
+- [Sites File](#non_repairable_multiple_emissions_per_source-sites-file)
+- [Site type File](#non_repairable_multiple_emissions_per_source-site-type-file)
+- [Equipment File](#non_repairable_multiple_emissions_per_source-equipment-file)
+- [Sources File](#multiple_emissions_per_source-source-file)
 
 **Notes on acquisition:** Users are encouraged to undertake an exercise to assess whether it's logical for a particular source to generate multiple emissions simultaneously.
 
@@ -1210,6 +1331,13 @@ and `c` represents the optional minimum threshold that the rate must exceed to b
 
 `eg. coverage.spatial = 0.25`. The emission has a 25% chance of being detected regardless of the number of surveys.
 
+See the following files for examples on setting this value at a more granular level:
+
+- [Sites File](#method_spatial-sites-file)
+- [Site type File](#method_spatial-site-type-file)
+- [Equipment File](#method_spatial-equipment-file)
+- [Sources File](#method_spatial-source-file)
+
 **Notes on acquisition:** N/A
 
 **Notes of caution:** Future research is required!
@@ -1228,7 +1356,7 @@ and `c` represents the optional minimum threshold that the rate must exceed to b
 
 **Notes of caution:** Future research is required!
 
-### &lt;cost&gt;  _(propagating parameter)_
+### &lt;cost&gt;
 
 **Description:** The cost to deploy a given method. The type of currency is not considered, but it must be consistent across all cost inputs.
 
@@ -1252,17 +1380,29 @@ and `c` represents the optional minimum threshold that the rate must exceed to b
 
 **Description:** The cost charged by the service provider (per crew per site). It is charged each time a crew is deployed at a site.
 
+See the following files for examples on setting this value at a more granular level:
+
+- [Sites File](#method_survey_cost-sites-file)
+- [Site type File](#method_survey_cost-site-type-file)
+
 **Notes on acquisition:** No data acquisition required.
 
 **Notes of caution:** N/A
 
 #### &lt;upfront&gt;  _(propagating parameter)_
 
+_TODO_ Doesn't exist
+
 **Data type:** Numeric
 
 **Default input:** 0
 
 **Description:** The initial up-front cost of each crew. This cost is only charged once.
+
+See the following files for examples on setting this value at a more granular level:
+
+- [Sites File](#sites_file)
+- [Site type File](#site-type-file)
 
 **Notes on acquisition:** Consult service provider.
 
@@ -1300,6 +1440,11 @@ and `c` represents the optional minimum threshold that the rate must exceed to b
 
 **Description:** An integer indicating the number of required surveys at each facility per calendar year.
 
+See the following files for examples on setting this value at a more granular level:
+
+- [Sites File](#method_surveys_per_year-sites-file)
+- [Site type File](#method_surveys_per_year-site-type-file)
+
 **Notes on acquisition:** Survey frequencies can be based on regulatory requirements, company policies, or can be fabricated by the modeler to explore different scenarios.
 
 **Notes of caution:** Note that just because a number of surveys is prescribed, it does not mean that this number of surveys will necessarily be performed. For example, if labour limitations exist (i.e., not enough crews are available to inspect the number of facilities in the program) or if environmental conditions are unsuitable (i.e., a particular facility is in a cloudy location that cannot be accessed by satellite), the performed number of surveys may be less than the prescribed number. This variable is not required for continuous measurement methods.
@@ -1313,6 +1458,11 @@ and `c` represents the optional minimum threshold that the rate must exceed to b
 **Default input:** N/A
 
 **Description:** The number in minutes required to complete a survey or screening at each facility.
+
+See the following files for examples on setting this value at a more granular level:
+
+- [Sites File](#method_survey_time-sites-file)
+- [Site type File](#method_survey_time-site-type-file)
 
 **Notes on acquisition:** In most cases, an estimate will be made as data will not exist for the specific combination of facility and unique method. However, as new methods and programs are implemented, data will become available to better refine modeling estimates and develop more intelligent programs.
 
@@ -1368,7 +1518,7 @@ and `c` represents the optional minimum threshold that the rate must exceed to b
 
 **Description:** The list of numbers denotes the time in minutes required to plan, travel, setup, take down, required in between surveys. A value is selected at random from the provided list.
 
-### &lt;scheduling&gt;  _(propagating parameter)_
+### &lt;scheduling&gt;
 
 #### &lt;deployment_months&gt;  _(propagating parameter)_
 
@@ -1377,6 +1527,11 @@ and `c` represents the optional minimum threshold that the rate must exceed to b
 **Default input:** [1,2,3,4,5,6,7,8,9,10,11,12]
 
 **Description:** A list of months used for scheduling. Methods can only be deployed during these months. For example, [8,9] indicates methods can only be deployed in August and September. If not defined, LDAR-Sim assumes methods can be deployed every month.
+
+See the following files for examples on setting this value at a more granular level:
+
+- [Sites File](#method_deploy_months-sites-file)
+- [Site type File](#method_deploy_months-site-type-file)
 
 **Notes on acquisition:** N/A
 
@@ -1389,6 +1544,11 @@ and `c` represents the optional minimum threshold that the rate must exceed to b
 **Default input:** N/A
 
 **Description:** A list of years used for scheduling. Methods can only be deployed during these years. For example, [2017,2018] indicates methods can only be deployed in 2017 and 2018\. If not defined, LDAR-Sim assumes methods can be deployed every year.
+
+See the following files for examples on setting this value at a more granular level:
+
+- [Sites File](#method_deploy_years-sites-file)
+- [Site type File](#method_deploy_years-site-type-file)
 
 **Notes on acquisition:** N/A
 
@@ -1589,26 +1749,26 @@ At a minimum it must contain the following columns:
 Other optional columns consist of the following:
 
 - [equipment](#equipment-sites-file)
-- [repairable_repair_delay](#delayrepairs-propagating-parameter)
-- [repairable_repair_cost](#costrepairs-propagating-parameter)
-- [repairable_emissions_rate_source](#emission_rate_source-propagating-parameter)
-- [repairable_emissions_production_rate](#emissions_production_rate-propagating-parameter)
-- [repairable_duration](#duration-propagating-parameter)
-- [repairable_multiple_emissions_per_source](#multiple_emissions_per_source-propagating-parameter)
-- [non_repairable_emissions_rate_source](#emission_rate_source-propagating-parameter)
-- [non_repairable_emissions_production_rate](#emissions_production_rate-propagating-parameter)
-- [non_repairable_duration](#duration-propagating-parameter)
-- [non_repairable_multiple_emissions_per_source](#multiple_emissions_per_source-propagating-parameter)
+- [repairable_repair_delay](#repairable_repair_delay-sites-file)
+- [repairable_repair_cost](#repairable_repair_cost-sites-file)
+- [repairable_emissions_rate_source](#repairable_emissions_rate_source-sites-file)
+- [repairable_emissions_production_rate](#repairable_emissions_production_rate-sites-file)
+- [repairable_duration](#repairable_duration-sites-file)
+- [repairable_multiple_emissions_per_source](#repairable_multiple_emissions_per_source-sites-file)
+- [non_repairable_emissions_rate_source](#non_repairable_emissions_rate_source-sites-file)
+- [non_repairable_emissions_production_rate](#non_repairable_emissions_production_rate-sites-file)
+- [non_repairable_duration](#non_repairable_duration-sites-file)
+- [non_repairable_multiple_emissions_per_source](#non_repairable_multiple_emissions_per_source-sites-file)
 
 Method-specific columns are values that can be defined for a particular method. To use them, replace the `{method}` placeholder with the relevant [method_name](#method_name) that the user is parameterizing. The following method-specific columns are available for the Sites file:
 
-- {method}_[surveys_per_year](#surveys_per_year-propagating-parameter)
-- {method}_[deploy_year](#deployment_years--propagating-parameter)
-- {method}_[deploy_month](#deployment_months--propagating-parameter)
-- {method}_[spatial](#spatial-propagating-parameter)
-- {method}_[survey_time](#survey_time-propagating-parameter)
-- {method}_[survey_cost](#per_site--propagating-parameter)
-- [{method}_site_deployment](#method_site_deployment)
+- {method}_[surveys_per_year](#method_surveys_per_year-sites-file)
+- {method}_[deploy_year](#method_deploy_years-sites-file)
+- {method}_[deploy_month](#method_deploy_months-sites-file)
+- {method}_[spatial](#method_spatial-sites-file)
+- {method}_[survey_time](#method_survey_time-sites-file)
+- {method}_[survey_cost](#method_survey_cost-sites-file)
+- {method}_[site_deployment](#method_site_deployment-sites-file)
 
 **Note:** As with most name-related parameters in LDAR-Sim, the values in the `site_type` and `equipment` columns are case-sensitive and must be consistent across all related files. Any method specific parameters also require the same care with the case-sensitivity and consistency in all relevant files with the method name.
 
@@ -1655,16 +1815,182 @@ Below is an example _Sites file_:
 
 Equipment in LDAR-Sim can be defined in two different ways: as a single integer or as a string of user-defined values.
 
-- Numeric value: Defines the number of placeholder equipment items to create and populate.
-- User-defined value or set of values: Each value provided becomes an equipment group. Users can specify a list of equipment groups that define the given site by separating each item with a comma (,).
+- Numeric value: Defines the number of placeholder equipment items to create and populate. This **must** be a **single** number. For example setting the value to 5 will create `5` placeholder_equipments.
+- One or more equipment identifier: Each value provided becomes an equipment group. Users can specify a list of equipment groups that define the given site by separating each item with a comma (,). For example setting this to `well, flare` will produce 2 equipments, one called _well_ and another called _flare_.
 
 **Note:** When using a user-defined value, it is case-sensitive and must remain consistent with the [equipment file](#equipment-file).
 
 **Note of caution:** Using a numeric value for equipment is a legacy feature from LDAR-Sim V3. It is recommended to use user-defined values or sets of values if your data permits.
 
-#### {method}_site_deployment
+#### repairable_repair_delay (Sites file)
+
+**Description:** This is a propagating parameter that can be set at multiple level of granularity. See [repair delay](#values-delaypropagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value in days.
+
+This parameter can also be set in the following files:
+
+- [Virtual World Parameter file](#values-delaypropagating-parameter)
+- [Site type File](#repairable_repair_delay-site-type-file)
+
+#### repairable_repair_cost (Sites file)
+
+**Description:** This is a propagating parameter that can be set at multiple level of granularity. See [repair cost](#values-cost-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value, representing cost.
+
+This parameter can also be set in the following files:
+
+- [Virtual World Parameter file](#values-cost-propagating-parameter)
+- [Site type File](#repairable_repair_cost-site-type-file)
+
+#### repairable_emissions_rate_source (Sites file)
+
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_rate_source](#emissions_rate_source-propagating-parameter) for more details on what this parameter represents. In this file this is a user defined value, identifying the [source](#source-emission-file) of the repairable emissions for the given site.
+
+This parameter can also be set in the following files:
+
+- [Virtual World Parameter file](#emissions_rate_source-propagating-parameter)
+- [Site type File](#repairable_emissions_rate_source-site-type-file)
+- [Equipment File](#repairable_emissions_rate_source-equipment-file)
+- [Source File](#emissions_rate_source-source-file)
+
+#### repairable_emissions_production_rate (Sites file)
+
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_production_rate](#emissions_production_rate-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value, representing the emission production rate for repairable emissions at the given site per day.
+
+This parameter can also be set in the following files:
+
+- [Virtual World Parameter file](#emissions_production_rate-propagating-parameter)
+- [Site type File](#repairable_emissions_production_rate-site-type-file)
+- [Equipment File](#repairable_emissions_production_rate-equipment-file)
+- [Source File](#emissions_production_rate-source-file)
+
+#### repairable_duration (Sites file)
+
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [duration](#duration-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value in days, representing the maximum emissions duration for repairable emissions.
+
+This parameter can also be set in the following files:
+
+- [Virtual World Parameter file](#duration-propagating-parameter)
+- [Site type File](#repairable_duration-site-type-file)
+- [Equipment File](#repairable_duration-equipment-file)
+- [Source File](#duration-source-file)
+
+#### repairable_multiple_emissions_per_source (Sites file)
+
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [multiple_emissions_per_source](#multiple_emissions_per_source-propagating-parameter) for more details on what this parameter represents. In this file, this is a `TRUE`/`FALSE` value, representing if the given site can have multiple repairable emissions at a given time.
+
+This parameter can also be set in the following files:
+
+- [Virtual World Parameter file](#multiple_emissions_per_source-propagating-parameter)
+- [Site type File](#repairable_multiple_emissions_per_source-site-type-file)
+- [Equipment File](#repairable_multiple_emissions_per_source-equipment-file)
+- [Source File](#multiple_emissions_per_source-source-file)
+
+#### non_repairable_emissions_rate_source (Sites file)
+
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_rate_source](#emissions_rate_source-propagating-parameter) for more details on what this parameter represents. In this file this is a user defined value, identifying the [source](#source-emission-file) of the non-repairable emissions for the given site.
+
+This parameter can also be set in the following files:
+
+- [Virtual World Parameter file](#emissions_rate_source-propagating-parameter)
+- [Site type File](#non_repairable_emissions_rate_source-site-type-file)
+- [Equipment File](#non_repairable_emissions_rate_source-equipment-file)
+- [Source File](#emissions_rate_source-source-file)
+
+#### non_repairable_emissions_production_rate (Sites file)
+
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_production_rate](#emissions_production_rate-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value, representing the emission production rate per day for the non-repairable emissions at the given site.
+
+This parameter can also be set in the following files:
+
+- [Virtual World Parameter file](#emissions_production_rate-propagating-parameter)
+- [Site type File](#non_repairable_emissions_production_rate-site-type-file)
+- [Equipment File](#non_repairable_emissions_production_rate-equipment-file)
+- [Source File](#emissions_production_rate-source-file)
+
+#### non_repairable_duration (Sites file)
+
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [duration](#duration-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value in days, representing the maximum duration of the non-repairable emissions at the given site.
+
+This parameter can also be set in the following files:
+
+- [Virtual World Parameter file](#duration-propagating-parameter)
+- [Site type File](#non_repairable_duration-site-type-file)
+- [Equipment File](#non_repairable_duration-equipment-file)
+- [Source File](#duration-source-file)
+
+#### non_repairable_multiple_emissions_per_source (Sites file)
+
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [multiple_emissions_per_source](#multiple_emissions_per_source-propagating-parameter) for more details on what this parameter represents. In this file, this is a `TRUE`/`FALSE` value, representing if there can be multiple emissions existing at a given time for non-repairable emissions for the given site.
+
+This parameter can also be set in the following files:
+
+- [Virtual World Parameter file](#multiple_emissions_per_source-propagating-parameter)
+- [Site type File](#non_repairable_multiple_emissions_per_source-site-type-file)
+- [Equipment File](#non_repairable_multiple_emissions_per_source-equipment-file)
+- [Source File](#multiple_emissions_per_source-source-file)
+
+#### {method}_surveys_per_year (Sites file)
+
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See[surveys_per_year](#surveys_per_year-propagating-parameter) for more details on what this parameter represents. In this file, this is a single integer representing the number of surveys to be conducted in a given year for the specified site for the specified method.
+
+This parameter can also be set in the following files:
+
+- [Method Parameter file](#surveys_per_year-propagating-parameter)
+- [Site type File](#method_surveys_per_year-site-type-file)
+
+#### {method}_deploy_years (Sites file)
+
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [deploy_year](#deployment_years--propagating-parameter) for more details on what this parameter represents. In this file, this is a list of integers representing which years the specified method can be deployed on.
+
+This parameter can also be set in the following files:
+
+- [Method Parameter file](#deployment_years--propagating-parameter)
+- [Site type File](#method_deploy_years-site-type-file)
+
+#### {method}_deploy_months (Sites file)
+
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See[deploy_month](#deployment_months--propagating-parameter) for more details on what this parameter represents. In this file, this is a list of integers representing which months the specified method can be deployed on.
+
+This parameter can also be set in the following files:
+
+- [Method Parameter file](#deployment_months--propagating-parameter)
+- [Site type File](#method_deploy_months-site-type-file)
+
+#### {method}_spatial (Sites file)
+
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See[spatial](#spatial-propagating-parameter) for more details on what this parameter represents. In this file, this is a single value, representing the chance in which the given method can detect emissions at the given site.
+
+This parameter can also be set in the following files:
+
+- [Method Parameter file](#spatial-propagating-parameter)
+- [Site type file](#method_spatial-site-type-file)
+- [Equipment file](#method_spatial-equipment-file)
+- [Source file](#method_spatial-source-file)
+
+#### {method}_survey_time (Sites file)
+
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [survey_time](#survey_time-propagating-parameter) for more details on what this parameter represents. In this file, this is a single value, representing how long in minutes it takes for the specified method to survey the given site.
+
+This parameter can also be set in the following files:
+
+- [Method Parameter file](#survey_time-propagating-parameter)
+- [Site type file](#method_survey_time-site-type-file)
+
+#### {method}_survey_cost (Sites file)
+
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [survey_cost](#per_site--propagating-parameter) for more details on what this parameter represents. In this file, this is a single value, representing the cost of the specified method to survey the given site.
+
+This parameter can also be set in the following files:
+
+- [Method Parameter file](#per_site--propagating-parameter)
+- [Site type file](#method_survey_cost-site-type-file)
+
+#### {method}_site_deployment (Sites file)
 
 **Description:** A True/False column that indicates whether the specified method will be deployed at the given site type. For example, if the value is set to `FALSE`, the emissions at the site will be simulated, but the method will not be deployed. This is similar to setting the[surveys per year](#surveys_per_year-propagating-parameter) to 0 for the site.
+
+This parameter can also be set in the following file:
+
+- [Site type file](#method_site_deployment-site-type-file)
 
 _TODO_ update description more when the scale up feature is implemented.
 
@@ -1672,31 +1998,31 @@ _TODO_ update description more when the scale up feature is implemented.
 
 ### Site Type File
 
-This is an optional file that is used to define groups of sites. It must contain the `site_type` column. All other columns are optional and based on the user's needs.
+This is an optional file that is used to define groups of sites. It must contain the [site_type](#site_type-site-type-file) column. All other columns are optional and based on the user's needs.
 
 Possible column headers:
 
-- [equipment](#equipment-sites-file)
-- [repairable_repair_delay](#delayrepairs-propagating-parameter)
-- [repairable_repair_cost](#costrepairs-propagating-parameter)
-- [repairable_emissions_rate_source](#emission_rate_source-propagating-parameter)
-- [repairable_emissions_production_rate](#emissions_production_rate-propagating-parameter)
-- [repairable_duration](#duration-propagating-parameter)
-- [repairable_multiple_emissions_per_source](#multiple_emissions_per_source-propagating-parameter)
-- [non_repairable_emissions_rate_source](#emission_rate_source-propagating-parameter)
-- [non_repairable_emissions_production_rate](#emissions_production_rate-propagating-parameter)
-- [non_repairable_duration](#duration-propagating-parameter)
-- [non_repairable_multiple_emissions_per_source](#multiple_emissions_per_source-propagating-parameter)
+- [equipment](#equipment-site-type-file)
+- [repairable_repair_delay](#repairable_repair_delay-site-type-file)
+- [repairable_repair_cost](#repairable_repair_cost-site-type-file)
+- [repairable_emissions_rate_source](#repairable_emissions_rate_source-site-type-file)
+- [repairable_emissions_production_rate](#repairable_emissions_production_rate-site-type-file)
+- [repairable_duration](#repairable_duration-site-type-file)
+- [repairable_multiple_emissions_per_source](#repairable_multiple_emissions_per_source-site-type-file)
+- [non_repairable_emissions_rate_source](#non_repairable_emissions_rate_source-site-type-file)
+- [non_repairable_emissions_production_rate](#non_repairable_emissions_production_rate-site-type-file)
+- [non_repairable_duration](#non_repairable_duration-site-type-file)
+- [non_repairable_multiple_emissions_per_source](#non_repairable_multiple_emissions_per_source-site-type-file)
 
-Method-specific columns are values that can be defined for a particular method. To use them, replace the `{method}` placeholder with the relevant [method_name](#method_name) that the user is parameterizing. The following method-specific columns are available for the Sites file:
+Method-specific columns are values that can be defined for a particular method. To use them, replace the `{method}` placeholder with the relevant [method_name](#method_name) that the user is parameterizing. The following method-specific columns are available for the site type file:
 
-- {method}_[surveys_per_year](#surveys_per_year-propagating-parameter)
-- {method}_[deploy_year](#deployment_years--propagating-parameter)
-- {method}_[deploy_month](#deployment_months--propagating-parameter)
-- {method}_[spatial](#spatial-propagating-parameter)
-- {method}_[survey_time](#survey_time-propagating-parameter)
-- {method}_[survey_cost](#per_site--propagating-parameter)
-- [{method}_site_deployment](#method_site_deployment)
+- {method}_[surveys_per_year](#method_surveys_per_year-site-type-file)
+- {method}_[deploy_years](#method_deploy_years-site-type-file)
+- {method}_[deploy_months](#method_deploy_months-site-type-file)
+- {method}_[spatial](#method_spatial-site-type-file)
+- {method}_[survey_time](#method_survey_time-site-type-file)
+- {method}_[survey_cost](#method_survey_cost-site-type-file)
+- {method}_[site_deployment](#method_site_deployment-site-type-file)
 
 **Note:** As with most name-related parameters in LDAR-Sim, the values in the `site_type` and `equipment` columns are case-sensitive and must be consistent across all related files. Any method specific parameters also require the same care with the case-sensitivity and consistency in all relevant files with the method name.
 
@@ -1731,14 +2057,201 @@ Equipment in LDAR-Sim can be defined in two different ways: as a single integer 
 
 **Note of caution:** Using a numeric value for equipment is a legacy feature from LDAR-Sim V3. It is recommended to use user-defined values or sets of values if your data permits.
 
+#### repairable_repair_delay (Site type file)
+
+**Description:** This is a propagating parameter that can be set at multiple level of granularity. See [repair delay](#values-delaypropagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value in days.
+
+This parameter can also be set in the following files:
+
+- [Virtual World Parameter file](#values-delaypropagating-parameter)
+- [Sites File](#repairable_repair_delay-sites-file)
+
+#### repairable_repair_cost (Site type file)
+
+**Description:** This is a propagating parameter that can be set at multiple level of granularity. See [repair cost](#values-cost-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value, representing cost.
+
+This parameter can also be set in the following files:
+
+- [Virtual World Parameter file](#values-cost-propagating-parameter)
+- [Sites File](#repairable_repair_cost-sites-file)
+
+#### repairable_emissions_rate_source (Site type file)
+
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_rate_source](#emissions_rate_source-propagating-parameter) for more details on what this parameter represents. In this file this is a user defined value, identifying the [source](#source-emission-file) of the repairable emissions for the given site.
+
+This parameter can also be set in the following files:
+
+- [Virtual World Parameter file](#emissions_rate_source-propagating-parameter)
+- [Sites File](#repairable_emissions_rate_source-sites-file)
+- [Equipment File](#repairable_emissions_rate_source-equipment-file)
+- [Source File](#emissions_rate_source-source-file)
+
+#### repairable_emissions_production_rate (Site type file)
+
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_production_rate](#emissions_production_rate-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value, representing the emission production rate for repairable emissions at the given site per day.
+
+This parameter can also be set in the following files:
+
+- [Virtual World Parameter file](#emissions_production_rate-propagating-parameter)
+- [Sites File](#repairable_emissions_production_rate-sites-file)
+- [Equipment File](#repairable_emissions_production_rate-equipment-file)
+- [Source File](#emissions_production_rate-source-file)
+
+#### repairable_duration (Site type file)
+
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [duration](#duration-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value in days, representing the maximum duration of repairable emissions.
+
+This parameter can also be set in the following files:
+
+- [Virtual World Parameter file](#duration-propagating-parameter)
+- [Sites File](#repairable_duration-sites-file)
+- [Equipment File](#repairable_duration-equipment-file)
+- [Source File](#duration-source-file)
+
+#### repairable_multiple_emissions_per_source (Site type file)
+
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [multiple_emissions_per_source](#multiple_emissions_per_source-propagating-parameter) for more details on what this parameter represents. In this file, this is a `TRUE`/`FALSE` value, representing there can be multiple repairable emissions at the given site type at a single point in time.
+
+This parameter can also be set in the following files:
+
+- [Virtual World Parameter file](#multiple_emissions_per_source-propagating-parameter)
+- [Sites File](#repairable_multiple_emissions_per_source-sites-file)
+- [Equipment File](#repairable_multiple_emissions_per_source-equipment-file)
+- [Source File](#multiple_emissions_per_source-source-file)
+
+#### non_repairable_emissions_rate_source (Site type file)
+
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_rate_source](#emissions_rate_source-propagating-parameter) for more details on what this parameter represents. In this file this is a user defined value, identifying the [source](#source-emission-file) of the non-repairable emissions for the given site type.
+
+This parameter can also be set in the following files:
+
+- [Virtual World Parameter file](#emissions_rate_source-propagating-parameter)
+- [Sites File](#non_repairable_emissions_rate_source-sites-file)
+- [Equipment File](#non_repairable_emissions_rate_source-equipment-file)
+- [Source File](#emissions_rate_source-source-file)
+
+#### non_repairable_emissions_production_rate (Site type file)
+
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_production_rate](#emissions_production_rate-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value, representing the emission production rate for non-repairable emissions of the given site type.
+
+This parameter can also be set in the following files:
+
+- [Virtual World Parameter file](#emissions_production_rate-propagating-parameter)
+- [Sites File](#non_repairable_emissions_production_rate-sites-file)
+- [Equipment File](#non_repairable_emissions_production_rate-equipment-file)
+- [Source File](#emissions_production_rate-source-file)
+
+#### non_repairable_duration (Site type file)
+
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [duration](#duration-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value in days, representing the maximum duration of the non-repairable emissions for the given site type.
+
+This parameter can also be set in the following files:
+
+- [Virtual World Parameter file](#duration-propagating-parameter)
+- [Sites File](#non_repairable_duration-sites-file)
+- [Equipment File](#non_repairable_duration-equipment-file)
+- [Source File](#duration-source-file)
+
+#### non_repairable_multiple_emissions_per_source (Site type file)
+
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [multiple_emissions_per_source](#multiple_emissions_per_source-propagating-parameter) for more details on what this parameter represents. In this file, this is a `TRUE`/`FALSE` value, representing if the given site type can have multiple non-repairable emissions at a given time.
+
+This parameter can also be set in the following files:
+
+- [Virtual World Parameter file](#multiple_emissions_per_source-propagating-parameter)
+- [Sites File](#non_repairable_multiple_emissions_per_source-sites-file)
+- [Equipment File](#non_repairable_multiple_emissions_per_source-equipment-file)
+- [Source File](#multiple_emissions_per_source-source-file)
+
+#### {method}_surveys_per_year (Site type file)
+
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See[surveys_per_year](#surveys_per_year-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value representing the number of required surveys per year for the specified method for the given site type.
+
+This parameter can also be set in the following files:
+
+- [Methods Parameter file](#surveys_per_year-propagating-parameter)
+- [Sites file](#method_surveys_per_year-sites-file)
+
+#### {method}_deploy_years (Site type file)
+
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [deploy_year](#deployment_years--propagating-parameter) for more details on what this parameter represents. In this file, this is a list of integers representing which years the specified method can be deployed on at the given site type.
+
+This parameter can also be set in the following files:
+
+- [Methods Parameter file](#deployment_years--propagating-parameter)
+- [Sites file](#method_deploy_years-sites-file)
+
+#### {method}_deploy_months (Site type file)
+
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See[deploy_month](#deployment_months--propagating-parameter) for more details on what this parameter represents. In this file, this is a list of integers representing which months the specified method can be deployed on at the given site type.
+
+This parameter can also be set in the following files:
+
+- [Methods Parameter file](#deployment_months--propagating-parameter)
+- [Sites file](#method_deploy_months-sites-file)
+
+#### {method}_spatial (Site type file)
+
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See[spatial](#spatial-propagating-parameter) for more details on what this parameter represents. In this file, this is a single value, representing the chance in which the given method can detect emissions at the given site type.
+
+This parameter can also be set in the following files:
+
+- [Methods Parameter file](#spatial-propagating-parameter)
+- [Sites file](#method_spatial-sites-file)
+- [Equipment file](method_spatial-equipment-file)
+- [Source file](#method_spatial-source-file)
+
+#### {method}_survey_time (Site type file)
+
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [survey_time](#survey_time-propagating-parameter) for more details on what this parameter represents. In this file, this is a single value, representing how long in minutes it takes for the specified method to survey the given site type.
+
+This parameter can also be set in the following files:
+
+- [Methods Parameter file](#survey_time-propagating-parameter)
+- [Sites file](#method_survey_time-sites-file)
+
+#### {method}_survey_cost (Site type file)
+
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [survey_cost](#per_site--propagating-parameter) for more details on what this parameter represents. In this file, this is a single value, representing the cost of the specified method to survey the given site type.
+
+This parameter can also be set in the following files:
+
+- [Methods Parameter file](#per_site--propagating-parameter)
+- [Sites file](#method_survey_cost-sites-file)
+
+#### {method}_site_deployment (Site type file)
+
+**Description:** A True/False column that indicates whether the specified method will be deployed at the given site type. For example, if the value is set to `FALSE`, the emissions at the site will be simulated, but the method will not be deployed. This is similar to setting the[surveys per year](#surveys_per_year-propagating-parameter) to 0 for the site.
+
+This parameter can also be set in the following file:
+
+- [Sites file](#method_site_deployment-sites-file)
+
+_TODO_ update description more when the scale up feature is implemented.
+
 --------------------------------------------------------------------------------
 
 ### Equipment File
 
 This optional file enables **users to define _equipment_ or equipment groups** for the simulation.
 
-The structure of the file consists of a column defining an _[equipment](#equipment-equipment-file)_, followed by user-defined [components](#component-equipment-file) and their respective counts per the given equipment.
-Through this file, users can specify the counts of _components_ that make up each _equipment_ group. These _equipment_ groups serve as building blocks for constructing complex sites.
+Only the [equipment](#equipment-equipment-file) column is mandatory.
+
+Potential columns are:
+
+- [{component}](#component-equipment-file)
+- [repairable_emissions_rate_source](#repairable_emissions_rate_source-equipment-file)
+- [repairable_emissions_production_rate](#repairable_emissions_production_rate-equipment-file)
+- [repairable_duration](#repairable_duration-equipment-file)
+- [repairable_multiple_emissions_per_source](#repairable_multiple_emissions_per_source-equipment-file)
+- [non_repairable_emissions_rate_source](#non_repairable_emissions_rate_source-equipment-file)
+- [non_repairable_emissions_production_rate](#non_repairable_emissions_production_rate-equipment-file)
+- [non_repairable_duration](#non_repairable_duration-equipment-file)
+- [non_repairable_multiple_emissions_per_source](#non_repairable_multiple_emissions_per_source-equipment-file)
+
+Method-specific columns are values that can be defined for a particular method. To use them, replace the `{method}` placeholder with the relevant [method_name](#method_name) that the user is parameterizing. The following method-specific column is available for the equipment file:
+
+- {method}_[spatial](#method_spatial-equipment-file)
 
 **Note:** As with most name-related parameters in LDAR-Sim, the values in the `equipment` and the user defined _component_ columns are case-sensitive and must be consistent across all related files. Any method specific parameters also require the same care with the case-sensitivity and consistency in all relevant files with the method name.
 
@@ -1764,7 +2277,108 @@ Below is an example of an _equipment file_ that defines 3 different groups:
 
 #### {component} (Equipment File)
 
-**Description:** User defined column headers that define a specific component for the simulation. The values in
+**Description:** The column header is a user defined value of a specific component in the simulation. The values in each column and row indicate how many counts of the given component(column) exists for the given equipment(row). These _equipment_ groups can serve as building blocks for constructing complex sites.
+
+**Note:**The column headers are case-sensitive and must be consistent with the [Source](#component-source-file) where they are defined.
+
+#### repairable_emissions_rate_source (Equipment file)
+
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_rate_source](#emissions_rate_source-propagating-parameter) for more details on what this parameter represents. In this file this is a user defined value, identifying the [source](#source-emission-file) of the repairable emissions for the given equipment.
+
+This parameter can also be set in the following files:
+
+- [Virtual World Parameter file](#emissions_rate_source-propagating-parameter)
+- [Sites File](#repairable_emissions_rate_source-sites-file)
+- [Site type File](#repairable_emissions_rate_source-site-type-file)
+- [Source File](#emissions_rate_source-source-file)
+
+#### repairable_emissions_production_rate (Equipment file)
+
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_production_rate](#emissions_production_rate-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value, representing the emission production rate for repairable emissions at the given equipment per day.
+
+This parameter can also be set in the following files:
+
+- [Virtual World Parameter file](#emissions_production_rate-propagating-parameter)
+- [Sites File](#repairable_emissions_production_rate-sites-file)
+- [Site type File](#repairable_emissions_production_rate-site-type-file)
+- [Source File](#emissions_production_rate-source-file)
+
+#### repairable_duration (Equipment file)
+
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [duration](#duration-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value in days, representing the maximum duration of the repairable emissions of the given equipment.
+
+This parameter can also be set in the following files:
+
+- [Virtual World Parameter file](#duration-propagating-parameter)
+- [Sites File](#repairable_duration-sites-file)
+- [Site type File](#repairable_duration-site-type-file)
+- [Source File](#duration-source-file)
+
+#### repairable_multiple_emissions_per_source (Equipment file)
+
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [multiple_emissions_per_source](#multiple_emissions_per_source-propagating-parameter) for more details on what this parameter represents. In this file, this is a `TRUE`/`FALSE` value, representing if the given equipment can have multiple repairable emissions at a given time.
+
+This parameter can also be set in the following files:
+
+- [Virtual World Parameter file](#multiple_emissions_per_source-propagating-parameter)
+- [Sites File](#repairable_multiple_emissions_per_source-sites-file)
+- [Site type File](#repairable_multiple_emissions_per_source-site-type-file)
+- [Source File](#multiple_emissions_per_source-source-file)
+
+#### non_repairable_emissions_rate_source (Equipment file)
+
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_rate_source](#emissions_rate_source-propagating-parameter) for more details on what this parameter represents. In this file this is a user defined value, identifying the [source](#source-emission-file) of the non-repairable emissions for the given equipment.
+
+This parameter can also be set in the following files:
+
+- [Virtual World Parameter file](#emissions_rate_source-propagating-parameter)
+- [Sites File](#non_repairable_emissions_rate_source-sites-file)
+- [Site type File](#non_repairable_emissions_rate_source-site-type-file)
+- [Source File](#emissions_rate_source-source-file)
+
+#### non_repairable_emissions_production_rate (Equipment file)
+
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_production_rate](#emissions_production_rate-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value, representing the emission production rate for non-repairable emissions at the given equipment per day.
+
+This parameter can also be set in the following files:
+
+- [Virtual World Parameter file](#emissions_production_rate-propagating-parameter)
+- [Sites File](#non_repairable_emissions_production_rate-sites-file)
+- [Site type File](#non_repairable_emissions_production_rate-site-type-file)
+- [Source File](#emissions_production_rate-source-file)
+
+#### non_repairable_duration (Equipment file)
+
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [duration](#duration-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value in days, representing the maximum duration of the non-repairable emissions for the given equipment.
+
+This parameter can also be set in the following files:
+
+- [Virtual World Parameter file](#duration-propagating-parameter)
+- [Sites File](#non_repairable_duration-sites-file)
+- [Site type File](#non_repairable_duration-site-type-file)
+- [Source File](#duration-source-file)
+
+#### non_repairable_multiple_emissions_per_source (Equipment file)
+
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [multiple_emissions_per_source](#multiple_emissions_per_source-propagating-parameter) for more details on what this parameter represents. In this file, this is a `TRUE`/`FALSE` value, representing if the given equipment type can have multiple non-repairable emissions at a given time.
+
+This parameter can also be set in the following files:
+
+- [Virtual World Parameter file](#multiple_emissions_per_source-propagating-parameter)
+- [Sites File](#non_repairable_multiple_emissions_per_source-sites-file)
+- [Site type File](#non_repairable_multiple_emissions_per_source-site-type-file)
+- [Source File](#multiple_emissions_per_source-source-file)
+
+#### {method}_spatial (Equipment file)
+
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See[spatial](#spatial-propagating-parameter) for more details on what this parameter represents. In this file, this is a single value, representing the chance in which the given method can detect emissions at the given equipment.
+
+This parameter can also be set in the following files:
+
+- [Methods Parameter file](#spatial-propagating-parameter)
+- [Sites file](#method_spatial-sites-file)
+- [Site type file](method_spatial-site-type-file)
+- [Source file](#method_spatial-source-file)
 
 --------------------------------------------------------------------------------
 
@@ -1782,14 +2396,14 @@ The sources file has a few mandatory predefined column headers:
 
 And optional column headers that define the emissions:
 
-- emissions_production_rate - see [emissions production rate](#emissions_production_rate-propagating-parameter) for more details
-- emissions_rate_source - see [emissions rate source](#emission_rate_source-propagating-parameter) for more details
-- duration - see [duration](#duration-propagating-parameter) for more details
-- multiple_emissions_per_source - see [multiple emissions per source](#multiple_emissions_per_source-propagating-parameter) for more details
+- [emissions production rate](#emissions_production_rate-source-file)
+- [emissions rate source](#emissions_rate_source-source-file)
+- [duration](#duration-source-file)
+- [multiple emissions per source](#multiple_emissions_per_source-source-file)
 
 Method-specific columns are values that can be defined for a particular method. To use them, replace the `{method}` placeholder with the relevant [method_name](#method_name) that the user is parameterizing. The following method-specific columns are available for the Sites file:
 
-- {method}_[spatial_coverage](#spatial-propagating-parameter)
+- {method}_[spatial](#method_spatial-source-file)
   
 As mentioned above, if the optional columns are not provided, they will be populated with any existing higher-level values. For example, if the duration column is missing but is provided in the virtual world parameter file, LDAR-Sim will populate the durations of the specified component-source with the relevant durations from the virtual world parameter file.
 
@@ -1829,7 +2443,98 @@ This column is case-sensitive and must match the corresponding columns provided 
 
 #### repairable (Source File)
 
-**Description:** A True/False column that defines if the given emission source produces repairable or non-repairable emission.
+**Description:** A True/False column that defines if the given emission source produces repairable(`TRUE`) or non-repairable(`FALSE`) emission.
+
+#### emissions_rate_source (Source file)
+
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_rate_source](#emissions_rate_source-propagating-parameter) for more details on what this parameter represents. In this file this is a user defined value, identifying the [emission source](#source-emission-file) of the emission for the given component.
+
+This parameter can also be set in the following files:
+
+Repairable Emissions:
+
+- [Virtual World Parameter file](#emissions_rate_source-propagating-parameter)
+- [Sites File](#repairable_emissions_rate_source-sites-file)
+- [Site type File](#repairable_emissions_rate_source-site-type-file)
+- [Equipment File](#repairable_emissions_rate_source-equipment-file)
+
+Non-Repairable Emissions:
+
+- [Virtual World Parameter file](#emissions_rate_source-propagating-parameter)
+- [Sites File](#non_repairable_emissions_rate_source-sites-file)
+- [Site type File](#non_repairable_emissions_rate_source-site-type-file)
+- [Equipment File](#non_repairable_emissions_rate_source-equipment-file)
+
+#### emissions_production_rate (Source file)
+
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_production_rate](#emissions_production_rate-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value, representing the emission production rate of the given source at the given component per day.
+
+This parameter can also be set in the following files:
+
+Repairable Emissions:
+
+- [Virtual World Parameter file](#emissions_production_rate-propagating-parameter)
+- [Sites File](#repairable_emissions_production_rate-sites-file)
+- [Site type File](#repairable_emissions_production_rate-site-type-file)
+- [Equipment File](#repairable_emissions_production_rate-equipment-file)
+
+Repairable Emissions:
+
+- [Virtual World Parameter file](#emissions_production_rate-propagating-parameter)
+- [Sites File](#non_repairable_emissions_production_rate-sites-file)
+- [Site type File](#non_repairable_emissions_production_rate-site-type-file)
+- [Equipment File](#non_repairable_emissions_production_rate-equipment-file)
+
+#### duration (Source file)
+
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [duration](#duration-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value in days, representing the maximum duration of the given emission.
+
+This parameter can also be set in the following files:
+
+Repairable emissions:
+
+- [Virtual World Parameter file](#duration-propagating-parameter)
+- [Sites File](#repairable_duration-sites-file)
+- [Site type File](#repairable_duration-site-type-file)
+- [Equipment File](#repairable_duration-equipment-file)
+
+Non-Repairable emissions:
+
+- [Virtual World Parameter file](#duration-propagating-parameter)
+- [Sites File](#non_repairable_duration-sites-file)
+- [Site type File](#non_repairable_duration-site-type-file)
+- [Equipment File](#non_repairable_duration-equipment-file)
+
+#### multiple_emissions_per_source (Source file)
+
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [multiple_emissions_per_source](#multiple_emissions_per_source-propagating-parameter) for more details on what this parameter represents. In this file, this is a `TRUE`/`FALSE` value, representing if the given source can produce multiple emissions at a given time.
+
+This parameter can also be set in the following files:
+
+Repairable emissions:
+
+- [Virtual World Parameter file](#multiple_emissions_per_source-propagating-parameter)
+- [Sites File](#repairable_multiple_emissions_per_source-sites-file)
+- [Site type File](#repairable_multiple_emissions_per_source-site-type-file)
+- [Equipment File](#repairable_multiple_emissions_per_source-equipment-file)
+
+Non-Repairable emissions:
+
+- [Virtual World Parameter file](#multiple_emissions_per_source-propagating-parameter)
+- [Sites File](#non_repairable_multiple_emissions_per_source-sites-file)
+- [Site type File](#non_repairable_multiple_emissions_per_source-site-type-file)
+- [Equipment File](#non_repairable_multiple_emissions_per_source-equipment-file)
+
+#### {method}_spatial (Source file)
+
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See[spatial](#spatial-propagating-parameter) for more details on what this parameter represents. In this file, this is a single value, representing the chance in which the given method can detect the possible emission source.
+
+This parameter can also be set in the following files:
+
+- [Methods Parameter file](#spatial-propagating-parameter)
+- [Sites file](#method_spatial-sites-file)
+- [Site type file](method_spatial-site-type-file)
+- [Equipment file](#method_spatial-equipment-file)
 
 --------------------------------------------------------------------------------
 
@@ -1867,11 +2572,11 @@ Below is an example of an Emissions file:
 
 #### Header
 
-**Description:** A user defined row name, that corresponds to the [emission rate source](#emission_rate_source-propagating-parameter) references used in the virtual world parameters or in the infrastructure files.
+**Description:** A user defined row name, that corresponds to the [emissions rate source](#emissions_rate_source-propagating-parameter) references used in the virtual world parameters or in the infrastructure files.
 
 **Notes on acquisition:** User defined
 
-### Data Use
+#### Data Use
 
 **Description:** Describes way the numerical information in the column is utilized. Valid inputs are:
 
