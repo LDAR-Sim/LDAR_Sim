@@ -328,7 +328,7 @@ class Site:
     def get_required_surveys(self, method_name) -> int:
         return self._survey_frequencies[method_name]
 
-    def check_site_deployable(self, method_name) -> bool:
+    def do_site_deployment(self, method_name) -> bool:
         return self._deploy_method[method_name]
 
     def get_method_survey_time(self, method_name) -> float:

@@ -65,7 +65,7 @@ class GenericSchedule:
             # TODO flush out what survey planner needs as inputs for the constructor
             survey_freq: int = site._survey_frequencies[self._method]
             # TODO: make sure this is in the correct place....
-            deploy_meth: bool = site.check_site_deployable(self._method)
+            deploy_meth: bool = site.do_site_deployment(self._method)
             if survey_freq is None or not deploy_meth:
                 survey_freq = 0
             deploy_year: int = site._deployment_years[self._method]
