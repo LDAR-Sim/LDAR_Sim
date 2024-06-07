@@ -186,6 +186,9 @@ Email: <sally@highwoodemissions.com>
       - [component (Source File)](#component-source-file)
       - [source (Source File)](#source-source-file)
       - [repairable (Source File)](#repairable-source-file)
+      - [persistent (Source File)](#persistent-source-file)
+      - [active\_duration (Source File)](#active_duration-source-file)
+      - [inactive\_duration (Source File)](#inactive_duration-source-file)
       - [repair\_delay (Source file)](#repair_delay-source-file)
       - [repair\_cost (Source file)](#repair_cost-source-file)
       - [emissions\_rate\_source (Source file)](#emissions_rate_source-source-file)
@@ -1887,7 +1890,7 @@ This parameter can also be set in the following files:
 
 #### repairable_multiple_emissions_per_source (Sites file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [multiple_emissions_per_source](#multiple_emissions_per_source-propagating-parameter) for more details on what this parameter represents. In this file, this is a `TRUE`/`FALSE` value, representing if the given site can have multiple repairable emissions at a given time.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [multiple_emissions_per_source](#multiple_emissions_per_source-propagating-parameter) for more details on what this parameter represents. In this file, this is a `TRUE`/`FALSE` value, representing there can be multiple repairable emissions produced by the component-sources at the given site at a single point in time.
 
 This parameter can also be set in the following files:
 
@@ -1898,7 +1901,7 @@ This parameter can also be set in the following files:
 
 #### non_repairable_emissions_rate_source (Sites file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_rate_source](#emissions_rate_source-propagating-parameter) for more details on what this parameter represents. In this file this is a user defined value, identifying the [source](#source-emission-file) of the non-repairable emissions for the given site.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_rate_source](#emissions_rate_source-propagating-parameter) for more details on what this parameter represents. In this file this is a user defined value, that corresponds to the [source](#header) of the non-repairable emissions for the given site. This case-sensitive value specifies which of the potential emissions characteristics in the [emissions file](#emissions-file) should be used for the given non-repairable emissions rate source.
 
 This parameter can also be set in the following files:
 
@@ -1909,7 +1912,7 @@ This parameter can also be set in the following files:
 
 #### non_repairable_emissions_production_rate (Sites file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_production_rate](#emissions_production_rate-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value, representing the emission production rate per day for the non-repairable emissions at the given site.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_production_rate](#emissions_production_rate-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value, representing the chance of a non-repairable emissions occurring at the given site at any given day.
 
 This parameter can also be set in the following files:
 
@@ -1920,7 +1923,7 @@ This parameter can also be set in the following files:
 
 #### non_repairable_duration (Sites file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [duration](#duration-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value in days, representing the maximum duration of the non-repairable emissions at the given site.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [duration](#duration-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value, representing the maximum emissions duration in days for non-repairable emissions.
 
 This parameter can also be set in the following files:
 
@@ -1931,7 +1934,7 @@ This parameter can also be set in the following files:
 
 #### non_repairable_multiple_emissions_per_source (Sites file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [multiple_emissions_per_source](#multiple_emissions_per_source-propagating-parameter) for more details on what this parameter represents. In this file, this is a `TRUE`/`FALSE` value, representing if there can be multiple emissions existing at a given time for non-repairable emissions for the given site.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [multiple_emissions_per_source](#multiple_emissions_per_source-propagating-parameter) for more details on what this parameter represents. In this file, this is a `TRUE`/`FALSE` value, representing there can be multiple non-repairable emissions produced by the component-sources at the given site at a single point in time.
 
 This parameter can also be set in the following files:
 
@@ -1951,7 +1954,7 @@ This parameter can also be set in the following files:
 
 #### {method}_deploy_years (Sites file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [deploy_year](#deployment_years--propagating-parameter) for more details on what this parameter represents. In this file, this is a list of integers representing which years the specified method can be deployed on.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [deploy_year](#deployment_years--propagating-parameter) for more details on what this parameter represents. In this file, this is a list of integers representing which years the specified method can be deployed on for the given site.
 
 This parameter can also be set in the following files:
 
@@ -1960,7 +1963,7 @@ This parameter can also be set in the following files:
 
 #### {method}_deploy_months (Sites file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See[deploy_month](#deployment_months--propagating-parameter) for more details on what this parameter represents. In this file, this is a list of integers representing which months the specified method can be deployed on.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See[deploy_month](#deployment_months--propagating-parameter) for more details on what this parameter represents. In this file, this is a list of integers representing which months the specified method can be deployed on for the given site.
 
 This parameter can also be set in the following files:
 
@@ -1998,7 +2001,7 @@ This parameter can also be set in the following files:
 
 #### {method}_site_deployment (Sites file)
 
-**Description:** A True/False column that indicates whether the specified method will be deployed at the given site type. For example, if the value is set to `FALSE`, the emissions at the site will be simulated, but the method will not be deployed. This is similar to setting the[surveys per year](#surveys_per_year-propagating-parameter) to 0 for the site.
+**Description:** A True/False column that indicates whether the specified method will be deployed at the given site. For example, if the value is set to `FALSE`, the emissions at the site will be simulated, but the method will not be deployed at that site. This is similar to setting the[surveys per year](#surveys_per_year-propagating-parameter) to 0 for the site.
 
 This parameter can also be set in the following file:
 
@@ -2082,7 +2085,7 @@ This parameter can also be set in the following files:
 
 #### repairable_repair_cost (Site type file)
 
-**Description:** This is a propagating parameter that can be set at multiple level of granularity. See [repair cost](#values-cost-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value, representing cost.
+**Description:** This is a propagating parameter that can be set at multiple level of granularity. See [repair cost](#values-cost-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value, representing cost to repair emissions.
 
 This parameter can also be set in the following files:
 
@@ -2104,7 +2107,7 @@ This parameter can also be set in the following files:
 
 #### repairable_emissions_production_rate (Site type file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_production_rate](#emissions_production_rate-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value, representing the emission production rate for repairable emissions at the given site per day.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_production_rate](#emissions_production_rate-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value, representing the chance of a repairable emissions occurring at the given site type at any given day.
 
 This parameter can also be set in the following files:
 
@@ -2115,7 +2118,7 @@ This parameter can also be set in the following files:
 
 #### repairable_duration (Site type file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [duration](#duration-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value in days, representing the maximum duration of repairable emissions.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [duration](#duration-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value, representing the maximum emissions duration in days for repairable emissions.
 
 This parameter can also be set in the following files:
 
@@ -2126,7 +2129,7 @@ This parameter can also be set in the following files:
 
 #### repairable_multiple_emissions_per_source (Site type file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [multiple_emissions_per_source](#multiple_emissions_per_source-propagating-parameter) for more details on what this parameter represents. In this file, this is a `TRUE`/`FALSE` value, representing there can be multiple repairable emissions at the given site type at a single point in time.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [multiple_emissions_per_source](#multiple_emissions_per_source-propagating-parameter) for more details on what this parameter represents. In this file, this is a `TRUE`/`FALSE` value, representing there can be multiple repairable emissions produced by the component-sources at the given site type at a single point in time.
 
 This parameter can also be set in the following files:
 
@@ -2137,7 +2140,7 @@ This parameter can also be set in the following files:
 
 #### non_repairable_emissions_rate_source (Site type file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_rate_source](#emissions_rate_source-propagating-parameter) for more details on what this parameter represents. In this file this is a user defined value, identifying the [source](#source-emission-file) of the non-repairable emissions for the given site type.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_rate_source](#emissions_rate_source-propagating-parameter) for more details on what this parameter represents. In this file this is a user defined value, that corresponds to the [source](#header) of the non-repairable emissions for the given site type. This case-sensitive value specifies which of the potential emissions characteristics in the [emissions file](#emissions-file) should be used for the given non-repairable emissions rate source.
 
 This parameter can also be set in the following files:
 
@@ -2148,7 +2151,7 @@ This parameter can also be set in the following files:
 
 #### non_repairable_emissions_production_rate (Site type file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_production_rate](#emissions_production_rate-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value, representing the emission production rate for non-repairable emissions of the given site type.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_production_rate](#emissions_production_rate-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value, representing the chance of a non-repairable emissions occurring at the given site at any given day.
 
 This parameter can also be set in the following files:
 
@@ -2159,7 +2162,7 @@ This parameter can also be set in the following files:
 
 #### non_repairable_duration (Site type file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [duration](#duration-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value in days, representing the maximum duration of the non-repairable emissions for the given site type.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [duration](#duration-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value, representing the maximum emissions duration in days for non-repairable emissions.
 
 This parameter can also be set in the following files:
 
@@ -2170,7 +2173,7 @@ This parameter can also be set in the following files:
 
 #### non_repairable_multiple_emissions_per_source (Site type file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [multiple_emissions_per_source](#multiple_emissions_per_source-propagating-parameter) for more details on what this parameter represents. In this file, this is a `TRUE`/`FALSE` value, representing if the given site type can have multiple non-repairable emissions at a given time.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [multiple_emissions_per_source](#multiple_emissions_per_source-propagating-parameter) for more details on what this parameter represents. In this file, this is a `TRUE`/`FALSE` value, representing there can be multiple non-repairable emissions produced by the component-sources at the given site type at a single point in time.
 
 This parameter can also be set in the following files:
 
@@ -2190,7 +2193,7 @@ This parameter can also be set in the following files:
 
 #### {method}_deploy_years (Site type file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [deploy_year](#deployment_years--propagating-parameter) for more details on what this parameter represents. In this file, this is a list of integers representing which years the specified method can be deployed on at the given site type.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [deploy_year](#deployment_years--propagating-parameter) for more details on what this parameter represents. In this file, this is a list of integers representing which years the specified method can be deployed on for the given site type.
 
 This parameter can also be set in the following files:
 
@@ -2199,7 +2202,7 @@ This parameter can also be set in the following files:
 
 #### {method}_deploy_months (Site type file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See[deploy_month](#deployment_months--propagating-parameter) for more details on what this parameter represents. In this file, this is a list of integers representing which months the specified method can be deployed on at the given site type.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See[deploy_month](#deployment_months--propagating-parameter) for more details on what this parameter represents. In this file, this is a list of integers representing which months the specified method can be deployed on for the given site type.
 
 This parameter can also be set in the following files:
 
@@ -2237,7 +2240,7 @@ This parameter can also be set in the following files:
 
 #### {method}_site_deployment (Site type file)
 
-**Description:** A True/False column that indicates whether the specified method will be deployed at the given site type. For example, if the value is set to `FALSE`, the emissions at the site will be simulated, but the method will not be deployed. This is similar to setting the[surveys per year](#surveys_per_year-propagating-parameter) to 0 for the site.
+**Description:** A True/False column that indicates whether the specified method will be deployed at the given site type. For example, if the value is set to `FALSE`, the emissions at the site will be simulated, but the method will not be deployed at that site type. This is similar to setting the[surveys per year](#surveys_per_year-propagating-parameter) to 0 for the site.
 
 This parameter can also be set in the following file:
 
@@ -2334,7 +2337,7 @@ This parameter can also be set in the following files:
 
 #### repairable_emissions_production_rate (Equipment file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_production_rate](#emissions_production_rate-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value, representing the emission production rate for repairable emissions at the given equipment per day.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_production_rate](#emissions_production_rate-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value, representing the chance of a repairable emissions occurring at the given equipment at any given day.
 
 This parameter can also be set in the following files:
 
@@ -2345,7 +2348,7 @@ This parameter can also be set in the following files:
 
 #### repairable_duration (Equipment file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [duration](#duration-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value in days, representing the maximum duration of the repairable emissions of the given equipment.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [duration](#duration-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value, representing the maximum emissions duration in days for repairable emissions.
 
 This parameter can also be set in the following files:
 
@@ -2356,7 +2359,7 @@ This parameter can also be set in the following files:
 
 #### repairable_multiple_emissions_per_source (Equipment file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [multiple_emissions_per_source](#multiple_emissions_per_source-propagating-parameter) for more details on what this parameter represents. In this file, this is a `TRUE`/`FALSE` value, representing if the given equipment can have multiple repairable emissions at a given time.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [multiple_emissions_per_source](#multiple_emissions_per_source-propagating-parameter) for more details on what this parameter represents. In this file, this is a `TRUE`/`FALSE` value, representing there can be multiple repairable emissions produced by the component-sources at the given equipment at a single point in time.
 
 This parameter can also be set in the following files:
 
@@ -2367,7 +2370,7 @@ This parameter can also be set in the following files:
 
 #### non_repairable_emissions_rate_source (Equipment file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_rate_source](#emissions_rate_source-propagating-parameter) for more details on what this parameter represents. In this file this is a user defined value, identifying the [source](#source-emission-file) of the non-repairable emissions for the given equipment.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_rate_source](#emissions_rate_source-propagating-parameter) for more details on what this parameter represents. In this file this is a user defined value, that corresponds to the [source](#header) of the non-repairable emissions for the given equipment. This case-sensitive value specifies which of the potential emissions characteristics in the [emissions file](#emissions-file) should be used for the given non-repairable emissions rate source.
 
 This parameter can also be set in the following files:
 
@@ -2378,7 +2381,7 @@ This parameter can also be set in the following files:
 
 #### non_repairable_emissions_production_rate (Equipment file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_production_rate](#emissions_production_rate-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value, representing the emission production rate for non-repairable emissions at the given equipment per day.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_production_rate](#emissions_production_rate-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value, representing the chance of a non-repairable emissions occurring at the given equipment at any given day.
 
 This parameter can also be set in the following files:
 
@@ -2389,7 +2392,7 @@ This parameter can also be set in the following files:
 
 #### non_repairable_duration (Equipment file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [duration](#duration-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value in days, representing the maximum duration of the non-repairable emissions for the given equipment.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [duration](#duration-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value, representing the maximum emissions duration in days for non-repairable emissions.
 
 This parameter can also be set in the following files:
 
@@ -2400,7 +2403,7 @@ This parameter can also be set in the following files:
 
 #### non_repairable_multiple_emissions_per_source (Equipment file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [multiple_emissions_per_source](#multiple_emissions_per_source-propagating-parameter) for more details on what this parameter represents. In this file, this is a `TRUE`/`FALSE` value, representing if the given equipment type can have multiple non-repairable emissions at a given time.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [multiple_emissions_per_source](#multiple_emissions_per_source-propagating-parameter) for more details on what this parameter represents. In this file, this is a `TRUE`/`FALSE` value, representing there can be multiple non-repairable emissions produced by the component-sources at the given equipment at a single point in time.
 
 This parameter can also be set in the following files:
 
@@ -2436,6 +2439,9 @@ The sources file has a few mandatory predefined column headers:
 
 And optional column headers that define the emissions:
 
+- [persistent](#persistent-source-file)
+- [active_duration](#active_duration-source-file)
+- [inactive_duration](#inactive_duration-source-file)
 - [repair_delay](#repair_delay-source-file)
 - [repair_cost](#repair_cost-source-file)
 - [emissions_production_rate](#emissions_production_rate-source-file)
@@ -2486,6 +2492,18 @@ This column is case-sensitive and must match the corresponding columns provided 
 #### repairable (Source File)
 
 **Description:** A True/False column that defines if the given emission source produces repairable(`TRUE`) or non-repairable(`FALSE`) emission.
+
+#### persistent (Source File)
+
+**Description:** A True/False column that defines if the given emission source produces persistent(`TRUE`) or non-persistent(`FALSE`) emission. Non-persistent emissions have a total active duration of the user set parameter [duration](#duration-propagating-parameter). However each active and inactive period is defined by the following parameters respectively, [active_duration](#active_duration-source-file) and [inactive_duration](#inactive_duration-source-file).
+
+#### active_duration (Source File)
+
+**Description:** The number of days that the given non-persistent emission is active for at a given time.
+
+#### inactive_duration (Source File)
+
+**Description:** The number of days that the given non-persistent emission is inactive.
 
 #### repair_delay (Source file)
 
