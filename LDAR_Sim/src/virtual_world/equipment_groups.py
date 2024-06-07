@@ -29,7 +29,7 @@ from file_processing.input_processing.emissions_source_processing import (
     EmissionsSource,
 )
 from scheduling.schedule_dataclasses import TaggingInfo
-from virtual_world.emissions import Emission
+from virtual_world.emission_types.emission import Emission
 from constants.infrastructure_const import Infrastructure_Constants as IC
 from virtual_world.component import Component
 from constants.param_default_const import Common_Params as cp

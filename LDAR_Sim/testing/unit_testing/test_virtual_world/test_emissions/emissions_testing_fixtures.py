@@ -22,7 +22,7 @@ from datetime import date
 from typing import Tuple
 import pytest
 
-from src.virtual_world.emissions import Emission
+from src.virtual_world.emission_types.emission import Emission
 from src.constants.general_const import Emission_Constants as ec
 
 

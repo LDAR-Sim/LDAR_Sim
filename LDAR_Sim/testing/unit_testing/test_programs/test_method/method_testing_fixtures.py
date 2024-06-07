@@ -27,7 +27,7 @@ from collections import defaultdict
 from scheduling.schedule_dataclasses import SiteSurveyReport
 from sensors.default_site_level_sensor import DefaultSiteLevelSensor
 from src.sensors.default_sensor import DefaultSensor
-from src.virtual_world.emissions import Emission
+from src.virtual_world.emission_types.emission import Emission
 from src.scheduling.workplan import Workplan
 from src.scheduling.scheduled_survey_planner import ScheduledSurveyPlanner
 from constants import param_default_const as pdc

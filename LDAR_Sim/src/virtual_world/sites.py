@@ -30,7 +30,7 @@ from file_processing.input_processing.emissions_source_processing import (
     EmissionsSource,
 )
 from scheduling.schedule_dataclasses import TaggingInfo
-from virtual_world.emissions import Emission
+from virtual_world.emission_types.emission import Emission
 from virtual_world.equipment_groups import Equipment_Group
 
 from constants.infrastructure_const import (

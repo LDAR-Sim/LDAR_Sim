@@ -2,7 +2,7 @@ from copy import deepcopy
 from typing import Tuple
 from src.virtual_world.sources import Source
 
-from testing.unit_testing.test_virtual_world.test_sources.sources_testing_fixtures import (  # noqa
+from testing.unit_testing.test_virtual_world.test_sources.sources_testing_resources.sources_testing_fixtures import (  # noqa
     mock_simple_source_constructor_params_fix,
 )
 

@@ -25,12 +25,12 @@ import numpy as np
 import scipy.stats
 from src.virtual_world.sources import Source
 from src.file_processing.input_processing.emissions_source_processing import EmissionsSourceSample
-from testing.unit_testing.test_virtual_world.test_sources.sources_testing_fixtures import (  # noqa
+from testing.unit_testing.test_virtual_world.test_sources.sources_testing_resources.sources_testing_fixtures import (  # noqa
     mock_source_and_args_for_generate_emissions_fix,
     mock_simple_source_constructor_params_fix,
     mock_source_and_args_for_generate_emissions_same_st_ed_fix,
 )
-from virtual_world.emissions import Emission
+from virtual_world.emission_types.emission import Emission
 
 
 def mock_source_init(self, *args, **kwargs) -> None:

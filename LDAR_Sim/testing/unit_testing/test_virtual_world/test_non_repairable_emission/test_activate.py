@@ -1,7 +1,7 @@
 from datetime import date
-from src.virtual_world.nonfugitive_emissions import NonRepairableEmission
+from virtual_world.emission_types.non_repairable_emissions import NonRepairableEmission
 from src.constants.general_const import Emission_Constants as ec
-from testing.unit_testing.test_virtual_world.test_nonfugitive_emissions.nonfugitive_emission_testing_fixtures import (  # noqa
+from testing.unit_testing.test_virtual_world.test_non_repairable_emission.non_repairable_emission_testing_fixtures import (  # noqa
     mock_simple_nonfugitive_emission_for_activate_testing_1_fix,
 )
 

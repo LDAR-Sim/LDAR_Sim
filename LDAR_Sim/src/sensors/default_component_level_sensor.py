@@ -25,7 +25,7 @@ from scheduling.schedule_dataclasses import (
     SiteSurveyReport,
 )
 from sensors.default_sensor import DefaultSensor
-from virtual_world.emissions import Emission
+from virtual_world.emission_types.emission import Emission
 from virtual_world.sites import Site
 from constants.param_default_const import Levels
 

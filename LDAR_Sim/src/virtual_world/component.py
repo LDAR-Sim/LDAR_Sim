@@ -33,9 +33,9 @@ from file_processing.input_processing.emissions_source_processing import (
 )
 from scheduling.schedule_dataclasses import TaggingInfo
 from constants.output_file_constants import EMIS_DATA_COL_ACCESSORS as eca
-from virtual_world.emissions import Emission
-from virtual_world.fugitive_emission import FugitiveEmission
-from virtual_world.nonfugitive_emissions import NonRepairableEmission
+from virtual_world.emission_types.emission import Emission
+from virtual_world.emission_types.repairable_emission import RepairableEmission
+from virtual_world.emission_types.non_repairable_emissions import NonRepairableEmission
 from constants.infrastructure_const import Infrastructure_Constants as IC
 from constants.error_messages import Initialization_Messages as im
 from virtual_world.sources import Source
@@ -204,7 +204,7 @@ class Component:
         # TODO improve this logic
         emission_rate = tagging_info.measured_rate / len(self._active_emissions)
         for emission in self._active_emissions:
-            if isinstance(emission, FugitiveEmission):
+            if isinstance(emission, RepairableEmission):
                 emission.tag_leak(
                     measured_rate=emission_rate,
                     cur_date=tagging_info.curr_date,

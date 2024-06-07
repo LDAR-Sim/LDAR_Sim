@@ -172,6 +172,7 @@ class Versioning_Messages:
 
 
 class Initialization_Messages:
+    SOURCE_INFO_MISSING_KEY_MSG = "Error: Missing required source information: {key}"
     POTENTIAL_SOURCE_CREATION_ERROR_MESSAGE = (
         "Error creating emissions sources, they were only partially defined. "
         "Please input a value for the parameter '{rep} {const}' and rerun the simulation."

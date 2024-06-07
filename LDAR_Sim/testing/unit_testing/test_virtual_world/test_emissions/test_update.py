@@ -18,7 +18,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 ------------------------------------------------------------------------------
 """
 
-from src.virtual_world.emissions import Emission
+from src.virtual_world.emission_types.emission import Emission
 from src.file_processing.output_processing.output_utils import EmisInfo
 from testing.unit_testing.test_virtual_world.test_emissions.emissions_testing_fixtures import (  # Noqa
     mock_simple_emission_1_fix,

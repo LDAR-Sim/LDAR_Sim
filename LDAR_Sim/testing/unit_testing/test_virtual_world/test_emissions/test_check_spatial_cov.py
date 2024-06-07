@@ -1,6 +1,6 @@
 import numpy as np
 from typing import Tuple
-from virtual_world.emissions import Emission
+from virtual_world.emission_types.emission import Emission
 
 from testing.unit_testing.test_virtual_world.test_emissions.emissions_testing_fixtures import (  # Noqa
     mock_simple_emission_spat_cov_testing_1_fix,

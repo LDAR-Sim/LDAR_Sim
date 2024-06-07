@@ -21,7 +21,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 from datetime import date, timedelta
 from typing import Tuple
 from hypothesis import given, strategies as st
-from src.virtual_world.nonfugitive_emissions import NonRepairableEmission
+from virtual_world.emission_types.non_repairable_emissions import NonRepairableEmission
 
 
 def mock_simple_nonfugitive_emission_for_est_start_date_testing_1() -> NonRepairableEmission:

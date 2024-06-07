@@ -21,7 +21,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 from typing import Union
 from scheduling.schedule_dataclasses import SiteSurveyReport
 from sensors.default_sensor import DefaultSensor
-from virtual_world.emissions import Emission
+from virtual_world.emission_types.emission import Emission
 from virtual_world.sites import Site
 from constants.param_default_const import Levels
 
