@@ -19,7 +19,8 @@
 #
 # ------------------------------------------------------------------------------
 
-from typing import Any, override
+from typing import Any
+from typing_extensions import override
 
 from parameters.genric_parameters import GenericParameters
 from constants import sensitivity_analysis_constants as sens_const

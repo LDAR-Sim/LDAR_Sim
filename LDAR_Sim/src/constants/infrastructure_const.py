@@ -59,6 +59,8 @@ class Infrastructure_Constants:
         SURVEY_TIME_PLACEHOLDER = "_survey_time"  # Survey Time - Method specific
         SURVEY_COST_PLACEHOLDER = "_survey_cost"  # Survey Cost - Method specific
 
+        SITE_DEPLOYMENT_PLACEHOLDER = "_site_deployment"  # Site deployment - Method specific
+
         PROPAGATING_PARAMS: list[str] = [
             REP_EMIS_ERS,
             REP_EMIS_EPR,
@@ -77,6 +79,7 @@ class Infrastructure_Constants:
             SURVEY_FREQUENCY_PLACEHOLDER,
             SURVEY_COST_PLACEHOLDER,
             SURVEY_TIME_PLACEHOLDER,
+            SITE_DEPLOYMENT_PLACEHOLDER,
         ]
 
         REQUIRED_HEADERS: list[str] = [ID, LAT, LON, TYPE]
@@ -153,6 +156,8 @@ class Infrastructure_Constants:
         DEPLOYMENT_YEARS_PLACEHOLDER = "_deploy_year"  # Deployment Year - Method specific
         DEPLOYMENT_MONTHS_PLACEHOLDER = "_deploy_month"  # Deployment Month - Method specific
 
+        SITE_DEPLOYMENT_PLACEHOLDER = "_site_deployment"  # Site deployment - Method specific
+
         PROPAGATING_PARAMS: list[str] = [
             REP_EMIS_ERS,
             REP_EMIS_EPR,
@@ -173,6 +178,7 @@ class Infrastructure_Constants:
             SURVEY_TIME_PLACEHOLDER,
             DEPLOYMENT_MONTHS_PLACEHOLDER,
             DEPLOYMENT_YEARS_PLACEHOLDER,
+            SITE_DEPLOYMENT_PLACEHOLDER,
         ]
 
 
@@ -249,18 +255,28 @@ class Virtual_World_To_Prop_Params_Mapping:
     }
 
     METH_SPEC_PROP_PARAMS: dict[str, str] = {
+        Infrastructure_Constants.Sites_File_Constants.SPATIAL_PLACEHOLDER: ".".join(
+            [param_default_const.Method_Params.COVERAGE, param_default_const.Method_Params.SPATIAL]
+        ),
         (
             Infrastructure_Constants.Sites_File_Constants
-        ).SPATIAL_PLACEHOLDER: "coverage.spatial",  # noqa
+        ).SURVEY_FREQUENCY_PLACEHOLDER: param_default_const.Method_Params.RS,
+        (Infrastructure_Constants.Sites_File_Constants).SURVEY_COST_PLACEHOLDER: ".".join(
+            [param_default_const.Method_Params.COST, param_default_const.Method_Params.PER_SITE]
+        ),
         (
             Infrastructure_Constants.Sites_File_Constants
-        ).SURVEY_FREQUENCY_PLACEHOLDER: "surveys_per_year",
-        (Infrastructure_Constants.Sites_File_Constants).SURVEY_COST_PLACEHOLDER: "cost.per_site",
-        (Infrastructure_Constants.Sites_File_Constants).SURVEY_TIME_PLACEHOLDER: "survey_time",
-        (
-            Infrastructure_Constants.Site_Type_File_Constants
-        ).DEPLOYMENT_MONTHS_PLACEHOLDER: "scheduling.deployment_months",
-        (
-            Infrastructure_Constants.Site_Type_File_Constants
-        ).DEPLOYMENT_YEARS_PLACEHOLDER: "scheduling.deployment_years",
+        ).SURVEY_TIME_PLACEHOLDER: param_default_const.Method_Params.TIME,
+        (Infrastructure_Constants.Site_Type_File_Constants).DEPLOYMENT_MONTHS_PLACEHOLDER: ".".join(
+            [
+                param_default_const.Method_Params.SCHEDULING,
+                param_default_const.Method_Params.DEPLOYMENT_MONTHS,
+            ]
+        ),
+        (Infrastructure_Constants.Site_Type_File_Constants).DEPLOYMENT_YEARS_PLACEHOLDER: ".".join(
+            [
+                param_default_const.Method_Params.SCHEDULING,
+                param_default_const.Method_Params.DEPLOYMENT_YEARS,
+            ]
+        ),
     }

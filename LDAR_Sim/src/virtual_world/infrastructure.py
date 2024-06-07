@@ -96,6 +96,14 @@ class Infrastructure:
                 for path in access_path:
                     val = val[path]
                 prop_params_dict[pdc.Common_Params.METH_SPECIFIC][param][method] = val
+        # By default set all methods to be deployed at all sites
+        prop_params_dict[pdc.Common_Params.METH_SPECIFIC][
+            IC.Sites_File_Constants.SITE_DEPLOYMENT_PLACEHOLDER
+        ] = {}
+        for meth in methods:
+            prop_params_dict[pdc.Common_Params.METH_SPECIFIC][
+                IC.Sites_File_Constants.SITE_DEPLOYMENT_PLACEHOLDER
+            ][meth] = True
         return prop_params_dict
 
     def update_propagating_params(
@@ -118,18 +126,18 @@ class Infrastructure:
                     if site_type_val is not None:
                         prop_params[pdc.Common_Params.METH_SPECIFIC][param][method] = site_type_val
 
-            # Updating propagating parameters with site info
-            for param in IC.Sites_File_Constants.PROPAGATING_PARAMS:
-                site_val = site_row_df_info.get(param, None)
-                if site_val is not None:
-                    prop_params[param] = site_val
+        # Updating propagating parameters with site info
+        for param in IC.Sites_File_Constants.PROPAGATING_PARAMS:
+            site_val = site_row_df_info.get(param, None)
+            if site_val is not None:
+                prop_params[param] = site_val
 
-            # Update method specific propagating params with site info
-            for method in methods:
-                for param in IC.Sites_File_Constants.METH_SPEC_PROP_PARAMS:
-                    site_val = site_row_df_info.get(method + param, None)
-                    if site_val is not None:
-                        prop_params[pdc.Common_Params.METH_SPECIFIC][param][method] = site_val
+        # Update method specific propagating params with site info
+        for method in methods:
+            for param in IC.Sites_File_Constants.METH_SPEC_PROP_PARAMS:
+                site_val = site_row_df_info.get(method + param, None)
+                if site_val is not None:
+                    prop_params[pdc.Common_Params.METH_SPECIFIC][param][method] = site_val
 
     def set_pregen_emissions(self, emissions, sim_number) -> None:
         for site in self._sites:
