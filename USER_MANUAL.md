@@ -2077,6 +2077,8 @@ This parameter can also be set in the following files:
 
 - [Virtual World Parameter file](#values-delaypropagating-parameter)
 - [Sites File](#repairable_repair_delay-sites-file)
+- [Equipment File](#repairable_repair_delay-equipment-file)
+- [Source File](#repair_delay-source-file)
 
 #### repairable_repair_cost (Site type file)
 
@@ -2087,7 +2089,7 @@ This parameter can also be set in the following files:
 - [Virtual World Parameter file](#values-cost-propagating-parameter)
 - [Sites File](#repairable_repair_cost-sites-file)
 - [Equipment File](#repairable_repair_cost-equipment-file)
-- [Source File](#repair_cost-equipment-file)
+- [Source File](#repair_cost-source-file)
 
 #### repairable_emissions_rate_source (Site type file)
 
@@ -2255,6 +2257,7 @@ Potential columns are:
 
 - [{component}](#component-equipment-file)
 - [repairable_repair_delay](#repairable_repair_delay-equipment-file)
+- [repairable_repair_cost](#repairable_repair_cost-equipment-file)
 - [repairable_emissions_rate_source](#repairable_emissions_rate_source-equipment-file)
 - [repairable_emissions_production_rate](#repairable_emissions_production_rate-equipment-file)
 - [repairable_duration](#repairable_duration-equipment-file)
@@ -2316,7 +2319,7 @@ This parameter can also be set in the following files:
 - [Virtual World Parameter file](#values-cost-propagating-parameter)
 - [Sites File](#repairable_repair_cost-sites-file)
 - [Site type File](#repairable_repair_cost-site-type-file)
-- [Source File](#repair_cost-equipment-file)
+- [Source File](#repair_cost-source-file)
 
 #### repairable_emissions_rate_source (Equipment file)
 
