@@ -44,4 +44,4 @@ rolling_average:
   small_window: 7 # days
   large_window: 30 # days
   small_window_threshold: 0.0 # g/s
-  large_window_threshold: 0.0 # g/s
+  large_window_threshold: "_placeholder_float_" # g/s

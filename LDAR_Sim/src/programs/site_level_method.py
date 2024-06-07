@@ -134,9 +134,9 @@ class SiteLevelMethod(Method):
                     if existing_plan.rate_at_site >= self._inst_threshold:
                         self._follow_up_schedule.add_previous_queued_to_survey_queue(existing_plan)
                     elif self._deployment_type == pdc.Deployment_Types.STATIONARY:
-                        if (
-                            existing_plan.rate_at_site >= self._small_window_threshold
-                            or existing_plan.rate_at_site_long >= self._large_window_threshold
+                        if existing_plan.rate_at_site >= self._small_window_threshold or (
+                            self._large_window_threshold is not None
+                            and existing_plan.rate_at_site_long >= self._large_window_threshold
                         ):
                             self._candidates_for_flags.add(existing_plan)
                     elif existing_plan.rate_at_site >= self._threshold:
@@ -159,9 +159,9 @@ class SiteLevelMethod(Method):
                     if existing_plan.rate_at_site >= self._inst_threshold:
                         self._follow_up_schedule.add_previous_queued_to_survey_queue(existing_plan)
                     elif self._deployment_type == pdc.Deployment_Types.STATIONARY:
-                        if (
-                            existing_plan.rate_at_site >= self._small_window_threshold
-                            or existing_plan.rate_at_site_long >= self._large_window_threshold
+                        if existing_plan.rate_at_site >= self._small_window_threshold or (
+                            self._large_window_threshold is not None
+                            and existing_plan.rate_at_site_long >= self._large_window_threshold
                         ):
                             self._follow_up_schedule.add_to_survey_queue(existing_plan)
                     elif existing_plan.rate_at_site >= self._threshold:
@@ -177,8 +177,11 @@ class SiteLevelMethod(Method):
                     # if the detected rate is non-zero, and above the threshold add to queue
                     elif self._deployment_type == pdc.Deployment_Types.STATIONARY:
                         if detection_record.rate_detected != 0 and (
-                            detection_record.rate_detected >= self._small_window_threshold
-                            or detection_record.rate_detected >= self._large_window_threshold
+                            existing_plan.rate_at_site >= self._small_window_threshold
+                            or (
+                                self._large_window_threshold is not None
+                                and existing_plan.rate_at_site_long >= self._large_window_threshold
+                            )
                         ):
                             self._candidates_for_flags.add(
                                 FollowUpSurveyPlanner(detection_record, date_to_check)

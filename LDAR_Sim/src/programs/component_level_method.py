@@ -152,7 +152,7 @@ class ComponentLevelMethod(Method):
                 assigned_crew: CrewDailyReport
 
                 # Send the crew to attempt to survey the site
-                survey_report, travel_time, last_site_survey, n_site_visited = self.survey_site(
+                survey_report, travel_time, last_site_survey, site_visited = self.survey_site(
                     crew=assigned_crew,
                     survey_report=survey_report,
                     site_to_survey=site_to_survey,
@@ -163,7 +163,8 @@ class ComponentLevelMethod(Method):
                 travel_time: float
                 last_site_survey: bool
                 # Tracking Deployment statistics
-                deploy_stats.sites_visited += n_site_visited
+                if site_visited:
+                    deploy_stats.sites_visited += 1
                 deploy_stats.travel_time += travel_time
                 deploy_stats.survey_time += survey_report.time_surveyed
 

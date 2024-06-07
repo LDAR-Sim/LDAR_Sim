@@ -320,13 +320,17 @@ class StationarySurveyPlanner(ScheduledSurveyPlanner):
             bool: Boolean indicating if the site should be queued to be surveyed.
             True if the site should be queued to be surveyed, False otherwise.
         """
+        # check it's a valid year
         if self._check_deployable_year() is False:
             return False
+        # check if it's a valid deployment month
         if self._check_deployable_month() is False:
             return False
+        # check if if the site has already been queued
         elif self._queued is False:
             self._queued = True
             return True
+        # if site has already been queued, return false.
         return False
 
 

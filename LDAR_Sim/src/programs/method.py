@@ -238,7 +238,7 @@ class Method:
                 assigned_crew: CrewDailyReport
 
                 # Send the crew to attempt to survey the site
-                survey_report, travel_time, last_site_survey, n_site_visited = self.survey_site(
+                survey_report, travel_time, last_site_survey, site_visited = self.survey_site(
                     crew=assigned_crew,
                     survey_report=survey_report,
                     site_to_survey=site_to_survey,
@@ -249,7 +249,8 @@ class Method:
                 travel_time: float
                 last_site_survey: bool
                 # Tracking Deployment statistics
-                deploy_stats.sites_visited += n_site_visited
+                if site_visited:
+                    deploy_stats.sites_visited += 1
                 deploy_stats.travel_time += travel_time
                 deploy_stats.survey_time += survey_report.time_surveyed
 
@@ -320,13 +321,13 @@ class Method:
         workable: bool = True
         last_site_survey: bool = False
         site_travel_time: float = 0
-        site_visit: int = 0
+        site_visit: bool = False
         if self._weather:
             # if weather is considered
             workable: bool = self.check_weather(weather, curr_date, site_to_survey)
 
         if workable:
-            site_visit = 1
+            site_visit = True
             if self._deployment_type == pdc.Deployment_Types.STATIONARY:
                 site_survey_time: float = 0
                 site_travel_time: float = 0

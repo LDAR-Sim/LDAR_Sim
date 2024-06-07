@@ -1773,19 +1773,19 @@ The follow-up [delay](#delay-follow_up) parameter can be set to require multiple
 
 **Notes of acquisition:** N/A
 
-**Notes of caution:** N/A
+**Notes of caution:** When using the [stationary deployment type](#deployment_type),only the `small_window_threshold` is used by default. To enable two different rolling average considerations for the method, users will need to set the [large_window_threshold](#large_window_threshold).
 
 #### large_window_threshold
 
 **Data Type:** Numeric(Float)
 
-**Default input:** 0.0
+**Default input:** _placeholder_float_
 
-**Description:** The threshold in grams per second to consider when triggering follow-up work practices, based on the larger window rolling average.
+**Description:** The threshold in grams per second to consider when triggering follow-up work practices, based on the larger window rolling average. This is an optional second threshold value; if not set, the method will only consider the [small_window_threshold](#small_window_threshold) for triggering follow-up work practices.
 
 **Notes of acquisition:** N/A
 
-**Notes of caution:** N/A
+**Notes of caution:** When using the [stationary deployment type](#deployment_type),only the [small_window_threshold](#small_window_threshold) is used by default. To enable two different rolling average considerations for the method, users will need to set the `large_window_threshold`.
 
 --------------------------------------------------------------------------------
 
