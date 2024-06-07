@@ -20,10 +20,10 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 from typing import Any, Tuple
 from datetime import date
-from testing.unit_testing.test_virtual_world.test_nonfugitive_emissions.nonfugitive_emission_testing_fixtures import (  # noqa
+from testing.unit_testing.test_virtual_world.test_non_repairable_emission.non_repairable_emission_testing_fixtures import (  # noqa
     mock_simple_emission_for_get_summary_dict_1_fix,
 )
-from src.virtual_world.nonfugitive_emissions import NonRepairableEmission
+from virtual_world.emission_types.non_repairable_emissions import NonRepairableEmission
 
 
 def test_000_get_summary_dict_fe_returns_expected_values_for_simple_case(

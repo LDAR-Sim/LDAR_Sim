@@ -1,7 +1,7 @@
 from file_processing.output_processing.output_utils import EmisInfo
-from src.virtual_world.nonfugitive_emissions import NonRepairableEmission
+from virtual_world.emission_types.non_repairable_emissions import NonRepairableEmission
 
-from testing.unit_testing.test_virtual_world.test_nonfugitive_emissions.nonfugitive_emission_testing_fixtures import (  # noqa
+from testing.unit_testing.test_virtual_world.test_non_repairable_emission.non_repairable_emission_testing_fixtures import (  # noqa
     mock_nonfugitive_emission_for_update_no_status_change_fix,
     mock_nonfugitive_emission_for_update_no_status_change_emission_recorded_fix,
     mock_nonfugitive_emission_for_update_will_expire_fix,

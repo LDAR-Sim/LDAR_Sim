@@ -22,7 +22,7 @@ from datetime import date
 from typing import Tuple
 import pytest
 
-from src.virtual_world.nonfugitive_emissions import NonRepairableEmission
+from virtual_world.emission_types.non_repairable_emissions import NonRepairableEmission
 from src.constants.general_const import Emission_Constants as ec
 
 

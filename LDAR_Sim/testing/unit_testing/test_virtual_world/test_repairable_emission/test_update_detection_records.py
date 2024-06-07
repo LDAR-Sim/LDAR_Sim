@@ -1,15 +1,15 @@
 import copy
 from datetime import date
-from virtual_world.fugitive_emission import FugitiveEmission
+from virtual_world.emission_types.repairable_emission import RepairableEmission
 
-from testing.unit_testing.test_virtual_world.test_fugitive_emission.fugitive_emission_testing_fixtures import (  # noqa
+from testing.unit_testing.test_virtual_world.test_repairable_emission.repairable_emission_testing_fixtures import (  # noqa
     mock_fugitive_emission_for_update_detection_records_no_prior_detection_fix,
     mock_fugitive_emission_for_update_detection_records_w_prior_detection_fix,
 )
 
 
 def test_000_update_detection_records_correctly_sets_detection_info_where_no_prior_detection(
-    mock_fugitive_emission_for_update_detection_records_no_prior_detection: FugitiveEmission,
+    mock_fugitive_emission_for_update_detection_records_no_prior_detection: RepairableEmission,
 ) -> None:
     detec_company = "Testing"
     detec_date = date(*[2020, 1, 1])
@@ -27,7 +27,7 @@ def test_000_update_detection_records_correctly_sets_detection_info_where_no_pri
 
 
 def test_000_update_detection_records_does_not_overwrite_prior_detection_record_if_existing(
-    mock_fugitive_emission_for_update_detection_records_w_prior_detection: FugitiveEmission,
+    mock_fugitive_emission_for_update_detection_records_w_prior_detection: RepairableEmission,
 ) -> None:
     prev_detect_company = copy.deepcopy(
         mock_fugitive_emission_for_update_detection_records_w_prior_detection._init_detect_by

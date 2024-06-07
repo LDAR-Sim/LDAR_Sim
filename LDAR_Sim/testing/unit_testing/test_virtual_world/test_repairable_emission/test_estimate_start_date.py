@@ -21,11 +21,13 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 from datetime import date, timedelta
 from typing import Tuple
 from hypothesis import given, strategies as st
-from src.virtual_world.fugitive_emission import FugitiveEmission
+from virtual_world.emission_types.repairable_emission import RepairableEmission
 
 
-def mock_simple_fugitive_emission_for_est_start_date_testing_1() -> FugitiveEmission:
-    return FugitiveEmission(1, 1, date(*[2018, 1, 1]), date(*[2017, 1, 1]), False, {}, 14, 200, 365)
+def mock_simple_fugitive_emission_for_est_start_date_testing_1() -> RepairableEmission:
+    return RepairableEmission(
+        1, 1, date(*[2018, 1, 1]), date(*[2017, 1, 1]), False, {}, 14, 200, 365
+    )
 
 
 @st.composite
@@ -41,7 +43,7 @@ def gen_valid_est_start_date_testing_data(draw):
 def test_000_estimate_start_date_estimates_correct_with_with_valid_t_since_ldar(
     test_data: Tuple[int, date, date],
 ) -> None:
-    fug_emis: FugitiveEmission = mock_simple_fugitive_emission_for_est_start_date_testing_1()
+    fug_emis: RepairableEmission = mock_simple_fugitive_emission_for_est_start_date_testing_1()
     time_since_ldar, cur_dt, ans = test_data
     exp_est_dt, est_days_active = ans
     fug_emis.estimate_start_date(cur_dt, time_since_ldar)

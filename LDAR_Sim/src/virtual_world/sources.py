@@ -29,9 +29,7 @@ from constants.error_messages import Initialization_Messages as im
 from file_processing.input_processing.emissions_source_processing import (
     EmissionsSource,
 )
-from virtual_world.emissions import Emission
-from virtual_world.fugitive_emission import FugitiveEmission
-from virtual_world.nonfugitive_emissions import NonRepairableEmission
+from virtual_world import emission_types
 from constants.infrastructure_const import (
     Infrastructure_Constants as IC,
 )
@@ -43,12 +41,9 @@ class Source:
 
     def __init__(self, id: str, info, prop_params) -> None:
         self._source_ID: str = id
-        self._repairable: bool = info[IC.Sources_File_Constants.REPAIRABLE]
-        self._persistent: bool = info[IC.Sources_File_Constants.PERSISTENT]
-        self._active_duration: int = info[IC.Sources_File_Constants.ACTIVE_DUR]
-        self._inactive_duration: int = info[IC.Sources_File_Constants.INACTIVE_DUR]
+        self._set_source_only_properties(info=info)
         self._multi_emissions: bool = None
-        self._generated_emissions: dict[int, list[Emission]] = {}
+        self._generated_emissions: dict[int, list[emission_types.Emission]] = {}
         self._emis_rate_source: EmissionsSource = None
         self._emis_prod_rate: float = None
         self._emis_duration: int = None
@@ -58,8 +53,8 @@ class Source:
         self._prefix: Literal["repairable", "non_repairable"] = None
         self._set_prefix()
         self._update_prop_params(info=info, prop_params=prop_params)
-        self._set_source_properties(prop_params=prop_params)
-        self._next_emission: Emission = None
+        self._set_propagating_source_properties(prop_params=prop_params)
+        self._next_emission: emission_types.Emission = None
 
     def __reduce__(self):
         args = (
@@ -120,6 +115,16 @@ class Source:
         instance._prefix = prefix
         return instance
 
+    def _set_source_only_properties(self, info) -> None:
+        try:
+            self._repairable: bool = info[IC.Sources_File_Constants.REPAIRABLE]
+            self._persistent: bool = info[IC.Sources_File_Constants.PERSISTENT]
+            self._active_duration: int = info[IC.Sources_File_Constants.ACTIVE_DUR]
+            self._inactive_duration: int = info[IC.Sources_File_Constants.INACTIVE_DUR]
+        except KeyError as e:
+            print(im.SOURCE_INFO_MISSING_KEY_MSG.format(key=e))
+            sys.exit()
+
     def _set_prefix(self) -> None:
         prefix: Literal["repairable", "non_repairable"] = (
             ec.REP_PREFIX if self._repairable else ec.NON_REP_PREFIX
@@ -148,7 +153,7 @@ class Source:
 
         prop_params[pdc.Common_Params.METH_SPECIFIC] = meth_specific_params
 
-    def _set_source_properties(self, prop_params) -> None:
+    def _set_propagating_source_properties(self, prop_params) -> None:
         if prop_params[IC.Sources_File_Constants.EMIS_ERS] is None:
             print(
                 im.POTENTIAL_SOURCE_CREATION_ERROR_MESSAGE.format(
@@ -215,9 +220,9 @@ class Source:
         sim_start_date,
         emission_rate_source_dictionary: dict[str, EmissionsSource],
         repair_delay_dataframe: pd.DataFrame,
-    ) -> Emission:
+    ) -> emission_types.Emission:
         if self._repairable:
-            return FugitiveEmission(
+            return emission_types.RepairableEmission(
                 emission_n=leak_count,
                 rate=self._get_rate(emission_rate_source_dictionary),
                 start_date=start_date,
@@ -229,7 +234,7 @@ class Source:
                 nrd=self._get_emis_duration(),
             )
         else:
-            return NonRepairableEmission(
+            return emission_types.NonRepairableEmission(
                 emission_n=leak_count,
                 rate=self._get_rate(emission_rate_source_dictionary),
                 start_date=start_date,
@@ -246,9 +251,9 @@ class Source:
         sim_number: int,
         emission_rate_source_dictionary: dict[str, EmissionsSource],
         repair_delay_dataframe: pd.DataFrame,
-    ) -> dict[str, list[Emission]]:
+    ) -> dict[str, list[emission_types.Emission]]:
         # Using a list as a FIFO queue for less overhead and to be able to pickle it
-        emissions_fifo: list[Emission] = []
+        emissions_fifo: list[emission_types.Emission] = []
 
         # Initialize a counter to give all emissions for the source a unique "ID"
         leak_count: int = 0
@@ -259,8 +264,9 @@ class Source:
         # Generate Pre-Existing Emissions to exist at the start of simulation
         # The loop is working backwards in time, starting from 1 day before simulation start
 
-        # This first loop is to generate emissions that are already active at the start of the simulation
-        # If only one emission is allowed for the given source, the loop will break once the first is made,
+        # This first loop is to generate emissions that are already active
+        # at the start of the simulation. If only one emission is allowed
+        # for the given source, the loop will break once the first is made,
         # since no other emissions should exist
         last_emis_day: date = sim_start_date
         for day in range(1, self._emis_duration + 1):
@@ -268,7 +274,7 @@ class Source:
             if not create_emis:
                 continue
             emis_start_date: date = sim_start_date - timedelta(days=day)
-            emission: Emission = self._create_emission(
+            emission: emission_types.Emission = self._create_emission(
                 leak_count=leak_count,
                 start_date=emis_start_date,
                 sim_start_date=sim_start_date,
@@ -290,11 +296,12 @@ class Source:
             if create_emis:
                 emis_start_date: date = sim_start_date + timedelta(days=day)
                 if not self._multi_emissions:
-                    # if only a single emission can be made, check that the emission start date is after
-                    # the last emission's end date, otherwise continue the loop
+                    # if only a single emission can be made, check that
+                    # the emission start date is after the last emission's end date,
+                    # otherwise continue the loop
                     if emis_start_date <= last_emis_day:
                         continue
-                emission: Emission = self._create_emission(
+                emission: emission_types.Emission = self._create_emission(
                     leak_count=leak_count,
                     start_date=emis_start_date,
                     sim_start_date=sim_start_date,
@@ -304,12 +311,13 @@ class Source:
                 leak_count += 1
                 emissions_fifo.append(emission)
                 if not self._multi_emissions:
-                    # if only a single emission can be made, update the last_emis_day based on the new emission
+                    # if only a single emission can be made,
+                    # update the last_emis_day based on the new emission
                     last_emis_day = emis_start_date + timedelta(days=int(self._emis_duration))
         self._generated_emissions[sim_number] = emissions_fifo
         return {self._source_ID: emissions_fifo}
 
-    def activate_emissions(self, date: date, sim_number: int) -> list[Emission]:
+    def activate_emissions(self, date: date, sim_number: int) -> list[emission_types.Emission]:
         """Activate any emissions produced by the source that are due to begin on the current date
         for the given simulation and return them in a list.
 
@@ -321,18 +329,18 @@ class Source:
         Returns:
             list[Emission]: The list of emissions that are newly active on the current date
         """
-        newly_activated_emissions: list[Emission] = []
-        sim_emissions: list[Emission] = self._generated_emissions[sim_number]
+        newly_activated_emissions: list[emission_types.Emission] = []
+        sim_emissions: list[emission_types.Emission] = self._generated_emissions[sim_number]
 
         activate_emissions: bool = False
-        focus_emission: Emission = None
+        focus_emission: emission_types.Emission = None
 
         if self._next_emission is None:
             if sim_emissions:
-                focus_emission: Emission = sim_emissions.pop(0)
+                focus_emission: emission_types.Emission = sim_emissions.pop(0)
                 activate_emissions = focus_emission.activate(date)
         else:
-            focus_emission: Emission = self._next_emission
+            focus_emission: emission_types.Emission = self._next_emission
             activate_emissions = focus_emission.activate(date)
 
         while activate_emissions:

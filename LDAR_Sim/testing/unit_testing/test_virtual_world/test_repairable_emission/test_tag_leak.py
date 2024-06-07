@@ -1,8 +1,8 @@
 from datetime import date
 from typing import Tuple
-from virtual_world.fugitive_emission import FugitiveEmission
+from virtual_world.emission_types.repairable_emission import RepairableEmission
 
-from testing.unit_testing.test_virtual_world.test_fugitive_emission.fugitive_emission_testing_fixtures import (  # noqa
+from testing.unit_testing.test_virtual_world.test_repairable_emission.repairable_emission_testing_fixtures import (  # noqa
     mock_simple_fugitive_emission_for_tag_leak_testing_1_fix,
     mock_simple_fugitive_emission_for_tag_leak_testing_already_tagged_fix,
 )
@@ -10,10 +10,10 @@ from testing.unit_testing.test_virtual_world.test_fugitive_emission.fugitive_emi
 
 def test_000_tag_leak_correctly_sets_tagged_to_true(
     mock_simple_fugitive_emission_for_tag_leak_testing_1: Tuple[
-        FugitiveEmission, Tuple[float, date, int, str, str, int]
+        RepairableEmission, Tuple[float, date, int, str, str, int]
     ],
 ) -> None:
-    fug_emis: FugitiveEmission = mock_simple_fugitive_emission_for_tag_leak_testing_1[0]
+    fug_emis: RepairableEmission = mock_simple_fugitive_emission_for_tag_leak_testing_1[0]
     (
         measured_rate,
         cur_date,
@@ -28,12 +28,12 @@ def test_000_tag_leak_correctly_sets_tagged_to_true(
 
 def test_000_tag_leak_correctly_returns_false__with_no_overwrite_when_already_tagged(
     mock_simple_fugitive_emission_for_tag_leak_testing_already_tagged: Tuple[
-        FugitiveEmission, Tuple[float, date, int, str, str, int]
+        RepairableEmission, Tuple[float, date, int, str, str, int]
     ],
 ) -> None:
-    fug_emis: FugitiveEmission = mock_simple_fugitive_emission_for_tag_leak_testing_already_tagged[
-        0
-    ]
+    fug_emis: RepairableEmission = (
+        mock_simple_fugitive_emission_for_tag_leak_testing_already_tagged[0]
+    )
     (
         measured_rate,
         cur_date,
@@ -50,10 +50,10 @@ def test_000_tag_leak_correctly_returns_false__with_no_overwrite_when_already_ta
 
 def test_000_tag_leak_correctly_sets_input_args(
     mock_simple_fugitive_emission_for_tag_leak_testing_1: Tuple[
-        FugitiveEmission, Tuple[float, date, int, str, str, int]
+        RepairableEmission, Tuple[float, date, int, str, str, int]
     ],
 ) -> None:
-    fug_emis: FugitiveEmission = mock_simple_fugitive_emission_for_tag_leak_testing_1[0]
+    fug_emis: RepairableEmission = mock_simple_fugitive_emission_for_tag_leak_testing_1[0]
     (
         measured_rate,
         cur_date,
@@ -72,10 +72,10 @@ def test_000_tag_leak_correctly_sets_input_args(
 def test_000_tag_leak_correctly_calls_estimate_start_days(
     mocker,
     mock_simple_fugitive_emission_for_tag_leak_testing_1: Tuple[
-        FugitiveEmission, Tuple[float, date, int, str, str, int]
+        RepairableEmission, Tuple[float, date, int, str, str, int]
     ],
 ) -> None:
-    fug_emis: FugitiveEmission = mock_simple_fugitive_emission_for_tag_leak_testing_1[0]
+    fug_emis: RepairableEmission = mock_simple_fugitive_emission_for_tag_leak_testing_1[0]
     mocker.patch.object(fug_emis, "estimate_start_date")
     (
         measured_rate,
@@ -91,10 +91,10 @@ def test_000_tag_leak_correctly_calls_estimate_start_days(
 
 def test_000_tag_leak_returns_true_for_new_tag(
     mock_simple_fugitive_emission_for_tag_leak_testing_1: Tuple[
-        FugitiveEmission, Tuple[float, date, int, str, str, int]
+        RepairableEmission, Tuple[float, date, int, str, str, int]
     ],
 ) -> None:
-    fug_emis: FugitiveEmission = mock_simple_fugitive_emission_for_tag_leak_testing_1[0]
+    fug_emis: RepairableEmission = mock_simple_fugitive_emission_for_tag_leak_testing_1[0]
     (
         measured_rate,
         cur_date,

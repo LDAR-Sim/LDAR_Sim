@@ -1,7 +1,7 @@
 from typing import Any, Tuple
 import pytest
 from src.scheduling.schedule_dataclasses import EquipmentGroupSurveyReport
-from src.virtual_world.emissions import Emission
+from src.virtual_world.emission_types.emission import Emission
 
 from src.virtual_world.sites import Site
 

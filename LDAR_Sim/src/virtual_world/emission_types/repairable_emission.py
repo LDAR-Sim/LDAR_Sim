@@ -27,10 +27,10 @@ from typing_extensions import override
 from file_processing.output_processing.output_utils import EmisInfo
 from constants.output_file_constants import EMIS_DATA_COL_ACCESSORS as eca
 from constants.general_const import Emission_Constants as ec, Conversion_Constants as cc
-from virtual_world.emissions import Emission
+from virtual_world.emission_types.emission import Emission
 
 
-class FugitiveEmission(Emission):
+class RepairableEmission(Emission):
     def __init__(
         self,
         emission_n: int,

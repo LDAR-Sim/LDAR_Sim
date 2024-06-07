@@ -1,6 +1,6 @@
-from src.virtual_world.fugitive_emission import FugitiveEmission
+from virtual_world.emission_types.repairable_emission import RepairableEmission
 
-from testing.unit_testing.test_virtual_world.test_fugitive_emission.fugitive_emission_testing_fixtures import (  # noqa
+from testing.unit_testing.test_virtual_world.test_repairable_emission.repairable_emission_testing_fixtures import (  # noqa
     mock_fugitive_emission_for_update_ready_for_nat_repair_fix,
     mock_fugitive_emission_for_update_no_status_change_fix,
     mock_fugitive_emission_for_update_no_status_change_emission_tagged_fix,
@@ -10,7 +10,7 @@ from src.file_processing.output_processing.output_utils import EmisInfo
 
 
 def test_000_update_returns_nat_repair_and_calls_nat_repair_if_ready_for_nat_repair(
-    mock_fugitive_emission_for_update_ready_for_nat_repair: FugitiveEmission,
+    mock_fugitive_emission_for_update_ready_for_nat_repair: RepairableEmission,
 ) -> None:
     emis_info = EmisInfo(0, 0, 0, 0, 0)
     update_status: str = mock_fugitive_emission_for_update_ready_for_nat_repair.update(emis_info)
@@ -18,7 +18,7 @@ def test_000_update_returns_nat_repair_and_calls_nat_repair_if_ready_for_nat_rep
 
 
 def test_000_update_returns_no_status_change_when_no_change_to_status_emission_active(
-    mock_fugitive_emission_for_update_no_status_change: FugitiveEmission,
+    mock_fugitive_emission_for_update_no_status_change: RepairableEmission,
 ) -> None:
     emis_info = EmisInfo(0, 0, 0, 0, 0)
     update_status: str = mock_fugitive_emission_for_update_no_status_change.update(emis_info)
@@ -26,7 +26,7 @@ def test_000_update_returns_no_status_change_when_no_change_to_status_emission_a
 
 
 def test_000_update_returns_no_status_change_when_no_change_to_status_emission_tagged_but_not_repaired(  # noqa
-    mock_fugitive_emission_for_update_no_status_change_emission_tagged: FugitiveEmission,
+    mock_fugitive_emission_for_update_no_status_change_emission_tagged: RepairableEmission,
 ) -> None:
     emis_info = EmisInfo(0, 0, 0, 0, 0)
     update_status: str = mock_fugitive_emission_for_update_no_status_change_emission_tagged.update(
@@ -36,7 +36,7 @@ def test_000_update_returns_no_status_change_when_no_change_to_status_emission_t
 
 
 def test_000_update_returns_repaired_if_leak_newly_repaired(
-    mock_fugitive_emission_for_update_newly_repaired: FugitiveEmission,
+    mock_fugitive_emission_for_update_newly_repaired: RepairableEmission,
 ) -> None:
     emis_info = EmisInfo(0, 0, 0, 0, 0)
     update_status: str = mock_fugitive_emission_for_update_newly_repaired.update(emis_info)

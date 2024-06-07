@@ -22,7 +22,7 @@ from datetime import date
 from virtual_world.component import (
     Component,
     TaggingInfo,
-    FugitiveEmission,
+    RepairableEmission,
     NonRepairableEmission,
 )
 
@@ -30,7 +30,7 @@ from virtual_world.component import (
 def mock_active_emissions(emis_count: int = 3):
     active_emissions = []
     for i in range(emis_count):
-        active_emissions.append(FugitiveEmission())
+        active_emissions.append(RepairableEmission())
     for i in range(emis_count):
         active_emissions.append(NonRepairableEmission())
     return active_emissions
@@ -62,7 +62,7 @@ def mock_equipment_init(self, *args, **kwargs):
 
 
 def setup_mock_equipment(mocker):
-    mocker.patch.object(FugitiveEmission, "__init__", mock_fugitive_emission_init)
+    mocker.patch.object(RepairableEmission, "__init__", mock_fugitive_emission_init)
     mocker.patch.object(NonRepairableEmission, "__init__", mock_non_rep_emission_init)
     mocker.patch.object(Component, "__init__", mock_equipment_init)
 
@@ -76,7 +76,7 @@ def test_tag_emissions_with_multiple_emissions(mocker):
     mock_component.tag_emissions(tagging_info=tagging_info)
 
     for emission in emissions:
-        if isinstance(emission, FugitiveEmission):
+        if isinstance(emission, RepairableEmission):
             assert emission._tagged
             assert emission._tagged_by_company == "Test Company"
             assert emission._tagged_by_crew == "Test Crew"
