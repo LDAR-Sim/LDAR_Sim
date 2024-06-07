@@ -171,6 +171,8 @@ Email: <sally@highwoodemissions.com>
     - [Equipment File](#equipment-file)
       - [equipment (Equipment File)](#equipment-equipment-file)
       - [{component} (Equipment File)](#component-equipment-file)
+      - [repairable\_repair\_delay (Equipment file)](#repairable_repair_delay-equipment-file)
+      - [repairable\_repair\_cost (Equipment file)](#repairable_repair_cost-equipment-file)
       - [repairable\_emissions\_rate\_source (Equipment file)](#repairable_emissions_rate_source-equipment-file)
       - [repairable\_emissions\_production\_rate (Equipment file)](#repairable_emissions_production_rate-equipment-file)
       - [repairable\_duration (Equipment file)](#repairable_duration-equipment-file)
@@ -184,6 +186,8 @@ Email: <sally@highwoodemissions.com>
       - [component (Source File)](#component-source-file)
       - [source (Source File)](#source-source-file)
       - [repairable (Source File)](#repairable-source-file)
+      - [repair\_delay (Source file)](#repair_delay-source-file)
+      - [repair\_cost (Source file)](#repair_cost-source-file)
       - [emissions\_rate\_source (Source file)](#emissions_rate_source-source-file)
       - [emissions\_production\_rate (Source file)](#emissions_production_rate-source-file)
       - [duration (Source file)](#duration-source-file)
@@ -756,8 +760,10 @@ Weather file sizes can become quite large, especially when spatial and temporal 
 
 See the following files for examples on setting this value at a more granular level:
 
-- [Sites File](#method_survey_cost-sites-file)
-- [Site type File](#method_survey_cost-site-type-file)
+- [Sites File](#repairable_repair_cost-sites-file)
+- [Site type File](#repairable_repair_cost-site-type-file)
+- [Equipment File](#repairable_repair_cost-equipment-file)
+- [Source File](#repair_cost-source-file)
 
 **Notes on acquisition:** The duty holder should have data on cost of repairs.
 
@@ -796,6 +802,8 @@ See the following files for examples on setting this value at a more granular le
 
 - [Sites File](#repairable_repair_delay-sites-file)
 - [Site type File](#repairable_repair_delay-site-type-file)
+- [Equipment File](#repairable_repair_delay-equipment-file)
+- [Source File](#repair_delay-source-file)
 
 **Notes on acquisition:** Get this information from the service provider.
 
@@ -1830,19 +1838,23 @@ This parameter can also be set in the following files:
 
 - [Virtual World Parameter file](#values-delaypropagating-parameter)
 - [Site type File](#repairable_repair_delay-site-type-file)
+- [Equipment File](#repairable_repair_delay-equipment-file)
+- [Source File](#repair_delay-source-file)
 
 #### repairable_repair_cost (Sites file)
 
-**Description:** This is a propagating parameter that can be set at multiple level of granularity. See [repair cost](#values-cost-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value, representing cost.
+**Description:** This is a propagating parameter that can be set at multiple level of granularity. See [repair cost](#values-cost-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value, representing cost to repair emissions.
 
 This parameter can also be set in the following files:
 
 - [Virtual World Parameter file](#values-cost-propagating-parameter)
 - [Site type File](#repairable_repair_cost-site-type-file)
+- [Equipment File](#repairable_repair_cost-equipment-file)
+- [Source File](#repair_cost-source-file)
 
 #### repairable_emissions_rate_source (Sites file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_rate_source](#emissions_rate_source-propagating-parameter) for more details on what this parameter represents. In this file this is a user defined value, identifying the [source](#source-emission-file) of the repairable emissions for the given site.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_rate_source](#emissions_rate_source-propagating-parameter) for more details on what this parameter represents. In this file this is a user defined value, that corresponds to the [source](#header) of the repairable emissions for the given site. This case-sensitive value specifies which of the potential emissions characteristics in the [emissions file](#emissions-file) should be used for the given repairable emissions rate source.
 
 This parameter can also be set in the following files:
 
@@ -1853,7 +1865,7 @@ This parameter can also be set in the following files:
 
 #### repairable_emissions_production_rate (Sites file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_production_rate](#emissions_production_rate-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value, representing the emission production rate for repairable emissions at the given site per day.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_production_rate](#emissions_production_rate-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value, representing the chance of a repairable emissions occurring at the given site at any given day.
 
 This parameter can also be set in the following files:
 
@@ -1864,7 +1876,7 @@ This parameter can also be set in the following files:
 
 #### repairable_duration (Sites file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [duration](#duration-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value in days, representing the maximum emissions duration for repairable emissions.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [duration](#duration-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value, representing the maximum emissions duration in days for repairable emissions.
 
 This parameter can also be set in the following files:
 
@@ -2074,10 +2086,12 @@ This parameter can also be set in the following files:
 
 - [Virtual World Parameter file](#values-cost-propagating-parameter)
 - [Sites File](#repairable_repair_cost-sites-file)
+- [Equipment File](#repairable_repair_cost-equipment-file)
+- [Source File](#repair_cost-equipment-file)
 
 #### repairable_emissions_rate_source (Site type file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_rate_source](#emissions_rate_source-propagating-parameter) for more details on what this parameter represents. In this file this is a user defined value, identifying the [source](#source-emission-file) of the repairable emissions for the given site.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_rate_source](#emissions_rate_source-propagating-parameter) for more details on what this parameter represents. In this file this is a user defined value, that corresponds to the [source](#header) of the repairable emissions for the given site type. This case-sensitive value specifies which of the potential emissions characteristics in the [emissions file](#emissions-file) should be used for the given repairable emissions rate source.
 
 This parameter can also be set in the following files:
 
@@ -2240,6 +2254,7 @@ Only the [equipment](#equipment-equipment-file) column is mandatory.
 Potential columns are:
 
 - [{component}](#component-equipment-file)
+- [repairable_repair_delay](#repairable_repair_delay-equipment-file)
 - [repairable_emissions_rate_source](#repairable_emissions_rate_source-equipment-file)
 - [repairable_emissions_production_rate](#repairable_emissions_production_rate-equipment-file)
 - [repairable_duration](#repairable_duration-equipment-file)
@@ -2281,9 +2296,31 @@ Below is an example of an _equipment file_ that defines 3 different groups:
 
 **Note:**The column headers are case-sensitive and must be consistent with the [Source](#component-source-file) where they are defined.
 
+#### repairable_repair_delay (Equipment file)
+
+**Description:** This is a propagating parameter that can be set at multiple level of granularity. See [repair delay](#values-delaypropagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value in days.
+
+This parameter can also be set in the following files:
+
+- [Virtual World Parameter file](#values-delaypropagating-parameter)
+- [Site File](#repairable_repair_delay-sites-file)
+- [Site type File](#repairable_repair_delay-site-type-file)
+- [Source File](#repair_delay-source-file)
+
+#### repairable_repair_cost (Equipment file)
+
+**Description:** This is a propagating parameter that can be set at multiple level of granularity. See [repair cost](#values-cost-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value, representing cost to repair emissions.
+
+This parameter can also be set in the following files:
+
+- [Virtual World Parameter file](#values-cost-propagating-parameter)
+- [Sites File](#repairable_repair_cost-sites-file)
+- [Site type File](#repairable_repair_cost-site-type-file)
+- [Source File](#repair_cost-equipment-file)
+
 #### repairable_emissions_rate_source (Equipment file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_rate_source](#emissions_rate_source-propagating-parameter) for more details on what this parameter represents. In this file this is a user defined value, identifying the [source](#source-emission-file) of the repairable emissions for the given equipment.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_rate_source](#emissions_rate_source-propagating-parameter) for more details on what this parameter represents. In this file this is a user defined value, that corresponds to the [source](#header) of the repairable emissions for the given equipment. This case-sensitive value specifies which of the potential emissions characteristics in the [emissions file](#emissions-file) should be used for the given repairable emissions rate source.
 
 This parameter can also be set in the following files:
 
@@ -2396,10 +2433,12 @@ The sources file has a few mandatory predefined column headers:
 
 And optional column headers that define the emissions:
 
-- [emissions production rate](#emissions_production_rate-source-file)
-- [emissions rate source](#emissions_rate_source-source-file)
+- [repair_delay](#repair_delay-source-file)
+- [repair_cost](#repair_cost-source-file)
+- [emissions_production_rate](#emissions_production_rate-source-file)
+- [emissions_rate_source](#emissions_rate_source-source-file)
 - [duration](#duration-source-file)
-- [multiple emissions per source](#multiple_emissions_per_source-source-file)
+- [multiple_emissions_per_source](#multiple_emissions_per_source-source-file)
 
 Method-specific columns are values that can be defined for a particular method. To use them, replace the `{method}` placeholder with the relevant [method_name](#method_name) that the user is parameterizing. The following method-specific columns are available for the Sites file:
 
@@ -2445,9 +2484,31 @@ This column is case-sensitive and must match the corresponding columns provided 
 
 **Description:** A True/False column that defines if the given emission source produces repairable(`TRUE`) or non-repairable(`FALSE`) emission.
 
+#### repair_delay (Source file)
+
+**Description:** This is a propagating parameter that can be set at multiple level of granularity. See [repair delay](#values-delaypropagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value in days.
+
+This parameter can also be set in the following files:
+
+- [Virtual World Parameter file](#values-delaypropagating-parameter)
+- [Site File](#repairable_repair_delay-sites-file)
+- [Site type File](#repairable_repair_delay-site-type-file)
+- [Equipment File](#repairable_repair_delay-equipment-file)
+
+#### repair_cost (Source file)
+
+**Description:** This is a propagating parameter that can be set at multiple level of granularity. See [repair cost](#values-cost-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value, representing cost.
+
+This parameter can also be set in the following files:
+
+- [Virtual World Parameter file](#values-cost-propagating-parameter)
+- [Sites File](#repairable_repair_cost-sites-file)
+- [Site type File](#repairable_repair_cost-site-type-file)
+- [Equipment File](#repairable_repair_cost-equipment-file)
+
 #### emissions_rate_source (Source file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_rate_source](#emissions_rate_source-propagating-parameter) for more details on what this parameter represents. In this file this is a user defined value, identifying the [emission source](#source-emission-file) of the emission for the given component.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_rate_source](#emissions_rate_source-propagating-parameter) for more details on what this parameter represents. In this file this is a user defined value, that corresponds to the [source](#header) of the emissions for the given emission component-source. This case-sensitive value specifies which of the potential emissions characteristics in the [emissions file](#emissions-file) should be used for the given emissions rate source.
 
 This parameter can also be set in the following files:
 
