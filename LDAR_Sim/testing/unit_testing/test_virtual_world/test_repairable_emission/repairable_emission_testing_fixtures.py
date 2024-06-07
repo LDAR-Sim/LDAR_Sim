@@ -72,6 +72,7 @@ def mock_simple_emission_for_get_summary_dict_1_fix() -> Tuple[RepairableEmissio
             "Emissions ID": "0000000001",
             "Status": ec.INACTIVE,
             "Days Active": 0,
+            "Days Emitting": 0,
             "Estimated Days Active": 0,
             '"True" Volume Emitted (Kg Methane)': 0.0,
             "Mitigated Emissions (Kg Methane)": 0.0,

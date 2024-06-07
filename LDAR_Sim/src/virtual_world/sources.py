@@ -222,27 +222,55 @@ class Source:
         repair_delay_dataframe: pd.DataFrame,
     ) -> emission_types.Emission:
         if self._repairable:
-            return emission_types.RepairableEmission(
-                emission_n=leak_count,
-                rate=self._get_rate(emission_rate_source_dictionary),
-                start_date=start_date,
-                simulation_sd=sim_start_date,
-                repairable=self._get_repairable(),
-                tech_spat_cov_probs=self._meth_spat_covs,
-                repair_delay=self._get_rep_delay(repair_delay_dataframe),
-                repair_cost=self._get_rep_cost(),
-                nrd=self._get_emis_duration(),
-            )
+            if self._persistent:
+                return emission_types.RepairableEmission(
+                    emission_n=leak_count,
+                    rate=self._get_rate(emission_rate_source_dictionary),
+                    start_date=start_date,
+                    simulation_sd=sim_start_date,
+                    repairable=self._get_repairable(),
+                    tech_spat_cov_probs=self._meth_spat_covs,
+                    repair_delay=self._get_rep_delay(repair_delay_dataframe),
+                    repair_cost=self._get_rep_cost(),
+                    nrd=self._get_emis_duration(),
+                )
+            else:
+                return emission_types.IntermittentRepairableEmission(
+                    emission_number=leak_count,
+                    emission_rate=self._get_rate(emission_rate_source_dictionary),
+                    start_date=start_date,
+                    simulation_start_date=sim_start_date,
+                    repairable=self._get_repairable(),
+                    tech_spatial_coverage_probabilities=self._meth_spat_covs,
+                    repair_delay=self._get_rep_delay(repair_delay_dataframe),
+                    repair_cost=self._get_rep_cost(),
+                    duration=self._get_emis_duration(),
+                    active_duration=self._active_duration,
+                    inactive_duration=self._inactive_duration,
+                )
         else:
-            return emission_types.NonRepairableEmission(
-                emission_n=leak_count,
-                rate=self._get_rate(emission_rate_source_dictionary),
-                start_date=start_date,
-                simulation_sd=sim_start_date,
-                repairable=self._get_repairable(),
-                tech_spat_cov_probs=self._meth_spat_covs,
-                duration=self._get_emis_duration(),
-            )
+            if self._persistent:
+                return emission_types.NonRepairableEmission(
+                    emission_n=leak_count,
+                    rate=self._get_rate(emission_rate_source_dictionary),
+                    start_date=start_date,
+                    simulation_sd=sim_start_date,
+                    repairable=self._get_repairable(),
+                    tech_spat_cov_probs=self._meth_spat_covs,
+                    duration=self._get_emis_duration(),
+                )
+            else:
+                return emission_types.IntermittentNonRepairableEmission(
+                    emission_number=leak_count,
+                    emission_rate=self._get_rate(emission_rate_source_dictionary),
+                    start_date=start_date,
+                    simulation_start_date=sim_start_date,
+                    repairable=self._get_repairable(),
+                    tech_spatial_coverage_probabilities=self._meth_spat_covs,
+                    duration=self._get_emis_duration(),
+                    active_duration=self._active_duration,
+                    inactive_duration=self._inactive_duration,
+                )
 
     def generate_emissions(
         self,
