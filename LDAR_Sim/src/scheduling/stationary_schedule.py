@@ -57,7 +57,10 @@ class StationarySchedule(GenericSchedule):
     ) -> list[StationarySurveyPlanner]:
         survey_plans: list[StationarySurveyPlanner] = []
         for site in sites:
-            survey_freq = 365
+            survey_freq: int = 365
+            deploy_meth: bool = site.do_site_deployment(self._method)
+            if not deploy_meth:
+                survey_freq = 0
             deploy_year: int = site._deployment_years[self._method]
             deploy_month: int = site._deployment_months[self._method]
             survey_plans.append(

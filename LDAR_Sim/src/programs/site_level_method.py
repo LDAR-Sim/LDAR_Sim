@@ -177,10 +177,10 @@ class SiteLevelMethod(Method):
                     # if the detected rate is non-zero, and above the threshold add to queue
                     elif self._deployment_type == pdc.Deployment_Types.STATIONARY:
                         if detection_record.rate_detected != 0 and (
-                            existing_plan.rate_at_site >= self._small_window_threshold
+                            detection_record.rate_detected >= self._small_window_threshold
                             or (
                                 self._large_window_threshold is not None
-                                and existing_plan.rate_at_site_long >= self._large_window_threshold
+                                and detection_record.rate_detected >= self._large_window_threshold
                             )
                         ):
                             self._candidates_for_flags.add(
