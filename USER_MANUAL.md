@@ -1740,7 +1740,7 @@ The following figure offers a visual guideline for the various parameters that c
 
 ![data structure](doc-images/input_data_structure.png)
 
-**Note:** It is important to understand that for all the virtual world defining files, all optional columns have their values internally propagated down and set at the most granular level based on the provided higher-level values where relevant.
+**Note:** It is important to understand that for all the virtual world defining files, all optional columns have their values internally propagated down and set at the most granular level based on the provided higher-level values where relevant. For example, if the user sets the required surveys per year for a given site only in the method parameter file,  the simulator will internally set the _required surveys per year_ for each individual site.
 
 --------------------------------------------------------------------------------
 
@@ -1890,7 +1890,7 @@ This parameter can also be set in the following files:
 
 #### repairable_multiple_emissions_per_source (Sites file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [multiple_emissions_per_source](#multiple_emissions_per_source-propagating-parameter) for more details on what this parameter represents. In this file, this is a `TRUE`/`FALSE` value, representing there can be multiple repairable emissions produced by the component-sources at the given site at a single point in time.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [multiple_emissions_per_source](#multiple_emissions_per_source-propagating-parameter) for more details on what this parameter represents. In this file, this is a `TRUE`/`FALSE` value, representing if there can be multiple repairable emissions produced by the component-sources at the given site at a single point in time.
 
 This parameter can also be set in the following files:
 
@@ -1934,7 +1934,7 @@ This parameter can also be set in the following files:
 
 #### non_repairable_multiple_emissions_per_source (Sites file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [multiple_emissions_per_source](#multiple_emissions_per_source-propagating-parameter) for more details on what this parameter represents. In this file, this is a `TRUE`/`FALSE` value, representing there can be multiple non-repairable emissions produced by the component-sources at the given site at a single point in time.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [multiple_emissions_per_source](#multiple_emissions_per_source-propagating-parameter) for more details on what this parameter represents. In this file, this is a `TRUE`/`FALSE` value, representing if there can be multiple non-repairable emissions produced by the component-sources at the given site at a single point in time.
 
 This parameter can also be set in the following files:
 
@@ -1972,7 +1972,7 @@ This parameter can also be set in the following files:
 
 #### {method}_spatial (Sites file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See[spatial](#spatial-propagating-parameter) for more details on what this parameter represents. In this file, this is a single value, representing the chance in which the given method can detect emissions at the given site.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See[spatial](#spatial-propagating-parameter) for more details on what this parameter represents. In this file, this is a single value, representing the chance in which the given method can detect each emissions at the given site.
 
 This parameter can also be set in the following files:
 
@@ -2107,7 +2107,7 @@ This parameter can also be set in the following files:
 
 #### repairable_emissions_production_rate (Site type file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_production_rate](#emissions_production_rate-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value, representing the chance of a repairable emissions occurring at the given site type at any given day.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_production_rate](#emissions_production_rate-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value, representing the chance of a repairable emissions occurring at any site of the given site type at any given day.
 
 This parameter can also be set in the following files:
 
@@ -2129,7 +2129,7 @@ This parameter can also be set in the following files:
 
 #### repairable_multiple_emissions_per_source (Site type file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [multiple_emissions_per_source](#multiple_emissions_per_source-propagating-parameter) for more details on what this parameter represents. In this file, this is a `TRUE`/`FALSE` value, representing there can be multiple repairable emissions produced by the component-sources at the given site type at a single point in time.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [multiple_emissions_per_source](#multiple_emissions_per_source-propagating-parameter) for more details on what this parameter represents. In this file, this is a `TRUE`/`FALSE` value, representing if there can be multiple repairable emissions produced by the component-sources at the given site type at a single point in time.
 
 This parameter can also be set in the following files:
 
@@ -2151,7 +2151,7 @@ This parameter can also be set in the following files:
 
 #### non_repairable_emissions_production_rate (Site type file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_production_rate](#emissions_production_rate-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value, representing the chance of a non-repairable emissions occurring at the given site at any given day.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_production_rate](#emissions_production_rate-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value, representing the chance of a non-repairable emissions occurring at any site of the given site type at any given day.
 
 This parameter can also be set in the following files:
 
@@ -2173,7 +2173,7 @@ This parameter can also be set in the following files:
 
 #### non_repairable_multiple_emissions_per_source (Site type file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [multiple_emissions_per_source](#multiple_emissions_per_source-propagating-parameter) for more details on what this parameter represents. In this file, this is a `TRUE`/`FALSE` value, representing there can be multiple non-repairable emissions produced by the component-sources at the given site type at a single point in time.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [multiple_emissions_per_source](#multiple_emissions_per_source-propagating-parameter) for more details on what this parameter represents. In this file, this is a `TRUE`/`FALSE` value, representing if there can be multiple non-repairable emissions produced by the component-sources at the given site type at a single point in time.
 
 This parameter can also be set in the following files:
 
@@ -2184,7 +2184,7 @@ This parameter can also be set in the following files:
 
 #### {method}_surveys_per_year (Site type file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See[surveys_per_year](#surveys_per_year-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value representing the number of required surveys per year for the specified method for the given site type.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See[surveys_per_year](#surveys_per_year-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value representing the number of required surveys per year for the specified method for every site of the given site type.
 
 This parameter can also be set in the following files:
 
@@ -2193,7 +2193,7 @@ This parameter can also be set in the following files:
 
 #### {method}_deploy_years (Site type file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [deploy_year](#deployment_years--propagating-parameter) for more details on what this parameter represents. In this file, this is a list of integers representing which years the specified method can be deployed on for the given site type.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [deploy_year](#deployment_years--propagating-parameter) for more details on what this parameter represents. In this file, this is a list of integers representing which years the specified method can be deployed on for every site of the given site type.
 
 This parameter can also be set in the following files:
 
@@ -2202,7 +2202,7 @@ This parameter can also be set in the following files:
 
 #### {method}_deploy_months (Site type file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See[deploy_month](#deployment_months--propagating-parameter) for more details on what this parameter represents. In this file, this is a list of integers representing which months the specified method can be deployed on for the given site type.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See[deploy_month](#deployment_months--propagating-parameter) for more details on what this parameter represents. In this file, this is a list of integers representing which months the specified method can be deployed on for every site of the given site type.
 
 This parameter can also be set in the following files:
 
@@ -2222,7 +2222,7 @@ This parameter can also be set in the following files:
 
 #### {method}_survey_time (Site type file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [survey_time](#survey_time-propagating-parameter) for more details on what this parameter represents. In this file, this is a single value, representing how long in minutes it takes for the specified method to survey the given site type.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [survey_time](#survey_time-propagating-parameter) for more details on what this parameter represents. In this file, this is a single value, representing how long in minutes it takes for the specified method to survey a site of the given site type.
 
 This parameter can also be set in the following files:
 
@@ -2231,7 +2231,7 @@ This parameter can also be set in the following files:
 
 #### {method}_survey_cost (Site type file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [survey_cost](#per_site--propagating-parameter) for more details on what this parameter represents. In this file, this is a single value, representing the cost of the specified method to survey the given site type.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [survey_cost](#per_site--propagating-parameter) for more details on what this parameter represents. In this file, this is a single value, representing the cost of the specified method to survey a site of the given site type.
 
 This parameter can also be set in the following files:
 
@@ -2240,7 +2240,7 @@ This parameter can also be set in the following files:
 
 #### {method}_site_deployment (Site type file)
 
-**Description:** A True/False column that indicates whether the specified method will be deployed at the given site type. For example, if the value is set to `FALSE`, the emissions at the site will be simulated, but the method will not be deployed at that site type. This is similar to setting the[surveys per year](#surveys_per_year-propagating-parameter) to 0 for the site.
+**Description:** A True/False column that indicates whether the specified method will be deployed at the given site type. For example, if the value is set to `FALSE`, the emissions at the site will be simulated, but the method will no be deployed at any sites of that site type. This is similar to setting the[surveys per year](#surveys_per_year-propagating-parameter) to 0 for the site.
 
 This parameter can also be set in the following file:
 
@@ -2292,13 +2292,13 @@ Below is an example of an _equipment file_ that defines 3 different groups:
 
 #### equipment (Equipment File)
 
-**Description:** A user-defined value that defines a specific equipment group for the simulation. These equipment groups influence how  `equipment level` [measurement scale](#measurement_scale)  methods detect and measure emissions.
+**Description:** A user-defined value that defines a specific equipment group identifier for the simulation. These equipment groups influence how  `equipment level` [measurement scale](#measurement_scale)  methods detect and measure emissions. Each row must define a unique equipment identifier.
 
 **Note:** It is case-sensitive and must remain consistent when provided in other infrastructure files, such as the [sites file](#sites-file) or the [site type file](#site-type-file)
 
 #### {component} (Equipment File)
 
-**Description:** The column header is a user defined value of a specific component in the simulation. The values in each column and row indicate how many counts of the given component(column) exists for the given equipment(row). These _equipment_ groups can serve as building blocks for constructing complex sites.
+**Description:** The column header is a user defined value corresponding to the identifier of a specific component defined as part of the simulation. The values in each column and row indicate how many counts of the given component(column) exists for the given equipment(row). These _equipment_ groups can serve as building blocks for constructing complex sites.
 
 **Note:**The column headers are case-sensitive and must be consistent with the [Source](#component-source-file) where they are defined.
 
@@ -2359,7 +2359,7 @@ This parameter can also be set in the following files:
 
 #### repairable_multiple_emissions_per_source (Equipment file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [multiple_emissions_per_source](#multiple_emissions_per_source-propagating-parameter) for more details on what this parameter represents. In this file, this is a `TRUE`/`FALSE` value, representing there can be multiple repairable emissions produced by the component-sources at the given equipment at a single point in time.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [multiple_emissions_per_source](#multiple_emissions_per_source-propagating-parameter) for more details on what this parameter represents. In this file, this is a `TRUE`/`FALSE` value, representing if there can be multiple repairable emissions produced by the component-sources at the given equipment at a single point in time.
 
 This parameter can also be set in the following files:
 
@@ -2403,7 +2403,7 @@ This parameter can also be set in the following files:
 
 #### non_repairable_multiple_emissions_per_source (Equipment file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [multiple_emissions_per_source](#multiple_emissions_per_source-propagating-parameter) for more details on what this parameter represents. In this file, this is a `TRUE`/`FALSE` value, representing there can be multiple non-repairable emissions produced by the component-sources at the given equipment at a single point in time.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [multiple_emissions_per_source](#multiple_emissions_per_source-propagating-parameter) for more details on what this parameter represents. In this file, this is a `TRUE`/`FALSE` value, representing if there can be multiple non-repairable emissions produced by the component-sources at the given equipment at a single point in time.
 
 This parameter can also be set in the following files:
 
@@ -2485,9 +2485,7 @@ This column is case-sensitive and must match the corresponding columns provided 
 
 **Description:** A user-defined source represents a potential emission source for a given component. It is the smallest granular level considered for emission production.
 
-**Note:** The `source` column is often identical to the `emissions_rate_source` column. However it is in there incase users would like to use the same `emission_rate_sources`, for different `sources`.
-
-**Note of caution:** The `component` and `source` columns together act as a compound key. In simple terms, each component/source pair must be unique and exist only once.
+**Note of caution:** The `source` column is often an identical value to the `emissions_rate_source` column; however, these two columns serve different purposes. The `source` column allow users to apply the same [emission_rate_sources](#header) for different `sources`. Additionally, the `source` column, in conjunction with the `component` column, forms a compound key. In simple terms, each component/source pair must be unique and exist only once.
 
 #### repairable (Source File)
 
@@ -2499,11 +2497,11 @@ This column is case-sensitive and must match the corresponding columns provided 
 
 #### active_duration (Source File)
 
-**Description:** The number of days that the given non-persistent emission is active for at a given time.
+**Description:** The number of days that the given non-persistent emission is emitting for at a given time.
 
 #### inactive_duration (Source File)
 
-**Description:** The number of days that the given non-persistent emission is inactive.
+**Description:** The number of days that the given non-persistent emission is not emitting.
 
 #### repair_delay (Source file)
 
@@ -2549,7 +2547,7 @@ Non-Repairable Emissions:
 
 #### emissions_production_rate (Source file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_production_rate](#emissions_production_rate-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value, representing the emission production rate of the given source at the given component per day.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_production_rate](#emissions_production_rate-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value, representing the chance of an emissions arising from the given source at any given day.
 
 This parameter can also be set in the following files:
 
@@ -2609,7 +2607,7 @@ Non-Repairable emissions:
 
 #### {method}_spatial (Source file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See[spatial](#spatial-propagating-parameter) for more details on what this parameter represents. In this file, this is a single value, representing the chance in which the given method can detect the possible emission source.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See[spatial](#spatial-propagating-parameter) for more details on what this parameter represents. In this file, this is a single value, representing the chance in which the given method can detect the emissions coming from the given source.
 
 This parameter can also be set in the following files:
 
@@ -2654,7 +2652,7 @@ Below is an example of an Emissions file:
 
 #### Header
 
-**Description:** A user defined row name, that corresponds to the [emissions rate source](#emissions_rate_source-propagating-parameter) references used in the virtual world parameters or in the infrastructure files.
+**Description:** A user defined unique identifier, that corresponds to the [emissions rate source](#emissions_rate_source-propagating-parameter) references used in the virtual world parameters or in the infrastructure files.
 
 **Notes on acquisition:** User defined
 
@@ -2667,13 +2665,13 @@ Below is an example of an Emissions file:
 
 #### Distribution Type
 
-**Description:** The name of a distribution from the scipy library, only relevant if the row above is set to `dist`.
+**Description:** The name of a distribution from the scipy library, only relevant if the [data use](#data-use) set to `dist`.
 
 **Notes on acquisition:** See [scipy documentation](https://docs.scipy.org/doc/scipy/reference/stats.html) for more details.
 
 #### Maximum Emission Rate
 
-**Description:** The maximum possible leak rate that can be sampled from a distribution, in grams per second.
+**Description:** The maximum possible emission rate that can be sampled from a distribution, in grams per second.
 
 #### Units (amount)
 
@@ -2710,7 +2708,7 @@ Below is an example of an Emissions file:
 
 #### Source (Emission file)
 
-**Description:** Each row defines a single input. Depending on the [data use](#data-use) input, the values specify either individual emission rates (`sample`) or the shape and scale of the distribution (`dist`).
+**Description:** Each following row defines a single input. Depending on the [data use](#data-use) input, the values specify either individual emission rates (`sample`) or the shape and scale of the distribution (`dist`).
 
 - sample: Each row is a single emission value. LDAR-Sim randomly selects one of these values to generate a new emission.
 - dist: Each row becomes an input to describe the distribution shape. LDAR-Sim generates a random number based on this distribution for each new emission.
