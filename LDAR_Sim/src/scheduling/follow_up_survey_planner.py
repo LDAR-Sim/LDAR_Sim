@@ -62,7 +62,25 @@ class FollowUpSurveyPlanner(SurveyPlanner):
             self._detected_rates.append(new_detection.rate_detected)
             self.rate_at_site = max(self._detected_rates)
             self._latest_detection_date = detect_date
-        elif redund_filter == pdc.Method_Params.ROLLING_AVRG:
+        else:
+            print(rem.INVALID_REDUND_FILTER_ERROR.format(filter=redund_filter, method=method_name))
+            sys.exit()
+
+
+class StationaryFollowUpSurveyPlanner(FollowUpSurveyPlanner):
+    def __init__(self, detection_record: DetectionRecord, detect_date: date) -> None:
+        super().__init__(detection_record, detect_date)
+
+    def update_with_latest_survey(
+        self,
+        new_detection: DetectionRecord,
+        redund_filter: str,
+        method_name: str,
+        detect_date: date,
+        small_window: int = 7,
+        long_window: int = 30,
+    ) -> None:
+        if redund_filter == pdc.Method_Params.ROLLING_AVRG:
             self._detected_rates.append(new_detection.rate_detected)
             series_detect_rates = pd.Series(self._detected_rates)
             self.rate_at_site = (

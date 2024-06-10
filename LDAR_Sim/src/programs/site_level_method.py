@@ -26,7 +26,10 @@ from constants.error_messages import Input_Processing_Messages as ipm
 from file_processing.output_processing.output_utils import TaggingFlaggingStats
 from programs.method import Method
 from scheduling.follow_up_mobile_schedule import FollowUpMobileSchedule
-from scheduling.follow_up_survey_planner import FollowUpSurveyPlanner
+from scheduling.follow_up_survey_planner import (
+    FollowUpSurveyPlanner,
+    StationaryFollowUpSurveyPlanner,
+)
 from scheduling.surveying_dataclasses import DetectionRecord
 from sensors.default_site_level_sensor import DefaultSiteLevelSensor
 from sensors.METEC_NoWind_sensor import METECNWSite
@@ -85,10 +88,10 @@ class SiteLevelMethod(Method):
             self._inst_threshold = float("inf")
         self._follow_up_schedule: FollowUpMobileSchedule = follow_up_schedule
         self._detection_count = 0
-        self._small_window: int = properties[pdc.Method_Params.ROLLING_AVRG][
+        self._small_window = properties[pdc.Method_Params.ROLLING_AVRG][
             pdc.Method_Params.SMALL_WINDOW
         ]
-        self._large_window: int = properties[pdc.Method_Params.ROLLING_AVRG][
+        self._large_window = properties[pdc.Method_Params.ROLLING_AVRG][
             pdc.Method_Params.LARGE_WINDOW
         ]
         if self._deployment_type == pdc.Deployment_Types.STATIONARY:
@@ -184,7 +187,7 @@ class SiteLevelMethod(Method):
                             )
                         ):
                             self._candidates_for_flags.add(
-                                FollowUpSurveyPlanner(detection_record, date_to_check)
+                                StationaryFollowUpSurveyPlanner(detection_record, date_to_check)
                             )
                         # count that there was a detection, but it wasn't above the thresholds
                         elif detection_record.rate_detected > 0:

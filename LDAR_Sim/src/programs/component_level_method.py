@@ -61,7 +61,7 @@ class ComponentLevelMethod(Method):
         weather,
         curr_date: date,
     ) -> Tuple[SiteSurveyReport, float]:
-        survey_report, site_travel_time, last_site_survey, site_visit = super().survey_site(
+        survey_report, site_travel_time, last_site_survey, site_visited = super().survey_site(
             crew=crew,
             survey_report=survey_report,
             site_to_survey=site_to_survey,
@@ -89,7 +89,7 @@ class ComponentLevelMethod(Method):
                             tagging_info=tagging_info,
                         )
                         self._emissions_tagged_daily += 1
-        return survey_report, site_travel_time, last_site_survey, site_visit
+        return survey_report, site_travel_time, last_site_survey, site_visited
 
     def _initialize_sensor(self, sensor_info: dict) -> None:
         """Will initialize a sensor of the correct type based
