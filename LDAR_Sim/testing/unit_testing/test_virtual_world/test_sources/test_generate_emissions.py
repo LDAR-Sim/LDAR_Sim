@@ -43,6 +43,7 @@ def mock_source_init(self, *args, **kwargs) -> None:
         self._emis_rate_source = kwargs["emis_rate_source"]
         self._meth_spat_covs = kwargs["meth_spat_covs"]
         self._multi_emissions = kwargs["multi_emissions"]
+        self._persistent = kwargs["persistent"]
 
 
 def test_001_validate_date_randomness(mocker) -> None:
@@ -66,6 +67,7 @@ def test_001_validate_date_randomness(mocker) -> None:
         emis_rate_source="test",
         meth_spat_covs={},
         multi_emissions=True,
+        persistent=True,
     )
     # Fix a seed for testing so that the test is reproducible
     np.random.seed(0)
@@ -116,6 +118,7 @@ def test_001_test_single_emission_creation(mocker) -> None:
         emis_rate_source="test",
         meth_spat_covs={},
         multi_emissions=False,
+        persistent=True,
     )
     # Fix a seed for testing so that the test is reproducible
     np.random.seed(0)
@@ -150,6 +153,7 @@ def test_001_test_multi_emission_creation(mocker) -> None:
         emis_rate_source="test",
         meth_spat_covs={},
         multi_emissions=True,
+        persistent=True,
     )
     # Fix a seed for testing so that the test is reproducible
     np.random.seed(0)

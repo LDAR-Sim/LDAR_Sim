@@ -111,6 +111,12 @@ class Emission:
             self.set_init_detect_by(company)
             self.set_init_detect_date(detect_date)
 
+    def is_emitting(self) -> bool:
+        return True
+
+    def get_days_emitting(self) -> int:
+        return self._active_days
+
     def set_init_detect_by(self, init_detect_by):
         self._init_detect_by = init_detect_by
 
@@ -134,6 +140,7 @@ class Emission:
         summary_dict.update({(eca.EMIS_ID, self._emissions_id)})
         summary_dict.update({(eca.STATUS, self._status)})
         summary_dict.update({(eca.DAYS_ACT, self._active_days)})
+        summary_dict.update({(eca.DAYS_EMITTING, self.get_days_emitting())})
         summary_dict.update({(eca.EST_DAYS_ACT, self._estimated_days_active)})
         summary_dict.update({(eca.T_VOL_EMIT, self.calc_true_emis_vol())})
         summary_dict.update({(eca.MITIGATED, 0.0)})
