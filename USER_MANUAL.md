@@ -2495,6 +2495,8 @@ This column is case-sensitive and must match the corresponding columns provided 
 
 **Description:** A True/False column that defines if the given emission source produces persistent(`TRUE`) or non-persistent(`FALSE`) emission. Non-persistent emissions have a total active duration of the user set parameter [duration](#duration-propagating-parameter). However each active and inactive period is defined by the following parameters respectively, [active_duration](#active_duration-source-file) and [inactive_duration](#inactive_duration-source-file).
 
+**Note** Non-persistent emissions start from their emitting state, and then cycle between emitting and not emitting states.
+
 #### active_duration (Source File)
 
 **Description:** The number of days that the given non-persistent emission is emitting for at a given time.
