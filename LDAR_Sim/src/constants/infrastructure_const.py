@@ -80,6 +80,8 @@ class Infrastructure_Constants:
             SURVEY_COST_PLACEHOLDER,
             SURVEY_TIME_PLACEHOLDER,
             SITE_DEPLOYMENT_PLACEHOLDER,
+            DEPLOYMENT_MONTHS_PLACEHOLDER,
+            DEPLOYMENT_YEARS_PLACEHOLDER,
         ]
 
         REQUIRED_HEADERS: list[str] = [ID, LAT, LON, TYPE]
