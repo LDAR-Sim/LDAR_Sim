@@ -30,7 +30,7 @@ def intermittent_non_repairable_emission_creation_params_fixture() -> dict:
         "emission_rate": 1.0,
         "start_date": date(2024, 1, 1),
         "simulation_start_date": date(2024, 1, 1),
-        "repairable": True,
+        "repairable": False,
         "tech_spatial_coverage_probabilities": {},
         "duration": 365,
         "active_duration": 10,
