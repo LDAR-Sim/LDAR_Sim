@@ -2,7 +2,7 @@
 ------------------------------------------------------------------------------
 Program:     The LDAR Simulator (LDAR-Sim)
 File:        OGI_camera_rk
-Purpose: Provides an OGI camera sensor detection based on a 
+Purpose: Provides an OGI camera sensor detection based on a
 sigmoidal Gaussian cumulative probability function as described in Ravikumar et al. (2018)
 
 This program is free software: you can redistribute it and/or modify
@@ -21,6 +21,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 import math
 import numpy as np
+from constants.sensor_constants import QuantificationTypes
 from sensors.default_component_level_sensor import DefaultComponentLevelSensor
 from constants.general_const import Conversion_Constants as CC
 
@@ -29,8 +30,19 @@ class OGICameraRKSensor(DefaultComponentLevelSensor):
     MDL_CONST1 = 0.01275
     MDL_CONST2 = 0.00000278
 
-    def __init__(self, mdl: float, quantification_error: float) -> None:
-        super().__init__(mdl, quantification_error)
+    def __init__(
+        self,
+        mdl: float,
+        quantification_95_percent_ci_lower_range: float,
+        quantification_95_percent_ci_upper_range: float,
+        quantification_type: str = QuantificationTypes.DEFAULT.value,
+    ) -> None:
+        super().__init__(
+            mdl,
+            quantification_95_percent_ci_lower_range,
+            quantification_95_percent_ci_upper_range,
+            quantification_type,
+        )
         self._mdl = mdl
 
     def _rate_detected(self, emis_rate: float) -> bool:

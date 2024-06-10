@@ -6,8 +6,15 @@ from src.sensors.default_site_level_sensor import DefaultSiteLevelSensor
 
 def get_sensor_for_default_site_level_sensor_testing() -> DefaultSiteLevelSensor:
     mdl: float = 1.0
-    QE: float = 0.0
-    return DefaultSiteLevelSensor(mdl=mdl, quantification_error=QE)
+    quantification_95_percent_ci_lower_range: float = 0.0
+    quantification_95_percent_ci_upper_range: float = 0.0
+    quantification_type: str = "default"
+    return DefaultSiteLevelSensor(
+        mdl=mdl,
+        quantification_95_percent_ci_lower_range=quantification_95_percent_ci_lower_range,
+        quantification_95_percent_ci_upper_range=quantification_95_percent_ci_upper_range,
+        quantification_type=quantification_type,
+    )
 
 
 @st.composite

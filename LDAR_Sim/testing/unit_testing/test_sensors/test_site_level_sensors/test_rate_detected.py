@@ -30,13 +30,13 @@ def gen_sens_mdl_and_undetectable_rates(draw):
 
 @given(gen_test_vals=gen_sens_mdl_and_detectable_rates())
 def test_000_default_site_level_sensor_returns_true_above_mdl(gen_test_vals):
-    sens: DefaultSiteLevelSensor = DefaultSiteLevelSensor(gen_test_vals[0], 0.0)
+    sens: DefaultSiteLevelSensor = DefaultSiteLevelSensor(gen_test_vals[0], 0.0, 0.0, "default")
     rate = gen_test_vals[1]
     assert sens._rate_detected(rate) is True
 
 
 @given(gen_test_vals=gen_sens_mdl_and_undetectable_rates())
 def test_000_default_site_level_sensor_returns_false_below_mdl(gen_test_vals):
-    sens: DefaultSiteLevelSensor = DefaultSiteLevelSensor(gen_test_vals[0], 0.0)
+    sens: DefaultSiteLevelSensor = DefaultSiteLevelSensor(gen_test_vals[0], 0.0, 0.0, "default")
     rate = gen_test_vals[1]
     assert sens._rate_detected(rate) is False

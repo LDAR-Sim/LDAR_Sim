@@ -121,7 +121,10 @@ class Method:
         """
         if sensor_info[pdc.Method_Params.TYPE] == "default":
             self._sensor = DefaultSiteLevelSensor(
-                sensor_info[pdc.Method_Params.MDL], sensor_info[pdc.Method_Params.QE]
+                sensor_info[pdc.Method_Params.MDL],
+                sensor_info[pdc.Method_Params.QE][pdc.Method_Params.Q5],
+                sensor_info[pdc.Method_Params.QE][pdc.Method_Params.Q95],
+                sensor_info[pdc.Method_Params.QE][pdc.Method_Params.Q_TYPE],
             )
         else:
             print(ipm.ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))

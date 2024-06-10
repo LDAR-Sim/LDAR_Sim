@@ -424,7 +424,11 @@ def simple_method_values5_fix(mocker):
         pdc.Method_Params.SENSOR: {
             pdc.Method_Params.TYPE: "default",
             pdc.Method_Params.MDL: 1,
-            pdc.Method_Params.QE: 0,
+            pdc.Method_Params.QE: {
+                pdc.Method_Params.Q5: 0,
+                pdc.Method_Params.Q95: 0,
+                pdc.Method_Params.Q_TYPE: "default",
+            },
         },
         pdc.Method_Params.DEPLOYMENT_TYPE: "mobile",
         pdc.Method_Params.MAX_WORKDAY: 8,
@@ -496,7 +500,11 @@ def deploy_crews_testing_fix(mocker):
         pdc.Method_Params.SENSOR: {
             pdc.Method_Params.TYPE: "default",
             pdc.Method_Params.MDL: 1,
-            pdc.Method_Params.QE: 0,
+            pdc.Method_Params.QE: {
+                pdc.Method_Params.Q5: 0,
+                pdc.Method_Params.Q95: 0,
+                pdc.Method_Params.Q_TYPE: "default",
+            },
         },
         pdc.Method_Params.DEPLOYMENT_TYPE: "mobile",
         pdc.Method_Params.MAX_WORKDAY: 8,
@@ -578,7 +586,11 @@ def deploy_crews_testing2_fix(mocker):
         pdc.Method_Params.SENSOR: {
             pdc.Method_Params.TYPE: "default",
             pdc.Method_Params.MDL: 1,
-            pdc.Method_Params.QE: 0,
+            pdc.Method_Params.QE: {
+                pdc.Method_Params.Q5: 0,
+                pdc.Method_Params.Q95: 0,
+                pdc.Method_Params.Q_TYPE: "default",
+            },
         },
         pdc.Method_Params.DEPLOYMENT_TYPE: "mobile",
         pdc.Method_Params.MAX_WORKDAY: 8,

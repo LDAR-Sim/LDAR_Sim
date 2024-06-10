@@ -3,18 +3,33 @@ import pytest
 from src.virtual_world.emission_types.emission import Emission
 
 from src.virtual_world.sites import Site
+from constants import param_default_const as pdc
 
 
 @pytest.fixture(name="sensor_info_for_default_equipment_group_level_sensor_construction_testing")
 def sensor_info_for_default_equipment_group_level_sensor_construction_testing_fix() -> (
     dict[str, int]
 ):
-    return {"mdl": 1, "QE": 0.0}
+    return {
+        pdc.Method_Params.MDL: 1,
+        pdc.Method_Params.QE: {
+            pdc.Method_Params.Q5: 0.0,
+            pdc.Method_Params.Q95: 0.0,
+            pdc.Method_Params.Q_TYPE: "default",
+        },
+    }
 
 
 @pytest.fixture(name="sensor_info_high_mdl_for_default_site_level_sensor_testing")
 def sensor_info_high_mdl_for_default_site_level_sensor_testing_fix() -> dict[str, int]:
-    return {"mdl": 5.0, "QE": 0.0}
+    return {
+        pdc.Method_Params.MDL: 5.0,
+        pdc.Method_Params.QE: {
+            pdc.Method_Params.Q5: 0.0,
+            pdc.Method_Params.Q95: 0.0,
+            pdc.Method_Params.Q_TYPE: "default",
+        },
+    }
 
 
 @pytest.fixture(name="mock_site_emis_for_detect_emissions_testing")

@@ -1,4 +1,5 @@
 from pytest import approx
+from constants import param_default_const as pdc
 from src.scheduling.schedule_dataclasses import SiteSurveyReport
 from src.sensors.default_equipment_group_level_sensor import DefaultEquipmentGroupLevelSensor
 from src.virtual_world.sites import Site
@@ -33,7 +34,9 @@ def test_000_default_eqg_level_sensor_detect_emissions_detects_emissions_at_site
     mock_site: Site = Site()
     mdl: float = sensor_info_for_default_eqg_level_sensor_construction_testing["mdl"]
     qe: float = sensor_info_for_default_eqg_level_sensor_construction_testing["QE"]
-    sensor = DefaultEquipmentGroupLevelSensor(mdl, qe)
+    sensor = DefaultEquipmentGroupLevelSensor(
+        mdl, qe[pdc.Method_Params.Q5], qe[pdc.Method_Params.Q95], qe[pdc.Method_Params.Q_TYPE]
+    )
     report: SiteSurveyReport = SiteSurveyReport(1)
     emis_detected: bool = sensor.detect_emissions(mock_site, "test", report)
     expected_emis = mock_site_for_eqg_level_detect_emissions_testing[1]
@@ -53,7 +56,9 @@ def test_000_default_eqg_level_sensor_detect_emissions_does_not_detect_emissions
     mock_site: Site = Site()
     mdl: float = sensor_info_high_mdl_for_default_eqg_level_sensor_testing["mdl"]
     qe: float = sensor_info_high_mdl_for_default_eqg_level_sensor_testing["QE"]
-    sensor = DefaultEquipmentGroupLevelSensor(mdl, qe)
+    sensor = DefaultEquipmentGroupLevelSensor(
+        mdl, qe[pdc.Method_Params.Q5], qe[pdc.Method_Params.Q95], qe[pdc.Method_Params.Q_TYPE]
+    )
     report: SiteSurveyReport = SiteSurveyReport(1)
     emis_detected: bool = sensor.detect_emissions(mock_site, "test", report)
     expected_true_emis = mock_site_for_eqg_level_detect_emissions_testing_lower_emissions[1]
@@ -74,7 +79,9 @@ def test_000_default_eqg_level_sensor_detect_emissions_correctly_detects_only_em
     mock_site: Site = Site()
     mdl: float = sensor_info_high_mdl_for_default_eqg_level_sensor_testing["mdl"]
     qe: float = sensor_info_high_mdl_for_default_eqg_level_sensor_testing["QE"]
-    sensor = DefaultEquipmentGroupLevelSensor(mdl, qe)
+    sensor = DefaultEquipmentGroupLevelSensor(
+        mdl, qe[pdc.Method_Params.Q5], qe[pdc.Method_Params.Q95], qe[pdc.Method_Params.Q_TYPE]
+    )
     report: SiteSurveyReport = SiteSurveyReport(1)
     emis_detected: bool = sensor.detect_emissions(mock_site, "test", report)
     expected_true_emis = mock_site_for_eqg_level_detect_emissions_testing_mixed_detect[1]

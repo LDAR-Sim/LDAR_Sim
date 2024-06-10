@@ -19,6 +19,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 """
 
 from typing import Union
+from constants.sensor_constants import QuantificationTypes
 from scheduling.schedule_dataclasses import EquipmentGroupSurveyReport, SiteSurveyReport
 from sensors.default_sensor import DefaultSensor
 from virtual_world.emission_types.emission import Emission
@@ -29,8 +30,19 @@ from constants.param_default_const import Levels
 class DefaultEquipmentGroupLevelSensor(DefaultSensor):
     SURVEY_LEVEL = Levels.EQUIP_LEVEL
 
-    def __init__(self, mdl: Union[list[float], float], quantification_error: float) -> None:
-        super().__init__(mdl, quantification_error)
+    def __init__(
+        self,
+        mdl: Union[list[float], float],
+        quantification_95_percent_ci_lower_range: float,
+        quantification_95_percent_ci_upper_range: float,
+        quantification_type: str = QuantificationTypes.DEFAULT.value,
+    ) -> None:
+        super().__init__(
+            mdl,
+            quantification_95_percent_ci_lower_range,
+            quantification_95_percent_ci_upper_range,
+            quantification_type,
+        )
 
     def detect_emissions(self, site: Site, meth_name: str, survey_report: SiteSurveyReport) -> bool:
         # TODO update and test this functionality

@@ -2,18 +2,32 @@ from typing import Any, Tuple
 import pytest
 from src.scheduling.schedule_dataclasses import EquipmentGroupSurveyReport
 from src.virtual_world.emission_types.emission import Emission
-
+from constants import param_default_const as pdc
 from src.virtual_world.sites import Site
 
 
 @pytest.fixture(name="sensor_info_for_default_eqg_level_sensor_construction_testing")
 def sensor_info_for_default_eqg_level_sensor_construction_testing_fix() -> dict[str, int]:
-    return {"mdl": [1], "QE": 0.0}
+    return {
+        "mdl": [1],
+        "QE": {
+            pdc.Method_Params.Q_TYPE: "default",
+            pdc.Method_Params.Q5: 0.0,
+            pdc.Method_Params.Q95: 0.0,
+        },
+    }
 
 
 @pytest.fixture(name="sensor_info_high_mdl_for_default_eqg_level_sensor_testing")
 def sensor_info_high_mdl_for_default_eqg_level_sensor_testing_fix() -> dict[str, int]:
-    return {"mdl": [2.0], "QE": 0.0}
+    return {
+        "mdl": [2.0],
+        "QE": {
+            pdc.Method_Params.Q_TYPE: "default",
+            pdc.Method_Params.Q5: 0.0,
+            pdc.Method_Params.Q95: 0.0,
+        },
+    }
 
 
 @pytest.fixture(name="mock_site_emis_for_eqg_level_detect_emissions_testing")

@@ -20,6 +20,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 """
 
 import numpy as np
+from constants.sensor_constants import QuantificationTypes
 from sensors.default_sensor import DefaultSensor
 from sensors.default_component_level_sensor import DefaultComponentLevelSensor
 from sensors.default_equipment_group_level_sensor import DefaultEquipmentGroupLevelSensor
@@ -27,8 +28,19 @@ from constants.general_const import Conversion_Constants as CC
 
 
 class METECNWSite(DefaultSensor):
-    def __init__(self, mdl: float, quantification_error: float) -> None:
-        super().__init__(mdl, quantification_error)
+    def __init__(
+        self,
+        mdl: float,
+        quantification_95_percent_ci_lower_range: float,
+        quantification_95_percent_ci_upper_range: float,
+        quantification_type: str = QuantificationTypes.DEFAULT.value,
+    ) -> None:
+        super().__init__(
+            mdl,
+            quantification_95_percent_ci_lower_range,
+            quantification_95_percent_ci_upper_range,
+            quantification_type,
+        )
         self._mdl = mdl
 
     def _rate_detected(self, emis_rate: float) -> bool:
