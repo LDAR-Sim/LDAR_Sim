@@ -1413,7 +1413,10 @@ _TODO_ Doesn't exist
 
 **Default input:** 0
 
-**Description:** The initial up-front cost of each crew. This cost is only charged once. The total upfront cost will be upfront times the number of crews.
+**Description:** The initial up-front cost of each crew. This cost is only charged once.
+
+- For `mobile deployment` the total upfront cost will be upfront **times** the number of crews used.
+- For `stationary deployment` the total upfront cost will be equal to the user input value. There is **no** scaling.
 
 See the following files for examples on setting this value at a more granular level:
 
