@@ -2,7 +2,7 @@ parameter_level: "methods"
 version: "4.0"
 method_name: "_placeholder_str_"
 measurement_scale: "_placeholder_str_" # site/equipment/component
-deployment_type: "_placeholder_str_" # mobile/stationary/orbit
+deployment_type: "_placeholder_str_" # mobile/stationary
 sensor:
   type: default # default/OGI_camera_zim(see User manual for MDL values)/OGI_camera_rk
   quantification_error: 0.0
@@ -12,17 +12,17 @@ coverage:
   temporal: 1.0 # 0.0 to 1.0
 cost:
   per_day: 0
-  per_site: 0
+  per_site: 0 # MOBILE ONLY
   upfront: 0
-crew_count: 0 # whole numbers
+crew_count: 0 # whole numbers - MOBILE ONLY
 consider_daylight: False
-surveys_per_year: "_placeholder_int_"
-survey_time: "_placeholder_int_" # minutes
-max_workday: 8 # 1 to 23
+surveys_per_year: "_placeholder_int_" # days - MOBILE ONLY
+survey_time: "_placeholder_int_" # minutes - MOBILE ONLY
+max_workday: 8 # 1 to 23 - MOBILE ONLY
 reporting_delay: 2 # days
 time_between_sites:
-  file: "_placeholder_str_"
-  values: [30.0] # minutes
+  file: "_placeholder_str_" # MOBILE ONLY
+  values: [30.0] # minutes - MOBILE ONLY
 scheduling:
   deployment_months: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
   deployment_years: ["_placeholder_int_"]
@@ -37,6 +37,11 @@ follow_up:
   instant_threshold: "_placeholder_float_" # g/s
   interaction_priority: "threshold" # threshold/proportion
   proportion: 1.0 # 0 to 1.0
-  redundancy_filter: "recent" # recent/max/average
+  redundancy_filter: "recent" # recent/max/average - MOBILE ONLY
   sort_by_rate: True # True/False
-  threshold: 0.0 # g/s
+  threshold: 0.0 # g/s - MOBILE ONLY
+rolling_average:
+  small_window: 7 # days - STATIONARY ONLY
+  large_window: 30 # days - STATIONARY ONLY
+  small_window_threshold: 0.0 # g/s - STATIONARY ONLY
+  large_window_threshold: "_placeholder_float_" # g/s - STATIONARY ONLY

@@ -149,6 +149,11 @@ class Method_Params:
     SORT_BY_RATE = "sort_by_rate"
     THRESHOLD = "threshold"
     DEPLOY_SITE = "site_deployment"
+    ROLLING_AVRG = "rolling_average"
+    SMALL_WINDOW = "small_window"
+    LARGE_WINDOW = "large_window"
+    SMALL_WINDOW_THRESHOLD = "small_window_threshold"
+    LARGE_WINDOW_THRESHOLD = "large_window_threshold"
 
 
 @dataclass

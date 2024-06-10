@@ -62,15 +62,16 @@ class Method:
         sites: "list[Site]",
     ) -> None:
         self._name: str = name
+        self._deployment_type = properties[pdc.Method_Params.DEPLOYMENT_TYPE]
         self._initialize_sensor(properties[pdc.Method_Params.SENSOR])
         self._max_work_hours: int = properties[pdc.Method_Params.MAX_WORKDAY]
         self._daylight_sensitive = properties[pdc.Method_Params.CONSIDER_DAYLIGHT]
         self._weather: bool = consider_weather
         self._weather_envs: dict = properties[pdc.Method_Params.WEATHER_ENVS]
         self._is_follow_up: bool = properties[pdc.Method_Params.IS_FOLLOW_UP]
-        self._travel_times = properties[pdc.Method_Params.T_BW_SITES][
-            pdc.Common_Params.VAL
-        ]  # TODO: update this to not use just vals
+        self._initialize_travel_times(
+            properties[pdc.Method_Params.T_BW_SITES][pdc.Common_Params.VAL]
+        )  # TODO: update this to not use just vals
         self._reporting_delay: int = properties[pdc.Method_Params.REPORTING_DELAY]
         crews: int = properties[pdc.Method_Params.N_CREWS]
         # TODO Check where these should be saved
@@ -84,6 +85,10 @@ class Method:
         This will represent the number of crews available for the given method
 
         """
+        if self._deployment_type == pdc.Deployment_Types.STATIONARY:
+            self._crews: int = 1
+            self._crew_reports: list[CrewDailyReport] = [CrewDailyReport(0, 0)]
+            return
 
         self._crews: int = self._estimate_method_crews_required(crews, sites)
 
@@ -119,6 +124,12 @@ class Method:
         else:
             print(ipm.ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
             sys.exit()
+
+    def _initialize_travel_times(self, travel_time) -> None:
+        if self._deployment_type == pdc.Deployment_Types.STATIONARY:
+            self._travel_times = 0
+        else:
+            self._travel_times = travel_time
 
     def _get_average_method_surveys_required(self, sites: "list[Site]") -> float:
         return np.average([site.get_required_surveys(self._name) for site in sites])
@@ -175,6 +186,8 @@ class Method:
         Return:
             Average maximum daily sites a single crew can survey
         """
+        if self._deployment_type == pdc.Deployment_Types.STATIONARY:
+            return -1
         HOUR_TO_MIN: int = 60
         daily_work_time: int = self._max_work_hours * HOUR_TO_MIN
         survey_time: float = self._avg_s_time
@@ -208,7 +221,11 @@ class Method:
         # If the cost type for the method is per day, calculate the deployment cost for day
         # based off the number of crews being deployed
         if self.cost_type == self.PER_DAY_COST:
-            deploy_stats.deployment_cost = self.cost * len(self._crew_reports)
+            if self._deployment_type == pdc.Deployment_Types.STATIONARY:
+                deploy_stats.deployment_cost = self.cost * len(workplan.site_survey_planners)
+            else:
+                deploy_stats.deployment_cost = self.cost * len(self._crew_reports)
+
         # pop the site with the longest remaining hours to assign the next crew
         # while there are crews that can work
         for survey_plan in workplan.site_survey_planners.values():
@@ -221,7 +238,7 @@ class Method:
                 assigned_crew: CrewDailyReport
 
                 # Send the crew to attempt to survey the site
-                survey_report, travel_time, last_site_survey = self.survey_site(
+                survey_report, travel_time, last_site_survey, site_visited = self.survey_site(
                     crew=assigned_crew,
                     survey_report=survey_report,
                     site_to_survey=site_to_survey,
@@ -232,7 +249,8 @@ class Method:
                 travel_time: float
                 last_site_survey: bool
                 # Tracking Deployment statistics
-                deploy_stats.sites_visited += 1
+                if site_visited:
+                    deploy_stats.sites_visited += 1
                 deploy_stats.travel_time += travel_time
                 deploy_stats.survey_time += survey_report.time_surveyed
 
@@ -303,21 +321,28 @@ class Method:
         workable: bool = True
         last_site_survey: bool = False
         site_travel_time: float = 0
+        site_visit: bool = False
         if self._weather:
             # if weather is considered
             workable: bool = self.check_weather(weather, curr_date, site_to_survey)
 
         if workable:
-            site_survey_time: float = site_to_survey.get_method_survey_time(self._name)
-            site_travel_time: float = self._get_travel_time()
+            site_visit = True
+            if self._deployment_type == pdc.Deployment_Types.STATIONARY:
+                site_survey_time: float = 0
+                site_travel_time: float = 0
+                can_complete_survey: bool = True
+            else:
+                site_survey_time: float = site_to_survey.get_method_survey_time(self._name)
+                site_travel_time: float = self._get_travel_time()
 
-            # Check if the site survey can be completed
-            can_complete_survey: bool = self._determine_if_site_survey_can_be_completed(
-                survey_report=survey_report,
-                site_survey_time=site_survey_time,
-                site_travel_time=site_travel_time,
-                crew_time_remaining=crew.day_time_remaining,
-            )
+                # Check if the site survey can be completed
+                can_complete_survey: bool = self._determine_if_site_survey_can_be_completed(
+                    survey_report=survey_report,
+                    site_survey_time=site_survey_time,
+                    site_travel_time=site_travel_time,
+                    crew_time_remaining=crew.day_time_remaining,
+                )
 
             # Can finish the whole site
             if can_complete_survey:
@@ -359,8 +384,7 @@ class Method:
             else:
                 site_travel_time = 0
                 last_site_survey = True
-
-        return survey_report, site_travel_time, last_site_survey
+        return survey_report, site_travel_time, last_site_survey, site_visit
 
     def _determine_if_site_survey_can_be_completed(
         self,

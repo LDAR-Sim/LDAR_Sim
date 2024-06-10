@@ -96,17 +96,17 @@ Email: <sally@highwoodemissions.com>
       - [\<temporal\>](#temporal)
     - [\<cost\>](#cost)
       - [\<per\_day\>](#per_day)
-      - [\<per\_site\>  _(propagating parameter)_](#per_site--propagating-parameter)
+      - [\<per\_site\>  _(propagating parameter)_ _(mobile parameter)_](#per_site--propagating-parameter-mobile-parameter)
       - [\<upfront\>  _(propagating parameter)_](#upfront--propagating-parameter)
-    - [\<crew\_count\>](#crew_count)
+    - [\<crew\_count\> _(mobile parameter)_](#crew_count-mobile-parameter)
     - [\<consider\_daylight\>](#consider_daylight)
-    - [\<surveys\_per\_year\> _(propagating parameter)_](#surveys_per_year-propagating-parameter)
-    - [\<survey\_time\> _(propagating parameter)_](#survey_time-propagating-parameter)
-    - [\<max\_workday\>](#max_workday)
+    - [\<surveys\_per\_year\> _(propagating parameter)_ _(mobile parameter)_](#surveys_per_year-propagating-parameter-mobile-parameter)
+    - [\<survey\_time\> _(propagating parameter)_ _(mobile parameter)_](#survey_time-propagating-parameter-mobile-parameter)
+    - [\<max\_workday\> _(mobile parameter)_](#max_workday-mobile-parameter)
     - [\<reporting\_delay\>](#reporting_delay)
     - [\<time\_between\_sites\>](#time_between_sites)
-      - [file (time\_between\_sites)](#file-time_between_sites)
-      - [values (time\_between\_sites)](#values-time_between_sites)
+      - [file (time\_between\_sites) _(mobile parameter)_](#file-time_between_sites-mobile-parameter)
+      - [values (time\_between\_sites) _(mobile parameter)_](#values-time_between_sites-mobile-parameter)
     - [\<scheduling\>](#scheduling)
       - [\<deployment\_months\>  _(propagating parameter)_](#deployment_months--propagating-parameter)
       - [\<deployment\_years\>  _(propagating parameter)_](#deployment_years--propagating-parameter)
@@ -121,9 +121,14 @@ Email: <sally@highwoodemissions.com>
       - [\<instant\_threshold\>](#instant_threshold)
       - [\<interaction\_priority\>](#interaction_priority)
       - [\<proportion\>](#proportion)
-      - [\<redundancy\_filter\>](#redundancy_filter)
+      - [\<redundancy\_filter\> _(mobile parameter)_](#redundancy_filter-mobile-parameter)
       - [\<sort\_by\_rate\>](#sort_by_rate)
-      - [\<threshold\>](#threshold)
+      - [\<threshold\> _(mobile parameter)_](#threshold-mobile-parameter)
+    - [rolling\_average](#rolling_average)
+      - [small\_window _(stationary parameter)_](#small_window-stationary-parameter)
+      - [large\_window _(stationary parameter)_](#large_window-stationary-parameter)
+      - [small\_window\_threshold _(stationary parameter)_](#small_window_threshold-stationary-parameter)
+      - [large\_window\_threshold _(stationary parameter)_](#large_window_threshold-stationary-parameter)
   - [10. Virtual World Defining Files](#10-virtual-world-defining-files)
     - [Sites File](#sites-file)
       - [site\_ID](#site_id)
@@ -1224,7 +1229,7 @@ Valid deployment types:
 
 **Notes on acquisition:** No data acquisition required.
 
-**Notes of caution:** N/A
+**Notes of caution:** Certain parameters are mobile/stationary deployment specific, which will be labeled with the following _(mobile parameter)_ or _(stationary parameter)_.
 
 ### &lt;sensor&gt;
 
@@ -1381,9 +1386,9 @@ See the following files for examples on setting this value at a more granular le
 
 **Notes on acquisition:** No data acquisition required.
 
-**Notes of caution:** N/A
+**Notes of caution:** `Stationary` deployment methods only use the `per_day` and `upfront` cost values.
 
-#### &lt;per_site&gt;  _(propagating parameter)_
+#### &lt;per_site&gt;  _(propagating parameter)_ _(mobile parameter)_
 
 **Data type:** Numeric
 
@@ -1398,7 +1403,7 @@ See the following files for examples on setting this value at a more granular le
 
 **Notes on acquisition:** No data acquisition required.
 
-**Notes of caution:** N/A
+**Notes of caution:** `Stationary` deployment methods only use the `per_day` and `upfront` cost values.
 
 #### &lt;upfront&gt;  _(propagating parameter)_
 
@@ -1408,7 +1413,10 @@ _TODO_ Doesn't exist
 
 **Default input:** 0
 
-**Description:** The initial up-front cost of each crew. This cost is only charged once. The total upfront cost will be upfront times the number of crews.
+**Description:** The initial up-front cost of each crew. This cost is only charged once.
+
+- For `mobile` deployment the total upfront cost will be upfront **times** the number of crews used.
+- For `stationary` deployment the total upfront cost will be equal to the user input value. There is **no** scaling.
 
 See the following files for examples on setting this value at a more granular level:
 
@@ -1419,7 +1427,9 @@ See the following files for examples on setting this value at a more granular le
 
 **Notes of caution:** Does not account for maintenance activities or the cost of replacing devices at the end of their lifetime.
 
-### &lt;crew_count&gt;
+`Stationary` deployment methods only use the `per_day` and `upfront` cost values.
+
+### &lt;crew_count&gt; _(mobile parameter)_
 
 **Data type:**  Numeric (Integer)
 
@@ -1437,13 +1447,13 @@ See the following files for examples on setting this value at a more granular le
 
 **Default input:** False
 
-**Description:** A binary True/False to indicate whether crews should only work during daylight hours. If False, crews work the number of hours specified by the [max_workday](#max_workday) input variable used for each method. If True, crews work the shorter of either [max_workday](#max_workday) or the number of daylight hours calculated using the PyEphem package in python using latitude, longitude of each site, for each day of the year.
+**Description:** A binary True/False to indicate whether crews should only work during daylight hours. If False, crews work the number of hours specified by the [max_workday](#max_workday-mobile-parameter) input variable used for each method. If True, crews work the shorter of either [max_workday](#max_workday-mobile-parameter) or the number of daylight hours calculated using the PyEphem package in python using latitude, longitude of each site, for each day of the year.
 
 **Notes on acquisition:** Acquisition is automated using required latitude and longitude coordinates for each facility (see infrastructure_file input) at each time step.
 
 **Notes of caution:** In most cases, True and False will yield similar results. Use of daylight constraints should be considered for companies that do not wish to deploy crews in the dark for safety reasons, especially for locations at high latitudes during winter months (e.g., Northern Alberta). However, this functionality should not be used to determine whether sunlight is available for passive remote sensing methods or other technologies that require sunlight operate, as the sun has already set when civil twilight occurs (see obs.horizon). Solar flux will vary with topography and cloud cover (use ERA5 data).
 
-### &lt;surveys_per_year&gt; _(propagating parameter)_
+### &lt;surveys_per_year&gt; _(propagating parameter)_ _(mobile parameter)_
 
 **Data type:**  Numeric (Integer)
 
@@ -1462,7 +1472,7 @@ See the following files for examples on setting this value at a more granular le
 
 **Note:** this parameter may also be set more granularly using the infrastructure files.
 
-### &lt;survey_time&gt; _(propagating parameter)_
+### &lt;survey_time&gt; _(propagating parameter)_ _(mobile parameter)_
 
 **Data type:**  Numeric (Integer)
 
@@ -1481,7 +1491,7 @@ See the following files for examples on setting this value at a more granular le
 
 **Note:** this parameter may also be set more granularly using the infrastructure files.
 
-### &lt;max_workday&gt;
+### &lt;max_workday&gt; _(mobile parameter)_
 
 **Data type:**  Numeric (Integer)
 
@@ -1509,7 +1519,7 @@ See the following files for examples on setting this value at a more granular le
 
 **Description:** The following parameters specify the time required between surveys for planning, travel, setup, and takedown. This includes all the time not spent on the actual site survey, but the time needed between each site survey by a crew.
 
-#### file (time_between_sites)
+#### file (time_between_sites) _(mobile parameter)_
 
 **Data type:** String
 
@@ -1521,7 +1531,7 @@ See the following files for examples on setting this value at a more granular le
 
 **Notes of caution:** These data may be difficult to acquire and may lack representativeness.
 
-#### values (time_between_sites)
+#### values (time_between_sites) _(mobile parameter)_
 
 **Data type:** List of Integers
 
@@ -1641,7 +1651,11 @@ Moreover, this feature can model work practices involving multiple screenings to
 
 **Default input:** 0
 
-**Description:** The number of days required to have passed since the first site added to the site candidate flagged pool before a site can be flagged. The company will hold all measurements in a site candidate flagged pool. The emissions rate used to triage flagging based on follow-up threshold and proportion are specified with [redundancy filter](#redundancy_filter).
+**Description:** The number of days required to have passed since the first site added to the site candidate flagged pool before a site can be flagged. The company will hold all measurements in a site candidate flagged pool.
+
+The emissions rate for flagging mobile deployment methods is determined by the follow-up  [threshold](#threshold-mobile-parameter) and the specified [proportion](#proportion), as outlined  by the [redundancy filter](#redundancy_filter-mobile-parameter).
+
+For `Stationary` deployment methods, flagging is based on the [rolling-average](#rolling_average) parameters and specified [proportion](#proportion).
 
 **Notes on acquisition:** N/A
 
@@ -1657,7 +1671,7 @@ Moreover, this feature can model work practices involving multiple screenings to
 
 **Notes on acquisition:** No data acquisition required.
 
-**Notes of caution:** The instant threshold should be set above the [follow-up threshold](#threshold), as this is the minimum emission rate that a site must reach to be flagged.
+**Notes of caution:** The instant threshold should be set above the [follow-up threshold](#threshold-mobile-parameter), as this is the minimum emission rate that a site must reach to be flagged.
 
 Follow-up thresholds are explored in detail in Fox et al. 2021\. Choosing follow-up rules is complex and work practices should be developed following extensive analysis of different scenarios. It is important to understand how follow-up thresholds and follow-up ratios interact, especially if both are to be used in the same program. Note that follow-up thresholds are similar to minimum detection limits but that the former is checked against the measured emission rate (which is a function of quantification error) while the latter is checked against the true emission rate.
 
@@ -1688,7 +1702,7 @@ Follow-up thresholds are explored in detail in Fox et al. 2021\. Choosing follow
 
 **Notes of caution:** Specifies which measured emission rates to use when identifying flagged candidate sites for follow-up. This is relevant for individual sites that have had multiple independent measurements during the given period, resulting in the sites being added to a candidate pool of potentially flagged sites. The following are the three options available for this parameter:
 
-#### &lt;redundancy_filter&gt;
+#### &lt;redundancy_filter&gt; _(mobile parameter)_
 
 **Data type:** String
 
@@ -1716,7 +1730,7 @@ Follow-up thresholds are explored in detail in Fox et al. 2021\. Choosing follow
 
 **Notes of caution:** For the intended follow-up `interaction_priority:proportion` use case, it's advisable to enable sorting by setting `sort_by_rate: True`. This ensures that the original purpose of using `interaction_priority:proportion` is maintained.
 
-#### &lt;threshold&gt;
+#### &lt;threshold&gt; _(mobile parameter)_
 
 **Data type:** Float
 
@@ -1729,6 +1743,58 @@ The follow-up [delay](#delay-follow_up) parameter can be set to require multiple
 **Notes on acquisition:** No data acquisition required.
 
 **Notes of caution:** Follow-up thresholds are explored in detail in Fox et al. 2021\. Choosing follow-up rules is complex and work practices should be developed following extensive analysis of different scenarios. It is important to understand how follow-up thresholds and follow-up ratios interact, especially if both are to be used in the same program. Note that follow-up thresholds are similar to minimum detection limits but that the former is checked against to the measured emission rate (which is a function of quantification error) while the latter is checked against the true emission rate.
+
+### rolling_average
+
+**Description:** This parameter provides the overarching heading for the nested parameters related to rolling averages. The following parameters are only relevant when [deployment type](#deployment_type) is set to `stationary`.
+
+#### small_window _(stationary parameter)_
+
+**Data Type:** Numeric(Integer)
+
+**Default input:** 7
+
+**Description:** The number of days to consider when taking the rolling average for the [small threshold](#small_window_threshold-stationary-parameter).
+
+**Notes of acquisition:** N/A
+
+**Notes of caution:** N/A
+
+#### large_window _(stationary parameter)_
+
+**Data Type:** Numeric(Integer)
+
+**Default input:** 30
+
+**Description:** The number of days to consider when taking the rolling average for the [large threshold](#large_window_threshold-stationary-parameter).
+
+**Notes of acquisition:** N/A
+
+**Notes of caution:** N/A
+
+#### small_window_threshold _(stationary parameter)_
+
+**Data Type:** Numeric(Float)
+
+**Default input:** 0.0
+
+**Description:** The threshold in grams per second to consider when triggering follow-up work practices, based on the smaller window rolling average.
+
+**Notes of acquisition:** N/A
+
+**Notes of caution:** When using the [stationary deployment type](#deployment_type),only the `small_window_threshold` is used by default. To enable two different rolling average considerations for the method, users will need to set the [large_window_threshold](#large_window_threshold-stationary-parameter).
+
+#### large_window_threshold _(stationary parameter)_
+
+**Data Type:** Numeric(Float)
+
+**Default input:** _placeholder_float_
+
+**Description:** The threshold in grams per second to consider when triggering follow-up work practices, based on the larger window rolling average. This is an optional second threshold value; if not set, the method will only consider the [small_window_threshold](#small_window_threshold-stationary-parameter) for triggering follow-up work practices.
+
+**Notes of acquisition:** N/A
+
+**Notes of caution:** When using the [stationary deployment type](#deployment_type),only the [small_window_threshold](#small_window_threshold-stationary-parameter) is used by default. To enable two different rolling average considerations for the method, users will need to set the `large_window_threshold`.
 
 --------------------------------------------------------------------------------
 

@@ -293,6 +293,38 @@ class StationarySurveyPlanner(ScheduledSurveyPlanner):
             deployment_months=deployment_months,
         )
 
+    def _gen_survey_plan(
+        self,
+        site_annual_rs: int,
+    ) -> None:
+        """Not needed for stationary, placeholder to reduce computation when not needed"""
+        return None
+
+    def queue_site_for_survey(self) -> bool:
+        """Method to determine if the site for which this survey plan was generated
+        should be queued to be surveyed. Will return True if the site should be
+        queued to be surveyed, False otherwise.
+
+        Returns:
+            bool: Boolean indicating if the site should be queued to be surveyed.
+            True if the site should be queued to be surveyed, False otherwise.
+        """
+        # check it's a valid year
+        if self._check_deployable_year() is False:
+            return False
+        # check if it's a valid deployment month
+        if self._check_deployable_month() is False:
+            return False
+        # check if if the site has already been queued
+        elif (
+            self._queued is False
+            and self._surveys_this_year[self._current_date.year].Required_surveys > 0
+        ):
+            self._queued = True
+            return True
+        # if site has already been queued, return false.
+        return False
+
 
 @dataclass
 class Survey_Counter:
