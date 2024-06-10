@@ -1242,7 +1242,7 @@ and `c` represents the optional minimum threshold that the rate must exceed to b
 
 **Default input:** 0
 
-**Description:** The initial up-front cost of each crew. This cost is only charged once.
+**Description:** The initial up-front cost of each crew. This cost is only charged once. The total upfront cost will be upfront times the number of crews.
 
 **Notes on acquisition:** Consult service provider.
 
