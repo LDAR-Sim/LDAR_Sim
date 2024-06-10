@@ -187,7 +187,9 @@ def test_update_with_rolling_survey(mocker):
     mocker.patch.object(Site, "__init__", lambda self, *args, **kwargs: setattr(self, "id", 1))
     detection_record = DetectionRecord(site_id=1, site=mocker, rate_detected=0.1)
     detect_date = date(2021, 1, 1)
-    stationary_survey_planner = StationaryFollowUpSurveyPlanner(detection_record, detect_date)
+    stationary_survey_planner = StationaryFollowUpSurveyPlanner(
+        detection_record, detect_date, 7, 30
+    )
     method_name = "test_method"
     redund_filter = "rolling_average"
     detection_record = DetectionRecord(site_id=1, site=mocker, rate_detected=0.1)

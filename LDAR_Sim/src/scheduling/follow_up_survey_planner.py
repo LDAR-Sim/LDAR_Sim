@@ -47,8 +47,6 @@ class FollowUpSurveyPlanner(SurveyPlanner):
         redund_filter: str,
         method_name: str,
         detect_date: date,
-        small_window: int = 7,
-        long_window: int = 30,
     ) -> None:
         if redund_filter == self.REDUND_FILTER_RECENT:
             self.rate_at_site = new_detection.rate_detected
@@ -68,8 +66,16 @@ class FollowUpSurveyPlanner(SurveyPlanner):
 
 
 class StationaryFollowUpSurveyPlanner(FollowUpSurveyPlanner):
-    def __init__(self, detection_record: DetectionRecord, detect_date: date) -> None:
+    def __init__(
+        self,
+        detection_record: DetectionRecord,
+        detect_date: date,
+        small_window: int,
+        long_window: int,
+    ) -> None:
         super().__init__(detection_record, detect_date)
+        self._small_window: int = small_window
+        self._long_window: int = long_window
 
     def update_with_latest_survey(
         self,
@@ -77,17 +83,17 @@ class StationaryFollowUpSurveyPlanner(FollowUpSurveyPlanner):
         redund_filter: str,
         method_name: str,
         detect_date: date,
-        small_window: int = 7,
-        long_window: int = 30,
     ) -> None:
         if redund_filter == pdc.Method_Params.ROLLING_AVRG:
             self._detected_rates.append(new_detection.rate_detected)
             series_detect_rates = pd.Series(self._detected_rates)
             self.rate_at_site = (
-                series_detect_rates.rolling(window=small_window, min_periods=1).mean().iloc[-1]
+                series_detect_rates.rolling(window=self._small_window, min_periods=1)
+                .mean()
+                .iloc[-1]
             )
             self.rate_at_site_long = (
-                series_detect_rates.rolling(window=long_window, min_periods=1).mean().iloc[-1]
+                series_detect_rates.rolling(window=self._long_window, min_periods=1).mean().iloc[-1]
             )
             self._latest_detection_date = detect_date
         else:
