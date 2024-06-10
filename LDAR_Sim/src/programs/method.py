@@ -94,7 +94,7 @@ class Method:
         return
 
     def initialize_cost_tracking(self, cost_properties: dict[str, float]):
-        self.upfront_cost = cost_properties[pdc.Method_Params.UPFRONT]
+        self.upfront_cost = cost_properties[pdc.Method_Params.UPFRONT] * self._crews
         if cost_properties[pdc.Method_Params.PER_SITE] > 0:
             self.cost_type = self.PER_SITE_COST
             self.cost = cost_properties[pdc.Method_Params.PER_SITE]
@@ -180,6 +180,9 @@ class Method:
         survey_time: float = self._avg_s_time
 
         return math.ceil(daily_work_time / survey_time)
+
+    def get_upfront_cost(self) -> float:
+        return self.upfront_cost
 
     def get_crew_count(self) -> int:
         return self._crews

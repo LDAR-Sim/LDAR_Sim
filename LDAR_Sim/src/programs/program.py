@@ -202,6 +202,7 @@ class Program:
             timeseries_methods_data.append(
                 TsMethodData(
                     method_name=method.get_name(),
+                    upfront_cost=method.get_upfront_cost(),
                     daily_deployment_cost=deployment_stats.deployment_cost,
                     daily_flags=tags_flags.sites_flagged,
                     daily_tags=tags_flags.leaks_tagged,
