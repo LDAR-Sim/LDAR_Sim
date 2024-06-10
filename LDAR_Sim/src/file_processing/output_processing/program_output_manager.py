@@ -139,16 +139,25 @@ class ProgramOutputManager:
         new_row[tca.NAT_REP_LEAKS] = ts_emis_rep_info.leaks_nat_repaired
 
     def _update_ts_row_w_methods_info(
-        self, new_row: dict[str, Any], ts_methods_info: list[TsMethodData]
+        self,
+        new_row: dict[str, Any],
+        ts_methods_info: list[TsMethodData],
+        include_upfront_cost: bool = False,
     ) -> None:
         total_daily_cost: float = 0.0
         total_leaks_tagged: int = 0
         for method_info in ts_methods_info:
+            if include_upfront_cost:
+                total_daily_cost += method_info.upfront_cost
+                new_row[tca.METH_DAILY_DEPLOY_COST.format(method=method_info.method_name)] = (
+                    method_info.daily_deployment_cost + method_info.upfront_cost
+                )
+            else:
+                new_row[tca.METH_DAILY_DEPLOY_COST.format(method=method_info.method_name)] = (
+                    method_info.daily_deployment_cost
+                )
             total_daily_cost += method_info.daily_deployment_cost
             total_leaks_tagged += np.nan_to_num(method_info.daily_tags)
-            new_row[tca.METH_DAILY_DEPLOY_COST.format(method=method_info.method_name)] = (
-                method_info.daily_deployment_cost
-            )
             new_row[tca.METH_DAILY_TAGS.format(method=method_info.method_name)] = (
                 method_info.daily_tags
             )

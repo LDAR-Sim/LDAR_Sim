@@ -1408,7 +1408,7 @@ _TODO_ Doesn't exist
 
 **Default input:** 0
 
-**Description:** The initial up-front cost of each crew. This cost is only charged once.
+**Description:** The initial up-front cost of each crew. This cost is only charged once. The total upfront cost will be upfront times the number of crews.
 
 See the following files for examples on setting this value at a more granular level:
 

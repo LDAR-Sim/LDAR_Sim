@@ -87,6 +87,7 @@ class LdarSim:
         ts_columns = self._output_manager._init_ts_columns()
         timeseries = pd.DataFrame(columns=ts_columns)
         total_emissions_count: int = 0
+        first_day: bool = True
         while not self._tc.at_simulation_end():
             if self._preseed:
                 np.random.seed(self._preseed_ts[self._tc.current_date])
@@ -102,8 +103,10 @@ class LdarSim:
                 new_row=new_row, ts_emis_info=ts_emis_info, ts_emis_rep_info=ts_emis_rep_info
             )
             self._output_manager._update_ts_row_w_methods_info(
-                new_row=new_row, ts_methods_info=ts_methods_info
+                new_row=new_row, ts_methods_info=ts_methods_info, include_upfront_cost=first_day
             )
+            first_day = False
+
             timeseries.loc[len(timeseries)] = new_row
             self._program.update_date()
             self._tc.next_day()

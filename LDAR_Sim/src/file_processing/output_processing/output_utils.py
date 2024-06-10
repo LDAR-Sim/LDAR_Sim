@@ -87,6 +87,7 @@ class TsEmisData:
 @dataclass
 class TsMethodData:
     method_name: str
+    upfront_cost: float = 0.0
     daily_deployment_cost: float = 0.0
     daily_tags: int = 0
     daily_flags: int = 0
