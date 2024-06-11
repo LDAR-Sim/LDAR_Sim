@@ -239,6 +239,59 @@ def plot_probit(
         plt.close(combined_plot)
 
 
+def plot_box_whisker(
+    mitigation_data: dict[str, list[float]],
+    cost_data: dict[str, list[float]],
+    visualization_dir: Path,
+    visualization_name: str,
+    viz_mapper: SummaryVisualizationMapper,
+):
+    bar_chart_properties: dict = viz_mapper.get_boxplot_properties(visualization_name)
+
+    x_label: str = bar_chart_properties.pop("x_label")
+    y_label: str = bar_chart_properties.pop("y_label")
+
+
+def plot_stack_bar_chart(
+    mitigation_data: dict[str, list[float]],
+    cost_data: dict[str, list[float]],
+    visualization_dir: Path,
+    visualization_name: str,
+    viz_mapper: SummaryVisualizationMapper,
+):
+    x_axis_formatter: ticker.FuncFormatter | None = viz_mapper.get_x_axis_formatter(
+        visualization_name
+    )
+
+    bar_chart_properties: dict = viz_mapper.get_bar_chart_properties(visualization_name)
+
+    x_label: str = bar_chart_properties.pop("x_label")
+    y_label: str = bar_chart_properties.pop("y_label")
+
+    figure: plt.Figure = plt.figure(figsize=(11, 7))  # noqa 841
+    ax: plt.Axes = plt.gca()
+    for index, (program_name, mitigation_values) in enumerate(mitigation_data.items()):
+        ax.bar(
+            x=index,
+            width=np.mean(mitigation_values),
+            label=program_name,
+            **bar_chart_properties,
+        )
+
+    ax.set_yticks(range(len(mitigation_data.keys())))
+    ax.set_yticklabels(mitigation_data.keys())
+    ax.xaxis.set_major_formatter(x_axis_formatter)
+
+    ax.set_xlabel(x_label)
+    ax.set_ylabel(y_label)
+
+    plt.tight_layout()
+
+    save_path: Path = visualization_dir / visualization_name
+    plt.savefig(save_path)
+    plt.close(figure)
+
+
 def plot_bar_chart(
     mitigation_data: dict[str, list[float]],
     visualization_dir: Path,
@@ -284,6 +337,7 @@ def gen_estimated_vs_true_emissions_percent_difference_plot(
     baseline_program: str,
     combine_program_histograms: bool,
     viz_mapper: SummaryVisualizationMapper,
+    _,
 ):
     data_source: Path = out_dir / file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY
     data: pd.DataFrame = pd.read_csv(data_source.with_suffix(".csv"))
@@ -326,6 +380,7 @@ def gen_estimated_vs_true_emissions_relative_difference_plot(
     baseline_program: str,
     combine_program_histograms: bool,
     viz_mapper: SummaryVisualizationMapper,
+    _,
 ):
     data_source: Path = out_dir / file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY
     data: pd.DataFrame = pd.read_csv(data_source.with_suffix(".csv"))
@@ -368,6 +423,7 @@ def gen_true_and_estimated_paired_emissions_distribution_plot(
     baseline_program: str,
     combine_program_histograms: bool,
     viz_mapper: SummaryVisualizationMapper,
+    _,
 ):
     data_source: Path = out_dir / file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY
     data: pd.DataFrame = pd.read_csv(data_source.with_suffix(".csv"))
@@ -405,6 +461,7 @@ def gen_true_and_estimated_paired_probit_plot(
     baseline_program: str,
     combine_program_plots: bool,
     viz_mapper: SummaryVisualizationMapper,
+    _,
 ):
     data_source: Path = out_dir / file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY
     data: pd.DataFrame = pd.read_csv(data_source.with_suffix(".csv"))
@@ -442,6 +499,7 @@ def gen_program_mitigation_bars(
     baseline_program: str,
     _,
     viz_mapper: SummaryVisualizationMapper,
+    __,
 ):
     data_source: Path = out_dir / file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY
     data: pd.DataFrame = pd.read_csv(data_source.with_suffix(".csv"))
@@ -457,6 +515,79 @@ def gen_program_mitigation_bars(
 
     plot_bar_chart(
         annual_mitigation_data,
+        visualization_dir,
+        visualization_name,
+        viz_mapper,
+    )
+
+
+def gen_cost_to_mit_boxplot(
+    out_dir: Path,
+    visualization_dir: Path,
+    baseline_program: str,
+    _,
+    viz_mapper: SummaryVisualizationMapper,
+    prog_costs: dict
+):
+    data_source_emis: Path = (
+        out_dir / file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY
+    )
+    data_source_ts: Path = out_dir / file_name_constants.Output_Files.SummaryFileNames.TS_SUMMARY
+    data_emis: pd.DataFrame = pd.read_csv(data_source_emis.with_suffix(".csv"))
+    data_ts: pd.DataFrame = pd.read_csv(data_source_ts.with_suffix(".csv"))
+
+    visualization_name: str = output_file_constants.SummaryOutputVizFileNames.STACKED_COST_BAR_PLOT
+    program_names: list[str] = summary_visualization_helpers.get_non_baseline_prog_names(
+        data_emis, baseline_program
+    )
+    mitigation_data: dict[str, list[float]] = summary_visualization_helpers.gen_tot_mitigation_list(
+        data_emis, program_names
+    )
+
+    cost_data: dict[str, list[float]] = summary_visualization_helpers.gen_tot_cost_list(
+        data_ts, program_names
+    )
+    cost_mit_data = summary_visualization_helpers.gen_cost_to_mitigation_ratio(
+        mitigation_data, cost_data, program_names,prog_costs
+    )
+
+    plot_box_whisker(
+        cost_mit_data,
+        visualization_dir,
+        visualization_name,
+        viz_mapper,
+    )
+
+
+def gen_program_stacked_cost_bars(
+    out_dir: Path,
+    visualization_dir: Path,
+    baseline_program: str,
+    _,
+    viz_mapper: SummaryVisualizationMapper,
+    prog_costs: dict
+):
+    data_source_emis: Path = (
+        out_dir / file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY
+    )
+    data_source_ts: Path = out_dir / file_name_constants.Output_Files.SummaryFileNames.TS_SUMMARY
+    data_emis: pd.DataFrame = pd.read_csv(data_source_emis.with_suffix(".csv"))
+    data_ts: pd.DataFrame = pd.read_csv(data_source_ts.with_suffix(".csv"))
+
+    visualization_name: str = output_file_constants.SummaryOutputVizFileNames.STACKED_COST_BAR_PLOT
+    program_names: list[str] = summary_visualization_helpers.get_non_baseline_prog_names(
+        data_emis, baseline_program
+    )
+    mitigation_data: dict[str, list[float]] = summary_visualization_helpers.gen_tot_mitigation_list(
+        data_emis, program_names
+    )
+
+    cost_data: dict[str, list[float]] = summary_visualization_helpers.gen_tot_cost_list(
+        data_ts, program_names
+    )
+    plot_stack_bar_chart(
+        mitigation_data,
+        cost_data,
         visualization_dir,
         visualization_name,
         viz_mapper,

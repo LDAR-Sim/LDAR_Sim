@@ -34,6 +34,8 @@ class SummaryOutputVizFileNames:
     )
     TRUE_AND_ESTIMATED_PAIRED_PROBIT_PLOT = "True and Estimated Emissions Probit"
     PROGRAM_MITIGATION_BAR_PLOT = "Program Mitigation Comparison"
+    STACKED_COST_BAR_PLOT = "Stacked Cost Comparison"
+    COST_TO_MIT_BOX_PLOT = "Cost to Mitigation Ratios"
 
     def __iter__(self):
         for attr_name, attr_value in vars(self.__class__).items():
@@ -109,6 +111,17 @@ class MitigationBarConstants:
     HEIGHT = 0.75
 
 
+class StackedCostBarConstants:
+    X_LABEL = "Program Name"
+    Y_LABEL = "Average Total Cost ($) of all sites"
+    HEIGHT = 0.75
+
+
+class BoxPlotConstants:
+    X_LABEL = "Program Name"
+    Y_LABEL = "$ / tonne CO2e"
+
+
 class HistogramConstants:
     Y_AXIS_LABEL = "Relative Frequency (%)"
     BINS = 30
@@ -145,6 +158,7 @@ class TS_SUMMARY_COLUMNS_ACCESSORS:
     T_MIT_DAILT_EMIS_5 = '5th Percentile "True" Mitigable Daily Emissions (Kg Methane)'
     T_NON_MIT_DAILY_EMIS_5 = '5th Percentile "True" Non-Mitigable Daily Emissions (Kg Methane)'
     AVG_DAILY_COST = "Average Daily Cost ($)"
+    TOT_COST = "Total Cost ($)"
     DAILY_COST_95 = "95th Percentile Daily Cost ($)"
     DAILY_COST_5 = "5th Percentile Daily Cost ($)"
 
@@ -185,6 +199,7 @@ TS_SUMMARY_COLUMNS = [
     TS_SUMMARY_COLUMNS_ACCESSORS.T_MIT_DAILT_EMIS_5,
     TS_SUMMARY_COLUMNS_ACCESSORS.T_NON_MIT_DAILY_EMIS_5,
     TS_SUMMARY_COLUMNS_ACCESSORS.AVG_DAILY_COST,
+    TS_SUMMARY_COLUMNS_ACCESSORS.TOT_COST,
     TS_SUMMARY_COLUMNS_ACCESSORS.DAILY_COST_95,
     TS_SUMMARY_COLUMNS_ACCESSORS.DAILY_COST_5,
 ]

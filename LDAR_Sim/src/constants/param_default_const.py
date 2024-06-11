@@ -190,6 +190,7 @@ class Output_Params:
         '5th Percentile "True" Non-Mitigable Daily Emissions (Kg Methane)'
     )
     AVERAGE_DAILY_COST = "Average Daily Cost ($)"
+    TOTAL_COST = "Total Cost ($)"
     PERCENTILE_95_DAILY_COST = "95th Percentile Daily Cost ($)"
     PERCENTILE_5_DAILY_COST = "5th Percentile Daily Cost ($)"
     EMISSIONS_SUMMARY_TOT_MITIGATION = 'Total "True" Mitigated Emissions (Kg Methane)'

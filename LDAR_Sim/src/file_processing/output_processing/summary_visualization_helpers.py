@@ -170,6 +170,54 @@ def gen_annual_emissions_summary_list(
     return paired_emissions_lists
 
 
+def gen_cost_to_mitigation_ratio(
+    mitigation_info, cost_info, program_names, GWP
+) -> dict[str, list[float]]:
+    cost_to_mitigation_ratios = {}
+    for program_name in program_names:
+        mitigation_list = mitigation_info.loc[
+            mitigation_info[output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME]
+            == program_name,
+            output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_TOT_MIT,
+        ].values
+
+        cost_list = cost_info.loc[
+            cost_info[output_file_constants.TS_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME] == program_name,
+            output_file_constants.TS_SUMMARY_COLUMNS_ACCESSORS.TOT_COST,
+        ].values
+
+        cost_to_mitigation_ratios[program_name] = [
+            cost / (mitigation / 1000 * GWP) for cost, mitigation in zip(cost_list, mitigation_list)
+        ]
+    return cost_to_mitigation_ratios
+
+
+def gen_tot_cost_list(ts_summary_info, program_names) -> dict[str, list[float]]:
+    tot_cost_lists = {}
+    for program_name in program_names:
+        cost_list = ts_summary_info.loc[
+            ts_summary_info[output_file_constants.TS_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME]
+            == program_name,
+            output_file_constants.TS_SUMMARY_COLUMNS_ACCESSORS.TOT_COST,
+        ].values
+
+        tot_cost_lists[program_name] = cost_list
+    return tot_cost_lists
+
+
+def gen_tot_mitigation_list(emis_summary_info, program_names) -> dict[str, list[float]]:
+    tot_mitigation_lists = {}
+    for program_name in program_names:
+        mitigation_list = emis_summary_info.loc[
+            emis_summary_info[output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME]
+            == program_name,
+            output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_TOT_MIT,
+        ].values
+
+        tot_mitigation_lists[program_name] = mitigation_list
+    return tot_mitigation_lists
+
+
 def gen_annual_mitigation_summary_list(
     emis_summary_info, program_names
 ) -> dict[str, Tuple[list[float], list[float]]]:

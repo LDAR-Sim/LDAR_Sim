@@ -19,6 +19,7 @@ Summary Outputs:
       5th Percentile "True" Mitigable Daily Emissions (Kg Methane): true
       5th Percentile "True" Non-Mitigable Daily Emissions (Kg Methane): true
       Average Daily Cost ($): true
+      Total Cost ($): true
       95th Percentile Daily Cost ($): true
       5th Percentile Daily Cost ($): true
     Emissions Summary:
@@ -39,6 +40,8 @@ Summary Visualizations:
   True_and_Estimated_Paired_Emissions_Distribution: true
   True and Estimated Emissions Probit: true
   Program Mitigation Comparison: true
+  Stacked Cost Comparison: true
+  Cost to Mitigation Ratios: true
 Summary Visualization Settings:
   True and Estimated Emissions Probit: 
     Show Markers: true

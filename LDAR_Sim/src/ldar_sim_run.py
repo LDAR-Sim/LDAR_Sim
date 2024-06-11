@@ -209,6 +209,7 @@ def run_ldar_sim(parameter_filenames, DEBUG=False):
         output_dir=out_dir,
         baseline_program=base_program,
         site_count=virtual_world[pdc.Virtual_World_Params.N_SITES],
+        prog_params=programs,
     )
     # IF the are more than 5 simulations, divide the simulations into batches
     if simulation_count > 5:

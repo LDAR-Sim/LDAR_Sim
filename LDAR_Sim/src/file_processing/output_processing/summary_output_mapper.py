@@ -90,6 +90,11 @@ class SummaryOutputMapper:
                     df, output_file_constants.TIMESERIES_COL_ACCESSORS.COST
                 )
             ),
+            output_file_constants.TS_SUMMARY_COLUMNS_ACCESSORS.TOT_COST: lambda df: (
+                summary_output_helpers.get_sum(
+                    df, output_file_constants.TIMESERIES_COL_ACCESSORS.COST
+                )
+            ),
             output_file_constants.TS_SUMMARY_COLUMNS_ACCESSORS.DAILY_COST_95: lambda df: (
                 summary_output_helpers.get_nth_percentile(
                     df,

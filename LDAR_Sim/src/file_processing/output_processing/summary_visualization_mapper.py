@@ -123,6 +123,19 @@ class SummaryVisualizationMapper:
                 "color": output_file_constants.MitigationBarConstants.COLOR,
                 "height": output_file_constants.MitigationBarConstants.HEIGHT,
             },
+            output_file_constants.SummaryOutputVizFileNames.STACKED_COST_BAR_PLOT: {
+                "align": "center",
+                "x_label": output_file_constants.StackedCostBarConstants.X_LABEL,
+                "y_label": output_file_constants.StackedCostBarConstants.Y_LABEL,
+                "height": output_file_constants.StackedCostBarConstants.HEIGHT,
+            },
+        }
+
+        self._box_plot_properties_lookup = {
+            output_file_constants.SummaryOutputVizFileNames.COST_TO_MIT_BOX_PLOT: {
+                "x_label": output_file_constants.BoxPlotConstants.X_LABEL,
+                "y_label": output_file_constants.BoxPlotConstants.Y_LABEL,
+            }
         }
 
     def _get_summary_visualization_lookups(
@@ -141,6 +154,9 @@ class SummaryVisualizationMapper:
 
     def get_bar_chart_properties(self, visualization_name: str):
         return self._bar_chart_properties_lookup.get(visualization_name)
+
+    def get_boxplot_properties(self, visualization_name: str):
+        return self._box_plot_properties_lookup.get(visualization_name)
 
     def get_x_axis_formatter(self, visualization_name: str):
         return self._axis_formatter_lookup.get(visualization_name)
