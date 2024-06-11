@@ -27,22 +27,21 @@ def mock_default_sensor_init(self):
 
 
 @pytest.mark.parametrize(
-    "upper_range, lower_range, expected_sd, expected_centre",
+    "quantification_parameters, expected_sd, expected_centre",
     [
-        (0.0, 1.0, 0.5, 0.5),
-        (-1.0, 1.0, 1.0, 0.0),
-        (0.0, 0.0, 0.0, 0.0),
-        (-1.0, 0.0, 0.5, -0.5),
+        ([0.0, 1.0], 0.5, 0.5),
+        ([-1.0, 1.0], 1.0, 0.0),
+        ([0.0, 0.0], 0.0, 0.0),
+        ([-1.0, 0.0], 0.5, -0.5),
     ],
 )
 def test_default_quantification_predictor_constructed_as_expected(
-    monkeypatch, upper_range, lower_range, expected_sd, expected_centre
+    monkeypatch, quantification_parameters, expected_sd, expected_centre
 ):
     monkeypatch.setattr(DefaultSensor, "__init__", mock_default_sensor_init)
     test_sensor: DefaultSensor = DefaultSensor()
     test_sensor.initialize_quantification_predictor(
-        quantification_95_percent_ci_lower_range=lower_range,
-        quantification_95_percent_ci_upper_range=upper_range,
+        quantification_parameters=quantification_parameters,
         quantification_type="default",
     )
     assert test_sensor._quantification_predictor._quantification_standard_deviation == expected_sd
@@ -50,26 +49,23 @@ def test_default_quantification_predictor_constructed_as_expected(
 
 
 @pytest.mark.parametrize(
-    "upper_range, lower_range",
+    "quantification_parameters",
     [
-        (0.0, 1.0),
-        (-1.0, 1.0),
-        (0.0, 0.0),
-        (-1.0, 0.0),
+        [0.0, 1.0],
+        [-1.0, 1.0],
+        [0.0, 0.0],
+        [-1.0, 0.0],
     ],
 )
 def test_uniform_quantification_predictor_constructed_as_expected(
-    monkeypatch,
-    upper_range,
-    lower_range,
+    monkeypatch, quantification_parameters
 ):
     monkeypatch.setattr(DefaultSensor, "__init__", mock_default_sensor_init)
     test_sensor: DefaultSensor = DefaultSensor()
     test_sensor.initialize_quantification_predictor(
-        quantification_95_percent_ci_lower_range=lower_range,
-        quantification_95_percent_ci_upper_range=upper_range,
+        quantification_parameters,
         quantification_type="uniform",
     )
 
-    assert test_sensor._quantification_predictor._lower_range == lower_range
-    assert test_sensor._quantification_predictor._upper_range == upper_range
+    assert test_sensor._quantification_predictor._lower_range == quantification_parameters[0]
+    assert test_sensor._quantification_predictor._upper_range == quantification_parameters[1]

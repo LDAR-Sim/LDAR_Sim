@@ -11,10 +11,7 @@ def test_000_simple_default_equipment_level_constructor_properly_initializes_as_
     sl_sensor = DefaultComponentLevelSensor(
         sensor_info_for_default_equipment_level_sensor_construction_testing[pdc.Method_Params.MDL],
         sensor_info_for_default_equipment_level_sensor_construction_testing[pdc.Method_Params.QE][
-            pdc.Method_Params.Q5
-        ],
-        sensor_info_for_default_equipment_level_sensor_construction_testing[pdc.Method_Params.QE][
-            pdc.Method_Params.Q95
+            pdc.Method_Params.QUANTIFICATION_PARAMETERS
         ],
         sensor_info_for_default_equipment_level_sensor_construction_testing[pdc.Method_Params.QE][
             pdc.Method_Params.Q_TYPE

@@ -34,8 +34,7 @@ def gen_sens_mdl_and_undetectable_rates(draw):
 def test_000_default_eqg_level_sensor_returns_true_above_mdl(gen_test_vals):
     sens: DefaultEquipmentGroupLevelSensor = DefaultEquipmentGroupLevelSensor(
         [gen_test_vals[0]],
-        0.0,
-        0.0,
+        [0.0, 0.0],
         "default",
     )
     rate = gen_test_vals[1]
@@ -46,8 +45,7 @@ def test_000_default_eqg_level_sensor_returns_true_above_mdl(gen_test_vals):
 def test_000_default_eqg_level_sensor_returns_false_below_mdl(gen_test_vals):
     sens: DefaultEquipmentGroupLevelSensor = DefaultEquipmentGroupLevelSensor(
         [gen_test_vals[0]],
-        0.0,
-        0.0,
+        [0.0, 0.0],
         "default",
     )
     rate = gen_test_vals[1]

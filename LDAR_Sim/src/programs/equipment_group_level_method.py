@@ -52,15 +52,13 @@ class EquipmentGroupLevelMethod(SiteLevelMethod):
         if sensor_info[pdc.Method_Params.TYPE] == "default":
             self._sensor = DefaultEquipmentGroupLevelSensor(
                 sensor_info[pdc.Method_Params.MDL],
-                sensor_info[pdc.Method_Params.QE][pdc.Method_Params.Q5],
-                sensor_info[pdc.Method_Params.QE][pdc.Method_Params.Q95],
+                sensor_info[pdc.Method_Params.QE][pdc.Method_Params.QUANTIFICATION_PARAMETERS],
                 sensor_info[pdc.Method_Params.QE][pdc.Method_Params.Q_TYPE],
             )
         elif sensor_info[pdc.Method_Params.TYPE] == "METEC_no_wind":
             self._sensor = METECNWEquipmentGroup(
                 sensor_info[pdc.Method_Params.MDL],
-                sensor_info[pdc.Method_Params.QE][pdc.Method_Params.Q5],
-                sensor_info[pdc.Method_Params.QE][pdc.Method_Params.Q95],
+                sensor_info[pdc.Method_Params.QE][pdc.Method_Params.QUANTIFICATION_PARAMETERS],
                 sensor_info[pdc.Method_Params.QE][pdc.Method_Params.Q_TYPE],
             )
         else:

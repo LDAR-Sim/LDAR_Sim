@@ -6,13 +6,11 @@ from src.sensors.default_equipment_group_level_sensor import DefaultEquipmentGro
 
 def get_sensor_for_default_eqg_level_sensor_testing() -> DefaultEquipmentGroupLevelSensor:
     mdl: float = 1.0
-    quantification_95_percent_ci_lower_range: float = 0.0
-    quantification_95_percent_ci_upper_range: float = 0.0
+    quantification_parameters: list[float] = [0.0, 0.0]
     quantification_type: str = "default"
     return DefaultEquipmentGroupLevelSensor(
         mdl=mdl,
-        quantification_95_percent_ci_lower_range=quantification_95_percent_ci_lower_range,
-        quantification_95_percent_ci_upper_range=quantification_95_percent_ci_upper_range,
+        quantification_parameters=quantification_parameters,
         quantification_type=quantification_type,
     )
 

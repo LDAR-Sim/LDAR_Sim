@@ -6,13 +6,11 @@ from sensors.default_component_level_sensor import DefaultComponentLevelSensor
 
 def get_sensor_for_default_equipment_level_sensor_testing() -> DefaultComponentLevelSensor:
     mdl: float = 1.0
-    quantification_95_percent_ci_lower_range: float = 0.0
-    quantification_95_percent_ci_upper_range: float = 0.0
+    quantification_parameters: list[float] = [0.0, 0.0]
     quantification_type: str = "default"
     return DefaultComponentLevelSensor(
         mdl=mdl,
-        quantification_95_percent_ci_lower_range=quantification_95_percent_ci_lower_range,
-        quantification_95_percent_ci_upper_range=quantification_95_percent_ci_upper_range,
+        quantification_parameters=quantification_parameters,
         quantification_type=quantification_type,
     )
 

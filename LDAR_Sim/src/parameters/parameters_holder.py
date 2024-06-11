@@ -53,7 +53,7 @@ class ParametersHolder:
     }
 
     METHOD_SUB_PARAMETER_MAPPING = {
-        param_default_const.Method_Params.SENSOR: None,
+        param_default_const.Method_Params.SENSOR: {param_default_const.Method_Params.QE: None},
         param_default_const.Method_Params.COVERAGE: None,
         param_default_const.Method_Params.COST: None,
         param_default_const.Method_Params.T_BW_SITES: None,

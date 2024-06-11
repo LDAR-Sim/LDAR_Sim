@@ -28,8 +28,7 @@ class DefaultSensor:
     def __init__(
         self,
         mdl: Union[list[float], float],
-        quantification_95_percent_ci_lower_range: float,
-        quantification_95_percent_ci_upper_range: float,
+        quantification_parameters: list[float],
         quantification_type: str = QuantificationTypes.DEFAULT.value,
     ) -> None:
         # TODO revisit this implementation
@@ -43,26 +42,22 @@ class DefaultSensor:
         else:
             raise TypeError("mdl must be a integer, float or a list of floats")
         self.initialize_quantification_predictor(
-            quantification_95_percent_ci_lower_range=quantification_95_percent_ci_lower_range,
-            quantification_95_percent_ci_upper_range=quantification_95_percent_ci_upper_range,
+            quantification_parameters,
             quantification_type=quantification_type,
         )
 
     def initialize_quantification_predictor(
         self,
-        quantification_95_percent_ci_lower_range: float,
-        quantification_95_percent_ci_upper_range: float,
+        quantification_parameters: list[float],
         quantification_type: str,
     ):
         if quantification_type == QuantificationTypes.DEFAULT.value:
             self._quantification_predictor = quantification.DefaultQuantificationPredictor(
-                quantification_95_percent_ci_lower_range=quantification_95_percent_ci_lower_range,
-                quantification_95_percent_ci_upper_range=quantification_95_percent_ci_upper_range,
+                *quantification_parameters
             )
         elif quantification_type == QuantificationTypes.UNIFORM.value:
             self._quantification_predictor = quantification.UniformQuantificationPredictor(
-                quantification_95_percent_ci_lower_range=quantification_95_percent_ci_lower_range,
-                quantification_95_percent_ci_upper_range=quantification_95_percent_ci_upper_range,
+                *quantification_parameters
             )
 
     def _rate_detected(self, emis_rate: float) -> bool:

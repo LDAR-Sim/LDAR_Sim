@@ -31,14 +31,12 @@ class METECNWSite(DefaultSensor):
     def __init__(
         self,
         mdl: float,
-        quantification_95_percent_ci_lower_range: float,
-        quantification_95_percent_ci_upper_range: float,
+        quantification_parameters: list[float],
         quantification_type: str = QuantificationTypes.DEFAULT.value,
     ) -> None:
         super().__init__(
             mdl,
-            quantification_95_percent_ci_lower_range,
-            quantification_95_percent_ci_upper_range,
+            quantification_parameters,
             quantification_type,
         )
         self._mdl = mdl

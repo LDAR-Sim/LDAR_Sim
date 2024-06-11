@@ -12,8 +12,7 @@ def sensor_info_for_default_eqg_level_sensor_construction_testing_fix() -> dict[
         "mdl": [1],
         "QE": {
             pdc.Method_Params.Q_TYPE: "default",
-            pdc.Method_Params.Q5: 0.0,
-            pdc.Method_Params.Q95: 0.0,
+            pdc.Method_Params.QUANTIFICATION_PARAMETERS: [0.0, 0.0],
         },
     }
 
@@ -24,8 +23,7 @@ def sensor_info_high_mdl_for_default_eqg_level_sensor_testing_fix() -> dict[str,
         "mdl": [2.0],
         "QE": {
             pdc.Method_Params.Q_TYPE: "default",
-            pdc.Method_Params.Q5: 0.0,
-            pdc.Method_Params.Q95: 0.0,
+            pdc.Method_Params.QUANTIFICATION_PARAMETERS: [0.0, 0.0],
         },
     }
 

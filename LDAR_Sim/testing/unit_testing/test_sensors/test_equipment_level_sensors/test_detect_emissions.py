@@ -42,7 +42,7 @@ def test_000_default_equip_level_sensor_detect_emissions_detects_emissions_at_si
         pdc.Method_Params.QE
     ]
     sensor = DefaultComponentLevelSensor(
-        mdl, qe[pdc.Method_Params.Q5], qe[pdc.Method_Params.Q95], qe[pdc.Method_Params.Q_TYPE]
+        mdl, qe[pdc.Method_Params.QUANTIFICATION_PARAMETERS], qe[pdc.Method_Params.Q_TYPE]
     )
     report: SiteSurveyReport = SiteSurveyReport(1)
     emis_detected: bool = sensor.detect_emissions(mock_site, "test", report)
@@ -68,7 +68,7 @@ def test_000_default_equip_level_sensor_detect_emissions_does_not_detect_emissio
         pdc.Method_Params.QE
     ]
     sensor = DefaultComponentLevelSensor(
-        mdl, qe[pdc.Method_Params.Q5], qe[pdc.Method_Params.Q95], qe[pdc.Method_Params.Q_TYPE]
+        mdl, qe[pdc.Method_Params.QUANTIFICATION_PARAMETERS], qe[pdc.Method_Params.Q_TYPE]
     )
     report: SiteSurveyReport = SiteSurveyReport(1)
     emis_detected: bool = sensor.detect_emissions(mock_site, "test", report)
@@ -95,7 +95,7 @@ def test_000_default_eqg_level_sensor_detect_emissions_correctly_detects_only_em
         pdc.Method_Params.QE
     ]
     sensor = DefaultComponentLevelSensor(
-        mdl, qe[pdc.Method_Params.Q5], qe[pdc.Method_Params.Q95], qe[pdc.Method_Params.Q_TYPE]
+        mdl, qe[pdc.Method_Params.QUANTIFICATION_PARAMETERS], qe[pdc.Method_Params.Q_TYPE]
     )
     report: SiteSurveyReport = SiteSurveyReport(1)
     emis_detected: bool = sensor.detect_emissions(mock_site, "test", report)

@@ -71,4 +71,4 @@ class DefaultQuantificationPredictor:
         quantification_shift: float = np.random.normal(
             loc=self._quantification_centre, scale=self._quantification_standard_deviation
         )
-        return true_rate + true_rate * quantification_shift
+        return true_rate * (1 + (quantification_shift / 100))

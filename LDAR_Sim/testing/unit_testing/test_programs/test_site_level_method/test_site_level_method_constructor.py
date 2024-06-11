@@ -34,8 +34,7 @@ def test_site_level_method_creation(mock_follow_up_schedule):
             pdc.Method_Params.TYPE: "default",
             pdc.Method_Params.MDL: 1.0,
             pdc.Method_Params.QE: {
-                pdc.Method_Params.Q5: 0.0,
-                pdc.Method_Params.Q95: 0.0,
+                pdc.Method_Params.QUANTIFICATION_PARAMETERS: [0.0, 0.0],
                 pdc.Method_Params.Q_TYPE: "default",
             },
         },

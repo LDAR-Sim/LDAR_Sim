@@ -51,8 +51,8 @@ class UniformQuantificationPredictor:
 
         """
 
-        self._upper_range = quantification_95_percent_ci_upper_range
         self._lower_range = quantification_95_percent_ci_lower_range
+        self._upper_range = quantification_95_percent_ci_upper_range
 
     def predict(self, true_rate: float) -> float:
         """
@@ -65,4 +65,4 @@ class UniformQuantificationPredictor:
             float: The predicted quantified rate.
         """
         quantification_shift: float = np.random.uniform(self._lower_range, self._upper_range)
-        return true_rate + true_rate * quantification_shift
+        return true_rate * (1 + (quantification_shift / 100))

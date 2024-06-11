@@ -13,8 +13,7 @@ def sensor_info_for_default_equipment_group_level_sensor_construction_testing_fi
     return {
         pdc.Method_Params.MDL: 1,
         pdc.Method_Params.QE: {
-            pdc.Method_Params.Q5: 0.0,
-            pdc.Method_Params.Q95: 0.0,
+            pdc.Method_Params.QUANTIFICATION_PARAMETERS: [0.0, 0.0],
             pdc.Method_Params.Q_TYPE: "default",
         },
     }
@@ -25,8 +24,7 @@ def sensor_info_high_mdl_for_default_site_level_sensor_testing_fix() -> dict[str
     return {
         pdc.Method_Params.MDL: 5.0,
         pdc.Method_Params.QE: {
-            pdc.Method_Params.Q5: 0.0,
-            pdc.Method_Params.Q95: 0.0,
+            pdc.Method_Params.QUANTIFICATION_PARAMETERS: [0.0, 0.0],
             pdc.Method_Params.Q_TYPE: "default",
         },
     }
