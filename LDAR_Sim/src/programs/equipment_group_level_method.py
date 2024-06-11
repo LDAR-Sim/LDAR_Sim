@@ -58,8 +58,10 @@ class EquipmentGroupLevelMethod(SiteLevelMethod):
             self._sensor = METECNWEquipmentGroup(
                 sensor_info[pdc.Method_Params.MDL], sensor_info[pdc.Method_Params.QE]
             )
-        elif sensor_info[mp.TYPE] == "generic":
-            self._sensor = GenericPOD_Equip(sensor_info[mp.MDL], sensor_info[mp.QE])
+        elif sensor_info[pdc.Method_Params.TYPE] == "generic":
+            self._sensor = GenericPOD_Equip(
+                sensor_info[pdc.Method_Params.MDL], sensor_info[pdc.Method_Params.QE]
+            )
         else:
             print(ipm.ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
             sys.exit()

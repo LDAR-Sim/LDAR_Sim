@@ -333,8 +333,10 @@ class SiteLevelMethod(Method):
             self._sensor = METECNWSite(
                 sensor_info[pdc.Method_Params.MDL], sensor_info[pdc.Method_Params.QE]
             )
-        elif sensor_info[mp.TYPE] == "generic":
-            self._sensor = GenericPOD_Site(sensor_info[mp.MDL], sensor_info[mp.QE])
+        elif sensor_info[pdc.Method_Params.TYPE] == "generic":
+            self._sensor = GenericPOD_Site(
+                sensor_info[pdc.Method_Params.MDL], sensor_info[pdc.Method_Params.QE]
+            )
         else:
             print(ipm.ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
             sys.exit()

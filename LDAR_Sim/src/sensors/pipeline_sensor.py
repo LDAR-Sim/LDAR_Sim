@@ -50,6 +50,7 @@ SECONDTOMINUTE = 60
 class MobilePipeline(DefaultComponentLevelSensor):
     def __init__(self, mdl: float, quantification_error: float) -> None:
         super().__init__(mdl, quantification_error)
+        self._mdl = mdl
 
     def _rate_detected(self, emis_rate: float) -> bool:
         T = 15  # temperature in Celsius
