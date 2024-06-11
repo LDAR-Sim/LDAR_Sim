@@ -21,6 +21,8 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 from matplotlib import lines, pyplot as plt, ticker
 import scipy.stats
 from constants import output_file_constants
+from constants.general_const import Conversion_Constants as cf
+from constants.param_default_const import Program_Params as pp
 import seaborn as sns
 from typing import Any, Tuple, Union
 import numpy as np
@@ -205,7 +207,7 @@ def gen_tot_cost_list(ts_summary_info, program_names) -> dict[str, list[float]]:
     return tot_cost_lists
 
 
-def gen_tot_mitigation_cost_list(emis_summary_info, program_names) -> dict[str, list[float]]:
+def gen_tot_mitigation_cost_list(emis_summary_info, program_names,cost_dict) -> dict[str, list[float]]:
     tot_mitigation_lists = {}
     for program_name in program_names:
         mitigation_list = emis_summary_info.loc[
@@ -213,7 +215,8 @@ def gen_tot_mitigation_cost_list(emis_summary_info, program_names) -> dict[str, 
             == program_name,
             output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_TOT_MIT,
         ].values
-
+        cost_scale = cost_dict[program_name][pp.NATGAS]
+        mitigation_list = [mit * cost_scale * cf.KG_TO_MCF for mit in mitigation_list]
         tot_mitigation_lists[program_name] = mitigation_list
     return tot_mitigation_lists
 
