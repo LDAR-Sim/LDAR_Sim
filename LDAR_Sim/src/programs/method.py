@@ -102,12 +102,15 @@ class Method:
         if cost_properties[pdc.Method_Params.PER_DAY] > 0:
             self.cost_type = self.PER_DAY_COST
             self.cost = cost_properties[pdc.Method_Params.PER_DAY]
-        elif cost_properties[pdc.Method_Params.PER_SITE] > 0:
+        elif (
+            pdc.Method_Params.PER_SITE in cost_properties
+            and cost_properties[pdc.Method_Params.PER_SITE] > 0
+        ):
             self.cost_type = self.PER_SITE_COST
             self.cost = cost_properties[pdc.Method_Params.PER_SITE]
         else:
-            self.cost_type = self.PER_SITE_COST
-            self.cost = -1
+            self.cost_type = self.PER_DAY_COST
+            self.cost = 0
 
     def _initialize_sensor(self, sensor_info: dict) -> None:
         """Will initialize a sensor of the correct type based

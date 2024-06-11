@@ -23,10 +23,11 @@ from constants.general_const import Placeholder_Constants as pc
 from constants.error_messages import Initialization_Messages as im
 
 
-def check_types(default, test, omit_keys=None, fatal=False):
+def check_types(default, test, name, omit_keys=None, fatal=False):
     """Helper function to recursively check the type of parameter dictionaries
     :param default: default element to test
     :param test: test element to test
+    :param file_name: name of the file being tested
     :param omit_keys: a list of dictionary keys to omit from further recursive testing
     :param fatal: boolean to control whether sys.exit() is called upon an error
     """
@@ -55,17 +56,18 @@ def check_types(default, test, omit_keys=None, fatal=False):
             for i in test:
                 if i not in omit_keys:
                     if i not in default:
-                        print(im.PARAMETER_CREATION_ERROR_MESSAGE.format(key=i))
+                        print(im.PARAMETER_CREATION_ERROR_MESSAGE.format(key=i, name=name))
+                        fatal = True
                         if fatal:
                             sys.exit()
 
                     else:
-                        check_types(default[i], test[i], omit_keys=omit_keys, fatal=fatal)
+                        check_types(default[i], test[i], name, omit_keys=omit_keys, fatal=fatal)
 
         elif isinstance(test, list):
             if len(default) > 0 and len(test) > 0:
                 for i in range(len(test)):
-                    check_types(default[0], test[i], omit_keys=omit_keys, fatal=fatal)
+                    check_types(default[0], test[i], name, omit_keys=omit_keys, fatal=fatal)
 
     else:
         print(
@@ -74,7 +76,9 @@ def check_types(default, test, omit_keys=None, fatal=False):
                 def_type=str(type(default)),
                 test=str(test),
                 test_type=str(type(test)),
+                name=name,
             )
         )
+        fatal = True
         if fatal:
             sys.exit()

@@ -187,7 +187,10 @@ class InputManager:
                         programs = programs + new_parameters.pop(pc.Levels.PROGRAM)
 
                 check_types(
-                    self.simulation_parameters, new_parameters, omit_keys=[pc.Levels.PROGRAM]
+                    self.simulation_parameters,
+                    new_parameters,
+                    pc.Levels.SIMULATION,
+                    omit_keys=[pc.Levels.PROGRAM],
                 )
                 self.retain_update(self.simulation_parameters, new_parameters)
 
@@ -199,7 +202,7 @@ class InputManager:
                 v_world_param_file = ParameterProcessingConst.DEFAULT_PARAM_PATHWAY.format(def_file)
                 with open(v_world_param_file, "r") as f:
                     default_v_world_params = yaml.load(f.read(), Loader=yaml.SafeLoader)
-                check_types(default_v_world_params, new_parameters)
+                check_types(default_v_world_params, new_parameters, pc.Levels.VIRTUAL)
                 new_v_world = copy.deepcopy(default_v_world_params)
                 self.retain_update(new_v_world, new_parameters)
                 self.simulation_parameters[pc.Levels.VIRTUAL] = new_v_world
@@ -213,7 +216,10 @@ class InputManager:
                 with open(p_param_file, "r") as f:
                     default_program_parameters = yaml.load(f.read(), Loader=yaml.SafeLoader)
                 check_types(
-                    default_program_parameters, new_parameters, omit_keys=[pc.Levels.METHOD]
+                    default_program_parameters,
+                    new_parameters,
+                    new_parameters[pc.Program_Params.NAME],
+                    omit_keys=[pc.Levels.METHOD],
                 )
                 # Copy all default program parameters to build upon by calling update, then append
                 new_program = copy.deepcopy(default_program_parameters)
@@ -234,7 +240,7 @@ class InputManager:
                 output_param_file = ParameterProcessingConst.DEFAULT_PARAM_PATHWAY.format(def_file)
                 with open(output_param_file, "r") as f:
                     default_output_params = yaml.load(f.read(), Loader=yaml.SafeLoader)
-                check_types(default_output_params, new_parameters)
+                check_types(default_output_params, new_parameters, pc.Levels.OUTPUTS)
                 new_outputs = copy.deepcopy(default_output_params)
                 self.retain_update(new_outputs, new_parameters)
                 self.simulation_parameters[pc.Levels.OUTPUTS] = new_outputs
@@ -275,8 +281,10 @@ class InputManager:
                 if ParameterProcessingConst.DEFAULT_PARAM_STRING not in method:
                     if method[pc.Method_Params.DEPLOYMENT_TYPE] == pc.Deployment_Types.MOBILE:
                         def_file = df.METH_MOBILE_DEF_FILE
-                    else:
+                    elif method[pc.Method_Params.DEPLOYMENT_TYPE] == pc.Deployment_Types.STATIONARY:
                         def_file = df.METH_STATIONARY_DEF_FILE
+                    else:
+                        print(ipm.MISSING_DEPLOYMENT_TYPE_ERROR.format(method=method))
                 else:
                     def_file = new_parameters[ParameterProcessingConst.DEFAULT_PARAM_STRING]
                 m_param_file = ParameterProcessingConst.DEFAULT_PARAM_PATHWAY.format(def_file)
@@ -285,6 +293,7 @@ class InputManager:
                 check_types(
                     default_module,
                     method,
+                    method[pc.Method_Params.NAME],
                     omit_keys=[ParameterProcessingConst.DEFAULT_PARAM_STRING],
                 )
                 self.retain_update(default_module, method)
