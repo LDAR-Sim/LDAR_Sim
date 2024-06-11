@@ -273,7 +273,10 @@ class InputManager:
             # methods pre-specified
             for midx, method in program[pc.Levels.METHOD].items():
                 if ParameterProcessingConst.DEFAULT_PARAM_STRING not in method:
-                    def_file = df.METH_DEF_FILE
+                    if method[pc.Method_Params.DEPLOYMENT_TYPE] == pc.Deployment_Types.MOBILE:
+                        def_file = df.METH_MOBILE_DEF_FILE
+                    else:
+                        def_file = df.METH_STATIONARY_DEF_FILE
                 else:
                     def_file = new_parameters[ParameterProcessingConst.DEFAULT_PARAM_STRING]
                 m_param_file = ParameterProcessingConst.DEFAULT_PARAM_PATHWAY.format(def_file)

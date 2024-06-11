@@ -94,7 +94,7 @@ class Infrastructure:
                 val = None
                 val = methods[method]
                 for path in access_path:
-                    val = val[path]
+                    val = val.get(path, 0)
                 prop_params_dict[pdc.Common_Params.METH_SPECIFIC][param][method] = val
         # By default set all methods to be deployed at all sites
         prop_params_dict[pdc.Common_Params.METH_SPECIFIC][

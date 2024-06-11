@@ -181,7 +181,11 @@ def simple_method_values_fix(mocker):
             pdc.Method_Params.PRECIP: [0, 1],
         },
         pdc.Method_Params.REPORTING_DELAY: 0,
-        pdc.Method_Params.COST: {pdc.Method_Params.UPFRONT: 1000, pdc.Method_Params.PER_SITE: 500},
+        pdc.Method_Params.COST: {
+            pdc.Method_Params.UPFRONT: 1000,
+            pdc.Method_Params.PER_SITE: 500,
+            pdc.Method_Params.PER_DAY: 0,
+        },
     }
     current_date: date = date(2023, 1, 2)
     state = {"weather": create_random_state(), "daylight": [], "t": []}
@@ -241,7 +245,11 @@ def simple_method_values2_fix(mocker):
             pdc.Method_Params.PRECIP: [0, 1],
         },
         pdc.Method_Params.REPORTING_DELAY: 0,
-        pdc.Method_Params.COST: {pdc.Method_Params.UPFRONT: 1000, pdc.Method_Params.PER_SITE: 500},
+        pdc.Method_Params.COST: {
+            pdc.Method_Params.UPFRONT: 1000,
+            pdc.Method_Params.PER_SITE: 500,
+            pdc.Method_Params.PER_DAY: 0,
+        },
     }
     current_date: date = date(2023, 1, 2)
     state = {"weather": create_random_state(), "daylight": [], "t": []}
@@ -301,7 +309,11 @@ def simple_method_values3_fix(mocker):
             pdc.Method_Params.PRECIP: [0, 1],
         },
         pdc.Method_Params.REPORTING_DELAY: 0,
-        pdc.Method_Params.COST: {pdc.Method_Params.UPFRONT: 1000, pdc.Method_Params.PER_SITE: 500},
+        pdc.Method_Params.COST: {
+            pdc.Method_Params.UPFRONT: 1000,
+            pdc.Method_Params.PER_SITE: 500,
+            pdc.Method_Params.PER_DAY: 0,
+        },
     }
     current_date: date = date(2023, 1, 2)
     state = {"weather": create_random_state(), "daylight": [], "t": []}
@@ -357,7 +369,11 @@ def simple_method_values4_fix(mocker):
             pdc.Method_Params.PRECIP: [0, 1],
         },
         pdc.Method_Params.REPORTING_DELAY: 0,
-        pdc.Method_Params.COST: {pdc.Method_Params.UPFRONT: 1000, pdc.Method_Params.PER_SITE: 500},
+        pdc.Method_Params.COST: {
+            pdc.Method_Params.UPFRONT: 1000,
+            pdc.Method_Params.PER_SITE: 500,
+            pdc.Method_Params.PER_DAY: 0,
+        },
     }
     survey_report = SiteSurveyReport(site_id=1)
     current_date: date = date(2023, 1, 2)
@@ -421,7 +437,11 @@ def simple_method_values5_fix(mocker):
             pdc.Method_Params.PRECIP: [0, 1],
         },
         pdc.Method_Params.REPORTING_DELAY: 0,
-        pdc.Method_Params.COST: {pdc.Method_Params.UPFRONT: 1000, pdc.Method_Params.PER_SITE: 500},
+        pdc.Method_Params.COST: {
+            pdc.Method_Params.UPFRONT: 1000,
+            pdc.Method_Params.PER_SITE: 500,
+            pdc.Method_Params.PER_DAY: 0,
+        },
     }
     survey_report = SiteSurveyReport(site_id=1)
     current_date: date = date(2023, 1, 2)
@@ -489,7 +509,11 @@ def deploy_crews_testing_fix(mocker):
             pdc.Method_Params.PRECIP: [0, 1],
         },
         pdc.Method_Params.REPORTING_DELAY: 0,
-        pdc.Method_Params.COST: {pdc.Method_Params.UPFRONT: 1000, pdc.Method_Params.PER_SITE: 500},
+        pdc.Method_Params.COST: {
+            pdc.Method_Params.UPFRONT: 1000,
+            pdc.Method_Params.PER_SITE: 500,
+            pdc.Method_Params.PER_DAY: 0,
+        },
     }
     weather = create_random_state()
     sites = [site_mock]
@@ -567,7 +591,11 @@ def deploy_crews_testing2_fix(mocker):
             pdc.Method_Params.PRECIP: [0, 1],
         },
         pdc.Method_Params.REPORTING_DELAY: 0,
-        pdc.Method_Params.COST: {pdc.Method_Params.UPFRONT: 1000, pdc.Method_Params.PER_SITE: 500},
+        pdc.Method_Params.COST: {
+            pdc.Method_Params.UPFRONT: 1000,
+            pdc.Method_Params.PER_SITE: 500,
+            pdc.Method_Params.PER_DAY: 0,
+        },
     }
     weather = create_random_state()
     sites = [site_mock]
