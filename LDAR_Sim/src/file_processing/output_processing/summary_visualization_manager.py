@@ -63,7 +63,7 @@ class SummaryVisualizationManager:
         output_dir: Path,
         baseline_program: str,
         site_count: int,
-        programs: dict,
+        prog_params: dict,
     ):
         self.summary_visualizations_to_make: list[str] = self.parse_visualization_functions(
             output_config[output_file_constants.OutputConfigCategories.SUMMARY_VISUALIZATIONS]
@@ -82,7 +82,7 @@ class SummaryVisualizationManager:
                 output_file_constants.OutputConfigCategories.SUMMARY_VISUALIZATION_SETTINGS
             ]
         )
-        self.parse_program_cost_info(programs)
+        self.parse_program_cost_info(prog_params)
 
     def parse_program_cost_info(self, programs: dict) -> None:
         program_cost_info = {}
@@ -109,6 +109,7 @@ class SummaryVisualizationManager:
                     self.baseline_program,
                     False,
                     self._visualization_mapper,
+                    self._program_cost_info,
                 )
         plt.close("all")
 

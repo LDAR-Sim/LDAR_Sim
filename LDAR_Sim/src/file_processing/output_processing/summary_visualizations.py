@@ -527,7 +527,7 @@ def gen_cost_to_mit_boxplot(
     baseline_program: str,
     _,
     viz_mapper: SummaryVisualizationMapper,
-    prog_costs: dict
+    prog_costs: dict,
 ):
     data_source_emis: Path = (
         out_dir / file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY
@@ -540,15 +540,15 @@ def gen_cost_to_mit_boxplot(
     program_names: list[str] = summary_visualization_helpers.get_non_baseline_prog_names(
         data_emis, baseline_program
     )
-    mitigation_data: dict[str, list[float]] = summary_visualization_helpers.gen_tot_mitigation_list(
-        data_emis, program_names
+    mitigation_data: dict[str, list[float]] = (
+        summary_visualization_helpers.gen_tot_mitigation_cost_list(data_emis, program_names)
     )
 
     cost_data: dict[str, list[float]] = summary_visualization_helpers.gen_tot_cost_list(
         data_ts, program_names
     )
     cost_mit_data = summary_visualization_helpers.gen_cost_to_mitigation_ratio(
-        mitigation_data, cost_data, program_names,prog_costs
+        mitigation_data, cost_data, program_names, prog_costs
     )
 
     plot_box_whisker(
@@ -565,7 +565,7 @@ def gen_program_stacked_cost_bars(
     baseline_program: str,
     _,
     viz_mapper: SummaryVisualizationMapper,
-    prog_costs: dict
+    prog_costs: dict,
 ):
     data_source_emis: Path = (
         out_dir / file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY
@@ -578,8 +578,10 @@ def gen_program_stacked_cost_bars(
     program_names: list[str] = summary_visualization_helpers.get_non_baseline_prog_names(
         data_emis, baseline_program
     )
-    mitigation_data: dict[str, list[float]] = summary_visualization_helpers.gen_tot_mitigation_list(
-        data_emis, program_names
+    mitigation_data: dict[str, list[float]] = (
+        summary_visualization_helpers.gen_tot_mitigation_cost_list(
+            data_emis, program_names, prog_costs
+        )
     )
 
     cost_data: dict[str, list[float]] = summary_visualization_helpers.gen_tot_cost_list(

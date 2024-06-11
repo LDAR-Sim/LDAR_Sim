@@ -205,7 +205,7 @@ def gen_tot_cost_list(ts_summary_info, program_names) -> dict[str, list[float]]:
     return tot_cost_lists
 
 
-def gen_tot_mitigation_list(emis_summary_info, program_names) -> dict[str, list[float]]:
+def gen_tot_mitigation_cost_list(emis_summary_info, program_names) -> dict[str, list[float]]:
     tot_mitigation_lists = {}
     for program_name in program_names:
         mitigation_list = emis_summary_info.loc[
