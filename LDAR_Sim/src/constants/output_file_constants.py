@@ -114,12 +114,15 @@ class MitigationBarConstants:
 class StackedCostBarConstants:
     X_LABEL = "Program Name"
     Y_LABEL = "Average Total Cost ($) of all sites"
-    HEIGHT = 0.75
+    WIDTH = 0.75
 
 
 class BoxPlotConstants:
     X_LABEL = "Program Name"
     Y_LABEL = "$ / tonne CO2e"
+    WIDTH = 0.75
+    PATCH_ARTIST = True
+    MEDIAN_PROPS = {"linewidth": 3}
 
 
 class HistogramConstants:

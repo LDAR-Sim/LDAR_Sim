@@ -24,7 +24,6 @@ from pathlib import Path
 from constants import output_file_constants, output_messages
 from file_processing.output_processing import summary_visualizations
 from matplotlib import pyplot as plt
-
 from file_processing.output_processing.summary_visualization_mapper import (
     SummaryVisualizationMapper,
 )
@@ -82,14 +81,7 @@ class SummaryVisualizationManager:
                 output_file_constants.OutputConfigCategories.SUMMARY_VISUALIZATION_SETTINGS
             ]
         )
-        self.parse_program_cost_info(prog_params)
-
-    def parse_program_cost_info(self, programs: dict) -> None:
-        program_cost_info = {}
-        for program_name, program in programs.items():
-            program_cost_info[program_name] = program.get("economics")
-
-        self._program_cost_info = program_cost_info
+        self._program_cost_info = prog_params
 
     def gen_visualizations(self):
         # Print a message to the console indicating that

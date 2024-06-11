@@ -53,6 +53,7 @@ from programs.program import Program
 from constants.output_messages import RuntimeMessages as rm
 from constants.error_messages import Runtime_Error_Messages as rem
 import constants.param_default_const as pdc
+from file_processing.input_processing.prog_cost_param_parser import parse_program_cost_info
 
 
 def simulate(
@@ -204,12 +205,13 @@ def run_ldar_sim(parameter_filenames, DEBUG=False):
         output_config=output_params,
         sim_years=simulation_years,
     )
+    prog_cost_dict = parse_program_cost_info(programs)
     summary_visualization_manager: SummaryVisualizationManager = SummaryVisualizationManager(
         output_config=output_params,
         output_dir=out_dir,
         baseline_program=base_program,
         site_count=virtual_world[pdc.Virtual_World_Params.N_SITES],
-        prog_params=programs,
+        prog_params=prog_cost_dict,
     )
     # IF the are more than 5 simulations, divide the simulations into batches
     if simulation_count > 5:

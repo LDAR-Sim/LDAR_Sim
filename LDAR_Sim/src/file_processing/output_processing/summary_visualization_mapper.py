@@ -84,6 +84,11 @@ class SummaryVisualizationMapper:
                     summary_visualization_helpers.format_tick_labels_with_metric_prefix
                 )
             ),
+            output_file_constants.SummaryOutputVizFileNames.STACKED_COST_BAR_PLOT: (
+                ticker.FuncFormatter(
+                    summary_visualization_helpers.format_tick_labels_with_metric_prefix
+                )
+            ),
         }
 
         self._probit_properties_lookup = {
@@ -127,7 +132,7 @@ class SummaryVisualizationMapper:
                 "align": "center",
                 "x_label": output_file_constants.StackedCostBarConstants.X_LABEL,
                 "y_label": output_file_constants.StackedCostBarConstants.Y_LABEL,
-                "height": output_file_constants.StackedCostBarConstants.HEIGHT,
+                "width": output_file_constants.StackedCostBarConstants.WIDTH,
             },
         }
 
@@ -135,6 +140,9 @@ class SummaryVisualizationMapper:
             output_file_constants.SummaryOutputVizFileNames.COST_TO_MIT_BOX_PLOT: {
                 "x_label": output_file_constants.BoxPlotConstants.X_LABEL,
                 "y_label": output_file_constants.BoxPlotConstants.Y_LABEL,
+                "widths": output_file_constants.BoxPlotConstants.WIDTH,
+                "patch_artist": output_file_constants.BoxPlotConstants.PATCH_ARTIST,
+                "medianprops": output_file_constants.BoxPlotConstants.MEDIAN_PROPS,
             }
         }
 
@@ -158,7 +166,7 @@ class SummaryVisualizationMapper:
     def get_boxplot_properties(self, visualization_name: str):
         return self._box_plot_properties_lookup.get(visualization_name)
 
-    def get_x_axis_formatter(self, visualization_name: str):
+    def get_axis_formatter(self, visualization_name: str):
         return self._axis_formatter_lookup.get(visualization_name)
 
     def update_with_user_defined_summary_settings(

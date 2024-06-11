@@ -1070,11 +1070,13 @@ method_labels: ["aircraft","OGI_FU"]
 
 **Default input:** 3.0
 
-**Description:** The sale price of natural gas per thousand cubic foot (mcf) which is used to calculate the potential value of gas sold when captured as part of an LDAR program. LDAR-Sim takes the difference in emissions from a baseline scenario and multiplies this by the price of natural gas.
+**Description:** The sale price of natural gas per million Btu which is used to calculate the potential value of gas sold when captured as part of an LDAR program. LDAR-Sim takes the difference in emissions from a baseline scenario and multiplies this by the price of natural gas.
 
-**Notes of acquisition:** This value can be taken from local distribution companies or natural gas trading hubs. The U.S. Energy Information Administration is a good source for this information but units need to be converted to mcf before input into the model.
+**Notes of acquisition:** This value can be taken from local distribution companies or natural gas trading hubs (ex. [eia](https://www.eia.gov/dnav/ng/hist/rngwhhdm.htm)).
 
-**Notes of caution:** The default value of $3/mcf is a conservative estimate and users of LDAR-Sim will see different cost/benefit and cost/mitigation results if the price of natural gas is changed.
+**Notes of caution:** The default value of $3/MMbtu is a conservative estimate and users of LDAR-Sim will see different cost/benefit and cost/mitigation results if the price of natural gas is changed.
+
+It is important to note that LDAR-Sim internally converts KG of methane to MMBtu of natural gas equivalent based on assuming the natural composition of gas at 0.949, temperature of 15C, and 1 atm.
 
 #### &lt;verification_cost&gt; WIP
 
