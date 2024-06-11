@@ -1158,6 +1158,13 @@ The measured total site level emission rate on January 30th is assumed to have l
 
 ## 9\. Method Inputs
 
+**Note of caution:** There are two sets of valid method default parameters based on the [deployment type](#deployment_type) of the parameterized method. These can be found in the following files:
+
+- m_default_mobile.yml - for `mobile` deployment
+- m_default_stationary.yml - for `stationary` deployment
+
+Users should ensure they populate the correct set of parameters according to the method's [deployment type](#deployment_type). Parameters that are mobile or stationary deployment specific, will be labeled with _(mobile parameter)_ or _(stationary parameter)_ respectively.
+
 ### &lt;parameter_level&gt; (methods)
 
 **Data Type:** String
