@@ -53,7 +53,12 @@ class DefaultQuantificationPredictor:
         quantification_95_percent_ci_width: float = abs(
             quantification_95_percent_ci_upper_range - quantification_95_percent_ci_lower_range
         )
-        self._quantification_standard_deviation: float = quantification_95_percent_ci_width / 2.0
+        # We assume the empirical rule that 95% of the data lies within 2
+        # standard deviations of the mean. This means that u-2s = lower bound
+        # and u+2s = upper bound, where u is the mean and s is the standard deviation.
+        # Therefore, we can calculate the standard deviation s = (upper bound - lower bound) / 4
+        self._quantification_standard_deviation: float = quantification_95_percent_ci_width / 4.0
+
         self._quantification_centre: float = (
             quantification_95_percent_ci_upper_range + quantification_95_percent_ci_lower_range
         ) / 2.0

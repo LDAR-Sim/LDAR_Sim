@@ -29,10 +29,10 @@ def mock_default_sensor_init(self):
 @pytest.mark.parametrize(
     "quantification_parameters, expected_sd, expected_centre",
     [
-        ([0.0, 1.0], 0.5, 0.5),
-        ([-1.0, 1.0], 1.0, 0.0),
+        ([0.0, 1.0], 0.25, 0.5),
+        ([-1.0, 1.0], 0.5, 0.0),
         ([0.0, 0.0], 0.0, 0.0),
-        ([-1.0, 0.0], 0.5, -0.5),
+        ([-1.0, 0.0], 0.25, -0.5),
     ],
 )
 def test_default_quantification_predictor_constructed_as_expected(
