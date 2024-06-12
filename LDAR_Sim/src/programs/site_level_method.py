@@ -88,13 +88,13 @@ class SiteLevelMethod(Method):
             self._inst_threshold = float("inf")
         self._follow_up_schedule: FollowUpMobileSchedule = follow_up_schedule
         self._detection_count = 0
-        self._small_window = properties[pdc.Method_Params.ROLLING_AVRG][
-            pdc.Method_Params.SMALL_WINDOW
-        ]
-        self._large_window = properties[pdc.Method_Params.ROLLING_AVRG][
-            pdc.Method_Params.LARGE_WINDOW
-        ]
         if self._deployment_type == pdc.Deployment_Types.STATIONARY:
+            self._small_window = properties[pdc.Method_Params.ROLLING_AVRG][
+                pdc.Method_Params.SMALL_WINDOW
+            ]
+            self._large_window = properties[pdc.Method_Params.ROLLING_AVRG][
+                pdc.Method_Params.LARGE_WINDOW
+            ]
             self._small_window_threshold: float = properties[pdc.Method_Params.ROLLING_AVRG][
                 pdc.Method_Params.SMALL_WINDOW_THRESHOLD
             ]

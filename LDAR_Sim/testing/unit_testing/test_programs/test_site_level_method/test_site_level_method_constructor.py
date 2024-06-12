@@ -46,7 +46,11 @@ def test_site_level_method_creation(mock_follow_up_schedule):
         pdc.Method_Params.T_BW_SITES: {pdc.Common_Params.VAL: []},
         pdc.Method_Params.N_CREWS: 5,
         pdc.Method_Params.REPORTING_DELAY: 7,
-        pdc.Method_Params.COST: {pdc.Method_Params.PER_SITE: 10, pdc.Method_Params.UPFRONT: 5},
+        pdc.Method_Params.COST: {
+            pdc.Method_Params.PER_SITE: 10,
+            pdc.Method_Params.UPFRONT: 5,
+            pdc.Method_Params.PER_DAY: 0,
+        },
         # Include other properties as needed
     }
 

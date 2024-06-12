@@ -2,7 +2,7 @@ parameter_level: "methods"
 version: "4.0"
 method_name: "_placeholder_str_"
 measurement_scale: "_placeholder_str_" # site/equipment/component
-deployment_type: "_placeholder_str_" # mobile/stationary
+deployment_type: mobile # mobile
 sensor:
   type: default # default/OGI_camera_zim(see User manual for MDL values)/OGI_camera_rk
   quantification_error: 0.0
@@ -40,8 +40,3 @@ follow_up:
   redundancy_filter: "recent" # recent/max/average - MOBILE ONLY
   sort_by_rate: True # True/False
   threshold: 0.0 # g/s - MOBILE ONLY
-rolling_average:
-  small_window: 7 # days - STATIONARY ONLY
-  large_window: 30 # days - STATIONARY ONLY
-  small_window_threshold: 0.0 # g/s - STATIONARY ONLY
-  large_window_threshold: "_placeholder_float_" # g/s - STATIONARY ONLY

@@ -98,6 +98,7 @@ class Input_Processing_Messages:
         "Error: Invalid {level} name provided: {name}. "
         "Refer to the User Manual for further details."
     )
+    MISSING_DEPLOYMENT_TYPE_ERROR = "Warning: Deployment type is missing for method: {method}"
 
 
 class Output_Processing_Messages:
@@ -193,10 +194,10 @@ class Initialization_Messages:
         "Invalid LDAR-Sim infrastructure inputs: Failure to read in sources infrastructure input"
     )
     PARAMETER_CREATION_ERROR_MESSAGE = (
-        "Key {key} present in test parameters, but not in default parameters"
+        "Key {key} present in user defined parameters for {name}, but not in default parameters"
     )
     PARAMETER_TYPE_MISMATCH_ERROR_MESSAGE = (
-        "Parameter type mismatch. \nDefault parameter: {default} is {def_type}"
+        "Parameter type mismatch for {name}. \nDefault parameter: {default} is {def_type}"
         "\nTest parameter: {test} is {test_type}"
     )
     AWS_KEY_SEC_ERROR = (

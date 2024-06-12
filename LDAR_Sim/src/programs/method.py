@@ -64,20 +64,19 @@ class Method:
         self._name: str = name
         self._deployment_type = properties[pdc.Method_Params.DEPLOYMENT_TYPE]
         self._initialize_sensor(properties[pdc.Method_Params.SENSOR])
-        self._max_work_hours: int = properties[pdc.Method_Params.MAX_WORKDAY]
+        self._max_work_hours: int = properties.get(pdc.Method_Params.MAX_WORKDAY, 0)
         self._daylight_sensitive = properties[pdc.Method_Params.CONSIDER_DAYLIGHT]
         self._weather: bool = consider_weather
         self._weather_envs: dict = properties[pdc.Method_Params.WEATHER_ENVS]
         self._is_follow_up: bool = properties[pdc.Method_Params.IS_FOLLOW_UP]
         self._initialize_travel_times(
-            properties[pdc.Method_Params.T_BW_SITES][pdc.Common_Params.VAL]
+            properties.get(pdc.Method_Params.T_BW_SITES, {}).get(pdc.Common_Params.VAL, 0)
         )  # TODO: update this to not use just vals
         self._reporting_delay: int = properties[pdc.Method_Params.REPORTING_DELAY]
-        crews: int = properties[pdc.Method_Params.N_CREWS]
         # TODO Check where these should be saved
         self._site_survey_reports: list[SiteSurveyReport] = []
         self._detection_records: dict[date, list[DetectionRecord]] = {}
-        self.initialize_crews(crews, sites)
+        self.initialize_crews(properties.get(pdc.Method_Params.N_CREWS, 0), sites)
         self.initialize_cost_tracking(properties[pdc.Method_Params.COST])
 
     def initialize_crews(self, crews, sites: "list[Site]") -> None:
@@ -100,15 +99,18 @@ class Method:
 
     def initialize_cost_tracking(self, cost_properties: dict[str, float]):
         self.upfront_cost = cost_properties[pdc.Method_Params.UPFRONT] * self._crews
-        if cost_properties[pdc.Method_Params.PER_SITE] > 0:
-            self.cost_type = self.PER_SITE_COST
-            self.cost = cost_properties[pdc.Method_Params.PER_SITE]
-        elif cost_properties[pdc.Method_Params.PER_DAY] > 0:
+        if cost_properties[pdc.Method_Params.PER_DAY] > 0:
             self.cost_type = self.PER_DAY_COST
             self.cost = cost_properties[pdc.Method_Params.PER_DAY]
-        else:
+        elif (
+            pdc.Method_Params.PER_SITE in cost_properties
+            and cost_properties[pdc.Method_Params.PER_SITE] > 0
+        ):
             self.cost_type = self.PER_SITE_COST
-            self.cost = -1
+            self.cost = cost_properties[pdc.Method_Params.PER_SITE]
+        else:
+            self.cost_type = self.PER_DAY_COST
+            self.cost = 0
 
     def _initialize_sensor(self, sensor_info: dict) -> None:
         """Will initialize a sensor of the correct type based

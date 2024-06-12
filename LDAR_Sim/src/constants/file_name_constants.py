@@ -26,7 +26,8 @@ class Default_Files:
     VIRTUAL_DEF_FILE = "virtual_world_default.yml"
     SIM_SETTING_DEF_FILE = "simulation_settings_default.yml"
     PROG_DEF_FILE = "p_default.yml"
-    METH_DEF_FILE = "m_default.yml"
+    METH_STATIONARY_DEF_FILE = "m_default_stationary.yml"
+    METH_MOBILE_DEF_FILE = "m_default_mobile.yml"
     OUTPUT_DEF_FILE = "outputs_default.yml"
 
 
