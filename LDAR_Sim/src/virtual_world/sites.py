@@ -340,6 +340,9 @@ class Site:
     def get_id(self) -> str:
         return self._site_ID
 
+    def get_type(self) -> str:
+        return self._site_type
+
     def get_loc(self) -> tuple[float, float]:
         return self._lat, self._long
 

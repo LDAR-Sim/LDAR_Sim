@@ -34,6 +34,7 @@ import constants.param_default_const as pdc
 from constants.infrastructure_const import (
     Infrastructure_Constants as IC,
     Virtual_World_To_Prop_Params_Mapping as VW,
+    Deployment_TF_Sites_Constants as DTSC,
 )
 from virtual_world.sites import Site
 from file_processing.input_processing.infrastructure_processing import (
@@ -49,7 +50,7 @@ from weather.weather_lookup import WeatherLookup as WL
 
 class Infrastructure:
 
-    def __init__(self, virtual_world, methods, in_dir) -> None:
+    def __init__(self, virtual_world, methods, in_dir, site_measured_df) -> None:
         self.emission_rate_source_dictionary: dict[str, EmissionsSource] = process_emission_sources(
             inputs_path=in_dir, virtual_world=virtual_world
         )
@@ -57,7 +58,15 @@ class Infrastructure:
             inputs_path=in_dir, virtual_world=virtual_world
         )
         self._sites: list[Site] = []
-        self.generate_infrastructure(virtual_world=virtual_world, methods=methods, in_dir=in_dir)
+        self.generate_infrastructure(
+            virtual_world=virtual_world,
+            methods=methods,
+            in_dir=in_dir,
+        )
+        self.gen_site_measured_tf_data(
+            methods=methods,
+            site_measured_df=site_measured_df,
+        )
 
     def __reduce__(self):
         args = (self.emission_rate_source_dictionary, self.repair_delay_dataframe, self._sites)
@@ -183,6 +192,7 @@ class Infrastructure:
         virtual_world,
         methods,
         in_dir,
+        site_measured_df,
     ) -> None:
         """[summary]
 
@@ -258,6 +268,33 @@ class Infrastructure:
             sites.append(new_site)
 
         self._sites: list[Site] = sites
+
+    def gen_site_measured_tf_data(self, methods, site_TF_df) -> None:
+        """Generate a dictionary that provides info on if a given site will be measured
+        by a given method.
+
+        Args:
+            site_measured_df (pd.DataFrame): The DataFrame with site measured data.
+
+        Returns:
+            A dictionary: The dictionary with site potential measurement that can be used as a new row.
+        """
+        for i, site in enumerate(self._sites):
+
+            site_measured_data: dict = {
+                DTSC.SITE_ID: site.get_id(),
+                DTSC.SITE_TYPE: site.get_type(),
+            }
+
+            for method in methods:
+                deployed = site.do_site_deployment(method)
+                surveyed = site.get_required_surveys(method) > 0
+                site_measured_data[DTSC.SITE_DEPLOYMENT.format(method=method)] = deployed
+                site_measured_data[DTSC.REQUIRED_SURVEY.format(method=method)] = surveyed
+                site_measured_data[DTSC.SITE_MEASURED.format(method=method)] = deployed and surveyed
+
+            site_TF_df.loc[i] = site_measured_data
+        return
 
     # TODO
     def get_flagged_sites(self, company_id) -> list[Site]:

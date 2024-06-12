@@ -184,6 +184,18 @@ class Infrastructure_Constants:
         ]
 
 
+class Deployment_TF_Sites_Constants:
+    SITE_ID = Infrastructure_Constants.Sites_File_Constants.ID
+    SITE_TYPE = Infrastructure_Constants.Sites_File_Constants.TYPE
+    REQUIRED_SURVEY: str = (
+        "{method}" + Infrastructure_Constants.Sites_File_Constants.SURVEY_FREQUENCY_PLACEHOLDER
+    )
+    SITE_DEPLOYMENT: str = (
+        "{method}" + Infrastructure_Constants.Sites_File_Constants.SITE_DEPLOYMENT_PLACEHOLDER
+    )
+    SITE_MEASURED: str = "{method}_measured"
+
+
 class Virtual_World_To_Prop_Params_Mapping:
     PROPAGATING_PARAMS: dict[str, str] = {
         Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ERS: ".".join(

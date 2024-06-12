@@ -20,6 +20,7 @@
 # ------------------------------------------------------------------------------
 import os
 
+import pandas as pd
 import copy
 import gc
 from math import floor
@@ -53,6 +54,7 @@ from programs.program import Program
 from constants.output_messages import RuntimeMessages as rm
 from constants.error_messages import Runtime_Error_Messages as rem
 import constants.param_default_const as pdc
+from constants.infrastructure_const import Deployment_TF_Sites_Constants as DTSC
 
 
 def simulate(
@@ -103,6 +105,28 @@ def simulate(
     print(rm.FIN_PROG.format(prog_name=prog_name))
     gc.collect()
     return
+
+
+def set_up_tf_df(methods: dict[str, dict], site_count) -> pd.DataFrame:
+    """
+    Input:
+    methods: dict[str, dict] - dictionary of methods and their parameters
+    site_count: int - number of sites in the virtual world
+
+    Returns:
+    pd.DataFrame - a null filled dataframe with the columns for the true/false site list
+    """
+    column_names = [DTSC.SITE_ID, DTSC.SITE_TYPE] + [
+        item
+        for method in methods.keys()
+        for item in [
+            DTSC.REQUIRED_SURVEY.format(method=method),
+            DTSC.SITE_DEPLOYMENT.format(method=method),
+            DTSC.SITE_MEASURED.format(method=method),
+        ]
+    ]
+
+    return pd.DataFrame(index=range(site_count), columns=column_names)
 
 
 def run_ldar_sim(parameter_filenames, DEBUG=False):
@@ -158,6 +182,11 @@ def run_ldar_sim(parameter_filenames, DEBUG=False):
         emis_preseed_val, force_remake_gen = gen_seed_emis(simulation_count, generator_dir)
     infrastructure: Infrastructure
     hash_file_exist: bool
+
+    site_measured: pd.DataFrame = set_up_tf_df(
+        methods, virtual_world[pdc.Virtual_World_Params.N_SITES]
+    )
+
     infrastructure, hash_file_exist = initialize_infrastructure(
         methods,
         programs,
@@ -167,6 +196,7 @@ def run_ldar_sim(parameter_filenames, DEBUG=False):
         preseed_random,
         emis_preseed_val,
         force_remake_gen,
+        site_measured,
     )
     print(rm.INIT_EMISS)
     # Pregenerate emissions
