@@ -262,6 +262,7 @@ class Infrastructure:
                 infrastructure_inputs=infrastructure_inputs,
                 start_date=date(*virtual_world[pdc.Virtual_World_Params.START_DATE]),
                 methods=methods,
+                site_type=srow[IC.Sites_File_Constants.TYPE],
             )
 
             sites.append(new_site)
