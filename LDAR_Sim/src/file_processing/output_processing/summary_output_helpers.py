@@ -23,7 +23,7 @@ import numpy as np
 import pandas as pd
 import os
 import re
-from constants import file_processing_const
+from constants import file_processing_const, output_file_constants as ofc
 
 
 def get_mean_val(df: pd.DataFrame, column: str) -> float:
@@ -161,3 +161,105 @@ def mark_outputs_to_keep(dir: Path):
 
 def get_non_baseline_prog_names(programs, baseline_program) -> list:
     return [program_name for program_name in programs if program_name != baseline_program]
+
+
+def get_annual_emissions_at_all_sites_with_extrapolation(
+    estimated_emissions_data: pd.DataFrame, year: int
+) -> float:
+    """
+    Calculate the total annual emissions at all sites with extrapolation for sites that were not
+    measured.
+
+    Parameters:
+        estimated_emissions_data (pd.DataFrame): Data from an estimated emissions csv file.
+        year (int): The year for which the emissions are to be calculated.
+
+    Returns:
+        float: The total annual emissions at all sites with extrapolation for sites that were not
+        measured for the given year.
+    """
+    # Calculate the annual emissions for each site
+    annual_emissions: pd.Series = estimated_emissions_data.groupby(
+        ofc.EMIS_DATA_COL_ACCESSORS.SITE_ID
+    ).apply(
+        lambda x: get_yearly_value_for_multi_day_stat(
+            x,
+            ofc.EMIS_DATA_COL_ACCESSORS.EST_VOL_EMIT,
+            year,
+            ofc.EMIS_DATA_COL_ACCESSORS.START_DATE,
+            ofc.EMIS_DATA_COL_ACCESSORS.END_DATE,
+        )
+    )
+
+    # Convert the annual emissions to a DataFrame and join it with site type
+    # and measured information
+    annual_emissions_and_site_type: pd.DataFrame = (
+        pair_site_annual_emissions_with_site_type_and_measurement_info(
+            annual_emissions, estimated_emissions_data
+        )
+    )
+
+    # Filter out sites that were not measured
+    annual_emissions_and_site_type_measured = annual_emissions_and_site_type[
+        annual_emissions_and_site_type[ofc.EMIS_DATA_COL_ACCESSORS.SITE_MEASURED]
+    ]
+
+    # Group the measured sites by site type and average the annual emissions
+    annual_emissions_site_type_averages: pd.Series = (
+        annual_emissions_and_site_type_measured.groupby(
+            estimated_emissions_data[ofc.EMIS_DATA_COL_ACCESSORS.SITE_TYPE]
+        ).apply(lambda x: x[ofc.EMIS_DATA_COL_ACCESSORS.EST_VOL_EMIT].mean())
+    )
+
+    # Calculate the average of all measured sites
+    average_emissions_all_sites: float = annual_emissions_and_site_type_measured[
+        ofc.EMIS_DATA_COL_ACCESSORS.EST_VOL_EMIT
+    ].mean()
+
+    # Extrapolate the average emissions to sites that were not measured based on site type
+    # If there are no measured sites of a given type, use the average of all measured sites
+    # as the extrapolated value
+    extrapolated_annual_emissions: pd.Series = annual_emissions.apply(
+        lambda x: (
+            annual_emissions_site_type_averages.get(x, average_emissions_all_sites) if x == 0 else x
+        )
+    )
+
+    return extrapolated_annual_emissions.sum()
+
+
+def pair_site_annual_emissions_with_site_type_and_measurement_info(
+    site_annual_emissions: pd.Series, estimated_emissions_data: pd.DataFrame
+) -> pd.DataFrame:
+    """
+    Pair the annual emissions with the site type and measured information from the
+    estimated emissions data.
+
+    Parameters:
+        site_annual_emissions (pd.Series): The annual emissions at each site.
+        estimated_emissions_data (pd.DataFrame): Data from an estimated emissions csv file.
+
+    Returns:
+        pd.DataFrame: A DataFrame containing the annual emissions, site type, and
+        whether the site was measured.
+    """
+    # Convert the annual emissions to a DataFrame
+    annual_emissions_df: pd.DataFrame = (
+        site_annual_emissions.to_frame()
+        .reset_index()
+        .rename(columns={0: ofc.EMIS_DATA_COL_ACCESSORS.EST_VOL_EMIT})
+    )
+    # Extract site type and measured information from the estimated emissions data
+    site_type_info: pd.DataFrame = estimated_emissions_data[
+        [
+            ofc.EMIS_DATA_COL_ACCESSORS.SITE_ID,
+            ofc.EMIS_DATA_COL_ACCESSORS.SITE_TYPE,
+            ofc.EMIS_DATA_COL_ACCESSORS.SITE_MEASURED,
+        ]
+    ].drop_duplicates()
+    # Merge the annual emissions with the site type and measured information
+    annual_emissions_and_site_type: pd.DataFrame = annual_emissions_df.merge(
+        site_type_info, on=ofc.EMIS_DATA_COL_ACCESSORS.SITE_ID
+    )
+
+    return annual_emissions_and_site_type

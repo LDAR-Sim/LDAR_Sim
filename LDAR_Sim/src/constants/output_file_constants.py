@@ -258,6 +258,8 @@ class EMIS_DATA_COL_ACCESSORS:
     PREV_CONDITION = "Use Previous Condition"
     NEXT_CONDITION = "Use Next Condition"
     NEXT_SURVEY_DATE = "Next Survey Date"
+    SITE_MEASURED = "Site Measured"
+    SITE_TYPE = "Site Type"
 
 
 EMIS_ESTIMATION_OUTPUT_COLUMNS = [
