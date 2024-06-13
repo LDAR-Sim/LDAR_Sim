@@ -19,6 +19,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 ------------------------------------------------------------------------------
 """
 
+import pytest
 import pandas as pd
 from src.constants.infrastructure_const import (
     Deployment_TF_Sites_Constants as DTSC,
@@ -89,299 +90,181 @@ METHODS_PARAMS_STATIONARY: dict = {
 }
 
 
+class MockSite:
+    def __init__(self, site_id, site_type, deployment, surveys):
+        self.site_id = site_id
+        self.site_type = site_type
+        self.deployment = deployment
+        self.surveys = surveys
+
+    def get_id(self):
+        return self.site_id
+
+    def get_type(self):
+        return self.site_type
+
+    def do_site_deployment(self, method):
+        return self.deployment
+
+    def get_required_surveys(self, method):
+        return self.surveys
+
+
+def mock_infrastructure_initialization(
+    self, virtual_world, methods, in_dir, site_measured_df, mock_site
+):
+    self._sites = mock_site
+
+
 def make_empty_df():
     return pd.DataFrame(index=range(5), columns=EXPECTED_COLUMNS)
 
 
-def test_simple_generation_tf_sites(monkeypatch):
+@pytest.mark.parametrize(
+    "mock_site,methods_params,expected_data",
+    [
+        (
+            [
+                MockSite(1, "A", True, 2),
+                MockSite(1, "A", True, 2),
+                MockSite(1, "A", True, 2),
+                MockSite(1, "A", True, 2),
+                MockSite(1, "A", True, 2),
+            ],
+            METHODS_PARAMS,
+            {
+                DTSC.SITE_ID: [1, 1, 1, 1, 1],
+                DTSC.SITE_TYPE: ["A", "A", "A", "A", "A"],
+                DTSC.REQUIRED_SURVEY.format(method="A"): [True, True, True, True, True],
+                DTSC.SITE_DEPLOYMENT.format(method="A"): [True, True, True, True, True],
+                DTSC.METHOD_MEASURED.format(method="A"): [True, True, True, True, True],
+                DTSC.REQUIRED_SURVEY.format(method="B"): [True, True, True, True, True],
+                DTSC.SITE_DEPLOYMENT.format(method="B"): [True, True, True, True, True],
+                DTSC.METHOD_MEASURED.format(method="B"): [True, True, True, True, True],
+            },
+        ),
+        (
+            [
+                MockSite(1, "A", True, 2),
+                MockSite(1, "A", True, 2),
+                MockSite(1, "A", True, 2),
+                MockSite(1, "A", True, 2),
+                MockSite(1, "A", True, 2),
+            ],
+            METHODS_PARAMS_STATIONARY,
+            {
+                DTSC.SITE_ID: [1, 1, 1, 1, 1],
+                DTSC.SITE_TYPE: ["A", "A", "A", "A", "A"],
+                DTSC.REQUIRED_SURVEY.format(method="A"): [True, True, True, True, True],
+                DTSC.SITE_DEPLOYMENT.format(method="A"): [True, True, True, True, True],
+                DTSC.METHOD_MEASURED.format(method="A"): [True, True, True, True, True],
+                DTSC.REQUIRED_SURVEY.format(method="B"): [True, True, True, True, True],
+                DTSC.SITE_DEPLOYMENT.format(method="B"): [True, True, True, True, True],
+                DTSC.METHOD_MEASURED.format(method="B"): [True, True, True, True, True],
+            },
+        ),
+        (
+            [
+                MockSite(1, "A", True, 2),
+                MockSite(1, "A", True, 2),
+                MockSite(1, "A", True, 2),
+                MockSite(1, "A", True, 2),
+                MockSite(1, "A", True, 2),
+            ],
+            METHODS_PARAMS_FOLLOW_UP,
+            {
+                DTSC.SITE_ID: [1, 1, 1, 1, 1],
+                DTSC.SITE_TYPE: ["A", "A", "A", "A", "A"],
+                DTSC.REQUIRED_SURVEY.format(method="A"): [False, False, False, False, False],
+                DTSC.SITE_DEPLOYMENT.format(method="A"): [False, False, False, False, False],
+                DTSC.METHOD_MEASURED.format(method="A"): [False, False, False, False, False],
+                DTSC.REQUIRED_SURVEY.format(method="B"): [True, True, True, True, True],
+                DTSC.SITE_DEPLOYMENT.format(method="B"): [True, True, True, True, True],
+                DTSC.METHOD_MEASURED.format(method="B"): [True, True, True, True, True],
+            },
+        ),
+        (
+            [
+                MockSite(1, "A", True, 0),
+                MockSite(1, "A", True, 0),
+                MockSite(1, "A", True, 0),
+                MockSite(1, "A", True, 0),
+                MockSite(1, "A", True, 0),
+            ],
+            METHODS_PARAMS,
+            {
+                DTSC.SITE_ID: [1, 1, 1, 1, 1],
+                DTSC.SITE_TYPE: ["A", "A", "A", "A", "A"],
+                DTSC.REQUIRED_SURVEY.format(method="A"): [False, False, False, False, False],
+                DTSC.SITE_DEPLOYMENT.format(method="A"): [True, True, True, True, True],
+                DTSC.METHOD_MEASURED.format(method="A"): [False, False, False, False, False],
+                DTSC.REQUIRED_SURVEY.format(method="B"): [False, False, False, False, False],
+                DTSC.SITE_DEPLOYMENT.format(method="B"): [True, True, True, True, True],
+                DTSC.METHOD_MEASURED.format(method="B"): [False, False, False, False, False],
+            },
+        ),
+        (
+            [
+                MockSite(1, "A", False, 5),
+                MockSite(1, "A", False, 5),
+                MockSite(1, "A", False, 5),
+                MockSite(1, "A", False, 5),
+                MockSite(1, "A", False, 5),
+            ],
+            METHODS_PARAMS,
+            {
+                DTSC.SITE_ID: [1, 1, 1, 1, 1],
+                DTSC.SITE_TYPE: ["A", "A", "A", "A", "A"],
+                DTSC.REQUIRED_SURVEY.format(method="A"): [True, True, True, True, True],
+                DTSC.SITE_DEPLOYMENT.format(method="A"): [False, False, False, False, False],
+                DTSC.METHOD_MEASURED.format(method="A"): [False, False, False, False, False],
+                DTSC.REQUIRED_SURVEY.format(method="B"): [True, True, True, True, True],
+                DTSC.SITE_DEPLOYMENT.format(method="B"): [False, False, False, False, False],
+                DTSC.METHOD_MEASURED.format(method="B"): [False, False, False, False, False],
+            },
+        ),
+        (
+            [
+                MockSite(1, "A", False, 5),
+                MockSite(1, "A", True, 5),
+                MockSite(1, "A", False, 5),
+                MockSite(1, "A", True, 5),
+                MockSite(1, "A", False, 5),
+            ],
+            METHODS_PARAMS,
+            {
+                DTSC.SITE_ID: [1, 1, 1, 1, 1],
+                DTSC.SITE_TYPE: ["A", "A", "A", "A", "A"],
+                DTSC.REQUIRED_SURVEY.format(method="A"): [True, True, True, True, True],
+                DTSC.SITE_DEPLOYMENT.format(method="A"): [False, True, False, True, False],
+                DTSC.METHOD_MEASURED.format(method="A"): [False, True, False, True, False],
+                DTSC.REQUIRED_SURVEY.format(method="B"): [True, True, True, True, True],
+                DTSC.SITE_DEPLOYMENT.format(method="B"): [False, True, False, True, False],
+                DTSC.METHOD_MEASURED.format(method="B"): [False, True, False, True, False],
+            },
+        ),
+    ],
+)
+def test_generation_tf_sites(monkeypatch, mock_site, methods_params, expected_data):
     """
     Test that the generation of the true/false site list is correct
     """
-
-    class MockSite:
-        def get_id(self):
-            return 1
-
-        def get_type(self):
-            return "A"
-
-        def do_site_deployment(self, method):
-            return True
-
-        def get_required_surveys(self, method):
-            return 2
-
-    def mock_infrastructure_initialization(self, virtual_world, methods, in_dir, site_measured_df):
-        self._sites = [MockSite() for _ in range(5)]
-
     monkeypatch.setattr(
         "src.virtual_world.infrastructure.Infrastructure.__init__",
-        mock_infrastructure_initialization,
+        lambda self, virtual_world, methods, in_dir, site_measured_df: mock_infrastructure_initialization(  # noqa
+            self, virtual_world, methods, in_dir, site_measured_df, mock_site
+        ),
     )
 
     site_tf_df = make_empty_df()
 
-    infra = Infrastructure({}, METHODS_PARAMS, None, site_tf_df)
+    infra = Infrastructure({}, methods_params, None, site_tf_df)
 
-    infra.gen_site_measured_tf_data(METHODS_PARAMS, site_tf_df)
+    infra.gen_site_measured_tf_data(methods_params, site_tf_df)
 
-    data = {
-        DTSC.SITE_ID: [1, 1, 1, 1, 1],
-        DTSC.SITE_TYPE: ["A", "A", "A", "A", "A"],
-        DTSC.REQUIRED_SURVEY.format(method="A"): [True, True, True, True, True],
-        DTSC.SITE_DEPLOYMENT.format(method="A"): [True, True, True, True, True],
-        DTSC.METHOD_MEASURED.format(method="A"): [True, True, True, True, True],
-        DTSC.REQUIRED_SURVEY.format(method="B"): [True, True, True, True, True],
-        DTSC.SITE_DEPLOYMENT.format(method="B"): [True, True, True, True, True],
-        DTSC.METHOD_MEASURED.format(method="B"): [True, True, True, True, True],
-    }
-    expected: pd.DataFrame = pd.DataFrame(data)
+    expected: pd.DataFrame = pd.DataFrame(expected_data)
 
-    assert list(site_tf_df.columns) == list(expected.columns)
-    assert len(site_tf_df) == len(expected)
-    pd.testing.assert_frame_equal(site_tf_df, expected, check_index_type=False, check_dtype=False)
-
-def test_simple_generation_tf_sites_stationary(monkeypatch):
-    """
-    Test that the generation of the true/false site list is correct
-    """
-
-    class MockSite:
-        def get_id(self):
-            return 1
-
-        def get_type(self):
-            return "A"
-
-        def do_site_deployment(self, method):
-            return True
-
-        def get_required_surveys(self, method):
-            return 2
-
-    def mock_infrastructure_initialization(self, virtual_world, methods, in_dir, site_measured_df):
-        self._sites = [MockSite() for _ in range(5)]
-
-    monkeypatch.setattr(
-        "src.virtual_world.infrastructure.Infrastructure.__init__",
-        mock_infrastructure_initialization,
-    )
-
-    site_tf_df = make_empty_df()
-
-    infra = Infrastructure({}, METHODS_PARAMS_STATIONARY, None, site_tf_df)
-
-    infra.gen_site_measured_tf_data(METHODS_PARAMS_STATIONARY, site_tf_df)
-
-    data = {
-        DTSC.SITE_ID: [1, 1, 1, 1, 1],
-        DTSC.SITE_TYPE: ["A", "A", "A", "A", "A"],
-        DTSC.REQUIRED_SURVEY.format(method="A"): [True, True, True, True, True],
-        DTSC.SITE_DEPLOYMENT.format(method="A"): [True, True, True, True, True],
-        DTSC.METHOD_MEASURED.format(method="A"): [True, True, True, True, True],
-        DTSC.REQUIRED_SURVEY.format(method="B"): [True, True, True, True, True],
-        DTSC.SITE_DEPLOYMENT.format(method="B"): [True, True, True, True, True],
-        DTSC.METHOD_MEASURED.format(method="B"): [True, True, True, True, True],
-    }
-    expected: pd.DataFrame = pd.DataFrame(data)
-
-    assert list(site_tf_df.columns) == list(expected.columns)
-    assert len(site_tf_df) == len(expected)
-    pd.testing.assert_frame_equal(site_tf_df, expected, check_index_type=False, check_dtype=False)
-
-
-def test_simple_generation_tf_sites_for_followup(monkeypatch):
-    """
-    Test that the generation of the true/false site list is correct
-    """
-
-    class MockSite:
-        def get_id(self):
-            return 1
-
-        def get_type(self):
-            return "A"
-
-        def do_site_deployment(self, method):
-            return True
-
-        def get_required_surveys(self, method):
-            return 2
-
-    def mock_infrastructure_initialization(self, virtual_world, methods, in_dir, site_measured_df):
-        self._sites = [MockSite() for _ in range(5)]
-
-    monkeypatch.setattr(
-        "src.virtual_world.infrastructure.Infrastructure.__init__",
-        mock_infrastructure_initialization,
-    )
-
-    site_tf_df = make_empty_df()
-
-    infra = Infrastructure({}, METHODS_PARAMS_FOLLOW_UP, None, site_tf_df)
-
-    infra.gen_site_measured_tf_data(METHODS_PARAMS_FOLLOW_UP, site_tf_df)
-
-    data = {
-        DTSC.SITE_ID: [1, 1, 1, 1, 1],
-        DTSC.SITE_TYPE: ["A", "A", "A", "A", "A"],
-        DTSC.REQUIRED_SURVEY.format(method="A"): [False, False, False, False, False],
-        DTSC.SITE_DEPLOYMENT.format(method="A"): [False, False, False, False, False],
-        DTSC.METHOD_MEASURED.format(method="A"): [False, False, False, False, False],
-        DTSC.REQUIRED_SURVEY.format(method="B"): [True, True, True, True, True],
-        DTSC.SITE_DEPLOYMENT.format(method="B"): [True, True, True, True, True],
-        DTSC.METHOD_MEASURED.format(method="B"): [True, True, True, True, True],
-    }
-    expected: pd.DataFrame = pd.DataFrame(data)
-
-    assert list(site_tf_df.columns) == list(expected.columns)
-    assert len(site_tf_df) == len(expected)
-    pd.testing.assert_frame_equal(site_tf_df, expected, check_index_type=False, check_dtype=False)
-
-
-def test_simple_fail_generation_tf_sites(monkeypatch):
-    """
-    Test that the generation of the true/false site list is correct
-    """
-
-    class MockSite:
-        def get_id(self):
-            return 1
-
-        def get_type(self):
-            return "A"
-
-        def do_site_deployment(self, method):
-            return True
-
-        def get_required_surveys(self, method):
-            return 0
-
-    def mock_infrastructure_initialization(self, virtual_world, methods, in_dir, site_measured_df):
-        self._sites = [MockSite() for _ in range(5)]
-
-    monkeypatch.setattr(
-        "src.virtual_world.infrastructure.Infrastructure.__init__",
-        mock_infrastructure_initialization,
-    )
-
-    site_tf_df = make_empty_df()
-
-    infra = Infrastructure({}, METHODS_PARAMS, None, site_tf_df)
-
-    infra.gen_site_measured_tf_data(METHODS_PARAMS, site_tf_df)
-
-    data = {
-        DTSC.SITE_ID: [1, 1, 1, 1, 1],
-        DTSC.SITE_TYPE: ["A", "A", "A", "A", "A"],
-        DTSC.REQUIRED_SURVEY.format(method="A"): [False, False, False, False, False],
-        DTSC.SITE_DEPLOYMENT.format(method="A"): [True, True, True, True, True],
-        DTSC.METHOD_MEASURED.format(method="A"): [False, False, False, False, False],
-        DTSC.REQUIRED_SURVEY.format(method="B"): [False, False, False, False, False],
-        DTSC.SITE_DEPLOYMENT.format(method="B"): [True, True, True, True, True],
-        DTSC.METHOD_MEASURED.format(method="B"): [False, False, False, False, False],
-    }
-    expected: pd.DataFrame = pd.DataFrame(data)
-
-    assert list(site_tf_df.columns) == list(expected.columns)
-    assert len(site_tf_df) == len(expected)
-    pd.testing.assert_frame_equal(site_tf_df, expected, check_index_type=False, check_dtype=False)
-
-
-def test_simple_fail_generation_tf_sites2(monkeypatch):
-    """
-    Test that the generation of the true/false site list is correct
-    """
-
-    class MockSite:
-        def get_id(self):
-            return 1
-
-        def get_type(self):
-            return "A"
-
-        def do_site_deployment(self, method):
-            return False
-
-        def get_required_surveys(self, method):
-            return 5
-
-    def mock_infrastructure_initialization(self, virtual_world, methods, in_dir, site_measured_df):
-        self._sites = [MockSite() for _ in range(5)]
-
-    monkeypatch.setattr(
-        "src.virtual_world.infrastructure.Infrastructure.__init__",
-        mock_infrastructure_initialization,
-    )
-
-    site_tf_df = make_empty_df()
-
-    infra = Infrastructure({}, METHODS_PARAMS, None, site_tf_df)
-
-    infra.gen_site_measured_tf_data(METHODS_PARAMS, site_tf_df)
-
-    data = {
-        DTSC.SITE_ID: [1, 1, 1, 1, 1],
-        DTSC.SITE_TYPE: ["A", "A", "A", "A", "A"],
-        DTSC.REQUIRED_SURVEY.format(method="A"): [True, True, True, True, True],
-        DTSC.SITE_DEPLOYMENT.format(method="A"): [False, False, False, False, False],
-        DTSC.METHOD_MEASURED.format(method="A"): [False, False, False, False, False],
-        DTSC.REQUIRED_SURVEY.format(method="B"): [True, True, True, True, True],
-        DTSC.SITE_DEPLOYMENT.format(method="B"): [False, False, False, False, False],
-        DTSC.METHOD_MEASURED.format(method="B"): [False, False, False, False, False],
-    }
-    expected: pd.DataFrame = pd.DataFrame(data)
-
-    assert list(site_tf_df.columns) == list(expected.columns)
-    assert len(site_tf_df) == len(expected)
-    pd.testing.assert_frame_equal(site_tf_df, expected, check_index_type=False, check_dtype=False)
-
-
-def test_complex_generation_tf_sites(monkeypatch):
-    """
-    Test that the generation of the true/false site list is correct
-    """
-
-    class MockSite:
-        return_values = itertools.cycle([False, False, True, True])
-
-        def get_id(self):
-            return 1
-
-        def get_type(self):
-            return "A"
-
-        def do_site_deployment(self, method):
-            return next(MockSite.return_values)
-
-        def get_required_surveys(self, method):
-            return 5
-
-    def mock_infrastructure_initialization(self, virtual_world, methods, in_dir, site_measured_df):
-        self._sites = [MockSite() for _ in range(5)]
-
-    monkeypatch.setattr(
-        "src.virtual_world.infrastructure.Infrastructure.__init__",
-        mock_infrastructure_initialization,
-    )
-
-    site_tf_df = make_empty_df()
-
-    infra = Infrastructure({}, METHODS_PARAMS, None, site_tf_df)
-
-    infra.gen_site_measured_tf_data(METHODS_PARAMS, site_tf_df)
-
-    data = {
-        DTSC.SITE_ID: [1, 1, 1, 1, 1],
-        DTSC.SITE_TYPE: ["A", "A", "A", "A", "A"],
-        DTSC.REQUIRED_SURVEY.format(method="A"): [True, True, True, True, True],
-        DTSC.SITE_DEPLOYMENT.format(method="A"): [False, True, False, True, False],
-        DTSC.METHOD_MEASURED.format(method="A"): [False, True, False, True, False],
-        DTSC.REQUIRED_SURVEY.format(method="B"): [True, True, True, True, True],
-        DTSC.SITE_DEPLOYMENT.format(method="B"): [False, True, False, True, False],
-        DTSC.METHOD_MEASURED.format(method="B"): [False, True, False, True, False],
-    }
-    expected: pd.DataFrame = pd.DataFrame(data)
+    expected: pd.DataFrame = pd.DataFrame(expected_data)
 
     assert list(site_tf_df.columns) == list(expected.columns)
     assert len(site_tf_df) == len(expected)

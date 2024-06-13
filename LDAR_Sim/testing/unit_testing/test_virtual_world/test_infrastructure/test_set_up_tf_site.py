@@ -2,8 +2,7 @@
 ------------------------------------------------------------------------------
 Program:     The LDAR Simulator (LDAR-Sim)
 File:        test_populate_tf_site.py
-Purpose: Contains unit tests related to populating the true/false deployment
-site list data frame
+Purpose: Contains unit to ensure proper formatting of the true/false dataframe
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the MIT License as published
