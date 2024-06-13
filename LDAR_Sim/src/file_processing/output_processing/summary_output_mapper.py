@@ -177,6 +177,7 @@ class SummaryOutputMapper:
                 )
             ),
         },
+        file_name_constants.Output_Files.SummaryFileNames.COST_SUMMARY: {},
         file_name_constants.Output_Files.SummaryFileNames.EMIS_EST_SUMMARY: {},
         file_name_constants.Output_Files.SummaryFileNames.EMIS_FUG_EST_SUMMARY: {},
     }

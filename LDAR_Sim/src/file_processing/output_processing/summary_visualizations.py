@@ -532,32 +532,16 @@ def gen_cost_to_mit_boxplot(
     baseline_program: str,
     _,
     viz_mapper: SummaryVisualizationMapper,
-    prog_costs: dict,
 ):
-    data_source_emis: Path = (
-        out_dir / file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY
-    )
-    data_source_ts: Path = out_dir / file_name_constants.Output_Files.SummaryFileNames.TS_SUMMARY
-    data_emis: pd.DataFrame = pd.read_csv(data_source_emis.with_suffix(".csv"))
-    data_ts: pd.DataFrame = pd.read_csv(data_source_ts.with_suffix(".csv"))
+    data_source: Path = out_dir / file_name_constants.Output_Files.SummaryFileNames.COST_SUMMARY
+    data: pd.DataFrame = pd.read_csv(data_source.with_suffix(".csv"))
 
     visualization_name: str = output_file_constants.SummaryOutputVizFileNames.COST_TO_MIT_BOX_PLOT
-    program_names: list[str] = summary_visualization_helpers.get_non_baseline_prog_names(
-        data_emis, baseline_program
-    )
-    mitigation_data: dict[str, list[float]] = summary_visualization_helpers.gen_tot_mitigation_list(
-        data_emis, program_names, prog_costs, False
-    )
-
-    cost_data: dict[str, list[float]] = summary_visualization_helpers.gen_tot_cost_list(
-        data_ts, program_names, False
-    )
-    cost_mit_ratio_data = summary_visualization_helpers.gen_cost_to_mitigation_ratio(
-        mitigation_data, cost_data, program_names
-    )
+    columns = ["Program Name", "Cost to Mitigation Ratio"]
+    filtered_data = data[columns]
 
     plot_box_whisker(
-        cost_mit_ratio_data,
+        filtered_data,
         visualization_dir,
         visualization_name,
         viz_mapper,
@@ -570,39 +554,18 @@ def gen_program_stacked_cost_bars(
     baseline_program: str,
     _,
     viz_mapper: SummaryVisualizationMapper,
-    prog_costs: dict,
 ):
-    data_source_emis: Path = (
-        out_dir / file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY
-    )
-    data_source_ts: Path = out_dir / file_name_constants.Output_Files.SummaryFileNames.TS_SUMMARY
-    data_emis: pd.DataFrame = pd.read_csv(data_source_emis.with_suffix(".csv"))
-    data_ts: pd.DataFrame = pd.read_csv(data_source_ts.with_suffix(".csv"))
+    data_source: Path = out_dir / file_name_constants.Output_Files.SummaryFileNames.COST_SUMMARY
+    data: pd.DataFrame = pd.read_csv(data_source.with_suffix(".csv"))
 
     visualization_name: str = output_file_constants.SummaryOutputVizFileNames.STACKED_COST_BAR_PLOT
-    program_names: list[str] = summary_visualization_helpers.get_non_baseline_prog_names(
-        data_emis, baseline_program
-    )
-    mitigation_data: dict[str, list[float]] = (
-        summary_visualization_helpers.gen_tot_mitigation_cost_list(
-            data_emis, program_names, prog_costs, True
-        )
-    )
 
-    cost_data: dict[str, list[float]] = summary_visualization_helpers.gen_tot_cost_list(
-        data_ts, program_names, True
-    )
+    data = data["Program Name", "Mitigated Gas Cost", "Program Cost"]
 
-    mitigation_df = pd.DataFrame(
-        list(mitigation_data.items()), columns=["Program Name", "Mitigated Gas Cost"]
-    )
-    cost_df = pd.DataFrame(list(cost_data.items()), columns=["Program Name", "Program Cost"])
-    cost_df["Program Cost"] = -cost_df["Program Cost"]
-
-    combined_df = pd.merge(mitigation_df, cost_df, on="Program Name")
+    data["Program Cost"] = -data["Program Cost"]
 
     plot_stack_bar_chart(
-        combined_df,
+        data,
         visualization_dir,
         visualization_name,
         viz_mapper,

@@ -358,3 +358,13 @@ class TIMESERIES_COL_ACCESSORS:
     METH_DAILY_SITES_VIS = "{method} Sites Visited"
     METH_DAILY_TRAVEL_TIME = "{method} Travel Time (Minutes)"
     METH_DAILY_SURVEY_TIME = "{method} Survey Time (Minutes)"
+
+
+@dataclass
+class COST_SUMMARY_COLUMNS_ACCESSORS:
+    PROG_NAME = TS_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME
+    SIM = TS_SUMMARY_COLUMNS_ACCESSORS.SIM
+    MITIGATION = "Mitigated Methane (kg)"
+    TOTAL_COST = "Total Cost ($)"
+    MITIGATION_RATIO = "Mitigation Ratio ($/tonne CO2e)"
+    COST_OF_MITIGATED_EMIS = "Cost of Mitigated Methane ($)"
