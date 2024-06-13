@@ -1264,11 +1264,11 @@ Valid deployment types:
 
 **Default input:** 0
 
-**Description:** The parameters within this section are for specifying the functionality of quantification error within the simulation
+**Description:** The parameters within this section are for specifying the functionality of quantification error within the simulation.
 
 ##### &lt;quantification_parameters&gt;
 
-**Data type:** Numeric or List of integers
+**Data type:** Numeric (List of Floats)
 
 **Default input:** [0.0, 0.0]
 
@@ -1291,7 +1291,9 @@ Currently two quantification types are supported:
 - `default`: Quantification Error is drawn from a normal distribution centered on the midpoint between the upper and lower bounds of the 95% confidence interval of possible quantification error values provided through the [quantification_parameters](#quantification_parameters). The distribution will use a standard deviation also calculated from the 95% confidence interval assuming the empirical rule (95% percent of all observations lie within two standard deviations of the mean).
 - `uniform`: Quantification Error is drawn from a uniform distribution bounded by the upper and lower bounds of the 95% confidence interval of possible quantification error values provided through the [quantification_parameters](#quantification_parameters).
 
-  _NOTE: Users may develop and implement their own quantification modules. Further documentation to support this practice will be added in a later release._
+  Both supported types expect a list of 2 floating point numbers: the upper and lower bounds of the 95% confidence interval of possible quantification error values as input for [quantification_parameters](#quantification_parameters).
+
+  **NOTE**: Users may develop and implement their own quantification modules. Further documentation to support this practice will be added in a later release.
 
 **Notes on acquisition:** The user must decide the most appropriate assumption on the distribution of quantification error.
 

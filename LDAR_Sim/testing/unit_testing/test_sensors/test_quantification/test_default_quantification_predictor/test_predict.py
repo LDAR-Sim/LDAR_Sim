@@ -1,3 +1,23 @@
+"""
+------------------------------------------------------------------------------
+Program:     The LDAR Simulator (LDAR-Sim)
+File:        test_predict.py
+Purpose:    To test the predict method of the DefaultQuantificationPredictor class.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the MIT License as published
+by the Free Software Foundation, version 3.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+MIT License for more details.
+You should have received a copy of the MIT License
+along with this program.  If not, see <https://opensource.org/licenses/MIT>.
+
+------------------------------------------------------------------------------
+"""
+
 import pytest
 from sensors.quantification.default_quantification_predictor import DefaultQuantificationPredictor
 import numpy.random
