@@ -115,7 +115,7 @@ cd install
 
 **Note**:In Windows, you can use the command dir to list the files and folders you have access to.
 
-Executing the command dir should display the following files: *.gitmessage, requirements.txt, requirements_dev.txt,* and *SetupInstructions.md*.
+Executing the command dir should display the following files: *.gitmessage, environment.yml, dev_environment.yml,* and *SetupInstructions.md*.
 
 ![alt text](doc-images/image1.png)
 
@@ -124,20 +124,20 @@ From this point, the following commands will be executed to set up the LDAR Sim 
 ```cmd
 conda config --add channels conda-forge
 conda config --set channel_priority strict
-conda create -n ldar_sim --file requirements.txt
+conda env create -f environment.yml
 ```
 
 Enter them sequentially in the Anaconda Prompt window, allowing the process to complete before entering the next command. The final of these three commands, Conda create, may take some time to run before prompting for confirmation to download and install a list of packages. Confirm with Y.
 
-**Note**: Please be aware that the `requirements.txt` file exclusively contains the essential dependencies required to run LDAR-Sim as a regular user. If you are in a development role, refer to `requirements_dev.txt` for additional requirements specific to the development environment.
+**Note**: Please be aware that the `environment.yml` file exclusively contains the essential dependencies required to run LDAR-Sim as a regular user. If you are in a development role, refer to `dev_environment.yml` for additional requirements specific to the development environment.
 
 Once the download and installation is complete, activate the new environment with the following command.
 
 ```cmd
-conda activate ldar_sim
+conda activate ldar_sim_env
 ```
 
-**Note**: `Activate ldar-sim` refers to activating the ldar-sim "environment" – a pre-defined group of the required Python code libraries. This command must be run each time a new Anaconda Prompt is opened to run LDAR-Sim (it will always be the first command to be run).
+**Note**: `Activate ldar-sim_env` refers to activating the ldar-sim "environment" – a pre-defined group of the required Python code libraries. This command must be run each time a new Anaconda Prompt is opened to run LDAR-Sim (it will always be the first command to be run).
 
 ![alt text](doc-images/image4.png)
 
