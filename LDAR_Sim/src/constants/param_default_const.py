@@ -116,6 +116,8 @@ class Method_Params:
     SENSOR = "sensor"
     TYPE = "type"
     QE = "quantification_error"
+    QUANTIFICATION_PARAMETERS = "quantification_parameters"
+    Q_TYPE = "quantification_type"
     MDL = "minimum_detection_limit"
     COVERAGE = "coverage"
     SPATIAL = "spatial"

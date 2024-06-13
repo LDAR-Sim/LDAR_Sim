@@ -5,8 +5,13 @@ from sensors.default_component_level_sensor import DefaultComponentLevelSensor
 
 def get_sensor_for_default_equipment_level_sensor_testing() -> DefaultComponentLevelSensor:
     mdl: float = [1.0]
-    QE: float = 0.0
-    return DefaultComponentLevelSensor(mdl=mdl, quantification_error=QE)
+    quantification_parameters: list[float] = [0.0, 0.0]
+    quantification_type: str = "default"
+    return DefaultComponentLevelSensor(
+        mdl=mdl,
+        quantification_parameters=quantification_parameters,
+        quantification_type=quantification_type,
+    )
 
 
 generate_emission_detection_reports_strategy: st.SearchStrategy = st.builds(

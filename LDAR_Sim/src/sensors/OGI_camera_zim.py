@@ -2,7 +2,7 @@
 ------------------------------------------------------------------------------
 Program:     The LDAR Simulator (LDAR-Sim)
 File:        OGI_camera_zim
-Purpose: Provides an OGI camera sensor detection based on Zimmerle 2020 
+Purpose: Provides an OGI camera sensor detection based on Zimmerle 2020
 DOI 10.1021/acs.est.0c01285
 uses power function as shown in figure 2 to calculate probability of
 detection using leak size, and two mdl parameters are set based on camera
@@ -23,6 +23,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 """
 
 import numpy as np
+from constants.sensor_constants import QuantificationTypes
 from sensors.default_component_level_sensor import DefaultComponentLevelSensor
 
 MDL_CONST1 = 0.24
@@ -31,8 +32,17 @@ GS_TO_SCFH = 187
 
 
 class OGICameraZimSensor(DefaultComponentLevelSensor):
-    def __init__(self, mdl: float, quantification_error: float) -> None:
-        super().__init__(mdl, quantification_error)
+    def __init__(
+        self,
+        mdl: float,
+        quantification_parameters: list[float],
+        quantification_type: str = QuantificationTypes.DEFAULT.value,
+    ) -> None:
+        super().__init__(
+            mdl,
+            quantification_parameters,
+            quantification_type,
+        )
         self._mdl = mdl
 
     def _rate_detected(self, emis_rate: float) -> bool:

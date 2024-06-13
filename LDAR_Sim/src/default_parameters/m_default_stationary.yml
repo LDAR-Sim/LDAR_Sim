@@ -5,7 +5,9 @@ measurement_scale: "_placeholder_str_" # site/equipment/component
 deployment_type: stationary #stationary
 sensor:
   type: default # default/OGI_camera_zim(see User manual for MDL values)/OGI_camera_rk
-  quantification_error: 0.0
+  quantification_error:
+    quantification_parameters: [0.0, 0.0] # default and uniform types support [lower_95%_CI, upper_95%_CI]
+    quantification_type: "default" # default (normal)/uniform
   minimum_detection_limit: [0.01]
 coverage:
   spatial: 1.0 # 0.0 to 1.0

@@ -19,12 +19,18 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 """
 
 from typing import Union
-import numpy as np
+from sensors import quantification
 from virtual_world.sites import Site
+from constants.sensor_constants import QuantificationTypes
 
 
 class DefaultSensor:
-    def __init__(self, mdl: Union[list[float], float], quantification_error: float) -> None:
+    def __init__(
+        self,
+        mdl: Union[list[float], float],
+        quantification_parameters: list[float],
+        quantification_type: str = QuantificationTypes.DEFAULT.value,
+    ) -> None:
         # TODO revisit this implementation
         self._min_threshold: float = None
         if isinstance(mdl, (float, int)):
@@ -35,7 +41,24 @@ class DefaultSensor:
                 self._min_threshold: float = mdl[3]
         else:
             raise TypeError("mdl must be a integer, float or a list of floats")
-        self._quantification_error: float = quantification_error
+        self.initialize_quantification_predictor(
+            quantification_parameters,
+            quantification_type=quantification_type,
+        )
+
+    def initialize_quantification_predictor(
+        self,
+        quantification_parameters: list[float],
+        quantification_type: str,
+    ):
+        if quantification_type == QuantificationTypes.DEFAULT.value:
+            self._quantification_predictor = quantification.DefaultQuantificationPredictor(
+                *quantification_parameters
+            )
+        elif quantification_type == QuantificationTypes.UNIFORM.value:
+            self._quantification_predictor = quantification.UniformQuantificationPredictor(
+                *quantification_parameters
+            )
 
     def _rate_detected(self, emis_rate: float) -> bool:
         return emis_rate >= self._mdl
@@ -49,13 +72,4 @@ class DefaultSensor:
         return True
 
     def _measure_rate(self, true_rate: float) -> float:
-        quant_error: float = np.random.normal(0, self._quantification_error)
-
-        measured_rate = None
-        if quant_error >= 0:
-            measured_rate: float = true_rate + true_rate * quant_error
-        if quant_error < 0:
-            denom: float = abs(quant_error - 1)
-            measured_rate: float = true_rate / denom
-
-        return measured_rate
+        return self._quantification_predictor.predict(true_rate)

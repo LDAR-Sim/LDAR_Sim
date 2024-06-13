@@ -10,6 +10,7 @@ from testing.unit_testing.test_sensors.test_site_level_sensors.site_level_sensor
     mock_site_emis_for_detect_emissions_testing_lower_emis_fix,
     mock_site_for_detect_emissions_testing_lower_emissions_fix,
 )
+from constants import param_default_const as pdc
 
 
 def test_000_default_site_level_sensor_detect_emissions_detects_emissions_at_site_if_combined_rate_above_mdl(  # noqa
@@ -17,9 +18,15 @@ def test_000_default_site_level_sensor_detect_emissions_detects_emissions_at_sit
     mock_site_for_detect_emissions_testing,
 ) -> None:
     mock_site: Site = Site()
-    mdl: float = sensor_info_for_default_equipment_group_level_sensor_construction_testing["mdl"]
-    qe: float = sensor_info_for_default_equipment_group_level_sensor_construction_testing["QE"]
-    sensor = DefaultSiteLevelSensor([mdl], qe)
+    mdl: float = sensor_info_for_default_equipment_group_level_sensor_construction_testing[
+        pdc.Method_Params.MDL
+    ]
+    qe: float = sensor_info_for_default_equipment_group_level_sensor_construction_testing[
+        pdc.Method_Params.QE
+    ]
+    sensor = DefaultSiteLevelSensor(
+        [mdl], qe[pdc.Method_Params.QUANTIFICATION_PARAMETERS], qe[pdc.Method_Params.Q_TYPE]
+    )
     report: SiteSurveyReport = SiteSurveyReport(1)
     emis_detected: bool = sensor.detect_emissions(mock_site, "test", report)
     expected_emis = mock_site_for_detect_emissions_testing[1]
@@ -33,9 +40,11 @@ def test_000_default_site_level_sensor_detect_emissions_does_not_detect_emission
     mock_site_for_detect_emissions_testing_lower_emissions,
 ) -> None:
     mock_site: Site = Site()
-    mdl: float = sensor_info_high_mdl_for_default_site_level_sensor_testing["mdl"]
-    qe: float = sensor_info_high_mdl_for_default_site_level_sensor_testing["QE"]
-    sensor = DefaultSiteLevelSensor(mdl, qe)
+    mdl: float = sensor_info_high_mdl_for_default_site_level_sensor_testing[pdc.Method_Params.MDL]
+    qe: float = sensor_info_high_mdl_for_default_site_level_sensor_testing[pdc.Method_Params.QE]
+    sensor = DefaultSiteLevelSensor(
+        mdl, qe[pdc.Method_Params.QUANTIFICATION_PARAMETERS], qe[pdc.Method_Params.Q_TYPE]
+    )
     report: SiteSurveyReport = SiteSurveyReport(1)
     emis_detected: bool = sensor.detect_emissions(mock_site, "test", report)
     expected_true_emis = mock_site_for_detect_emissions_testing_lower_emissions[1]
