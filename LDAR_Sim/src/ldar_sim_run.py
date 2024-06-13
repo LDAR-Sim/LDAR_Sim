@@ -20,6 +20,7 @@
 # ------------------------------------------------------------------------------
 import os
 
+import pandas as pd
 import copy
 import gc
 from math import floor
@@ -42,6 +43,10 @@ from weather.daylight_calculator import DaylightCalculatorAve
 from weather.weather_lookup import WeatherLookup as WL
 from constants.file_name_constants import Generator_Files, Output_Files
 from utils.generic_functions import check_ERA5_file
+from utils.prog_method_measured_func import (
+    set_up_tf_method_deployed_df,
+    filter_deployment_tf_by_program_methods,
+)
 from file_processing.input_processing.input_manager import InputManager
 from initialization.args import (
     files_from_args,
@@ -69,6 +74,7 @@ def simulate(
     output_dir: Path,
     preseed_timeseries,
     lock,
+    prog_measured_df,
 ):
     if lock is not None:
         with lock:
@@ -98,6 +104,7 @@ def simulate(
         input_dir,
         output_dir,
         preseed_timeseries,
+        prog_measured_df,
     )
     simulation.run_simulation()
     print(rm.FIN_PROG.format(prog_name=prog_name))
@@ -158,6 +165,11 @@ def run_ldar_sim(parameter_filenames, DEBUG=False):
         emis_preseed_val, force_remake_gen = gen_seed_emis(simulation_count, generator_dir)
     infrastructure: Infrastructure
     hash_file_exist: bool
+
+    site_measured: pd.DataFrame = set_up_tf_method_deployed_df(
+        methods, virtual_world[pdc.Virtual_World_Params.N_SITES]
+    )
+
     infrastructure, hash_file_exist = initialize_infrastructure(
         methods,
         programs,
@@ -167,6 +179,10 @@ def run_ldar_sim(parameter_filenames, DEBUG=False):
         preseed_random,
         emis_preseed_val,
         force_remake_gen,
+    )
+    infrastructure.gen_site_measured_tf_data(
+        methods,
+        site_measured,
     )
     print(rm.INIT_EMISS)
     # Pregenerate emissions
@@ -229,6 +245,9 @@ def run_ldar_sim(parameter_filenames, DEBUG=False):
                 # -- Run simulations --
                 for program in programs:
                     meth_params = {}
+                    prog_measured_df = filter_deployment_tf_by_program_methods(
+                        site_measured, programs[program][pdc.Program_Params.METHODS]
+                    )
                     for meth in programs[program][pdc.Program_Params.METHODS]:
                         meth_params[meth] = methods[meth]
                     simulate(
@@ -245,6 +264,7 @@ def run_ldar_sim(parameter_filenames, DEBUG=False):
                         out_dir,
                         seed_timeseries,
                         None,
+                        prog_measured_df,
                     )
                 print(rm.FIN_SIM_SET.format(simulation_number=simulation_number))
             # -- Batch Report --
@@ -268,6 +288,9 @@ def run_ldar_sim(parameter_filenames, DEBUG=False):
                         meth_params = {}
                         for meth in programs[program][pdc.Program_Params.METHODS]:
                             meth_params[meth] = methods[meth]
+                        prog_measured_df = filter_deployment_tf_by_program_methods(
+                            site_measured, programs[program][pdc.Program_Params.METHODS]
+                        )
                         prog_data.append(
                             (
                                 daylight,
@@ -283,6 +306,7 @@ def run_ldar_sim(parameter_filenames, DEBUG=False):
                                 out_dir,
                                 seed_timeseries,
                                 lock,
+                                prog_measured_df,
                             )
                         )
 

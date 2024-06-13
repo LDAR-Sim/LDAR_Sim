@@ -35,7 +35,14 @@ def hash_dict(in_dict) -> str:
 
 
 def initialize_infrastructure(
-    methods, programs, virtual_world, generator_dir, in_dir, preseed, preseed_val, force_remake
+    methods,
+    programs,
+    virtual_world,
+    generator_dir,
+    in_dir,
+    preseed,
+    preseed_val,
+    force_remake,
 ) -> Infrastructure:
 
     if not os.path.exists(generator_dir):
@@ -90,7 +97,9 @@ def initialize_infrastructure(
             np.random.seed(preseed_val[0])
 
         infrastructure: Infrastructure = Infrastructure(
-            virtual_world=virtual_world, methods=methods, in_dir=in_dir
+            virtual_world=virtual_world,
+            methods=methods,
+            in_dir=in_dir,
         )
 
         # Save the generated Infrastructure and the input file hashes and the virtual world hash.
@@ -148,7 +157,9 @@ def initialize_infrastructure(
                 np.random.seed(preseed_val[0])
 
             infrastructure: Infrastructure = Infrastructure(
-                virtual_world=virtual_world, methods=methods, in_dir=in_dir
+                virtual_world=virtual_world,
+                methods=methods,
+                in_dir=in_dir,
             )
             # Save the generated Infrastructure,
             # the input file hashes and the virtual world hash.

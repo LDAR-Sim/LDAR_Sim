@@ -34,6 +34,7 @@ import constants.param_default_const as pdc
 from constants.infrastructure_const import (
     Infrastructure_Constants as IC,
     Virtual_World_To_Prop_Params_Mapping as VW,
+    Deployment_TF_Sites_Constants as DTSC,
 )
 from virtual_world.sites import Site
 from file_processing.input_processing.infrastructure_processing import (
@@ -57,7 +58,11 @@ class Infrastructure:
             inputs_path=in_dir, virtual_world=virtual_world
         )
         self._sites: list[Site] = []
-        self.generate_infrastructure(virtual_world=virtual_world, methods=methods, in_dir=in_dir)
+        self.generate_infrastructure(
+            virtual_world=virtual_world,
+            methods=methods,
+            in_dir=in_dir,
+        )
 
     def __reduce__(self):
         args = (self.emission_rate_source_dictionary, self.repair_delay_dataframe, self._sites)
@@ -253,11 +258,56 @@ class Infrastructure:
                 infrastructure_inputs=infrastructure_inputs,
                 start_date=date(*virtual_world[pdc.Virtual_World_Params.START_DATE]),
                 methods=methods,
+                site_type=srow[IC.Sites_File_Constants.TYPE],
             )
 
             sites.append(new_site)
 
         self._sites: list[Site] = sites
+
+    def gen_site_measured_tf_data(self, methods, site_tf_df) -> None:
+        """Generate a dictionary that provides info on if a given site will be measured
+        by a given method.
+
+        Args:
+            site_measured_df (pd.DataFrame): The DataFrame with site measured data.
+
+        Returns:
+            A dictionary: The dictionary with site potential measurement that can be used as a new row.
+        """
+        for i, site in enumerate(self._sites):
+
+            site_measured_data: dict = {
+                DTSC.SITE_ID: site.get_id(),
+                DTSC.SITE_TYPE: site.get_type(),
+            }
+
+            for method in methods:
+                # If the method is a follow-up method, we do not know if it will ever be triggered
+                # therefore  we set it to False
+                # Follow-up methods will always  be called with another method, and because of this
+                # setting it false is fine, the other method will ensure that the site measured
+                # value is set to true
+                if methods[method][pdc.Method_Params.IS_FOLLOW_UP]:
+                    surveyed = False
+                    deployed = False
+                else:
+                    deployed = site.do_site_deployment(method)
+                    if (
+                        methods[method][pdc.Method_Params.DEPLOYMENT_TYPE]
+                        == pdc.Deployment_Types.STATIONARY
+                    ):
+                        surveyed = True
+                    else:
+                        surveyed = site.get_required_surveys(method) > 0
+                site_measured_data[DTSC.SITE_DEPLOYMENT.format(method=method)] = deployed
+                site_measured_data[DTSC.REQUIRED_SURVEY.format(method=method)] = surveyed
+                site_measured_data[DTSC.METHOD_MEASURED.format(method=method)] = (
+                    deployed and surveyed
+                )
+
+            site_tf_df.loc[i] = site_measured_data
+        return
 
     # TODO
     def get_flagged_sites(self, company_id) -> list[Site]:
