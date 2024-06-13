@@ -64,8 +64,8 @@ class Infrastructure:
             in_dir=in_dir,
         )
         self.gen_site_measured_tf_data(
-            methods=methods,
-            site_measured_df=site_measured_df,
+            methods,
+            site_measured_df,
         )
 
     def __reduce__(self):
@@ -192,7 +192,6 @@ class Infrastructure:
         virtual_world,
         methods,
         in_dir,
-        site_measured_df,
     ) -> None:
         """[summary]
 
@@ -269,7 +268,7 @@ class Infrastructure:
 
         self._sites: list[Site] = sites
 
-    def gen_site_measured_tf_data(self, methods, site_TF_df) -> None:
+    def gen_site_measured_tf_data(self, methods, site_tf_df) -> None:
         """Generate a dictionary that provides info on if a given site will be measured
         by a given method.
 
@@ -287,13 +286,27 @@ class Infrastructure:
             }
 
             for method in methods:
-                deployed = site.do_site_deployment(method)
-                surveyed = site.get_required_surveys(method) > 0
+                # If the method is a follow-up method, we do not know if it will ever be triggered
+                # therefore  we set it to False
+                if methods[method][pdc.Method_Params.IS_FOLLOW_UP]:
+                    surveyed = False
+                    deployed = False
+                else:
+                    deployed = site.do_site_deployment(method)
+                    if (
+                        methods[method][pdc.Method_Params.DEPLOYMENT_TYPE]
+                        == pdc.Deployment_Types.STATIONARY
+                    ):
+                        surveyed = True
+                    else:
+                        surveyed = site.get_required_surveys(method) > 0
                 site_measured_data[DTSC.SITE_DEPLOYMENT.format(method=method)] = deployed
                 site_measured_data[DTSC.REQUIRED_SURVEY.format(method=method)] = surveyed
-                site_measured_data[DTSC.SITE_MEASURED.format(method=method)] = deployed and surveyed
+                site_measured_data[DTSC.METHOD_MEASURED.format(method=method)] = (
+                    deployed and surveyed
+                )
 
-            site_TF_df.loc[i] = site_measured_data
+            site_tf_df.loc[i] = site_measured_data
         return
 
     # TODO

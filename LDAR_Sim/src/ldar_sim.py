@@ -53,6 +53,7 @@ class LdarSim:
         input_dir: WindowsPath,
         output_dir: WindowsPath,
         preseed_timeseries,
+        prog_measured_df,
     ):
         """
         Construct the simulation.
@@ -67,7 +68,7 @@ class LdarSim:
         self._program: Program = program
 
         self._input_dir: WindowsPath = input_dir
-
+        self._measured_tf_df = prog_measured_df
         self.name_str: str = self.SIMULATION_NAME_STR.format(
             program=program.name, sim_number=sim_number
         )
@@ -122,4 +123,5 @@ class LdarSim:
             self._tc._start_date,
             self._tc._end_date,
             self._program,
+            self._measured_tf_df,
         )

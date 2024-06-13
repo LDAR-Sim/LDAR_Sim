@@ -41,6 +41,7 @@ from constants.output_file_constants import (
     EMIS_INFO_COLUMNS_TO_KEEP_FOR_DURATION_ESTIMATION,
 )
 from programs.program import Program
+from constants.infrastructure_const import Deployment_TF_Sites_Constants as DTSC
 from constants.param_default_const import Duration_Method as dm
 import file_processing.output_processing.program_output as prog_output
 
@@ -63,6 +64,7 @@ class ProgramOutputManager:
         start_date: date,
         end_date: date,
         program: Program,
+        measured_tf_df: pd.DataFrame,
     ) -> None:
         self.gen_sim_directory()
         summary_filename = self.generate_file_names(Output_Files.EMISSIONS_SUMMARY_FILE)
@@ -91,7 +93,13 @@ class ProgramOutputManager:
                 emis_file_name = self.generate_file_names(Output_Files.EST_EMISSIONS_FILE)
                 fug_file_name = self.generate_file_names(Output_Files.EST_REP_EMISSIONS_FILE)
 
-                emis_estimation.to_csv(self._output_dir / emis_file_name, index=False)
+                measured_tf_df = measured_tf_df.rename(columns={DTSC.SITE_ID: eca.SITE_ID})
+
+                emis_estimation_merged = pd.merge(
+                    emis_estimation, measured_tf_df, on=eca.SITE_ID, how="left"
+                )
+
+                emis_estimation_merged.to_csv(self._output_dir / emis_file_name, index=False)
                 fug_to_remove.to_csv(self._output_dir / fug_file_name, index=False)
         else:
             raise KeyError(f"No function found for program: {program}")

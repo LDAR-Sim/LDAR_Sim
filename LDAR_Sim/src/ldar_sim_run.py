@@ -71,6 +71,7 @@ def simulate(
     output_dir: Path,
     preseed_timeseries,
     lock,
+    prog_measured_df,
 ):
     if lock is not None:
         with lock:
@@ -100,6 +101,7 @@ def simulate(
         input_dir,
         output_dir,
         preseed_timeseries,
+        prog_measured_df,
     )
     simulation.run_simulation()
     print(rm.FIN_PROG.format(prog_name=prog_name))
@@ -122,11 +124,28 @@ def set_up_tf_df(methods: dict[str, dict], site_count) -> pd.DataFrame:
         for item in [
             DTSC.REQUIRED_SURVEY.format(method=method),
             DTSC.SITE_DEPLOYMENT.format(method=method),
-            DTSC.SITE_MEASURED.format(method=method),
+            DTSC.METHOD_MEASURED.format(method=method),
         ]
     ]
 
     return pd.DataFrame(index=range(site_count), columns=column_names)
+
+
+def filter_df_by_relevant_method(tf_df_ori: pd.DataFrame, methods: list[str]) -> pd.DataFrame:
+    """
+    Input:
+    tf_df_ori: pd.DataFrame - the original true/false site list dataframe
+    methods: list[str] - list of methods to filter the dataframe
+
+    Returns:
+    pd.DataFrame - a filtered dataframe with the columns for the true/false
+    """
+    formatted_method_columns = [DTSC.METHOD_MEASURED.format(method=method) for method in methods]
+    columns = [DTSC.SITE_ID, DTSC.SITE_TYPE] + formatted_method_columns
+    filtered_df = tf_df_ori[columns].copy()
+    filtered_df[DTSC.MEASURED] = filtered_df[formatted_method_columns].any(axis=1)
+
+    return filtered_df[[DTSC.SITE_ID, DTSC.SITE_TYPE, DTSC.MEASURED]]
 
 
 def run_ldar_sim(parameter_filenames, DEBUG=False):
@@ -259,6 +278,9 @@ def run_ldar_sim(parameter_filenames, DEBUG=False):
                 # -- Run simulations --
                 for program in programs:
                     meth_params = {}
+                    prog_measured_df = filter_df_by_relevant_method(
+                        site_measured, programs[program][pdc.Program_Params.METHODS]
+                    )
                     for meth in programs[program][pdc.Program_Params.METHODS]:
                         meth_params[meth] = methods[meth]
                     simulate(
@@ -275,6 +297,7 @@ def run_ldar_sim(parameter_filenames, DEBUG=False):
                         out_dir,
                         seed_timeseries,
                         None,
+                        prog_measured_df,
                     )
                 print(rm.FIN_SIM_SET.format(simulation_number=simulation_number))
             # -- Batch Report --
@@ -298,6 +321,9 @@ def run_ldar_sim(parameter_filenames, DEBUG=False):
                         meth_params = {}
                         for meth in programs[program][pdc.Program_Params.METHODS]:
                             meth_params[meth] = methods[meth]
+                        prog_measured_df = filter_df_by_relevant_method(
+                            site_measured, programs[program][pdc.Program_Params.METHODS]
+                        )
                         prog_data.append(
                             (
                                 daylight,
@@ -313,6 +339,7 @@ def run_ldar_sim(parameter_filenames, DEBUG=False):
                                 out_dir,
                                 seed_timeseries,
                                 lock,
+                                prog_measured_df,
                             )
                         )
 

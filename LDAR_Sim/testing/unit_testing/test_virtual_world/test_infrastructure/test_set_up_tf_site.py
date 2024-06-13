@@ -37,10 +37,10 @@ def test_set_up_tf_df():
         DTSC.SITE_TYPE,
         DTSC.REQUIRED_SURVEY.format(method="A"),
         DTSC.SITE_DEPLOYMENT.format(method="A"),
-        DTSC.SITE_MEASURED.format(method="A"),
+        DTSC.METHOD_MEASURED.format(method="A"),
         DTSC.REQUIRED_SURVEY.format(method="B"),
         DTSC.SITE_DEPLOYMENT.format(method="B"),
-        DTSC.SITE_MEASURED.format(method="B"),
+        DTSC.METHOD_MEASURED.format(method="B"),
     ]
 
     assert len(result) == 5

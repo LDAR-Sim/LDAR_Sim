@@ -193,7 +193,8 @@ class Deployment_TF_Sites_Constants:
     SITE_DEPLOYMENT: str = (
         "{method}" + Infrastructure_Constants.Sites_File_Constants.SITE_DEPLOYMENT_PLACEHOLDER
     )
-    SITE_MEASURED: str = "{method}_measured"
+    METHOD_MEASURED: str = "{method}_measured"
+    MEASURED: str = "Measured"
 
 
 class Virtual_World_To_Prop_Params_Mapping:
