@@ -21,7 +21,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 import pandas as pd
 import pytest
-from src.ldar_sim_run import filter_df_by_relevant_method
+from src.ldar_sim_run import filter_deployment_tf_by_program_methods
 from src.constants.infrastructure_const import Deployment_TF_Sites_Constants as DTSC
 
 
@@ -77,11 +77,37 @@ def complex_fixture():
     return (pd.DataFrame(data_ori), prog_method, pd.DataFrame(data_filtered_result))
 
 
-@pytest.mark.parametrize("fixture", [simple_fixture(), complex_fixture()])
+def three_method_fixture():
+    data_ori = {
+        DTSC.SITE_ID: [1, 2, 3, 4, 5],
+        DTSC.SITE_TYPE: ["A", "A", "A", "A", "A"],
+        DTSC.REQUIRED_SURVEY.format(method="A"): [True, True, True, False, True],
+        DTSC.SITE_DEPLOYMENT.format(method="A"): [True, True, False, False, False],
+        DTSC.METHOD_MEASURED.format(method="A"): [True, True, False, False, False],
+        DTSC.REQUIRED_SURVEY.format(method="B"): [False, False, True, False, True],
+        DTSC.SITE_DEPLOYMENT.format(method="B"): [False, False, True, False, True],
+        DTSC.METHOD_MEASURED.format(method="B"): [False, False, True, False, True],
+        DTSC.REQUIRED_SURVEY.format(method="C"): [True, True, True, True, True],
+        DTSC.SITE_DEPLOYMENT.format(method="C"): [False, True, False, True, False],
+        DTSC.METHOD_MEASURED.format(method="C"): [False, True, False, True, False],
+        DTSC.REQUIRED_SURVEY.format(method="D"): [True, True, True, True, True],
+        DTSC.SITE_DEPLOYMENT.format(method="D"): [False, True, False, True, False],
+        DTSC.METHOD_MEASURED.format(method="D"): [False, True, False, True, False],
+    }
+    prog_method = ["A", "B", "C"]
+    data_filtered_result = {
+        DTSC.SITE_ID: [1, 2, 3, 4, 5],
+        DTSC.SITE_TYPE: ["A", "A", "A", "A", "A"],
+        DTSC.MEASURED: [True, True, True, True, True],
+    }
+    return (pd.DataFrame(data_ori), prog_method, pd.DataFrame(data_filtered_result))
+
+
+@pytest.mark.parametrize("fixture", [simple_fixture(), complex_fixture(), three_method_fixture()])
 def test_filter_df_by_relevant_method(fixture):
     truefalse_df, prog_method, expected = fixture
 
-    result = filter_df_by_relevant_method(truefalse_df, prog_method)
+    result = filter_deployment_tf_by_program_methods(truefalse_df, prog_method)
 
     assert list(result.columns) == list(expected.columns)
     assert len(result) == len(expected)

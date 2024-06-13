@@ -25,7 +25,6 @@ from src.constants.infrastructure_const import (
     Deployment_TF_Sites_Constants as DTSC,
 )
 from src.virtual_world.infrastructure import Infrastructure
-import itertools
 
 EXPECTED_COLUMNS = [
     DTSC.SITE_ID,
@@ -120,135 +119,155 @@ def make_empty_df():
     return pd.DataFrame(index=range(5), columns=EXPECTED_COLUMNS)
 
 
+@pytest.fixture
+def mock_sites_all_true_deploy_survey_fix():
+    inputs = [
+        MockSite(1, "A", True, 2),
+        MockSite(1, "A", True, 2),
+        MockSite(1, "A", True, 2),
+        MockSite(1, "A", True, 2),
+        MockSite(1, "A", True, 2),
+    ]
+    results = {
+        DTSC.SITE_ID: [1, 1, 1, 1, 1],
+        DTSC.SITE_TYPE: ["A", "A", "A", "A", "A"],
+        DTSC.REQUIRED_SURVEY.format(method="A"): [True, True, True, True, True],
+        DTSC.SITE_DEPLOYMENT.format(method="A"): [True, True, True, True, True],
+        DTSC.METHOD_MEASURED.format(method="A"): [True, True, True, True, True],
+        DTSC.REQUIRED_SURVEY.format(method="B"): [True, True, True, True, True],
+        DTSC.SITE_DEPLOYMENT.format(method="B"): [True, True, True, True, True],
+        DTSC.METHOD_MEASURED.format(method="B"): [True, True, True, True, True],
+    }
+    return (inputs, METHODS_PARAMS, results)
+
+
+@pytest.fixture
+def mock_sites_all_true_deploy_survey_stationary_fix():
+    input = [
+        MockSite(1, "A", True, 2),
+        MockSite(1, "A", True, 2),
+        MockSite(1, "A", True, 2),
+        MockSite(1, "A", True, 2),
+        MockSite(1, "A", True, 2),
+    ]
+    results = {
+        DTSC.SITE_ID: [1, 1, 1, 1, 1],
+        DTSC.SITE_TYPE: ["A", "A", "A", "A", "A"],
+        DTSC.REQUIRED_SURVEY.format(method="A"): [True, True, True, True, True],
+        DTSC.SITE_DEPLOYMENT.format(method="A"): [True, True, True, True, True],
+        DTSC.METHOD_MEASURED.format(method="A"): [True, True, True, True, True],
+        DTSC.REQUIRED_SURVEY.format(method="B"): [True, True, True, True, True],
+        DTSC.SITE_DEPLOYMENT.format(method="B"): [True, True, True, True, True],
+        DTSC.METHOD_MEASURED.format(method="B"): [True, True, True, True, True],
+    }
+    return (input, METHODS_PARAMS_STATIONARY, results)
+
+
+@pytest.fixture
+def mock_sites_all_true_deploy_survey_followup_fix():
+    input = [
+        MockSite(1, "A", True, 2),
+        MockSite(1, "A", True, 2),
+        MockSite(1, "A", True, 2),
+        MockSite(1, "A", True, 2),
+        MockSite(1, "A", True, 2),
+    ]
+    results = {
+        DTSC.SITE_ID: [1, 1, 1, 1, 1],
+        DTSC.SITE_TYPE: ["A", "A", "A", "A", "A"],
+        DTSC.REQUIRED_SURVEY.format(method="A"): [False, False, False, False, False],
+        DTSC.SITE_DEPLOYMENT.format(method="A"): [False, False, False, False, False],
+        DTSC.METHOD_MEASURED.format(method="A"): [False, False, False, False, False],
+        DTSC.REQUIRED_SURVEY.format(method="B"): [True, True, True, True, True],
+        DTSC.SITE_DEPLOYMENT.format(method="B"): [True, True, True, True, True],
+        DTSC.METHOD_MEASURED.format(method="B"): [True, True, True, True, True],
+    }
+    return (input, METHODS_PARAMS_FOLLOW_UP, results)
+
+
+@pytest.fixture
+def mock_sites_true_deploy_false_survey_fix():
+    input = [
+        MockSite(1, "A", True, 0),
+        MockSite(1, "A", True, 0),
+        MockSite(1, "A", True, 0),
+        MockSite(1, "A", True, 0),
+        MockSite(1, "A", True, 0),
+    ]
+    results = {
+        DTSC.SITE_ID: [1, 1, 1, 1, 1],
+        DTSC.SITE_TYPE: ["A", "A", "A", "A", "A"],
+        DTSC.REQUIRED_SURVEY.format(method="A"): [False, False, False, False, False],
+        DTSC.SITE_DEPLOYMENT.format(method="A"): [True, True, True, True, True],
+        DTSC.METHOD_MEASURED.format(method="A"): [False, False, False, False, False],
+        DTSC.REQUIRED_SURVEY.format(method="B"): [False, False, False, False, False],
+        DTSC.SITE_DEPLOYMENT.format(method="B"): [True, True, True, True, True],
+        DTSC.METHOD_MEASURED.format(method="B"): [False, False, False, False, False],
+    }
+    return (input, METHODS_PARAMS, results)
+
+
+@pytest.fixture
+def mock_sites_false_deploy_true_survey_fix():
+    inputs = [
+        MockSite(1, "A", False, 5),
+        MockSite(2, "A", False, 5),
+        MockSite(3, "A", False, 5),
+        MockSite(4, "A", False, 5),
+        MockSite(5, "A", False, 5),
+    ]
+    results = {
+        DTSC.SITE_ID: [1, 2, 3, 4, 5],
+        DTSC.SITE_TYPE: ["A", "A", "A", "A", "A"],
+        DTSC.REQUIRED_SURVEY.format(method="A"): [True, True, True, True, True],
+        DTSC.SITE_DEPLOYMENT.format(method="A"): [False, False, False, False, False],
+        DTSC.METHOD_MEASURED.format(method="A"): [False, False, False, False, False],
+        DTSC.REQUIRED_SURVEY.format(method="B"): [True, True, True, True, True],
+        DTSC.SITE_DEPLOYMENT.format(method="B"): [False, False, False, False, False],
+        DTSC.METHOD_MEASURED.format(method="B"): [False, False, False, False, False],
+    }
+
+    return (inputs, METHODS_PARAMS, results)
+
+
+@pytest.fixture
+def mock_sites_mix_deploy_mix_survey_fix():
+    inputs = [
+        MockSite(1, "A", False, 5),
+        MockSite(1, "A", True, 5),
+        MockSite(1, "A", False, 5),
+        MockSite(1, "A", True, 5),
+        MockSite(1, "A", False, 5),
+    ]
+    results = {
+        DTSC.SITE_ID: [1, 1, 1, 1, 1],
+        DTSC.SITE_TYPE: ["A", "A", "A", "A", "A"],
+        DTSC.REQUIRED_SURVEY.format(method="A"): [True, True, True, True, True],
+        DTSC.SITE_DEPLOYMENT.format(method="A"): [False, True, False, True, False],
+        DTSC.METHOD_MEASURED.format(method="A"): [False, True, False, True, False],
+        DTSC.REQUIRED_SURVEY.format(method="B"): [True, True, True, True, True],
+        DTSC.SITE_DEPLOYMENT.format(method="B"): [False, True, False, True, False],
+        DTSC.METHOD_MEASURED.format(method="B"): [False, True, False, True, False],
+    }
+    return (inputs, METHODS_PARAMS, results)
+
+
 @pytest.mark.parametrize(
-    "mock_site,methods_params,expected_data",
+    "fixture_data",
     [
-        (
-            [
-                MockSite(1, "A", True, 2),
-                MockSite(1, "A", True, 2),
-                MockSite(1, "A", True, 2),
-                MockSite(1, "A", True, 2),
-                MockSite(1, "A", True, 2),
-            ],
-            METHODS_PARAMS,
-            {
-                DTSC.SITE_ID: [1, 1, 1, 1, 1],
-                DTSC.SITE_TYPE: ["A", "A", "A", "A", "A"],
-                DTSC.REQUIRED_SURVEY.format(method="A"): [True, True, True, True, True],
-                DTSC.SITE_DEPLOYMENT.format(method="A"): [True, True, True, True, True],
-                DTSC.METHOD_MEASURED.format(method="A"): [True, True, True, True, True],
-                DTSC.REQUIRED_SURVEY.format(method="B"): [True, True, True, True, True],
-                DTSC.SITE_DEPLOYMENT.format(method="B"): [True, True, True, True, True],
-                DTSC.METHOD_MEASURED.format(method="B"): [True, True, True, True, True],
-            },
-        ),
-        (
-            [
-                MockSite(1, "A", True, 2),
-                MockSite(1, "A", True, 2),
-                MockSite(1, "A", True, 2),
-                MockSite(1, "A", True, 2),
-                MockSite(1, "A", True, 2),
-            ],
-            METHODS_PARAMS_STATIONARY,
-            {
-                DTSC.SITE_ID: [1, 1, 1, 1, 1],
-                DTSC.SITE_TYPE: ["A", "A", "A", "A", "A"],
-                DTSC.REQUIRED_SURVEY.format(method="A"): [True, True, True, True, True],
-                DTSC.SITE_DEPLOYMENT.format(method="A"): [True, True, True, True, True],
-                DTSC.METHOD_MEASURED.format(method="A"): [True, True, True, True, True],
-                DTSC.REQUIRED_SURVEY.format(method="B"): [True, True, True, True, True],
-                DTSC.SITE_DEPLOYMENT.format(method="B"): [True, True, True, True, True],
-                DTSC.METHOD_MEASURED.format(method="B"): [True, True, True, True, True],
-            },
-        ),
-        (
-            [
-                MockSite(1, "A", True, 2),
-                MockSite(1, "A", True, 2),
-                MockSite(1, "A", True, 2),
-                MockSite(1, "A", True, 2),
-                MockSite(1, "A", True, 2),
-            ],
-            METHODS_PARAMS_FOLLOW_UP,
-            {
-                DTSC.SITE_ID: [1, 1, 1, 1, 1],
-                DTSC.SITE_TYPE: ["A", "A", "A", "A", "A"],
-                DTSC.REQUIRED_SURVEY.format(method="A"): [False, False, False, False, False],
-                DTSC.SITE_DEPLOYMENT.format(method="A"): [False, False, False, False, False],
-                DTSC.METHOD_MEASURED.format(method="A"): [False, False, False, False, False],
-                DTSC.REQUIRED_SURVEY.format(method="B"): [True, True, True, True, True],
-                DTSC.SITE_DEPLOYMENT.format(method="B"): [True, True, True, True, True],
-                DTSC.METHOD_MEASURED.format(method="B"): [True, True, True, True, True],
-            },
-        ),
-        (
-            [
-                MockSite(1, "A", True, 0),
-                MockSite(1, "A", True, 0),
-                MockSite(1, "A", True, 0),
-                MockSite(1, "A", True, 0),
-                MockSite(1, "A", True, 0),
-            ],
-            METHODS_PARAMS,
-            {
-                DTSC.SITE_ID: [1, 1, 1, 1, 1],
-                DTSC.SITE_TYPE: ["A", "A", "A", "A", "A"],
-                DTSC.REQUIRED_SURVEY.format(method="A"): [False, False, False, False, False],
-                DTSC.SITE_DEPLOYMENT.format(method="A"): [True, True, True, True, True],
-                DTSC.METHOD_MEASURED.format(method="A"): [False, False, False, False, False],
-                DTSC.REQUIRED_SURVEY.format(method="B"): [False, False, False, False, False],
-                DTSC.SITE_DEPLOYMENT.format(method="B"): [True, True, True, True, True],
-                DTSC.METHOD_MEASURED.format(method="B"): [False, False, False, False, False],
-            },
-        ),
-        (
-            [
-                MockSite(1, "A", False, 5),
-                MockSite(1, "A", False, 5),
-                MockSite(1, "A", False, 5),
-                MockSite(1, "A", False, 5),
-                MockSite(1, "A", False, 5),
-            ],
-            METHODS_PARAMS,
-            {
-                DTSC.SITE_ID: [1, 1, 1, 1, 1],
-                DTSC.SITE_TYPE: ["A", "A", "A", "A", "A"],
-                DTSC.REQUIRED_SURVEY.format(method="A"): [True, True, True, True, True],
-                DTSC.SITE_DEPLOYMENT.format(method="A"): [False, False, False, False, False],
-                DTSC.METHOD_MEASURED.format(method="A"): [False, False, False, False, False],
-                DTSC.REQUIRED_SURVEY.format(method="B"): [True, True, True, True, True],
-                DTSC.SITE_DEPLOYMENT.format(method="B"): [False, False, False, False, False],
-                DTSC.METHOD_MEASURED.format(method="B"): [False, False, False, False, False],
-            },
-        ),
-        (
-            [
-                MockSite(1, "A", False, 5),
-                MockSite(1, "A", True, 5),
-                MockSite(1, "A", False, 5),
-                MockSite(1, "A", True, 5),
-                MockSite(1, "A", False, 5),
-            ],
-            METHODS_PARAMS,
-            {
-                DTSC.SITE_ID: [1, 1, 1, 1, 1],
-                DTSC.SITE_TYPE: ["A", "A", "A", "A", "A"],
-                DTSC.REQUIRED_SURVEY.format(method="A"): [True, True, True, True, True],
-                DTSC.SITE_DEPLOYMENT.format(method="A"): [False, True, False, True, False],
-                DTSC.METHOD_MEASURED.format(method="A"): [False, True, False, True, False],
-                DTSC.REQUIRED_SURVEY.format(method="B"): [True, True, True, True, True],
-                DTSC.SITE_DEPLOYMENT.format(method="B"): [False, True, False, True, False],
-                DTSC.METHOD_MEASURED.format(method="B"): [False, True, False, True, False],
-            },
-        ),
+        "mock_sites_all_true_deploy_survey_fix",
+        "mock_sites_all_true_deploy_survey_stationary_fix",
+        "mock_sites_all_true_deploy_survey_followup_fix",
+        "mock_sites_true_deploy_false_survey_fix",
+        "mock_sites_false_deploy_true_survey_fix",
+        "mock_sites_mix_deploy_mix_survey_fix",
     ],
 )
-def test_generation_tf_sites(monkeypatch, mock_site, methods_params, expected_data):
+def test_generation_tf_sites(request, fixture_data, monkeypatch):
     """
     Test that the generation of the true/false site list is correct
     """
+    mock_site, methods_params, expected_data = request.getfixturevalue(fixture_data)
     monkeypatch.setattr(
         "src.virtual_world.infrastructure.Infrastructure.__init__",
         lambda self, virtual_world, methods, in_dir, site_measured_df: mock_infrastructure_initialization(  # noqa
@@ -261,8 +280,6 @@ def test_generation_tf_sites(monkeypatch, mock_site, methods_params, expected_da
     infra = Infrastructure({}, methods_params, None, site_tf_df)
 
     infra.gen_site_measured_tf_data(methods_params, site_tf_df)
-
-    expected: pd.DataFrame = pd.DataFrame(expected_data)
 
     expected: pd.DataFrame = pd.DataFrame(expected_data)
 

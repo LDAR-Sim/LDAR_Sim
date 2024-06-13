@@ -43,6 +43,10 @@ from weather.daylight_calculator import DaylightCalculatorAve
 from weather.weather_lookup import WeatherLookup as WL
 from constants.file_name_constants import Generator_Files, Output_Files
 from utils.generic_functions import check_ERA5_file
+from utils.prog_method_measured_func import (
+    set_up_tf_method_deployed_df,
+    filter_deployment_tf_by_program_methods,
+)
 from file_processing.input_processing.input_manager import InputManager
 from initialization.args import (
     files_from_args,
@@ -54,7 +58,6 @@ from programs.program import Program
 from constants.output_messages import RuntimeMessages as rm
 from constants.error_messages import Runtime_Error_Messages as rem
 import constants.param_default_const as pdc
-from constants.infrastructure_const import Deployment_TF_Sites_Constants as DTSC
 
 
 def simulate(
@@ -107,45 +110,6 @@ def simulate(
     print(rm.FIN_PROG.format(prog_name=prog_name))
     gc.collect()
     return
-
-
-def set_up_tf_df(methods: dict[str, dict], site_count) -> pd.DataFrame:
-    """
-    Input:
-    methods: dict[str, dict] - dictionary of methods and their parameters
-    site_count: int - number of sites in the virtual world
-
-    Returns:
-    pd.DataFrame - a null filled dataframe with the columns for the true/false site list
-    """
-    column_names = [DTSC.SITE_ID, DTSC.SITE_TYPE] + [
-        item
-        for method in methods.keys()
-        for item in [
-            DTSC.REQUIRED_SURVEY.format(method=method),
-            DTSC.SITE_DEPLOYMENT.format(method=method),
-            DTSC.METHOD_MEASURED.format(method=method),
-        ]
-    ]
-
-    return pd.DataFrame(index=range(site_count), columns=column_names)
-
-
-def filter_df_by_relevant_method(tf_df_ori: pd.DataFrame, methods: list[str]) -> pd.DataFrame:
-    """
-    Input:
-    tf_df_ori: pd.DataFrame - the original true/false site list dataframe
-    methods: list[str] - list of methods to filter the dataframe
-
-    Returns:
-    pd.DataFrame - a filtered dataframe with the columns for the true/false
-    """
-    formatted_method_columns = [DTSC.METHOD_MEASURED.format(method=method) for method in methods]
-    columns = [DTSC.SITE_ID, DTSC.SITE_TYPE] + formatted_method_columns
-    filtered_df = tf_df_ori[columns].copy()
-    filtered_df[DTSC.MEASURED] = filtered_df[formatted_method_columns].any(axis=1)
-
-    return filtered_df[[DTSC.SITE_ID, DTSC.SITE_TYPE, DTSC.MEASURED]]
 
 
 def run_ldar_sim(parameter_filenames, DEBUG=False):
@@ -202,7 +166,7 @@ def run_ldar_sim(parameter_filenames, DEBUG=False):
     infrastructure: Infrastructure
     hash_file_exist: bool
 
-    site_measured: pd.DataFrame = set_up_tf_df(
+    site_measured: pd.DataFrame = set_up_tf_method_deployed_df(
         methods, virtual_world[pdc.Virtual_World_Params.N_SITES]
     )
 
@@ -215,6 +179,9 @@ def run_ldar_sim(parameter_filenames, DEBUG=False):
         preseed_random,
         emis_preseed_val,
         force_remake_gen,
+    )
+    infrastructure.gen_site_measured_tf_data(
+        methods,
         site_measured,
     )
     print(rm.INIT_EMISS)
@@ -278,7 +245,7 @@ def run_ldar_sim(parameter_filenames, DEBUG=False):
                 # -- Run simulations --
                 for program in programs:
                     meth_params = {}
-                    prog_measured_df = filter_df_by_relevant_method(
+                    prog_measured_df = filter_deployment_tf_by_program_methods(
                         site_measured, programs[program][pdc.Program_Params.METHODS]
                     )
                     for meth in programs[program][pdc.Program_Params.METHODS]:
@@ -321,7 +288,7 @@ def run_ldar_sim(parameter_filenames, DEBUG=False):
                         meth_params = {}
                         for meth in programs[program][pdc.Program_Params.METHODS]:
                             meth_params[meth] = methods[meth]
-                        prog_measured_df = filter_df_by_relevant_method(
+                        prog_measured_df = filter_deployment_tf_by_program_methods(
                             site_measured, programs[program][pdc.Program_Params.METHODS]
                         )
                         prog_data.append(

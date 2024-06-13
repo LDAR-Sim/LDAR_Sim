@@ -43,7 +43,6 @@ def initialize_infrastructure(
     preseed,
     preseed_val,
     force_remake,
-    site_measured_df,
 ) -> Infrastructure:
 
     if not os.path.exists(generator_dir):
@@ -101,7 +100,6 @@ def initialize_infrastructure(
             virtual_world=virtual_world,
             methods=methods,
             in_dir=in_dir,
-            site_measured_df=site_measured_df,
         )
 
         # Save the generated Infrastructure and the input file hashes and the virtual world hash.
@@ -162,7 +160,6 @@ def initialize_infrastructure(
                 virtual_world=virtual_world,
                 methods=methods,
                 in_dir=in_dir,
-                site_measured_df=site_measured_df,
             )
             # Save the generated Infrastructure,
             # the input file hashes and the virtual world hash.

@@ -18,7 +18,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 ------------------------------------------------------------------------------
 """
 
-from src.ldar_sim_run import set_up_tf_df
+from src.utils.prog_method_measured_func import set_up_tf_method_deployed_df
 from src.constants.infrastructure_const import Deployment_TF_Sites_Constants as DTSC
 
 
@@ -30,7 +30,7 @@ METHODS_PARAMS: dict = {
 
 def test_set_up_tf_df():
     n_sites: int = 5
-    result = set_up_tf_df(METHODS_PARAMS, n_sites)
+    result = set_up_tf_method_deployed_df(METHODS_PARAMS, n_sites)
     expected_columns = [
         DTSC.SITE_ID,
         DTSC.SITE_TYPE,

@@ -50,7 +50,7 @@ from weather.weather_lookup import WeatherLookup as WL
 
 class Infrastructure:
 
-    def __init__(self, virtual_world, methods, in_dir, site_measured_df) -> None:
+    def __init__(self, virtual_world, methods, in_dir) -> None:
         self.emission_rate_source_dictionary: dict[str, EmissionsSource] = process_emission_sources(
             inputs_path=in_dir, virtual_world=virtual_world
         )
@@ -62,10 +62,6 @@ class Infrastructure:
             virtual_world=virtual_world,
             methods=methods,
             in_dir=in_dir,
-        )
-        self.gen_site_measured_tf_data(
-            methods,
-            site_measured_df,
         )
 
     def __reduce__(self):
@@ -289,6 +285,9 @@ class Infrastructure:
             for method in methods:
                 # If the method is a follow-up method, we do not know if it will ever be triggered
                 # therefore  we set it to False
+                # Follow-up methods will always  be called with another method, and because of this
+                # setting it false is fine, the other method will ensure that the site measured
+                # value is set to true
                 if methods[method][pdc.Method_Params.IS_FOLLOW_UP]:
                     surveyed = False
                     deployed = False
