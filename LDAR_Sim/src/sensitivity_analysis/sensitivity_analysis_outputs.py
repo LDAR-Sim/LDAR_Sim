@@ -19,7 +19,7 @@
 #
 # ------------------------------------------------------------------------------
 
-import nt
+
 import os
 import re
 from typing import Any
@@ -30,7 +30,7 @@ from file_processing.output_processing import output_utils
 
 
 def gen_true_vs_est_emissions_sens(
-    dir: nt.DirEntry, program: str, index: int, varied_progs: bool = False
+    dir: os.DirEntry, program: str, index: int, varied_progs: bool = False
 ) -> pd.DataFrame:
     result: pd.DataFrame = pd.DataFrame(
         columns=(
