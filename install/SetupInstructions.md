@@ -25,6 +25,8 @@ From Conda Shell:
 
     Note: Please note that the ``environment.yml`` file exclusively includes the essential dependencies needed to run LDAR-Sim as a regular user. If you are in a development role, refer to `environment_dev.yml` for the additional requirements specific to the development environment.
 
+    If you are on Linux and not windows please use the ``linux_environment`` or ``linux_dev_environment`` instead.
+
     ```cmd
     conda activate ldar_sim_env
     ```
