@@ -113,7 +113,7 @@ class MitigationBarConstants:
 
 class StackedCostBarConstants:
     X_LABEL = "Program Name"
-    Y_LABEL = "Average Total Cost ($) of all sites"
+    Y_LABEL = "Median Total Cost ($) for all sites for all years"
     WIDTH = 0.75
 
 
@@ -368,3 +368,4 @@ class COST_SUMMARY_COLUMNS_ACCESSORS:
     TOTAL_COST = "Total Cost ($)"
     MITIGATION_RATIO = "Mitigation Ratio ($/tonne CO2e)"
     COST_OF_MITIGATED_EMIS = "Cost of Mitigated Methane ($)"
+    NET_COST = "Net Cost ($)"

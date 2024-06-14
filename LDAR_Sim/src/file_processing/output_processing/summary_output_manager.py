@@ -177,16 +177,13 @@ class SummaryOutputManager:
             )
             cost_mit_df.loc[
                 mask, output_file_constants.COST_SUMMARY_COLUMNS_ACCESSORS.MITIGATION_RATIO
-            ] = (
+            ] = cost_mit_df.loc[
+                mask, output_file_constants.COST_SUMMARY_COLUMNS_ACCESSORS.TOTAL_COST
+            ] / (
                 cost_mit_df.loc[
-                    mask, output_file_constants.COST_SUMMARY_COLUMNS_ACCESSORS.TOTAL_COST
+                    mask, output_file_constants.COST_SUMMARY_COLUMNS_ACCESSORS.MITIGATION
                 ]
-                / (
-                    cost_mit_df.loc[
-                        mask, output_file_constants.COST_SUMMARY_COLUMNS_ACCESSORS.MITIGATION
-                    ]
-                    / 1000
-                )
+                / 1000
                 * self._program_cost_info[program_name][pp.GWP]
             )
 

@@ -240,7 +240,7 @@ def plot_probit(
 
 
 def plot_box_whisker(
-    cost_mit_ratio_data: dict[str, list[float]],
+    cost_mit_ratio_data: pd.DataFrame,
     visualization_dir: Path,
     visualization_name: str,
     viz_mapper: SummaryVisualizationMapper,
@@ -249,12 +249,22 @@ def plot_box_whisker(
 
     x_label: str = box_plot_properties.pop("x_label")
     y_label: str = box_plot_properties.pop("y_label")
+    # Group by 'program name' and collect 'mitigation_ratio' values into lists
+    grouped_data = (
+        cost_mit_ratio_data.groupby(output_file_constants.COST_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME)[
+            output_file_constants.COST_SUMMARY_COLUMNS_ACCESSORS.MITIGATION_RATIO
+        ]
+        .apply(list)
+        .reset_index(name=output_file_constants.COST_SUMMARY_COLUMNS_ACCESSORS.MITIGATION_RATIO)
+    )
+    labels = grouped_data[output_file_constants.COST_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME].tolist()
+    data_to_plot = grouped_data[
+        output_file_constants.COST_SUMMARY_COLUMNS_ACCESSORS.MITIGATION_RATIO
+    ].tolist()
 
     figure: plt.Figure = plt.figure(figsize=(11, 7))  # noqa 841
     ax: plt.Axes = plt.gca()
-    ax.boxplot(
-        cost_mit_ratio_data.values(), labels=cost_mit_ratio_data.keys(), **box_plot_properties
-    )
+    ax.boxplot(data_to_plot, labels=labels, **box_plot_properties)
 
     ax.set_xlabel(x_label)
     ax.set_ylabel(y_label)
@@ -275,20 +285,47 @@ def plot_stack_bar_chart(
     y_axis_formatter: ticker.FuncFormatter | None = viz_mapper.get_axis_formatter(
         visualization_name
     )
+    # Extract NET_COST and remove it from cost_data
+    net_cost = cost_data.pop(output_file_constants.COST_SUMMARY_COLUMNS_ACCESSORS.NET_COST)
 
     x_label: str = bar_chart_properties.pop("x_label")
     y_label: str = bar_chart_properties.pop("y_label")
 
     figure: plt.Figure = plt.figure(figsize=(11, 7))  # noqa 841
     ax: plt.Axes = plt.gca()
-    cost_data.plot(x="Program Name", kind="bar", stacked=True, ax=ax)
+    cost_data.plot(
+        x=output_file_constants.COST_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME,
+        kind="bar",
+        stacked=True,
+        ax=ax,
+    )
+    # Plot NET_COST as dots on top of the stacked bar chart
+    program_names = cost_data[output_file_constants.COST_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME]
+    x_positions = range(len(program_names))  # Assuming program names are on the x-axis
+    ax.scatter(
+        x_positions,
+        net_cost,
+        color="black",
+        zorder=5,
+        label=output_file_constants.COST_SUMMARY_COLUMNS_ACCESSORS.NET_COST,
+    )  # zorder=5 to plot dots above bars
 
+    # Add text labels for each dot to display the actual Net Cost value
+    for x_pos, net_cost_value in zip(x_positions, net_cost):
+        ax.text(
+            x_pos,
+            net_cost_value,
+            f"${net_cost_value:.2f}",  # Format the net cost value to two decimal places
+            ha="left",
+            va="bottom",
+        )
+    ax.legend()
     ax.set_xlabel(x_label)
     ax.set_ylabel(y_label)
     ax.yaxis.set_major_formatter(y_axis_formatter)
 
     # Add a horizontal line at y=0.0
-    ax.axhline(0, color="black", label="0.0")
+    ax.axhline(0, color="black")
 
     plt.tight_layout()
 
@@ -342,7 +379,6 @@ def gen_estimated_vs_true_emissions_percent_difference_plot(
     baseline_program: str,
     combine_program_histograms: bool,
     viz_mapper: SummaryVisualizationMapper,
-    _,
 ):
     data_source: Path = out_dir / file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY
     data: pd.DataFrame = pd.read_csv(data_source.with_suffix(".csv"))
@@ -385,7 +421,6 @@ def gen_estimated_vs_true_emissions_relative_difference_plot(
     baseline_program: str,
     combine_program_histograms: bool,
     viz_mapper: SummaryVisualizationMapper,
-    _,
 ):
     data_source: Path = out_dir / file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY
     data: pd.DataFrame = pd.read_csv(data_source.with_suffix(".csv"))
@@ -428,7 +463,6 @@ def gen_true_and_estimated_paired_emissions_distribution_plot(
     baseline_program: str,
     combine_program_histograms: bool,
     viz_mapper: SummaryVisualizationMapper,
-    _,
 ):
     data_source: Path = out_dir / file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY
     data: pd.DataFrame = pd.read_csv(data_source.with_suffix(".csv"))
@@ -466,7 +500,6 @@ def gen_true_and_estimated_paired_probit_plot(
     baseline_program: str,
     combine_program_plots: bool,
     viz_mapper: SummaryVisualizationMapper,
-    _,
 ):
     data_source: Path = out_dir / file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY
     data: pd.DataFrame = pd.read_csv(data_source.with_suffix(".csv"))
@@ -504,7 +537,6 @@ def gen_program_mitigation_bars(
     baseline_program: str,
     _,
     viz_mapper: SummaryVisualizationMapper,
-    __,
 ):
     data_source: Path = out_dir / file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY
     data: pd.DataFrame = pd.read_csv(data_source.with_suffix(".csv"))
@@ -537,8 +569,13 @@ def gen_cost_to_mit_boxplot(
     data: pd.DataFrame = pd.read_csv(data_source.with_suffix(".csv"))
 
     visualization_name: str = output_file_constants.SummaryOutputVizFileNames.COST_TO_MIT_BOX_PLOT
-    columns = ["Program Name", "Cost to Mitigation Ratio"]
-    filtered_data = data[columns]
+
+    filtered_data = data[
+        [
+            output_file_constants.COST_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME,
+            output_file_constants.COST_SUMMARY_COLUMNS_ACCESSORS.MITIGATION_RATIO,
+        ]
+    ]
 
     plot_box_whisker(
         filtered_data,
@@ -560,9 +597,28 @@ def gen_program_stacked_cost_bars(
 
     visualization_name: str = output_file_constants.SummaryOutputVizFileNames.STACKED_COST_BAR_PLOT
 
-    data = data["Program Name", "Mitigated Gas Cost", "Program Cost"]
+    data = data[
+        [
+            output_file_constants.COST_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME,
+            output_file_constants.COST_SUMMARY_COLUMNS_ACCESSORS.COST_OF_MITIGATED_EMIS,
+            output_file_constants.COST_SUMMARY_COLUMNS_ACCESSORS.TOTAL_COST,
+        ]
+    ]
 
-    data["Program Cost"] = -data["Program Cost"]
+    data = (
+        data.groupby(output_file_constants.COST_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME)
+        .median()
+        .reset_index()
+    )
+
+    data[output_file_constants.COST_SUMMARY_COLUMNS_ACCESSORS.TOTAL_COST] = -data[
+        output_file_constants.COST_SUMMARY_COLUMNS_ACCESSORS.TOTAL_COST
+    ]
+
+    data[output_file_constants.COST_SUMMARY_COLUMNS_ACCESSORS.NET_COST] = (
+        data[output_file_constants.COST_SUMMARY_COLUMNS_ACCESSORS.TOTAL_COST]
+        + data[output_file_constants.COST_SUMMARY_COLUMNS_ACCESSORS.COST_OF_MITIGATED_EMIS]
+    )
 
     plot_stack_bar_chart(
         data,
