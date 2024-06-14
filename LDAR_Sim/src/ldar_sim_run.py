@@ -53,7 +53,6 @@ from programs.program import Program
 from constants.output_messages import RuntimeMessages as rm
 from constants.error_messages import Runtime_Error_Messages as rem
 import constants.param_default_const as pdc
-from file_processing.input_processing.prog_cost_param_parser import parse_program_cost_info
 
 
 def simulate(
@@ -299,8 +298,9 @@ def run_ldar_sim(parameter_filenames, DEBUG=False):
                 # -- Batch Report --
                 print(rm.BATCH_CLEAN.format(batch_count=batch_count))
                 summary_stats_manager.gen_summary_outputs(batch_count != 0)
-    non_baseline_progs = get_non_baseline_prog_names(programs, base_program)
-    summary_stats_manager.gen_cost_summary_outputs(non_baseline_progs)
+    if summary_stats_manager.make_cost_summary():
+        non_baseline_progs = get_non_baseline_prog_names(programs, base_program)
+        summary_stats_manager.gen_cost_summary_outputs(non_baseline_progs)
     summary_visualization_manager.gen_visualizations()
 
 

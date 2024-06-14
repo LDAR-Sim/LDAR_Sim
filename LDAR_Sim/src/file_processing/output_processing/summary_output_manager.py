@@ -228,3 +228,6 @@ class SummaryOutputManager:
             inplace=True,
         )
         return filtered_df
+
+    def make_cost_summary(self) -> bool:
+        return Output_Files.SummaryFileNames.COST_SUMMARY in self._summary_outputs_to_make

@@ -7,6 +7,7 @@ Summary Outputs:
   Summary Files:
     Timeseries Summary: true
     Emissions Summary: true
+    Cost Summary: true
   Summary Stats:
     Timeseries Summary:
       Average "True" Daily Emissions (Kg Methane): true
