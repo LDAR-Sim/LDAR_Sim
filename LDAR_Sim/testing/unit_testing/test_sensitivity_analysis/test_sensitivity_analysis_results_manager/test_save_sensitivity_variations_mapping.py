@@ -34,6 +34,8 @@ import pandas as pd
 
 from constants.sensitivity_analysis_constants import SensitivityAnalysisOutputs
 
+import sys
+
 
 def mock_init_sensitivity_analysis_results_manager(
     self, param_sens_mappings: dict[str, Any], sens_level: str
@@ -430,9 +432,14 @@ def test_save_sensitivity_variations_mapping_vw(monkeypatch):
 
     manager.save_sensitivity_variations_mapping(num_variations)
 
-    assert results_holder[
-        "test\\" + SensitivityAnalysisOutputs.SENSITIVITY_VARIATIONS_MAPPING + ".csv"
-    ].equals(get_expected_vw_Sens_mappings_1())
+    if sys.platform.startswith("win"):
+        assert results_holder[
+            "test\\" + SensitivityAnalysisOutputs.SENSITIVITY_VARIATIONS_MAPPING + ".csv"
+        ].equals(get_expected_vw_Sens_mappings_1())
+    else:
+        assert results_holder[
+            "test/" + SensitivityAnalysisOutputs.SENSITIVITY_VARIATIONS_MAPPING + ".csv"
+        ].equals(get_expected_vw_Sens_mappings_1())
 
 
 def test_save_sensitivity_variations_mapping_vw_2(monkeypatch):
@@ -455,9 +462,14 @@ def test_save_sensitivity_variations_mapping_vw_2(monkeypatch):
 
     manager.save_sensitivity_variations_mapping(num_variations)
 
-    assert results_holder[
-        "test\\" + SensitivityAnalysisOutputs.SENSITIVITY_VARIATIONS_MAPPING + ".csv"
-    ].equals(get_expected_vw_Sens_mappings_2())
+    if sys.platform.startswith("win"):
+        assert results_holder[
+            "test\\" + SensitivityAnalysisOutputs.SENSITIVITY_VARIATIONS_MAPPING + ".csv"
+        ].equals(get_expected_vw_Sens_mappings_2())
+    else:
+        assert results_holder[
+            "test/" + SensitivityAnalysisOutputs.SENSITIVITY_VARIATIONS_MAPPING + ".csv"
+        ].equals(get_expected_vw_Sens_mappings_2())
 
 
 def test_save_sensitivity_variations_mapping_vw_3(monkeypatch):
@@ -480,9 +492,14 @@ def test_save_sensitivity_variations_mapping_vw_3(monkeypatch):
 
     manager.save_sensitivity_variations_mapping(num_variations)
 
-    assert results_holder[
-        "test\\" + SensitivityAnalysisOutputs.SENSITIVITY_VARIATIONS_MAPPING + ".csv"
-    ].equals(get_expected_vw_Sens_mappings_3())
+    if sys.platform.startswith("win"):
+        assert results_holder[
+            "test\\" + SensitivityAnalysisOutputs.SENSITIVITY_VARIATIONS_MAPPING + ".csv"
+        ].equals(get_expected_vw_Sens_mappings_3())
+    else:
+        assert results_holder[
+            "test/" + SensitivityAnalysisOutputs.SENSITIVITY_VARIATIONS_MAPPING + ".csv"
+        ].equals(get_expected_vw_Sens_mappings_3())
 
 
 def test_save_sensitivity_variations_mapping_program_1(monkeypatch):
@@ -507,9 +524,14 @@ def test_save_sensitivity_variations_mapping_program_1(monkeypatch):
 
     expected_df: pd.DataFrame = get_expected_program_Sens_mappings_1()
 
-    assert results_holder[
-        "test\\" + SensitivityAnalysisOutputs.SENSITIVITY_VARIATIONS_MAPPING + ".csv"
-    ].equals(expected_df)
+    if sys.platform.startswith("win"):
+        assert results_holder[
+            "test\\" + SensitivityAnalysisOutputs.SENSITIVITY_VARIATIONS_MAPPING + ".csv"
+        ].equals(expected_df)
+    else:
+        assert results_holder[
+            "test/" + SensitivityAnalysisOutputs.SENSITIVITY_VARIATIONS_MAPPING + ".csv"
+        ].equals(expected_df)
 
 
 def test_save_sensitivity_variations_mapping_program_2(monkeypatch):
@@ -534,9 +556,14 @@ def test_save_sensitivity_variations_mapping_program_2(monkeypatch):
 
     expected_df: pd.DataFrame = get_expected_program_Sens_mappings_2()
 
-    assert results_holder[
-        "test\\" + SensitivityAnalysisOutputs.SENSITIVITY_VARIATIONS_MAPPING + ".csv"
-    ].equals(expected_df)
+    if sys.platform.startswith("win"):
+        assert results_holder[
+            "test\\" + SensitivityAnalysisOutputs.SENSITIVITY_VARIATIONS_MAPPING + ".csv"
+        ].equals(expected_df)
+    else:
+        assert results_holder[
+            "test/" + SensitivityAnalysisOutputs.SENSITIVITY_VARIATIONS_MAPPING + ".csv"
+        ].equals(expected_df)
 
 
 def test_save_sensitivity_variations_mapping_method_1(monkeypatch):
@@ -561,9 +588,14 @@ def test_save_sensitivity_variations_mapping_method_1(monkeypatch):
 
     expected_df: pd.DataFrame = get_expected_method_Sens_mappings_1()
 
-    assert results_holder[
-        "test\\" + SensitivityAnalysisOutputs.SENSITIVITY_VARIATIONS_MAPPING + ".csv"
-    ].equals(expected_df)
+    if sys.platform.startswith("win"):
+        assert results_holder[
+            "test\\" + SensitivityAnalysisOutputs.SENSITIVITY_VARIATIONS_MAPPING + ".csv"
+        ].equals(expected_df)
+    else:
+        assert results_holder[
+            "test/" + SensitivityAnalysisOutputs.SENSITIVITY_VARIATIONS_MAPPING + ".csv"
+        ].equals(expected_df)
 
 
 def test_save_sensitivity_variations_mapping_method_2(monkeypatch):
@@ -588,9 +620,14 @@ def test_save_sensitivity_variations_mapping_method_2(monkeypatch):
 
     expected_df: pd.DataFrame = get_expected_method_Sens_mappings_2()
 
-    assert results_holder[
-        "test\\" + SensitivityAnalysisOutputs.SENSITIVITY_VARIATIONS_MAPPING + ".csv"
-    ].equals(expected_df)
+    if sys.platform.startswith("win"):
+        assert results_holder[
+            "test\\" + SensitivityAnalysisOutputs.SENSITIVITY_VARIATIONS_MAPPING + ".csv"
+        ].equals(expected_df)
+    else:
+        assert results_holder[
+            "test/" + SensitivityAnalysisOutputs.SENSITIVITY_VARIATIONS_MAPPING + ".csv"
+        ].equals(expected_df)
 
 
 def test_save_sensitivity_variations_mapping_method_3(monkeypatch):
@@ -615,6 +652,11 @@ def test_save_sensitivity_variations_mapping_method_3(monkeypatch):
 
     expected_df: pd.DataFrame = get_expected_method_Sens_mappings_3()
 
-    assert results_holder[
-        "test\\" + SensitivityAnalysisOutputs.SENSITIVITY_VARIATIONS_MAPPING + ".csv"
-    ].equals(expected_df)
+    if sys.platform.startswith("win"):
+        assert results_holder[
+            "test\\" + SensitivityAnalysisOutputs.SENSITIVITY_VARIATIONS_MAPPING + ".csv"
+        ].equals(expected_df)
+    else:
+        assert results_holder[
+            "test/" + SensitivityAnalysisOutputs.SENSITIVITY_VARIATIONS_MAPPING + ".csv"
+        ].equals(expected_df)
