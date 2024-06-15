@@ -56,7 +56,7 @@ def mock_est_emis_data_1_subtype_few_sites_fix():
                 "2025-12-31",
             ],
             ofc.EMIS_DATA_COL_ACCESSORS.M_RATE: [0, 3, 0, 0, 0, 0],
-            ofc.EMIS_DATA_COL_ACCESSORS.EST_VOL_EMIT: [0, 1551, 0, 0, 0, 0],
+            ofc.EMIS_DATA_COL_ACCESSORS.EST_VOL_EMIT: [0, 1554, 0, 0, 0, 0],
             ofc.EMIS_DATA_COL_ACCESSORS.SITE_MEASURED: [True, True, True, True, False, False],
             ofc.EMIS_DATA_COL_ACCESSORS.SITE_TYPE: ["A", "A", "A", "A", "A", "A"],
         }
@@ -66,7 +66,7 @@ def mock_est_emis_data_1_subtype_few_sites_fix():
 @pytest.fixture(name="mock_est_emis_data_1_subtype_few_sites_expected_results")
 def mock_est_emis_data_1_subtype_few_sites_expected_results_fix():
     return {
-        2024: 2190,
+        2024: 2196,
         2025: 912,
     }
 
@@ -127,15 +127,15 @@ def mock_est_emis_data_1_subtype_multiple_sites_fix():
             ofc.EMIS_DATA_COL_ACCESSORS.M_RATE: [0, 3, 0, 0, 0, 0, 4, 0, 0, 2, 0, 0, 0, 0],
             ofc.EMIS_DATA_COL_ACCESSORS.EST_VOL_EMIT: [
                 0,
-                1551,  # Emitting 1095 year 1 and 456 year 2
+                1554,  # Emitting 1098 year 1 and 456 year 2
                 0,
                 0,
                 0,
                 0,
-                2680,  # Emitting 1220 year 1 and 1460 year 2
+                2684,  # Emitting 1224 year 1 and 1460 year 2
                 0,
                 0,
-                1156,  # Emitting 730 year 1 and 426 year 2
+                1158,  # Emitting 732 year 1 and 426 year 2
                 0,
                 0,
                 0,
@@ -180,10 +180,10 @@ def mock_est_emis_data_1_subtype_multiple_sites_fix():
 @pytest.fixture(name="mock_est_emis_data_1_subtype_multiple_sites_expected_results")
 def mock_est_emis_data_1_subtype_multiple_sites_expected_results_fix():
     return {
-        # 4(1095 + 1220 + 730)/3 = 4060
-        2024: 4060,
+        # 4(1098 + 1224 + 732)/3 = 4072
+        2024: 4072,
         # 4(456 + 1460 + 426)/3 = 3122.7
-        2025: 3122.7,
+        2025: 3122.6666667,
     }
 
 
@@ -373,35 +373,35 @@ def mock_est_emis_data_3_subtypes_multiple_sites_fix():
             ],
             ofc.EMIS_DATA_COL_ACCESSORS.EST_VOL_EMIT: [
                 0,
-                1551,  # Emitting 1095 year 1 and 456 year 2
+                1554,  # Emitting 1098 year 1 and 456 year 2
                 0,
                 0,
                 0,
                 0,
-                2680,  # Emitting 1220 year 1 and 1460 year 2
+                2684,  # Emitting 1224 year 1 and 1460 year 2
                 0,
                 0,
-                1156,  # Emitting 730 year 1 and 426 year 2
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                2680,  # Emitting 1220 year 1 and 1460 year 2
-                0,
-                0,
-                1156,  # Emitting 730 year 1 and 426 year 2
+                1158,  # Emitting 732 year 1 and 426 year 2
                 0,
                 0,
                 0,
                 0,
                 0,
                 0,
-                2680,  # Emitting 1220 year 1 and 1460 year 2
+                2684,  # Emitting 1224 year 1 and 1460 year 2
                 0,
                 0,
-                1734,  # Emitting 1095 year 1 and 639 year 2
+                1158,  # Emitting 732 year 1 and 426 year 2
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                2684,  # Emitting 1224 year 1 and 1460 year 2
+                0,
+                0,
+                1737,  # Emitting 1098 year 1 and 639 year 2
                 0,
                 0,
                 0,
@@ -486,10 +486,10 @@ def mock_est_emis_data_3_subtypes_multiple_sites_fix():
 @pytest.fixture(name="mock_est_emis_data_3_subtypes_multiple_sites_expected_results")
 def mock_est_emis_data_3_subtypes_multiple_sites_expected_results_fix():
     return {
-        # 4(1095 + 1220 + 730)/3 + 3(1220 + 730)/2 + 3(1220 + 1095)/2 = 10457.5
-        2024: 10457.5,
+        # 4(1098 + 1224 + 732)/3 + 3(1224 + 732)/2 + 3(1224 + 1098)/2 = 10457.5
+        2024: 10489,
         # 4(456 + 1460 + 426)/3 + 3(1460 + 426)/2 + 3(1460 + 639)/2 = 9100.166666667
-        2025: 9100.17,
+        2025: 9100.166666667,
     }
 
 
@@ -546,4 +546,4 @@ def test_get_annual_emissions_at_all_sites_with_extrapolation_returns_expected(
     )
 
     # Check if the result matches the expected output
-    assert annual_emis_data == pytest.approx(mock_est_emis_data_expected_results[year], 1e-1)
+    assert annual_emis_data == pytest.approx(mock_est_emis_data_expected_results[year], 1e-5)

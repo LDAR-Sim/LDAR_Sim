@@ -207,7 +207,7 @@ def get_annual_emissions_at_all_sites_with_extrapolation(
     # Group the measured sites by site type and average the annual emissions
     annual_emissions_site_type_averages: pd.Series = (
         annual_emissions_and_site_type_measured.groupby(
-            estimated_emissions_data[ofc.EMIS_DATA_COL_ACCESSORS.SITE_TYPE]
+            annual_emissions_and_site_type_measured[ofc.EMIS_DATA_COL_ACCESSORS.SITE_TYPE]
         ).apply(lambda x: x[ofc.EMIS_DATA_COL_ACCESSORS.EST_VOL_EMIT].mean())
     )
 
@@ -219,10 +219,20 @@ def get_annual_emissions_at_all_sites_with_extrapolation(
     # Extrapolate the average emissions to sites that were not measured based on site type
     # If there are no measured sites of a given type, use the average of all measured sites
     # as the extrapolated value
-    extrapolated_annual_emissions: pd.Series = annual_emissions.apply(
-        lambda x: (
-            annual_emissions_site_type_averages.get(x, average_emissions_all_sites) if x == 0 else x
-        )
+
+    # Map average emissions to site IDs based on site type (where possible)
+    # This will be used as the list of replacement values for sites that were not measured
+    average_emissions_map: list[float] = [
+        annual_emissions_site_type_averages.get(site_type, average_emissions_all_sites)
+        for site_type in annual_emissions_and_site_type[ofc.EMIS_DATA_COL_ACCESSORS.SITE_TYPE]
+    ]
+
+    # Replace the annual emissions for sites that were not measured with the extrapolated values
+    extrapolated_annual_emissions: pd.Series = annual_emissions.where(
+        annual_emissions.index.isin(
+            annual_emissions_and_site_type_measured[ofc.EMIS_DATA_COL_ACCESSORS.SITE_ID]
+        ),
+        average_emissions_map,
     )
 
     return extrapolated_annual_emissions.sum()

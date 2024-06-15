@@ -210,12 +210,9 @@ class SummaryOutputMapper:
         file_name_constants.Output_Files.SummaryFileNames.EMIS_EST_SUMMARY: {
             output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.EST_ANN_EMIS: lambda year: (
                 lambda df: (
-                    summary_output_helpers.get_yearly_value_for_multi_day_stat(
+                    summary_output_helpers.get_annual_emissions_at_all_sites_with_extrapolation(
                         df,
-                        output_file_constants.EMIS_DATA_COL_ACCESSORS.EST_VOL_EMIT,
                         year,
-                        output_file_constants.EMIS_DATA_COL_ACCESSORS.START_DATE,
-                        output_file_constants.EMIS_DATA_COL_ACCESSORS.END_DATE,
                     )
                 )
             )
