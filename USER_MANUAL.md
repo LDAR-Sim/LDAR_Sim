@@ -842,7 +842,7 @@ method_labels: ["aircraft","OGI_FU"]
 
 **Notes of caution:** Using a GWP of CH4 for a 20-year time period may dramatically change results but all options should be explored.
 
-#### &lt;sale_price_of_natural_gas&gt; 
+#### &lt;sale_price_of_natural_gas&gt;
 
 **Data Type:** Numeric
 
@@ -1874,7 +1874,7 @@ This parameter can also be set in the following file:
 
 - [Site type file](#method_site_deployment-site-type-file)
 
-_TODO_ update description more when the scale up feature is implemented.
+**Note:** If site deployment is set to False for a site/site(s) in the sites file for all non-follow-up methods that make up a program, that site will be functionally not measured by the program. In this case, estimated emissions are computed using the annual average of all estimated emissions from all measured sites of the same type or, if not possible, the annual average of all measured sites.
 
 --------------------------------------------------------------------------------
 
@@ -2112,6 +2112,8 @@ This parameter can also be set in the following files:
 This parameter can also be set in the following file:
 
 - [Sites file](#method_site_deployment-sites-file)
+
+**Note:** If site_type deployment is set to False for a site_type in the sites file for all non-follow-up methods that make up a program, that site_type will be functionally not measured by the program. In this case, estimated emissions are computed using the annual average of all estimated emissions from all measured sites.
 
 --------------------------------------------------------------------------------
 
