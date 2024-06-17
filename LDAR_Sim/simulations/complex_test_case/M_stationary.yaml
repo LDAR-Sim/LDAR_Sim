@@ -1,0 +1,14 @@
+parameter_level: methods
+version: "4.0"
+method_name: stationary
+deployment_type: stationary
+measurement_scale: site
+sensor:
+  type: default
+  minimum_detection_limit: [5.55]
+is_follow_up: False
+cost:
+  per_day: 3
+  upfront: 6000
+follow_up:
+  delay: 7

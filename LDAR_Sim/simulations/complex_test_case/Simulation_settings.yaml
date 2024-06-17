@@ -1,0 +1,8 @@
+input_directory: ./inputs/complex_test_case
+simulation_count: 3
+output_directory: ./outputs/complex_test_case
+parameter_level: simulation_settings
+preseed_random: true
+reference_program: P_OGI
+baseline_program: P_none
+version: "4.0"
