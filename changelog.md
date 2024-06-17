@@ -1,5 +1,23 @@
 # Change Log
 
+## 2024-06-17 - Version 4.0.0
+
+The version bump to 4.0 of LDAR-Sim included a significant overhaul of the existing code base and functionality overhaul.
+
+1. Improved User Manual
+2. Improved stationary deployment - continuous monitoring is now based on rolling averages
+3. Improved quantification error
+4. Refactored emissions, added granularity - see User Manual for more details
+5. Refactored infrastructure, added granularity - see User Manual for more details
+6. Refactored sensors, the following sensors are now built into ldar-sim: METEC_NoWind, OGI_Zim, and OGI_RK (See user manual for more details on how to use them)
+7. Refactored scheduling, significant runtime improvement from v3
+8. New Output parameters to disable outputs
+9. New uncertainty outputs
+10. New Sensitivity Analysis Module
+11. New debugging mode - enables benchmarking
+12. _Removed routing functionality_
+13. New unit tests
+
 ## 2024-03-18 - Version 3.3.6
 
 1. **New Documentation** Added new installation guide documentation.
