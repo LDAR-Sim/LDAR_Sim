@@ -65,6 +65,9 @@ def mock_scandir_emis_sum(dir: Path):
 mock_emis_csv_data = {
     "test_0_estimated_emissions.csv": pd.DataFrame(
         {
+            eca.SITE_ID: [1, 1, 1, 1],
+            eca.SITE_TYPE: ["A", "A", "A", "A"],
+            eca.SITE_MEASURED: [True, True, True, True],
             eca.EST_VOL_EMIT: [0, 1, 2, 3],
             eca.M_RATE: [9, 8, 7, 6],
             eca.REPAIRABLE: [True, True, True, False],
@@ -74,6 +77,9 @@ mock_emis_csv_data = {
     ),
     "test_1_estimated_emissions.csv": pd.DataFrame(
         {
+            eca.SITE_ID: [1, 1, 1, 1],
+            eca.SITE_TYPE: ["A", "A", "A", "A"],
+            eca.SITE_MEASURED: [True, True, True, True],
             eca.EST_VOL_EMIT: [4, 5, 6, 7],
             eca.M_RATE: [5, 4, 3, 2],
             eca.START_DATE: ["2024-01-01", "2024-01-01", "2025-01-01", "2025-01-01"],
@@ -82,6 +88,9 @@ mock_emis_csv_data = {
     ),
     "test_2_estimated_emissions.csv": pd.DataFrame(
         {
+            eca.SITE_ID: [1, 1, 1, 1],
+            eca.SITE_TYPE: ["A", "A", "A", "A"],
+            eca.SITE_MEASURED: [True, True, True, True],
             eca.EST_VOL_EMIT: [8, 9, 10, 11],
             eca.M_RATE: [2, 1, 0, 0],
             eca.START_DATE: ["2024-01-01", "2024-01-01", "2025-01-01", "2025-01-01"],
