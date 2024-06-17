@@ -1519,7 +1519,7 @@ Follow-up thresholds are explored in detail in Fox et al. 2021\. Choosing follow
 
 **Notes on acquisition:** N/A
 
-**Notes of caution:** If the [follow\_up.delay](#delay-follow_up) is not zero, crews may survey a given site multiple times, adding to the candidate flagged site pool. This parameter becomes especially relevant in stationary deployments or any methods involving frequent deployments.
+**Notes of caution:** If the [follow\_up.delay](#delay-follow_up) is not zero, crews may survey a given site multiple times, adding to the candidate flagged site pool. This parameter becomes especially relevant in any methods involving frequent deployments.
 
 #### &lt;sort_by_rate&gt;
 
