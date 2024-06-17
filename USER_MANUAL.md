@@ -89,7 +89,9 @@ The LDAR-Sim software is organized using the following structure:
 - Root
   - Benchmarking
   - doc-images
-  - Feature Guides
+  - Guides
+    - Feature Guides
+    - Version Migration Guides
   - install
   - LDAR_Sim
     - inputs
@@ -114,7 +116,11 @@ The **Benchmarking** folder is a dev specific folder for benchmarking results.
 
 The **doc-images** folder contains all images used in the different documents and guides for LDAR-Sim.
 
-The **Feature Guides** folder contains other documentation and guides, such as the one for sensitivity analysis or setup.
+The **Guides** folder contains all other guides and documents and guides for LDAR-Sim.
+
+The **Feature Guides** folder contains guides and documentation on specific features.
+
+The **Version Migration Guides** folder contains guides for version migrations.
 
 The **install**  folder contains the YAML files necessary for setting up the Conda environment required to run LDAR-Sim.
 
