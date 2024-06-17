@@ -4,13 +4,13 @@
 
 The version bump to 4.0 of LDAR-Sim included a significant overhaul of the existing code base and functionality overhaul.
 
-1. Improve User Manual
+1. Improved User Manual
 2. Improved stationary deployment - continuous monitoring is now based on rolling averages
 3. Improved quantification error
-4. Refactor emissions, added granularity - see User Manual for more details
-5. Refactor infrastructure, added granularity - see User Manual for more details
-6. Refactor sensors
-7. Refactor scheduling
+4. Refactored emissions, added granularity - see User Manual for more details
+5. Refactored infrastructure, added granularity - see User Manual for more details
+6. Refactored sensors, the following sensors are now built into ldar-sim: METEC_NoWind, OGI_Zim, and OGI_RK (See user manual for more details on how to use them)
+7. Refactored scheduling, significant runtime improvement from v3
 8. New Output parameters to disable outputs
 9. New uncertainty outputs
 10. New Sensitivity Analysis Module
