@@ -21,230 +21,22 @@ Email: <sally@highwoodemissions.com>
   - [2. Introduction](#2-introduction)
   - [3. File Structure](#3-file-structure)
   - [4. Introducing Parameter Files](#4-introducing-parameter-files)
-    - [Parameter file usage](#parameter-file-usage)
-    - [Parameter Hierarchy](#parameter-hierarchy)
-    - [Versioning of Parameter Files](#versioning-of-parameter-files)
-    - [Parameter File Formats](#parameter-file-formats)
   - [5. Simulation Settings](#5-simulation-settings)
-    - [\<parameter\_level\> (simulation\_settings)](#parameter_level-simulation_settings)
-    - [\<version\> (simulation\_settings)](#version-simulation_settings)
-    - [\<input\_directory\>](#input_directory)
-    - [\<output\_directory\>](#output_directory)
-    - [\<baseline\_program\>](#baseline_program)
-    - [\<reference\_program\> WIP](#reference_program-wip)
-    - [\<processes\_count\>](#processes_count)
-    - [\<simulation\_count\>](#simulation_count)
-    - [\<preseed\_random\>](#preseed_random)
   - [6. Output Settings](#6-output-settings)
-    - [\<parameter\_level\> (outputs)](#parameter_level-outputs)
-    - [\<version\> (outputs)](#version-outputs)
   - [7. Virtual World Setting](#7-virtual-world-setting)
-    - [\<parameter\_level\> (virtual\_world)](#parameter_level-virtual_world)
-    - [\<version\> (virtual world)](#version-virtual-world)
-    - [\<start\_date\>](#start_date)
-    - [\<end\_date\>](#end_date)
-    - [\<infrastructure\>](#infrastructure)
-      - [\<sites\_file\>](#sites_file)
-      - [\<site\_type\_file\>](#site_type_file)
-      - [\<equipment\_group\_file\>](#equipment_group_file)
-      - [\<sources\_file\>](#sources_file)
-    - [\<site\_samples\>](#site_samples)
-    - [\<consider\_weather\>](#consider_weather)
-    - [\<weather\_file\>](#weather_file)
-    - [\<Repairs\>](#repairs)
-    - [\<cost\>(repairs)](#costrepairs)
-      - [\<values\> (cost) _(propagating parameter)_](#values-cost-propagating-parameter)
-      - [\<file\> (cost)](#file-cost)
-    - [\<delay\>(repairs)](#delayrepairs)
-      - [\<values\> (delay)_(propagating parameter)_](#values-delaypropagating-parameter)
-      - [\<file\> (delay)](#file-delay)
-    - [\<emissions\>](#emissions)
-      - [\<emissions\_file\>](#emissions_file)
-    - [repairable\_emissions / non\_repairable\_emissions](#repairable_emissions--non_repairable_emissions)
-      - [\<emissions\_rate\_source\> _(propagating parameter)_](#emissions_rate_source-propagating-parameter)
-      - [\<emissions\_production\_rate\> _(propagating parameter)_](#emissions_production_rate-propagating-parameter)
-      - [\<duration\> _(propagating parameter)_](#duration-propagating-parameter)
-      - [\<multiple\_emissions\_per\_source\> _(propagating parameter)_](#multiple_emissions_per_source-propagating-parameter)
   - [8. Program Inputs](#8-program-inputs)
-    - [\<parameter\_level\> (programs)](#parameter_level-programs)
-    - [\<version\> (programs)](#version-programs)
-    - [\<program\_name\>](#program_name)
-    - [\<method\_labels\>](#method_labels)
-    - [\<economics\>](#economics)
-      - [\<global\_warming\_potential\_CH4\>](#global_warming_potential_ch4)
-      - [\<sale\_price\_of\_natural\_gas\>](#sale_price_of_natural_gas)
-    - [\<duration\_estimate\>](#duration_estimate)
-      - [\<duration\_factor\> WIP](#duration_factor-wip)
-      - [\<duration\_method\>](#duration_method)
   - [9. Method Inputs](#9-method-inputs)
-    - [\<parameter\_level\> (methods)](#parameter_level-methods)
-    - [\<version\> (methods)](#version-methods)
-    - [\<method\_name\>](#method_name)
-    - [\<measurement\_scale\>](#measurement_scale)
-    - [\<deployment\_type\>](#deployment_type)
-    - [\<sensor\>](#sensor)
-      - [\<type\>](#type)
-      - [\<quantification\_error\>](#quantification_error)
-        - [\<quantification\_parameters\>](#quantification_parameters)
-        - [\<quantification\_type\>](#quantification_type)
-      - [\<minimum\_detection\_limit\> (default)](#minimum_detection_limit-default)
-      - [\<minimum\_detection\_limit\> (OGI\_camera\_rk)](#minimum_detection_limit-ogi_camera_rk)
-      - [\<minimum\_detection\_limit\> (OGI\_camera\_zim)](#minimum_detection_limit-ogi_camera_zim)
-      - [\<minimum\_detection\_limit\> (METEC\_no\_wind)](#minimum_detection_limit-metec_no_wind)
-    - [\<coverage\>](#coverage)
-      - [\<spatial\> _(propagating parameter)_](#spatial-propagating-parameter)
-      - [\<temporal\>](#temporal)
-    - [\<cost\>](#cost)
-      - [\<per\_day\>](#per_day)
-      - [\<per\_site\>  _(propagating parameter)_ _(mobile parameter)_](#per_site--propagating-parameter-mobile-parameter)
-      - [\<upfront\>  _(propagating parameter)_](#upfront--propagating-parameter)
-    - [\<crew\_count\> _(mobile parameter)_](#crew_count-mobile-parameter)
-    - [\<consider\_daylight\>](#consider_daylight)
-    - [\<surveys\_per\_year\> _(propagating parameter)_ _(mobile parameter)_](#surveys_per_year-propagating-parameter-mobile-parameter)
-    - [\<survey\_time\> _(propagating parameter)_ _(mobile parameter)_](#survey_time-propagating-parameter-mobile-parameter)
-    - [\<max\_workday\> _(mobile parameter)_](#max_workday-mobile-parameter)
-    - [\<reporting\_delay\>](#reporting_delay)
-    - [\<time\_between\_sites\>](#time_between_sites)
-      - [file (time\_between\_sites) _(mobile parameter)_](#file-time_between_sites-mobile-parameter)
-      - [values (time\_between\_sites) _(mobile parameter)_](#values-time_between_sites-mobile-parameter)
-    - [\<scheduling\>](#scheduling)
-      - [\<deployment\_months\>  _(propagating parameter)_](#deployment_months--propagating-parameter)
-      - [\<deployment\_years\>  _(propagating parameter)_](#deployment_years--propagating-parameter)
-    - [\<weather\_envelopes\>](#weather_envelopes)
-      - [\<precipitation\>](#precipitation)
-      - [\<temperature\>](#temperature)
-      - [\<wind\>](#wind)
-    - [\<is\_follow\_up\>](#is_follow_up)
-    - [\<follow\_up\>](#follow_up)
-      - [\<preferred\_method\>](#preferred_method)
-      - [\<delay\> (follow\_up)](#delay-follow_up)
-      - [\<instant\_threshold\>](#instant_threshold)
-      - [\<interaction\_priority\>](#interaction_priority)
-      - [\<proportion\>](#proportion)
-      - [\<redundancy\_filter\> _(mobile parameter)_](#redundancy_filter-mobile-parameter)
-      - [\<sort\_by\_rate\>](#sort_by_rate)
-      - [\<threshold\> _(mobile parameter)_](#threshold-mobile-parameter)
-    - [rolling\_average](#rolling_average)
-      - [small\_window _(stationary parameter)_](#small_window-stationary-parameter)
-      - [large\_window _(stationary parameter)_](#large_window-stationary-parameter)
-      - [small\_window\_threshold _(stationary parameter)_](#small_window_threshold-stationary-parameter)
-      - [large\_window\_threshold _(stationary parameter)_](#large_window_threshold-stationary-parameter)
   - [10. Virtual World Defining Files](#10-virtual-world-defining-files)
     - [Sites File](#sites-file)
-      - [site\_ID](#site_id)
-      - [lat](#lat)
-      - [lon](#lon)
-      - [site\_type (Sites file)](#site_type-sites-file)
-      - [equipment (Sites file)](#equipment-sites-file)
-      - [repairable\_repair\_delay (Sites file)](#repairable_repair_delay-sites-file)
-      - [repairable\_repair\_cost (Sites file)](#repairable_repair_cost-sites-file)
-      - [repairable\_emissions\_rate\_source (Sites file)](#repairable_emissions_rate_source-sites-file)
-      - [repairable\_emissions\_production\_rate (Sites file)](#repairable_emissions_production_rate-sites-file)
-      - [repairable\_duration (Sites file)](#repairable_duration-sites-file)
-      - [repairable\_multiple\_emissions\_per\_source (Sites file)](#repairable_multiple_emissions_per_source-sites-file)
-      - [non\_repairable\_emissions\_rate\_source (Sites file)](#non_repairable_emissions_rate_source-sites-file)
-      - [non\_repairable\_emissions\_production\_rate (Sites file)](#non_repairable_emissions_production_rate-sites-file)
-      - [non\_repairable\_duration (Sites file)](#non_repairable_duration-sites-file)
-      - [non\_repairable\_multiple\_emissions\_per\_source (Sites file)](#non_repairable_multiple_emissions_per_source-sites-file)
-      - [{method}\_surveys\_per\_year (Sites file)](#method_surveys_per_year-sites-file)
-      - [{method}\_deploy\_years (Sites file)](#method_deploy_years-sites-file)
-      - [{method}\_deploy\_months (Sites file)](#method_deploy_months-sites-file)
-      - [{method}\_spatial (Sites file)](#method_spatial-sites-file)
-      - [{method}\_survey\_time (Sites file)](#method_survey_time-sites-file)
-      - [{method}\_survey\_cost (Sites file)](#method_survey_cost-sites-file)
-      - [{method}\_site\_deployment (Sites file)](#method_site_deployment-sites-file)
     - [Site Type File](#site-type-file)
-      - [site\_type (Site type file)](#site_type-site-type-file)
-      - [equipment (Site type file)](#equipment-site-type-file)
-      - [repairable\_repair\_delay (Site type file)](#repairable_repair_delay-site-type-file)
-      - [repairable\_repair\_cost (Site type file)](#repairable_repair_cost-site-type-file)
-      - [repairable\_emissions\_rate\_source (Site type file)](#repairable_emissions_rate_source-site-type-file)
-      - [repairable\_emissions\_production\_rate (Site type file)](#repairable_emissions_production_rate-site-type-file)
-      - [repairable\_duration (Site type file)](#repairable_duration-site-type-file)
-      - [repairable\_multiple\_emissions\_per\_source (Site type file)](#repairable_multiple_emissions_per_source-site-type-file)
-      - [non\_repairable\_emissions\_rate\_source (Site type file)](#non_repairable_emissions_rate_source-site-type-file)
-      - [non\_repairable\_emissions\_production\_rate (Site type file)](#non_repairable_emissions_production_rate-site-type-file)
-      - [non\_repairable\_duration (Site type file)](#non_repairable_duration-site-type-file)
-      - [non\_repairable\_multiple\_emissions\_per\_source (Site type file)](#non_repairable_multiple_emissions_per_source-site-type-file)
-      - [{method}\_surveys\_per\_year (Site type file)](#method_surveys_per_year-site-type-file)
-      - [{method}\_deploy\_years (Site type file)](#method_deploy_years-site-type-file)
-      - [{method}\_deploy\_months (Site type file)](#method_deploy_months-site-type-file)
-      - [{method}\_spatial (Site type file)](#method_spatial-site-type-file)
-      - [{method}\_survey\_time (Site type file)](#method_survey_time-site-type-file)
-      - [{method}\_survey\_cost (Site type file)](#method_survey_cost-site-type-file)
-      - [{method}\_site\_deployment (Site type file)](#method_site_deployment-site-type-file)
     - [Equipment File](#equipment-file)
-      - [equipment (Equipment File)](#equipment-equipment-file)
-      - [{component} (Equipment File)](#component-equipment-file)
-      - [repairable\_repair\_delay (Equipment file)](#repairable_repair_delay-equipment-file)
-      - [repairable\_repair\_cost (Equipment file)](#repairable_repair_cost-equipment-file)
-      - [repairable\_emissions\_rate\_source (Equipment file)](#repairable_emissions_rate_source-equipment-file)
-      - [repairable\_emissions\_production\_rate (Equipment file)](#repairable_emissions_production_rate-equipment-file)
-      - [repairable\_duration (Equipment file)](#repairable_duration-equipment-file)
-      - [repairable\_multiple\_emissions\_per\_source (Equipment file)](#repairable_multiple_emissions_per_source-equipment-file)
-      - [non\_repairable\_emissions\_rate\_source (Equipment file)](#non_repairable_emissions_rate_source-equipment-file)
-      - [non\_repairable\_emissions\_production\_rate (Equipment file)](#non_repairable_emissions_production_rate-equipment-file)
-      - [non\_repairable\_duration (Equipment file)](#non_repairable_duration-equipment-file)
-      - [non\_repairable\_multiple\_emissions\_per\_source (Equipment file)](#non_repairable_multiple_emissions_per_source-equipment-file)
-      - [{method}\_spatial (Equipment file)](#method_spatial-equipment-file)
+    - [equipment (Equipment File)](#equipment-equipment-file)
     - [Source File](#source-file)
-      - [component (Source File)](#component-source-file)
-      - [source (Source File)](#source-source-file)
-      - [repairable (Source File)](#repairable-source-file)
-      - [persistent (Source File)](#persistent-source-file)
-      - [active\_duration (Source File)](#active_duration-source-file)
-      - [inactive\_duration (Source File)](#inactive_duration-source-file)
-      - [repair\_delay (Source file)](#repair_delay-source-file)
-      - [repair\_cost (Source file)](#repair_cost-source-file)
-      - [emissions\_rate\_source (Source file)](#emissions_rate_source-source-file)
-      - [emissions\_production\_rate (Source file)](#emissions_production_rate-source-file)
-      - [duration (Source file)](#duration-source-file)
-      - [multiple\_emissions\_per\_source (Source file)](#multiple_emissions_per_source-source-file)
-      - [{method}\_spatial (Source file)](#method_spatial-source-file)
     - [Emissions File](#emissions-file)
-      - [Header](#header)
-      - [Data Use](#data-use)
-      - [Distribution Type](#distribution-type)
-      - [Maximum Emission Rate](#maximum-emission-rate)
-      - [Units (amount)](#units-amount)
-      - [Units (time)](#units-time)
-      - [Source (Emission file)](#source-emission-file)
   - [11. Legacy Inputs](#11-legacy-inputs)
     - [Legacy Simulation Settings Parameters](#legacy-simulation-settings-parameters)
-      - [\<pregenerate\_leaks\>](#pregenerate_leaks)
-      - [\<print\_from\_simulation\>](#print_from_simulation)
-      - [\<outputs\>](#outputs)
-      - [\<site\_visits\>](#site_visits)
-      - [\<leaks\>](#leaks)
-      - [\<sites\>](#sites)
-      - [\<timeseries\>](#timeseries)
-      - [\<plots\>](#plots)
-      - [\<batch\_reporting\>](#batch_reporting)
-      - [\<make\_plots\>](#make_plots)
     - [Legacy Virtual World Settings Parameters](#legacy-virtual-world-settings-parameters)
-      - [\<consider\_venting\>](#consider_venting)
-      - [\<weather\_is\_hourly\>](#weather_is_hourly)
-      - [\<infrastructure\_file\>](#infrastructure_file)
-      - [\<subtype\_file\>](#subtype_file)
-      - [\<leak\_dist\_params\>](#leak_dist_params)
-      - [\<leak\_dist\_type\>](#leak_dist_type)
-      - [\<leak\_file\>](#leak_file)
-      - [\<leak\_file\_use\>](#leak_file_use)
-      - [\<max\_leak\_rate\>](#max_leak_rate)
-      - [\<units\>](#units)
-      - [\<n\_init\_leaks\_prob\>](#n_init_leaks_prob)
-      - [\<n\_init\_days\>](#n_init_days)
-      - [\<subtype\_leak\_dist\_file\>](#subtype_leak_dist_file)
-      - [\<subtype\_times\_file\>](#subtype_times_file)
-      - [\<vent\_file\>](#vent_file)
-    - [Legacy Program Parameters](#legacy-program-parameters)
-      - [\<verification\_cost\>](#verification_cost)
-      - [\<carbon\_price\_tonnes\_CO2\_equivalent\>](#carbon_price_tonnes_co2_equivalent)
   - [12. Data sources, modelling confidence and model sensitivity](#12-data-sources-modelling-confidence-and-model-sensitivity)
-    - [Duty Holder / Operator (historical LDAR data)](#duty-holder--operator-historical-ldar-data)
-    - [Duty Holder / Operator (organizational data)](#duty-holder--operator-organizational-data)
-    - [Technology / Solution Provider / Operator (if self-performing LDAR)](#technology--solution-provider--operator-if-self-performing-ldar)
-    - [Modeling Expert](#modeling-expert)
   - [13. References](#13-references)
 
 --------------------------------------------------------------------------------
@@ -293,36 +85,53 @@ By detailing the model inputs, this report creates the technical foundation for 
 
 ## 3\. File Structure
 
-_TODO_ update when structure is finalized
-
 The LDAR-Sim software is organized using the following structure:
 
-- Root(LDAR_Sim)
-  - inputs
+- Root
+  - Benchmarking
+  - doc-images
+  - Feature Guides
   - install
-  - outputs
-  - src
-  - simulations
-  - external_sensors
+  - LDAR_Sim
+    - inputs
+    - outputs
+    - simulations
+    - src
+      - default_parameters
+      - ldar_sim_run.py
+      - ldar_sim_sensitivity_analysis.py
+    - testing
 
-- CHANGELOG.md
-- ParameterMigrationGuide.md
-- LICENSE.txt
-- README.md
-- USER_MANUAL.md
-- INSTALL_GUIDE.md
+  - CHANGELOG.md
+  - INSTALL_GUIDE.md
+  - LICENSE.txt
+  - ParameterMigrationGuide.md
+  - README.md
+  - USER_MANUAL.md
 
-The **Root** folder includes all code, inputs, and outputs necessary to run LDAR-Sim. From a software perspective, the root folder is the parent to the src folder (folder containing LDAR_sim_main). This folder will be always be the root folder when making relative references in LDAR-Sim. For example, if input_directory is specified as _./inputs_ from anywhere in the code, the targeted folder will be _{absolute_path_to} / Root / inputs_.
+The **Root** folder includes all LDAR-Sim related content.
 
-The **inputs** folder contains input files required to run LDAR-Sim. These include weather files, empirical emission and vent data, facility lists, and other inputs.
+The **Benchmarking** folder is a dev specific folder for benchmarking results.
 
-The **outputs** folder stores all output data files produced by LDAR-Sim. The folder is cleaned, and added if required each time ldar_sim_main is run.
+The **doc-images** folder contains all images used in the different documents and guides for LDAR-Sim.
 
-The **src** folder stores the python source code. The main code of LDAR-Sim, LDAR_sim_main.py is stored in the base folder of src.
+The **Feature Guides** folder contains other documentation and guides, such as the one for sensitivity analysis or setup.
 
-The **external_sensors** folder contains python source code for alternative technology sensors that users are free to use and add to.
+The **install**  folder contains the YAML files necessary for setting up the Conda environment required to run LDAR-Sim.
 
-The **simulations** stores sample V4.0 input parameter files.
+The **LDAR-Sim** folder contains all the files related to the simulation, including the actual source code and various parameter/input files.
+
+The **inputs** folder is the default folder that contains virtual world defining files required to run LDAR-Sim. These include weather files, empirical emission data, facility lists, and more.
+
+The **outputs** folder is the default folder that stores all output data files produced by LDAR-Sim. The folder is cleaned, and added if required each time the ldar_sim_run script is executed. Users can set the [outputs](#output_directory) to change the location.
+
+The **simulations** stores sample input parameter files.
+
+The **src** folder stores the python source code. The main script to run LDAR-Sim, ldar_sim_run.py is stored in the base folder of src, in addition to the script to run the sensitivity analysis, ldar_sim_sensitivity_analysis.py.
+
+The **default_paramters** file contained within the _src_ folder contains all the default parameters utilized by LDAR-Sim.
+
+The **testing** folder is a development-specific directory that contains resources for end-to-end testing as well as all unit tests.
 
 --------------------------------------------------------------------------------
 
@@ -565,31 +374,11 @@ To generate meaningful and reliable data output from the simulator, it's importa
 
 ## 6\. Output Settings
 
-### &lt;parameter_level&gt; (outputs)
+The output parameter file is a configuration file used to manage the activation (`true`) or deactivation (`false`) of specific outputs. By modifying this file, users can control which outputs are generated based on their particular needs. This is particularly useful when users only require specific outputs, allowing them to streamline the process and potentially improve performance by disabling unnecessary outputs.
 
-**Data Type:** String
+It is strongly recommended to use the default settings provided. These settings are optimized for general use and ensure that all necessary outputs are correctly generated without any issues.
 
-**Default input:** 'outputs'
-
-**Description:** A string indicating the parameters in file are at the output settings level
-
-**Notes on acquisition:** No data acquisition required.
-
-**Notes of caution:** Must be set to ```parameter_level: outputs``` for an output setting parameter file.
-
-### &lt;version&gt; (outputs)
-
-**Data type:** String
-
-**Default input:** 4.0
-
-**Description:** Specify version of LDAR-Sim. See section _[Versioning of Parameter Files](#versioning-of-parameter-files)_ for more information.
-
-**Notes on acquisition:** N/A
-
-**Notes of caution:** Improper versioning will prevent simulator from executing.
-
-_TODO_ fill out later
+It is important to understand that certain outputs are interdependent. Disabling an output that serves as a dependency for another may cause errors or unexpected behavior. Therefore, users should be cautious and ensure they have a thorough understanding of these dependencies before making changes.
 
 --------------------------------------------------------------------------------
 
@@ -1827,8 +1616,6 @@ The following figure offers a visual guideline for the various parameters that c
 
 ### Sites File
 
-_TODO_ Update with intermittency update.
-
 This file defines the individual sites that are simulated by LDAR-Sim. Each row in this file defines a single site.
 
 At a minimum it must contain the following columns:
@@ -1872,10 +1659,10 @@ Below is an example _Sites file_:
 
 |site_ID|lat|lon|site_type|equipment|OGI_site_deployment|repairable_emissions_rate_source|repairable_emissions_production_rate|
 |----|----|----|----|----|----|----|----|
-|1|55|-110|well pad|wells_1|FALSE|well_source|0.0001|
-|2|45|-100|compressor station|compressors, tanks, flares|TRUE|compressor_source|0.0064|
-|3|56|-100|well pad|wells_2|TRUE|well_source|0.005|
-|4|55|-109|compressor station|compressors, tanks, flares, flares_2|TRUE|compressor_source|0.0064|
+|1|55|-110|well pad|equipment2|FALSE|Bottom-Up Fugitive Emissions Rates|0.0001|
+|2|45|-100|compressor station|equipment1, equipment2, equipment3|TRUE|Top-Down Fugitive Emission Rates|0.0064|
+|3|56|-100|well pad|equipment1|TRUE|Bottom-Up Fugitive Emissions Rates|0.005|
+|4|55|-109|compressor station|equipment1, equipment2, equipment3|TRUE|Top-Down Fugitive Emission Rates|0.0064|
 
 --------------------------------------------------------------------------------
 
@@ -2026,11 +1813,11 @@ This parameter can also be set in the following files:
 
 #### {method}_surveys_per_year (Sites file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See[surveys_per_year](#surveys_per_year-propagating-parameter) for more details on what this parameter represents. In this file, this is a single integer representing the number of surveys to be conducted in a given year for the specified site for the specified method.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See[surveys_per_year](#surveys_per_year-propagating-parameter-mobile-parameter) for more details on what this parameter represents. In this file, this is a single integer representing the number of surveys to be conducted in a given year for the specified site for the specified method.
 
 This parameter can also be set in the following files:
 
-- [Method Parameter file](#surveys_per_year-propagating-parameter)
+- [Method Parameter file](#surveys_per_year-propagating-parameter-mobile-parameter)
 - [Site type File](#method_surveys_per_year-site-type-file)
 
 #### {method}_deploy_years (Sites file)
@@ -2064,25 +1851,25 @@ This parameter can also be set in the following files:
 
 #### {method}_survey_time (Sites file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [survey_time](#survey_time-propagating-parameter) for more details on what this parameter represents. In this file, this is a single value, representing how long in minutes it takes for the specified method to survey the given site.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [survey_time](#survey_time-propagating-parameter-mobile-parameter) for more details on what this parameter represents. In this file, this is a single value, representing how long in minutes it takes for the specified method to survey the given site.
 
 This parameter can also be set in the following files:
 
-- [Method Parameter file](#survey_time-propagating-parameter)
+- [Method Parameter file](#survey_time-propagating-parameter-mobile-parameter)
 - [Site type file](#method_survey_time-site-type-file)
 
 #### {method}_survey_cost (Sites file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [survey_cost](#per_site--propagating-parameter) for more details on what this parameter represents. In this file, this is a single value, representing the cost of the specified method to survey the given site.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [survey_cost](#per_site--propagating-parameter-mobile-parameter) for more details on what this parameter represents. In this file, this is a single value, representing the cost of the specified method to survey the given site.
 
 This parameter can also be set in the following files:
 
-- [Method Parameter file](#per_site--propagating-parameter)
+- [Method Parameter file](#per_site--propagating-parameter-mobile-parameter)
 - [Site type file](#method_survey_cost-site-type-file)
 
 #### {method}_site_deployment (Sites file)
 
-**Description:** A True/False column that indicates whether the specified method will be deployed at the given site. For example, if the value is set to `FALSE`, the emissions at the site will be simulated, but the method will not be deployed at that site. This is similar to setting the[surveys per year](#surveys_per_year-propagating-parameter) to 0 for the site.
+**Description:** A True/False column that indicates whether the specified method will be deployed at the given site. For example, if the value is set to `FALSE`, the emissions at the site will be simulated, but the method will not be deployed at that site. This is similar to setting the[surveys per year](#surveys_per_year-propagating-parameter-mobile-parameter) to 0 for the site.
 
 This parameter can also be set in the following file:
 
@@ -2129,8 +1916,8 @@ Below is an example _Site type file_:
 
 |site_type|equipment|OGI_site_deployment|repairable_emissions_rate_source|repairable_emissions_production_rate|
 |----|----|----|----|----|
-|well pad|wells_1|FALSE|well_source|0.0001|
-|compressor station|compressors, tanks, flares|TRUE|compressor_source|0.0064|
+|well pad|equipment1|FALSE|Bottom-Up Fugitive Emissions Rates|0.0001|
+|compressor station|equipment1, equipment2, equipment3|TRUE|Top-Down Fugitive Emission Rates|0.0064|
 
 --------------------------------------------------------------------------------
 
@@ -2265,11 +2052,11 @@ This parameter can also be set in the following files:
 
 #### {method}_surveys_per_year (Site type file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See[surveys_per_year](#surveys_per_year-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value representing the number of required surveys per year for the specified method for every site of the given site type.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See[surveys_per_year](#surveys_per_year-propagating-parameter-mobile-parameter) for more details on what this parameter represents. In this file, this is a single numeric value representing the number of required surveys per year for the specified method for every site of the given site type.
 
 This parameter can also be set in the following files:
 
-- [Methods Parameter file](#surveys_per_year-propagating-parameter)
+- [Methods Parameter file](#surveys_per_year-propagating-parameter-mobile-parameter)
 - [Sites file](#method_surveys_per_year-sites-file)
 
 #### {method}_deploy_years (Site type file)
@@ -2303,31 +2090,29 @@ This parameter can also be set in the following files:
 
 #### {method}_survey_time (Site type file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [survey_time](#survey_time-propagating-parameter) for more details on what this parameter represents. In this file, this is a single value, representing how long in minutes it takes for the specified method to survey a site of the given site type.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [survey_time](#survey_time-propagating-parameter-mobile-parameter) for more details on what this parameter represents. In this file, this is a single value, representing how long in minutes it takes for the specified method to survey a site of the given site type.
 
 This parameter can also be set in the following files:
 
-- [Methods Parameter file](#survey_time-propagating-parameter)
+- [Methods Parameter file](#survey_time-propagating-parameter-mobile-parameter)
 - [Sites file](#method_survey_time-sites-file)
 
 #### {method}_survey_cost (Site type file)
 
-**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [survey_cost](#per_site--propagating-parameter) for more details on what this parameter represents. In this file, this is a single value, representing the cost of the specified method to survey a site of the given site type.
+**Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [survey_cost](#per_site--propagating-parameter-mobile-parameter) for more details on what this parameter represents. In this file, this is a single value, representing the cost of the specified method to survey a site of the given site type.
 
 This parameter can also be set in the following files:
 
-- [Methods Parameter file](#per_site--propagating-parameter)
+- [Methods Parameter file](#per_site--propagating-parameter-mobile-parameter)
 - [Sites file](#method_survey_cost-sites-file)
 
 #### {method}_site_deployment (Site type file)
 
-**Description:** A True/False column that indicates whether the specified method will be deployed at the given site type. For example, if the value is set to `FALSE`, the emissions at the site will be simulated, but the method will no be deployed at any sites of that site type. This is similar to setting the[surveys per year](#surveys_per_year-propagating-parameter) to 0 for the site.
+**Description:** A True/False column that indicates whether the specified method will be deployed at the given site type. For example, if the value is set to `FALSE`, the emissions at the site will be simulated, but the method will no be deployed at any sites of that site type. This is similar to setting the[surveys per year](#surveys_per_year-propagating-parameter-mobile-parameter) to 0 for the site.
 
 This parameter can also be set in the following file:
 
 - [Sites file](#method_site_deployment-sites-file)
-
-_TODO_ update description more when the scale up feature is implemented.
 
 --------------------------------------------------------------------------------
 
@@ -2363,7 +2148,7 @@ See [equipment file](#equipment-file) for details on how to set the parameter fo
 
 Below is an example of an _equipment file_ that defines 3 different groups:
 
-| equipment |flare|tank|pump|
+| equipment |component1|component2|component3|
 |----|----|----|----|
 |group1|1|1|0|
 |group2|0|0|2|
@@ -2371,19 +2156,19 @@ Below is an example of an _equipment file_ that defines 3 different groups:
 
 --------------------------------------------------------------------------------
 
-#### equipment (Equipment File)
+### equipment (Equipment File)
 
 **Description:** A user-defined value that defines a specific equipment group identifier for the simulation. These equipment groups influence how  `equipment level` [measurement scale](#measurement_scale)  methods detect and measure emissions. Each row must define a unique equipment identifier.
 
 **Note:** It is case-sensitive and must remain consistent when provided in other infrastructure files, such as the [sites file](#sites-file) or the [site type file](#site-type-file)
 
-#### {component} (Equipment File)
+### {component} (Equipment File)
 
 **Description:** The column header is a user defined value corresponding to the identifier of a specific component defined as part of the simulation. The values in each column and row indicate how many counts of the given component(column) exists for the given equipment(row). These _equipment_ groups can serve as building blocks for constructing complex sites.
 
 **Note:**The column headers are case-sensitive and must be consistent with the [Source](#component-source-file) where they are defined.
 
-#### repairable_repair_delay (Equipment file)
+### repairable_repair_delay (Equipment file)
 
 **Description:** This is a propagating parameter that can be set at multiple level of granularity. See [repair delay](#values-delaypropagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value in days.
 
@@ -2394,7 +2179,7 @@ This parameter can also be set in the following files:
 - [Site type File](#repairable_repair_delay-site-type-file)
 - [Source File](#repair_delay-source-file)
 
-#### repairable_repair_cost (Equipment file)
+### repairable_repair_cost (Equipment file)
 
 **Description:** This is a propagating parameter that can be set at multiple level of granularity. See [repair cost](#values-cost-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value, representing cost to repair emissions.
 
@@ -2405,7 +2190,7 @@ This parameter can also be set in the following files:
 - [Site type File](#repairable_repair_cost-site-type-file)
 - [Source File](#repair_cost-source-file)
 
-#### repairable_emissions_rate_source (Equipment file)
+### repairable_emissions_rate_source (Equipment file)
 
 **Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_rate_source](#emissions_rate_source-propagating-parameter) for more details on what this parameter represents. In this file this is a user defined value, that corresponds to the [source](#header) of the repairable emissions for the given equipment. This case-sensitive value specifies which of the potential emissions characteristics in the [emissions file](#emissions-file) should be used for the given repairable emissions rate source.
 
@@ -2416,7 +2201,7 @@ This parameter can also be set in the following files:
 - [Site type File](#repairable_emissions_rate_source-site-type-file)
 - [Source File](#emissions_rate_source-source-file)
 
-#### repairable_emissions_production_rate (Equipment file)
+### repairable_emissions_production_rate (Equipment file)
 
 **Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [emissions_production_rate](#emissions_production_rate-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value, representing the chance of a repairable emissions occurring at the given equipment at any given day.
 
@@ -2427,7 +2212,7 @@ This parameter can also be set in the following files:
 - [Site type File](#repairable_emissions_production_rate-site-type-file)
 - [Source File](#emissions_production_rate-source-file)
 
-#### repairable_duration (Equipment file)
+### repairable_duration (Equipment file)
 
 **Description:** This is a propagating parameter that can be set at multiple levels of granularity. See [duration](#duration-propagating-parameter) for more details on what this parameter represents. In this file, this is a single numeric value, representing the maximum emissions duration in days for repairable emissions.
 
@@ -2546,9 +2331,9 @@ Below is an example of a _source file_ that defines two different components and
 
 |component|source|emissions_rate_source|repairable|
 |----------|----------|----------|----------|
-|tank|fugitive|fugitive_rates|TRUE|
-|tank|non-repairable|operational|FALSE|
-|well|fugitive|fugitive_rates|TRUE|
+|component1|fugitive|Bottom-Up Fugitive Emissions Rates|TRUE|
+|component1|non-repairable|Top-Down Fugitive Emission Rates|FALSE|
+|component2|fugitive|Bottom-Up Fugitive Emissions Rates|TRUE|
 
 --------------------------------------------------------------------------------
 
@@ -2641,7 +2426,7 @@ Repairable Emissions:
 - [Site type File](#repairable_emissions_production_rate-site-type-file)
 - [Equipment File](#repairable_emissions_production_rate-equipment-file)
 
-Repairable Emissions:
+Non-Repairable Emissions:
 
 - [Virtual World Parameter file](#emissions_production_rate-propagating-parameter)
 - [Sites File](#non_repairable_emissions_production_rate-sites-file)
@@ -2719,7 +2504,7 @@ Each column in the emissions file represents a single emissions source. Each row
 
 Below is an example of an Emissions file:
 
-| Bottom-Up Fugitive Emissions | Top-Down Fugitive Emission Rates |
+| Bottom-Up Fugitive Emissions Rates | Top-Down Fugitive Emission Rates |
 |----------|----------|
 | dist | sample |
 | lognormal | n/a |

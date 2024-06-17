@@ -1,5 +1,23 @@
 # Change Log
 
+## 2024-06-17 - Version 4.0.0
+
+The version bump to 4.0 of LDAR-Sim included a significant overhaul of the existing code base and functionality overhaul.
+
+1. Improve User Manual
+2. Improved stationary deployment - continuous monitoring is now based on rolling averages
+3. Improved quantification error
+4. Refactor emissions, added granularity - see User Manual for more details
+5. Refactor infrastructure, added granularity - see User Manual for more details
+6. Refactor sensors
+7. Refactor scheduling
+8. New Output parameters to disable outputs
+9. New uncertainty outputs
+10. New Sensitivity Analysis Module
+11. New debugging mode - enables benchmarking
+12. _Removed routing functionality_
+13. New unit tests
+
 ## 2024-03-18 - Version 3.3.6
 
 1. **New Documentation** Added new installation guide documentation.
