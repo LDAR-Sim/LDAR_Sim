@@ -1,6 +1,6 @@
-input_directory: ./inputs/complex_test_case
+input_directory: ./inputs/granular_infrastructure
 simulation_count: 3
-output_directory: ./outputs/complex_test_case
+output_directory: ./outputs/granular_infrastructure
 parameter_level: simulation_settings
 preseed_random: true
 reference_program: P_OGI
