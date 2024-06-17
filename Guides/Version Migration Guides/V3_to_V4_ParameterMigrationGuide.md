@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This guide is intended to assist users users who are updating to LDAR-Sim V4 by providing instructions on how to transfer as much of their parameter files as possible to the V4 format from V3. Do note that some new LDAR-Sim behavior has been introduced in V4 and some existing behavior has been changed, thus it is impossible to completely transfer all parameter files and inputs.
+This guide is intended to assist users who wish to update to LDAR-Sim V4 by providing instructions on transferring as much of the existing V3 parameters to V4 format. Do note that new behavior has been introduced in V4 and some existing behavior has been changed, thus, it is impossible to transfer all parameter files and inputs.
 
 ## What changed between V3 and V4
 
@@ -10,7 +10,7 @@ The majority of the LDAR-Sim parameters from V3 still exist in V4, but many of t
 
 ## Guidance on moving from V3 to V4
 
-When moving from V3 to V4, it is advised to read the updated [user manual](../USER_MANUAL.md) to get an initial understanding of the scope of all the changes that have occurred. Users will need to make new input files in order to run V4 simulations: Critically users will need a [sites file](../USER_MANUAL.md#sites-file) and the new [emissions file](../USER_MANUAL.md#emissions-file) to run any simulations. Many parameters have been changed or renamed. Reference the [Parameter File Changes](#parameter-file-changes) section for more detailed information. It may be easier for users to attempt to parameterize the V4 parameters while referencing the user manual for aid instead of attempting to "migrate" V3 simulation parameters.
+When moving from V3 to V4, it is advised to read the updated [user manual](../../USER_MANUAL.md) to get an initial understanding of the scope of all the changes that have occurred. Users will need to make new input files in order to run V4 simulations: Critically users will need a [sites file](../../USER_MANUAL.md#sites-file) and the new [emissions file](../../USER_MANUAL.md#emissions-file) to run any simulations. Many parameters have been changed or renamed. Reference the [Parameter File Changes](#parameter-file-changes) section for more detailed information. It may be easier for users to attempt to parameterize the V4 parameters while referencing the user manual for aid instead of attempting to "migrate" V3 simulation parameters.
 
 ## Parameter File Changes
 
@@ -29,7 +29,7 @@ When moving from V3 to V4, it is advised to read the updated [user manual](../US
 |--------------------|-----------|
 | print_from_simulations| now always enabled  |
 | pregenerate leaks| now always enabled  |
-| outputs| functionality moved to [output parameters](../USER_MANUAL.md#6-output-settings) |
+| outputs| functionality moved to [output parameters](../../USER_MANUAL.md#6-output-settings) |
 | start_date| moved to virtual world |
 | end_date| moved to virtual world |
 
@@ -43,33 +43,33 @@ No new parameters were introduced in simulation settings.
 
 | V3 Parameter | V4 Parameter    | Notes                                                                 |
 |--------------------|-----------|-----------------------------------------------------------------------|
-| infrastructure_file| infrastructure: sites_file  | What was the infrastructure is now just one of the files that define infrastructure. See the [user_manual](../USER_MANUAL.md#infrastructure) on new infrastructure parameters in the virtual world for more information|
+| infrastructure_file| infrastructure: sites_file  | The `infrastructure_file` is now just one of the files that define the virtual world. See the [user_manual](../../USER_MANUAL.md#infrastructure) on new infrastructure parameters in the virtual world for more information|
 | repair_delay| repairs: delay| repair_delay was moved under the repairs heading and renamed to delay|
-|emissions: LPR| emissions: repairable_emissions: emissions_production_rate| Not quite just a rename, but the functionality is very similar |
-| NRD | emissions: repairable_emissions: duration | Not quite just a rename, but the functionality is very similar |
+|emissions: LPR| emissions: repairable_emissions: emissions_production_rate| Not quite just a rename, but the functionality is very similar. See the [relevant](../../USER_MANUAL.md#emissions_production_rate-propagating-parameter) section in the user manual for more details. |
+| NRD | emissions: repairable_emissions: duration | Not quite just a rename, but the functionality is very similar. See the [relevant](../../USER_MANUAL.md#duration-propagating-parameter) section in the user manual for more details. |
 
 #### Virtual World: Removed Parameters
 
 | V3 Parameter | Notes                                                                   |
 |--------------------|-----------|
-| weather_is_hourly| weather functionality has been streamlined  |
-| emissions: consider_venting| emissions granularity has been reworked. See [emissions section](../USER_MANUAL.md#emissions) and all emissions relating parameters in the user manual for more information|
+| weather_is_hourly| Weather functionality has been streamlined  |
+| emissions: consider_venting| Emissions granularity has been reworked. See [emissions section](../USER_MANUAL.md#emissions) and all emissions relating parameters in the user manual for more information|
 | emissions: leak_dist_params| Effectively moved this functionality into the [emissions file](../USER_MANUAL.md#emissions-file)|
 | emissions: leak_dist_type| Effectively moved this functionality into the [emissions file](../USER_MANUAL.md#emissions-file)|
 |leak_file| Effectively moved this functionality into the [emissions file](../USER_MANUAL.md#emissions-file)|
 |emissions: leak_file_use|Fit functionality has been removed. This is to avoid scenarios where emissions rates an incorrectly fit to a lognormal distribution when the data is not lognormal|
 | emissions: max_leak_rate | Effectively moved this functionality into the [emissions file](../USER_MANUAL.md#emissions-file) |
 | emissions: units | Effectively moved this functionality into the [emissions file](../USER_MANUAL.md#emissions-file) |
-| n_init_leaks_prob | To be reintroduced in later updates as needed |
-| n_init_days | To be reintroduced in later updates as needed |
+| n_init_leaks_prob | Removed. To be reintroduced in later updates as needed |
+| n_init_days | Removed. To be reintroduced in later updates as needed |
 
 #### Virtual World: New Parameters
 
 | New Parameter | Notes                                                                   |
 |--------------------|-----------|
-| start_date| moved to virtual world from simulation_settings  |
-| end_date| moved to virtual world from simulation_settings |
-| repairs: cost | moved to virtual world from program parameters |
+| start_date| Moved to virtual world from simulation_settings  |
+| end_date| Moved to virtual world from simulation_settings |
+| repairs: cost | Moved to virtual world from program parameters |
 | infrastructure: site_type_file | See relevant [section](../USER_MANUAL.md#site-type-file) in the user manual |
 | infrastructure: equipment_group_file | See relevant [section](../USER_MANUAL.md#equipment-file) in the user manual |
 | infrastructure: sources_file | See relevant [section](../USER_MANUAL.md#source-file) in the user manual |
@@ -93,7 +93,6 @@ No new parameters were introduced in simulation settings.
 
 | V3 Parameter | V4 Parameter    | Notes                                                                 |
 |--------------------|-----------|-----------------------------------------------------------------------|
-| economics: carbon_price_tonnesCO2e | economics: carbon_price_tonnes_CO2_equivalent |  |
 | economics: CWP_CH4 | economics: global_warming_potential_CH4| |
 | economics: sale_price_natgas | economics: sale_price_of_natural_gas| **Note**: the units of this parameter have changed |
 
@@ -101,7 +100,9 @@ No new parameters were introduced in simulation settings.
 
 | V3 Parameter | Notes                                                                   |
 |--------------------|-----------|
+| economics: carbon_price_tonnesCO2e | Removed due to limited use in outputs |
 | economics: cost_CCUS | Removed due to limited use in outputs |
+| economics: verification_cost | Removed as functionally this can be added to repairs: cost and does not need it's own functionality|
 | repair_costs | Moved to virtual world |
 
 #### Parameters: New Parameters
@@ -130,6 +131,7 @@ Note there are now two default method parameter files: One for mobile deployment
 | n_crews | crew_count| |
 | RS | surveys_per_year | |
 | time | survey_time | |
+| t_bt_sites | time_between_sites | |
 | weather_envs | weather_envelopes | |
 | weather_envs: precip | weather_envelopes: precipitation | |
 | weather_envs: temp | weather_envelopes: temperature | |
@@ -147,9 +149,9 @@ Note there are now two default method parameter files: One for mobile deployment
 | scheduling: travel_speeds | Removed all routing parameters as it was not fully functional |
 | scheduling: min_time_bt_surveys | New scheduling algorithm uses queue based scheduling, removing the need for this parameter |
 | follow_up: instant_threshold_type | [Instant threshold](../USER_MANUAL.md#instant_threshold) is now fixed to an absolute threshold|
-| follow_up: min_followups| To be reimplemented if needed|
-| follow_up: min_followup_type| To be reimplemented if needed|
-| follow_up: min_followup_days_to_end| To be reimplemented if needed|
+| follow_up: min_followups| Removed. To be reimplemented if needed|
+| follow_up: min_followup_type| Removed. To be reimplemented if needed|
+| follow_up: min_followup_days_to_end| Removed. To be reimplemented if needed|
 | follow_up: instant_threshold_type | [Threshold](../USER_MANUAL.md#threshold-mobile-parameter) is now fixed to an absolute threshold|
 
 #### Methods: New Parameters

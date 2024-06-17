@@ -33,7 +33,7 @@ Chris Hugenholtz: <chhugenh@ucalgary.ca>
 
 LDAR-Sim version 3 can be found on the branch: _TODO_
 
-If moving from V3 to V4, see the [V3 to V4 Parameter Migration Guide](./Version%20Migration%20Guides/V3_to_V4_ParameterMigrationGuide.md) for a useful companion guide to assist in adapting to V4.
+If moving from V3 to V4, see the [V3 to V4 Parameter Migration Guide](./Guides/Version%20Migration%20Guides/V3_to_V4_ParameterMigrationGuide.md) for a useful companion guide to assist in adapting to V4.
 
 ## LDAR-Sim Licensing and Use
 
