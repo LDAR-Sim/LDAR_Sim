@@ -94,6 +94,7 @@ class ProgramOutputManager:
                 fug_file_name = self.generate_file_names(Output_Files.EST_REP_EMISSIONS_FILE)
 
                 measured_tf_df = measured_tf_df.rename(columns={DTSC.SITE_ID: eca.SITE_ID})
+                measured_tf_df = measured_tf_df.rename(columns={DTSC.SITE_TYPE: eca.SITE_TYPE})
 
                 emis_estimation_merged = pd.merge(
                     emis_estimation, measured_tf_df, on=eca.SITE_ID, how="left"
