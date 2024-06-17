@@ -30,6 +30,12 @@ Thomas Barchyn: <tbarchyn@ucalgary.ca>
 
 Chris Hugenholtz: <chhugenh@ucalgary.ca>
 
+## Legacy Versions
+
+LDAR-Sim version 3 can be found on the branch: _TODO_
+
+If moving from V3 to V4, see the [V3 to V4 Parameter Migration Guide](./Guides/Version%20Migration%20Guides/V3_to_V4_ParameterMigrationGuide.md) for a useful companion guide to assist in adapting to V4.
+
 ## LDAR-Sim Licensing and Use
 
 LDAR-Sim was invented by Thomas Fox, Mozhou Gao, Thomas Barchyn, and Chris Hugenholtz at the University of Calgary's Centre for Smart Emissions Sensing Technologies.
