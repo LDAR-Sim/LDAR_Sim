@@ -32,7 +32,7 @@ Chris Hugenholtz: <chhugenh@ucalgary.ca>
 
 ## Legacy Versions
 
-LDAR-Sim version 3 can be found on the branch: _TODO_
+LDAR-Sim version 3 can be found on the branch: [Legacy branch V3](https://github.com/LDAR-Sim/LDAR_Sim/tree/Legacy_Branch_V3)
 
 If moving from V3 to V4, see the [V3 to V4 Parameter Migration Guide](./Guides/Version%20Migration%20Guides/V3_to_V4_ParameterMigrationGuide.md) for a useful companion guide to assist in adapting to V4.
 
