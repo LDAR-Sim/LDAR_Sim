@@ -30,7 +30,6 @@ Email: <sally@highwoodemissions.com>
     - [Sites File](#sites-file)
     - [Site Type File](#site-type-file)
     - [Equipment File](#equipment-file)
-    - [equipment (Equipment File)](#equipment-equipment-file)
     - [Source File](#source-file)
     - [Emissions File](#emissions-file)
   - [11. Legacy Inputs](#11-legacy-inputs)
