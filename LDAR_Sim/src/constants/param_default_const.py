@@ -169,6 +169,7 @@ class Output_Params:
     SUMMARY_VISUALIZATIONS = "Summary Visualizations"
     TIMESERIES_SUMMARY = "Timeseries Summary"
     EMISSIONS_SUMMARY = "Emissions Summary"
+    COST_SUMMARY = "Cost Summary"
     SUMMARY_STATS = "Summary Stats"
     AVERAGE_DAILY_EMISSIONS = 'Average "True" Daily Emissions (Kg Methane)'
     AVERAGE_MITIGABLE_DAILY_EMISSIONS = 'Average "True" Mitigable Daily Emissions (Kg Methane)'
@@ -190,6 +191,7 @@ class Output_Params:
         '5th Percentile "True" Non-Mitigable Daily Emissions (Kg Methane)'
     )
     AVERAGE_DAILY_COST = "Average Daily Cost ($)"
+    TOTAL_COST = "Total Cost ($)"
     PERCENTILE_95_DAILY_COST = "95th Percentile Daily Cost ($)"
     PERCENTILE_5_DAILY_COST = "5th Percentile Daily Cost ($)"
     EMISSIONS_SUMMARY_TOT_MITIGATION = 'Total "True" Mitigated Emissions (Kg Methane)'

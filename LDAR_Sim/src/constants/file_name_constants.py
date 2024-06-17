@@ -51,6 +51,7 @@ class Output_Files:
     class SummaryFileNames:
         TS_SUMMARY = "Timeseries Summary"
         EMIS_SUMMARY = "Emissions Summary"
+        COST_SUMMARY = "Cost Summary"
         EMIS_EST_SUMMARY = "Estimated Emissions Summary"
         EMIS_FUG_EST_SUMMARY = "Estimated Fugitive Emissions Summary"
 

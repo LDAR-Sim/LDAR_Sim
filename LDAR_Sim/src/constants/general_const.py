@@ -53,6 +53,7 @@ class Conversion_Constants:
     GS_TO_GH = 3600
     DAYS_IN_MONTH = 30.437
     GS_TO_KGHR = 3.6
+    KG_TO_MMBTU = 0.0543121421
 
 
 @dataclass

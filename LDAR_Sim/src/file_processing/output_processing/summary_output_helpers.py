@@ -157,3 +157,7 @@ def mark_outputs_to_keep(dir: Path):
                 new_name = file_processing_const.Multi_Sim_Output_Const.OUTPUT_KEEP_STR + entry.name
                 new_file_path = os.path.join(dir, new_name)
                 os.rename(old_file_path, new_file_path)
+
+
+def get_non_baseline_prog_names(programs, baseline_program) -> list:
+    return [program_name for program_name in programs if program_name != baseline_program]

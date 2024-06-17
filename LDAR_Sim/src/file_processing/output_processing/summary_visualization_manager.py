@@ -24,7 +24,6 @@ from pathlib import Path
 from constants import output_file_constants, output_messages
 from file_processing.output_processing import summary_visualizations
 from matplotlib import pyplot as plt
-
 from file_processing.output_processing.summary_visualization_mapper import (
     SummaryVisualizationMapper,
 )
@@ -49,10 +48,20 @@ class SummaryVisualizationManager:
         output_file_constants.SummaryOutputVizFileNames.PROGRAM_MITIGATION_BAR_PLOT: (
             summary_visualizations.gen_program_mitigation_bars
         ),
+        output_file_constants.SummaryOutputVizFileNames.STACKED_COST_BAR_PLOT: (
+            summary_visualizations.gen_program_stacked_cost_bars
+        ),
+        output_file_constants.SummaryOutputVizFileNames.COST_TO_MIT_BOX_PLOT: (
+            summary_visualizations.gen_cost_to_mit_boxplot
+        ),
     }
 
     def __init__(
-        self, output_config: dict, output_dir: Path, baseline_program: str, site_count: int
+        self,
+        output_config: dict,
+        output_dir: Path,
+        baseline_program: str,
+        site_count: int,
     ):
         self.summary_visualizations_to_make: list[str] = self.parse_visualization_functions(
             output_config[output_file_constants.OutputConfigCategories.SUMMARY_VISUALIZATIONS]

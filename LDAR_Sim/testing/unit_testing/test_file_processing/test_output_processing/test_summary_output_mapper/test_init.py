@@ -17,6 +17,7 @@ def get_mock_output_config_data():
             param_default_const.Output_Params.AVERAGE_DAILY_COST: True,
             param_default_const.Output_Params.PERCENTILE_95_DAILY_COST: True,
             param_default_const.Output_Params.PERCENTILE_5_DAILY_COST: True,
+            param_default_const.Output_Params.TOTAL_COST: True,
         },
         param_default_const.Output_Params.EMISSIONS_SUMMARY: {
             param_default_const.Output_Params.EMISSIONS_SUMMARY_TOT_MITIGATION: True,

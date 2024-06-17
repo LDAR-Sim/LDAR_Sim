@@ -34,7 +34,7 @@ from file_processing.output_processing.summary_visualization_manager import (
     SummaryVisualizationManager,
 )
 from file_processing.output_processing.summary_output_manager import SummaryOutputManager
-
+from file_processing.output_processing.summary_output_helpers import get_non_baseline_prog_names
 
 from initialization.initialize_infrastructure import initialize_infrastructure
 from initialization.preseed import gen_seed_emis
@@ -219,6 +219,7 @@ def run_ldar_sim(parameter_filenames, DEBUG=False):
         output_path=out_dir,
         output_config=output_params,
         sim_years=simulation_years,
+        programs=programs,
     )
     summary_visualization_manager: SummaryVisualizationManager = SummaryVisualizationManager(
         output_config=output_params,
@@ -321,6 +322,9 @@ def run_ldar_sim(parameter_filenames, DEBUG=False):
                 # -- Batch Report --
                 print(rm.BATCH_CLEAN.format(batch_count=batch_count))
                 summary_stats_manager.gen_summary_outputs(batch_count != 0)
+    if summary_stats_manager.make_cost_summary():
+        non_baseline_progs = get_non_baseline_prog_names(programs, base_program)
+        summary_stats_manager.gen_cost_summary_outputs(non_baseline_progs)
     summary_visualization_manager.gen_visualizations()
 
 
