@@ -1,13 +1,10 @@
-version: "3.3"
-parameter_level: "program"
+version: "4.0"
+parameter_level: "programs"
 program_name: "default"
 method_labels: []
 economics:
-  carbon_price_tonnesCO2e: 40.0
-  cost_CCUS: 20.0
-  GWP_CH4: 28.0
-  sale_price_natgas: 3.0
-  repair_costs:
-    vals: [200]
-    file: "_placeholder_str_"
-  verification_cost: 0
+  global_warming_potential_CH4: 28.0
+  sale_price_of_natural_gas: 3.0
+duration_estimate:
+  duration_factor: 1
+  duration_method: "component-based" # component-based or measurement-based-conservative

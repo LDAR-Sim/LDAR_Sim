@@ -1,23 +1,34 @@
-version: "3.3"
 parameter_level: "virtual_world"
-weather_file: "weather_alberta.nc"
-weather_is_hourly: True # True/False
+version: "4.0"
+start_date: [2023, 1, 1] # Start date of the simulation. 
+# CAUTION: A start date not on January 1st of a given year may cause error with the calculation of annual summary statistics.
+end_date: [2027, 12, 31] # End date of the simulation. 
+# CAUTION: An end date not on December 31st of a given year may cause error with the calculation of annual summary statistics.
+infrastructure:
+  sites_file: "_placeholder_str_" #Infrastructure file defining sites
+  site_type_file: "_placeholder_str_" # Infrastructure file defining site types
+  equipment_group_file: "_placeholder_str_" #Infrastructure file defining equipment groups at sites
+  sources_file: "_placeholder_str_" #Infrastructure file defining emissions sources at equipment
+site_samples: "_placeholder_int_"
 consider_weather: False # True/False
-infrastructure_file: "facilities_alberta.csv"
-site_samples: 500
-subtype_file: "_placeholder_str_"
-repair_delay:
-  type: "default" # default/list/distribution
-  val: [14.0]
+weather_file: "_placeholder_str_"
+repairs:
+  cost:
+    values: [200]
+    file: "_placeholder_str_"
+  delay:
+    file: "_placeholder_str_" # The file containing sample repair delays, if it exists
+    values: [14.0] # Can either be a single number, a list of numbers (for example [1,2,3]) 
+    # or the name of a column in the repair delays file to sample from
 emissions:
-  consider_venting: False # True/False
-  leak_dist_params: [-2.776, 1.462]
-  leak_dist_type: "lognorm"
-  leak_file: "_placeholder_str_"
-  leak_file_use: "sample" # sample/fit
-  LPR: 0.0065
-  max_leak_rate: 100000.0
-  units: ["kilogram", "hour"]
-NRd: 365
-n_init_leaks_prob: "_placeholder_float_"
-n_init_days: "_placeholder_int_"
+  emissions_file: "_placeholder_str_" # File containing sample emissions rates or emissions distributions.
+  repairable_emissions:
+    emissions_production_rate: "_placeholder_float_" # The production rate of repairable emissions
+    emissions_rate_source: "_placeholder_str_" # The name of a column in the emissions file
+    duration: 365 # Natural repair delay of repairable emissions
+    multiple_emissions_per_source: True # True/False of whether repairable emission source can produce multiple emissions
+  non_repairable_emissions:
+    emissions_production_rate: "_placeholder_float_" # The production rate of non-repairable emissions
+    emissions_rate_source: "_placeholder_str_" # The name of a column in the emissions file
+    duration: 365 # Natural repair delay of non-repairable emissions
+    multiple_emissions_per_source: True # True/False of whether non-repairable emission source can produce multiple emissions

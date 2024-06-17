@@ -1,4 +1,4 @@
-# The LDAR Simulator V3.3
+# The LDAR Simulator V4.0
 
 See changelog [here](changelog.md)
 
@@ -12,6 +12,7 @@ LDAR-Sim has many potential uses, including:
   2) Evaluate performance and cost of methane sensing technologies and work practices
   3) Predict the emissions mitigation of proposed or existing fugitive methane policies
   4) Inform the development and niche of technologies and work practices
+  5) Predict the uncertainty of a measurement program
 
 To learn more about LDAR-Sim, you can:
 
@@ -29,6 +30,12 @@ Thomas Barchyn: <tbarchyn@ucalgary.ca>
 
 Chris Hugenholtz: <chhugenh@ucalgary.ca>
 
+## Legacy Versions
+
+LDAR-Sim version 3 can be found on the branch: _TODO_
+
+If moving from V3 to V4, see the [V3 to V4 Parameter Migration Guide](./Guides/Version%20Migration%20Guides/V3_to_V4_ParameterMigrationGuide.md) for a useful companion guide to assist in adapting to V4.
+
 ## LDAR-Sim Licensing and Use
 
 LDAR-Sim was invented by Thomas Fox, Mozhou Gao, Thomas Barchyn, and Chris Hugenholtz at the University of Calgary's Centre for Smart Emissions Sensing Technologies.
@@ -41,7 +48,7 @@ NOTE: This applies to all versions following Commit 69c27ec, Made on March 1st, 
 
  The LDAR-Sim development team would like to give a special thanks and acknowledgement to the University of Calgary's Intelligent Methane Monitoring and Management System (IM3S) Group for their significant contributions to the development and growth of LDAR-Sim from 2018 to 2021.
 
-## [Fox_etal_2020 Release](https://github.com/tarcadius/LDAR_Sim/tree/Fox_etal_2020)
+## [Fox et al. 2020 Release](https://github.com/tarcadius/LDAR_Sim/tree/Fox_etal_2020)
 
 The Fox et al. 2020 release is immortalized in a separate branch that can be found by [clicking here](https://github.com/tarcadius/LDAR_Sim/tree/Fox_etal_2020).
 
@@ -90,7 +97,7 @@ The application requires both facility and weather data to run. We have included
 
 #### Step 4: Populate the simulation folder with Programs and associated methods
 
-The simulation files allow a user to set simulation_setting / virtual_world / program/ and method parameters. If a parameter is not included in the file a default value will be used. One simulation_settings file, one virtual world file and at least one Program File is required for running the program while method files are required for running a method.
+The simulation files allow a user to set simulation_setting / virtual_world / program / and method parameters. If a parameter is not included in the file a default value will be used. One simulation_settings file, one virtual world file and at least one Program File is required for running the program while method files are required for running a method.
 
 ##### Example
 
@@ -150,17 +157,17 @@ Check out the [user manual](USER_MANUAL.md) for more info on the parameters.
 
 #### Step 5: Run the program
 
-The main program is a python script called LDAR_Sim_main.py. Within the virtual environment (or where all py packages are installed) run:
+The main program is a python script called LDAR_Sim_run.py. Within the virtual environment (or where all py packages are installed) run:
 
- ```Python LDAR_Sim_main.py {SS_XXX} {VW_XXX} {P_XXX} {M_YYY}```
+ ```Python LDAR_Sim_run.py {SS_XXX} {VW_XXX} {P_XXX} {M_YYY}```
 
   where each argument is a path to a simulation settings, virtual world, program, or method input parameter file. for example:
 
-```Python LDAR_Sim_main.py ./simulations/Simulation_settings.yaml ./simulations/virtual_world.yaml ./simulations/P_aircraft.yaml ./simulations/P_none.yaml ./ simulations/M_aircraft.yaml ./simulations/M_OGI_FU.```
+```Python LDAR_Sim_run.py ./simulations/Simulation_settings.yaml ./simulations/virtual_world.yaml ./simulations/P_aircraft.yaml ./simulations/P_none.yaml ./ simulations/M_aircraft.yaml ./simulations/M_OGI_FU.```
 
 alternatively, an entire directory can be passed using the "-P", "--in_dir" flags where all files within the directory are added to the program. for example:
 
- ```Python LDAR_Sim_main.py --in_dir ./simulations```
+ ```Python LDAR_Sim_run.py --in_dir ./simulations```
 
  will load all files in the simulations folder into the program.
 

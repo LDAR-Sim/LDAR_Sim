@@ -22,6 +22,9 @@ import os
 import sys
 from argparse import ArgumentParser, RawTextHelpFormatter
 from pathlib import Path
+from constants.error_messages import Input_Processing_Messages as ipm
+from constants.general_const import File_Extension_Constants as fc
+from constants.output_messages import InputHelpText as iht
 
 
 def get_abs_path(path, ref_folder=None):
@@ -62,22 +65,93 @@ def files_from_args(ref_path):
         "in_files",
         type=str,
         nargs="*",
-        help="Input files, separate with space, can be absolute path or relative to"
-        + "root directory (LDAR_Sim). All files should have yaml, yml, or json extensions \n"
-        + "ie. python ldar_sim_main.py ./file1.json c:/path/to/file/file2.json",
+        help=iht.INPUT_FILE_HELP_TEXT,
     )
     parser.add_argument(
         "-P",
         "--in_dir",
-        help="Input Directory, folder containing input files, will input all files within"
-        + "folder that have yaml, yml or json extensions \n"
-        + "ie. python ldar_sim_main.py --in_dir ./folder_with_infiles",
+        help=iht.INPUT_DIR_HELP_TEXT,
     )
     parser.add_argument(
         "-X",
         "--out_dir",
-        help="Output Directory, folder containing output files, will save all output files \n"
-        + "ie. python ldar_sim_main.py --out_dir ./folder_for_save_outputs",
+        help=iht.OUTPUT_DIR_HELP_TEXT,
+    )
+    parser.add_argument(
+        "-D", "--debug", action="store_true", help=iht.DEBUG_HELP_TEXT, default=False
+    )
+
+    args = parser.parse_args()
+    if args.in_dir is not None:
+        # if an input directory is specified, get all files within that are in the directory
+        # Get all yaml or json files in specified folder
+        parameter_files = [
+            get_abs_path(args.in_dir, ref_path) / "{}".format(f)
+            for f in os.listdir(get_abs_path(args.in_dir, ref_path))
+            if fc.YML in f or fc.YAML in f or fc.JSON in f
+        ]
+    else:
+        parameter_files = [
+            get_abs_path(f, ref_path)
+            for f in args.in_files
+            if fc.YAML in f or fc.YML in f or fc.JSON in f
+        ]
+
+    if len(parameter_files) < 1:
+        print(ipm.MISSING_ARGUMENT_ERROR)
+        sys.exit()
+    if args.out_dir is not None:
+        out_dir = get_abs_path(args.out_dir, ref_path)
+        return {"parameter_files": parameter_files, "out_dir": str(out_dir)}
+
+    return parameter_files, args.debug
+
+
+def files_from_path(in_path):
+    if in_path is not None:
+        # if an input directory is specified, get all files within that are in the directory
+        # Get all yaml or json files in specified folder
+        parameter_files = [
+            in_path / "{}".format(f)
+            for f in os.listdir(in_path)
+            if fc.YAML in f or fc.YML in f or fc.JSON in f
+        ]
+
+    if len(parameter_files) < 1:
+        print(ipm.MISSING_ARGUMENT_ERROR)
+        sys.exit()
+
+    return parameter_files
+
+
+def files_from_args_sens(ref_path):
+    """
+    Look for parameter files supplied as arguments - if parameter files are supplied as
+    arguments, proceed to parse and type check input parameter type with the input manager.
+    The program will also accept flagged input directory , (-P or --in_dir)
+    """
+    parser = ArgumentParser(formatter_class=RawTextHelpFormatter)
+    # ---Declare input arguments---
+    parser.add_argument(
+        "in_files",
+        type=str,
+        nargs="*",
+        help=iht.INPUT_FILE_HELP_TEXT,
+    )
+    parser.add_argument(
+        "-P",
+        "--in_dir",
+        help=iht.INPUT_DIR_HELP_TEXT,
+    )
+    parser.add_argument(
+        "-X",
+        "--out_dir",
+        help=iht.OUTPUT_DIR_HELP_TEXT,
+    )
+    parser.add_argument(
+        "-S",
+        "--sensitivity_info",
+        help=iht.SENSITIVITY_INFO_HELP_TEXT,
     )
 
     args = parser.parse_args()
@@ -88,37 +162,20 @@ def files_from_args(ref_path):
         parameter_files = [
             get_abs_path(args.in_dir, ref_path) / "{}".format(f)
             for f in os.listdir(get_abs_path(args.in_dir, ref_path))
-            if ".yaml" in f or ".yml" in f or ".json" in f
+            if fc.YML in f or fc.YAML in f or fc.JSON in f
         ]
     else:
         parameter_files = [
             get_abs_path(f, ref_path)
             for f in args.in_files
-            if ".yaml" in f or ".yml" in f or ".json" in f
+            if fc.YAML in f or fc.YML in f or fc.JSON in f
         ]
 
     if len(parameter_files) < 1:
-        print("Please provide at least one input argument")
-        sys.exit()
+        print(ipm.MISSING_ARGUMENT_ERROR)
+        sys.exit(ipm.MISSING_ARGUMENT_ERROR)
     if args.out_dir is not None:
         out_dir = get_abs_path(args.out_dir, ref_path)
         return {"parameter_files": parameter_files, "out_dir": str(out_dir)}
 
-    return parameter_files
-
-
-def files_from_path(in_path):
-    if in_path is not None:
-        # if an input directory is specified, get all files within that are in the directory
-        # Get all yaml or json files in specified folder
-        parameter_files = [
-            in_path / "{}".format(f)
-            for f in os.listdir(in_path)
-            if ".yaml" in f or ".yml" in f or ".json" in f
-        ]
-
-    if len(parameter_files) < 1:
-        print("Please provide at least one input argument")
-        sys.exit()
-
-    return parameter_files
+    return parameter_files, args.sensitivity_info

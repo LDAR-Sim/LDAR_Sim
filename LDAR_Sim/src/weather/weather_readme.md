@@ -1,10 +1,12 @@
 # Weather Files
 
-* [ERA5_concat](#weather-file-merger-era5concat)
-* [ERA5_downloader](#weather-downloader-era5downloader)
-* [ERA5_hourly_to_daily](#era5hourlytodaily)
-* [weather_lookup](#weatherlookup--hourly)
-* [weather_lookup_hourly](#weatherlookup--hourly)
+- [Weather Files](#weather-files)
+  - [Weather file merger (ERA5\_concat)](#weather-file-merger-era5_concat)
+  - [Weather Downloader (ERA5\_downloader)](#weather-downloader-era5_downloader)
+    - [Setting up Copernicus](#setting-up-copernicus)
+    - [How to use ERA5\_downloader](#how-to-use-era5_downloader)
+  - [ERA5\_hourly\_to\_daily](#era5_hourly_to_daily)
+  - [weather\_lookup](#weather_lookup)
 
 ## Weather file merger (ERA5_concat)
 
@@ -68,6 +70,6 @@ If the script ever terminates mid-download, you can still obtain the data direct
  converting three hourly ERA5 NetCDF4 weather data of Alberta into one daily average
  ERA5 NetCDF4 weather data of Alberta.
 
-## weather_lookup [ _hourly]
+## weather_lookup
 
 Reads in NetCDF files and returns the environment at a given place in time.

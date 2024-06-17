@@ -1,0 +1,23 @@
+version: "4.0"
+parameter_level: virtual_world
+site_samples: 11
+emissions:
+  emissions_file: "emissions.csv" #File containing sample emissions rates or emissions distributions. 
+  repairable_emissions:
+    emissions_production_rate: 0.1 # The production rate of repairable emissions
+    emissions_rate_source: "test1" # The name of a column in the emissions file
+    duration: 365 # Natural repair delay of repairable emissions
+    multiple_emissions_per_source: True # True/False of whether repairable emission source can produce multiple emissions
+  non_repairable_emissions:
+    emissions_production_rate: 0.1  # The production rate of non-repairable emissions
+    emissions_rate_source: "test2" # The name of a column in the emissions file
+    duration: 365 # Natural repair delay of non-repairable emissions
+    multiple_emissions_per_source: True # True/False of whether non-repairable emission source can produce multiple emissions
+infrastructure:
+  site_type_file: "site_type.csv" # Infrastructure file defining site types
+  sites_file: "site.csv" #Infrastructure file defining sites
+  equipment_group_file: "equipment.csv" #Infrastructure file defining equipment groups at sites
+  sources_file: "sources.csv" #Infrastructure file defining emissions sources at equipment
+weather_file: "weather_alberta.nc"
+start_date: [2017, 1, 1]
+end_date: [2021, 12, 31]

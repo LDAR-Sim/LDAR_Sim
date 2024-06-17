@@ -1,4 +1,4 @@
-facility_ID,subtype_code,lat,lon,equipment_groups
+site_ID,site_type,lat,lon,equipment
 0,1,31.8459486,-104.4115901,1
 1,1,31.55667914,-101.9088721,1
 2,1,32.69862605,-101.6634249,1

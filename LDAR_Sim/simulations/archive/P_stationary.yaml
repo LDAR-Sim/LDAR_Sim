@@ -1,6 +1,0 @@
-program_name: P_stationary
-parameter_level: program
-version: '2.0'
-method_labels:
-- stationary
-- OGI_FU

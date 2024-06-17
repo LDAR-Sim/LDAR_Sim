@@ -1,0 +1,7 @@
+input_directory: ./inputs/simple_test_case_1
+simulation_count: 3
+output_directory: ./outputs/simple_test_case_1
+parameter_level: simulation_settings
+preseed_random: true
+reference_program: P_OGI
+version: "4.0"

@@ -18,11 +18,73 @@
 #
 # ------------------------------------------------------------------------------
 
-import random
-from datetime import datetime
+import numpy as np
+from datetime import date, timedelta
+import pickle
+import os
+from constants.file_name_constants import Generator_Files
+from constants.output_messages import RuntimeMessages
 
 
-def gen_seed_timeseries(params):
-    start_date = datetime(*params["start_date"])
-    n_timesteps = (datetime(*params["end_date"]) - start_date).days
-    return [random.randrange(1, 50, 1) for i in range(n_timesteps)]
+def gen_seed_timeseries(
+    sim_start_date: date, sim_end_date: date, gen_dir, force_remake: bool = False
+) -> list[int]:
+    seed_ts_dict: dict[date, int] = {}
+    preseed_loc = gen_dir / Generator_Files.PRESEED_FILE
+    current_date = sim_start_date
+
+    if os.path.isfile(preseed_loc) and not force_remake:
+        seed_ts_dict = get_seed_timeseries(gen_dir)
+        # check that the sim length matches
+        if (sim_end_date - sim_start_date).days + 1 == len(seed_ts_dict):
+            return seed_ts_dict
+    print(RuntimeMessages.GEN_PRESEED)
+    while current_date <= sim_end_date:
+        seed_ts_dict[current_date] = np.random.randint(0, 255)
+        current_date += timedelta(days=1)
+    with open(preseed_loc, "wb") as f:
+        pickle.dump(seed_ts_dict, f)
+
+    return seed_ts_dict
+
+
+def get_seed_timeseries(gen_dir) -> list[int]:
+    preseed_loc = gen_dir / Generator_Files.PRESEED_FILE
+    with open(preseed_loc, "rb") as f:
+        seed_ts = pickle.load(f)
+    return seed_ts
+
+
+def gen_seed_emis(n_sim: int, gen_dir) -> tuple[list[int], bool]:
+    preseed_val: list[int] = []
+    preseed_loc = gen_dir / Generator_Files.EMISSION_PRESEED_FILE
+    force_remake = False
+    if not os.path.exists(gen_dir):
+        force_remake = True
+        os.mkdir(gen_dir)
+
+    if os.path.isfile(preseed_loc):
+        preseed_val = get_emis_seed(gen_dir)
+        if len(preseed_val) < n_sim:
+            print(RuntimeMessages.GEN_ADD_PRESEED_EMISS)
+            for i in range(len(preseed_val), n_sim):
+                emis_preseed: int = np.random.randint(0, 255)
+                preseed_val.append(emis_preseed)
+            with open(preseed_loc, "wb") as f:
+                pickle.dump(preseed_val, f)
+    else:
+        print(RuntimeMessages.GEN_PRESEED_EMISS)
+        force_remake = True
+        for i in range(n_sim):
+            emis_preseed: int = np.random.randint(0, 255)
+            preseed_val.append(emis_preseed)
+        with open(preseed_loc, "wb") as f:
+            pickle.dump(preseed_val, f)
+    return preseed_val, force_remake
+
+
+def get_emis_seed(gen_dir) -> list[int]:
+    preseed_loc = gen_dir / Generator_Files.EMISSION_PRESEED_FILE
+    with open(preseed_loc, "rb") as f:
+        emis_seed = pickle.load(f)
+    return emis_seed
