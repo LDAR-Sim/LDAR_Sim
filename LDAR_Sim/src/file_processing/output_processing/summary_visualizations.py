@@ -313,7 +313,7 @@ def plot_stack_bar_chart(
     # Add text labels for each dot to display the actual Net Cost value
     for x_pos, net_cost_value in zip(x_positions, net_cost):
         ax.text(
-            x_pos,
+            x_pos + 0.02,
             net_cost_value,
             f"${net_cost_value:.2f}",  # Format the net cost value to two decimal places
             ha="left",

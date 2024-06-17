@@ -21,8 +21,6 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 from matplotlib import lines, pyplot as plt, ticker
 import scipy.stats
 from constants import output_file_constants
-from constants.general_const import Conversion_Constants as cc
-from constants.param_default_const import Program_Params as pp
 import seaborn as sns
 from typing import Any, Tuple, Union
 import numpy as np
@@ -43,24 +41,8 @@ def format_tick_labels_with_metric_prefix(x, pos):
     """
     Function to format tick labels as words with metric prefixes
     """
-    powers = [
-        18,
-        15,
-        12,
-        9,
-        6,
-        3,
-        0,
-    ]
-    label = [
-        "H",
-        "Q",
-        "T",
-        "B",
-        "M",
-        "K",
-        "",
-    ]
+    powers = [18, 15, 12, 9, 6, 3, 0]
+    label = ["H", "Q", "T", "B", "M", "K", ""]
     for i, power in enumerate(powers):
         if abs(x) >= 10**power:
             return "{:.1f}{}".format(x / 10**power, label[i])
@@ -178,81 +160,6 @@ def gen_annual_emissions_summary_list(
 
         paired_emissions_lists[program_name] = (true_emis_list, est_emis_list)
     return paired_emissions_lists
-
-
-def gen_tot_mitigation_list(
-    emis_summary_info, program_names, cost_dict, median: bool
-) -> dict[str, list[float]]:
-    tot_mitigation_cost_lists = {}
-    for program_name in program_names:
-        mitigation_list = emis_summary_info.loc[
-            emis_summary_info[output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME]
-            == program_name,
-            output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_TOT_MIT,
-        ].values
-        GWP = cost_dict[program_name][pp.GWP]
-        mitigation_list = [
-            mit for mit in mitigation_list
-        ]  # todo check the proper conversion factor
-        if median:
-            tot_mitigation_cost_lists[program_name] = np.median(mitigation_list) * GWP / 1000
-        else:
-            tot_mitigation_cost_lists[program_name] = [
-                value * GWP / 1000 for value in mitigation_list
-            ]
-    return tot_mitigation_cost_lists
-
-
-def gen_cost_to_mitigation_ratio(
-    mitigation_info: dict[str, list[float]], cost_info: dict[str, list[float]], program_names
-) -> dict[str, list[float]]:
-    cost_to_mitigation_ratios = {}
-    for program_name in program_names:
-        mitigation_list = mitigation_info[program_name]
-        cost_list = cost_info[program_name]
-
-        cost_to_mitigation_ratios[program_name] = [
-            cost / mitigation for cost, mitigation in zip(cost_list, mitigation_list)
-        ]
-    return cost_to_mitigation_ratios
-
-
-def gen_tot_cost_list(ts_summary_info, program_names, median: bool) -> dict[str, list[float]]:
-    tot_cost_lists = {}
-    for program_name in program_names:
-        cost_list = ts_summary_info.loc[
-            ts_summary_info[output_file_constants.TS_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME]
-            == program_name,
-            output_file_constants.TS_SUMMARY_COLUMNS_ACCESSORS.TOT_COST,
-        ].values
-        if median:
-            tot_cost_lists[program_name] = np.median(cost_list)
-        else:
-            tot_cost_lists[program_name] = cost_list
-    return tot_cost_lists
-
-
-def gen_tot_mitigation_cost_list(
-    emis_summary_info, program_names, cost_dict, median: bool
-) -> dict[str, list[float]]:
-    tot_mitigation_cost_lists = {}
-    for program_name in program_names:
-        mitigation_list = emis_summary_info.loc[
-            emis_summary_info[output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME]
-            == program_name,
-            output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_TOT_MIT,
-        ].values
-        cost_scale = cost_dict[program_name][pp.NATGAS]
-        mitigation_list = [
-            mit for mit in mitigation_list
-        ]  # todo check the proper conversion factor
-        if median:
-            tot_mitigation_cost_lists[program_name] = (
-                np.median(mitigation_list) * cc.KG_TO_MMBTU * cost_scale
-            )
-        else:
-            tot_mitigation_cost_lists[program_name] = mitigation_list * cc.KG_TO_MMBTU * cost_scale
-    return tot_mitigation_cost_lists
 
 
 def gen_annual_mitigation_summary_list(

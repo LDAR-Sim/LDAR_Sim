@@ -367,5 +367,5 @@ class COST_SUMMARY_COLUMNS_ACCESSORS:
     MITIGATION = "Mitigated Methane (kg)"
     TOTAL_COST = "Total Cost ($)"
     MITIGATION_RATIO = "Mitigation Ratio ($/tonne CO2e)"
-    COST_OF_MITIGATED_EMIS = "Cost of Mitigated Methane ($)"
+    COST_OF_MITIGATED_EMIS = "Value of Mitigated Methane ($)"
     NET_COST = "Net Cost ($)"

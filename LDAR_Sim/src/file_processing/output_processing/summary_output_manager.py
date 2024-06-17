@@ -190,7 +190,7 @@ class SummaryOutputManager:
         return
 
     def filter_program_costs(self, ts_summary_info, program_names) -> pd.DataFrame:
-        """Filter DataFrame to return cost columns and rows with program names in program_names"""
+        """Filter DataFrame to return cost columns and rows based on program names"""
         filtered_df = ts_summary_info.loc[
             ts_summary_info[output_file_constants.TS_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME].isin(
                 program_names
@@ -210,7 +210,7 @@ class SummaryOutputManager:
         return filtered_df
 
     def filter_program_mitigation(self, emis_summary_info, program_names) -> pd.DataFrame:
-        """Filter dataframe to return mitigation columns and rows with program names in program_names"""
+        """Filter dataframe to return mitigation columns and rows based on program names"""
         filtered_df = emis_summary_info.loc[
             emis_summary_info[output_file_constants.TS_SUMMARY_COLUMNS_ACCESSORS.PROG_NAME].isin(
                 program_names

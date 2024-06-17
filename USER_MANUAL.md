@@ -1042,8 +1042,6 @@ method_labels: ["aircraft","OGI_FU"]
 
 **Description** Economic values that are used to generate cost related figures.
 
-**Note:** The following economics parameters are currently placeholders and will be reimplemented in a future patch.
-
 #### &lt;global_warming_potential_CH4&gt;
 
 **Data Type:** Numeric
