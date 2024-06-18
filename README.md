@@ -20,7 +20,7 @@ To learn more about LDAR-Sim, you can:
   2) Read our [story map](https://arcg.is/1rXeX10) (less technical introduction).
   3) Read [Fox et al., 2021](https://www.sciencedirect.com/science/article/pii/S0959652620352811).
 
-For first time users, we recommend attempting to reproduce the case study results in Fox et al. 2021 (see below).
+For first time users, we recommend attempting to reproduce the case study results in Fox et al. 2021 ([see below](#fox-et-al-2020-release)).
 
 Thomas Fox: <thomas@highwoodemissions.com>
 
@@ -46,7 +46,9 @@ NOTE: This applies to all versions following Commit 69c27ec, Made on March 1st, 
 
 ## Special Thanks and Acknowledgements
 
- The LDAR-Sim development team would like to give a special thanks and acknowledgement to the University of Calgary's Intelligent Methane Monitoring and Management System (IM3S) Group for their significant contributions to the development and growth of LDAR-Sim from 2018 to 2021.
+The LDAR-Sim development team would like to give a special thanks and acknowledgement to Colorado Department of Public Health and Environment(CDPHE) for supporting and funding the development and release of Version 4.0.0 of LDAR-Sim.
+
+The LDAR-Sim development team would like to give a special thanks and acknowledgement to the University of Calgary's Intelligent Methane Monitoring and Management System (IM3S) Group for their significant contributions to the development and growth of LDAR-Sim from 2018 to 2021.
 
 ## [Fox et al. 2020 Release](https://github.com/tarcadius/LDAR_Sim/tree/Fox_etal_2020)
 
@@ -56,11 +58,11 @@ The Fox et al., 2020 release contains the exact code and inputs used in [our LDA
 
 Citation for this release: Fox, Thomas A., Mozhou Gao, Thomas E. Barchyn, Yorwearth L. Jamin, and Chris H. Hugenholtz. "An agent-based model for estimating emissions reduction equivalence among leak detection and repair programs." Journal of Cleaner Production (2021): 125237.
 
-### Getting started
+## Getting started
 
-This guide is intended to get a user running with LDAR-Sim, **note** that even though we have supplied default variables, these should be used with caution, as many are not fully understood, are dependent on specific company workpractices, and vary by geographical region.
+This guide is intended to get a user running with LDAR-Sim, **note** that even though we have supplied default variables, these should be used with caution, as many are not fully understood, are dependent on specific company work practices, and vary by geographical region.
 
-#### Step 1: Before you begin
+### Step 1: Before you begin
 
 Read and understand the LDAR-Sim [MIT license](LICENSE.txt).
 Read and follow the [installation guide](INSTALL_GUIDE.md).
@@ -68,9 +70,9 @@ Read the [user manual](USER_MANUAL.md).
 
 Read [Fox et al 2021](https://www.sciencedirect.com/science/article/pii/S0959652620352811) to familiarize yourself with LDAR-Sim fundamentals.
 
-#### Step 2: Installing Packages with Conda
+### Step 2: Installing Packages with Conda
 
-Using Conda (Conda-forge) and the requirements file included in the "install folder" Follow the directions included in the Setting Up LDAR Sim Dev Environment file. The requirements.txt file can also be used with PIP and pipenv, but Python should be installed separately.
+Using Conda (Conda-forge) and the requirements file included in the "install" folder. Follow the directions included in the Setting Up LDAR Sim Dev Environment file. The `requirements.txt` file can also be used with PIP and pipenv, but Python should be installed separately.
 
 - Install Miniconda3 newest version
 - From Conda Shell: cd into LDAR-Sim/install
@@ -91,15 +93,15 @@ if you are using satellite modules orbit predictor needs to be added to environm
 
   `pip install orbit_predictor==1.14.2`
 
-#### Step 3: Get Weather and Facility Data
+### Step 3: Get Weather and Facility Data
 
 The application requires both facility and weather data to run. We have included sample facilities and weather data for Alberta as an example. Check out the [user manual](USER_MANUAL.md) for more information on formatting of facility data. Weather data can either be downloaded manually, or ERA5 data can be downloaded directly from Copernicus using the /module_code/weather/ERA5_downloader.py module (see file for instructions). Note the output data is in hourly format, therefore the flag weather_is_hourly should be set to True. Multiple ERA nc files can be concatenated with ERA5_concat.py.
 
-#### Step 4: Populate the simulation folder with Programs and associated methods
+### Step 4: Populate the simulation folder with Programs and associated methods
 
 The simulation files allow a user to set simulation_setting / virtual_world / program / and method parameters. If a parameter is not included in the file a default value will be used. One simulation_settings file, one virtual world file and at least one Program File is required for running the program while method files are required for running a method.
 
-##### Example
+#### Example
 
 A simulation settings yaml file is required, the most basic setup is as follows (note that P_OGI and P_none are required):
 Simulation_settings.yaml =>
@@ -155,7 +157,7 @@ A Method yaml file is required, the most basic setup is as follows:
 
 Check out the [user manual](USER_MANUAL.md) for more info on the parameters.
 
-#### Step 5: Run the program
+### Step 5: Run the program
 
 The main program is a python script called LDAR_Sim_run.py. Within the virtual environment (or where all py packages are installed) run:
 
@@ -185,6 +187,6 @@ The included python code follows strict PEP8 Standards for formatting with a mod
 
 Example command to run black in cmd: ```black --line-length 100 LDAR_Sim```
 
-When submitting Issues, Commits and Pull Requests, please use the provided templates to ensure consistent format. For instructions on how to setup the LDAR-Sim commit message template please see the [Setup Instructions](LDAR_Sim/install/SetupInstructions.md)
+When submitting Issues, Commits and Pull Requests, please use the provided templates to ensure consistent format. For instructions on how to setup the LDAR-Sim commit message template please see the [Setup Instructions](Guides/SetupInstructions.md)
 
 The authors welcome all contributions and collaborations. Please reach out - we would love to hear from you and/or work with you!
