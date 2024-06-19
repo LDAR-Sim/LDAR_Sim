@@ -42,7 +42,12 @@ def summarize_program_outputs(
                 )
             ):
                 new_summary_row: dict[str, Any] = {}
-                data = pd.read_csv(entry.path)
+                # Check to make sure the entry is not empty before reading it
+                # If it is empty, initialize the data variable to an empty dataframe
+                try:
+                    data = pd.read_csv(entry.path)
+                except pd.errors.EmptyDataError:
+                    data = pd.DataFrame()
                 new_summary_row[
                     output_file_constants.SummaryFileColumns.CommonColumns.PROGRAM_NAME
                 ] = (
