@@ -1,5 +1,9 @@
 # Change Log
 
+## 2024-06-19 - Version 4.0.2
+
+1. Mitigation related plots will automatically not be rendered when there are no mitigation in the simulation.
+
 ## 2024-06-19 - Version 4.0.1
 
 1. Fixed an Issue where users would encounter an error when trying to simulate only non-repairable emissions
