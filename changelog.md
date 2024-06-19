@@ -1,5 +1,9 @@
 # Change Log
 
+## 2024-06-19 - Version 4.0.1
+
+1. Fixed an Issue where users would encounter an error when trying to simulate only non-repairable emissions
+
 ## 2024-06-17 - Version 4.0.0
 
 The version bump to 4.0 of LDAR-Sim included a significant overhaul of the existing code base and functionality overhaul.
