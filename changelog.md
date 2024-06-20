@@ -1,8 +1,9 @@
 # Change Log
 
-## 2024-06-19 - Version 4.0.2
+## 2024-06-120 - Version 4.0.2
 
 1. Mitigation related plots will automatically not be rendered when there are no mitigation in the simulation.
+2. Updated the sensitivity analysis module script to be in line with the ldar_sim_run script
 
 ## 2024-06-19 - Version 4.0.1
 
