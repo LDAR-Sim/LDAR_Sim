@@ -24,6 +24,7 @@ import multiprocessing as mp
 import os
 import shutil
 import sys
+import pandas as pd
 from datetime import date
 from math import floor
 from pathlib import Path
@@ -56,6 +57,11 @@ from utils.generic_functions import check_ERA5_file
 from virtual_world.infrastructure import Infrastructure
 from weather.daylight_calculator import DaylightCalculatorAve
 from weather.weather_lookup import WeatherLookup as WL
+from utils.prog_method_measured_func import (
+    set_up_tf_method_deployed_df,
+    filter_deployment_tf_by_program_methods,
+)
+from file_processing.output_processing.summary_output_helpers import get_non_baseline_prog_names
 
 if __name__ == "__main__":
     print(rm.OPENING_MSG)
@@ -162,6 +168,9 @@ if __name__ == "__main__":
         simulation_count: int = simulation_setting[pdc.Sim_Setting_Params.SIMS]
         emis_preseed_val: list[int] = None
         force_remake_gen: bool = False
+        site_measured: pd.DataFrame = set_up_tf_method_deployed_df(
+            methods, virtual_world[pdc.Virtual_World_Params.N_SITES]
+        )
         if preseed_random:
             emis_preseed_val, force_remake_gen = gen_seed_emis(simulation_count, generator_dir)
         infrastructure, hash_file_exist = initialize_infrastructure(
@@ -176,6 +185,7 @@ if __name__ == "__main__":
         )
         infrastructure: Infrastructure
         hash_file_exist: bool
+        infrastructure.gen_site_measured_tf_data(methods, site_measured)
         print(rm.INIT_EMISS)
         # Pregenerate emissions
         seed_timeseries = initialize_emissions(
@@ -211,6 +221,7 @@ if __name__ == "__main__":
             output_path=out_dir,
             output_config=output_params,
             sim_years=simulation_years,
+            programs=programs,
         )
         summary_visualization_manager: SummaryVisualizationManager = SummaryVisualizationManager(
             output_config=output_params,
@@ -242,8 +253,12 @@ if __name__ == "__main__":
                     prog_data = []
                     for program in programs:
                         meth_params = {}
+                        prog_measured_df = filter_deployment_tf_by_program_methods(
+                            site_measured, programs[program][pdc.Program_Params.METHODS]
+                        )
                         for meth in programs[program][pdc.Program_Params.METHODS]:
                             meth_params[meth] = methods[meth]
+
                         prog_data.append(
                             (
                                 daylight,
@@ -259,6 +274,7 @@ if __name__ == "__main__":
                                 out_dir,
                                 seed_timeseries,
                                 lock,
+                                prog_measured_df,
                             )
                         )
 
@@ -273,6 +289,9 @@ if __name__ == "__main__":
                 # -- Batch Report --
                 print(rm.BATCH_CLEAN.format(batch_count=batch_count))
                 summary_stats_manager.gen_summary_outputs(batch_count != 0)
+        if summary_stats_manager.make_cost_summary():
+            non_baseline_progs = get_non_baseline_prog_names(programs, base_program)
+            summary_stats_manager.gen_cost_summary_outputs(non_baseline_progs)
         summary_visualization_manager.gen_visualizations()
     sensitivity_results_manager.gen_sensitivity_results(
         sensitivity_program,
