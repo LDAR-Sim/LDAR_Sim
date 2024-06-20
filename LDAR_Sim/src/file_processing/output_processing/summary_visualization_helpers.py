@@ -180,7 +180,7 @@ def gen_annual_mitigation_summary_list(
         mit_ann_columns = mit_ann_columns[1:]
 
     annual_mitigation_lists = {}
-
+    is_there_mitigation = False
     for program_name in program_names:
         mitigation_list = np.ravel(
             emis_summary_info.loc[
@@ -189,9 +189,21 @@ def gen_annual_mitigation_summary_list(
                 mit_ann_columns,
             ].values
         ).tolist()
-
+        # Check if there is any mitigation in the program only
+        # if there has not been any mitigation found yet
+        if not is_there_mitigation:
+            is_there_mitigation = is_list_non_zero(mitigation_list)
         annual_mitigation_lists[program_name] = mitigation_list
-    return annual_mitigation_lists
+    # If there is mitigation, return the mitigation lists
+    if is_there_mitigation:
+        return annual_mitigation_lists
+    else:
+        # Return none if there is no mitigation in any program
+        return None
+
+
+def is_list_non_zero(list) -> bool:
+    return all(item != 0 for item in list)
 
 
 def gen_true_estimated_annualized_statistics(

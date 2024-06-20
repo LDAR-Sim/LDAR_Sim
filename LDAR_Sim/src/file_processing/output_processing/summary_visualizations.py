@@ -549,7 +549,9 @@ def gen_program_mitigation_bars(
     annual_mitigation_data: dict[str, list[float]] = (
         summary_visualization_helpers.gen_annual_mitigation_summary_list(data, program_names)
     )
-
+    # if no mitigation data was found, return
+    if annual_mitigation_data is None:
+        return
     plot_bar_chart(
         annual_mitigation_data,
         visualization_dir,
@@ -576,6 +578,12 @@ def gen_cost_to_mit_boxplot(
             output_file_constants.COST_SUMMARY_COLUMNS_ACCESSORS.MITIGATION_RATIO,
         ]
     ]
+    # Mitigation ratio will be infinite if there is no mitigation.
+    # if all mitigation ratios are infinite, do not plot.
+    if np.isinf(
+        filtered_data[output_file_constants.COST_SUMMARY_COLUMNS_ACCESSORS.MITIGATION_RATIO]
+    ).all():
+        return
 
     plot_box_whisker(
         filtered_data,
