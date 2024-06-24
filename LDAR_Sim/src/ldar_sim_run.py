@@ -236,7 +236,7 @@ def run_ldar_sim(parameter_filenames, DEBUG=False):
             sim_counts.append(remainder)
     else:
         sim_counts = [simulation_count]
-    if _DEBUG:
+    if DEBUG:
         for batch_count, sim_count in enumerate(sim_counts):
             for simulation in range(sim_count):
                 simulation_number: int = batch_count * 5 + simulation
@@ -348,4 +348,4 @@ if __name__ == "__main__":
             "cumulative",
         )
     else:
-        run_ldar_sim(parameter_filenames)
+        run_ldar_sim(parameter_filenames, _DEBUG)
