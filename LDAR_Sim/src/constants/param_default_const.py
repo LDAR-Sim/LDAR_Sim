@@ -165,6 +165,8 @@ class Output_Params:
     PROGRAM_TIMESERIES = "Program Timeseries"
     SUMMARY_OUTPUTS = "Summary Outputs"
     SUMMARY_VISUALIZATION_SETTINGS = "Summary Visualization Settings"
+    PROGRAM_VISUALIZATIONS = "Program Visualizations"
+    SINGLE_PROGRAM_TIMESERIES = "Single Program Timeseries"
     SUMMARY_FILES = "Summary Files"
     SUMMARY_VISUALIZATIONS = "Summary Visualizations"
     TIMESERIES_SUMMARY = "Timeseries Summary"

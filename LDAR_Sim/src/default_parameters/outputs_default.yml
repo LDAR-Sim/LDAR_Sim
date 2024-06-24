@@ -3,6 +3,8 @@ version: "4.0"
 Program Outputs:
   Program Emissions: true
   Program Timeseries: true
+Program Visualizations:
+  Single Program Timeseries: true
 Summary Outputs:
   Summary Files:
     Timeseries Summary: true

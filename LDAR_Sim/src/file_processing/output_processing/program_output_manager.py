@@ -25,9 +25,8 @@ import pandas as pd
 from pathlib import Path, WindowsPath
 from typing import Any
 
-from file_processing.output_processing.program_specific_visualizations import (
-    gen_prog_timeseries_plot,
-)
+from file_processing.output_processing import program_specific_visualizations
+
 from file_processing.output_processing.output_utils import (
     EmisInfo,
     TsEmisData,
@@ -42,7 +41,7 @@ from constants.output_file_constants import (
 )
 from programs.program import Program
 from constants.infrastructure_const import Deployment_TF_Sites_Constants as DTSC
-from constants.param_default_const import Duration_Method as dm
+from constants.param_default_const import Duration_Method as dm, Output_Params as op
 import file_processing.output_processing.program_output as prog_output
 
 
@@ -51,11 +50,23 @@ class ProgramOutputManager:
         dm.COMPONENT: prog_output.gen_estimated_comp_emissions_report,
         dm.MEASUREMENT_CONSERVATIVE: prog_output.gen_estimated_emissions_report,
     }
+    PROGRAM_VISUALIZATION_FUNCTIONS_MAP = {
+        op.SINGLE_PROGRAM_TIMESERIES: program_specific_visualizations.gen_prog_timeseries_plot
+    }
 
-    def __init__(self, path: WindowsPath, name_str: str, method_names: list[str]) -> None:
+    def __init__(
+        self, path: WindowsPath, name_str: str, method_names: list[str], output_config
+    ) -> None:
         self._output_dir: Path = path
         self.name_str: str = name_str
         self._method_names: list[str] = method_names
+
+        self.program_visualizations_to_make: list[str] = self.parse_visualization_functions(
+            output_config[op.PROGRAM_VISUALIZATIONS]
+        )
+
+    def parse_visualization_functions(self, output_config: dict) -> list[str]:
+        return [output for output, wanted in output_config.items() if wanted]
 
     def summarize_program_outputs(
         self,
@@ -69,7 +80,12 @@ class ProgramOutputManager:
         self.gen_sim_directory()
         summary_filename = self.generate_file_names(Output_Files.EMISSIONS_SUMMARY_FILE)
         self.save_results(overall_emission_data, summary_filename)
-        self.gen_prog_spec_visualizations(timeseries=timeseries)
+        for program_visualization in self.program_visualizations_to_make:
+            visualization_function = self.PROGRAM_VISUALIZATION_FUNCTIONS_MAP.get(
+                program_visualization
+            )
+            if visualization_function:
+                visualization_function(timeseries, self._output_dir, self.name_str)
         timeseries_filename = self.generate_file_names(Output_Files.TIMESERIES_FILE)
         self.save_results(timeseries, timeseries_filename)
 
@@ -115,10 +131,6 @@ class ProgramOutputManager:
         filepath: Path = self._output_dir / filename
         with open(filepath, "w", newline="") as f:
             data.to_csv(f, index=False, float_format="%.5f")
-
-    def gen_prog_spec_visualizations(self, timeseries: pd.DataFrame):
-        gen_prog_timeseries_plot(timeseries, self._output_dir, self.name_str)
-        return
 
     def _init_ts_row(self, current_date: date):
         new_ts_row: dict[str, Any] = {

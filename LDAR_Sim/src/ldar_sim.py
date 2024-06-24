@@ -48,6 +48,7 @@ class LdarSim:
         sim_number: int,
         simulation_settings,
         virtual_world,
+        output_config,
         program: Program,
         infrastructure: Infrastructure,
         input_dir: WindowsPath,
@@ -76,6 +77,7 @@ class LdarSim:
             path=output_dir / program.name,
             name_str=self.name_str,
             method_names=program.method_names,
+            output_config=output_config,
         )
         if preseed_timeseries is not None:
             self._preseed = True
