@@ -41,6 +41,8 @@ def format_tick_labels_with_metric_prefix(x, pos):
     """
     Function to format tick labels as words with metric prefixes
     """
+    if abs(x) < 1:
+        return "{:.1f}".format(x)
     powers = [18, 15, 12, 9, 6, 3, 0]
     label = ["H", "Q", "T", "B", "M", "K", ""]
     for i, power in enumerate(powers):
