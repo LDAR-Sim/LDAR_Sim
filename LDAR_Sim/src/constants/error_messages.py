@@ -101,6 +101,12 @@ class Input_Processing_Messages:
     MISSING_DEPLOYMENT_TYPE_ERROR = "Warning: Deployment type is missing for method: {method}"
 
 
+class Runtime_Warning_Messages:
+    POTENTIAL_CREW_SHORTAGE_MESSAGE = (
+        "Warning: LDAR-Sim has detected a potential for crew shortage for the method: {method}"
+    )
+
+
 class Output_Processing_Messages:
     OPERAND_ADDITION_ERROR = "Unsupported operand type for addition"
     OPERAND_INPLACE_ADDITION_ERROR = "Unsupported operand type for in-place addition"

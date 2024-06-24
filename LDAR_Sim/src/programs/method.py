@@ -27,7 +27,10 @@ from typing import Tuple
 import gc
 import numpy as np
 import constants.param_default_const as pdc
-from constants.error_messages import Input_Processing_Messages as ipm
+from constants.error_messages import (
+    Input_Processing_Messages as ipm,
+    Runtime_Warning_Messages as rwm,
+)
 from file_processing.output_processing.output_utils import CrewDeploymentStats, TaggingFlaggingStats
 from sensors.default_site_level_sensor import DefaultSiteLevelSensor
 from virtual_world.sites import Site
@@ -48,10 +51,6 @@ class Method:
 
     PER_SITE_COST = "site"
     PER_DAY_COST = "day"
-
-    POTENTIAL_CREW_SHORTAGE_MESSAGE = (
-        "Warning: LDAR-Sim has detected a potential for crew shortage for the method: {method}"
-    )
 
     # TODO ensure survey times aren't needed for methods
     def __init__(
@@ -177,7 +176,7 @@ class Method:
             estimate_req_n_crews = 1
         if crews > 0 and estimate_req_n_crews > crews:
             estimate_req_n_crews = crews
-            print(self.POTENTIAL_CREW_SHORTAGE_MESSAGE)
+            print(rwm.POTENTIAL_CREW_SHORTAGE_MESSAGE.format(method=self._name))
         return estimate_req_n_crews
 
     def _get_avg_t_bt_sites(self) -> float:
