@@ -269,6 +269,7 @@ if __name__ == "__main__":
                                 programs[program],
                                 simulation_setting,
                                 virtual_world,
+                                output_params,
                                 infra,
                                 in_dir,
                                 out_dir,
