@@ -6,5 +6,5 @@ economics:
   global_warming_potential_CH4: 28.0
   sale_price_of_natural_gas: 3.0
 duration_estimate:
-  duration_factor: 1
+  duration_factor: 1.0 # A value between 0.0 and 1.0
   duration_method: "component-based" # component-based or measurement-based-conservative

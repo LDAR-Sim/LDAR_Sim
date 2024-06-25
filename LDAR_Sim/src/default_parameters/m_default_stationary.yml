@@ -13,8 +13,8 @@ coverage:
   spatial: 1.0 # 0.0 to 1.0
   temporal: 1.0 # 0.0 to 1.0
 cost:
-  per_day: 0
-  upfront: 0
+  per_day: 0.0
+  upfront: 0.0
 consider_daylight: False
 reporting_delay: 2 # days
 scheduling:

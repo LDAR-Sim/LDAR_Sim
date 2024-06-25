@@ -14,7 +14,7 @@ consider_weather: False # True/False
 weather_file: "_placeholder_str_"
 repairs:
   cost:
-    values: [200]
+    values: [200.0]
     file: "_placeholder_str_"
   delay:
     file: "_placeholder_str_" # The file containing sample repair delays, if it exists
