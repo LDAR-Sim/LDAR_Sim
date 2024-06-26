@@ -1,0 +1,8 @@
+program_name: P_stationary
+parameter_level: programs
+version: "4.0"
+method_labels:
+  - stationary
+  - OGI_FU
+duration_estimate:
+  duration_method: "measurement-based-conservative" # component-based or measurement-based-conservative
