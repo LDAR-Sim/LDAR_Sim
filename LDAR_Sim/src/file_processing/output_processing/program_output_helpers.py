@@ -18,15 +18,21 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 ------------------------------------------------------------------------------
 """
 
+from math import ceil
 import pandas as pd
 import numpy as np
 from typing import Any
 from constants.general_const import Conversion_Constants as conv_const
 from constants.output_file_constants import EMIS_DATA_COL_ACCESSORS as eca
+from constants.error_messages import Output_Processing_Messages as opm
 
 
 def closest_future_date(date: pd.Timestamp, date_list: list[pd.Timestamp]) -> pd.Timestamp:
     return min([d for d in date_list if d > date], default=None, key=lambda x: abs(x - date))
+
+
+def closest_past_date(date: pd.Timestamp, date_list: list[pd.Timestamp]) -> pd.Timestamp:
+    return max([d for d in date_list if d < date], default=None, key=lambda x: abs(x - date))
 
 
 def find_df_row_value_w_match(
@@ -96,3 +102,23 @@ def expand_column(df: pd.DataFrame, column: str) -> pd.DataFrame:
     combined_df = combined_df.loc[:, ~combined_df.columns.duplicated()]
 
     return combined_df
+
+
+def calculate_new_start_date(start_date, end_date, duration_factor):
+    """
+    Calculate the new start date based on the end date and duration factor
+    If a factor is 0 or negative, an error will be raised
+    If a duration factor results in a part of a date, it will be rounded up to the next whole day
+        Ex. 1.2 days will be rounded up to 2 days
+    Args:
+        start_date (pd.Timestamp): The start date
+        end_date (pd.Timestamp): The end date
+        duration_factor (float): The duration factor
+    """
+    if duration_factor <= 0 or duration_factor > 1.0:
+        raise ValueError(
+            opm.DURATION_FACTOR_ERROR
+        )  # TODO: this should be checked in parameter verification
+    days = (end_date - start_date).days
+    new_days = ceil(days * duration_factor)
+    return end_date - pd.Timedelta(days=new_days)

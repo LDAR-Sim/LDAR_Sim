@@ -21,6 +21,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 """
 
 import pandas as pd
+import numpy as np
 from datetime import date
 
 from file_processing.output_processing import program_output_helpers
@@ -33,7 +34,6 @@ from constants.output_file_constants import (
     EMIS_COMP_ESTIMATION_OUTPUT_COLUMNS,
     EST_FUG_OUTPUT_COLUMNS,
 )
-from constants.file_name_constants import Output_Files
 
 
 def gen_estimated_fugitive_emissions_to_remove(
@@ -62,12 +62,28 @@ def gen_estimated_fugitive_emissions_to_remove(
         .unique()
         .to_dict()
     )
-
     # Use the dictionary to map the closest future survey date for each row
     fugitive_emissions_rates_and_repair_dates[eca.NEXT_SURVEY_DATE] = (
         fugitive_emissions_rates_and_repair_dates.apply(
             lambda x: program_output_helpers.closest_future_date(
                 x[eca.DATE_REP_EXP], site_survey_dates[x[eca.SITE_ID]]
+            ),
+            axis=1,
+        )
+    )
+
+    # Populate a new column in the fugitive emissions rates and repair dates dataframe
+    # with the closest past survey date - this is based on the "calculated" start date
+    # if duration factor is less than 1
+    # this new column will be used to determine the start date for the emissions to remove
+    # if they need to be changed based on the duration factor
+    site_start_dates = (
+        site_survey_reports_summary.groupby(eca.SITE_ID)[eca.START_DATE].unique().to_dict()
+    )
+    fugitive_emissions_rates_and_repair_dates[eca.LAST_SURVEY_DATE] = (
+        fugitive_emissions_rates_and_repair_dates.apply(
+            lambda x: program_output_helpers.closest_past_date(
+                x[eca.NEXT_SURVEY_DATE], site_start_dates[x[eca.SITE_ID]]
             ),
             axis=1,
         )
@@ -93,7 +109,7 @@ def gen_estimated_fugitive_emissions_to_remove(
     # to be able to re-use the calculate_volume_emitted function
     # to calculate the emissions to remove
     fugitive_emissions_rates_and_repair_dates = fugitive_emissions_rates_and_repair_dates.assign(
-        **{eca.START_DATE: lambda x: x[eca.DATE_REP_EXP]},
+        **{eca.START_DATE: lambda x: np.maximum(x[eca.DATE_REP_EXP], x[eca.LAST_SURVEY_DATE])},
         **{eca.END_DATE: lambda x: x[eca.NEXT_SURVEY_DATE]},
     )
     fugitive_emissions_rates_and_repair_dates[eca.EST_VOL_EMIT] = (
@@ -110,6 +126,7 @@ def gen_estimated_emissions_report(
     fugutive_emissions_rates_and_repair_dates: pd.DataFrame,
     start_date: date,
     end_date: date,
+    duration_factor: float,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     """Generate a report of yearly estimated emissions based on site survey reports
     Args:
@@ -154,9 +171,6 @@ def gen_estimated_emissions_report(
     sorted_by_site_summary["days_since_last_survey"] = (
         grouped_by_site_summary[eca.SURVEY_COMPLETION_DATE].diff().dt.days
     )
-    sorted_by_site_summary["days_since_last_survey"] = (
-        grouped_by_site_summary[eca.SURVEY_COMPLETION_DATE].diff().dt.days
-    )
     sorted_by_site_summary["days_until_next_survey"] = abs(
         grouped_by_site_summary[eca.SURVEY_COMPLETION_DATE].diff(-1).dt.days
     )
@@ -175,6 +189,16 @@ def gen_estimated_emissions_report(
         .apply(program_output_helpers.calculate_end_date)
         .reset_index(drop=True)
     )
+    # if the duration factor is less than 1, need to calculate a different start date
+    # based on the duration factor
+    if duration_factor < 1:
+        sorted_by_site_summary[eca.OGI_START_DATE] = sorted_by_site_summary[eca.START_DATE]
+        sorted_by_site_summary[eca.START_DATE] = sorted_by_site_summary.apply(
+            lambda x: program_output_helpers.calculate_new_start_date(
+                x[eca.OGI_START_DATE], x[eca.END_DATE], duration_factor
+            ),
+            axis=1,
+        )
     # Generate a report of estimated fugitive emissions to remove
     fugitive_emissions_to_remove: pd.DataFrame = gen_estimated_fugitive_emissions_to_remove(
         site_survey_reports_summary=sorted_by_site_summary,
@@ -192,9 +216,10 @@ def gen_estimated_emissions_report(
 
 def gen_estimated_comp_emissions_report(
     site_survey_reports_summary: pd.DataFrame,
-    fugutive_emissions_rates_and_repair_dates: pd.DataFrame,
+    fugitive_emissions_rates_and_repair_dates: pd.DataFrame,
     start_date: date,
     end_date: date,
+    duration_factor: float,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     """Generate a report of yearly estimated emissions based on only component level surveys
     Args:
@@ -292,9 +317,7 @@ def gen_estimated_comp_emissions_report(
     sorted_by_site_summary["days_since_last_survey"] = (
         grouped_by_site_summary[eca.SURVEY_COMPLETION_DATE].diff().dt.days
     )
-    sorted_by_site_summary["days_since_last_survey"] = (
-        grouped_by_site_summary[eca.SURVEY_COMPLETION_DATE].diff().dt.days
-    )
+
     sorted_by_site_summary["days_until_next_survey"] = abs(
         grouped_by_site_summary[eca.SURVEY_COMPLETION_DATE].diff(-1).dt.days
     )
@@ -309,9 +332,19 @@ def gen_estimated_comp_emissions_report(
         program_output_helpers.calculate_end_date
     ).reset_index(drop=True)
 
+    # if the duration factor is less than 1, need to calculate a different start date
+    # based on the duration factor
+    if duration_factor < 1:
+        sorted_by_site_summary[eca.OGI_START_DATE] = sorted_by_site_summary[eca.START_DATE]
+        sorted_by_site_summary[eca.START_DATE] = sorted_by_site_summary.apply(
+            lambda x: program_output_helpers.calculate_new_start_date(
+                x[eca.OGI_START_DATE], x[eca.END_DATE], duration_factor
+            ),
+            axis=1,
+        )
     fugitive_emissions_to_remove: pd.DataFrame = gen_estimated_fugitive_emissions_to_remove(
         site_survey_reports_summary=sorted_by_site_summary,
-        fugitive_emissions_rates_and_repair_dates=fugutive_emissions_rates_and_repair_dates,
+        fugitive_emissions_rates_and_repair_dates=fugitive_emissions_rates_and_repair_dates,
     )
 
     sorted_by_site_summary[eca.EST_VOL_EMIT] = sorted_by_site_summary.apply(
