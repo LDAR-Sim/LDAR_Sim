@@ -115,7 +115,8 @@ def generate_emissions_summary(directory: str, outputs_mapper: SummaryOutputMapp
         how="outer",
     )
     # Fill NaN values with zeros
-    merged.fillna(0, inplace=True)
+    with pd.option_context("future.no_silent_downcasting", True):
+        merged = merged.fillna(0).infer_objects(copy=False)
     return merged
 
 
