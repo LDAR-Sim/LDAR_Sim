@@ -88,6 +88,11 @@ def generate_timeseries_summary(directory: str, outputs_mapper: SummaryOutputMap
 
 
 def generate_emissions_summary(directory: str, outputs_mapper: SummaryOutputMapper):
+
+    common_columns = [
+        output_file_constants.SummaryFileColumns.CommonColumns.PROGRAM_NAME,
+        output_file_constants.SummaryFileColumns.CommonColumns.SIMULATION_NUMBER,
+    ]
     summary_columns: list[str] = outputs_mapper.get_summary_columns(
         file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY
     )
@@ -105,17 +110,21 @@ def generate_emissions_summary(directory: str, outputs_mapper: SummaryOutputMapp
         file_processing_const.Multi_Sim_Output_Const.EMIS_PATTERN,
     )
     estimated_df: pd.DataFrame = generate_emissions_estimation_summary(directory, outputs_mapper)
+    # Merge summary and estimated data
     merged = pd.merge(
         emissions_summary_df,
         estimated_df,
-        on=[
-            output_file_constants.SummaryFileColumns.CommonColumns.PROGRAM_NAME,
-            output_file_constants.SummaryFileColumns.CommonColumns.SIMULATION_NUMBER,
-        ],
+        on=common_columns,
         how="outer",
     )
-    # Fill NaN values with zeros
-    merged.fillna(0, inplace=True)
+
+    # Exclude specific columns from being converted to numeric
+    cols_to_convert = merged.columns.difference(common_columns)
+
+    # Convert applicable columns to numeric, fill NA values with 0
+    merged[cols_to_convert] = merged[cols_to_convert].apply(pd.to_numeric, errors="coerce")
+    # Fill NA values with 0
+    merged = merged.fillna(0)
     return merged
 
 
