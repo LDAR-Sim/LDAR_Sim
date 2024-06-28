@@ -84,6 +84,16 @@ class Infrastructure_Constants:
             DEPLOYMENT_YEARS_PLACEHOLDER,
         ]
 
+        PROPAGATING_PARAMS_TO_SCALE: list[str] = [
+            REP_EMIS_EPR,
+            NON_REP_EMIS_EPR,
+        ]
+
+        METH_SPEC_PROP_PARAMS_TO_SCALE: list[str] = [
+            SURVEY_COST_PLACEHOLDER,
+            SURVEY_TIME_PLACEHOLDER,
+        ]
+
         REQUIRED_HEADERS: list[str] = [ID, LAT, LON, TYPE]
 
         OPTIONAL_SHARED_HEADERS: list[str] = [EQG]
