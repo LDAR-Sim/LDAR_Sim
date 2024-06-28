@@ -219,15 +219,8 @@ class Method:
         for crew in self._crew_reports:
             # TODO : if method is daylight sensitive, check for max daylight
             crew.day_time_remaining = day_time_remaining
+            crew.deployed = False
             priority_queue.put((-crew.day_time_remaining, crew.crew_id, crew))
-
-        # If the cost type for the method is per day, calculate the deployment cost for day
-        # based off the number of crews being deployed
-        if self.cost_type == self.PER_DAY_COST:
-            if self._deployment_type == pdc.Deployment_Types.STATIONARY:
-                deploy_stats.deployment_cost = self.cost * len(workplan.site_survey_planners)
-            else:
-                deploy_stats.deployment_cost = self.cost * len(self._crew_reports)
 
         # pop the site with the longest remaining hours to assign the next crew
         # while there are crews that can work
@@ -254,6 +247,7 @@ class Method:
                 # Tracking Deployment statistics
                 if site_visited:
                     deploy_stats.sites_visited += 1
+                    crew.deployed = True
                     deploy_stats.travel_time += travel_time
                     deploy_stats.survey_time += survey_report.time_surveyed_current_day
 
@@ -295,6 +289,12 @@ class Method:
                     if site_survey_cost == 0 and self.cost > 0:
                         site_survey_cost = self.cost
                     deploy_stats.deployment_cost += site_survey_cost
+
+        # If the cost type for the method is per day, calculate the deployment cost for day
+        # based off the number of crews being deployed
+        if self.cost_type == self.PER_DAY_COST:
+            count_deployed_crews = sum(crew.deployed for crew in self._crew_reports)
+            deploy_stats.deployment_cost = self.cost * count_deployed_crews
         return deploy_stats
 
     def update(self, current_date: date) -> TaggingFlaggingStats:

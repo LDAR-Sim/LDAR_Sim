@@ -142,12 +142,9 @@ class ComponentLevelMethod(Method):
         for crew in self._crew_reports:
             # TODO : if method is daylight sensitive, check for max daylight
             crew.day_time_remaining = day_time_remaining
+            crew.deployed = False
             priority_queue.put((-crew.day_time_remaining, crew.crew_id, crew))
 
-        # If the cost type for the method is per day, calculate the deployment cost for day
-        # based off the number of crews being deployed
-        if self.cost_type == self.PER_DAY_COST:
-            deploy_stats.deployment_cost = self.cost * len(self._crew_reports)
         # pop the site with the longest remaining hours to assign the next crew
         # while there are crews that can work
         for survey_plan in workplan.site_survey_planners.values():
@@ -173,6 +170,7 @@ class ComponentLevelMethod(Method):
                 # Tracking Deployment statistics
                 if site_visited:
                     deploy_stats.sites_visited += 1
+                    crew.deployed = True
                     deploy_stats.travel_time += travel_time
                     deploy_stats.survey_time += survey_report.time_surveyed_current_day
 
@@ -204,4 +202,10 @@ class ComponentLevelMethod(Method):
             workplan.add_survey_report(survey_report, survey_plan)
             if survey_report.survey_complete:
                 self._site_survey_reports.append(survey_report)
+
+        # If the cost type for the method is per day, calculate the deployment cost for day
+        # based off the number of crews being deployed
+        if self.cost_type == self.PER_DAY_COST:
+            count_deployed_crews = sum(crew.deployed for crew in self._crew_reports)
+            deploy_stats.deployment_cost = self.cost * count_deployed_crews
         return deploy_stats
