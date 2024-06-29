@@ -68,6 +68,7 @@ class EquipmentGroupSurveyReport:
 class SiteSurveyReport:
     site_id: str
     time_surveyed: int = 0
+    time_surveyed_current_day: int = 0
     time_spent_to_travel: int = 0
     survey_complete: bool = False
     survey_in_progress: bool = False
