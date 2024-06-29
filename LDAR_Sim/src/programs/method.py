@@ -255,7 +255,7 @@ class Method:
                 if site_visited:
                     deploy_stats.sites_visited += 1
                 deploy_stats.travel_time += travel_time
-                deploy_stats.survey_time += survey_report.time_surveyed
+                deploy_stats.survey_time += survey_report.time_surveyed_current_day
 
                 # If this will be last survey of the day, set remaining time
                 # to 0 and track travel home time
@@ -362,8 +362,11 @@ class Method:
                 crew.day_time_remaining -= site_travel_time
                 # Account for survey time in time calculations,
                 # and consider that some of the site may have previously been surveyed
+                survey_report.time_surveyed_current_day = (
+                    site_survey_time - survey_report.time_surveyed
+                )
+                crew.day_time_remaining -= survey_report.time_surveyed_current_day
                 survey_report.time_surveyed = site_survey_time
-                crew.day_time_remaining -= site_survey_time - survey_report.time_surveyed
                 if crew.day_time_remaining <= site_travel_time:
                     last_site_survey = True
                 self._sensor.detect_emissions(
@@ -379,7 +382,10 @@ class Method:
                 last_site_survey = True
                 # Log Survey and travel time
                 survey_report.time_spent_to_travel += site_travel_time
-                survey_report.time_surveyed += crew.day_time_remaining - (site_travel_time * 2)
+                survey_report.time_surveyed_current_day = crew.day_time_remaining - (
+                    site_travel_time * 2
+                )
+                survey_report.time_surveyed += survey_report.time_surveyed_current_day
                 crew.day_time_remaining = site_travel_time
                 # Log survey start date
                 survey_report.survey_start_date = curr_date
