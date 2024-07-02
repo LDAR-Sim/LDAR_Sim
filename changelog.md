@@ -1,6 +1,13 @@
 # Change Log
 
-## 2024-06-120 - Version 4.0.2
+## 2024-07-02 - Version 4.0.3
+
+1. Fixed potential crew shortage warning message
+2. Fixed tick labels on output visualizations to show numbers between -1 to 1, specifically 0 when using metric prefixes
+3. Added option to disable program specific visualizations
+4. Fixed error that would sometimes occur with summary output generation
+
+## 2024-06-20 - Version 4.0.2
 
 1. Mitigation related plots will automatically not be rendered when there are no mitigation in the simulation.
 2. Updated the sensitivity analysis module script to be in line with the ldar_sim_run script
