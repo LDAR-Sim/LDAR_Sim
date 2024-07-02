@@ -71,14 +71,14 @@ class Site:
         self._deployment_years = propagating_params[pdc.Common_Params.METH_SPECIFIC].pop(
             Infrastructure_Constants.Sites_File_Constants.DEPLOYMENT_YEARS_PLACEHOLDER
         )
+        self._deploy_method: dict[str, bool] = propagating_params[
+            pdc.Common_Params.METH_SPECIFIC
+        ].pop(Infrastructure_Constants.Sites_File_Constants.SITE_DEPLOYMENT_PLACEHOLDER)
         self._equipment_groups: list[Equipment_Group] = []
         self._survey_costs: dict[str, float] = {}
         self._create_equipment_groups(equipment_groups, infrastructure_inputs, propagating_params)
         self._set_survey_costs(methods=methods)
         self._latest_tagging_survey_date: date = start_date
-        self._deploy_method: dict[str, bool] = propagating_params[
-            pdc.Common_Params.METH_SPECIFIC
-        ].pop(Infrastructure_Constants.Sites_File_Constants.SITE_DEPLOYMENT_PLACEHOLDER)
 
     def __reduce__(self):
         args = (
