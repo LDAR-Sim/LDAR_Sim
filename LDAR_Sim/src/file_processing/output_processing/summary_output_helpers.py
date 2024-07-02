@@ -150,13 +150,17 @@ def clear_directory(dir: Path):
 
 
 def mark_outputs_to_keep(dir: Path):
+    rename_operations: list[tuple[str, str]] = []
     with os.scandir(dir) as entries:
         for entry in entries:
             if entry.is_file():
                 old_file_path = entry.path
                 new_name = file_processing_const.Multi_Sim_Output_Const.OUTPUT_KEEP_STR + entry.name
                 new_file_path = os.path.join(dir, new_name)
-                os.rename(old_file_path, new_file_path)
+                rename_operations.append((old_file_path, new_file_path))
+
+    for old_file_path, new_file_path in rename_operations:
+        os.rename(old_file_path, new_file_path)
 
 
 def get_non_baseline_prog_names(programs, baseline_program) -> list:
