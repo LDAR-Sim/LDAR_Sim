@@ -63,7 +63,7 @@ class Method:
         self._name: str = name
         self._deployment_type = properties[pdc.Method_Params.DEPLOYMENT_TYPE]
         self._initialize_sensor(properties[pdc.Method_Params.SENSOR])
-        self._max_work_hours: int = properties.get(pdc.Method_Params.MAX_WORKDAY, 0)
+        self._max_work_hours: int = properties.get(pdc.Method_Params.MAX_WORKDAY, 24)
         self._daylight_sensitive = properties[pdc.Method_Params.CONSIDER_DAYLIGHT]
         self._weather: bool = consider_weather
         self._weather_envs: dict = properties[pdc.Method_Params.WEATHER_ENVS]
