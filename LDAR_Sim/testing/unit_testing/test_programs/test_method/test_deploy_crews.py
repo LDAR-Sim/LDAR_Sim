@@ -63,19 +63,20 @@ def test_000_simple_deployment_of_crews_work_a_day(deploy_crews_testing2):
     assert len(workplan.site_survey_planners) == 1
     deploy_stats: CrewDeploymentStats = method.deploy_crews(workplan, weather, daylight)
     expected = SiteSurveyReport(
-        1,
-        120,
-        1,
-        True,
-        False,
-        [],
-        "Site_level",
-        1.0,
-        1.0,
-        False,
-        date(2023, 1, 1),
-        date(2023, 1, 1),
-        "test_method",
+        site_id=1,
+        time_surveyed=120,
+        time_surveyed_current_day=120,
+        time_spent_to_travel=1,
+        survey_complete=True,
+        survey_in_progress=False,
+        equipment_groups_surveyed=[],
+        survey_level="Site_level",
+        site_measured_rate=1.0,
+        site_true_rate=1.0,
+        site_flagged=False,
+        survey_completion_date=date(2023, 1, 1),
+        survey_start_date=date(2023, 1, 1),
+        method="test_method",
     )
     expected_deployment_stats = CrewDeploymentStats(500.0, 1, 2, 120)
     assert isinstance(method._crew_reports[0], CrewDailyReport)

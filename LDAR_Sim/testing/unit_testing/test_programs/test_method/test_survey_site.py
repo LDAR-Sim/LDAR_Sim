@@ -76,8 +76,10 @@ def test_000_simple_weather_fail_to_finish_site(simple_method_values5):
         site_id=1,
         survey_in_progress=True,
         time_surveyed=8,
+        time_surveyed_current_day=8,
         time_spent_to_travel=1,
         survey_start_date=date(2023, 1, 2),
+        method="test_method",
     )
     assert surveyed_report == expected
     assert last_survey
@@ -105,6 +107,7 @@ def test_000_simple_weather_finish_site(simple_method_values5):
         site_id=1,
         survey_in_progress=False,
         time_surveyed=120,
+        time_surveyed_current_day=120,
         time_spent_to_travel=1,
         survey_level="site_level",
         site_measured_rate=1.0,
