@@ -13,9 +13,9 @@ coverage:
   spatial: 1.0 # 0.0 to 1.0
   temporal: 1.0 # 0.0 to 1.0
 cost:
-  per_day: 0
-  per_site: 0 # MOBILE ONLY
-  upfront: 0
+  per_day: 0.0
+  per_site: 0.0 # MOBILE ONLY
+  upfront: 0.0
 crew_count: 0 # whole numbers - MOBILE ONLY
 consider_daylight: False
 surveys_per_year: "_placeholder_int_" # days - MOBILE ONLY
