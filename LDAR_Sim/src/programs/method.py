@@ -254,8 +254,8 @@ class Method:
                 # Tracking Deployment statistics
                 if site_visited:
                     deploy_stats.sites_visited += 1
-                deploy_stats.travel_time += travel_time
-                deploy_stats.survey_time += survey_report.time_surveyed_current_day
+                    deploy_stats.travel_time += travel_time
+                    deploy_stats.survey_time += survey_report.time_surveyed_current_day
 
                 # If this will be last survey of the day, set remaining time
                 # to 0 and track travel home time
@@ -307,7 +307,7 @@ class Method:
         site_to_survey: Site,
         weather,
         curr_date: date,
-    ) -> Tuple[SiteSurveyReport, float]:
+    ) -> Tuple[SiteSurveyReport, int, bool, bool]:
         """The method will attempt to survey the site provided as an argument, detecting emissions
         at it's detection level, either tagging sites for follow-up or flagging leaks,
         and generating an emissions report
@@ -377,6 +377,10 @@ class Method:
             # Cannot finish the whole site but can survey
             # TODO determine reasonable fraction of site that can be surveyed to make it worth going
             elif crew.day_time_remaining > (2 * site_travel_time):
+                # Log survey start date
+                if not survey_report.survey_in_progress:
+                    survey_report.survey_start_date = curr_date
+                    survey_report.method = self._name
                 # Mark the survey as in progress
                 survey_report.survey_in_progress = True
                 last_site_survey = True
@@ -387,10 +391,10 @@ class Method:
                 )
                 survey_report.time_surveyed += survey_report.time_surveyed_current_day
                 crew.day_time_remaining = site_travel_time
-                # Log survey start date
-                survey_report.survey_start_date = curr_date
             # Not enough time left to travel to site
             else:
+                survey_report.time_surveyed_current_day = 0
+                survey_report.time_spent_to_travel = 0
                 site_travel_time = 0
                 last_site_survey = True
         return survey_report, site_travel_time, last_site_survey, site_visit
