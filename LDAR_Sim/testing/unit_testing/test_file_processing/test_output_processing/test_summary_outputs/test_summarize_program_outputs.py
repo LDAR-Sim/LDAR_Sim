@@ -159,8 +159,8 @@ expected_emis_summary_csv = pd.DataFrame(
         esca.T_ANN_MIT.format(2025): [2.0, 1.0, 2.0],
         esca.T_ANN_EMIS.format(2024): [3.0, 11.0, 19.0],
         esca.T_ANN_EMIS.format(2025): [7.0, 15.0, 23.0],
-        esca.EST_ANN_EMIS.format(2024): [0, 0, 0],
-        esca.EST_ANN_EMIS.format(2025): [0, 0, 0],
+        esca.EST_ANN_EMIS.format(2024): [0.0, 0.0, 0.0],
+        esca.EST_ANN_EMIS.format(2025): [0.0, 0.0, 0.0],
     }
 )
 expected_emis_summary_csv2 = pd.DataFrame(
