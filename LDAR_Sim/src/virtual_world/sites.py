@@ -71,14 +71,14 @@ class Site:
         self._deployment_years = propagating_params[pdc.Common_Params.METH_SPECIFIC].pop(
             Infrastructure_Constants.Sites_File_Constants.DEPLOYMENT_YEARS_PLACEHOLDER
         )
+        self._deploy_method: dict[str, bool] = propagating_params[
+            pdc.Common_Params.METH_SPECIFIC
+        ].pop(Infrastructure_Constants.Sites_File_Constants.SITE_DEPLOYMENT_PLACEHOLDER)
         self._equipment_groups: list[Equipment_Group] = []
         self._survey_costs: dict[str, float] = {}
         self._create_equipment_groups(equipment_groups, infrastructure_inputs, propagating_params)
         self._set_survey_costs(methods=methods)
         self._latest_tagging_survey_date: date = start_date
-        self._deploy_method: dict[str, bool] = propagating_params[
-            pdc.Common_Params.METH_SPECIFIC
-        ].pop(Infrastructure_Constants.Sites_File_Constants.SITE_DEPLOYMENT_PLACEHOLDER)
 
     def __reduce__(self):
         args = (
@@ -158,20 +158,20 @@ class Site:
                     == equipment_group
                 ].iloc[0]
                 prop_params = copy.deepcopy(propagating_params)
-                if (
-                    prop_params[Infrastructure_Constants.Sites_File_Constants.REP_EMIS_EPR]
-                    is not None
-                ):
-                    prop_params[
-                        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_EPR
-                    ] /= equip_count
-                if (
-                    prop_params[Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_EPR]
-                    is not None
-                ):
-                    prop_params[
-                        Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_EPR
-                    ] /= equip_count
+                for (
+                    param
+                ) in Infrastructure_Constants.Sites_File_Constants.PROPAGATING_PARAMS_TO_SCALE:
+                    if prop_params[param] is not None:
+                        prop_params[param] /= equip_count
+
+                for (
+                    param
+                ) in Infrastructure_Constants.Sites_File_Constants.METH_SPEC_PROP_PARAMS_TO_SCALE:
+                    for method in prop_params[pdc.Common_Params.METH_SPECIFIC][param]:
+                        if prop_params[pdc.Common_Params.METH_SPECIFIC][param][method] is not None:
+                            prop_params[pdc.Common_Params.METH_SPECIFIC][param][
+                                method
+                            ] /= equip_count
 
                 self._equipment_groups.append(
                     Equipment_Group(
@@ -260,14 +260,20 @@ class Site:
                     {placeholder: math.ceil(equip_count / equipment_groups)}
                 )
                 prop_params = copy.deepcopy(propagating_params)
-                if rep_emis_epr is not None and rep_emis_epr > 0:
-                    prop_params[Infrastructure_Constants.Sites_File_Constants.REP_EMIS_EPR] = (
-                        rep_emis_epr / equipment_groups
-                    )
-                if nonrep_emis_epr is not None and nonrep_emis_epr > 0:
-                    prop_params[Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_EPR] = (
-                        nonrep_emis_epr / equipment_groups
-                    )
+                for (
+                    param
+                ) in Infrastructure_Constants.Sites_File_Constants.PROPAGATING_PARAMS_TO_SCALE:
+                    if prop_params[param] is not None:
+                        prop_params[param] /= equipment_groups
+                for (
+                    param
+                ) in Infrastructure_Constants.Sites_File_Constants.METH_SPEC_PROP_PARAMS_TO_SCALE:
+                    for method in prop_params[pdc.Common_Params.METH_SPECIFIC][param]:
+                        if prop_params[pdc.Common_Params.METH_SPECIFIC][param][method] is not None:
+                            prop_params[pdc.Common_Params.METH_SPECIFIC][param][
+                                method
+                            ] /= equipment_groups
+
                 self._equipment_groups.append(
                     Equipment_Group(i, infrastructure_inputs, prop_params, equip_group_info)
                 )
