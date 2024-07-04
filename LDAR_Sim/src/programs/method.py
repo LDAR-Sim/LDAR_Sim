@@ -254,8 +254,8 @@ class Method:
                 # Tracking Deployment statistics
                 if site_visited:
                     deploy_stats.sites_visited += 1
-                deploy_stats.travel_time += travel_time
-                deploy_stats.survey_time += survey_report.time_surveyed
+                    deploy_stats.travel_time += travel_time
+                    deploy_stats.survey_time += survey_report.time_surveyed_current_day
 
                 # If this will be last survey of the day, set remaining time
                 # to 0 and track travel home time
@@ -307,7 +307,7 @@ class Method:
         site_to_survey: Site,
         weather,
         curr_date: date,
-    ) -> Tuple[SiteSurveyReport, float]:
+    ) -> Tuple[SiteSurveyReport, int, bool, bool]:
         """The method will attempt to survey the site provided as an argument, detecting emissions
         at it's detection level, either tagging sites for follow-up or flagging leaks,
         and generating an emissions report
@@ -332,12 +332,12 @@ class Method:
         if workable:
             site_visit = True
             if self._deployment_type == pdc.Deployment_Types.STATIONARY:
-                site_survey_time: float = 0
-                site_travel_time: float = 0
+                site_survey_time: int = 0
+                site_travel_time: int = 0
                 can_complete_survey: bool = True
             else:
-                site_survey_time: float = site_to_survey.get_method_survey_time(self._name)
-                site_travel_time: float = self._get_travel_time()
+                site_survey_time: int = site_to_survey.get_method_survey_time(self._name)
+                site_travel_time: int = self._get_travel_time()
 
                 # Check if the site survey can be completed
                 can_complete_survey: bool = self._determine_if_site_survey_can_be_completed(
@@ -362,8 +362,11 @@ class Method:
                 crew.day_time_remaining -= site_travel_time
                 # Account for survey time in time calculations,
                 # and consider that some of the site may have previously been surveyed
+                survey_report.time_surveyed_current_day = (
+                    site_survey_time - survey_report.time_surveyed
+                )
+                crew.day_time_remaining -= survey_report.time_surveyed_current_day
                 survey_report.time_surveyed = site_survey_time
-                crew.day_time_remaining -= site_survey_time - survey_report.time_surveyed
                 if crew.day_time_remaining <= site_travel_time:
                     last_site_survey = True
                 self._sensor.detect_emissions(
@@ -374,17 +377,24 @@ class Method:
             # Cannot finish the whole site but can survey
             # TODO determine reasonable fraction of site that can be surveyed to make it worth going
             elif crew.day_time_remaining > (2 * site_travel_time):
+                # Log survey start date
+                if not survey_report.survey_in_progress:
+                    survey_report.survey_start_date = curr_date
+                    survey_report.method = self._name
                 # Mark the survey as in progress
                 survey_report.survey_in_progress = True
                 last_site_survey = True
                 # Log Survey and travel time
                 survey_report.time_spent_to_travel += site_travel_time
-                survey_report.time_surveyed += crew.day_time_remaining - (site_travel_time * 2)
+                survey_report.time_surveyed_current_day = crew.day_time_remaining - (
+                    site_travel_time * 2
+                )
+                survey_report.time_surveyed += survey_report.time_surveyed_current_day
                 crew.day_time_remaining = site_travel_time
-                # Log survey start date
-                survey_report.survey_start_date = curr_date
             # Not enough time left to travel to site
             else:
+                survey_report.time_surveyed_current_day = 0
+                survey_report.time_spent_to_travel = 0
                 site_travel_time = 0
                 last_site_survey = True
         return survey_report, site_travel_time, last_site_survey, site_visit
@@ -392,24 +402,26 @@ class Method:
     def _determine_if_site_survey_can_be_completed(
         self,
         survey_report: SiteSurveyReport,
-        site_survey_time: float,
-        site_travel_time: float,
-        crew_time_remaining: float,
+        site_survey_time: int,
+        site_travel_time: int,
+        crew_time_remaining: int,
     ) -> bool:
         # Account for the possibility of the crew needing to return when considering if the
         # Site can be surveyed in a day.
         # TODO review travel home time logic
-        survey_required_time: float = site_survey_time + (site_travel_time * 2)
-        actual_required_time: float = survey_required_time - survey_report.time_surveyed
+        survey_required_time: int = site_survey_time + (site_travel_time * 2)
+        actual_required_time: int = survey_required_time - survey_report.time_surveyed
         survey_can_be_completed: bool = crew_time_remaining >= actual_required_time
 
         return survey_can_be_completed
 
-    def _get_travel_time(self) -> float:
-        if isinstance(self._travel_times, (int, float)):
+    def _get_travel_time(self) -> int:
+        if isinstance(self._travel_times, int):
             return self._travel_times
+        elif isinstance(self._travel_times, float):
+            return round(self._travel_times)
         elif isinstance(self._travel_times, list):
-            return choice(self._travel_times)
+            return round(choice(self._travel_times))
         else:
             print(f"Error: Unrecognized travel time format for method {self._name}")
             sys.exit()

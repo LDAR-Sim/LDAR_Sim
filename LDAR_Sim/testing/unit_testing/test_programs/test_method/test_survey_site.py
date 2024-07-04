@@ -19,14 +19,25 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 """
 
 from datetime import date
-from src.programs.method import Method
+
+import pytest
+from pytest_mock import MockerFixture
 from scheduling.schedule_dataclasses import SiteSurveyReport
+from src.programs.method import Method
+from src.scheduling.schedule_dataclasses import CrewDailyReport
+from src.virtual_world.infrastructure import Site
 from testing.unit_testing.test_programs.test_method.method_testing_fixtures import (  # noqa
     simple_method_values4_fix,
     simple_method_values5_fix,
 )
-from src.scheduling.schedule_dataclasses import CrewDailyReport
-from src.virtual_world.infrastructure import Site
+from testing.unit_testing.test_programs.test_method.survey_site_testing_resources import (  # noqa
+    setup_mock_objects_for_survey_report_testing,
+    survey_site_not_in_progress_can_complete_data_fix,
+    survey_site_not_in_progress_cant_complete_data_fix,
+    survey_site_in_progress_can_complete_data_fix,
+    survey_site_in_progress_cant_complete_data_fix,
+    survey_site_in_progress_no_time_to_survey_data_fix,
+)
 
 
 def test_000_simple_weather_fail_to_survey_site(simple_method_values4):
@@ -69,8 +80,10 @@ def test_000_simple_weather_fail_to_finish_site(simple_method_values5):
         site_id=1,
         survey_in_progress=True,
         time_surveyed=8,
+        time_surveyed_current_day=8,
         time_spent_to_travel=1,
         survey_start_date=date(2023, 1, 2),
+        method="test_method",
     )
     assert surveyed_report == expected
     assert last_survey
@@ -98,6 +111,7 @@ def test_000_simple_weather_finish_site(simple_method_values5):
         site_id=1,
         survey_in_progress=False,
         time_surveyed=120,
+        time_surveyed_current_day=120,
         time_spent_to_travel=1,
         survey_level="site_level",
         site_measured_rate=1.0,
@@ -111,3 +125,38 @@ def test_000_simple_weather_finish_site(simple_method_values5):
     assert not last_survey
     assert travel_time == 1
     assert site_visited == 1
+
+
+@pytest.mark.parametrize(
+    "test_data_fixture",
+    [
+        "survey_site_not_in_progress_can_complete_data",
+        "survey_site_not_in_progress_cant_complete_data",
+        "survey_site_in_progress_can_complete_data",
+        "survey_site_in_progress_cant_complete_data",
+        "survey_site_in_progress_no_time_to_survey_data",
+    ],
+)
+def test_000_survey_site_correctly_updates_survey_report(
+    mocker: MockerFixture, request: pytest.FixtureRequest, test_data_fixture
+):
+    (
+        site_properties,
+        method_properties,
+        existing_survey_report,
+        crew_time,
+        expected_survey_report,
+    ) = request.getfixturevalue(test_data_fixture)
+    mock_site, method, daily_report = setup_mock_objects_for_survey_report_testing(
+        mocker, site_properties, method_properties, crew_time
+    )
+
+    survey_report: SiteSurveyReport = method.survey_site(
+        daily_report,
+        existing_survey_report,
+        mock_site,
+        mocker.Mock(),
+        date(2023, 1, 1),
+    )[0]
+
+    assert survey_report == expected_survey_report

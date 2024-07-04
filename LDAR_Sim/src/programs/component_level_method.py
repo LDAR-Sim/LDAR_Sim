@@ -173,8 +173,8 @@ class ComponentLevelMethod(Method):
                 # Tracking Deployment statistics
                 if site_visited:
                     deploy_stats.sites_visited += 1
-                deploy_stats.travel_time += travel_time
-                deploy_stats.survey_time += survey_report.time_surveyed
+                    deploy_stats.travel_time += travel_time
+                    deploy_stats.survey_time += survey_report.time_surveyed_current_day
 
                 # If this will be last survey of the day, set remaining time
                 # to 0 and track travel home time

@@ -337,11 +337,11 @@ class Site:
     def do_site_deployment(self, method_name) -> bool:
         return self._deploy_method[method_name]
 
-    def get_method_survey_time(self, method_name) -> float:
+    def get_method_survey_time(self, method_name) -> int:
         survey_time: float = 0
         for eqg in self._equipment_groups:
             survey_time += eqg.get_survey_time(method_name=method_name)
-        return survey_time
+        return round(survey_time)
 
     def get_id(self) -> str:
         return self._site_ID
