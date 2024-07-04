@@ -43,7 +43,7 @@ class Equipment_Group:
         self._component: list[Component] = []
         self._update_prop_params(info, prop_params)
         self._set_method_specific_params(prop_params)
-        self._create_equipment(
+        self._create_components(
             infrastructure_inputs=infrastructure_inputs,
             prop_params=prop_params,
             info=info,
@@ -83,15 +83,20 @@ class Equipment_Group:
 
         prop_params[cp.METH_SPECIFIC] = meth_specific_params
 
-    def _create_equipment(self, infrastructure_inputs, prop_params, info) -> None:
-        tot_equip = info.sum()
+    def _create_components(
+        self, infrastructure_inputs: dict, prop_params: dict, info: pd.Series
+    ) -> None:
+        cleaned_info = self._clean_propagating_parameters_from_equipment_info(info)
+        total_components = cleaned_info.sum()
         nonrep_epr = prop_params[IC.Equipment_Group_File_Constants.NON_REP_EMIS_EPR]
         rep_epr = prop_params[IC.Equipment_Group_File_Constants.REP_EMIS_EPR]
         if nonrep_epr is not None and nonrep_epr > 0:
-            prop_params[IC.Equipment_Group_File_Constants.NON_REP_EMIS_EPR] = nonrep_epr / tot_equip
+            prop_params[IC.Equipment_Group_File_Constants.NON_REP_EMIS_EPR] = (
+                nonrep_epr / total_components
+            )
         if rep_epr is not None and rep_epr > 0:
-            prop_params[IC.Equipment_Group_File_Constants.REP_EMIS_EPR] = rep_epr / tot_equip
-        for col, val in info.items():
+            prop_params[IC.Equipment_Group_File_Constants.REP_EMIS_EPR] = rep_epr / total_components
+        for col, val in cleaned_info.items():
             for count in range(0, val):
                 self._component.append(Component(col, count, infrastructure_inputs, prop_params))
 
@@ -102,6 +107,24 @@ class Equipment_Group:
         self._meth_survey_costs = prop_params[cp.METH_SPECIFIC].pop(
             IC.Equipment_Group_File_Constants.SURVEY_COST_PLACEHOLDER
         )
+
+    def _clean_propagating_parameters_from_equipment_info(self, info: pd.Series) -> pd.Series:
+        info_labels_to_drop: list[str] = (
+            IC.Equipment_Group_File_Constants.PROPAGATING_PARAMETER_COLUMNS
+        )
+
+        for (
+            method_specific_label
+        ) in IC.Equipment_Group_File_Constants.METHOD_SPECIFIC_PROPAGATING_PARAMETERS:
+            info_labels_to_drop.extend(
+                [label for label in info.index if method_specific_label in label]
+            )
+
+        filtered_info_labels_to_drop: list[str] = [
+            label for label in info_labels_to_drop if label in info.index
+        ]
+        cleaned_info: pd.Series = info.drop(labels=filtered_info_labels_to_drop)
+        return cleaned_info
 
     def generate_emissions(
         self,

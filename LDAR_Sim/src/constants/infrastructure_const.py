@@ -123,6 +123,25 @@ class Infrastructure_Constants:
         SURVEY_COST_PLACEHOLDER = "_survey_cost"  # Survey Cost - Method specific
         SPATIAL_PLACEHOLDER = "_spatial"  # Spatial coverage - Method specific
 
+        PROPAGATING_PARAMETER_COLUMNS: list[str] = [
+            REP_EMIS_ERS,
+            REP_EMIS_EPR,
+            REP_EMIS_RD,
+            REP_EMIS_RC,
+            REP_EMIS_ED,
+            REP_EMIS_MULTI,
+            NON_REP_EMIS_ERS,
+            NON_REP_EMIS_EPR,
+            NON_REP_EMIS_ED,
+            NON_REP_EMIS_MULTI,
+        ]
+
+        METHOD_SPECIFIC_PROPAGATING_PARAMETERS: list[str] = [
+            SURVEY_TIME_PLACEHOLDER,
+            SURVEY_COST_PLACEHOLDER,
+            SPATIAL_PLACEHOLDER,
+        ]
+
     class Sources_File_Constants:
         COMPONENT = "component"
         SOURCE = "source"
