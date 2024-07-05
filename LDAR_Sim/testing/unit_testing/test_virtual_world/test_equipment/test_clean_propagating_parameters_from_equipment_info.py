@@ -33,6 +33,7 @@ from constants.infrastructure_const import Infrastructure_Constants as IC
         "testing_data_equipment_info_with_propagating_parameters",
         "testing_data_equipment_info_without_propagating_parameters",
         "testing_data_equipment_info_with_method_specific_propagating_parameters",
+        "testing_data_equipment_info_propagating_parameters_only",
     ],
 )
 def test_info_cleaned_as_expected(
@@ -100,3 +101,14 @@ def testing_data_equipment_info_with_method_specific_propagating_parameters_fixt
         "Test Comp2": 2,
     }
     return (pd.Series(info_dict), pd.Series(expected_cleaned_info_dict))
+
+
+@pytest.fixture(name="testing_data_equipment_info_propagating_parameters_only")
+def testing_data_equipment_info_propagating_parameters_only_fixture():
+    info_dict: dict = {}
+
+    for val in IC.Equipment_Group_File_Constants.PROPAGATING_PARAMETER_COLUMNS:
+        info_dict[val] = 0
+
+    expected_cleaned_info_dict: dict = {}
+    return (pd.Series(info_dict), pd.Series(expected_cleaned_info_dict, dtype="int64"))
