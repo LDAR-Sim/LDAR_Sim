@@ -84,7 +84,7 @@ class SummaryVisualizationMapper:
                     summary_visualization_helpers.format_tick_labels_with_metric_prefix
                 )
             ),
-            output_file_constants.SummaryOutputVizFileNames.STACKED_COST_BAR_PLOT: (
+            output_file_constants.SummaryOutputVizFileNames.PROGRAM_COST_VALUE_BAR_PLOT: (
                 ticker.FuncFormatter(
                     summary_visualization_helpers.format_tick_labels_with_metric_prefix
                 )
@@ -128,7 +128,7 @@ class SummaryVisualizationMapper:
                 "color": output_file_constants.MitigationBarConstants.COLOR,
                 "height": output_file_constants.MitigationBarConstants.HEIGHT,
             },
-            output_file_constants.SummaryOutputVizFileNames.STACKED_COST_BAR_PLOT: {
+            output_file_constants.SummaryOutputVizFileNames.PROGRAM_COST_VALUE_BAR_PLOT: {
                 "align": "center",
                 "x_label": output_file_constants.StackedCostBarConstants.X_LABEL,
                 "y_label": output_file_constants.StackedCostBarConstants.Y_LABEL,
