@@ -1500,7 +1500,7 @@ def test_vary_parameter_values_virtual_level_1_param():
     varied_parameters: list[ParametersHolder] = vary_parameter_values(
         simulation_parameters=parameters,
         parameter_variations=parameter_variations,
-        number_of_variations=number_of_variations,
+        number_of_sensitivity_sets=number_of_variations,
         sensitivity_program=None,
         parameter_level=Levels.VIRTUAL,
     )
@@ -1517,7 +1517,7 @@ def test_vary_parameter_values_virtual_level_2_params():
     varied_parameters: list[ParametersHolder] = vary_parameter_values(
         simulation_parameters=parameters,
         parameter_variations=parameter_variations,
-        number_of_variations=number_of_variations,
+        number_of_sensitivity_sets=number_of_variations,
         sensitivity_program=None,
         parameter_level=Levels.VIRTUAL,
     )
@@ -1534,7 +1534,7 @@ def test_vary_parameters_values_virtual_level_2_params_2():
     varied_parameters: list[ParametersHolder] = vary_parameter_values(
         simulation_parameters=parameters,
         parameter_variations=parameter_variations,
-        number_of_variations=number_of_variations,
+        number_of_sensitivity_sets=number_of_variations,
         sensitivity_program=None,
         parameter_level=Levels.VIRTUAL,
     )
@@ -1551,7 +1551,7 @@ def test_vary_parameter_values_program_level():
     varied_parameters: list[ParametersHolder] = vary_parameter_values(
         simulation_parameters=parameters,
         parameter_variations=parameter_variations,
-        number_of_variations=number_of_variations,
+        number_of_sensitivity_sets=number_of_variations,
         sensitivity_program=None,
         parameter_level=Levels.PROGRAM,
     )
@@ -1568,7 +1568,7 @@ def test_vary_parameter_values_program_level_2_progs():
     varied_parameters: list[ParametersHolder] = vary_parameter_values(
         simulation_parameters=parameters,
         parameter_variations=parameter_variations,
-        number_of_variations=number_of_variations,
+        number_of_sensitivity_sets=number_of_variations,
         sensitivity_program=None,
         parameter_level=Levels.PROGRAM,
     )
@@ -1585,7 +1585,7 @@ def test_vary_parameter_values_program_level_2_params():
     varied_parameters: list[ParametersHolder] = vary_parameter_values(
         simulation_parameters=parameters,
         parameter_variations=parameter_variations,
-        number_of_variations=number_of_variations,
+        number_of_sensitivity_sets=number_of_variations,
         sensitivity_program=None,
         parameter_level=Levels.PROGRAM,
     )
@@ -1602,7 +1602,7 @@ def test_vary_parameter_values_method_level_2_params():
     varied_parameters: list[ParametersHolder] = vary_parameter_values(
         simulation_parameters=parameters,
         parameter_variations=parameter_variations,
-        number_of_variations=number_of_variations,
+        number_of_sensitivity_sets=number_of_variations,
         sensitivity_program="test_prog2",
         parameter_level=Levels.METHOD,
     )
@@ -1619,7 +1619,7 @@ def test_vary_parameter_values_method_level_2_params_2():
     varied_parameters: list[ParametersHolder] = vary_parameter_values(
         simulation_parameters=parameters,
         parameter_variations=parameter_variations,
-        number_of_variations=number_of_variations,
+        number_of_sensitivity_sets=number_of_variations,
         sensitivity_program="test_prog2",
         parameter_level=Levels.METHOD,
     )
@@ -1636,7 +1636,7 @@ def test_vary_parameter_values_method_level_2_methods():
     varied_parameters: list[ParametersHolder] = vary_parameter_values(
         simulation_parameters=parameters,
         parameter_variations=parameter_variations,
-        number_of_variations=number_of_variations,
+        number_of_sensitivity_sets=number_of_variations,
         sensitivity_program="test_prog2",
         parameter_level=Levels.METHOD,
     )

@@ -32,7 +32,7 @@ def vary_parameter_values(
     simulation_parameters: ParametersHolder,
     sensitivity_program: str,
     parameter_level: str,
-    number_of_variations: int,
+    number_of_sensitivity_sets: int,
     parameter_variations: dict[str, Any] | list[dict[str, Any]],
 ) -> list[ParametersHolder]:
     """
@@ -41,7 +41,7 @@ def vary_parameter_values(
     Args:
         simulation_parameters (ParametersHolder): The original simulation parameters.
         parameter_level (str): The parameter level at which the sensitivity analysis is performed.
-        number_of_variations (int): The number of variations of parameters supplied.
+        number_of_sensitivity_sets (int): The number of sensitivity sets of parameters supplied.
         parameter_variations (dict[str, Any]): The parameter variations to apply.
         method_name (str, optional): The name of the method to vary parameters for
         (only applicable if parameter_level is 'METHOD'). Defaults to None.
@@ -58,12 +58,12 @@ def vary_parameter_values(
     # If the sensitivity analysis is at the virtual world level
     if parameter_level == param_default_const.Levels.VIRTUAL:
         # Loop through the number of variations
-        for i in range(number_of_variations):
+        for i in range(number_of_sensitivity_sets):
             # Create a deep copy of the simulation parameters
             parameters: ParametersHolder = copy.deepcopy(simulation_parameters)
             # Vary all the specified parameters
             for key, value in parameter_variations.items():
-                unique_parameter_variations: int = int(len(value) / number_of_variations)
+                unique_parameter_variations: int = int(len(value) / number_of_sensitivity_sets)
                 for index in range(
                     i * unique_parameter_variations,
                     (i * unique_parameter_variations) + unique_parameter_variations,
@@ -85,7 +85,7 @@ def vary_parameter_values(
             simulation_parameters.get_baseline_program(),
         )
         # Loop through the number of variations
-        for i in range(number_of_variations):
+        for i in range(number_of_sensitivity_sets):
             for program_name, program_variations in parameter_variations.items():
                 # Create a deep copy of the non-baseline program (will return the first if multiple)
                 program_parameters: GenericParameters = copy.deepcopy(
@@ -100,7 +100,7 @@ def vary_parameter_values(
                 )
                 # Vary all the specified parameters
                 for key, value in program_variations.items():
-                    unique_parameter_variations: int = int(len(value) / number_of_variations)
+                    unique_parameter_variations: int = int(len(value) / number_of_sensitivity_sets)
                     for index in range(
                         i * unique_parameter_variations,
                         (i * unique_parameter_variations) + unique_parameter_variations,
@@ -120,7 +120,7 @@ def vary_parameter_values(
         # Create a deep copy of the simulation parameters
         parameters: ParametersHolder = copy.deepcopy(simulation_parameters)
         # Loop through the number of variations
-        for i in range(number_of_variations):
+        for i in range(number_of_sensitivity_sets):
             # Create a deep copy of the non-baseline program (will return the first if multiple)
             program_parameters: GenericParameters = copy.deepcopy(
                 simulation_parameters.get_program(sensitivity_program)
@@ -173,7 +173,7 @@ def vary_parameter_values(
 
                 for key, value in variations.items():
                     key_vals: dict | Any = {}
-                    unique_parameter_variations: int = int(len(value) / number_of_variations)
+                    unique_parameter_variations: int = int(len(value) / number_of_sensitivity_sets)
                     for index in range(
                         i * unique_parameter_variations,
                         (i * unique_parameter_variations) + unique_parameter_variations,

@@ -301,6 +301,6 @@ if __name__ == "__main__":
         sensitivity_program,
     )
     sensitivity_results_manager.save_sensitivity_variations_mapping(
-        sensitivity_info[sens_map.SENS_PARAM_MAPPING[sens_map.SENS_PERMUTATIONS]]
+        sensitivity_info[sens_map.SENS_PARAM_MAPPING[sens_map.SENS_SET_COUNT]]
     )
     sensitivity_results_manager.gen_sensitivity_summary_results()

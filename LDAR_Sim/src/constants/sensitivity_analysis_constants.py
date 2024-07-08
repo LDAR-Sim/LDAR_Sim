@@ -82,20 +82,20 @@ class ValidParametersForSensitivityAnalysis:
 
 class SensitivityAnalysisMapping:
     SENS_PARAM_LEVEL = "Sensitivity Parameter Level"
-    SENS_PERMUTATIONS = "Sensitivity Analysis Permutations"
+    SENS_SET_COUNT = "Sensitivity Sets Provided"
     METHOD_NAME = "Method Name"
     Method_SENS_PARAMS = "Method Sensitivity Parameters"
     PROGRAM_NAME = "Program Name"
     PROGRAM_SENS_PARAMS = "Program Sensitivity Parameters"
-    SENS_PARAM_VARIATIONS = "Sensitivity Parameter Variations"
+    SENS_SETS = "Sensitivity Sets"
     PARAM_VARIATIONS = "parameter_variations"
     PARAM_LEVEL = "parameter_level"
-    NUM_VARIATIONS = "number_of_variations"
+    NUM_SENS_SETS = "number_of_sensitivity_sets"
     SENS_SUMMARY_INFO = "Sensitivity Summary Outputs Information"
     SENS_PARAM_MAPPING = {
         SENS_PARAM_LEVEL: PARAM_LEVEL,
-        SENS_PERMUTATIONS: NUM_VARIATIONS,
-        SENS_PARAM_VARIATIONS: PARAM_VARIATIONS,
+        SENS_SET_COUNT: NUM_SENS_SETS,
+        SENS_SETS: PARAM_VARIATIONS,
         SENS_SUMMARY_INFO: SENS_SUMMARY_INFO,
     }
 
@@ -137,6 +137,7 @@ class SensitivityAnalysisOutputs:
         X_LABEL = 'Percent Difference between "Estimated" and "True" Emissions'
         Y_LABEL = "Relative Frequency (%)"
         BIN_WIDTH = 10.0
+        LEGEND_TITLE = "Sensitivity Set"
 
     class TrueEstimatedEmissionsViolinSensPlot:
         TRUE_EMISSIONS_LABEL = "T"
@@ -147,7 +148,7 @@ class SensitivityAnalysisOutputs:
         ESTIMATED_EMIS_LABEL = '"Estimated" Emissions'
 
     class SensitivityVariationsMapping:
-        FIXED_COLUMN_NAMES = ["Sensitivity Permutation"]
+        FIXED_COLUMN_NAMES = ["Sensitivity Set"]
         FLEXIBLE_COLUMNS_NAMES = ["Parameter_{x}", "Value_{x}"]
 
     class SensitivityTrueVsEstimatedCIs:

@@ -136,7 +136,7 @@ class SensitivityAnalysisResultsManager:
         else:
             return key, value
 
-    def save_sensitivity_variations_mapping(self, parameter_permutation_count: int) -> None:
+    def save_sensitivity_variations_mapping(self, sensitivity_set_count: int) -> None:
         # Unpack the dictionary and create a list of rows
         rows = []
 
@@ -144,13 +144,11 @@ class SensitivityAnalysisResultsManager:
             self._sens_level == param_default_const.Levels.METHOD
             or self._sens_level == param_default_const.Levels.PROGRAM
         ):
-            for index in range(parameter_permutation_count):
+            for index in range(sensitivity_set_count):
                 row = [index]
                 for name, variations in self._parameter_variations.items():
                     for key, value in variations.items():
-                        unique_parameter_permutations: int = int(
-                            len(value) / parameter_permutation_count
-                        )
+                        unique_parameter_permutations: int = int(len(value) / sensitivity_set_count)
                         for i in range(
                             index * unique_parameter_permutations,
                             (index * unique_parameter_permutations) + unique_parameter_permutations,
@@ -163,12 +161,10 @@ class SensitivityAnalysisResultsManager:
                 rows.append(row)
 
         else:
-            for index in range(parameter_permutation_count):
+            for index in range(sensitivity_set_count):
                 row: list = [index]
                 for key, value in self._parameter_variations.items():
-                    unique_parameter_permutations: int = int(
-                        len(value) / parameter_permutation_count
-                    )
+                    unique_parameter_permutations: int = int(len(value) / sensitivity_set_count)
                     for i in range(
                         index * unique_parameter_permutations,
                         (index * unique_parameter_permutations) + unique_parameter_permutations,
