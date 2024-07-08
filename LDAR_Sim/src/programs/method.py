@@ -63,7 +63,7 @@ class Method:
         self._name: str = name
         self._deployment_type = properties[pdc.Method_Params.DEPLOYMENT_TYPE]
         self._initialize_sensor(properties[pdc.Method_Params.SENSOR])
-        self._max_work_hours: int = properties.get(pdc.Method_Params.MAX_WORKDAY, 0)
+        self._max_work_hours: int = properties.get(pdc.Method_Params.MAX_WORKDAY, 24)
         self._daylight_sensitive = properties[pdc.Method_Params.CONSIDER_DAYLIGHT]
         self._weather: bool = consider_weather
         self._weather_envs: dict = properties[pdc.Method_Params.WEATHER_ENVS]
@@ -219,16 +219,10 @@ class Method:
         for crew in self._crew_reports:
             # TODO : if method is daylight sensitive, check for max daylight
             crew.day_time_remaining = day_time_remaining
+            crew.deployed = False
             priority_queue.put((-crew.day_time_remaining, crew.crew_id, crew))
 
-        # If the cost type for the method is per day, calculate the deployment cost for day
-        # based off the number of crews being deployed
-        if self.cost_type == self.PER_DAY_COST:
-            if self._deployment_type == pdc.Deployment_Types.STATIONARY:
-                deploy_stats.deployment_cost = self.cost * len(workplan.site_survey_planners)
-            else:
-                deploy_stats.deployment_cost = self.cost * len(self._crew_reports)
-
+        incompleteSurveys: list[Tuple] = []
         # pop the site with the longest remaining hours to assign the next crew
         # while there are crews that can work
         for survey_plan in workplan.site_survey_planners.values():
@@ -254,13 +248,14 @@ class Method:
                 # Tracking Deployment statistics
                 if site_visited:
                     deploy_stats.sites_visited += 1
+                    assigned_crew.deployed = True
                     deploy_stats.travel_time += travel_time
-                    deploy_stats.survey_time += survey_report.time_surveyed_current_day
+                    deploy_stats.survey_time += survey_report.time_surveyed
 
                 # If this will be last survey of the day, set remaining time
                 # to 0 and track travel home time
                 if last_site_survey:
-                    crew.day_time_remaining = 0
+                    assigned_crew.day_time_remaining = 0
                     workplan.total_travel_time += travel_time
                     deploy_stats.travel_time += travel_time
                     # TODO Make sure this gets update for other travel times as well
@@ -276,7 +271,7 @@ class Method:
                     )
             # Update the survey planner. If the survey was not finished, the update will
             # indicate that the particular site needs to be requeued with higher priority
-            workplan.add_survey_report(survey_report, survey_plan)
+            incompleteSurveys.append((survey_report, survey_plan))
             if survey_report.survey_complete:
                 self._site_survey_reports.append(survey_report)
                 detection_record: DetectionRecord = DetectionRecord(
@@ -295,6 +290,18 @@ class Method:
                     if site_survey_cost == 0 and self.cost > 0:
                         site_survey_cost = self.cost
                     deploy_stats.deployment_cost += site_survey_cost
+        for survey in incompleteSurveys:
+            # Update the survey planner. If the survey was not finished, the update will
+            # indicate that the particular site needs to be requeued with higher priority
+            workplan.add_survey_report(*survey)
+        # If the cost type for the method is per day, calculate the deployment cost for day
+        # based off the number of crews being deployed
+        if self.cost_type == self.PER_DAY_COST:
+            if self._deployment_type == pdc.Deployment_Types.STATIONARY:
+                deploy_stats.deployment_cost = self.cost * len(workplan.site_survey_planners)
+            else:
+                count_deployed_crews = sum(crew.deployed for crew in self._crew_reports)
+                deploy_stats.deployment_cost = self.cost * count_deployed_crews
         return deploy_stats
 
     def update(self, current_date: date) -> TaggingFlaggingStats:

@@ -1193,6 +1193,8 @@ See the following files for examples on setting this value at a more granular le
 
 **Description:** The daily cost charged by the service provider (per crew). It is charged each time a crew is deployed, regardless of how many sites they survey that day.
 
+For `stationary`, the cost per day is for each site the method is deployed on.
+
 **Notes on acquisition:** No data acquisition required.
 
 **Notes of caution:** `Stationary` deployment methods only use the `per_day` and `upfront` cost values.

@@ -108,6 +108,7 @@ class SiteSurveyReport:
 class CrewDailyReport:
     crew_id: int
     day_time_remaining: int
+    deployed: bool = False
 
 
 @dataclass
