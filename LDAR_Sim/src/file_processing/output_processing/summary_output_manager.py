@@ -203,7 +203,9 @@ class SummaryOutputManager:
         ]
         filtered_df.rename(
             columns={
-                output_file_constants.TS_SUMMARY_COLUMNS_ACCESSORS.TOT_COST: output_file_constants.COST_SUMMARY_COLUMNS_ACCESSORS.TOTAL_COST
+                output_file_constants.TS_SUMMARY_COLUMNS_ACCESSORS.TOT_COST: (
+                    output_file_constants.COST_SUMMARY_COLUMNS_ACCESSORS.TOTAL_COST
+                )
             },
             inplace=True,
         )
@@ -223,7 +225,9 @@ class SummaryOutputManager:
         ]
         filtered_df.rename(
             columns={
-                output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_TOT_MIT: output_file_constants.COST_SUMMARY_COLUMNS_ACCESSORS.MITIGATION,
+                output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_TOT_MIT: (
+                    output_file_constants.COST_SUMMARY_COLUMNS_ACCESSORS.MITIGATION
+                ),
             },
             inplace=True,
         )

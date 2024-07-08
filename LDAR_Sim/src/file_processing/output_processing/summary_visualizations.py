@@ -593,7 +593,7 @@ def gen_cost_to_mit_boxplot(
     )
 
 
-def gen_program_stacked_cost_bars(
+def gen_program_stacked_cost_value_bars(
     out_dir: Path,
     visualization_dir: Path,
     baseline_program: str,
@@ -603,7 +603,9 @@ def gen_program_stacked_cost_bars(
     data_source: Path = out_dir / file_name_constants.Output_Files.SummaryFileNames.COST_SUMMARY
     data: pd.DataFrame = pd.read_csv(data_source.with_suffix(".csv"))
 
-    visualization_name: str = output_file_constants.SummaryOutputVizFileNames.STACKED_COST_BAR_PLOT
+    visualization_name: str = (
+        output_file_constants.SummaryOutputVizFileNames.PROGRAM_COST_VALUE_BAR_PLOT
+    )
 
     data = data[
         [

@@ -48,8 +48,8 @@ class SummaryVisualizationManager:
         output_file_constants.SummaryOutputVizFileNames.PROGRAM_MITIGATION_BAR_PLOT: (
             summary_visualizations.gen_program_mitigation_bars
         ),
-        output_file_constants.SummaryOutputVizFileNames.STACKED_COST_BAR_PLOT: (
-            summary_visualizations.gen_program_stacked_cost_bars
+        output_file_constants.SummaryOutputVizFileNames.PROGRAM_COST_VALUE_BAR_PLOT: (
+            summary_visualizations.gen_program_stacked_cost_value_bars
         ),
         output_file_constants.SummaryOutputVizFileNames.COST_TO_MIT_BOX_PLOT: (
             summary_visualizations.gen_cost_to_mit_boxplot

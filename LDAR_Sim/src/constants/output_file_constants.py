@@ -34,7 +34,7 @@ class SummaryOutputVizFileNames:
     )
     TRUE_AND_ESTIMATED_PAIRED_PROBIT_PLOT = "True and Estimated Emissions Probit"
     PROGRAM_MITIGATION_BAR_PLOT = "Program Mitigation Comparison"
-    STACKED_COST_BAR_PLOT = "Stacked Cost Comparison"
+    PROGRAM_COST_VALUE_BAR_PLOT = "Program Cost Value Comparison"
     COST_TO_MIT_BOX_PLOT = "Cost to Mitigation Ratios"
 
     def __iter__(self):
@@ -113,7 +113,7 @@ class MitigationBarConstants:
 
 class StackedCostBarConstants:
     X_LABEL = "Program Name"
-    Y_LABEL = "Median Total Cost ($) for all sites for all years"
+    Y_LABEL = "Median Total Value ($) for all sites for all years"
     WIDTH = 0.75
 
 
