@@ -1,5 +1,14 @@
 # Change Log
 
+## 2024-07-07 - Version 4.0.4
+
+1. Fixed per day costs
+2. Fixed scaling with surveys at the equipment group level
+3. Fixed error preventing users from setting parameters at the equipment group level
+4. Updated default parameter data types
+5. New unit tests added
+6. Other various bugs/future exception warnings
+
 ## 2024-07-02 - Version 4.0.3
 
 1. Fixed potential crew shortage warning message
