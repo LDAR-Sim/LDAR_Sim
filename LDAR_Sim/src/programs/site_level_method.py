@@ -146,9 +146,8 @@ class SiteLevelMethod(Method):
         # If the site is already queued to get a follow-up,
         # update the queue priority based on new results
         elif self._site_IDs_in_follow_up_queue[detection_record.site_id]:
-            existing_plan: StationaryFollowUpSurveyPlanner = (
-                self._follow_up_schedule.get_plan_from_queue(detection_record.site_id)
-            )
+            existing_plan = self._follow_up_schedule.get_plan_from_queue(detection_record.site_id)
+            existing_plan: StationaryFollowUpSurveyPlanner
             existing_plan.update_with_latest_survey(
                 detection_record,
                 self._redund_filter,
@@ -164,6 +163,7 @@ class SiteLevelMethod(Method):
                 self._follow_up_schedule.add_to_survey_queue(existing_plan)
             else:
                 self._site_IDs_in_follow_up_queue[detection_record.site_id] = False
+                self._site_IDs_in_consideration_for_flag[detection_record.site_id] = False
 
         # Otherwise, the site is not already in processing for a follow-up,
         # process as normal
@@ -223,6 +223,7 @@ class SiteLevelMethod(Method):
                 self._candidates_for_flags.add(existing_plan)
             else:
                 self._site_IDs_in_follow_up_queue[detection_record.site_ID] = False
+                self._site_IDs_in_consideration_for_flag[detection_record.site_id] = False
 
         # If the site is already queued to get a follow-up,
         # update the queue priority based on new results
@@ -242,6 +243,7 @@ class SiteLevelMethod(Method):
                 self._follow_up_schedule.add_to_survey_queue(existing_plan)
             else:
                 self._site_IDs_in_follow_up_queue[detection_record.site_id] = False
+                self._site_IDs_in_consideration_for_flag[detection_record.site_id] = False
         # Otherwise, the site is not already in processing for a follow-up,
         # process as normal
         else:
@@ -300,15 +302,19 @@ class SiteLevelMethod(Method):
             for survey_plan in self._get_candidates():
                 self._follow_up_schedule.add_to_survey_queue(survey_plan)
                 n_flags += 1
+                self._site_IDs_in_follow_up_queue[survey_plan.site_id] = True
+                self._site_IDs_in_consideration_for_flag[survey_plan.site_id] = False
         return n_flags
 
     def _get_plan_from_candidates(self, site_id: str) -> FollowUpSurveyPlanner:
-        survey_plan: FollowUpSurveyPlanner = next(
-            [plan for plan in self._candidates_for_flags if plan.site_id == site_id],
-            None,
-        )
-        self._candidates_for_flags.remove(survey_plan)
-        return survey_plan
+        plan_to_return: FollowUpSurveyPlanner = None
+        for plan in self._candidates_for_flags:
+            if plan.site_id == site_id:
+                plan_to_return = plan
+                break
+        if plan_to_return:
+            self._candidates_for_flags.remove(plan_to_return)
+        return plan_to_return
 
     def _filter_candidates_by_proportion(self) -> None:
         # If interaction priority is threshold first, simply get the number of

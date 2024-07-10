@@ -68,7 +68,7 @@ class FollowUpMobileSchedule(GenericSchedule):
             else:
                 new_queue.put(prio, plan)
         self._survey_queue: PriorityQueueWithFIFO = new_queue
-        return prio, target_plan
+        return target_plan
 
     def requeue_survey_plan(self, prio: int, survey_plan: FollowUpSurveyPlanner) -> None:
         self._survey_queue.put(priority=(prio, survey_plan.rate_at_site), item=survey_plan)
