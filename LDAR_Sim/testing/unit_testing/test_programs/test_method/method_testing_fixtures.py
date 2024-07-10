@@ -181,7 +181,7 @@ def simple_method_values_fix(mocker):
         mock_get_method_survey_time,
     )
     properties: dict = {
-        pdc.Method_Params.N_CREWS: 5,
+        pdc.Method_Params.N_CREWS: 3,
         pdc.Method_Params.SENSOR: "default",
         pdc.Method_Params.DEPLOYMENT_TYPE: "mobile",
         pdc.Method_Params.MAX_WORKDAY: 8,
@@ -245,7 +245,7 @@ def simple_method_values2_fix(mocker):
         mock_get_method_survey_time,
     )
     properties: dict = {
-        pdc.Method_Params.N_CREWS: 5,
+        pdc.Method_Params.N_CREWS: 0,
         pdc.Method_Params.SENSOR: "default",
         pdc.Method_Params.DEPLOYMENT_TYPE: "mobile",
         pdc.Method_Params.MAX_WORKDAY: 1,
@@ -309,7 +309,6 @@ def simple_method_values3_fix(mocker):
         mock_get_method_survey_time,
     )
     properties: dict = {
-        pdc.Method_Params.N_CREWS: 5,
         pdc.Method_Params.SENSOR: "default",
         pdc.Method_Params.DEPLOYMENT_TYPE: "mobile",
         pdc.Method_Params.MAX_WORKDAY: 1,
@@ -507,7 +506,7 @@ def deploy_crews_testing_fix(mocker):
     mocker.patch.object(DefaultSiteLevelSensor, "detect_emissions", mock_detect_emissions)
     mocker.patch.object(site_mock, "get_detectable_emissions", mock_get_detectable_emissions)
     properties: dict = {
-        pdc.Method_Params.N_CREWS: 5,
+        pdc.Method_Params.N_CREWS: 1,
         pdc.Method_Params.SENSOR: {
             pdc.Method_Params.TYPE: "default",
             pdc.Method_Params.MDL: 1,
@@ -796,7 +795,7 @@ def deploy_crews_testing4_fix(mocker):
     mocker.patch.object(DefaultSiteLevelSensor, "detect_emissions", mock_detect_emissions)
     mocker.patch.object(site_mock, "get_detectable_emissions", mock_get_detectable_emissions)
     properties: dict = {
-        pdc.Method_Params.N_CREWS: 5,
+        pdc.Method_Params.N_CREWS: 1,
         pdc.Method_Params.SENSOR: {
             pdc.Method_Params.TYPE: "default",
             pdc.Method_Params.MDL: 1,
