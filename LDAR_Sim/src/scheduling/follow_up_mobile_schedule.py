@@ -24,6 +24,9 @@ from scheduling.generic_schedule import GenericSchedule
 from utils.queue import PriorityQueueWithFIFO
 from virtual_world.sites import Site
 from constants.param_default_const import Deployment_Types as dt
+from scheduling.workplan import Workplan
+from scheduling.schedule_dataclasses import SiteSurveyReport
+from scheduling.scheduled_survey_planner import ScheduledSurveyPlanner
 
 
 class FollowUpMobileSchedule(GenericSchedule):
@@ -106,3 +109,19 @@ class FollowUpMobileSchedule(GenericSchedule):
             (GenericSchedule.QUEUED_SURVEY_PRIORITY, survey_plan.rate_at_site),
             survey_plan,
         )
+
+    def update(self, workplan: Workplan, current_date: date) -> None:
+        reports, planners = workplan.get_reports()
+        reports: dict[str, SiteSurveyReport]
+        planners: dict[str, ScheduledSurveyPlanner]
+        for site_id, report in reports.items():
+            planner: ScheduledSurveyPlanner = planners[site_id]
+
+            if not report.survey_complete:
+                if report.survey_in_progress:
+                    self.add_unfinished_to_survey_queue(planner)
+                else:
+                    self.add_previous_queued_to_survey_queue(planner)
+            else:
+                planner.add_to_surveys_done(current_date)
+                self._site_IDs_in_queue[planner.site_id] = False
