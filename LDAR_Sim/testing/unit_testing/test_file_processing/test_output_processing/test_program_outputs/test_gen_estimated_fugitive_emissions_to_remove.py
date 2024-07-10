@@ -137,7 +137,7 @@ def test_gen_estimated_fugitive_emissions_to_remove_simple():
     fugitive_emissions_rates_and_rep_data: pd.DataFrame = (
         gen_test_fugitive_emissions_rates_and_rep_data()
     )
-    est_fug_emis_to_rem: pd.Dataframe = program_output.gen_estimated_fugitive_emissions_to_remove(
+    est_fug_emis_to_rem: pd.Dataframe = program_output.gen_estimated_repairable_emissions_to_remove(
         site_survey_reports_summary, fugitive_emissions_rates_and_rep_data
     )
     expected: pd.DataFrame = gen_expected_estimated_fugitive_emissions_to_remove()

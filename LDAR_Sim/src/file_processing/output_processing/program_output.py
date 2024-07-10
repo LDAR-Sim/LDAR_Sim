@@ -33,10 +33,9 @@ from constants.output_file_constants import (
     EMIS_COMP_ESTIMATION_OUTPUT_COLUMNS,
     EST_FUG_OUTPUT_COLUMNS,
 )
-from constants.file_name_constants import Output_Files
 
 
-def gen_estimated_fugitive_emissions_to_remove(
+def gen_estimated_repairable_emissions_to_remove(
     site_survey_reports_summary: pd.DataFrame,
     fugitive_emissions_rates_and_repair_dates: pd.DataFrame,
 ) -> pd.DataFrame:
@@ -50,7 +49,7 @@ def gen_estimated_fugitive_emissions_to_remove(
         fugitive_emissions_rates_and_repair_dates.loc[:, eca.DATE_REP_EXP].astype("datetime64[ns]")
     )
 
-    # Drop rows with missing repair dates
+    # Drop rows with missing repair dates and missing measured rates
     fugitive_emissions_rates_and_repair_dates.dropna(inplace=True)
 
     # Populate a new column in the fugitive emissions rates and repair dates dataframe
@@ -58,11 +57,10 @@ def gen_estimated_fugitive_emissions_to_remove(
     # fugitive emissions to remove to avoid double counting
     # Create a dictionary to store the unique survey completion dates for each site
     site_survey_dates = (
-        site_survey_reports_summary.groupby(eca.SITE_ID)[eca.SURVEY_COMPLETION_DATE]
-        .unique()
+        site_survey_reports_summary.groupby(eca.SITE_ID)
+        .apply(lambda df: list(zip(df[eca.SURVEY_COMPLETION_DATE], df[eca.START_DATE])))
         .to_dict()
     )
-
     # Use the dictionary to map the closest future survey date for each row
     fugitive_emissions_rates_and_repair_dates[eca.NEXT_SURVEY_DATE] = (
         fugitive_emissions_rates_and_repair_dates.apply(
@@ -71,22 +69,6 @@ def gen_estimated_fugitive_emissions_to_remove(
             ),
             axis=1,
         )
-    )
-    fugitive_emissions_rates_and_repair_dates.loc[
-        :, "account_for_fugitives"
-    ] = fugitive_emissions_rates_and_repair_dates.loc[:, eca.NEXT_SURVEY_DATE].apply(
-        lambda x: program_output_helpers.find_df_row_value_w_match(
-            x,
-            eca.SURVEY_COMPLETION_DATE,
-            eca.PREV_CONDITION,
-            site_survey_reports_summary,
-        )
-    )
-    fugitive_emissions_rates_and_repair_dates.drop(
-        fugitive_emissions_rates_and_repair_dates.index[
-            ~fugitive_emissions_rates_and_repair_dates["account_for_fugitives"]
-        ],
-        inplace=True,
     )
 
     # Assign the Start and End date based on the repaired/expiry date and the next survey date
@@ -155,7 +137,7 @@ def gen_estimated_emissions_report(
     )
 
     # Generate a report of estimated fugitive emissions to remove
-    fugitive_emissions_to_remove: pd.DataFrame = gen_estimated_fugitive_emissions_to_remove(
+    fugitive_emissions_to_remove: pd.DataFrame = gen_estimated_repairable_emissions_to_remove(
         site_survey_reports_summary=sorted_by_site_summary,
         fugitive_emissions_rates_and_repair_dates=fugutive_emissions_rates_and_repair_dates,
     )
@@ -273,7 +255,7 @@ def gen_estimated_comp_emissions_report(
         sorted_by_site_summary, grouped_by_site_summary, duration_factor
     )
 
-    fugitive_emissions_to_remove: pd.DataFrame = gen_estimated_fugitive_emissions_to_remove(
+    fugitive_emissions_to_remove: pd.DataFrame = gen_estimated_repairable_emissions_to_remove(
         site_survey_reports_summary=sorted_by_site_summary,
         fugitive_emissions_rates_and_repair_dates=fugitive_emissions_rates_and_repair_dates,
     )

@@ -30,8 +30,25 @@ from constants.output_file_constants import (
 from constants.error_messages import Output_Processing_Messages as opm
 
 
-def closest_future_date(date: pd.Timestamp, date_list: list[pd.Timestamp]) -> pd.Timestamp:
-    return min([d for d in date_list if d > date], default=None, key=lambda x: abs(x - date))
+def closest_future_date(
+    date: pd.Timestamp, date_dict: list[tuple[pd.Timestamp, pd.Timestamp]]
+) -> pd.Timestamp:
+
+    # Find the index of the closest future survey completion date
+    closest_index = min(
+        [i for i, d in enumerate(date_dict) if d[0] > date],
+        default=None,
+        key=lambda i: abs(date_dict[i][0] - date),
+    )
+    # if no future survey completion date is found, return None
+    if closest_index is None:
+        return None
+    # if the new start date based on the ratio is before repair date, return the repair date
+    elif date_dict[closest_index][1] < date:
+        return date
+    # otherwise, return the new start date
+    else:
+        return date_dict[closest_index][1]
 
 
 def find_df_row_value_w_match(
