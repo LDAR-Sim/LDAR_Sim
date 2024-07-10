@@ -1246,7 +1246,8 @@ See the following files for examples on setting this value at a more granular le
 
 **Default input:** 0
 
-**Description:** The maximum number of distinct, independent crews that will be deployed using the same method. If the `crew_count` is not provided, LDAR-Sim will provide crews as needed.
+**Description:** The maximum number of distinct, independent crews that will be deployed using the same method. If the `crew_count` is not provided, LDAR-Sim will provide crews as needed. When explicitly stated, the maximum number of crews will be utilized for the given method.
+Warning, for follow-up mobile methods, crew count will be defaulted to 1 if not explicitly stated, which may lead to crew shortage.
 
 **Notes on acquisition:** No data acquisition required.
 
