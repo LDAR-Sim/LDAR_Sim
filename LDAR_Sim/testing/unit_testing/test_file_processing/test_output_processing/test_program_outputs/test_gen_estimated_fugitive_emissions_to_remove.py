@@ -69,6 +69,22 @@ def gen_test_site_survey_reports_summary():
                     "2024-12-31",
                 ]
             ),
+            output_file_constants.EMIS_DATA_COL_ACCESSORS.START_DATE: pd.to_datetime(
+                [
+                    "2024-01-01",
+                    "2024-01-30",
+                    "2024-02-01",
+                    "2024-05-06",
+                    "2024-09-04",
+                    "2024-12-31",
+                    "2024-01-01",
+                    "2024-01-29",
+                    "2024-03-04",
+                    "2024-08-09",
+                    "2024-11-11",
+                    "2024-12-31",
+                ]
+            ),
             output_file_constants.EMIS_DATA_COL_ACCESSORS.PREV_CONDITION: [
                 False,
                 False,
