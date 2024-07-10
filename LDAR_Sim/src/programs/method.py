@@ -174,9 +174,10 @@ class Method:
 
         else:
             estimate_req_n_crews = 1
-        if crews > 0 and estimate_req_n_crews > crews:
+        if crews > 0:
+            if estimate_req_n_crews > crews:
+                print(rwm.POTENTIAL_CREW_SHORTAGE_MESSAGE.format(method=self._name))
             estimate_req_n_crews = crews
-            print(rwm.POTENTIAL_CREW_SHORTAGE_MESSAGE.format(method=self._name))
         return estimate_req_n_crews
 
     def _get_avg_t_bt_sites(self) -> float:
