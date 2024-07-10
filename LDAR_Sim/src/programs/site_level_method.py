@@ -125,20 +125,29 @@ class SiteLevelMethod(Method):
                 date_to_check,
             )
             if existing_plan.rate_at_site >= self._inst_threshold:
+                # Add site to be surveyed, and remove from consideration for flags because
+                # it is now in the follow-up queue
                 self._follow_up_schedule.add_previous_queued_to_survey_queue(existing_plan)
+                self._site_IDs_in_consideration_for_flag[detection_record.site_id] = False
+                self._site_IDs_in_follow_up_queue[detection_record.site_id] = True
 
             elif existing_plan.rate_at_site >= self._small_window_threshold or (
                 self._large_window_threshold is not None
                 and existing_plan.rate_at_site_long >= self._large_window_threshold
             ):
+                # Adding it back into the queue, therefore do not need to update
+                # the sites to consider for flags
                 self._candidates_for_flags.add(existing_plan)
+            else:
+                # if the site is below the threshold, remove it from the list of
+                # sites to consider for flags
+                self._site_IDs_in_consideration_for_flag[detection_record.site_id] = False
 
         # If the site is already queued to get a follow-up,
         # update the queue priority based on new results
         elif self._site_IDs_in_follow_up_queue[detection_record.site_id]:
-            existing_plan: StationaryFollowUpSurveyPlanner = (
-                self._follow_up_schedule.get_plan_from_queue(detection_record.site_id)
-            )
+            existing_plan = self._follow_up_schedule.get_plan_from_queue(detection_record.site_id)
+            existing_plan: StationaryFollowUpSurveyPlanner
             existing_plan.update_with_latest_survey(
                 detection_record,
                 self._redund_filter,
@@ -147,12 +156,14 @@ class SiteLevelMethod(Method):
             )
             if existing_plan.rate_at_site >= self._inst_threshold:
                 self._follow_up_schedule.add_previous_queued_to_survey_queue(existing_plan)
-
             elif existing_plan.rate_at_site >= self._small_window_threshold or (
                 self._large_window_threshold is not None
                 and existing_plan.rate_at_site_long >= self._large_window_threshold
             ):
                 self._follow_up_schedule.add_to_survey_queue(existing_plan)
+            else:
+                self._site_IDs_in_follow_up_queue[detection_record.site_id] = False
+                self._site_IDs_in_consideration_for_flag[detection_record.site_id] = False
 
         # Otherwise, the site is not already in processing for a follow-up,
         # process as normal
@@ -167,6 +178,9 @@ class SiteLevelMethod(Method):
                         self._large_window,
                     )
                 )
+                self._site_IDs_in_follow_up_queue[detection_record.site_id] = True
+                self._site_IDs_in_consideration_for_flag[detection_record.site_id] = False
+
             elif detection_record.rate_detected != 0 and (
                 detection_record.rate_detected >= self._small_window_threshold
                 or (
@@ -182,6 +196,7 @@ class SiteLevelMethod(Method):
                         self._large_window,
                     )
                 )
+                self._site_IDs_in_consideration_for_flag[detection_record.site_id] = True
             # count that there was a detection, but it wasn't above the thresholds
             elif detection_record.rate_detected > 0:
                 self._detection_count += 1
@@ -201,9 +216,16 @@ class SiteLevelMethod(Method):
                 date_to_check,
             )
             if existing_plan.rate_at_site >= self._inst_threshold:
+                # Site added to be queued, can be removed from the consideration list
+                # and instead added to the follow-up queue
                 self._follow_up_schedule.add_previous_queued_to_survey_queue(existing_plan)
+                self._site_IDs_in_follow_up_queue[detection_record.site_id] = True
+                self._site_IDs_in_consideration_for_flag[detection_record.site_id] = False
             elif existing_plan.rate_at_site >= self._threshold:
                 self._candidates_for_flags.add(existing_plan)
+            else:
+                # If the site is no longer under consideration, remove from the list
+                self._site_IDs_in_consideration_for_flag[detection_record.site_id] = False
 
         # If the site is already queued to get a follow-up,
         # update the queue priority based on new results
@@ -221,6 +243,10 @@ class SiteLevelMethod(Method):
                 self._follow_up_schedule.add_previous_queued_to_survey_queue(existing_plan)
             elif existing_plan.rate_at_site >= self._threshold:
                 self._follow_up_schedule.add_to_survey_queue(existing_plan)
+            else:
+                # Site is no longer in consideration for follow-up
+                self._site_IDs_in_follow_up_queue[detection_record.site_id] = False
+                self._site_IDs_in_consideration_for_flag[detection_record.site_id] = False
         # Otherwise, the site is not already in processing for a follow-up,
         # process as normal
         else:
@@ -229,6 +255,8 @@ class SiteLevelMethod(Method):
                 self._follow_up_schedule.add_previous_queued_to_survey_queue(
                     FollowUpSurveyPlanner(detection_record, date_to_check)
                 )
+                self._site_IDs_in_follow_up_queue[detection_record.site_id] = True
+                self._site_IDs_in_consideration_for_flag[detection_record.site_id] = False
             # if the detected rate is non-zero, and above the threshold add to queue
             elif (
                 detection_record.rate_detected != 0
@@ -237,6 +265,7 @@ class SiteLevelMethod(Method):
                 self._candidates_for_flags.add(
                     FollowUpSurveyPlanner(detection_record, date_to_check)
                 )
+                self._site_IDs_in_consideration_for_flag[detection_record.site_id] = True
             # count that there was a detection, but it wasn't above the threshold
             elif detection_record.rate_detected > 0:
                 self._detection_count += 1
@@ -276,15 +305,19 @@ class SiteLevelMethod(Method):
             for survey_plan in self._get_candidates():
                 self._follow_up_schedule.add_to_survey_queue(survey_plan)
                 n_flags += 1
+                self._site_IDs_in_follow_up_queue[survey_plan.site_id] = True
+                self._site_IDs_in_consideration_for_flag[survey_plan.site_id] = False
         return n_flags
 
     def _get_plan_from_candidates(self, site_id: str) -> FollowUpSurveyPlanner:
-        survey_plan: FollowUpSurveyPlanner = next(
-            [plan for plan in self._candidates_for_flags if plan.site_id == site_id],
-            None,
-        )
-        self._candidates_for_flags.remove(survey_plan)
-        return survey_plan
+        plan_to_return: FollowUpSurveyPlanner = None
+        for plan in self._candidates_for_flags:
+            if plan.site_id == site_id:
+                plan_to_return = plan
+                break
+        if plan_to_return:
+            self._candidates_for_flags.remove(plan_to_return)
+        return plan_to_return
 
     def _filter_candidates_by_proportion(self) -> None:
         # If interaction priority is threshold first, simply get the number of
@@ -299,6 +332,9 @@ class SiteLevelMethod(Method):
             sites_for_consideration: int = self._detection_count
             sites_to_keep: int = ceil(float(sites_for_consideration * self._proportion))
             candidates_to_keep = min(sites_to_keep, len(self._candidates_for_flags))
+        # Set the sites that are not going to be kept to False in the dictionary
+        for reject_sites in self._candidates_for_flags[candidates_to_keep:]:
+            self._site_IDs_in_consideration_for_flag[reject_sites.site_id] = False
         # Trim the list of candidates to the first "candidates_to_keep"
         # elements of the list of candidates. Since the list is sorted by rate,
         # these are the candidates with biggest measured rates.
