@@ -224,6 +224,12 @@ EMIS_SUMMARY_COLUMNS = [
 ]
 
 
+class EMIS_DATA_TEMP_COLUMNS:
+    PREV_DATE = "Previous Date"
+    NEXT_DATE = "Next Date"
+    DURATION = "Duration"
+
+
 class EMIS_DATA_COL_ACCESSORS:
     EMIS_ID = "Emissions ID"
     SITE_ID = "Site ID"
@@ -254,12 +260,14 @@ class EMIS_DATA_COL_ACCESSORS:
     SURVEY_COMPLETION_DATE = "Survey Completion Date"
     METHOD = "Method"
     START_DATE = "Start Date"
+    OGI_START_DATE = "Original Start date"
     END_DATE = "End Date"
     PREV_CONDITION = "Use Previous Condition"
     NEXT_CONDITION = "Use Next Condition"
     NEXT_SURVEY_DATE = "Next Survey Date"
     SITE_MEASURED = "Site Measured"
     SITE_TYPE = "Site Type"
+    LAST_SURVEY_DATE = "Last Survey Date"
 
 
 EMIS_ESTIMATION_OUTPUT_COLUMNS = [

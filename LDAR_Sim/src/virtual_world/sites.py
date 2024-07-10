@@ -352,12 +352,6 @@ class Site:
     def get_loc(self) -> tuple[float, float]:
         return self._lat, self._long
 
-    # def _get_days_since_last_survey(self, method_name: str, current_date: date) -> int:
-    #     return (self._last_survey_dates[method_name] - current_date).days
-
-    # def _get_current_yearly_surveys(self, method_name: str) -> int:
-    #     return self._surveys_this_year[method_name]
-
     def get_latest_tagging_survey_date(self) -> date:
         return self._latest_tagging_survey_date
 

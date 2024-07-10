@@ -115,6 +115,8 @@ class Output_Processing_Messages:
     OPERAND_ADDITION_ERROR = "Unsupported operand type for addition"
     OPERAND_INPLACE_ADDITION_ERROR = "Unsupported operand type for in-place addition"
 
+    DURATION_FACTOR_ERROR = "Duration factor must be between 0.0 and 1.0"
+
 
 class Runtime_Error_Messages:
     NO_BASE_PROG_ERROR = "No baseline program input...Exiting sim"
