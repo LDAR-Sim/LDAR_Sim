@@ -1,10 +1,10 @@
 Sensitivity Parameter Level: "virtual_world" # Valid options - virtual_world, programs, methods
-Sensitivity Analysis Permutations: 3 # Number of permutations of parameters to vary to run
+Sensitivity Sets Provided: 3 # Number of sensitivity sets of parameters to vary to run
 # Below user need to provide a series of values for the parameters to vary in 
 # the sensitivity analysis in the same format as they are found in their parameter file.
 # If these are method level parameters, the user should provide the method name, and indent all 
 # parameters for that method under "Method Sensitivity Parameters".
-Sensitivity Parameter Variations:
+Sensitivity Sets:
   emissions:
     repairable_emissions:
       emissions_production_rate: [0.00325, 0.0065, 0.013]

@@ -40,8 +40,8 @@ def mock_read_in_sens_parameters(root_dir: Path, sens_info_file_path: str, param
 def mock_sensitivity_info():
     return {
         SensitivityAnalysisMapping.SENS_PARAM_LEVEL: "test",
-        SensitivityAnalysisMapping.SENS_PERMUTATIONS: 1,
-        SensitivityAnalysisMapping.SENS_PARAM_VARIATIONS: "test",
+        SensitivityAnalysisMapping.SENS_SET_COUNT: 1,
+        SensitivityAnalysisMapping.SENS_SETS: "test",
         SensitivityAnalysisMapping.SENS_SUMMARY_INFO: {
             SensitivityAnalysisOutputs.SensitivityTrueVsEstimatedCIs: "test"
         },
@@ -53,12 +53,8 @@ def get_expected_sensitivity_info():
         SensitivityAnalysisMapping.SENS_PARAM_MAPPING[
             SensitivityAnalysisMapping.SENS_PARAM_LEVEL
         ]: "test",
-        SensitivityAnalysisMapping.SENS_PARAM_MAPPING[
-            SensitivityAnalysisMapping.SENS_PERMUTATIONS
-        ]: 1,
-        SensitivityAnalysisMapping.SENS_PARAM_MAPPING[
-            SensitivityAnalysisMapping.SENS_PARAM_VARIATIONS
-        ]: "test",
+        SensitivityAnalysisMapping.SENS_PARAM_MAPPING[SensitivityAnalysisMapping.SENS_SET_COUNT]: 1,
+        SensitivityAnalysisMapping.SENS_PARAM_MAPPING[SensitivityAnalysisMapping.SENS_SETS]: "test",
         SensitivityAnalysisMapping.SENS_PARAM_MAPPING[
             SensitivityAnalysisMapping.SENS_SUMMARY_INFO
         ]: {SensitivityAnalysisOutputs.SensitivityTrueVsEstimatedCIs: "test"},

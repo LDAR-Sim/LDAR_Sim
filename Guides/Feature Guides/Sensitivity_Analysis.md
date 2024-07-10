@@ -74,8 +74,8 @@ The Sensitivity Analysis Information File must be a .yaml or .yml file that foll
 
 ```yml
 Sensitivity Parameter Level: # The level of parameters on which to perform sensitivity analysis. Options are: "virtual_world", "programs" or "methods".
-Sensitivity Analysis Permutations: # How many different sensitivity analysis permutations are described (The length of the list of values to evaluate for each parameters). For example: if we have Parameter: [Value 1, Value 2] that would be a value of 2.
-Sensitivity Parameter Variations: 
+Sensitivity Sets Provided: # How many different sensitivity analysis permutations are described (The length of the list of values to evaluate for each parameters). For example: if we have Parameter: [Value 1, Value 2] that would be a value of 2.
+Sensitivity Sets: 
   # Parameters and Lists of values to set for those parameters that fall under the specified parameter level.
   # Looks like:
   # Parameter: [Value 1, Value 2, Value 3]
@@ -90,8 +90,8 @@ This format varies slightly based on the parameter level on which Sensitivity An
 
 ```yml
 Sensitivity Parameter Level: "virtual_world"
-Sensitivity Analysis Permutations: 3
-Sensitivity Parameter Variations:
+Sensitivity Sets Provided: 3
+Sensitivity Sets:
   emissions:
     repairable_emissions:
       emissions_production_rate: [0.00325, 0.0065, 0.013]
@@ -104,8 +104,8 @@ Sensitivity Summary Outputs Information:
 
 ```yml
 Sensitivity Parameter Level: "programs"
-Sensitivity Analysis Permutations: 3
-Sensitivity Parameter Variations:
+Sensitivity Sets Provided: 3
+Sensitivity Sets:
   - Program Name: "Example_Program"
     Program Sensitivity Parameters:
       economics: 
@@ -120,8 +120,8 @@ Sensitivity Summary Outputs Information:
 
 ```yml
 Sensitivity Parameter Level: "methods"
-Sensitivity Analysis Permutations: 3
-Sensitivity Parameter Variations:
+Sensitivity Sets Provided: 3
+Sensitivity Sets:
   - Method Name: "Example_Method"
     Method Sensitivity Parameters:
       surveys_per_year: [1,2,3]
@@ -133,8 +133,8 @@ Sensitivity Summary Outputs Information:
 
 ```yml
 Sensitivity Parameter Level: "methods"
-Sensitivity Analysis Permutations: 3
-Sensitivity Parameter Variations:
+Sensitivity Sets Provided: 3
+Sensitivity Sets:
   - Method Name: "Example_Method"
     Method Sensitivity Parameters:
       surveys_per_year: [1,2,3]

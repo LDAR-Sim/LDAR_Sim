@@ -90,7 +90,12 @@ def gen_true_vs_est_emissions_percent_difference_sens_viz(
             ).TrueEstimatedEmissionsPercentDiffSensPlot.BIN_WIDTH,
         )
     plot_ax.xaxis.set_major_formatter(ticker.FuncFormatter(output_utils.percentage_formatter))
-    plt.legend(handles=legend_elements)
+    plt.legend(
+        handles=legend_elements,
+        title=(
+            sensitivity_analysis_constants.SensitivityAnalysisOutputs
+        ).TrueEstimatedEmissionsPercentDiffSensPlot.LEGEND_TITLE,
+    )
     save_path: str = os.path.join(
         out_dir,
         sensitivity_analysis_constants.SensitivityAnalysisOutputs.SENSITIVITY_TRUE_VS_ESTIMATED_PD,

@@ -180,9 +180,7 @@ def get_sensitivity_info(
                 sensitivity_analysis_constants.SensitivityAnalysisMapping.PARAM_VARIATIONS
             ],
             sens_info_dict[sensitivity_analysis_constants.SensitivityAnalysisMapping.PARAM_LEVEL],
-            sens_info_dict[
-                sensitivity_analysis_constants.SensitivityAnalysisMapping.NUM_VARIATIONS
-            ],
+            sens_info_dict[sensitivity_analysis_constants.SensitivityAnalysisMapping.NUM_SENS_SETS],
         )
     )
     return sens_info_dict

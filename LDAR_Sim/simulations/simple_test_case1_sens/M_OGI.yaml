@@ -11,6 +11,6 @@ cost:
   per_day: 0
   per_site: 500
 time_between_sites:
-  vals: [30]
+  values: [30]
 surveys_per_year: 4
 survey_time: 120
