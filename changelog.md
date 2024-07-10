@@ -1,5 +1,9 @@
 # Change Log
 
+## 2024-07-11 - Version 4.1.0
+
+1. Implemented duration estimation factor - See user manual for more details
+
 ## 2024-07-11 - Version 4.0.5
 
 1. Fixed crew count always being overwritten by estimated crew count
