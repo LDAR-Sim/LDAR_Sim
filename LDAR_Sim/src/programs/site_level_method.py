@@ -222,7 +222,6 @@ class SiteLevelMethod(Method):
             elif existing_plan.rate_at_site >= self._threshold:
                 self._candidates_for_flags.add(existing_plan)
             else:
-                self._site_IDs_in_follow_up_queue[detection_record.site_ID] = False
                 self._site_IDs_in_consideration_for_flag[detection_record.site_id] = False
 
         # If the site is already queued to get a follow-up,
@@ -329,6 +328,9 @@ class SiteLevelMethod(Method):
             sites_for_consideration: int = self._detection_count
             sites_to_keep: int = ceil(float(sites_for_consideration * self._proportion))
             candidates_to_keep = min(sites_to_keep, len(self._candidates_for_flags))
+        # Set the sites that are not going to be kept to False in the dictionary
+        for reject_sites in self._candidates_for_flags[candidates_to_keep:]:
+            self._site_IDs_in_consideration_for_flag[reject_sites.site_id] = False
         # Trim the list of candidates to the first "candidates_to_keep"
         # elements of the list of candidates. Since the list is sorted by rate,
         # these are the candidates with biggest measured rates.
