@@ -125,13 +125,23 @@ class SiteLevelMethod(Method):
                 date_to_check,
             )
             if existing_plan.rate_at_site >= self._inst_threshold:
+                # Add site to be surveyed, and remove from consideration for flags because
+                # it is now in the follow-up queue
                 self._follow_up_schedule.add_previous_queued_to_survey_queue(existing_plan)
+                self._site_IDs_in_consideration_for_flag[detection_record.site_id] = False
+                self._site_IDs_in_follow_up_queue[detection_record.site_id] = True
 
             elif existing_plan.rate_at_site >= self._small_window_threshold or (
                 self._large_window_threshold is not None
                 and existing_plan.rate_at_site_long >= self._large_window_threshold
             ):
+                # Adding it back into the queue, therefore do not need to update
+                # the sites to consider for flags
                 self._candidates_for_flags.add(existing_plan)
+            else:
+                # if the site is below the threshold, remove it from the list of
+                # sites to consider for flags
+                self._site_IDs_in_consideration_for_flag[detection_record.site_id] = False
 
         # If the site is already queued to get a follow-up,
         # update the queue priority based on new results
@@ -147,12 +157,13 @@ class SiteLevelMethod(Method):
             )
             if existing_plan.rate_at_site >= self._inst_threshold:
                 self._follow_up_schedule.add_previous_queued_to_survey_queue(existing_plan)
-
             elif existing_plan.rate_at_site >= self._small_window_threshold or (
                 self._large_window_threshold is not None
                 and existing_plan.rate_at_site_long >= self._large_window_threshold
             ):
                 self._follow_up_schedule.add_to_survey_queue(existing_plan)
+            else:
+                self._site_IDs_in_follow_up_queue[detection_record.site_id] = False
 
         # Otherwise, the site is not already in processing for a follow-up,
         # process as normal
@@ -167,6 +178,9 @@ class SiteLevelMethod(Method):
                         self._large_window,
                     )
                 )
+                self._site_IDs_in_follow_up_queue[detection_record.site_id] = True
+                self._site_IDs_in_consideration_for_flag[detection_record.site_id] = False
+
             elif detection_record.rate_detected != 0 and (
                 detection_record.rate_detected >= self._small_window_threshold
                 or (
@@ -182,6 +196,7 @@ class SiteLevelMethod(Method):
                         self._large_window,
                     )
                 )
+                self._site_IDs_in_consideration_for_flag[detection_record.site_id] = True
             # count that there was a detection, but it wasn't above the thresholds
             elif detection_record.rate_detected > 0:
                 self._detection_count += 1
@@ -202,8 +217,12 @@ class SiteLevelMethod(Method):
             )
             if existing_plan.rate_at_site >= self._inst_threshold:
                 self._follow_up_schedule.add_previous_queued_to_survey_queue(existing_plan)
+                self._site_IDs_in_follow_up_queue[detection_record.site_id] = True
+                self._site_IDs_in_consideration_for_flag[detection_record.site_id] = False
             elif existing_plan.rate_at_site >= self._threshold:
                 self._candidates_for_flags.add(existing_plan)
+            else:
+                self._site_IDs_in_follow_up_queue[detection_record.site_ID] = False
 
         # If the site is already queued to get a follow-up,
         # update the queue priority based on new results
@@ -221,6 +240,8 @@ class SiteLevelMethod(Method):
                 self._follow_up_schedule.add_previous_queued_to_survey_queue(existing_plan)
             elif existing_plan.rate_at_site >= self._threshold:
                 self._follow_up_schedule.add_to_survey_queue(existing_plan)
+            else:
+                self._site_IDs_in_follow_up_queue[detection_record.site_id] = False
         # Otherwise, the site is not already in processing for a follow-up,
         # process as normal
         else:
@@ -229,6 +250,8 @@ class SiteLevelMethod(Method):
                 self._follow_up_schedule.add_previous_queued_to_survey_queue(
                     FollowUpSurveyPlanner(detection_record, date_to_check)
                 )
+                self._site_IDs_in_follow_up_queue[detection_record.site_id] = True
+                self._site_IDs_in_consideration_for_flag[detection_record.site_id] = False
             # if the detected rate is non-zero, and above the threshold add to queue
             elif (
                 detection_record.rate_detected != 0
@@ -237,6 +260,7 @@ class SiteLevelMethod(Method):
                 self._candidates_for_flags.add(
                     FollowUpSurveyPlanner(detection_record, date_to_check)
                 )
+                self._site_IDs_in_consideration_for_flag[detection_record.site_id] = True
             # count that there was a detection, but it wasn't above the threshold
             elif detection_record.rate_detected > 0:
                 self._detection_count += 1
