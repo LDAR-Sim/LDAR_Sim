@@ -1,5 +1,9 @@
 # Change Log
 
+## 2024-07-11 - Version 4.0.5
+
+1. Fixed crew count always being overwritten by estimated crew count
+
 ## 2024-07-07 - Version 4.0.4
 
 1. Fixed per day costs
