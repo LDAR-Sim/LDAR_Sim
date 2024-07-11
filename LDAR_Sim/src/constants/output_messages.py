@@ -47,6 +47,7 @@ class RuntimeMessages:
 
     SIM_SET = "......Simulating set {simulation_number}"
     SIM_PROG = ".........Simulating program: {prog_name}"
+    SUMMARIZE_PROG = "............Summarizing program: {prog_name}"
     FIN_PROG = "......... Finished simulating program: {prog_name}"
     FIN_SIM_SET = "...Finished simulating set {simulation_number}"
     BATCH_CLEAN = "...Cleaning up batch {batch_count} data"
