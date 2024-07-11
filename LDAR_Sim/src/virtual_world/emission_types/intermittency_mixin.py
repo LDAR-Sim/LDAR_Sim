@@ -63,7 +63,7 @@ class IntermittencyMixin:
 
     @override
     def calc_true_emis_vol(self) -> float:
-        return self._days_emitting * self._rate * cc.GRAMS_PER_SECOND_TO_KG_PER_DAY
+        return self._days_emitting * self.rate * cc.GRAMS_PER_SECOND_TO_KG_PER_DAY
 
     @override
     def activate(self, date: date) -> bool:

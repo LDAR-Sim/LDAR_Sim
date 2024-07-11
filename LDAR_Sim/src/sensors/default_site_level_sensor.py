@@ -46,19 +46,17 @@ class DefaultSiteLevelSensor(DefaultSensor):
         detectable_emissions: dict[str, dict[str, list[Emission]]] = site.get_detectable_emissions(
             method_name=meth_name
         )
-        site_level_emission_rate: float = sum(
-            [
-                emission.get_rate()
-                for eq_emis_list in detectable_emissions.values()
-                for emis_list in eq_emis_list.values()
-                for emission in emis_list
-            ]
-        )
 
-        emissions_detected: bool = self._rate_detected(site_level_emission_rate)
+        site_level_emis_rate: float = 0.0
+        for eq_emis_list in detectable_emissions.values():
+            for emis_list in eq_emis_list.values():
+                for emis in emis_list:
+                    site_level_emis_rate += emis.rate
+
+        emissions_detected: bool = self._rate_detected(site_level_emis_rate)
 
         if emissions_detected:
-            site_level_measured_rate: float = self._measure_rate(site_level_emission_rate)
+            site_level_measured_rate: float = self._measure_rate(site_level_emis_rate)
             for eq_emis_list in detectable_emissions.values():
                 for emis_list in eq_emis_list.values():
                     for emission in emis_list:
@@ -68,9 +66,7 @@ class DefaultSiteLevelSensor(DefaultSensor):
         else:
             site_level_measured_rate: float = 0.0
 
-        self._fill_detection_report(
-            survey_report, site_level_emission_rate, site_level_measured_rate
-        )
+        self._fill_detection_report(survey_report, site_level_emis_rate, site_level_measured_rate)
         return emissions_detected
 
     def _fill_detection_report(

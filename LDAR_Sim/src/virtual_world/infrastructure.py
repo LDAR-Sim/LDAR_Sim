@@ -44,6 +44,7 @@ from file_processing.input_processing.infrastructure_processing import (
 )
 from weather.weather_lookup import WeatherLookup as WL
 
+
 # TODO: create logic for wrapping up the emissions into a dictionary
 # TODO: create logic for unwrapping the emissions dictionary
 
@@ -273,7 +274,8 @@ class Infrastructure:
             site_measured_df (pd.DataFrame): The DataFrame with site measured data.
 
         Returns:
-            A dictionary: The dictionary with site potential measurement that can be used as a new row.
+            A dictionary: The dictionary with site potential measurement
+            that can be used as a new row.
         """
         for i, site in enumerate(self._sites):
 

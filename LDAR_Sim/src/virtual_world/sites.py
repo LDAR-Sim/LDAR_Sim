@@ -325,9 +325,11 @@ class Site:
         return {self._site_ID: site_emissions}
 
     def get_detectable_emissions(self, method_name: str) -> dict[str, dict[str, list[Emission]]]:
-        detectable_emissions: dict[str, dict[str, Emission]] = {}
-        for eqg in self._equipment_groups:
-            detectable_emissions[eqg.get_id()] = eqg.get_detectable_emissions(method_name)
+        method_spatial_lookup: str = f"{method_name} Spatial Coverage"
+        detectable_emissions: dict[str, dict[str, list[Emission]]] = {
+            eqg.id: eqg.get_detectable_emissions(method_spatial_lookup)
+            for eqg in self._equipment_groups
+        }
 
         return detectable_emissions
 

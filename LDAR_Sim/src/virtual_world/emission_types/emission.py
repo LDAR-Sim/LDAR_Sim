@@ -56,7 +56,7 @@ class Emission:
         tech_spat_cov_probs: dict[str, float],
     ) -> None:
         self._emissions_id: str = f"{str(emission_n).zfill(10)}"
-        self._rate: float = rate
+        self.rate: float = rate
         self._start_date: date = start_date
         self._repairable: bool = repairable
 
@@ -67,7 +67,7 @@ class Emission:
         self._flagged_by: str = None
         self._init_detect_by: str = None
         self._init_detect_date: date = None
-        self._tech_spat_cov_probs: dict[str, float] = tech_spat_cov_probs
+        self._set_tech_spatial_coverage_probabilities(tech_spat_cov_probs)
         self._tech_spat_covs: dict[str, int] = {}
         self._status = ec.INACTIVE
 
@@ -83,6 +83,14 @@ class Emission:
         emission.__setstate__(state)
         return emission
 
+    def _set_tech_spatial_coverage_probabilities(
+        self, tech_spat_cov_probs: dict[str, float]
+    ) -> None:
+        self._tech_spat_cov_probs = {
+            f"{method} Spatial Coverage": probability
+            for method, probability in tech_spat_cov_probs.items()
+        }
+
     def update(self, emis_rep_info: EmisInfo) -> bool:
         """
         Increments duration values
@@ -93,18 +101,17 @@ class Emission:
         else:
             return False
 
-    def check_spatial_cov(self, method) -> int:
-        name_str: str = f"{method} Spatial Coverage"
-        if name_str not in self._tech_spat_covs:
-            cov_prob: float = self._tech_spat_cov_probs[method]
-            self._tech_spat_covs[name_str] = binomial(1, cov_prob)
-        return self._tech_spat_covs[name_str]
+    def check_spatial_cov(self, method_spatial_lookup: str) -> int:
+        if method_spatial_lookup not in self._tech_spat_covs:
+            cov_prob: float = self._tech_spat_cov_probs[method_spatial_lookup]
+            self._tech_spat_covs[method_spatial_lookup] = binomial(1, cov_prob)
+        return self._tech_spat_covs[method_spatial_lookup]
 
     def activate() -> bool:
         return False
 
     def calc_true_emis_vol(self) -> float:
-        return self._active_days * self._rate * cc.GRAMS_PER_SECOND_TO_KG_PER_DAY
+        return self._active_days * self.rate * cc.GRAMS_PER_SECOND_TO_KG_PER_DAY
 
     def update_detection_records(self, company: str, detect_date: date):
         if self._init_detect_by is None:
@@ -126,14 +133,11 @@ class Emission:
     def set_measured_rate(self, measured_rate):
         self._measured_rate = measured_rate
 
-    def get_rate(self) -> float:
-        return self._rate
-
     def get_status(self) -> str:
         return self._status
 
     def get_daily_emis(self) -> float:
-        return self._rate * cc.GRAMS_PER_SECOND_TO_KG_PER_DAY
+        return self.rate * cc.GRAMS_PER_SECOND_TO_KG_PER_DAY
 
     def get_summary_dict(self) -> dict[str, Any]:
         summary_dict = {}
@@ -144,7 +148,7 @@ class Emission:
         summary_dict.update({(eca.EST_DAYS_ACT, self._estimated_days_active)})
         summary_dict.update({(eca.T_VOL_EMIT, self.calc_true_emis_vol())})
         summary_dict.update({(eca.MITIGATED, 0.0)})
-        summary_dict.update({(eca.T_RATE, self._rate)})
+        summary_dict.update({(eca.T_RATE, self.rate)})
         summary_dict.update({(eca.M_RATE, self._measured_rate)})
         summary_dict.update({(eca.DATE_BEG, self._start_date)})
         summary_dict.update({(eca.INIT_DETECT_BY, self._init_detect_by)})

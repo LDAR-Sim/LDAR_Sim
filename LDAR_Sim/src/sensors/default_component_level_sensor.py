@@ -61,22 +61,24 @@ class DefaultComponentLevelSensor(DefaultSensor):
             emissions_detection_reports: list[EmissionDetectionReport] = []
 
             for comp, emis_list in eq_emis_list.items():
-                equip_rate: float = sum([emission.get_rate() for emission in emis_list])
+                comp_rate: float = 0.0
+                for emission in emis_list:
+                    comp_rate += emission.rate
 
-                equip_emission_detected: bool = self._rate_detected(equip_rate)
+                equip_emission_detected: bool = self._rate_detected(comp_rate)
 
                 if equip_emission_detected:
-                    equip_measured_rate: float = self._measure_rate(equip_rate)
+                    equip_measured_rate: float = self._measure_rate(comp_rate)
                 else:
                     equip_measured_rate: float = 0
 
                 emissions_detection_reports.append(
                     self._gen_emissions_detection_report(
-                        site.get_id(), eqg, comp, equip_measured_rate, equip_rate
+                        site.get_id(), eqg, comp, equip_measured_rate, comp_rate
                     )
                 )
 
-                eqg_level_emis_rate += equip_rate
+                eqg_level_emis_rate += comp_rate
                 eqg_level_measured_rate += equip_measured_rate
 
             eqg_survey_reports.append(

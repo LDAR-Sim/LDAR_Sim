@@ -71,7 +71,7 @@ class NonRepairableEmission(Emission):
         return instance
 
     def get_daily_emissions(self) -> float:
-        return self._rate * 86.4
+        return self.rate * 86.4
 
     def expire(self, emis_info: EmisInfo):
         """

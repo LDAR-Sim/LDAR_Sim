@@ -104,7 +104,7 @@ class RepairableEmission(Emission):
             return random.choice(self._repair_cost)
 
     def get_daily_emissions(self) -> float:
-        return self._rate * cc.GRAMS_PER_SECOND_TO_KG_PER_DAY
+        return self.rate * cc.GRAMS_PER_SECOND_TO_KG_PER_DAY
 
     def natural_repair(self, emis_rep_info: EmisInfo):
         self._tagged = True
@@ -170,7 +170,7 @@ class RepairableEmission(Emission):
             # Calculate mitigated days only if necessary
             mit_days = self._nrd - self._active_days - self._days_active_b4_sim - days_after_sim_end
             if mit_days > 0:
-                return mit_days * self._rate * cc.GRAMS_PER_SECOND_TO_KG_PER_DAY
+                return mit_days * self.rate * cc.GRAMS_PER_SECOND_TO_KG_PER_DAY
         return 0.0
 
     def calc_theory_date(self) -> date:

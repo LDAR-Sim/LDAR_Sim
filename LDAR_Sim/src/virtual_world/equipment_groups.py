@@ -29,15 +29,15 @@ from file_processing.input_processing.emissions_source_processing import (
     EmissionsSource,
 )
 from scheduling.schedule_dataclasses import TaggingInfo
-from virtual_world.emission_types.emission import Emission
 from constants.infrastructure_const import Infrastructure_Constants as IC
 from virtual_world.component import Component
 from constants.param_default_const import Common_Params as cp
+from virtual_world.emission_types.emission import Emission
 
 
 class Equipment_Group:
     def __init__(self, id, infrastructure_inputs, prop_params, info) -> None:
-        self._id: str = id
+        self.id: str = id
         self._meth_survey_times = None
         self._meth_survey_costs = None
         self._component: list[Component] = []
@@ -51,7 +51,7 @@ class Equipment_Group:
 
     def __reduce__(self):
         args = (
-            self._id,
+            self.id,
             self._meth_survey_times,
             self._meth_survey_costs,
             self._component,
@@ -61,7 +61,7 @@ class Equipment_Group:
     @classmethod
     def _reconstruct(cls, id, meth_survey_times, meth_survey_costs, component):
         instance = cls.__new__(cls)
-        instance._id = id
+        instance.id = id
         instance._meth_survey_times = meth_survey_times
         instance._meth_survey_costs = meth_survey_costs
         instance._component = component
@@ -146,7 +146,7 @@ class Equipment_Group:
                 )
             )
 
-        return {self._id: eqg_emissions}
+        return {self.id: eqg_emissions}
 
     def activate_emissions(self, date: date, sim_number: int) -> int:
         """Activate any emissions that are due to begin on the current date for the given simulation
@@ -173,12 +173,12 @@ class Equipment_Group:
         )
         target_comp.tag_emissions(tagging_info)
 
-    def get_detectable_emissions(self, method_name: str) -> dict[str, list[Emission]]:
-        detectable_emissions: dict[str, Emission] = {}
-        for equip in self._component:
-            detectable_emissions[equip.get_id()] = equip.get_detectable_emissions(method_name)
-
-        return detectable_emissions
+    def get_detectable_emissions(self, method_spatial_lookup: str) -> dict[str, list[Emission]]:
+        detectable_emissions_rates: dict[str, list[Emission]] = {
+            comp.id: comp.get_detectable_emissions(method_spatial_lookup)
+            for comp in self._component
+        }
+        return detectable_emissions_rates
 
     def set_pregen_emissions(self, eqg_emissions, sim_number) -> None:
         for component in self._component:
@@ -193,12 +193,12 @@ class Equipment_Group:
         return
 
     def get_id(self) -> str:
-        return self._id
+        return self.id
 
     def gen_emis_data(self, emis_df: pd.DataFrame, site_id: str, row_index: int, end_date: date):
         upd_row_index = row_index
         for equip in self._component:
-            upd_row_index = equip.gen_emis_data(emis_df, site_id, self._id, upd_row_index, end_date)
+            upd_row_index = equip.gen_emis_data(emis_df, site_id, self.id, upd_row_index, end_date)
         return upd_row_index
 
     def get_survey_cost(self, method_name) -> float:

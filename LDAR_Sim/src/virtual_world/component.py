@@ -45,8 +45,9 @@ class Component:
     def __init__(self, equip_type, equip_id, infrastructure_inputs, prop_params) -> None:
         STR_FILTER = r"_equipment"
         pattern: re.Pattern[str] = re.compile(re.escape(STR_FILTER), re.IGNORECASE)
+
         self._equip_type: str = re.sub(pattern, "", equip_type)
-        self._component_ID: str = self._equip_type + "_" + str(equip_id)
+        self.id: str = self._equip_type + "_" + str(equip_id)
         self._sources: list[Source] = []
         self._create_sources(infrastructure_inputs=infrastructure_inputs, prop_params=prop_params)
         self._active_emissions: list[Emission] = []
@@ -56,7 +57,7 @@ class Component:
     def __reduce__(self):
         args = (
             self._equip_type,
-            self._component_ID,
+            self.id,
             self._sources,
             self._active_emissions,
             self._inactive_emissions,
@@ -76,7 +77,7 @@ class Component:
     ):
         instance = cls.__new__(cls)
         instance._equip_type = equip_type
-        instance._component_ID = component_ID
+        instance.id = component_ID
         instance._sources = sources
         instance._active_emissions = active_emissions
         instance._inactive_emissions = inactive_emissions
@@ -166,7 +167,7 @@ class Component:
                 )
             )
 
-        return {self._component_ID: equip_emissions}
+        return {self.id: equip_emissions}
 
     def activate_emissions(self, date: date, sim_number: int) -> int:
         """Activate any emissions that are due to begin on the current date for the given simulation
@@ -184,6 +185,7 @@ class Component:
             new_emissions_count += len(new_emissions)
         return new_emissions_count
 
+    # This method is optimized to reduce runtime
     def update_emissions_state(self, emis_rep_info: EmisInfo, emis_data: TsEmisData) -> None:
         updated_active_emissions: list[Emission] = []
         for emission in self._active_emissions:
@@ -228,20 +230,20 @@ class Component:
                     company=tagging_info.company, detect_date=tagging_info.curr_date
                 )
 
-    def get_detectable_emissions(self, method_name: str) -> Emission:
-        detectable_emissions: list[Emission] = []
-        for emis in self._active_emissions:
-            if emis.check_spatial_cov(method_name) and emis.is_emitting():
-                detectable_emissions.append(emis)
-
-        return detectable_emissions
+    def get_detectable_emissions(self, method_spatial_lookup: str) -> list[Emission]:
+        detectable_emissions_rates: list[Emission] = [
+            emis
+            for emis in self._active_emissions
+            if (emis.check_spatial_cov(method_spatial_lookup) and emis.is_emitting())
+        ]
+        return detectable_emissions_rates
 
     def set_pregen_emissions(self, equipment_emissions, sim_number) -> None:
         for src in self._sources:
             src.set_pregen_emissions(equipment_emissions[src.get_id()], sim_number)
 
     def get_id(self) -> str:
-        return self._component_ID
+        return self.id
 
     def gen_emis_data(
         self, emis_df: pd.DataFrame, site_id: str, eqg_id: str, row_index: int, end_date: date
@@ -249,17 +251,13 @@ class Component:
         upd_row_index = row_index
         for emission in self._active_emissions:
             summary_dict: dict[str, Any] = emission.get_summary_dict(end_date)
-            summary_dict.update(
-                {eca.SITE_ID: site_id, eca.EQG: eqg_id, eca.COMP: self._component_ID}
-            )
+            summary_dict.update({eca.SITE_ID: site_id, eca.EQG: eqg_id, eca.COMP: self.id})
             emis_df.loc[upd_row_index] = summary_dict
             upd_row_index += 1
 
         for emission in self._inactive_emissions:
             summary_dict: dict[str, Any] = emission.get_summary_dict(end_date)
-            summary_dict.update(
-                {eca.SITE_ID: site_id, eca.EQG: eqg_id, eca.COMP: self._component_ID}
-            )
+            summary_dict.update({eca.SITE_ID: site_id, eca.EQG: eqg_id, eca.COMP: self.id})
             emis_df.loc[upd_row_index] = summary_dict
             upd_row_index += 1
         return upd_row_index

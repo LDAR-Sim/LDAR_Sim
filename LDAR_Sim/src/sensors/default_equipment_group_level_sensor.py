@@ -19,6 +19,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 """
 
 from typing import Union
+
 from constants.sensor_constants import QuantificationTypes
 from scheduling.schedule_dataclasses import EquipmentGroupSurveyReport, SiteSurveyReport
 from sensors.default_sensor import DefaultSensor
@@ -51,32 +52,36 @@ class DefaultEquipmentGroupLevelSensor(DefaultSensor):
         site_level_emission_rate: float = 0.0
         site_level_measured_rate: float = 0.0
 
-        for eqg, eq_emis_list in detectable_emissions.items():
-            eqg_level_emis_rate: float = sum(
-                [
-                    emission.get_rate()
-                    for emis_list in eq_emis_list.values()
-                    for emission in emis_list
-                ]
-            )
+        site_id: str = site.get_id()
 
-            eqg_emissions_detected: bool = self._rate_detected(eqg_level_emis_rate)
+        for eqg, eq_emis_list in detectable_emissions.items():
+            eqg_level_emis: float = 0.0
+            for emis_list in eq_emis_list.values():
+                for emis in emis_list:
+                    eqg_level_emis += emis.rate
+
+            eqg_emissions_detected: bool = self._rate_detected(eqg_level_emis)
 
             if eqg_emissions_detected:
-                eqg_level_measured_rate: float = self._measure_rate(eqg_level_emis_rate)
+                eqg_level_measured_rate: float = self._measure_rate(eqg_level_emis)
+                for emis_list in eq_emis_list.values():
+                    for emission in emis_list:
+                        emission.update_detection_records(
+                            company=meth_name, detect_date=survey_report.survey_completion_date
+                        )
             else:
-                eqg_level_measured_rate: float = 0.0
+                eqg_level_measured_rate: float = 0
 
             eqg_survey_reports.append(
                 self._gen_eqg_survey_report(
-                    site_id=site.get_id(),
+                    site_id=site_id,
                     eqg_id=eqg,
-                    true_rate=eqg_level_emis_rate,
+                    true_rate=eqg_level_emis,
                     measured_rate=eqg_level_measured_rate,
                 )
             )
 
-            site_level_emission_rate += eqg_level_emis_rate
+            site_level_emission_rate += eqg_level_emis
             site_level_measured_rate += eqg_level_measured_rate
 
         self._fill_detection_report(
@@ -100,7 +105,6 @@ class DefaultEquipmentGroupLevelSensor(DefaultSensor):
     def _gen_eqg_survey_report(
         self, site_id: str, eqg_id: str, true_rate: float, measured_rate: float
     ) -> EquipmentGroupSurveyReport:
-        eqg_survey_report: EquipmentGroupSurveyReport = EquipmentGroupSurveyReport(
+        return EquipmentGroupSurveyReport(
             site_id, eqg_id, measured_rate=measured_rate, true_rate=true_rate
         )
-        return eqg_survey_report
