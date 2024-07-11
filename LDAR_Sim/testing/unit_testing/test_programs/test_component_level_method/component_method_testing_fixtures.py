@@ -270,7 +270,7 @@ def deploy_crews_testing4_fix(mocker):
     )
     mocker.patch.object(site_mock, "get_detectable_emissions", mock_get_detectable_emissions)
     properties: dict = {
-        pdc.Method_Params.N_CREWS: 5,
+        pdc.Method_Params.N_CREWS: 1,
         pdc.Method_Params.SENSOR: {
             pdc.Method_Params.TYPE: "default",
             pdc.Method_Params.MDL: 1,
