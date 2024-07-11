@@ -21,7 +21,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 import pytest
 import pandas as pd
 
-from file_processing.output_processing.program_output_helpers import closest_future_date
+from file_processing.output_processing.program_output_helpers import find_closest_future_date
 
 
 @pytest.fixture
@@ -92,6 +92,6 @@ def multiple_future_dates():
 def test_closest_future_date_new(request, fixture):
     test_data = request.getfixturevalue(fixture)
     assert (
-        closest_future_date(test_data["input_date"], test_data["date_dict"])
+        find_closest_future_date(test_data["input_date"], test_data["date_dict"])
         == test_data["expected"]
     )

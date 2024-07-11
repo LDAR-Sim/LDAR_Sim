@@ -64,7 +64,7 @@ def gen_estimated_repairable_emissions_to_remove(
     # Use the dictionary to map the closest future survey date for each row
     fugitive_emissions_rates_and_repair_dates[eca.NEXT_SURVEY_DATE] = (
         fugitive_emissions_rates_and_repair_dates.apply(
-            lambda x: program_output_helpers.closest_future_date(
+            lambda x: program_output_helpers.find_closest_future_date(
                 x[eca.DATE_REP_EXP], site_survey_dates[x[eca.SITE_ID]]
             ),
             axis=1,
@@ -272,8 +272,12 @@ def gen_estimated_comp_emissions_report(
 
 def determine_start_and_end_dates(sorted_by_site_summary_df, group_by_summary, duration_factor):
     # Determine if the previous or next condition should be used for the emission rate
-    sorted_by_site_summary_df[eca.PREV_CONDITION] = group_by_summary[eca.M_RATE].diff() <= 0
-    sorted_by_site_summary_df[eca.NEXT_CONDITION] = group_by_summary[eca.M_RATE].diff(-1) < 0
+    sorted_by_site_summary_df = program_output_helpers.calculate_prev_condition(
+        sorted_by_site_summary_df, group_by_summary
+    )
+    sorted_by_site_summary_df = program_output_helpers.calculate_next_condition(
+        sorted_by_site_summary_df, group_by_summary
+    )
     # Set the estimated start/end date based on the emission rate condition
     sorted_by_site_summary_df[eca.START_DATE] = (
         sorted_by_site_summary_df.groupby(eca.SITE_ID)

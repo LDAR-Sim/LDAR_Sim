@@ -40,7 +40,8 @@ def test_calculate_next_condition_for_empty_df():
     df = pd.DataFrame(columns=expected_columns)
 
     # Call the function
-    result_df = calculate_next_condition(df)
+    groupby = df.groupby(eca.SITE_ID)
+    result_df = calculate_next_condition(df, groupby)
     assert result_df.empty
     assert all(column in result_df.columns for column in expected_columns)
 
@@ -54,7 +55,8 @@ def test_calculate_next_condition_for_empty_df():
 )
 def test_calculate_simple_next_condition(test_input, expected):
     # Call the function
-    result_df = calculate_next_condition(test_input)
+    groupby = test_input.groupby(eca.SITE_ID)
+    result_df = calculate_next_condition(test_input, groupby)
     assert result_df.equals(expected)
 
 
@@ -66,6 +68,6 @@ def test_calculate_simple_next_condition(test_input, expected):
     ],
 )
 def test_calculate_complex_next_condition(test_input, expected):
-    # Call the function
-    result_df = calculate_next_condition(test_input)
+    groupby = test_input.groupby(eca.SITE_ID)
+    result_df = calculate_next_condition(test_input, groupby)
     assert result_df.equals(expected)

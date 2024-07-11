@@ -18,7 +18,6 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 ------------------------------------------------------------------------------
 """
 
-from math import ceil
 import pandas as pd
 import numpy as np
 from typing import Any
@@ -27,28 +26,27 @@ from constants.output_file_constants import (
     EMIS_DATA_COL_ACCESSORS as eca,
     EMIS_DATA_TEMP_COLUMNS as edtc,
 )
-from constants.error_messages import Output_Processing_Messages as opm
 
 
-def closest_future_date(
-    date: pd.Timestamp, date_dict: list[tuple[pd.Timestamp, pd.Timestamp]]
+def find_closest_future_date(
+    reference_date: pd.Timestamp, potential_futureDates: list[tuple[pd.Timestamp, pd.Timestamp]]
 ) -> pd.Timestamp:
 
     # Find the index of the closest future survey completion date
     closest_index = min(
-        [i for i, d in enumerate(date_dict) if d[0] > date],
+        [i for i, d in enumerate(potential_futureDates) if d[0] > reference_date],
         default=None,
-        key=lambda i: abs(date_dict[i][0] - date),
+        key=lambda i: abs(potential_futureDates[i][0] - reference_date),
     )
     # if no future survey completion date is found, return None
     if closest_index is None:
         return None
     # if the new start date based on the ratio is before repair date, return the repair date
-    elif date_dict[closest_index][1] < date:
-        return date
+    elif potential_futureDates[closest_index][1] < reference_date:
+        return reference_date
     # otherwise, return the new start date
     else:
-        return date_dict[closest_index][1]
+        return potential_futureDates[closest_index][1]
 
 
 def find_df_row_value_w_match(
@@ -98,7 +96,7 @@ def calculate_start_date(df: pd.DataFrame, factor: float):
     df[edtc.PREV_DATE] = determine_prev_date(df)
 
     # Calculate the factor to use based on the condition
-    series_factor: np.array[float] = calculate_factor(condition, factor)
+    duration_scaling_factor: np.array[float] = calculate_factor(condition, factor)
 
     # Calculate the duration between the previous date and the current date
     df[edtc.DURATION] = calculate_duration_between_dates(
@@ -107,7 +105,7 @@ def calculate_start_date(df: pd.DataFrame, factor: float):
 
     # Calculate start dates using the adjusted duration and factor
     start_dates = df[eca.SURVEY_COMPLETION_DATE] - pd.to_timedelta(
-        np.ceil(df[edtc.DURATION] * series_factor), unit="D"
+        np.ceil(df[edtc.DURATION] * duration_scaling_factor), unit="D"
     )
     return start_dates
 
@@ -117,7 +115,7 @@ def calculate_end_date(df: pd.DataFrame, factor: float):
     df[edtc.NEXT_DATE] = determine_next_date(df)
 
     # Calculate the factor to use based on the condition
-    series_factor: pd.Series = calculate_factor(condition, factor)
+    duration_scaling_factor: pd.Series = calculate_factor(condition, factor)
 
     # Calculate the duration between the current date and the next date
     df[edtc.DURATION] = calculate_duration_between_dates(
@@ -126,7 +124,7 @@ def calculate_end_date(df: pd.DataFrame, factor: float):
 
     # Calculate end dates using the adjusted duration and factor
     end_dates = df[eca.SURVEY_COMPLETION_DATE] + pd.to_timedelta(
-        np.floor(df[edtc.DURATION] * series_factor), unit="D"
+        np.floor(df[edtc.DURATION] * duration_scaling_factor), unit="D"
     )
     return end_dates
 
@@ -163,49 +161,30 @@ def expand_column(df: pd.DataFrame, column: str) -> pd.DataFrame:
     return combined_df
 
 
-def calculate_new_start_date(start_date, end_date, duration_factor):
-    """
-    Calculate the new start date based on the end date and duration factor
-    If a factor is 0 or negative, an error will be raised
-    If a duration factor results in a part of a date, it will be rounded up to the next whole day
-        Ex. 1.2 days will be rounded up to 2 days
-    Args:
-        start_date (pd.Timestamp): The start date
-        end_date (pd.Timestamp): The end date
-        duration_factor (float): The duration factor
-    """
-    if duration_factor <= 0 or duration_factor > 1.0:
-        raise ValueError(
-            opm.DURATION_FACTOR_ERROR
-        )  # TODO: this should be checked in parameter verification
-    days = (end_date - start_date).days
-    new_days = ceil(days * duration_factor)
-    return end_date - pd.Timedelta(days=new_days)
-
-
-def calculate_prev_condition(grouped_by_site_summary):
+def calculate_prev_condition(site_summary_data, grouped_by_site_summary):
     """
     Calculate the previous condition based on the emission rate difference.
 
     Parameters:
-    - grouped_by_site_summary: DataFrame containing the emission rates and other related data.
+    - site_summary_data: DataFrame containing the emission rates and other related data.
+    - grouped_by_site_summary: groupby of the site_summary_data DataFrame.
     Returns:
     - DataFrame with updated previous condition column.
     """
-    grouped_by_site_summary[eca.PREV_CONDITION] = grouped_by_site_summary[eca.M_RATE].diff() <= 0
-    return grouped_by_site_summary
+    site_summary_data[eca.PREV_CONDITION] = grouped_by_site_summary[eca.M_RATE].diff() <= 0
+    return site_summary_data
 
 
-def calculate_next_condition(grouped_by_site_summary):
+def calculate_next_condition(site_summary_data, grouped_by_site_summary):
     """
     Calculate the next condition based on the emission rate difference.
 
     Parameters:
-    - grouped_by_site_summary: DataFrame containing the emission rates and other related data.
-    - m_rate_column: The column name for the emission rate.
+    - site_summary_data: DataFrame containing the emission rates and other related data.
+    - grouped_by_site_summary: groupby of the site_summary_data DataFrame.
 
     Returns:
     - DataFrame with updated next condition column.
     """
-    grouped_by_site_summary[eca.NEXT_CONDITION] = grouped_by_site_summary[eca.M_RATE].diff(-1) < 0
-    return grouped_by_site_summary
+    site_summary_data[eca.NEXT_CONDITION] = grouped_by_site_summary[eca.M_RATE].diff(-1) < 0
+    return site_summary_data

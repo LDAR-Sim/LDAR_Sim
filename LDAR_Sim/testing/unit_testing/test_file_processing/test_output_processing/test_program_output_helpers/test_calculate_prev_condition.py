@@ -38,9 +38,9 @@ def test_calculate_prev_condition_for_empty_df():
     # Create an empty DataFrame
     expected_columns = [eca.SITE_ID, eca.M_RATE, eca.PREV_CONDITION]
     df = pd.DataFrame(columns=expected_columns)
-
+    groupby = df.groupby(eca.SITE_ID)
     # Call the function
-    result_df = calculate_prev_condition(df)
+    result_df = calculate_prev_condition(df, groupby)
     assert result_df.empty
     assert all(column in result_df.columns for column in expected_columns)
 
@@ -53,8 +53,9 @@ def test_calculate_prev_condition_for_empty_df():
     ],
 )
 def test_calculate_simple_prev_condition(test_input, expected):
+    groupby = test_input.groupby(eca.SITE_ID)
     # Call the function
-    result_df = calculate_prev_condition(test_input)
+    result_df = calculate_prev_condition(test_input, groupby)
     assert result_df.equals(expected)
 
 
@@ -66,6 +67,7 @@ def test_calculate_simple_prev_condition(test_input, expected):
     ],
 )
 def test_calculate_complex_prev_condition(test_input, expected):
+    groupby = test_input.groupby(eca.SITE_ID)
     # Call the function
-    result_df = calculate_prev_condition(test_input)
+    result_df = calculate_prev_condition(test_input, groupby)
     assert result_df.equals(expected)

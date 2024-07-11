@@ -260,7 +260,7 @@ class EMIS_DATA_COL_ACCESSORS:
     SURVEY_COMPLETION_DATE = "Survey Completion Date"
     METHOD = "Method"
     START_DATE = "Start Date"
-    OGI_START_DATE = "Original Start date"
+    ORIGINAL_START_DATE = "Original Start date"
     END_DATE = "End Date"
     PREV_CONDITION = "Use Previous Condition"
     NEXT_CONDITION = "Use Next Condition"
