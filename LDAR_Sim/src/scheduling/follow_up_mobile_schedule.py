@@ -111,11 +111,18 @@ class FollowUpMobileSchedule(GenericSchedule):
         )
 
     def update(self, workplan: Workplan, current_date: date) -> None:
-        super().update(workplan, current_date)
-
         reports, planners = workplan.get_reports()
-        for site_id, report in reports.items():
-            planner = planners[site_id]
+        reports: dict[str, SiteSurveyReport]
+        planners: dict[str, ScheduledSurveyPlanner]
 
-            if report.survey_complete:
+        for site_id, report in reports.items():
+            planner: ScheduledSurveyPlanner = planners[site_id]
+
+            if not report.survey_complete:
+                if report.survey_in_progress:
+                    self.add_unfinished_to_survey_queue(planner)
+                else:
+                    self.add_previous_queued_to_survey_queue(planner)
+            else:
+                planner.add_to_surveys_done(current_date)
                 self._site_IDs_in_queue[planner.site_id] = False
