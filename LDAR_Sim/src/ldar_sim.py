@@ -37,6 +37,7 @@ from constants.output_file_constants import (
     EMIS_DATA_FINAL_COL_ORDER,
     TIMESERIES_COL_ACCESSORS as tca,
 )
+from constants.output_messages import RuntimeMessages as rm
 from constants.param_default_const import Virtual_World_Params as vp
 
 
@@ -114,6 +115,7 @@ class LdarSim:
             self._program.update_date()
             self._tc.next_day()
 
+        print(rm.SUMMARIZE_PROG.format(prog_name=self._program.name))
         overall_emission_data: pd.DataFrame = pd.DataFrame(
             columns=EMIS_DATA_FINAL_COL_ORDER, index=range(total_emissions_count)
         )
