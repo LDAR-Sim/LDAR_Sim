@@ -3,6 +3,9 @@
 ## 2024-07-11 - Version 4.0.5
 
 1. Fixed crew count always being overwritten by estimated crew count
+2. Update language around sensitivity analysis
+3. Update language of stacked cost (now value) bar chart
+4. Fix bug with sites considered for follow-ups and queue for follow-ups
 
 ## 2024-07-07 - Version 4.0.4
 

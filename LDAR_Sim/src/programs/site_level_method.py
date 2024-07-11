@@ -146,8 +146,9 @@ class SiteLevelMethod(Method):
         # If the site is already queued to get a follow-up,
         # update the queue priority based on new results
         elif self._site_IDs_in_follow_up_queue[detection_record.site_id]:
-            existing_plan = self._follow_up_schedule.get_plan_from_queue(detection_record.site_id)
-            existing_plan: StationaryFollowUpSurveyPlanner
+            existing_plan: StationaryFollowUpSurveyPlanner = (
+                self._follow_up_schedule.get_plan_from_queue(detection_record.site_id)
+            )
             existing_plan.update_with_latest_survey(
                 detection_record,
                 self._redund_filter,
@@ -163,7 +164,6 @@ class SiteLevelMethod(Method):
                 self._follow_up_schedule.add_to_survey_queue(existing_plan)
             else:
                 self._site_IDs_in_follow_up_queue[detection_record.site_id] = False
-                self._site_IDs_in_consideration_for_flag[detection_record.site_id] = False
 
         # Otherwise, the site is not already in processing for a follow-up,
         # process as normal
@@ -179,7 +179,6 @@ class SiteLevelMethod(Method):
                     )
                 )
                 self._site_IDs_in_follow_up_queue[detection_record.site_id] = True
-                self._site_IDs_in_consideration_for_flag[detection_record.site_id] = False
 
             elif detection_record.rate_detected != 0 and (
                 detection_record.rate_detected >= self._small_window_threshold
@@ -246,7 +245,6 @@ class SiteLevelMethod(Method):
             else:
                 # Site is no longer in consideration for follow-up
                 self._site_IDs_in_follow_up_queue[detection_record.site_id] = False
-                self._site_IDs_in_consideration_for_flag[detection_record.site_id] = False
         # Otherwise, the site is not already in processing for a follow-up,
         # process as normal
         else:
@@ -256,7 +254,6 @@ class SiteLevelMethod(Method):
                     FollowUpSurveyPlanner(detection_record, date_to_check)
                 )
                 self._site_IDs_in_follow_up_queue[detection_record.site_id] = True
-                self._site_IDs_in_consideration_for_flag[detection_record.site_id] = False
             # if the detected rate is non-zero, and above the threshold add to queue
             elif (
                 detection_record.rate_detected != 0
