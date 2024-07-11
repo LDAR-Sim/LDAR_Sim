@@ -866,17 +866,17 @@ It is important to note that LDAR-Sim internally converts KG of methane to MMBtu
 
 **Description:** The following parameters are used to estimate the total emission amount according to the specified program's work practices.
 
-#### &lt;duration_factor&gt; WIP
+#### &lt;duration_factor&gt;
 
 **Data Type:** Numeric
 
-**Default input:** 1
+**Default input:** 1.0
 
 **Description:** A decimal number representing the ratio of time since the last survey or screening at a given site, used to estimate the duration of a given measurement.
 
-For example, a value of 0.5 means that all measurements are based on the assumption that half the time since the last survey or screening at a given site is used to estimate the duration of the measured emission.
+For example, a value of 0.6 means that 60% of the duration was assumed to be the greater emitting value, between the two measurement points, and 40% of the duration would be assuming the smaller of the measured emission.
 
-By default(1), it assumes that the estimated emission has been emitting since the last screening or survey.
+By default(1.0), it assumes that the greater measured value has been emitting since the last measurement.
 
 ```txt
 Scenario
@@ -885,7 +885,11 @@ Scenario
 
 If duration_factor is set to 0.5:
   - The estimated volume emitted would be calculated by the following
-      ((31 - 1) * 0.5)days * 5kg/day = 75 kg
+      ((31 - 1) * 0.5)days * 5kg/day + ((31 - 1) * 0.5) * 0kg/day= 75 kg
+
+If duration_factor is set to 0.2:
+  - The estimated volume emitted would be calculated by the following
+      ((31 - 1) * 0.2)days * 5kg/day + ((31 - 1) * 0.8) * 0kg/day= 30 kg
 
 If the duration_factor is set to 1:
   - The estimated volume emitted for the same period would be 
@@ -895,7 +899,7 @@ If the duration_factor is set to 1:
 
 **Notes of acquisition:** N/A
 
-**Notes of caution:** This is currently a placeholder parameter.
+**Notes of caution:** When using `duration_method: measurement-based-conservative` with a `stationary` method, the only valid duration factors are 0.0 and 1.0. Any values greater than 0.0 will be handled the same as setting the `duration_factor: 1.0` because LDAR-Sim operates at a day scale - any partial dates are rounded to the next date.
 
 #### &lt;duration_method&gt;
 

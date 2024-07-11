@@ -33,10 +33,9 @@ from constants.output_file_constants import (
     EMIS_COMP_ESTIMATION_OUTPUT_COLUMNS,
     EST_FUG_OUTPUT_COLUMNS,
 )
-from constants.file_name_constants import Output_Files
 
 
-def gen_estimated_fugitive_emissions_to_remove(
+def gen_estimated_repairable_emissions_to_remove(
     site_survey_reports_summary: pd.DataFrame,
     fugitive_emissions_rates_and_repair_dates: pd.DataFrame,
 ) -> pd.DataFrame:
@@ -50,7 +49,7 @@ def gen_estimated_fugitive_emissions_to_remove(
         fugitive_emissions_rates_and_repair_dates.loc[:, eca.DATE_REP_EXP].astype("datetime64[ns]")
     )
 
-    # Drop rows with missing repair dates
+    # Drop rows with missing repair dates and missing measured rates
     fugitive_emissions_rates_and_repair_dates.dropna(inplace=True)
 
     # Populate a new column in the fugitive emissions rates and repair dates dataframe
@@ -58,35 +57,18 @@ def gen_estimated_fugitive_emissions_to_remove(
     # fugitive emissions to remove to avoid double counting
     # Create a dictionary to store the unique survey completion dates for each site
     site_survey_dates = (
-        site_survey_reports_summary.groupby(eca.SITE_ID)[eca.SURVEY_COMPLETION_DATE]
-        .unique()
+        site_survey_reports_summary.groupby(eca.SITE_ID)
+        .apply(lambda df: list(zip(df[eca.SURVEY_COMPLETION_DATE], df[eca.START_DATE])))
         .to_dict()
     )
-
     # Use the dictionary to map the closest future survey date for each row
     fugitive_emissions_rates_and_repair_dates[eca.NEXT_SURVEY_DATE] = (
         fugitive_emissions_rates_and_repair_dates.apply(
-            lambda x: program_output_helpers.closest_future_date(
+            lambda x: program_output_helpers.find_closest_future_date(
                 x[eca.DATE_REP_EXP], site_survey_dates[x[eca.SITE_ID]]
             ),
             axis=1,
         )
-    )
-    fugitive_emissions_rates_and_repair_dates.loc[
-        :, "account_for_fugitives"
-    ] = fugitive_emissions_rates_and_repair_dates.loc[:, eca.NEXT_SURVEY_DATE].apply(
-        lambda x: program_output_helpers.find_df_row_value_w_match(
-            x,
-            eca.SURVEY_COMPLETION_DATE,
-            eca.PREV_CONDITION,
-            site_survey_reports_summary,
-        )
-    )
-    fugitive_emissions_rates_and_repair_dates.drop(
-        fugitive_emissions_rates_and_repair_dates.index[
-            ~fugitive_emissions_rates_and_repair_dates["account_for_fugitives"]
-        ],
-        inplace=True,
     )
 
     # Assign the Start and End date based on the repaired/expiry date and the next survey date
@@ -110,6 +92,7 @@ def gen_estimated_emissions_report(
     fugutive_emissions_rates_and_repair_dates: pd.DataFrame,
     start_date: date,
     end_date: date,
+    duration_factor: float,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     """Generate a report of yearly estimated emissions based on site survey reports
     Args:
@@ -149,34 +132,12 @@ def gen_estimated_emissions_report(
 
     grouped_by_site_summary = sorted_by_site_summary.groupby(eca.SITE_ID)
 
-    # Calculate the days since last survey and days
-    # till next survey based on the survey completion date
-    sorted_by_site_summary["days_since_last_survey"] = (
-        grouped_by_site_summary[eca.SURVEY_COMPLETION_DATE].diff().dt.days
+    sorted_by_site_summary = determine_start_and_end_dates(
+        sorted_by_site_summary, grouped_by_site_summary, duration_factor
     )
-    sorted_by_site_summary["days_since_last_survey"] = (
-        grouped_by_site_summary[eca.SURVEY_COMPLETION_DATE].diff().dt.days
-    )
-    sorted_by_site_summary["days_until_next_survey"] = abs(
-        grouped_by_site_summary[eca.SURVEY_COMPLETION_DATE].diff(-1).dt.days
-    )
-    # Calculate if the previous or the next condition should be used for the emission rate
-    sorted_by_site_summary[eca.PREV_CONDITION] = grouped_by_site_summary[eca.M_RATE].diff() <= 0
-    sorted_by_site_summary[eca.NEXT_CONDITION] = grouped_by_site_summary[eca.M_RATE].diff(-1) < 0
 
-    # Set the estimated start/end date based on the emission rate condition
-    sorted_by_site_summary[eca.START_DATE] = (
-        sorted_by_site_summary.groupby(eca.SITE_ID)
-        .apply(program_output_helpers.calculate_start_date)
-        .reset_index(drop=True)
-    )
-    sorted_by_site_summary[eca.END_DATE] = (
-        sorted_by_site_summary.groupby(eca.SITE_ID)
-        .apply(program_output_helpers.calculate_end_date)
-        .reset_index(drop=True)
-    )
     # Generate a report of estimated fugitive emissions to remove
-    fugitive_emissions_to_remove: pd.DataFrame = gen_estimated_fugitive_emissions_to_remove(
+    fugitive_emissions_to_remove: pd.DataFrame = gen_estimated_repairable_emissions_to_remove(
         site_survey_reports_summary=sorted_by_site_summary,
         fugitive_emissions_rates_and_repair_dates=fugutive_emissions_rates_and_repair_dates,
     )
@@ -192,9 +153,10 @@ def gen_estimated_emissions_report(
 
 def gen_estimated_comp_emissions_report(
     site_survey_reports_summary: pd.DataFrame,
-    fugutive_emissions_rates_and_repair_dates: pd.DataFrame,
+    fugitive_emissions_rates_and_repair_dates: pd.DataFrame,
     start_date: date,
     end_date: date,
+    duration_factor: float,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     """Generate a report of yearly estimated emissions based on only component level surveys
     Args:
@@ -289,29 +251,13 @@ def gen_estimated_comp_emissions_report(
     # For each unique site/equipment/component combination, calculate the days since last survey
     grouped_by_site_summary = sorted_by_site_summary.groupby([eca.SITE_ID, eca.EQG, eca.COMP])
 
-    sorted_by_site_summary["days_since_last_survey"] = (
-        grouped_by_site_summary[eca.SURVEY_COMPLETION_DATE].diff().dt.days
+    sorted_by_site_summary = determine_start_and_end_dates(
+        sorted_by_site_summary, grouped_by_site_summary, duration_factor
     )
-    sorted_by_site_summary["days_since_last_survey"] = (
-        grouped_by_site_summary[eca.SURVEY_COMPLETION_DATE].diff().dt.days
-    )
-    sorted_by_site_summary["days_until_next_survey"] = abs(
-        grouped_by_site_summary[eca.SURVEY_COMPLETION_DATE].diff(-1).dt.days
-    )
-    # Determine if the previous or next condition should be used for the emission rate
-    sorted_by_site_summary[eca.PREV_CONDITION] = grouped_by_site_summary[eca.M_RATE].diff() <= 0
-    sorted_by_site_summary[eca.NEXT_CONDITION] = grouped_by_site_summary[eca.M_RATE].diff(-1) < 0
-    # Set the estimated start/end date based on the emission rate condition
-    sorted_by_site_summary[eca.START_DATE] = grouped_by_site_summary.apply(
-        program_output_helpers.calculate_start_date
-    ).reset_index(drop=True)
-    sorted_by_site_summary[eca.END_DATE] = grouped_by_site_summary.apply(
-        program_output_helpers.calculate_end_date
-    ).reset_index(drop=True)
 
-    fugitive_emissions_to_remove: pd.DataFrame = gen_estimated_fugitive_emissions_to_remove(
+    fugitive_emissions_to_remove: pd.DataFrame = gen_estimated_repairable_emissions_to_remove(
         site_survey_reports_summary=sorted_by_site_summary,
-        fugitive_emissions_rates_and_repair_dates=fugutive_emissions_rates_and_repair_dates,
+        fugitive_emissions_rates_and_repair_dates=fugitive_emissions_rates_and_repair_dates,
     )
 
     sorted_by_site_summary[eca.EST_VOL_EMIT] = sorted_by_site_summary.apply(
@@ -322,3 +268,25 @@ def gen_estimated_comp_emissions_report(
     select_sorted_by_site_summary = sorted_by_site_summary[EMIS_COMP_ESTIMATION_OUTPUT_COLUMNS]
 
     return (select_sorted_by_site_summary, fugitive_emissions_to_remove)
+
+
+def determine_start_and_end_dates(sorted_by_site_summary_df, group_by_summary, duration_factor):
+    # Determine if the previous or next condition should be used for the emission rate
+    sorted_by_site_summary_df = program_output_helpers.calculate_prev_condition(
+        sorted_by_site_summary_df, group_by_summary
+    )
+    sorted_by_site_summary_df = program_output_helpers.calculate_next_condition(
+        sorted_by_site_summary_df, group_by_summary
+    )
+    # Set the estimated start/end date based on the emission rate condition
+    sorted_by_site_summary_df[eca.START_DATE] = (
+        sorted_by_site_summary_df.groupby(eca.SITE_ID)
+        .apply(lambda x: program_output_helpers.calculate_start_date(x, duration_factor))
+        .reset_index(drop=True)
+    )
+    sorted_by_site_summary_df[eca.END_DATE] = (
+        sorted_by_site_summary_df.groupby(eca.SITE_ID)
+        .apply(lambda x: program_output_helpers.calculate_end_date(x, duration_factor))
+        .reset_index(drop=True)
+    )
+    return sorted_by_site_summary_df

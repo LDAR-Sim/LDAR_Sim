@@ -101,6 +101,7 @@ class ProgramOutputManager:
                 emis_info_for_duration_estimation,
                 start_date,
                 end_date,
+                program.duration_factor,
             )
             if result:
                 emis_estimation: pd.DataFrame
