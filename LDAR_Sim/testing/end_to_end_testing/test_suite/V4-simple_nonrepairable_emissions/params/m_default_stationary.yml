@@ -1,0 +1,39 @@
+parameter_level: "methods"
+version: "4.0"
+method_name: "stationary"
+measurement_scale: "site" # site/equipment/component
+deployment_type: stationary #stationary
+sensor:
+  type: default # default/OGI_camera_zim(see User manual for MDL values)/OGI_camera_rk
+  quantification_error:
+    quantification_parameters: [0.0, 0.0] # default and uniform types support [lower_95%_CI, upper_95%_CI]
+    quantification_type: "default" # default (normal)/uniform
+  minimum_detection_limit: [5.55]
+coverage:
+  spatial: 1.0 # 0.0 to 1.0
+  temporal: 1.0 # 0.0 to 1.0
+cost:
+  per_day: 3.0
+  upfront: 50.0
+consider_daylight: False
+reporting_delay: 2 # days
+scheduling:
+  deployment_months: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+  deployment_years: ["_placeholder_int_"]
+weather_envelopes:
+  precipitation: [0.0, 0.5]
+  temperature: [-40.0, 40.0]
+  wind: [0.0, 10.0]
+is_follow_up: False # True/False
+follow_up:
+  preferred_method: "_placeholder_str_"
+  delay: 0 # days
+  instant_threshold: "_placeholder_float_" # g/s
+  interaction_priority: "threshold" # threshold/proportion
+  proportion: 1.0 # 0 to 1.0
+  sort_by_rate: True # True/False
+rolling_average:
+  small_window: 7 # days - STATIONARY ONLY
+  large_window: 30 # days - STATIONARY ONLY
+  small_window_threshold: 0.0 # g/s - STATIONARY ONLY
+  large_window_threshold: "_placeholder_float_" # g/s - STATIONARY ONLY

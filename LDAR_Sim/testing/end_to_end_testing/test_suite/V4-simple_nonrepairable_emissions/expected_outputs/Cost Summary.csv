@@ -1,0 +1,7 @@
+Program Name,Simulation,Mitigated Methane (kg),Total Cost ($),Mitigation Ratio ($/tonne CO2e),Value of Mitigated Methane ($)
+P_air,0,0.0,114500.0,inf,0.0
+P_air,1,0.0,116500.0,inf,0.0
+P_OGI,0,0.0,340000.0,inf,0.0
+P_OGI,1,0.0,340000.0,inf,0.0
+P_stationary,0,0.0,775100.0,inf,0.0
+P_stationary,1,0.0,806100.0,inf,0.0
