@@ -931,6 +931,8 @@ The measured total site level emission rate on January 30th is assumed to have l
 
 **Notes of caution:** All emissions estimation in simulation is based on the assumption that technologies quantify emissions.
 
+If an emission estimation results in a negative value due to considerations of repairable emissions, the simulator will automatically set this value to 0 for reporting purposes.
+
 --------------------------------------------------------------------------------
 
 ## 9\. Method Inputs
