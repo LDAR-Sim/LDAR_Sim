@@ -164,8 +164,10 @@ def generate_emissions_estimation_summary(directory: str, outputs_mapper: Summar
         ]
     ]
 
-    subtracted_df = est_emissions_summary_df[columns_to_subtract].sub(
-        est_rep_emissions_summary_df[columns_to_subtract]
+    subtracted_df = (
+        est_emissions_summary_df[columns_to_subtract]
+        .sub(est_rep_emissions_summary_df[columns_to_subtract])
+        .clip(lower=0)
     )
 
     # Combine the result with columns not involved in subtraction
