@@ -275,7 +275,7 @@ class SiteLevelMethod(Method):
         for detection_record in new_detections:
             # Check that the site hasn't gotten a survey with a method
             # that can tag leaks since the date the detection was made
-            if detection_record.site.get_latest_tagging_survey_date() < date_to_check:
+            if detection_record.site.get_latest_tagging_survey_date() <= date_to_check:
                 if self._deployment_type == pdc.Deployment_Types.STATIONARY:
                     self.update_stationary(date_to_check, detection_record)
                 else:
