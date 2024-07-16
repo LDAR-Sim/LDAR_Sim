@@ -899,35 +899,35 @@ If the duration_factor is set to 1:
 
 **Notes of acquisition:** N/A
 
-**Notes of caution:** When using `duration_method: measurement-based-conservative` with a `stationary` method, the only valid duration factors are 0.0 and 1.0. Any values greater than 0.0 will be handled the same as setting the `duration_factor: 1.0` because LDAR-Sim operates at a day scale - any partial dates are rounded to the next date.
+**Notes of caution:** When using `duration_method: measurement-based` with a `stationary` method, the only valid duration factors are 0.0 and 1.0. Any values greater than 0.0 will be handled the same as setting the `duration_factor: 1.0` because LDAR-Sim operates at a day scale - any partial dates are rounded to the next date.
 
 #### &lt;duration_method&gt;
 
 **Data Type:** String
 
-**Default input:** "component-based"
+**Default input:** "measurement-based"
 
 **Description:** A string that specifies how the program as a whole will estimate the total emissions measured.
 
 **`component-based`**- Only component level measurement work practices will be considered for estimating total emissions.
 
-For example, if a given program uses two mobile methods, `A` and `B`, where `A` is a component-level survey and `B` is a site-level screening:
+For example, with a duration factor of 1, if a given program uses two mobile methods, `A` and `B`, where `A` is a component-level survey and `B` is a site-level screening:
 
 - `A` surveys `site_1` on January 1st and 30th, finding an emission on the 30th.
 - `B` surveys `site_1` on January 15th.
 
 The emission would be estimated to have lasted since January 1st, as that is the last valid component-level measurement conducted.
 
-**`measurement-based-conservative`**- All methods are considered valid for estimating the total emissions measured.
+**`measurement-based`**- All methods are considered valid for estimating the total emissions measured.
 
-For example, if a given program uses two mobile methods, `A` and `B`, where `A` is a component-level survey and `B` is a site-level screening:
+For example, with a duration factor of 1, if a given program uses two mobile methods, `A` and `B`, where `A` is a component-level survey and `B` is a site-level screening:
 
 - `A` surveys `site_1` on January 1st and 30th, finding an emission on the 30th.
 - `B` surveys `site_1` on January 15th.
 
 The measured total site level emission rate on January 30th is assumed to have lasted since January 15th.
 
-**Notes of acquisition:** Currently the two valid duration estimation methods are `component-based` and `measurement-based-conservative`.
+**Notes of acquisition:** Currently the two valid duration estimation methods are `component-based` and `measurement-based`.
 
 **Notes of caution:** All emissions estimation in simulation is based on the assumption that technologies quantify emissions.
 

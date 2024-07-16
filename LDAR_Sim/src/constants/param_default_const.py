@@ -53,7 +53,7 @@ class Deployment_Types:
 @dataclass
 class Duration_Method:
     COMPONENT = "component-based"
-    MEASUREMENT_CONSERVATIVE = "measurement-based-conservative"
+    MEASUREMENT_CONSERVATIVE = "measurement-based"
 
 
 @dataclass
