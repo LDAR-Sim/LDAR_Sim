@@ -1,0 +1,10 @@
+program_name: P_air_measurement_based
+parameter_level: programs
+version: "4.0"
+method_labels:
+  - airH
+  - OGI_FU
+duration_estimate:
+  duration_factor: 1.0 # A value between 0.0 and 1.0
+  duration_method: "measurement-based" # component-based or measurement-based
+
