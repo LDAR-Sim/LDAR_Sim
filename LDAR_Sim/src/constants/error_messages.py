@@ -226,6 +226,9 @@ class Initialization_Messages:
         "refer to model documentation for configuration instructions."
     )
     ERA_AUTH_ERROR = "Authentication Failed or Server Unavailable. Exiting"
+    SURVEY_FREQUENCY_ERROR = (
+        "Warning: No survey frequency was provided for method '{method}' at site '{site}'"
+    )
 
 
 class SensitivityAnalysisMessages:
