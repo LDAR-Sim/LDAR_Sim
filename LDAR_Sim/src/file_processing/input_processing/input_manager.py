@@ -273,7 +273,7 @@ class InputManager:
                             method_found = True
 
                     if not method_found:
-                        print(ipm.MISSING_METHOD_ERROR.format(method=method_label))
+                        sys.exit(ipm.MISSING_METHOD_ERROR.format(method=method_label))
 
             # Next, perform type checking and updating from default module parameters, even for
             # methods pre-specified
