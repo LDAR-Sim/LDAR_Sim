@@ -22,6 +22,8 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 import os
 from pathlib import Path
 from constants import output_file_constants, output_messages
+from constants.general_const import WindowsPathConstants as wpc
+from constants import error_messages
 from file_processing.output_processing import summary_visualizations
 from matplotlib import pyplot as plt
 from file_processing.output_processing.summary_visualization_mapper import (
@@ -71,6 +73,11 @@ class SummaryVisualizationManager:
         self.summary_visualizations_dir: Path = (
             output_dir / output_file_constants.FileDirectory.SUMMARY_PROGRAM_PLOTS_DIRECTORY
         )
+        if (
+            len(str(self.summary_visualizations_dir)) > wpc.pre_filename_size_limit
+            and os.name == "nt"
+        ):
+            print(error_messages.Runtime_Warning_Messages.PATH_TOO_LONG_WARNING)
         self._visualization_mapper: SummaryVisualizationMapper = SummaryVisualizationMapper(
             site_count
         )

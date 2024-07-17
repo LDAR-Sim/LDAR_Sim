@@ -40,6 +40,8 @@ from constants.output_file_constants import (
     EMIS_INFO_COLUMNS_TO_KEEP_FOR_DURATION_ESTIMATION,
 )
 from programs.program import Program
+from constants import error_messages
+from constants.general_const import WindowsPathConstants as wpc
 from constants.infrastructure_const import Deployment_TF_Sites_Constants as DTSC
 from constants.param_default_const import Duration_Method as dm, Output_Params as op
 import file_processing.output_processing.program_output as prog_output
@@ -58,6 +60,9 @@ class ProgramOutputManager:
         self, path: WindowsPath, name_str: str, method_names: list[str], output_config
     ) -> None:
         self._output_dir: Path = path
+        if len(str(path)) > wpc.pre_filename_size_limit and os.name == "nt":
+            print(error_messages.Runtime_Warning_Messages.PATH_TOO_LONG_WARNING)
+
         self.name_str: str = name_str
         self._method_names: list[str] = method_names
 

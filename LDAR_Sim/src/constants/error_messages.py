@@ -106,8 +106,17 @@ class Runtime_Warning_Messages:
         "Warning: LDAR-Sim has detected a potential for crew shortage for the method: {method}"
     )
     FOLLOW_UP_METHOD_CREW_ESTIMATION = (
-        "Warning: LDAR-Sim as defaulted to a single crew for the following follow-up method: {method}. "
-        "This may lead to crew shortages, please provide a crew count for this method if this is not intended."
+        "Warning: LDAR-Sim as defaulted to a single crew for the following "
+        "follow-up method: {method}. "
+        "This may lead to crew shortages, please provide a crew count for this method"
+        " if this is not intended."
+    )
+    PATH_TOO_LONG_WARNING = (
+        "Warning: LDAR-Sim has detected file path lengths approaching or"
+        " exceeding the windows path limit."
+        " This may result in a File Not Found Exception During Runtime. "
+        "Please refer to the Installation Guide Section 6 for information"
+        " on how to avoid this issue."
     )
 
 
