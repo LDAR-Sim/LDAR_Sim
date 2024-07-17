@@ -2,25 +2,26 @@
 
 ## Table of Contents
 
-- [Table of Contents](#table-of-contents)
-- [1. Introduction](#1-introduction)
-- [2. Git](#2-git)
-  - [What is Git? Why do you need it?](#what-is-git-why-do-you-need-it)
-  - [Installing Git](#installing-git)
-  - [Accessing Git](#accessing-git)
-- [3. MiniConda3](#3-miniconda3)
-  - [What is MiniConda? Why do you need it?](#what-is-miniconda-why-do-you-need-it)
-  - [Installing MiniConda3](#installing-miniconda3)
-- [4. LDAR-Sim](#4-ldar-sim)
-  - [Downloading LDAR-Sim](#downloading-ldar-sim)
-  - [Setting up LDAR-Sim environment](#setting-up-ldar-sim-environment)
-- [5. Weather File](#5-weather-file)
-- [6. Windows Path Modifications (Optional)](#6-windows-path-modifications-optional)
-  - [Enabling Long File Paths in Windows (Example is from Windows 11)](#enabling-long-file-paths-in-windows-example-is-from-windows-11)
-- [Enabling Long File Paths in Git](#enabling-long-file-paths-in-git)
-- [7. IDE / Text Editors](#7-ide--text-editors)
-  - [What is an IDE (integrated development environment)?](#what-is-an-ide-integrated-development-environment)
-- [8. References](#8-references)
+- [Installation Guide](#installation-guide)
+  - [Table of Contents](#table-of-contents)
+  - [1. Introduction](#1-introduction)
+  - [2. Git](#2-git)
+    - [What is Git? Why do you need it?](#what-is-git-why-do-you-need-it)
+    - [Installing Git](#installing-git)
+    - [Accessing Git](#accessing-git)
+  - [3. MiniConda3](#3-miniconda3)
+    - [What is MiniConda? Why do you need it?](#what-is-miniconda-why-do-you-need-it)
+    - [Installing MiniConda3](#installing-miniconda3)
+  - [4. LDAR-Sim](#4-ldar-sim)
+    - [Downloading LDAR-Sim](#downloading-ldar-sim)
+    - [Setting up LDAR-Sim environment](#setting-up-ldar-sim-environment)
+  - [5. Weather File](#5-weather-file)
+  - [6. Windows Path Modifications (Optional)](#6-windows-path-modifications-optional)
+    - [Enabling Long File Paths in Windows (Example is from Windows 11)](#enabling-long-file-paths-in-windows-example-is-from-windows-11)
+  - [Enabling Long File Paths in Git](#enabling-long-file-paths-in-git)
+  - [7. IDE / Text Editors](#7-ide--text-editors)
+    - [What is an IDE (integrated development environment)?](#what-is-an-ide-integrated-development-environment)
+  - [8. References](#8-references)
 
 ## 1. Introduction
 
@@ -176,7 +177,7 @@ If running LDAR-Sim on the Windows operating system, you may encounter errors re
 
 2. Type gpedit.msc into the run dialog and hit ok. You will see the group policy editor open up
    ![alt text](doc-images/group%20policy%20editor.png)
-3. Navigate to **Local Computer Policy** > **Computer Configuration** > **Administrative Templates** **System** > **Filesystem**
+3. Navigate to **Local Computer Policy** > **Computer Configuration** > **Administrative Templates** > **System** > **Filesystem**
    ![alt text](doc-images/Group%20Policy%20at%20Filesystem.png)
 4. Double Click on "Enable Win32 long paths
    ![alt text](doc-images/group%20policy%20enable%20long%20paths.png)

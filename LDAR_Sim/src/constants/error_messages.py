@@ -106,7 +106,7 @@ class Runtime_Warning_Messages:
         "Warning: LDAR-Sim has detected a potential for crew shortage for the method: {method}"
     )
     FOLLOW_UP_METHOD_CREW_ESTIMATION = (
-        "Warning: LDAR-Sim as defaulted to a single crew for the following "
+        "Warning: LDAR-Sim has defaulted to a single crew for the following "
         "follow-up method: {method}. "
         "This may lead to crew shortages, please provide a crew count for this method"
         " if this is not intended."
