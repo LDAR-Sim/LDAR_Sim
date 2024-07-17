@@ -2,23 +2,25 @@
 
 ## Table of Contents
 
-- [Installation Guide](#installation-guide)
-  - [Table of Contents](#table-of-contents)
-  - [1. Introduction](#1-introduction)
-  - [2. Git](#2-git)
-    - [What is Git? Why do you need it?](#what-is-git-why-do-you-need-it)
-    - [Installing Git](#installing-git)
-    - [Accessing Git](#accessing-git)
-  - [3. MiniConda3](#3-miniconda3)
-    - [What is MiniConda? Why do you need it?](#what-is-miniconda-why-do-you-need-it)
-    - [Installing MiniConda3](#installing-miniconda3)
-  - [4. LDAR-Sim](#4-ldar-sim)
-    - [Downloading LDAR-Sim](#downloading-ldar-sim)
-    - [Setting up LDAR-Sim environment](#setting-up-ldar-sim-environment)
-  - [5. Weather File](#5-weather-file)
-  - [6. IDE / Text Editors](#6-ide--text-editors)
-    - [What is an IDE (integrated development environment)?](#what-is-an-ide-integrated-development-environment)
-  - [7. References](#7-references)
+- [Table of Contents](#table-of-contents)
+- [1. Introduction](#1-introduction)
+- [2. Git](#2-git)
+  - [What is Git? Why do you need it?](#what-is-git-why-do-you-need-it)
+  - [Installing Git](#installing-git)
+  - [Accessing Git](#accessing-git)
+- [3. MiniConda3](#3-miniconda3)
+  - [What is MiniConda? Why do you need it?](#what-is-miniconda-why-do-you-need-it)
+  - [Installing MiniConda3](#installing-miniconda3)
+- [4. LDAR-Sim](#4-ldar-sim)
+  - [Downloading LDAR-Sim](#downloading-ldar-sim)
+  - [Setting up LDAR-Sim environment](#setting-up-ldar-sim-environment)
+- [5. Weather File](#5-weather-file)
+- [6. Windows Path Modifications (Optional)](#6-windows-path-modifications-optional)
+  - [Enabling Long File Paths in Windows (Example is from Windows 11)](#enabling-long-file-paths-in-windows-example-is-from-windows-11)
+- [Enabling Long File Paths in Git](#enabling-long-file-paths-in-git)
+- [7. IDE / Text Editors](#7-ide--text-editors)
+  - [What is an IDE (integrated development environment)?](#what-is-an-ide-integrated-development-environment)
+- [8. References](#8-references)
 
 ## 1. Introduction
 
@@ -161,7 +163,36 @@ Inside this file, paste the copied URL and Key from the website and save.
 
 ![alt text](doc-images/image3.png)
 
-## 6. IDE / Text Editors
+## 6. Windows Path Modifications (Optional)
+
+If running LDAR-Sim on the Windows operating system, you may encounter errors related file path length. The simulator is design to provide warnings when file paths begin to become to long. To resolve this problem, users may enable windows long file paths or move LDAR-Sim closer to the C drive in folder organization. To use Git with longer filepaths, the long file paths must also be added to the git settings.
+
+**Note of Caution**: Enabling Windows Long Paths may cause issues with older third party software on windows that is incompatible with Long Paths.
+
+### Enabling Long File Paths in Windows (Example is from Windows 11)
+
+1. Open the windows run dialog with Windows Key + R at the same time
+   ![alt text](doc-images/Windows%20Run%20Dialog.png)
+
+2. Type gpedit.msc into the run dialog and hit ok. You will see the group policy editor open up
+   ![alt text](doc-images/group%20policy%20editor.png)
+3. Navigate to **Local Computer Policy** > **Computer Configuration** > **Administrative Templates** **System** > **Filesystem**
+   ![alt text](doc-images/Group%20Policy%20at%20Filesystem.png)
+4. Double Click on "Enable Win32 long paths
+   ![alt text](doc-images/group%20policy%20enable%20long%20paths.png)
+5. Select Enable, click Apply and then OK and restart the computer
+   ![alt text](doc-images/Enable%20Win%2032%20long%20paths.png)
+
+## Enabling Long File Paths in Git
+
+1. Run command prompt as administrator:
+2. Type in the following command:
+
+  ```cmd
+  git config --global core.longpaths true
+  ```
+
+## 7. IDE / Text Editors
 
 ### What is an IDE (integrated development environment)?
 
@@ -175,7 +206,7 @@ Visual Studio is a powerful IDE available for download from <https://code.visual
 Notepad++ is an alternative text editor that provides the ability to open multiple tabs/files and offers color coding. It can be downloaded from <https://notepad-plus-plus.org/downloads/>.
 To download, choose the most recent version and download the installer.
 
-## 7. References
+## 8. References
 
 <https://git-scm.com/>
 

@@ -23,8 +23,8 @@ from pathlib import Path
 
 import pandas as pd
 from constants.file_name_constants import Output_Files
-from constants import output_file_constants
-from constants.general_const import Conversion_Constants as cc
+from constants import error_messages, output_file_constants
+from constants.general_const import Conversion_Constants as cc, WindowsPathConstants as wpc
 from file_processing.output_processing import summary_outputs, summary_output_helpers
 from file_processing.output_processing.summary_output_mapper import SummaryOutputMapper
 from constants.param_default_const import Program_Params as pp
@@ -41,6 +41,9 @@ class SummaryOutputManager:
         self, output_path: Path, output_config: dict, sim_years: list[int], programs: dict
     ):
         self._output_path: Path = output_path
+        if len(str(output_path)) > wpc.pre_filename_size_limit and os.name == "nt":
+            print(error_messages.Runtime_Warning_Messages.PATH_TOO_LONG_WARNING)
+
         self._summary_outputs_to_make: list[str] = self.parse_output_functions(
             output_config[output_file_constants.OutputConfigCategories.SUMMARY_OUTPUTS][
                 output_file_constants.OutputConfigCategories.SummaryOutputCatageories.SUMMARY_FILES

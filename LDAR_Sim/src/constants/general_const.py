@@ -91,3 +91,9 @@ class Placeholder_Constants:
     PLACEHOLDER_INT = "_placeholder_int_"
     PLACEHOLDER_FLOAT = "_placeholder_float_"
     PLACEHOLDER_STR = "_placeholder_str_"
+
+
+@dataclass
+class WindowsPathConstants:
+    windows_pathsize_limit = 260
+    pre_filename_size_limit = 190
