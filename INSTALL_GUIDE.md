@@ -1,4 +1,4 @@
-# Installation Guide
+# Installation Guide <!-- omit in toc -->
 
 ## Table of Contents
 
@@ -176,7 +176,7 @@ If running LDAR-Sim on the Windows operating system, you may encounter errors re
 
 2. Type gpedit.msc into the run dialog and hit ok. You will see the group policy editor open up
    ![alt text](doc-images/group%20policy%20editor.png)
-3. Navigate to **Local Computer Policy** > **Computer Configuration** > **Administrative Templates** **System** > **Filesystem**
+3. Navigate to **Local Computer Policy** > **Computer Configuration** > **Administrative Templates** > **System** > **Filesystem**
    ![alt text](doc-images/Group%20Policy%20at%20Filesystem.png)
 4. Double Click on "Enable Win32 long paths
    ![alt text](doc-images/group%20policy%20enable%20long%20paths.png)

@@ -332,7 +332,12 @@ class Site:
         return detectable_emissions
 
     def get_required_surveys(self, method_name) -> int:
-        return self._survey_frequencies[method_name]
+        required_surveys: int = self._survey_frequencies[method_name]
+        # if required_surveys is not None:
+        if required_surveys:
+            return required_surveys
+        else:
+            sys.exit(im.SURVEY_FREQUENCY_ERROR.format(site=self._site_ID, method=method_name))
 
     def do_site_deployment(self, method_name) -> bool:
         return self._deploy_method[method_name]
