@@ -25,7 +25,7 @@ from utils.queue import PriorityQueueWithFIFO
 from virtual_world.sites import Site
 from constants.param_default_const import Deployment_Types as dt
 from scheduling.workplan import Workplan
-from scheduling.schedule_dataclasses import SiteSurveyReport
+from scheduling.schedule_dataclasses import SiteSurveyReport, MinimalSurveyReport
 from scheduling.scheduled_survey_planner import ScheduledSurveyPlanner
 
 
@@ -110,7 +110,11 @@ class FollowUpMobileSchedule(GenericSchedule):
             survey_plan,
         )
 
-    def update(self, workplan: Workplan, current_date: date) -> None:
+    def update(
+        self, workplan: Workplan, current_date: date, component_level_emissions_estimation: bool
+    ) -> list[MinimalSurveyReport]:
+        survey_reports: list[MinimalSurveyReport] = []
+        completed_sites: list[str] = []
         reports, planners = workplan.get_reports()
         reports: dict[str, SiteSurveyReport]
         planners: dict[str, ScheduledSurveyPlanner]
@@ -125,4 +129,15 @@ class FollowUpMobileSchedule(GenericSchedule):
                     self.add_previous_queued_to_survey_queue(planner)
             else:
                 planner.add_to_surveys_done(current_date)
+                completed_sites.append(site_id)
                 self._site_IDs_in_queue[planner.site_id] = False
+
+        for site in completed_sites:
+            completed_report = reports.pop(site)
+            survey_reports.extend(
+                completed_report.to_minimal_survey_reports(
+                    component_level_duration_estimation=component_level_emissions_estimation
+                )
+            )
+
+        return survey_reports

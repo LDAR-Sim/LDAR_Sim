@@ -128,7 +128,7 @@ def run_ldar_sim(parameter_filenames, DEBUG=False):
         out_dir = get_abs_path(sim_params[pdc.Sim_Setting_Params.OUTPUT])
 
     # --- Assign local variables
-    ref_program = sim_params[pdc.Sim_Setting_Params.REFERENCE]
+    ref_program = sim_params[pdc.Sim_Setting_Params.REFERENCE]  # noqa
     base_program = sim_params[pdc.Sim_Setting_Params.BASELINE]
     in_dir = get_abs_path(sim_params[pdc.Sim_Setting_Params.INPUT])
     programs = sim_params.pop(pdc.Levels.PROGRAM)

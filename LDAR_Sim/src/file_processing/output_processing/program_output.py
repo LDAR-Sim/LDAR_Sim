@@ -30,7 +30,6 @@ from scheduling.schedule_dataclasses import (
 from constants.output_file_constants import (
     EMIS_DATA_COL_ACCESSORS as eca,
     EMIS_ESTIMATION_OUTPUT_COLUMNS,
-    EMIS_COMP_ESTIMATION_OUTPUT_COLUMNS,
     EST_FUG_OUTPUT_COLUMNS,
 )
 
@@ -166,15 +165,14 @@ def gen_estimated_comp_emissions_report(
     if site_survey_reports_summary.empty:
         return
 
-    # Unpack the site survey reports to return equipment and component level survey reports
-    unpack_equip = program_output_helpers.expand_column(site_survey_reports_summary, eca.EQG)
-    unpack_comp = program_output_helpers.expand_column(unpack_equip, eca.COMP)
-
     # Filter out only the component level survey reports
-    unpack_comp = unpack_comp[unpack_comp[eca.SURVEY_LEVEL] == "component_level"]
+    comp_reports: pd.DataFrame = site_survey_reports_summary[
+        site_survey_reports_summary[eca.COMP].notnull()
+    ]
+
     # Get unique combinations of site_ID, equipment and component
-    unique_combinations = unpack_comp[[eca.SITE_ID, eca.EQG, eca.COMP]].drop_duplicates()
-    unique_site_survey_dates = unpack_comp[
+    unique_combinations = comp_reports[[eca.SITE_ID, eca.EQG, eca.COMP]].drop_duplicates()
+    unique_site_survey_dates = comp_reports[
         [eca.SITE_ID, eca.SURVEY_COMPLETION_DATE]
     ].drop_duplicates()
 
@@ -186,10 +184,10 @@ def gen_estimated_comp_emissions_report(
     # Create a set of tuples for all existing combinations in the DataFrame
     existing_combinations = set(
         zip(
-            unpack_comp[eca.SITE_ID],
-            unpack_comp[eca.EQG],
-            unpack_comp[eca.COMP],
-            unpack_comp[eca.SURVEY_COMPLETION_DATE],
+            comp_reports[eca.SITE_ID],
+            comp_reports[eca.EQG],
+            comp_reports[eca.COMP],
+            comp_reports[eca.SURVEY_COMPLETION_DATE],
         )
     )
     new_rows = []
@@ -212,7 +210,7 @@ def gen_estimated_comp_emissions_report(
                         eca.M_RATE: 0,
                     }
                 )
-    unpack_comp = pd.concat([unpack_comp, pd.DataFrame(new_rows)], ignore_index=True)
+    comp_reports = pd.concat([comp_reports, pd.DataFrame(new_rows)], ignore_index=True)
     # Adding start and end date for each unique component
     new_data: list = []
     for site_id, eqg, comp in unique_combinations_list:
@@ -238,13 +236,13 @@ def gen_estimated_comp_emissions_report(
         new_data.append(new_row_2)
 
     new_data_df: pd.DataFrame = pd.DataFrame(new_data)
-    unpack_comp = pd.concat([unpack_comp, new_data_df], ignore_index=True)
+    comp_reports = pd.concat([comp_reports, new_data_df], ignore_index=True)
 
-    unpack_comp[eca.SURVEY_COMPLETION_DATE] = unpack_comp[eca.SURVEY_COMPLETION_DATE].astype(
+    comp_reports[eca.SURVEY_COMPLETION_DATE] = comp_reports[eca.SURVEY_COMPLETION_DATE].astype(
         "datetime64[ns]"
     )
     # Sort by the composite key - site_id, equipment, component and survey completion date
-    sorted_by_site_summary = unpack_comp.sort_values(
+    sorted_by_site_summary = comp_reports.sort_values(
         by=[eca.SITE_ID, eca.EQG, eca.COMP, eca.SURVEY_COMPLETION_DATE]
     ).reset_index(drop=True)
 
@@ -264,10 +262,7 @@ def gen_estimated_comp_emissions_report(
         program_output_helpers.calculate_volume_emitted, axis=1
     ).reset_index(drop=True)
 
-    # Filter out only the predefined columns
-    select_sorted_by_site_summary = sorted_by_site_summary[EMIS_COMP_ESTIMATION_OUTPUT_COLUMNS]
-
-    return (select_sorted_by_site_summary, fugitive_emissions_to_remove)
+    return (sorted_by_site_summary, fugitive_emissions_to_remove)
 
 
 def determine_start_and_end_dates(sorted_by_site_summary_df, group_by_summary, duration_factor):

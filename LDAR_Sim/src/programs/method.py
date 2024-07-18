@@ -277,7 +277,6 @@ class Method:
             # indicate that the particular site needs to be requeued with higher priority
             incompleteSurveys.append((survey_report, survey_plan))
             if survey_report.survey_complete:
-                self._site_survey_reports.append(survey_report)
                 detection_record: DetectionRecord = DetectionRecord(
                     site_id=survey_report.site_id,
                     site=survey_plan.get_site(),
@@ -534,6 +533,3 @@ class Method:
     def site_survey_reports(self) -> None:
         del self._site_survey_reports
         gc.collect()
-
-    def get_follow_up_method_name(self) -> str:
-        return "N/A"

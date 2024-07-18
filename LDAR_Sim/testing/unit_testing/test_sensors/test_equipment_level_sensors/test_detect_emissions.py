@@ -17,7 +17,7 @@ from constants import param_default_const as pdc
 
 def compare_reports(expected, result) -> bool:
     match: bool = True
-    for exp_prop, res_prop in zip(expected.__dict__, result.__dict__):
+    for exp_prop, res_prop in zip(expected.__slots__, result.__slots__):
         if isinstance(exp_prop, float):
             if not exp_prop == approx(res_prop):
                 match = False
