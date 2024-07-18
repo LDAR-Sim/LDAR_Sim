@@ -262,8 +262,6 @@ def gen_estimated_comp_emissions_report(
         program_output_helpers.calculate_volume_emitted, axis=1
     ).reset_index(drop=True)
 
-    # Filter out only the predefined columns
-
     return (sorted_by_site_summary, fugitive_emissions_to_remove)
 
 

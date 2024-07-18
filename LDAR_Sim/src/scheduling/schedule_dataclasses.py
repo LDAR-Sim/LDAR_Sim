@@ -98,7 +98,6 @@ class SiteSurveyReport:
     survey_completion_date: date = None
     survey_start_date: date = None
     method: str = None
-    follow_up_method: str = "N/A"
 
     def to_report_summary(self, expand: bool = False):
         if expand:
@@ -111,7 +110,6 @@ class SiteSurveyReport:
                 eca.M_RATE: self.site_measured_rate,
                 eca.METHOD: self.method,
                 eca.EQG: [eqg.to_report_summary(expand) for eqg in self.equipment_groups_surveyed],
-                eca.FU_METHOD: self.follow_up_method,
             }
         return {
             eca.SITE_ID: self.site_id,
@@ -121,7 +119,6 @@ class SiteSurveyReport:
             eca.SURVEY_COMPLETION_DATE: self.survey_completion_date,
             eca.SURVEY_START_DATE: self.survey_start_date,
             eca.METHOD: self.method,
-            eca.FU_METHOD: self.follow_up_method,
         }
 
     def to_minimal_survey_reports(
