@@ -3,7 +3,7 @@
 Program:     The LDAR Simulator (LDAR-Sim)
 File:        generic_schedule
 Purpose: Contains the generic schedule module. This provides a survey queue for a given LDAR
-method so that sites can be queued to be surveyed. 
+method so that sites can be queued to be surveyed.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the MIT License as published
@@ -22,7 +22,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 from datetime import date
 from scheduling.workplan import Workplan
 from virtual_world.sites import Site
-from scheduling.schedule_dataclasses import SiteSurveyReport
+from scheduling.schedule_dataclasses import SiteSurveyReport, MinimalSurveyReport
 from scheduling.scheduled_survey_planner import ScheduledSurveyPlanner
 from utils.queue import PriorityQueueWithFIFO
 
@@ -138,7 +138,11 @@ class GenericSchedule:
         sites_to_survey: list[ScheduledSurveyPlanner] = self.get_daily_sites_to_survey()
         return Workplan(site_survey_plan_list=sites_to_survey, date=current_date)
 
-    def update(self, workplan: Workplan, current_date: date) -> None:
+    def update(
+        self, workplan: Workplan, current_date: date, component_level_emissions_estimation: bool
+    ) -> list[MinimalSurveyReport]:
+        survey_reports: list[MinimalSurveyReport] = []
+        completed_sites: list[str] = []
         reports, planners = workplan.get_reports()
         reports: dict[str, SiteSurveyReport]
         planners: dict[str, ScheduledSurveyPlanner]
@@ -153,3 +157,13 @@ class GenericSchedule:
                     self.add_previous_queued_to_survey_queue(planner)
             else:
                 planner.add_to_surveys_done(current_date)
+                completed_sites.append(site_id)
+        for site in completed_sites:
+            completed_report = reports.pop(site)
+            survey_reports.extend(
+                completed_report.to_minimal_survey_reports(
+                    component_level_duration_estimation=component_level_emissions_estimation
+                )
+            )
+
+        return survey_reports

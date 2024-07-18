@@ -268,6 +268,7 @@ class EMIS_DATA_COL_ACCESSORS:
     SITE_MEASURED = "Site Measured"
     SITE_TYPE = "Site Type"
     LAST_SURVEY_DATE = "Last Survey Date"
+    FU_METHOD = "follow_up_method"
 
 
 EMIS_ESTIMATION_OUTPUT_COLUMNS = [

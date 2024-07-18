@@ -29,6 +29,7 @@ from file_processing.output_processing.output_utils import (
 from programs.equipment_group_level_method import EquipmentGroupLevelMethod
 from programs.component_level_method import ComponentLevelMethod
 from programs.site_level_method import SiteLevelMethod
+from scheduling.schedule_dataclasses import MinimalSurveyReport
 from scheduling.scheduling_utils import create_schedule
 
 from virtual_world.sites import Site
@@ -80,6 +81,10 @@ class Program:
         self.duration_method = prog_params[pdc.Program_Params.DURATION_ESTIMATE][
             pdc.Program_Params.DURATION_METHOD
         ]
+        self._component_level_emissions_estimation = Program.PROGRAM_REPORT_EXPANSION_MAPPING[
+            self.duration_method
+        ]
+        self._survey_reports: list[MinimalSurveyReport] = []
 
     def _init_methods_and_schedules(
         self,
@@ -197,7 +202,11 @@ class Program:
             deployment_stats: CrewDeploymentStats = method.deploy_crews(
                 method_workplan, self.weather, self.daylight
             )
-            method_schedule.update(method_workplan, self._current_date)
+            self._survey_reports.extend(
+                method_schedule.update(
+                    method_workplan, self._current_date, self._component_level_emissions_estimation
+                )
+            )
             tags_flags: TaggingFlaggingStats = method.update(self._current_date)
             timeseries_methods_data.append(
                 TsMethodData(
@@ -223,14 +232,7 @@ class Program:
     def aggregate_method_survey_reports(self) -> pd.DataFrame:
         """Aggregate the survey reports from all methods"""
 
-        data: list[dict] = [
-            report.to_report_summary(
-                expand=Program.PROGRAM_REPORT_EXPANSION_MAPPING[self.duration_method]
-            )
-            | {"follow_up_method": method.get_follow_up_method_name()}
-            for method in self._methods
-            for report in method.site_survey_reports
-        ]
+        data: list[dict] = [report.to_report_summary() for report in self._survey_reports]
 
         df: pd.DataFrame = pd.DataFrame(data)
 

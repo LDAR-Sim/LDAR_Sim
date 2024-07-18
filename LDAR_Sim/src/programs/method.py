@@ -277,7 +277,7 @@ class Method:
             # indicate that the particular site needs to be requeued with higher priority
             incompleteSurveys.append((survey_report, survey_plan))
             if survey_report.survey_complete:
-                self._site_survey_reports.append(survey_report)
+                survey_report.follow_up_method = self.get_follow_up_method_name()
                 detection_record: DetectionRecord = DetectionRecord(
                     site_id=survey_report.site_id,
                     site=survey_plan.get_site(),

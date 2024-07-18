@@ -271,7 +271,7 @@ class SiteLevelMethod(Method):
         # TODO add user configurable follow_up parameter to allow
         # for up to a certain % variation between rates
         date_to_check: date = current_date - timedelta(days=int(self._reporting_delay))
-        new_detections: list[DetectionRecord] = self._detection_records.get(date_to_check, [])
+        new_detections: list[DetectionRecord] = self._detection_records.pop(date_to_check, [])
         for detection_record in new_detections:
             # Check that the site hasn't gotten a survey with a method
             # that can tag leaks since the date the detection was made

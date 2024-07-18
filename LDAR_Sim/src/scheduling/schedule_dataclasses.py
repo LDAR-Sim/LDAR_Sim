@@ -23,7 +23,25 @@ from datetime import date
 from constants.output_file_constants import EMIS_DATA_COL_ACCESSORS as eca
 
 
-@dataclass
+@dataclass(slots=True)
+class MinimalSurveyReport:
+    site_id: str
+    equipment_id: str
+    component_id: str
+    measured_rate: float
+    survey_completion_date: date
+
+    def to_report_summary(self):
+        return {
+            eca.SITE_ID: self.site_id,
+            eca.EQG: self.equipment_id,
+            eca.COMP: self.component_id,
+            eca.M_RATE: self.measured_rate,
+            eca.SURVEY_COMPLETION_DATE: self.survey_completion_date,
+        }
+
+
+@dataclass(slots=True)
 class EmissionDetectionReport:
     site: str
     equipment_group: str
@@ -41,7 +59,7 @@ class EmissionDetectionReport:
         }
 
 
-@dataclass
+@dataclass(slots=True)
 class EquipmentGroupSurveyReport:
     site: str
     equipment_group: str
@@ -64,7 +82,7 @@ class EquipmentGroupSurveyReport:
         }
 
 
-@dataclass
+@dataclass(slots=True)
 class SiteSurveyReport:
     site_id: str
     time_surveyed: int = 0
@@ -80,6 +98,7 @@ class SiteSurveyReport:
     survey_completion_date: date = None
     survey_start_date: date = None
     method: str = None
+    follow_up_method: str = "N/A"
 
     def to_report_summary(self, expand: bool = False):
         if expand:
@@ -92,6 +111,7 @@ class SiteSurveyReport:
                 eca.M_RATE: self.site_measured_rate,
                 eca.METHOD: self.method,
                 eca.EQG: [eqg.to_report_summary(expand) for eqg in self.equipment_groups_surveyed],
+                eca.FU_METHOD: self.follow_up_method,
             }
         return {
             eca.SITE_ID: self.site_id,
@@ -101,7 +121,38 @@ class SiteSurveyReport:
             eca.SURVEY_COMPLETION_DATE: self.survey_completion_date,
             eca.SURVEY_START_DATE: self.survey_start_date,
             eca.METHOD: self.method,
+            eca.FU_METHOD: self.follow_up_method,
         }
+
+    def to_minimal_survey_reports(
+        self, component_level_duration_estimation: bool
+    ) -> MinimalSurveyReport:
+        minimal_reports: list[MinimalSurveyReport] = []
+        if self.equipment_groups_surveyed and component_level_duration_estimation:
+            for eqg in self.equipment_groups_surveyed:
+                if eqg.emissions_detected:
+                    for comp in eqg.emissions_detected:
+                        minimal_reports.append(
+                            MinimalSurveyReport(
+                                site_id=self.site_id,
+                                equipment_id=eqg.equipment_group,
+                                component_id=comp.component,
+                                measured_rate=comp.measured_rate,
+                                survey_completion_date=self.survey_completion_date,
+                            )
+                        )
+        else:
+            minimal_reports.append(
+                MinimalSurveyReport(
+                    site_id=self.site_id,
+                    equipment_id=None,
+                    component_id=None,
+                    measured_rate=self.site_measured_rate,
+                    survey_completion_date=self.survey_completion_date,
+                )
+            )
+
+        return minimal_reports
 
 
 @dataclass
