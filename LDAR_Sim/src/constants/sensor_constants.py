@@ -24,3 +24,4 @@ from enum import Enum
 class QuantificationTypes(Enum):
     DEFAULT = "default"
     UNIFORM = "uniform"
+    SAMPLING = "sample"

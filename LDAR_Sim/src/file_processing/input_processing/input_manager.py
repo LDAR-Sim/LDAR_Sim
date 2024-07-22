@@ -294,7 +294,10 @@ class InputManager:
                     default_module,
                     method,
                     method[pc.Method_Params.NAME],
-                    omit_keys=[ParameterProcessingConst.DEFAULT_PARAM_STRING],
+                    omit_keys=[
+                        ParameterProcessingConst.DEFAULT_PARAM_STRING,
+                        pc.Method_Params.QUANTIFICATION_PARAMETERS,
+                    ],
                 )
                 self.retain_update(default_module, method)
                 programs[p_idx][pc.Levels.METHOD][midx] = default_module

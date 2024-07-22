@@ -1048,13 +1048,16 @@ Valid deployment types:
 
 ##### &lt;quantification_parameters&gt;
 
-**Data type:** Numeric (List of Floats)
+**Data type:** List, either Numeric (List of Floats) or String (List of Strings)
 
 **Default input:** [0.0, 0.0]
 
-**Description:** Parameters informing how quantification error functionality model measurement of emissions rates. With the two currently support quantification types, the expected input is two numbers: the lower and upper bounds of a 95% confidence interval of possible quantification error values.
+**Description:** Parameters informing how quantification error functionality model measurement of emissions rates. With the `default` or `uniform` quantification types, the expected input is two numbers: the lower and upper bounds of a 95% confidence interval of possible signed quantification percent error values. with the `sample` quantification type, the expected input is two strings (text) the filename of the csv to use (including file extension), followed by the column in the file to use. The column specified of the file specified is expected to contain a list of possible signed quantification percent error values.
 
-**Notes on acquisition:** We recommend extensive controlled release testing under a range of representative release rates, distances, and conditions to establish quantification error 95% confidence intervals. Given the amount of work required to collect this information, we recommend using historical estimates where possible.
+_Illustrative Example:_
+For all quantification types, quantification error is applied as follows: A quantification error of +60% will results in a rate at 100 kg/h being measured as 160 kg/h.
+
+**Notes on acquisition:** We recommend extensive controlled release testing under a range of representative release rates, distances, and conditions to establish quantification error 95% confidence intervals or using sample with all recorded possible quantification errors. Given the amount of work required to collect this information, we recommend using historical estimates where possible.
 
 **Notes of caution:** As facility-scale quantification error remains poorly constrained for LDAR screening methods, and likely depend on work practice, dispersion modeling, and environment, screening programs should be evaluated using a range of possible quantification errors. We recommend understanding exactly how quantification error works before making use of this functionality.
 
@@ -1068,10 +1071,12 @@ Valid deployment types:
 
 Currently two quantification types are supported:
 
-- `default`: Quantification Error is drawn from a normal distribution centered on the midpoint between the upper and lower bounds of the 95% confidence interval of possible quantification error values provided through the [quantification_parameters](#quantification_parameters). The distribution will use a standard deviation also calculated from the 95% confidence interval assuming the empirical rule (95% percent of all observations lie within two standard deviations of the mean).
-- `uniform`: Quantification Error is drawn from a uniform distribution bounded by the upper and lower bounds of the 95% confidence interval of possible quantification error values provided through the [quantification_parameters](#quantification_parameters).
+- `default`: Quantification Error is drawn from a normal distribution centered on the midpoint between the upper and lower bounds of the 95% confidence interval of possible signed quantification percent error values provided through the [quantification_parameters](#quantification_parameters). The distribution will use a standard deviation also calculated from the 95% confidence interval assuming the empirical rule (95% percent of all observations lie within two standard deviations of the mean).
+- `uniform`: Quantification Error is drawn from a uniform distribution bounded by the upper and lower bounds of the 95% confidence interval of possible signed quantification percent error values provided through the [quantification_parameters](#quantification_parameters).
+  
+  Both `default` and `uniform` types expect a list of 2 floating point numbers: the upper and lower bounds of the 95% confidence interval of possible quantification error values as input for [quantification_parameters](#quantification_parameters).
 
-  Both supported types expect a list of 2 floating point numbers: the upper and lower bounds of the 95% confidence interval of possible quantification error values as input for [quantification_parameters](#quantification_parameters).
+- `sample`: Quantification Error is drawn randomly from a list of possible signed quantification percent error values read in from a column of a csv file specified through the [quantification_parameters](#quantification_parameters).
 
   **NOTE**: Users may develop and implement their own quantification modules. Further documentation to support this practice will be added in a later release.
 

@@ -59,6 +59,10 @@ class DefaultSensor:
             self._quantification_predictor = quantification.UniformQuantificationPredictor(
                 *quantification_parameters
             )
+        elif quantification_type == QuantificationTypes.SAMPLING.value:
+            self._quantification_predictor = quantification.SamplingQuantificationPredictor(
+                *quantification_parameters, input_dir=input_dir
+            )
 
     def _rate_detected(self, emis_rate: float) -> bool:
         return emis_rate >= self._mdl
