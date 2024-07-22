@@ -1052,10 +1052,16 @@ Valid deployment types:
 
 **Default input:** [0.0, 0.0]
 
-**Description:** Parameters informing how quantification error functionality model measurement of emissions rates. With the `default` or `uniform` quantification types, the expected input is two numbers: the lower and upper bounds of a 95% confidence interval of possible signed quantification percent error values. with the `sample` quantification type, the expected input is two strings (text) the filename of the csv to use (including file extension), followed by the column in the file to use. The column specified of the file specified is expected to contain a list of possible signed quantification percent error values.
+**Description:** Parameters informing how quantification error functionality model measurement of emissions rates.
+
+- With the `default` or `uniform` quantification types, the expected input is two numbers: the lower and upper bounds of a 95% confidence interval of possible signed quantification percent error values.
+- With the `sample` quantification type, the expected input is two strings (text) the filename of the csv to use (including file extension), followed by the column in the file to use. The column specified of the file specified is expected to contain a list of possible signed quantification percent error values.
 
 _Illustrative Example:_
-For all quantification types, quantification error is applied as follows: A quantification error of +60% will results in a rate at 100 kg/h being measured as 160 kg/h.
+For all quantification types, quantification error is applied as follows:
+
+- A quantification error of +60% will result in a rate at 100 kg/h being measured as 160 kg/h.
+- A quantification error of -60% will result in a rate at 100 kg/h being measured as 40 kg/h
 
 **Notes on acquisition:** We recommend extensive controlled release testing under a range of representative release rates, distances, and conditions to establish quantification error 95% confidence intervals or using sample with all recorded possible quantification errors. Given the amount of work required to collect this information, we recommend using historical estimates where possible.
 
@@ -1069,7 +1075,7 @@ For all quantification types, quantification error is applied as follows: A quan
 
 **Description:**  The quantification module to use for determining quantification error. The shape of the [quantification_parameters](#quantification_parameters) must be support by the selected quantification types.
 
-Currently two quantification types are supported:
+Currently three quantification types are supported:
 
 - `default`: Quantification Error is drawn from a normal distribution centered on the midpoint between the upper and lower bounds of the 95% confidence interval of possible signed quantification percent error values provided through the [quantification_parameters](#quantification_parameters). The distribution will use a standard deviation also calculated from the 95% confidence interval assuming the empirical rule (95% percent of all observations lie within two standard deviations of the mean).
 - `uniform`: Quantification Error is drawn from a uniform distribution bounded by the upper and lower bounds of the 95% confidence interval of possible signed quantification percent error values provided through the [quantification_parameters](#quantification_parameters).
