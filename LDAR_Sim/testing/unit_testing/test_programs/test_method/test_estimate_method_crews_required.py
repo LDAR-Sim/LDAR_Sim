@@ -31,7 +31,7 @@ from src.virtual_world.infrastructure import Site
 def test_000_return_provided_value(simple_method_values):
     mocker, properties, current_date, state = simple_method_values
     sites = [mocker.Mock(spec=Site) for i in range(5)]
-    method = Method("test_method", properties, True, sites)
+    method = Method("test_method", properties, True, sites, None)
 
     expected_crews_required = 3
     assert method._crews == expected_crews_required
@@ -40,7 +40,7 @@ def test_000_return_provided_value(simple_method_values):
 def test_000_return_estimated_not_followup(simple_method_values2):
     mocker, properties, current_date, state = simple_method_values2
     sites = [mocker.Mock(spec=Site) for i in range(500)]
-    method = Method("test_method", properties, True, sites)
+    method = Method("test_method", properties, True, sites, None)
 
     expected_crews_required = 3
     assert method._crews == expected_crews_required
@@ -49,7 +49,7 @@ def test_000_return_estimated_not_followup(simple_method_values2):
 def test_000_return_estimate_1_if_followup(simple_method_values3):
     mocker, properties, current_date, state = simple_method_values3
     sites = [mocker.Mock(spec=Site) for i in range(5)]
-    method = Method("test_method", properties, True, sites)
+    method = Method("test_method", properties, True, sites, None)
 
     expected_crews_required = 1
     assert method._crews == expected_crews_required

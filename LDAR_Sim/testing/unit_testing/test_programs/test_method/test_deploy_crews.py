@@ -36,7 +36,7 @@ def test_000_test_initialization_of_crews(
     deploy_crews_testing,
 ):
     (sites, properties, weather, workplan, daylight) = deploy_crews_testing
-    method = Method("test_method", properties, True, sites)
+    method = Method("test_method", properties, True, sites, None)
     assert len(method._crew_reports) == 1
     assert isinstance(method._crew_reports[0], CrewDailyReport)
     assert method._crew_reports[0].day_time_remaining == 0
@@ -47,7 +47,7 @@ def test_000_simple_deployment_of_crews_no_crews_deployed_no_valid_sites(
 ):
     (sites, properties, weather, workplan, daylight) = deploy_crews_testing
     workplan: Workplan
-    method = Method("test_method", properties, True, sites)
+    method = Method("test_method", properties, True, sites, None)
     method.deploy_crews(workplan, weather, daylight)
     assert isinstance(method._crew_reports[0], CrewDailyReport)
     assert method._crew_reports[0].day_time_remaining == 8 * 60
@@ -58,7 +58,7 @@ def test_000_simple_deployment_of_crews_no_crews_deployed_no_valid_sites(
 def test_000_simple_deployment_of_crews_work_a_day(deploy_crews_testing2):
     (sites, properties, weather, workplan, daylight) = deploy_crews_testing2
     workplan: Workplan
-    method = Method("test_method", properties, True, sites)
+    method = Method("test_method", properties, True, sites, None)
     assert workplan._site_survey_reports == {}
     assert len(workplan.site_survey_planners) == 1
     deploy_stats: CrewDeploymentStats = method.deploy_crews(workplan, weather, daylight)

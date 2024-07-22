@@ -43,6 +43,7 @@ def test_default_quantification_predictor_constructed_as_expected(
     test_sensor.initialize_quantification_predictor(
         quantification_parameters=quantification_parameters,
         quantification_type="default",
+        input_dir=None,
     )
     assert test_sensor._quantification_predictor._quantification_standard_deviation == expected_sd
     assert test_sensor._quantification_predictor._quantification_centre == expected_centre
@@ -65,6 +66,7 @@ def test_uniform_quantification_predictor_constructed_as_expected(
     test_sensor.initialize_quantification_predictor(
         quantification_parameters,
         quantification_type="uniform",
+        input_dir=None,
     )
 
     assert test_sensor._quantification_predictor._lower_range == quantification_parameters[0]

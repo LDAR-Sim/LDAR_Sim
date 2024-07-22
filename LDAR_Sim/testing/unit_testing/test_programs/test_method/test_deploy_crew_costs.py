@@ -38,7 +38,7 @@ def test_000_simple_single_crew_daily_cost(deploy_crews_testing3):
         deploy_crews_testing3
     )
     workplan: Workplan
-    method = Method("test_method", properties, True, sites)
+    method = Method("test_method", properties, True, sites, None)
 
     deploy_stats: CrewDeploymentStats = method.deploy_crews(workplan, weather, daylight)
 
@@ -58,7 +58,7 @@ def test_000_multi_site_single_crew_daily_cost(deploy_crews_testing4):
         deploy_crews_testing4
     )
     workplan: Workplan
-    method = Method("test_method", properties, True, sites)
+    method = Method("test_method", properties, True, sites, None)
 
     deploy_stats: CrewDeploymentStats = method.deploy_crews(workplan, weather, daylight)
 
@@ -78,7 +78,7 @@ def test_000_multi_site_crew_daily_cost(deploy_crews_testing5):
         deploy_crews_testing5
     )
     workplan: Workplan
-    method = Method("test_method", properties, True, sites)
+    method = Method("test_method", properties, True, sites, None)
 
     deploy_stats: CrewDeploymentStats = method.deploy_crews(workplan, weather, daylight)
 
@@ -98,7 +98,7 @@ def test_000_multi_site_single_crew_required_daily_cost(deploy_crews_testing6):
         deploy_crews_testing6
     )
     workplan: Workplan
-    method = Method("test_method", properties, True, sites)
+    method = Method("test_method", properties, True, sites, None)
 
     deploy_stats: CrewDeploymentStats = method.deploy_crews(workplan, weather, daylight)
 

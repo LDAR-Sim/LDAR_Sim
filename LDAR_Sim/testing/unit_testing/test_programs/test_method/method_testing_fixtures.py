@@ -53,7 +53,7 @@ def mock_average_t_btw_site(self):
     return 0
 
 
-def mock_initialize_sensor(self, properties):
+def mock_initialize_sensor(self, properties, input_dir):
     return {}
 
 

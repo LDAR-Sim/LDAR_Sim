@@ -93,6 +93,7 @@ def simulate(
         date(*virtual_world[pdc.Virtual_World_Params.END_DATE]),
         virtual_world[pdc.Virtual_World_Params.CONSIDER_WEATHER],
         prog_param,
+        input_dir=input_dir,
     )
     infra.setup(program.get_method_names())
     print(rm.SIM_PROG.format(prog_name=prog_name))

@@ -59,10 +59,11 @@ class Method:
         properties: dict,
         consider_weather: bool,
         sites: "list[Site]",
+        input_dir: str,
     ) -> None:
         self._name: str = name
         self._deployment_type = properties[pdc.Method_Params.DEPLOYMENT_TYPE]
-        self._initialize_sensor(properties[pdc.Method_Params.SENSOR])
+        self._initialize_sensor(properties[pdc.Method_Params.SENSOR], input_dir)
         self._max_work_hours: int = properties.get(pdc.Method_Params.MAX_WORKDAY, 24)
         self._daylight_sensitive = properties[pdc.Method_Params.CONSIDER_DAYLIGHT]
         self._weather: bool = consider_weather
@@ -111,7 +112,7 @@ class Method:
             self.cost_type = self.PER_DAY_COST
             self.cost = 0
 
-    def _initialize_sensor(self, sensor_info: dict) -> None:
+    def _initialize_sensor(self, sensor_info: dict, input_dir: str) -> None:
         """Will initialize a sensor of the correct type based
         on the sensor info provided to the method
 
@@ -123,6 +124,7 @@ class Method:
                 sensor_info[pdc.Method_Params.MDL],
                 sensor_info[pdc.Method_Params.QE][pdc.Method_Params.QUANTIFICATION_PARAMETERS],
                 sensor_info[pdc.Method_Params.QE][pdc.Method_Params.Q_TYPE],
+                input_dir=input_dir,
             )
         else:
             print(ipm.ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))

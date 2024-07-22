@@ -30,6 +30,7 @@ class DefaultSensor:
         mdl: Union[list[float], float],
         quantification_parameters: list[float],
         quantification_type: str = QuantificationTypes.DEFAULT.value,
+        input_dir: str = None,
     ) -> None:
         # TODO revisit this implementation
         self._min_threshold: float = None
@@ -44,12 +45,11 @@ class DefaultSensor:
         self.initialize_quantification_predictor(
             quantification_parameters,
             quantification_type=quantification_type,
+            input_dir=input_dir,
         )
 
     def initialize_quantification_predictor(
-        self,
-        quantification_parameters: list[float],
-        quantification_type: str,
+        self, quantification_parameters: list[float], quantification_type: str, input_dir: str
     ):
         if quantification_type == QuantificationTypes.DEFAULT.value:
             self._quantification_predictor = quantification.DefaultQuantificationPredictor(

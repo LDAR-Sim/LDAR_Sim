@@ -54,6 +54,7 @@ def test_000_simple_program_init(mocker):
         sim_end_date,
         consider_weather,
         prog_params,
+        None,
     )
 
     # Assert that the properties are as expected
