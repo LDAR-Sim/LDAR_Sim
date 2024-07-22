@@ -36,6 +36,7 @@ import numpy.random
         ),
         (-100.0, 0.0, -20.0, 100.0, 80.0),
         (-100.0, 100.0, -5.0, 100.0, 95.0),
+        (-150.0, 150.0, -150.0, 100.0, 0.0),
     ],
 )
 def test_uniform_predict_gives_expected_output(
