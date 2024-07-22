@@ -65,8 +65,10 @@ class Program:
         sim_end_date: date,
         consider_weather: bool,
         prog_params: dict[str, Any],
+        input_dir: str,
     ) -> None:
         self.name: str = name
+        self._input_dir: str = input_dir
         self._survey_schedules: dict[str, GenericSchedule] = {}
         self.method_names: list[str] = [method for method in methods]
         self._init_methods_and_schedules(
@@ -103,7 +105,9 @@ class Program:
             method_name: str
             properties: dict
 
-            method: Method = ComponentLevelMethod(method_name, properties, consider_weather, sites)
+            method: Method = ComponentLevelMethod(
+                method_name, properties, consider_weather, sites, self._input_dir
+            )
 
             follow_up_method_list.append(method)
 
@@ -171,6 +175,7 @@ class Program:
                 consider_weather,
                 sites=sites,
                 follow_up_schedule=follow_up_schedule,
+                input_dir=self._input_dir,
             )
         elif method_survey_level == EquipmentGroupLevelMethod.MEASUREMENT_SCALE:
             meth_pref_follow_up = properties[pdc.Method_Params.FOLLOW_UP][
@@ -189,9 +194,12 @@ class Program:
                 consider_weather,
                 sites=sites,
                 follow_up_schedule=follow_up_schedule,
+                input_dir=self._input_dir,
             )
         elif method_survey_level == ComponentLevelMethod.MEASUREMENT_SCALE:
-            return ComponentLevelMethod(method_name, properties, consider_weather, sites)
+            return ComponentLevelMethod(
+                method_name, properties, consider_weather, sites, self._input_dir
+            )
 
     def do_daily_program_deployment(self) -> list[TsMethodData]:
         timeseries_methods_data: list[TsMethodData] = []

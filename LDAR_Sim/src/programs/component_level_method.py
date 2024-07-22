@@ -42,8 +42,8 @@ import constants.param_default_const as pdc
 class ComponentLevelMethod(Method):
     MEASUREMENT_SCALE = "component"
 
-    def __init__(self, name, properties, consider_weather, sites):
-        super().__init__(name, properties, consider_weather, sites)
+    def __init__(self, name, properties, consider_weather, sites, input_dir: str):
+        super().__init__(name, properties, consider_weather, sites, input_dir)
         self._emissions_tagged_daily: int = 0
 
     def update(self, current_date: date) -> TaggingFlaggingStats:
@@ -91,7 +91,7 @@ class ComponentLevelMethod(Method):
                         self._emissions_tagged_daily += 1
         return survey_report, site_travel_time, last_site_survey, site_visited
 
-    def _initialize_sensor(self, sensor_info: dict) -> None:
+    def _initialize_sensor(self, sensor_info: dict, input_dir: str) -> None:
         """Will initialize a sensor of the correct type based
         on the sensor info provided to the method
 
@@ -104,24 +104,28 @@ class ComponentLevelMethod(Method):
                 sensor_info[pdc.Method_Params.MDL],
                 sensor_info[pdc.Method_Params.QE][pdc.Method_Params.QUANTIFICATION_PARAMETERS],
                 sensor_info[pdc.Method_Params.QE][pdc.Method_Params.Q_TYPE],
+                input_dir=input_dir,
             )
         elif sensor_info[pdc.Method_Params.TYPE] == "OGI_camera_zim":
             self._sensor = OGICameraZimSensor(
                 sensor_info[pdc.Method_Params.MDL],
                 sensor_info[pdc.Method_Params.QE][pdc.Method_Params.QUANTIFICATION_PARAMETERS],
                 sensor_info[pdc.Method_Params.QE][pdc.Method_Params.Q_TYPE],
+                input_dir=input_dir,
             )
         elif sensor_info[pdc.Method_Params.TYPE] == "OGI_camera_rk":
             self._sensor = OGICameraRKSensor(
                 sensor_info[pdc.Method_Params.MDL],
                 sensor_info[pdc.Method_Params.QE][pdc.Method_Params.QUANTIFICATION_PARAMETERS],
                 sensor_info[pdc.Method_Params.QE][pdc.Method_Params.Q_TYPE],
+                input_dir=input_dir,
             )
         elif sensor_info[pdc.Method_Params.TYPE] == "METEC_no_wind":
             self._sensor = METECNWComponent(
                 sensor_info[pdc.Method_Params.MDL],
                 sensor_info[pdc.Method_Params.QE][pdc.Method_Params.QUANTIFICATION_PARAMETERS],
                 sensor_info[pdc.Method_Params.QE][pdc.Method_Params.Q_TYPE],
+                input_dir=input_dir,
             )
         else:
             print(ipm.ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))

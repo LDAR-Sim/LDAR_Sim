@@ -39,10 +39,11 @@ class EquipmentGroupLevelMethod(SiteLevelMethod):
         consider_weather,
         sites,
         follow_up_schedule: FollowUpMobileSchedule,
+        input_dir: str,
     ):
-        super().__init__(name, properties, consider_weather, sites, follow_up_schedule)
+        super().__init__(name, properties, consider_weather, sites, follow_up_schedule, input_dir)
 
-    def _initialize_sensor(self, sensor_info: dict) -> None:
+    def _initialize_sensor(self, sensor_info: dict, input_dir: str) -> None:
         """Will initialize a sensor of the correct type based
         on the sensor info provided to the method
 
@@ -54,12 +55,14 @@ class EquipmentGroupLevelMethod(SiteLevelMethod):
                 sensor_info[pdc.Method_Params.MDL],
                 sensor_info[pdc.Method_Params.QE][pdc.Method_Params.QUANTIFICATION_PARAMETERS],
                 sensor_info[pdc.Method_Params.QE][pdc.Method_Params.Q_TYPE],
+                input_dir=input_dir,
             )
         elif sensor_info[pdc.Method_Params.TYPE] == "METEC_no_wind":
             self._sensor = METECNWEquipmentGroup(
                 sensor_info[pdc.Method_Params.MDL],
                 sensor_info[pdc.Method_Params.QE][pdc.Method_Params.QUANTIFICATION_PARAMETERS],
                 sensor_info[pdc.Method_Params.QE][pdc.Method_Params.Q_TYPE],
+                input_dir=input_dir,
             )
         else:
             print(ipm.ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))

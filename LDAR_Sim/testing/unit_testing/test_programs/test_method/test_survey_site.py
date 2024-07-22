@@ -49,7 +49,7 @@ def test_000_simple_weather_fail_to_survey_site(simple_method_values4):
         survey_report,
     ) = simple_method_values4
     sites = [mocker.Mock(spec=Site) for i in range(5)]
-    method = Method("test_method", properties, True, sites)
+    method = Method("test_method", properties, True, sites, None)
     daily_report = CrewDailyReport(1, 400)
     surveyed_report, travel_time, last_survey, site_visited = method.survey_site(
         daily_report, survey_report, sites[0], state, current_date
@@ -71,7 +71,7 @@ def test_000_simple_weather_fail_to_finish_site(simple_method_values5):
         survey_report,
     ) = simple_method_values5
     sites = [mocker.Mock(spec=Site) for i in range(5)]
-    method = Method("test_method", properties, True, sites)
+    method = Method("test_method", properties, True, sites, None)
     daily_report = CrewDailyReport(1, 10)
     surveyed_report, travel_time, last_survey, site_visited = method.survey_site(
         daily_report, survey_report, site_mock, state, current_date
@@ -101,7 +101,7 @@ def test_000_simple_weather_finish_site(simple_method_values5):
         survey_report,
     ) = simple_method_values5
     sites = [mocker.Mock(spec=Site) for i in range(5)]
-    method = Method("test_method", properties, True, sites)
+    method = Method("test_method", properties, True, sites, None)
     daily_report = CrewDailyReport(1, 200)
     surveyed_report, travel_time, last_survey, site_visited = method.survey_site(
         daily_report, survey_report, site_mock, state, current_date

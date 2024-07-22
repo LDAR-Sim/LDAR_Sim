@@ -65,4 +65,4 @@ class UniformQuantificationPredictor:
             float: The predicted quantified rate.
         """
         quantification_shift: float = np.random.uniform(self._lower_range, self._upper_range)
-        return true_rate * (1 + (quantification_shift / 100))
+        return max(true_rate * (1 + (quantification_shift / 100)), 0)

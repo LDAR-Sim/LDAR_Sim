@@ -37,11 +37,13 @@ class OGICameraZimSensor(DefaultComponentLevelSensor):
         mdl: float,
         quantification_parameters: list[float],
         quantification_type: str = QuantificationTypes.DEFAULT.value,
+        input_dir: str = None,
     ) -> None:
         super().__init__(
             mdl,
             quantification_parameters,
             quantification_type,
+            input_dir=input_dir,
         )
         self._mdl = mdl
 

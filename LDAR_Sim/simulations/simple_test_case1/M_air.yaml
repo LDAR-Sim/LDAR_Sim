@@ -6,6 +6,10 @@ measurement_scale: site
 sensor:
   type: default
   minimum_detection_limit: [5.55]
+  quantification_error:
+    quantification_parameters: ["test_qe.csv", "test_col"] # default and uniform types support [lower_95%_CI, upper_95%_CI]
+    # sample supports [filename, column_name]
+    quantification_type: "sample" # default (normal)/uniform/sample
 is_follow_up: False
 cost:
   per_day: 0

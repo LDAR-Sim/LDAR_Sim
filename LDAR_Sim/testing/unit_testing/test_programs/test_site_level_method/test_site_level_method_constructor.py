@@ -65,7 +65,7 @@ def test_site_level_method_creation(mock_follow_up_schedule):
         sites = []  # Pass the appropriate list of Site objects
         follow_up_schedule = mock_follow_up_schedule
         site_method = SiteLevelMethod(
-            method_name, properties, consider_weather, sites, follow_up_schedule
+            method_name, properties, consider_weather, sites, follow_up_schedule, None
         )
 
         # Assert that the method is created successfully

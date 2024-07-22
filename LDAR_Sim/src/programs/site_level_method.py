@@ -53,8 +53,9 @@ class SiteLevelMethod(Method):
         consider_weather,
         sites,
         follow_up_schedule: FollowUpMobileSchedule,
+        input_dir: str,
     ) -> None:
-        super().__init__(name, properties, consider_weather, sites)
+        super().__init__(name, properties, consider_weather, sites, input_dir)
         interaction_priority: str = properties[pdc.Method_Params.FOLLOW_UP][
             pdc.Method_Params.INTERACTION_PRIORITY
         ]
@@ -349,7 +350,7 @@ class SiteLevelMethod(Method):
         self._first_candidate_date = None
         return candidates
 
-    def _initialize_sensor(self, sensor_info: dict) -> None:
+    def _initialize_sensor(self, sensor_info: dict, input_dir: str) -> None:
         """Will initialize a sensor of the correct type based
         on the sensor info provided to the method
 
@@ -362,12 +363,14 @@ class SiteLevelMethod(Method):
                 sensor_info[pdc.Method_Params.MDL],
                 sensor_info[pdc.Method_Params.QE][pdc.Method_Params.QUANTIFICATION_PARAMETERS],
                 sensor_info[pdc.Method_Params.QE][pdc.Method_Params.Q_TYPE],
+                input_dir=input_dir,
             )
         elif sensor_info[pdc.Method_Params.TYPE] == "METEC_no_wind":
             self._sensor = METECNWSite(
                 sensor_info[pdc.Method_Params.MDL],
                 sensor_info[pdc.Method_Params.QE][pdc.Method_Params.QUANTIFICATION_PARAMETERS],
                 sensor_info[pdc.Method_Params.QE][pdc.Method_Params.Q_TYPE],
+                input_dir=input_dir,
             )
         else:
             print(ipm.ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
