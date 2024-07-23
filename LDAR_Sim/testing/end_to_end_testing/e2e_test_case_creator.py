@@ -114,7 +114,6 @@ if __name__ == "__main__":
     sim_params = input_manager.read_and_validate_parameters(parameter_filenames)
 
     # --- Assign local variabls
-    ref_program = sim_params[pdc.Sim_Setting_Params.REFERENCE]
     base_program = sim_params[pdc.Sim_Setting_Params.BASELINE]
     in_dir = get_abs_path("./inputs", test_creator_dir)
     out_dir = get_abs_path("./expected_outputs", test_case_dir)

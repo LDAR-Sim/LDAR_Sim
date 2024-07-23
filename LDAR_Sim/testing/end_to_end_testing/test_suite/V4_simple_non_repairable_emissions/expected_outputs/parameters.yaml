@@ -812,7 +812,6 @@ programs:
     parameter_level: programs
     program_name: P_stationary_measurement_based
     version: '4.0'
-reference_program: P_OGI
 simulation_count: 2
 version: '4.0'
 virtual_world:

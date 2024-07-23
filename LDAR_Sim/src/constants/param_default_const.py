@@ -88,7 +88,6 @@ class Sim_Setting_Params:
     INPUT = "input_directory"
     OUTPUT = "output_directory"
     BASELINE = "baseline_program"
-    REFERENCE = "reference_program"
     PROCESS = "processes_count"
     SIMS = "simulation_count"
     PRESEED = "preseed_random"

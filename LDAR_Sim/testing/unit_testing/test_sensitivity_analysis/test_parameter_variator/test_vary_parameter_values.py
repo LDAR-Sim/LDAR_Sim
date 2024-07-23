@@ -37,7 +37,6 @@ def get_simulation_parameters_1():
         Common_Params.VERSION: "4.0",
         Sim_Setting_Params.INPUT: "test_input",
         Sim_Setting_Params.OUTPUT: "test_output",
-        Sim_Setting_Params.REFERENCE: "test_reference",
     }
     virtual_world = {
         Common_Params.PARAM_LEVEL: Levels.VIRTUAL,

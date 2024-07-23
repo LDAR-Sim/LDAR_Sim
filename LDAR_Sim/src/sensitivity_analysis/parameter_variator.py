@@ -219,11 +219,11 @@ def vary_parameter_values(
             simulation_parameters.get_baseline_program(),
         )
         # Edit the base program
-        parameters.alter_parameter(
-            param_default_const.Levels.SIMULATION,
-            param_default_const.Sim_Setting_Params.REFERENCE,
-            f"{sensitivity_program}_{0}",
-        )
+        # parameters.alter_parameter(
+        #     param_default_const.Levels.SIMULATION,
+        #     param_default_const.Sim_Setting_Params.REFERENCE,
+        #     f"{sensitivity_program}_{0}",
+        # )
         # Append the new parameters to the list
         new_simulation_parameters.append(parameters)
     # If the parameter level is not recognized or valid for the sensitivity analysis

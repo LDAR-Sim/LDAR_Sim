@@ -135,7 +135,6 @@ if __name__ == "__main__":
         programs: list[dict] = simulation_parameters.get_programs()
         virtual_world: dict = simulation_parameters.get_virtual_world()
         output_params: dict = simulation_parameters.get_output()
-        ref_program: str = simulation_setting[pdc.Sim_Setting_Params.REFERENCE]
         base_program: str = simulation_setting[pdc.Sim_Setting_Params.BASELINE]
         in_dir: Path = get_abs_path(simulation_setting[pdc.Sim_Setting_Params.INPUT])
         out_dir: Path = get_abs_path(simulation_setting[pdc.Sim_Setting_Params.OUTPUT])
