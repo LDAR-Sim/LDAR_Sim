@@ -22,6 +22,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 from pathlib import Path
 import numpy as np
 import pandas as pd
+import constants.error_messages as em
 
 
 class SamplingQuantificationPredictor:
@@ -47,10 +48,31 @@ class SamplingQuantificationPredictor:
             quantification_column (str): The name of the column in the file
             containing quantification errors to sample from.
         """
-        all_quantification_errors: pd.DataFrame = pd.read_csv(input_dir / quantification_file)
-        self._quantification_errors: np.ndarray = all_quantification_errors[
-            quantification_column
-        ].values
+        self._set_quantification_errors(quantification_file, quantification_column, input_dir)
+
+    def _set_quantification_errors(
+        self, quantification_file: str, quantification_column: str, input_dir: Path
+    ):
+        try:
+            # Directly read the required column and drop NaN values, reducing memory usage
+            self._quantification_errors = (
+                pd.read_csv(input_dir / quantification_file, usecols=[quantification_column])
+                .dropna()[quantification_column]
+                .to_numpy()
+            )
+        except FileNotFoundError:
+            raise FileNotFoundError(
+                em.Input_Processing_Messages.QUANTIFICATION_FILE_NOT_FOUND.format(
+                    quantification_file=quantification_file, input_dir=input_dir
+                )
+            )
+        except ValueError:
+            raise ValueError(
+                em.Input_Processing_Messages.QUANTIFICATION_INVALID_COLUMN.format(
+                    quantification_column=quantification_column,
+                    quantification_file=quantification_file,
+                )
+            )
 
     def predict(self, true_rate: float) -> float:
         """
