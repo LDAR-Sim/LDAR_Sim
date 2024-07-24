@@ -100,6 +100,13 @@ class Input_Processing_Messages:
     )
     MISSING_DEPLOYMENT_TYPE_ERROR = "Warning: Deployment type is missing for method: {method}"
 
+    QUANTIFICATION_FILE_NOT_FOUND = (
+        "Warning: Quantification file {quantification_file} not found in {input_dir}."
+    )
+    QUANTIFICATION_INVALID_COLUMN = (
+        "Warning: Quantification column {quantification_column} not found in {quantification_file}."
+    )
+
 
 class Runtime_Warning_Messages:
     POTENTIAL_CREW_SHORTAGE_MESSAGE = (
