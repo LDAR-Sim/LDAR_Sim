@@ -48,9 +48,12 @@ class SamplingQuantificationPredictor:
             containing quantification errors to sample from.
         """
         all_quantification_errors: pd.DataFrame = pd.read_csv(input_dir / quantification_file)
-        self._quantification_errors: np.ndarray = all_quantification_errors[
+        target_quantification_errors: np.ndarray = all_quantification_errors[
             quantification_column
         ].values
+        self._quantification_errors: np.ndarray = target_quantification_errors[
+            ~np.isnan(target_quantification_errors)
+        ]
 
     def predict(self, true_rate: float) -> float:
         """
