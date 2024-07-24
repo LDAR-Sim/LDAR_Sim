@@ -3,5 +3,4 @@ simulation_count: 10
 output_directory: ./outputs/sens_test_case1_vw
 parameter_level: simulation_settings
 preseed_random: true
-reference_program: P_OGI
 version: "4.0"

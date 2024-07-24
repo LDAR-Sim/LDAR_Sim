@@ -32,6 +32,7 @@ When moving from V3 to V4, it is advised to read the updated [user manual](../..
 | outputs| functionality moved to [output parameters](../../USER_MANUAL.md#6-output-settings) |
 | start_date| moved to virtual world |
 | end_date| moved to virtual world |
+| reference_program| removed until feature is necessary again |
 
 #### Simulation Settings: New Parameters
 

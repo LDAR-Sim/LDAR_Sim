@@ -175,13 +175,12 @@ Parameter files are all key-value pairs (i.e., Python dictionary), with multiple
 - `program`: program parameters that are used to define a specific emissions reduction program (or lack thereof). Commonly, an 'alternative' custom program is compared to a defined regulatory program. Many programs can be compared at once.
 - `method`: emissions reduction methods (e.g., specific LDAR technologies and work practices and/or LDAR service provider companies) that are deployed within a program. Methods are specified in a given program for deployment and multiple methods may be used at once (e.g., satellite + aircraft + OGI follow-up + routine AVO)
 
-A typical simulation would compare at least two programs: a reference program and one or more test programs. Including a baseline program is also necessary.
+A typical simulation would compare at least two programs: a baseline program and one or more test programs.
 
-- `baseline program`: The program against which mitigation is estimated for reference and test programs (mitigation = baseline emissions - LDAR emissions). Typically involves running LDAR-Sim in the absence of a formal LDAR program (commonly denoted as 'P_none'). Even without a formal LDAR program, emissions are eventually removed from the simulation due to operator rounds (e.g., AVO), routine maintenance, refits and retrofits, or other factors.
-- `reference program`: The program against which test programs are compared (e.g., to establish equivalency). The reference program is often defined by regulations that require the use of OGI (commonly denoted 'P_OGI').
+- `baseline program`: The program against which mitigation is estimated for test programs (mitigation = baseline emissions - LDAR emissions). Typically involves running LDAR-Sim in the absence of a formal LDAR program (commonly denoted as 'P_none'). Even without a formal LDAR program, emissions are eventually removed from the simulation due to operator rounds (e.g., AVO), routine maintenance, refits and retrofits, or other factors.
 - `test programs`: A custom alternative program that the user wants to evaluate. Commonly denoted using 'P_' + program name (e.g., 'P_aircraft', 'P_GasCompanyX', 'P_drone', etc.).
 
-A simulation can consist of any number of programs and each program can consist of any number of methods. For example, the reference program could deploy one method (OGI). The test program could deploy two new LDAR methods (magical helicopter and un-magical binoculars). Each program would be run on the asset base multiple times through time to create a statistical representation of the emissions and cost data. Finally, the statistical emissions and cost distributions of the reference program can be compared to those of the test program. It is often the differences between the programs that represents the important information that is of interest to users of LDAR-Sim.
+A simulation can consist of any number of programs and each program can consist of any number of methods. For example, the test program 1 could deploy one method (OGI). The test program 2 could deploy two new LDAR methods (magical helicopter and un-magical binoculars). Each program would be run on the asset base multiple times through time to create a statistical representation of the emissions and cost data. Finally, the statistical emissions and cost distributions of the baseline program can be compared to those of the test program. It is often the differences between the programs that represents the important information that is of interest to users of LDAR-Sim.
 
 In this example, the hierarchy looks like:
 
@@ -190,8 +189,6 @@ Simulation setting parameters
 Virtual world parameters
 Programs:
     Baseline program
-    Reference program:
-        Reference LDAR method (OGI)
     Test program:
         New LDAR method 1 (Magical Helicopter)
         New LDAR method 2 (Un-magical Binoculars)
@@ -322,14 +319,6 @@ Note that programs are interpreted as a flat list of parameters that are incorpo
 **Notes on acquisition:** Typically a program that represents a scenario where there is no formal LDAR or that has no LDAR method is recommended as the baseline program. Simply put, create a program with no methods.
 
 **Notes of caution:** A baseline program is required to successfully run the simulation.
-
-### &lt;reference_program&gt; WIP
-
-**Data type:** String
-
-**Default input:** 'P_OGI'
-
-**Description:** Refers to a [name of a program](#program_name), against which alternative programs are compared.
 
 **Notes on acquisition:** N/A
 
@@ -2619,6 +2608,12 @@ As LDAR-Sim continues to advance, certain parameters may become obsolete and con
 --------------------------------------------------------------------------------
 
 ### Legacy Simulation Settings Parameters
+
+#### &lt;reference_program&gt;
+
+- Removed as of version 4.1.0
+
+The reference program functionality has been temporarily removed to avoid confusion. It will be reinstated once it is re-implemented and becomes relevant.
 
 #### &lt;pregenerate_leaks&gt;
 
