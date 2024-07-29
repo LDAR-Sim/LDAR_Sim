@@ -95,7 +95,7 @@ def mock_site_for_simple_activate_emissions_fix() -> Tuple[Site, date, int]:
     prop_params: dict = {
         Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ERS: "test",
         Infrastructure_Constants.Sites_File_Constants.REP_EMIS_EPR: 1,
-        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ED: 1,
+        Infrastructure_Constants.Sites_File_Constants.REP_EMIS_ED: 2,
         Infrastructure_Constants.Sites_File_Constants.REP_EMIS_MULTI: True,
         Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_MULTI: True,
         Infrastructure_Constants.Sites_File_Constants.NON_REP_EMIS_EPR: None,
