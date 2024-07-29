@@ -130,7 +130,10 @@ def test_001_test_single_emission_creation(mocker) -> None:
         emission_rate_source_dictionary,
         repair_delay_dataframe,
     )
-    assert len(emissions_dict["test"]) == 2
+    assert len(emissions_dict["test"]) == 3
+    assert emissions_dict["test"][0]._start_date == date(2022, 1, 1)
+    assert emissions_dict["test"][1]._start_date == date(2023, 1, 2)
+    assert emissions_dict["test"][2]._start_date == date(2024, 1, 3)
 
 
 def test_001_test_multi_emission_creation(mocker) -> None:
@@ -165,4 +168,4 @@ def test_001_test_multi_emission_creation(mocker) -> None:
         emission_rate_source_dictionary,
         repair_delay_dataframe,
     )
-    assert len(emissions_dict["test"]) == 729
+    assert len(emissions_dict["test"]) == 728
