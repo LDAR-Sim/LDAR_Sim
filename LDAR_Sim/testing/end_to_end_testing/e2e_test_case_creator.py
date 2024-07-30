@@ -29,6 +29,7 @@ from typing import Any
 from datetime import date
 import yaml
 import gc
+from testing_utils.remove_generator import remove_non_preseed_files
 
 # Get directories and set up root
 e2e_test_dir: Path = Path(os.path.dirname(os.path.realpath(__file__)))
@@ -274,3 +275,6 @@ if __name__ == "__main__":
     shutil.move(params_dir, test_case_dir)
     shutil.move(in_dir, test_case_dir)
     shutil.move(test_case_dir, tests_dir / sys.argv[3])
+
+    test_generator = tests_dir / sys.argv[3] / "inputs" / "generator"
+    remove_non_preseed_files(test_generator)
