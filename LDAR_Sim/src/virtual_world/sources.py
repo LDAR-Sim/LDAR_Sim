@@ -285,8 +285,19 @@ class Source:
 
         # Initialize a counter to give all emissions for the source a unique "ID"
         leak_count: int = 0
+        # Pre-calculate date ranges
+        pre_existing_dates = pd.date_range(
+            start=sim_start_date - timedelta(days=self._emis_duration),
+            periods=self._emis_duration,
+            freq="D",
+        )
 
-        # TODO: re-do this logic to reflect the brainstorming session
+        # Vectorize random number generation
+        pre_existing_emissions = np.random.binomial(1, self._emis_prod_rate, self._emis_duration)
+
+        # Filter dates where emissions should be created
+        filtered_emission_dates = pre_existing_dates[pre_existing_emissions == 1]
+
         #  RNG the number of emissions to create and RNG the date for each emission
 
         # Generate Pre-Existing Emissions to exist at the start of simulation
@@ -297,11 +308,8 @@ class Source:
         # for the given source, the loop will break once the first is made,
         # since no other emissions should exist
         last_emis_day: date = sim_start_date
-        for day in range(self._emis_duration, 0, -1):
-            create_emis: int = np.random.binomial(1, self._emis_prod_rate)
-            if not create_emis:
-                continue
-            emis_start_date: date = sim_start_date - timedelta(days=day)
+        for day in filtered_emission_dates:
+            emis_start_date: date = day.date()
             emission: emission_types.Emission = self._create_emission(
                 leak_count=leak_count,
                 start_date=emis_start_date,
@@ -318,30 +326,33 @@ class Source:
 
         # Generate Emissions for the course of the simulation
         date_diff: timedelta = sim_end_date - sim_start_date
-        sim_dur: int = date_diff.days
-        for day in range(0, sim_dur):
-            create_emis: int = np.random.binomial(1, self._emis_prod_rate)
-            if create_emis:
-                emis_start_date: date = sim_start_date + timedelta(days=day)
-                if not self._multi_emissions:
-                    # if only a single emission can be made, check that
-                    # the emission start date is after the last emission's end date,
-                    # otherwise continue the loop
-                    if emis_start_date <= last_emis_day:
-                        continue
-                emission: emission_types.Emission = self._create_emission(
-                    leak_count=leak_count,
-                    start_date=emis_start_date,
-                    sim_start_date=sim_start_date,
-                    emission_rate_source_dictionary=emission_rate_source_dictionary,
-                    repair_delay_dataframe=repair_delay_dataframe,
-                )
-                leak_count += 1
-                emissions_fifo.append(emission)
-                if not self._multi_emissions:
-                    # if only a single emission can be made,
-                    # update the last_emis_day based on the new emission
-                    last_emis_day = emis_start_date + timedelta(days=int(self._emis_duration))
+        # Precalculate date
+        simulation_dates = pd.date_range(start=sim_start_date, periods=sim_dur, freq="D")
+        # Vectorize random number generation
+        simulation_emissions = np.random.binomial(1, self._emis_prod_rate, sim_dur)
+
+        # Filter dates where emissions should be created
+        emission_dates = simulation_dates[simulation_emissions == 1]
+
+        for day in emission_dates:
+            emis_start_date: date = day.date()
+            # Skip emission creation if it's too soon after the last one
+            if not self._multi_emissions and emis_start_date <= last_emis_day:
+                continue
+
+            emission: emission_types.Emission = self._create_emission(
+                leak_count=leak_count,
+                start_date=emis_start_date,
+                sim_start_date=sim_start_date,
+                emission_rate_source_dictionary=emission_rate_source_dictionary,
+                repair_delay_dataframe=repair_delay_dataframe,
+            )
+            leak_count += 1
+            emissions_fifo.append(emission)
+            if not self._multi_emissions:
+                # if only a single emission can be made,
+                # update the last_emis_day based on the new emission
+                last_emis_day = emis_start_date + timedelta(days=int(self._emis_duration))
         self._generated_emissions[sim_number] = emissions_fifo
         return {self._source_ID: emissions_fifo}
 
