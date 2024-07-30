@@ -27,6 +27,7 @@ import pandas as pd
 from pathlib import Path
 from datetime import date
 from testing_utils.result_verification import compare_outputs
+from testing_utils.remove_generator import remove_non_preseed_files
 
 # Get directories and set up root
 e2e_test_dir: Path = Path(os.path.dirname(os.path.realpath(__file__)))
@@ -124,8 +125,7 @@ if __name__ == "__main__":
             input_manager.write_parameters(out_dir / Output_Files.PARAMETER_FILE)
 
             generator_dir = in_dir / Generator_Files.GENERATOR_FOLDER
-            if os.path.exists(generator_dir):
-                print(rm.GEN_WARNING_MSG)
+            remove_non_preseed_files(generator_dir)
             print(rm.INIT_INFRA)
             simulation_count: int = sim_params[pdc.Sim_Setting_Params.SIMS]
             emis_preseed_val: list[int] = None
