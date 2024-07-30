@@ -32,6 +32,5 @@ def remove_non_preseed_files(directory):
             file_path = os.path.join(directory, filename)
             if os.path.isfile(file_path) and "preseed" not in filename:
                 os.remove(file_path)
-                print(f"Removed: {file_path}")
     except Exception as e:
         print(f"An error occurred: {e}")
