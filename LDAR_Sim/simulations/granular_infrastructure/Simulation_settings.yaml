@@ -3,6 +3,5 @@ simulation_count: 3
 output_directory: ./outputs/granular_infrastructure
 parameter_level: simulation_settings
 preseed_random: true
-reference_program: P_OGI
 baseline_program: P_none
 version: "4.0"
