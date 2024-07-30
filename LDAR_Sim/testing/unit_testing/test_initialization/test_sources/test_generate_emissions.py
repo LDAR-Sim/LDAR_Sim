@@ -198,7 +198,7 @@ def expected_dictionary4():
     return {
         "source1": [
             date(2020, 1, 22),
-            date(2021, 2, 1),
+            date(2021, 2, 25),
         ]
     }
 

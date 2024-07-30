@@ -326,6 +326,7 @@ class Source:
 
         # Generate Emissions for the course of the simulation
         date_diff: timedelta = sim_end_date - sim_start_date
+        sim_dur: int = date_diff.days + 1  # +1 to include the end date
         # Precalculate date
         simulation_dates = pd.date_range(start=sim_start_date, periods=sim_dur, freq="D")
         # Vectorize random number generation

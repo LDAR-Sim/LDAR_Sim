@@ -168,4 +168,4 @@ def test_001_test_multi_emission_creation(mocker) -> None:
         emission_rate_source_dictionary,
         repair_delay_dataframe,
     )
-    assert len(emissions_dict["test"]) == 729
+    assert len(emissions_dict["test"]) == 730
