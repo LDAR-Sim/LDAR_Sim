@@ -297,7 +297,7 @@ class Source:
         # for the given source, the loop will break once the first is made,
         # since no other emissions should exist
         last_emis_day: date = sim_start_date
-        for day in range(self._emis_duration, 1, -1):
+        for day in range(self._emis_duration, 0, -1):
             create_emis: int = np.random.binomial(1, self._emis_prod_rate)
             if not create_emis:
                 continue
