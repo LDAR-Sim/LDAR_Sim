@@ -7,7 +7,12 @@
 3. Update estimate default parameter values
 4. Add documentation and support for long pathways (Windows OS)
 5. Runtime and memory optimization
-6. Various bug fixes
+6. New quantification error module
+7. Various bug fixes:
+    - quantification error module file read bug
+    - generate emissions can now generate emission on the last day of simulation
+    - error handling for missing survey frequency
+    - error handling for missing methods
 
 ## 2024-07-11 - Version 4.1.0
 
