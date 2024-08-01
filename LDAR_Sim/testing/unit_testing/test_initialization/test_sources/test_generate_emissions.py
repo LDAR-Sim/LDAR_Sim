@@ -149,16 +149,16 @@ def expected_dictionary():
 def expected_dictionary2():
     return {
         "source1": [
-            date(2021, 1, 11),
-            date(2021, 2, 12),
-            date(2021, 3, 2),
-            date(2021, 3, 4),
-            date(2021, 5, 20),
-            date(2021, 6, 4),
-            date(2021, 7, 20),
-            date(2021, 9, 18),
-            date(2021, 10, 4),
             date(2021, 10, 16),
+            date(2021, 10, 4),
+            date(2021, 9, 18),
+            date(2021, 7, 20),
+            date(2021, 6, 4),
+            date(2021, 5, 20),
+            date(2021, 3, 4),
+            date(2021, 3, 2),
+            date(2021, 2, 12),
+            date(2021, 1, 11),
         ]
     }
 
@@ -166,30 +166,30 @@ def expected_dictionary2():
 def expected_dictionary3():
     return {
         "source1": [
-            date(2020, 1, 22),
-            date(2020, 2, 23),
-            date(2020, 3, 12),
-            date(2020, 3, 14),
-            date(2020, 5, 30),
-            date(2020, 6, 14),
-            date(2020, 7, 30),
-            date(2020, 9, 28),
-            date(2020, 10, 14),
-            date(2020, 10, 26),
-            date(2021, 2, 25),
-            date(2021, 2, 26),
-            date(2021, 3, 3),
-            date(2021, 3, 24),
-            date(2021, 3, 28),
-            date(2021, 4, 24),
-            date(2021, 7, 17),
-            date(2021, 8, 19),
-            date(2021, 8, 23),
-            date(2021, 9, 12),
-            date(2021, 9, 17),
-            date(2021, 10, 5),
-            date(2021, 10, 22),
             date(2021, 12, 29),
+            date(2021, 10, 22),
+            date(2021, 10, 5),
+            date(2021, 9, 17),
+            date(2021, 9, 12),
+            date(2021, 8, 23),
+            date(2021, 8, 19),
+            date(2021, 7, 17),
+            date(2021, 4, 24),
+            date(2021, 3, 28),
+            date(2021, 3, 24),
+            date(2021, 3, 3),
+            date(2021, 2, 26),
+            date(2021, 2, 25),
+            date(2020, 10, 26),
+            date(2020, 10, 14),
+            date(2020, 9, 28),
+            date(2020, 7, 30),
+            date(2020, 6, 14),
+            date(2020, 5, 30),
+            date(2020, 3, 14),
+            date(2020, 3, 12),
+            date(2020, 2, 23),
+            date(2020, 1, 22),
         ]
     }
 
@@ -197,8 +197,8 @@ def expected_dictionary3():
 def expected_dictionary4():
     return {
         "source1": [
-            date(2020, 1, 22),
             date(2021, 2, 25),
+            date(2020, 1, 22),
         ]
     }
 
