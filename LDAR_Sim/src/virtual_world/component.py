@@ -178,10 +178,13 @@ class Component:
             Used to interact with the correct set of emissions.
         """
         new_emissions_count: int = 0
+        new_emissions_list: list[Emission] = []
         for source in self._sources:
             new_emissions: list[Emission] = source.activate_emissions(date, sim_number)
-            self._active_emissions.extend(new_emissions)
-            new_emissions_count += len(new_emissions)
+            new_emissions_list.extend(new_emissions)
+
+        new_emissions_count += len(new_emissions_list)
+        self._active_emissions.extend(new_emissions_list)
         return new_emissions_count
 
     def update_emissions_state(self, emis_rep_info: EmisInfo, emis_data: TsEmisData) -> None:

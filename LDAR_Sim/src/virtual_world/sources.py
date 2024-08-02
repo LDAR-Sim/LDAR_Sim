@@ -354,6 +354,7 @@ class Source:
                 # if only a single emission can be made,
                 # update the last_emis_day based on the new emission
                 last_emis_day = emis_start_date + timedelta(days=int(self._emis_duration))
+        emissions_fifo.reverse()
         self._generated_emissions[sim_number] = emissions_fifo
         return {self._source_ID: emissions_fifo}
 
@@ -372,24 +373,16 @@ class Source:
         newly_activated_emissions: list[emission_types.Emission] = []
         sim_emissions: list[emission_types.Emission] = self._generated_emissions[sim_number]
 
-        activate_emissions: bool = False
-        focus_emission: emission_types.Emission = None
-
-        if self._next_emission is None:
-            if sim_emissions:
-                focus_emission: emission_types.Emission = sim_emissions.pop(0)
-                activate_emissions = focus_emission.activate(date)
+        if self._next_emission is None and sim_emissions:
+            focus_emission: emission_types.Emission = sim_emissions.pop()
         else:
             focus_emission: emission_types.Emission = self._next_emission
-            activate_emissions = focus_emission.activate(date)
 
-        while activate_emissions:
+        while focus_emission and focus_emission.activate(date):
             newly_activated_emissions.append(focus_emission)
             if sim_emissions:
-                focus_emission = sim_emissions.pop(0)
-                activate_emissions = focus_emission.activate(date)
+                focus_emission = sim_emissions.pop()
             else:
-                activate_emissions = False
                 focus_emission = None
 
         self._next_emission = focus_emission
@@ -402,7 +395,3 @@ class Source:
 
     def get_id(self) -> str:
         return self._source_ID
-
-
-# TODO : make an if/else function to determine emission sample from list or distribution
-# TODO: make function that is called by above function to get single value for emission
