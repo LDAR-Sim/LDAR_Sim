@@ -1,6 +1,7 @@
 import copy
 
 from math import floor
+import os
 from pathlib import Path
 
 
@@ -84,3 +85,18 @@ def simulate(
     print(rm.FIN_PROG.format(prog_name=prog_name))
     gc.collect()
     return
+
+
+def remove_non_preseed_files(directory):
+    """
+    Remove all files in the given directory except for 'preseed.p'.
+
+    :param directory: Path to the directory to clean up.
+    """
+    try:
+        for filename in os.listdir(directory):
+            file_path = os.path.join(directory, filename)
+            if os.path.isfile(file_path) and "preseed" not in filename:
+                os.remove(file_path)
+    except Exception as e:
+        print(f"An error occurred: {e}")
