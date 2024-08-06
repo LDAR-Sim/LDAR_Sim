@@ -27,7 +27,6 @@ from typing import Any, override
 import yaml
 from constants.file_processing_const import IOLocationConstants as io_loc
 from constants import param_default_const as pdc
-from constants.output_messages import RuntimeMessages as rm
 from file_processing.input_processing.input_manager import InputManager
 from file_processing.output_processing.summary_output_helpers import get_non_baseline_prog_names
 from initialization.args import files_from_path, get_abs_path
@@ -131,8 +130,6 @@ class EndToEndCreationSimulationManager(SimulationManager):
     @override
     def generate_summary_results(self) -> None:
 
-        print(rm.BATCH_CLEAN.format(batch_count=0))
-        self.summary_stats_manager.gen_summary_outputs(False)
         non_baseline_progs = get_non_baseline_prog_names(self.programs, self.base_program)
         self.summary_stats_manager.gen_cost_summary_outputs(non_baseline_progs)
 
