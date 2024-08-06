@@ -53,7 +53,7 @@ if __name__ == "__main__":
     from initialization.initialize_emissions import initialize_emissions, read_in_emissions
     from initialization.initialize_infrastructure import initialize_infrastructure
     from initialization.preseed import gen_seed_emis
-    from ldar_sim_run import simulate
+    from simulation.simulation_helpers import simulate
     from utils.generic_functions import check_ERA5_file
     from utils.prog_method_measured_func import (
         set_up_tf_method_deployed_df,

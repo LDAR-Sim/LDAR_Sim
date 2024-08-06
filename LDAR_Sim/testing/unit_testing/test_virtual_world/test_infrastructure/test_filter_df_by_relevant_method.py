@@ -21,7 +21,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 import pandas as pd
 import pytest
-from src.ldar_sim_run import filter_deployment_tf_by_program_methods
+from utils.prog_method_measured_func import filter_deployment_tf_by_program_methods
 from src.constants.infrastructure_const import Deployment_TF_Sites_Constants as DTSC
 
 
