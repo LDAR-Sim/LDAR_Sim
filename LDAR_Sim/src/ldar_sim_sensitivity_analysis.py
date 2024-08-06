@@ -48,7 +48,7 @@ from initialization.args import (  # TODO: move this over to input_processing?
 from initialization.initialize_emissions import initialize_emissions, read_in_emissions
 from initialization.initialize_infrastructure import initialize_infrastructure
 from initialization.preseed import gen_seed_emis
-from ldar_sim_run import simulate
+from simulation.simulation_helpers import simulate
 from parameters.parameters_holder import ParametersHolder
 from sensitivity_analysis.sensitivity_analysis_results_manager import (
     SensitivityAnalysisResultsManager,
