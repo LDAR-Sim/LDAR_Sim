@@ -24,9 +24,9 @@ import os
 
 import subprocess
 from datetime import datetime
-from typing import Any, Literal
+from typing import Literal
 import pandas as pd
-import yaml
+
 
 DEFAULT_TEST_DIR: str = "testing/end_to_end_testing/test_results/"
 
