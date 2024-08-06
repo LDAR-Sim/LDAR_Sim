@@ -151,18 +151,19 @@ class SimulationManager:
 
         if os.path.exists(self.generator_dir):
             print(rm.GEN_WARNING_MSG)
-        print(rm.INIT_INFRA)
 
         if self.preseed_random:
             self.emis_preseed_val, self.force_remake_gen = gen_seed_emis(
                 self.simulation_count, self.generator_dir
             )
 
-    def setup_virtual_world(self) -> None:
+    def setup_infrastructure(self) -> None:
 
         self.site_measurement_matrix = set_up_tf_method_deployed_df(
             self.methods, self.virtual_world[pdc.Virtual_World_Params.N_SITES]
         )
+
+        print(rm.INIT_INFRA)
 
         self.infrastructure, self.hash_file_exists = initialize_infrastructure(
             self.methods,

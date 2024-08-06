@@ -44,7 +44,7 @@ def run_ldar_sim(parameter_filenames, DEBUG=False):
 
     simulation_manager.check_generator_files()
 
-    simulation_manager.setup_virtual_world()
+    simulation_manager.setup_infrastructure()
 
     simulation_manager.setup_emissions()
 
