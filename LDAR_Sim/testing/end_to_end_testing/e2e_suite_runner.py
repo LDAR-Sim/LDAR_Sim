@@ -27,7 +27,6 @@ import pandas as pd
 from pathlib import Path
 from datetime import date
 from testing_utils.result_verification import compare_outputs
-from testing_utils.remove_generator import remove_non_preseed_files
 
 # Get directories and set up root
 e2e_test_dir: Path = Path(os.path.dirname(os.path.realpath(__file__)))
@@ -59,6 +58,7 @@ if __name__ == "__main__":
         set_up_tf_method_deployed_df,
         filter_deployment_tf_by_program_methods,
     )
+    from simulation.simulation_helpers import remove_non_preseed_files
     from virtual_world.infrastructure import Infrastructure
     from weather.daylight_calculator import DaylightCalculatorAve
     from weather.weather_lookup import WeatherLookup as WL
