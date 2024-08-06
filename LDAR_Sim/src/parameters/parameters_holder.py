@@ -129,16 +129,16 @@ class ParametersHolder:
     def remove_program(self, program_name: str) -> None:
         self._programs.pop(program_name)
 
-    def get_simulation_settings(self) -> GenericParameters:
+    def get_simulation_settings(self) -> dict:
         return self._simulation_settings.to_dict()
 
-    def get_virtual_world(self) -> HighLevelParameters:
+    def get_virtual_world(self) -> dict:
         return self._virtual_world.to_dict()
 
-    def get_output(self) -> HighLevelParameters:
+    def get_output(self) -> dict:
         return self._output.to_dict()
 
-    def get_programs(self) -> list[dict[str:dict]]:
+    def get_programs(self) -> dict[str:dict]:
         return {name: program.to_dict() for name, program in self._programs.items()}
 
     def alter_simulation_info(self, variation_number: int) -> None:
