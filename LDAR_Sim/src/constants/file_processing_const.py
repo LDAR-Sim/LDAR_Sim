@@ -52,3 +52,12 @@ class Multi_Sim_Output_Const:
 
     PERCENTILE_95 = 95
     PERCENTILE_5 = 5
+
+
+class IOLocationConstants:
+    GENERATOR_FOLDER = "generator"
+    TESTING_PARAMETERS_FOLDER = "params"
+    INPUT_FOLDER = "inputs"
+    TESTING_INPUTS_FOLDER = "./inputs"
+    TESTING_OUTPUTS_FOLDER = "./outputs"
+    EXPECTED_OUTPUTS_FOLDER = "./expected_outputs"

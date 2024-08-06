@@ -1,9 +1,31 @@
+# ------------------------------------------------------------------------------
+# Program:     The LDAR Simulator (LDAR-Sim)
+# File:        end_to_end_creation_simulation_manager.py
+# Purpose:     Manager for creating end-to-end simulation tests.
+#
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the MIT License as published
+# by the Free Software Foundation, version 3.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MIT License for more details.
+
+# You should have received a copy of the MIT License
+# along with this program.  If not, see <https://opensource.org/licenses/MIT>.
+#
+# ------------------------------------------------------------------------------
+
+
 import os
 import shutil
 from pathlib import Path
 from typing import Any, override
 
 import yaml
+from constants.file_processing_const import IOLocationConstants as io_loc
 from constants import param_default_const as pdc
 from constants.output_messages import RuntimeMessages as rm
 from file_processing.input_processing.input_manager import InputManager
@@ -24,8 +46,8 @@ class EndToEndCreationSimulationManager(SimulationManager):
         self.GLOBAL_PARAMS_TO_REP: "dict[str, Any]" = {
             pdc.Sim_Setting_Params.SIMS: 2,
             pdc.Sim_Setting_Params.PRESEED: True,
-            pdc.Sim_Setting_Params.INPUT: "./inputs",
-            pdc.Sim_Setting_Params.OUTPUT: "./outputs",
+            pdc.Sim_Setting_Params.INPUT: io_loc.TESTING_INPUTS_FOLDER,
+            pdc.Sim_Setting_Params.OUTPUT: io_loc.TESTING_OUTPUTS_FOLDER,
         }
         self.GLOBAL_OUTPUT_PARAMS: "dict[str, Any]" = {
             pdc.Output_Params.PROGRAM_VISUALIZATIONS: {
@@ -59,7 +81,7 @@ class EndToEndCreationSimulationManager(SimulationManager):
     def retrieve_test_parameters(self) -> None:
         self.original_inputs_dir: Path = self.root_dir / self.original_input_folder
         self.original_params_dir: Path = self.root_dir / self.original_param_folder
-        self.params_dir: Path = self.test_creator_dir / "params"
+        self.params_dir: Path = self.test_creator_dir / io_loc.TESTING_PARAMETERS_FOLDER
         if self.original_params_dir != self.params_dir:
             shutil.copytree(self.original_params_dir, self.params_dir)
         self.test_case_dir: Path = self.test_creator_dir / self.test_name
@@ -84,16 +106,16 @@ class EndToEndCreationSimulationManager(SimulationManager):
         parameter_filenames: list[str],
     ) -> None:
         self.sim_params: dict = input_manager.read_and_validate_parameters(parameter_filenames)
-        self.out_dir: Path = get_abs_path("./expected_outputs", self.test_case_dir)
+        self.out_dir: Path = get_abs_path(io_loc.EXPECTED_OUTPUTS_FOLDER, self.test_case_dir)
         self._set_parameters()
 
     @override
     def _set_parameters(self) -> None:
         self.base_program: str = self.sim_params[pdc.Sim_Setting_Params.BASELINE]
-        self.in_dir = get_abs_path("./inputs", self.test_creator_dir)
+        self.in_dir = get_abs_path(io_loc.TESTING_INPUTS_FOLDER, self.test_creator_dir)
         shutil.copytree(self.original_inputs_dir, self.in_dir)
-        if os.path.exists(self.in_dir / "generator"):
-            shutil.rmtree(self.in_dir / "generator")
+        if os.path.exists(self.in_dir / io_loc.GENERATOR_FOLDER):
+            shutil.rmtree(self.in_dir / io_loc.GENERATOR_FOLDER)
         self.programs = self.sim_params.pop(pdc.Levels.PROGRAM)
         self.virtual_world = self.sim_params.pop(pdc.Levels.VIRTUAL)
         self.output_params = self.sim_params.pop(pdc.Levels.OUTPUTS)
@@ -120,5 +142,5 @@ class EndToEndCreationSimulationManager(SimulationManager):
         shutil.move(self.in_dir, self.test_case_dir)
         shutil.move(self.test_case_dir, tests_dir / self.test_name)
 
-        test_generator = tests_dir / self.test_name / "inputs" / "generator"
+        test_generator = tests_dir / self.test_name / io_loc.INPUT_FOLDER / io_loc.GENERATOR_FOLDER
         remove_non_preseed_files(test_generator)

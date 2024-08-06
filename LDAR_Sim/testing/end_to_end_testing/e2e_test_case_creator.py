@@ -37,7 +37,9 @@ sys.path.insert(1, str(src_dir))
 if __name__ == "__main__":
 
     from file_processing.input_processing.input_manager import InputManager
-    from simulation.end_to_end_creation_simulation_manager import EndToEndCreationSimulationManager
+    from end_to_end_creation_simulation_manager import (
+        EndToEndCreationSimulationManager,
+    )
 
     input_manager: InputManager = InputManager()
 
