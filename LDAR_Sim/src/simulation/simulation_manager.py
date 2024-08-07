@@ -43,6 +43,7 @@ from initialization.args import get_abs_path
 from initialization.initialize_emissions import initialize_emissions, read_in_emissions
 from initialization.initialize_infrastructure import initialize_infrastructure
 from initialization.preseed import gen_seed_emis
+from log_utils.logging_config import setup_logging_to_output
 from simulation.simulation_helpers import batch_simulations, simulate
 from utils.generic_functions import check_ERA5_file
 from utils.prog_method_measured_func import (
@@ -144,6 +145,7 @@ class SimulationManager:
         if os.path.exists(self.out_dir):
             shutil.rmtree(self.out_dir)
         os.makedirs(self.out_dir)
+        setup_logging_to_output(self.out_dir)
         if write_parameters:
             input_manager.write_parameters(self.out_dir / Output_Files.PARAMETER_FILE)
 
