@@ -37,7 +37,7 @@ if __name__ == "__main__":
 
     from file_processing.input_processing.input_manager import InputManager
     from initialization.args import files_from_path
-    from simulation.end_to_end_test_simulation_manager import EndToEndTestSimulationManager
+    from end_to_end_test_simulation_manager import EndToEndTestSimulationManager
 
     for test in os.scandir(tests_dir):
 

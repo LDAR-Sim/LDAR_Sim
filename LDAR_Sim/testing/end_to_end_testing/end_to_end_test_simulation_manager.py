@@ -1,9 +1,31 @@
+# ------------------------------------------------------------------------------
+# Program:     The LDAR Simulator (LDAR-Sim)
+# File:        end_to_end_test_simulation_manager.py
+# Purpose:     Manager for running end-to-end tests for LDAR-Sim.
+#              Manages the state of simulation artifacts.
+#
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the MIT License as published
+# by the Free Software Foundation, version 3.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MIT License for more details.
+
+# You should have received a copy of the MIT License
+# along with this program.  If not, see <https://opensource.org/licenses/MIT>.
+#
+# ------------------------------------------------------------------------------
+
 import os
 from pathlib import Path
 from typing import Any, override
 
 from constants import param_default_const as pdc
 from constants.output_messages import RuntimeMessages as rm
+from constants.file_processing_const import IOLocationConstants as io_loc
 from file_processing.input_processing.input_manager import InputManager
 from file_processing.output_processing.summary_output_helpers import get_non_baseline_prog_names
 from initialization.args import get_abs_path
@@ -17,8 +39,8 @@ class EndToEndTestSimulationManager(SimulationManager):
         self.GLOBAL_PARAMS_TO_REP: "dict[str, Any]" = {
             pdc.Sim_Setting_Params.SIMS: 2,
             pdc.Sim_Setting_Params.PRESEED: True,
-            pdc.Sim_Setting_Params.INPUT: "./inputs",
-            pdc.Sim_Setting_Params.OUTPUT: "./outputs",
+            pdc.Sim_Setting_Params.INPUT: io_loc.TESTING_INPUTS_FOLDER,
+            pdc.Sim_Setting_Params.OUTPUT: io_loc.TESTING_OUTPUTS_FOLDER,
         }
 
         self.GLOBAL_OUTPUT_PARAMS: "dict[str, Any]" = {
@@ -30,7 +52,7 @@ class EndToEndTestSimulationManager(SimulationManager):
 
         super().__init__(input_manager=input_manager, parameter_filenames=parameter_filenames)
         self.overwrite_test_params()
-        self.expected_results: Path = test_dir / "expected_outputs"
+        self.expected_results: Path = test_dir / io_loc.EXPECTED_OUTPUTS_FOLDER
 
     def overwrite_test_params(self):
         for key, value in self.GLOBAL_PARAMS_TO_REP.items():
