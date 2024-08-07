@@ -32,6 +32,7 @@ from initialization.args import get_abs_path
 from initialization.preseed import gen_seed_emis
 from simulation.simulation_helpers import remove_non_preseed_files
 from simulation.simulation_manager import SimulationManager
+from testing_utils.result_verification import compare_outputs
 
 
 class EndToEndTestSimulationManager(SimulationManager):
@@ -98,5 +99,5 @@ class EndToEndTestSimulationManager(SimulationManager):
         non_baseline_progs = get_non_baseline_prog_names(self.programs, self.base_program)
         self.summary_stats_manager.gen_cost_summary_outputs(non_baseline_progs)
 
-    def validate_outputs(self, test: os.DirEntry, comparison_function: callable) -> None:
-        comparison_function(test.name, self.out_dir, self.expected_results)
+    def validate_outputs(self, test: os.DirEntry) -> None:
+        compare_outputs(test.name, self.out_dir, self.expected_results)

@@ -22,7 +22,6 @@
 import os
 import sys
 from pathlib import Path
-from testing_utils.result_verification import compare_outputs
 
 # Get directories and set up root
 e2e_test_dir: Path = Path(os.path.dirname(os.path.realpath(__file__)))
@@ -72,4 +71,4 @@ if __name__ == "__main__":
 
             simulation_manager.generate_summary_results()
 
-            simulation_manager.validate_outputs(test=test, comparison_function=compare_outputs)
+            simulation_manager.validate_outputs(test=test)
