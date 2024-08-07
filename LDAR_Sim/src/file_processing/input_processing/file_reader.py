@@ -37,7 +37,8 @@ def file_reader(input_file_path: Path) -> Any:
     """
     data = None
     if not os.path.exists(input_file_path):
-        print(ipm.MISSING_FILE_PATH_ERROR.format(file_path=str(input_file_path)))
+        logger: logging.Logger = logging.getLogger(__name__)
+        logger.error(ipm.MISSING_FILE_PATH_ERROR.format(file_path=str(input_file_path)))
         sys.exit()
     try:
         if input_file_path.suffix == fc.CSV:

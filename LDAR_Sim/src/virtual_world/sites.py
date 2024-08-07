@@ -20,6 +20,7 @@
 
 import copy
 from datetime import date
+import logging
 import math
 from typing import Union
 import sys
@@ -194,7 +195,8 @@ class Site:
             if (rep_emis_epr is None or rep_emis_epr <= 0) and (
                 nonrep_emis_epr is None or nonrep_emis_epr <= 0
             ):
-                print(im.EMISSION_PRODUCTION_RATE_ERROR)
+                logger: logging.Logger = logging.getLogger(__name__)
+                logger.error(im.EMISSION_PRODUCTION_RATE_ERROR)
                 sys.exit()
             elif nonrep_emis_epr is None and rep_emis_epr > 0:
                 prod_rate = rep_emis_epr
@@ -233,7 +235,8 @@ class Site:
             if (rep_emis_epr is None or rep_emis_epr <= 0) and (
                 nonrep_emis_epr is None or nonrep_emis_epr <= 0
             ):
-                print(im.EMISSION_PRODUCTION_RATE_ERROR)
+                logger: logging.Logger = logging.getLogger(__name__)
+                logger.error(im.EMISSION_PRODUCTION_RATE_ERROR)
                 sys.exit()
             elif nonrep_emis_epr is None and rep_emis_epr > 0:
                 prod_rate = rep_emis_epr
@@ -278,7 +281,8 @@ class Site:
                     Equipment_Group(i, infrastructure_inputs, prop_params, equip_group_info)
                 )
         else:
-            print(im.BAD_EQUIPMENT_INPUT_ERROR.format(equipment_groups))
+            logger: logging.Logger = logging.getLogger(__name__)
+            logger.error(im.BAD_EQUIPMENT_INPUT_ERROR.format(equipment_groups))
             sys.exit()
 
     def _set_survey_costs(self, methods: list[str]) -> float:
@@ -337,7 +341,9 @@ class Site:
         if required_surveys:
             return required_surveys
         else:
-            sys.exit(im.SURVEY_FREQUENCY_ERROR.format(site=self._site_ID, method=method_name))
+            logger: logging.Logger = logging.getLogger(__name__)
+            logger.error(im.SURVEY_FREQUENCY_ERROR.format(site=self._site_ID, method=method_name))
+            sys.exit()
 
     def do_site_deployment(self, method_name) -> bool:
         return self._deploy_method[method_name]

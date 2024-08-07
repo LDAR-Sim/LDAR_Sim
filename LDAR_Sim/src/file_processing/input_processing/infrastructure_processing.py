@@ -18,6 +18,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 ------------------------------------------------------------------------------
 """
 
+import logging
 from pathlib import Path
 import sys
 from pandas import DataFrame, Series
@@ -59,7 +60,8 @@ def read_in_infrastructure_files(virtual_world, in_dir: Path) -> dict[str, DataF
 def check_site_file(input_dict):
     for header in ic.Sites_File_Constants.REQUIRED_HEADERS:
         if header not in input_dict[ic.Virtual_World_Constants.SITES]:
-            print(ipm.MISSING_SITES_FILE_HEADER_ERROR.format(header=header))
+            logger: logging.Logger = logging.getLogger(__name__)
+            logger.error(ipm.MISSING_SITES_FILE_HEADER_ERROR.format(header=header))
             sys.exit()
 
 

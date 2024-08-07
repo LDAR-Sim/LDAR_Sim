@@ -18,6 +18,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 ------------------------------------------------------------------------------
 """
 
+import logging
 import sys
 from pandas import DataFrame, read_csv, Series
 from numpy.random import choice as random_sample
@@ -166,7 +167,8 @@ def read_in_emissions_sources_file(
         emissions_sources_file = read_csv(filepath)
         return emissions_sources_file
     else:
-        print(ipm.MISSING_EMISSIONS_FILE_ERROR)
+        logger: logging.Logger = logging.getLogger(__name__)
+        logger.error(ipm.MISSING_EMISSIONS_FILE_ERROR)
         sys.exit()
 
 

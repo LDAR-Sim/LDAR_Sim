@@ -23,21 +23,19 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 class Input_Processing_Messages:
     GENERATOR_ERROR = (
-        "Error: {file} file in the generator folder is missing. "
+        "{file} file in the generator folder is missing. "
         "Ensure the generator folder is correctly set up with the necessary files "
         "or delete the folder to regenerate the files."
     )
 
-    INVALID_EMISSIONS_SOURCE_ERROR = (
-        "Error, invalid emissions source information for source {source_name}"
-    )
+    INVALID_EMISSIONS_SOURCE_ERROR = "Invalid emissions source information for source {source_name}"
 
     MISSING_EMISSIONS_FILE_ERROR = (
         "Emissions file parameter is missing for the virtual world. "
         "Please provide a valid emissions file"
     )
     INVALID_EMISSIONS_SOURCE_FILE_VALUE_ERROR = (
-        "Error: LDAR-Sim could not parse source file value: {value} from source:{source}."
+        "LDAR-Sim could not parse source file value: {value} from source:{source}."
         " Encountered exception: {exception}"
     )
     INVALID_EMISSIONS_VALUE: dict[str, str] = {
@@ -63,12 +61,12 @@ class Input_Processing_Messages:
     )
 
     ERR_MSG_UNKNOWN_SENS_TYPE = (
-        "ERROR: LDAR-Sim could not resolve the provided sensor type for method: {method}."
+        "LDAR-Sim could not resolve the provided sensor type for method: {method}."
         " Please enter a valid sensor type and try again."
     )
 
     VALID_REPAIR_DELAY_TYPE_ERROR = (
-        "Error: Double check the contents of the repair delay file."
+        "Double check the contents of the repair delay file."
         " A numerical value was provided as a repair delay"
     )
 
@@ -83,7 +81,7 @@ class Input_Processing_Messages:
     )
     PARAMETER_PARSING_ERROR = "Parameter_level of {level} is not possible to parse."
     MISSING_PARAMETER_LEVEL_ERROR = (
-        "Error: parameter_level is missing from one or more of the input parameter files. "
+        "Parameter_level is missing from one or more of the input parameter files. "
         "If all file provided are intended to be parameter files,"
         " please add the correct parameter_level."
     )
@@ -92,11 +90,10 @@ class Input_Processing_Messages:
 
     MISSING_METHOD_ERROR = "Warning: The following method was specified, but not supplied: {method}"
 
-    MISSING_ARGUMENT_ERROR = "Error: Please provide at least one input argument"
+    MISSING_ARGUMENT_ERROR = "Please provide at least one input argument"
 
     INVALID_NAME_ERROR = (
-        "Error: Invalid {level} name provided: {name}. "
-        "Refer to the User Manual for further details."
+        "Invalid {level} name provided: {name}. " "Refer to the User Manual for further details."
     )
     MISSING_DEPLOYMENT_TYPE_ERROR = "Warning: Deployment type is missing for method: {method}"
 
@@ -137,10 +134,10 @@ class Output_Processing_Messages:
 class Runtime_Error_Messages:
     NO_BASE_PROG_ERROR = "No baseline program input...Exiting sim"
 
-    INVALID_REDUND_FILTER_ERROR = "Error: Invalid Redundancy filter: {filter} for method: {method}"
+    INVALID_REDUND_FILTER_ERROR = "Invalid Redundancy filter: {filter} for method: {method}"
 
     INVALID_DEPLOYMENT_TYPE_ERROR_MESSAGE = (
-        "Error: LDAR-Sim has detected an invalid method deployment type of:"
+        "LDAR-Sim has detected an invalid method deployment type of:"
         "{deploy_type} for method: {method}"
     )
 
@@ -201,7 +198,7 @@ class Versioning_Messages:
 
 
 class Initialization_Messages:
-    SOURCE_INFO_MISSING_KEY_MSG = "Error: Missing required source information: {key}"
+    SOURCE_INFO_MISSING_KEY_MSG = "Missing required source information: {key}"
     POTENTIAL_SOURCE_CREATION_ERROR_MESSAGE = (
         "Error creating emissions sources, they were only partially defined. "
         "Please input a value for the parameter '{rep} {const}' and rerun the simulation."

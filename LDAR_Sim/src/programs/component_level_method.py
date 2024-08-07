@@ -19,6 +19,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 """
 
 from datetime import date
+import logging
 from queue import PriorityQueue
 import sys
 from typing import Tuple
@@ -128,7 +129,8 @@ class ComponentLevelMethod(Method):
                 input_dir=input_dir,
             )
         else:
-            print(ipm.ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
+            logger: logging.Logger = logging.getLogger(__name__)
+            logger.error(ipm.ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
             sys.exit()
 
     def deploy_crews(self, workplan: Workplan, weather, daylight) -> CrewDeploymentStats:

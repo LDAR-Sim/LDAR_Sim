@@ -20,6 +20,7 @@
 # ------------------------------------------------------------------------------
 
 import gc
+import logging
 import multiprocessing as mp
 import os
 import shutil
@@ -134,7 +135,8 @@ class SimulationManager:
         has_base: bool = self.base_program in self.programs
 
         if not (has_base):
-            print(rem.NO_BASE_PROG_ERROR)
+            logger: logging.Logger = logging.getLogger(__name__)
+            logger.error(rem.NO_BASE_PROG_ERROR)
             sys.exit()
 
     def initialize_outputs(

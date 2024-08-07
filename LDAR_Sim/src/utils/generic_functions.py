@@ -18,6 +18,7 @@
 #
 # ------------------------------------------------------------------------------
 
+import logging
 import os
 import sys
 from pathlib import Path
@@ -50,7 +51,8 @@ def check_ERA5_file(dir, v_world):
                 r"{}/{}".format(dir, v_world[pdc.Virtual_World_Params.WEATHER_FILE]),
             )
         except ClientError:
-            print(im.ERA_AUTH_ERROR)
+            logger: logging.Logger = logging.getLogger(__name__)
+            logger.error(im.ERA_AUTH_ERROR)
             sys.exit()
         print(rm.COMPLETE_WEATHER_DOWNLOAD)
 

@@ -18,6 +18,7 @@
 #
 # ------------------------------------------------------------------------------
 
+import logging
 import sys
 from constants.general_const import Placeholder_Constants as pc
 from constants.error_messages import Initialization_Messages as im
@@ -56,7 +57,8 @@ def check_types(default, test, name, omit_keys=None, fatal=False):
             for i in test:
                 if i not in omit_keys:
                     if i not in default:
-                        print(im.PARAMETER_CREATION_ERROR_MESSAGE.format(key=i, name=name))
+                        logger: logging.Logger = logging.getLogger(__name__)
+                        logger.error(im.PARAMETER_CREATION_ERROR_MESSAGE.format(key=i, name=name))
                         fatal = True
                         if fatal:
                             sys.exit()
@@ -70,7 +72,8 @@ def check_types(default, test, name, omit_keys=None, fatal=False):
                     check_types(default[0], test[i], name, omit_keys=omit_keys, fatal=fatal)
 
     else:
-        print(
+        logger: logging.Logger = logging.getLogger(__name__)
+        logger.error(
             im.PARAMETER_TYPE_MISMATCH_ERROR_MESSAGE.format(
                 default=str(default),
                 def_type=str(type(default)),
