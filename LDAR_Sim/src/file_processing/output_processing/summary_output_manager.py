@@ -25,6 +25,7 @@ import pandas as pd
 from constants.file_name_constants import Output_Files
 from constants import error_messages, output_file_constants
 from constants.general_const import Conversion_Constants as cc, WindowsPathConstants as wpc
+from constants.file_processing_const import IOLocationConstants as io_loc
 from file_processing.output_processing import summary_outputs, summary_output_helpers
 from file_processing.output_processing.summary_output_mapper import SummaryOutputMapper
 from constants.param_default_const import Program_Params as pp
@@ -66,9 +67,8 @@ class SummaryOutputManager:
         self._program_cost_info = program_cost_info
 
     def gen_summary_outputs(self, clear_outputs: bool = False):
-        program_directories: list[str] = [
-            f.path for f in os.scandir(self._output_path) if f.is_dir()
-        ]
+        directories: list[str] = [f.path for f in os.scandir(self._output_path) if f.is_dir()]
+        program_directories = [dir for dir in directories if io_loc.LOG_FOLDER not in dir]
         legacy_outputs: dict[str, pd.DataFrame] = self.get_legacy_outputs()
         new_outputs: dict[str, list[pd.DataFrame]] = {}
         for program_directory in program_directories:
