@@ -143,11 +143,13 @@ class SimulationManager:
         self,
         input_manager: InputManager,
         write_parameters: bool = True,
+        setup_output_logging: bool = False,
     ) -> None:
         if os.path.exists(self.out_dir):
             shutil.rmtree(self.out_dir)
         os.makedirs(self.out_dir)
-        setup_logging_to_output(self.out_dir)
+        if setup_output_logging:
+            setup_logging_to_output(self.out_dir)
         if write_parameters:
             input_manager.write_parameters(self.out_dir / Output_Files.PARAMETER_FILE)
 

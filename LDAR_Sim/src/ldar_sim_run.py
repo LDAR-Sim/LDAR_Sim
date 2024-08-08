@@ -42,7 +42,7 @@ def run_ldar_sim(parameter_filenames, DEBUG=False):
 
     simulation_manager.check_inputs()
 
-    simulation_manager.initialize_outputs(input_manager)
+    simulation_manager.initialize_outputs(input_manager, setup_output_logging=True)
 
     simulation_manager.check_generator_files()
 
