@@ -18,6 +18,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 ------------------------------------------------------------------------------
 """
 
+import logging
 import sys
 from constants.error_messages import Input_Processing_Messages as ipm
 from programs.site_level_method import SiteLevelMethod
@@ -65,5 +66,6 @@ class EquipmentGroupLevelMethod(SiteLevelMethod):
                 input_dir=input_dir,
             )
         else:
-            print(ipm.ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
+            logger: logging.Logger = logging.getLogger(__name__)
+            logger.error(ipm.ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
             sys.exit()

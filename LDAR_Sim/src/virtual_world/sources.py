@@ -19,6 +19,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 """
 
 from datetime import date, timedelta
+import logging
 import re
 import sys
 from typing import Literal
@@ -122,7 +123,8 @@ class Source:
             self._active_duration: int = info[IC.Sources_File_Constants.ACTIVE_DUR]
             self._inactive_duration: int = info[IC.Sources_File_Constants.INACTIVE_DUR]
         except KeyError as e:
-            print(im.SOURCE_INFO_MISSING_KEY_MSG.format(key=e))
+            logger: logging.Logger = logging.getLogger(__name__)
+            logger.error(im.SOURCE_INFO_MISSING_KEY_MSG.format(key=e))
             sys.exit()
 
     def _set_prefix(self) -> None:
@@ -155,14 +157,16 @@ class Source:
 
     def _set_propagating_source_properties(self, prop_params) -> None:
         if prop_params[IC.Sources_File_Constants.EMIS_ERS] is None:
-            print(
+            logger: logging.Logger = logging.getLogger(__name__)
+            logger.error(
                 im.POTENTIAL_SOURCE_CREATION_ERROR_MESSAGE.format(
                     rep=self._prefix, const=IC.Sources_File_Constants.EMIS_ERS
                 )
             )
             sys.exit()
         elif prop_params[IC.Sources_File_Constants.EMIS_EPR] is None:
-            print(
+            logger: logging.Logger = logging.getLogger(__name__)
+            logger.error(
                 im.POTENTIAL_SOURCE_CREATION_ERROR_MESSAGE.format(
                     rep=self._prefix, const=IC.Sources_File_Constants.EMIS_EPR
                 )
@@ -201,10 +205,12 @@ class Source:
             if self._emis_rep_delay in repair_delay_dataframe:
                 return np.random.choice(repair_delay_dataframe[self._emis_rep_delay])
             else:
-                print(im.INVALID_REPAIR_DELAY_COL_MSG.format(key=self._emis_rep_delay))
+                logger: logging.Logger = logging.getLogger(__name__)
+                logger.error(im.INVALID_REPAIR_DELAY_COL_MSG.format(key=self._emis_rep_delay))
                 sys.exit()
         else:
-            print(im.INVALID_REPAIR_DELAY_ERR_MSG.format(delay=self._emis_rep_delay))
+            logger: logging.Logger = logging.getLogger(__name__)
+            logger.error(im.INVALID_REPAIR_DELAY_ERR_MSG.format(delay=self._emis_rep_delay))
             sys.exit()
 
     def _get_rep_cost(self):

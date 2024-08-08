@@ -18,6 +18,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 ------------------------------------------------------------------------------
 """
 
+import logging
 import sys
 from pandas import DataFrame, read_csv
 from pathlib import WindowsPath
@@ -44,7 +45,8 @@ def read_in_repair_delay_sources_file(
         valid_repair_delay_type = "int64"
         all_repair_types_valid = all(repair_delay_file.dtypes == valid_repair_delay_type)
         if not all_repair_types_valid:
-            print(imp.VALID_REPAIR_DELAY_TYPE_ERROR)
+            logger: logging.Logger = logging.getLogger(__name__)
+            logger.error(imp.VALID_REPAIR_DELAY_TYPE_ERROR)
             sys.exit()
         return repair_delay_file
     return None

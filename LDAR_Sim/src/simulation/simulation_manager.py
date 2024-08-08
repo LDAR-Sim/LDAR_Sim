@@ -20,6 +20,7 @@
 # ------------------------------------------------------------------------------
 
 import gc
+import logging
 import multiprocessing as mp
 import os
 import shutil
@@ -43,6 +44,7 @@ from initialization.args import get_abs_path
 from initialization.initialize_emissions import initialize_emissions, read_in_emissions
 from initialization.initialize_infrastructure import initialize_infrastructure
 from initialization.preseed import gen_seed_emis
+from log_utils.logging_config import setup_logging_to_output
 from simulation.simulation_helpers import batch_simulations, simulate
 from utils.generic_functions import check_ERA5_file
 from utils.prog_method_measured_func import (
@@ -133,17 +135,21 @@ class SimulationManager:
         has_base: bool = self.base_program in self.programs
 
         if not (has_base):
-            print(rem.NO_BASE_PROG_ERROR)
+            logger: logging.Logger = logging.getLogger(__name__)
+            logger.error(rem.NO_BASE_PROG_ERROR)
             sys.exit()
 
     def initialize_outputs(
         self,
         input_manager: InputManager,
         write_parameters: bool = True,
+        setup_output_logging: bool = False,
     ) -> None:
         if os.path.exists(self.out_dir):
             shutil.rmtree(self.out_dir)
         os.makedirs(self.out_dir)
+        if setup_output_logging:
+            setup_logging_to_output(self.out_dir)
         if write_parameters:
             input_manager.write_parameters(self.out_dir / Output_Files.PARAMETER_FILE)
 

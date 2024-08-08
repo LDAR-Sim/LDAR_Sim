@@ -20,6 +20,7 @@
 
 import copy
 import json
+import logging
 import os
 import sys
 from pathlib import Path
@@ -43,6 +44,7 @@ class InputManager:
 
     def __init__(self) -> None:
         """Constructor creates a lookup of method defaults to run validation against"""
+        self.logger: logging.Logger = logging.getLogger(__name__)
         sim_settings_file = "./src/default_parameters/simulation_settings_default.yml"
         with open(sim_settings_file, "r") as f:
             default_sim_setting_parameters = yaml.load(f.read(), Loader=yaml.SafeLoader)
@@ -103,9 +105,9 @@ class InputManager:
         new_parameters = {}
 
         if not os.path.exists(param_file):
-            print(ipm.MISSING_FILE_ERROR.format(file=param_file))
+            self.logger.error(ipm.MISSING_FILE_ERROR.format(file=param_file))
             if not param_file.is_absolute():
-                print(ipm.RELATIVE_FILE_PATH_ERROR)
+                self.logger.error(ipm.RELATIVE_FILE_PATH_ERROR)
             sys.exit()
 
         with open(param_file, "r") as f:
@@ -115,7 +117,8 @@ class InputManager:
             elif extension == fc.YML or extension == fc.YAML:
                 new_parameters = yaml.load(f.read(), Loader=yaml.SafeLoader)
             else:
-                sys.exit(ipm.INVALID_PARAM_FILE_FORMAT.format(filename=filename))
+                self.logger.error(ipm.INVALID_PARAM_FILE_FORMAT.format(filename=filename))
+                sys.exit()
 
         return new_parameters
 
@@ -129,20 +132,20 @@ class InputManager:
 
             if str(parameters[pc.Common_Params.VERSION]) != expected_version_string:
                 if str(parameters[pc.Common_Params.VERSION]) == vc.CURRENT_MAJOR_VERSION:
-                    print(vm.MAJOR_VERSION_ONLY_WARNING)
+                    self.logger.error(vm.MAJOR_VERSION_ONLY_WARNING)
                     sys.exit()
                 else:
                     major_version_check = check_major_version(
                         str(parameters[pc.Common_Params.VERSION]), vc.CURRENT_MAJOR_VERSION
                     )
                     if major_version_check == 1:
-                        print(vm.NEWER_PARAMETER_WARNING)
+                        self.logger.error(vm.NEWER_PARAMETER_WARNING)
                         sys.exit()
                     elif major_version_check == -1:
-                        print(vm.LEGACY_PARAMETER_WARNING)
+                        self.logger.error(vm.LEGACY_PARAMETER_WARNING)
                         sys.exit()
                     else:
-                        print(vm.MINOR_VERSION_MISMATCH_WARNING)
+                        self.logger.error(vm.MINOR_VERSION_MISMATCH_WARNING)
                         self.old_params = True
         return
 
@@ -176,7 +179,7 @@ class InputManager:
         for new_parameters in new_parameters_list:
             # Address unsupplied parameter level by defaulting it as simulation_settings
             if pc.Common_Params.PARAM_LEVEL not in new_parameters:
-                print(ipm.MISSING_PARAMETER_LEVEL_ERROR)
+                self.logger.error(ipm.MISSING_PARAMETER_LEVEL_ERROR)
                 sys.exit()
 
             if new_parameters[pc.Common_Params.PARAM_LEVEL] == pc.Levels.SIMULATION:
@@ -245,15 +248,17 @@ class InputManager:
                 self.retain_update(new_outputs, new_parameters)
                 self.simulation_parameters[pc.Levels.OUTPUTS] = new_outputs
             else:
-                sys.exit(
+                self.logger.error(
                     ipm.PARAMETER_PARSING_ERROR.format(
                         level=new_parameters[pc.Common_Params.PARAM_LEVEL]
                     )
                 )
+                sys.exit()
 
         # Double check there is at least 1 program
         if len(programs) == 0:
-            sys.exit(ipm.NO_PROGRAMS_WARNING)
+            self.logger.error(ipm.NO_PROGRAMS_WARNING)
+            sys.exit()
 
         # Second, install the programs, checking for specified children methods
         for p_idx, program in programs.items():
@@ -273,7 +278,8 @@ class InputManager:
                             method_found = True
 
                     if not method_found:
-                        sys.exit(ipm.MISSING_METHOD_ERROR.format(method=method_label))
+                        self.logger.error(ipm.MISSING_METHOD_ERROR.format(method=method_label))
+                        sys.exit()
 
             # Next, perform type checking and updating from default module parameters, even for
             # methods pre-specified
@@ -335,10 +341,14 @@ class InputManager:
         invalid_names = {"none", "null", "nan"}
         for name in self.simulation_parameters["programs"].keys():
             if name.lower() in invalid_names:
-                sys.exit(ipm.INVALID_NAME_ERROR.format(level=pc.Levels.PROGRAM, name=name))
+                self.logger.error(ipm.INVALID_NAME_ERROR.format(level=pc.Levels.PROGRAM, name=name))
+                sys.exit()
             for method in self.simulation_parameters["programs"][name][pc.Program_Params.METHODS]:
                 if method.lower() in invalid_names:
-                    sys.exit(ipm.INVALID_NAME_ERROR.format(level=pc.Levels.METHOD, name=method))
+                    self.logger.error(
+                        ipm.INVALID_NAME_ERROR.format(level=pc.Levels.METHOD, name=method)
+                    )
+                    sys.exit()
 
 
 class NoAliasDumper(yaml.SafeDumper):

@@ -1,5 +1,6 @@
 """Module to test handle_parameter_version"""
 
+import logging
 import pytest
 from file_processing.input_processing.input_manager import InputManager
 from src.constants.error_messages import Versioning_Messages as vm
@@ -32,6 +33,8 @@ def test_043_test_incorrect_minor_parameter_version(
 
     def mock_init(self, *args, **kwargs):
         self.old_params = mock_old_params
+        self.logger = logging.getLogger()
+        self.logger.error = print
 
     mocker.patch.object(InputManager, "__init__", mock_init)
     input_mngr = InputManager()
@@ -48,6 +51,8 @@ def test_043_test_incorrect_major_parameter_version(
 
     def mock_init(self, *args, **kwargs):
         self.old_params = mock_old_params
+        self.logger = logging.getLogger()
+        self.logger.error = print
 
     mocker.patch.object(InputManager, "__init__", mock_init)
     input_mngr = InputManager()
@@ -64,6 +69,8 @@ def test_043_test_only_major_parameter_version(mocker, capsys, mock_parameter_ma
 
     def mock_init(self, *args, **kwargs):
         self.old_params = mock_old_params
+        self.logger = logging.getLogger()
+        self.logger.error = print
 
     mocker.patch.object(InputManager, "__init__", mock_init)
     input_mngr = InputManager()

@@ -18,6 +18,7 @@
 #
 # ------------------------------------------------------------------------------
 
+import logging
 import os
 import sys
 from argparse import ArgumentParser, RawTextHelpFormatter
@@ -98,7 +99,8 @@ def files_from_args(ref_path):
         ]
 
     if len(parameter_files) < 1:
-        print(ipm.MISSING_ARGUMENT_ERROR)
+        logger: logging.Logger = logging.getLogger(__name__)
+        logger.error(ipm.MISSING_ARGUMENT_ERROR)
         sys.exit()
     if args.out_dir is not None:
         out_dir = get_abs_path(args.out_dir, ref_path)
@@ -118,7 +120,8 @@ def files_from_path(in_path):
         ]
 
     if len(parameter_files) < 1:
-        print(ipm.MISSING_ARGUMENT_ERROR)
+        logger: logging.Logger = logging.getLogger(__name__)
+        logger.error(ipm.MISSING_ARGUMENT_ERROR)
         sys.exit()
 
     return parameter_files
@@ -172,8 +175,9 @@ def files_from_args_sens(ref_path):
         ]
 
     if len(parameter_files) < 1:
-        print(ipm.MISSING_ARGUMENT_ERROR)
-        sys.exit(ipm.MISSING_ARGUMENT_ERROR)
+        logger: logging.Logger = logging.getLogger(__name__)
+        logger.error(ipm.MISSING_ARGUMENT_ERROR)
+        sys.exit()
     if args.out_dir is not None:
         out_dir = get_abs_path(args.out_dir, ref_path)
         return {"parameter_files": parameter_files, "out_dir": str(out_dir)}

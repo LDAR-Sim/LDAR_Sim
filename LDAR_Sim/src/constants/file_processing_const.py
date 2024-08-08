@@ -61,3 +61,4 @@ class IOLocationConstants:
     TESTING_INPUTS_FOLDER = "./inputs"
     TESTING_OUTPUTS_FOLDER = "./outputs"
     EXPECTED_OUTPUTS_FOLDER = "./expected_outputs"
+    LOG_FOLDER = "Logs"

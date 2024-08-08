@@ -18,6 +18,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 ------------------------------------------------------------------------------
 """
 
+import logging
 from pathlib import Path
 import pickle
 import sys
@@ -70,7 +71,8 @@ def initialize_emissions(
                 n_simulation_saved = pickle.load(f)
         except FileNotFoundError:
             # Handle the case when the file is missing
-            print(ipm.GENERATOR_ERROR.format(file=Generator_Files.N_SIM_SAVE_FILE))
+            logger: logging.Logger = logging.getLogger(__name__)
+            logger.error(ipm.GENERATOR_ERROR.format(file=Generator_Files.N_SIM_SAVE_FILE))
             sys.exit()
 
         if n_simulation_saved < n_sims:
