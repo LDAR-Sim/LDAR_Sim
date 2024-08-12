@@ -103,6 +103,9 @@ class Input_Processing_Messages:
     QUANTIFICATION_INVALID_COLUMN = (
         "Warning: Quantification column {quantification_column} not found in {quantification_file}."
     )
+    INVALID_INTERACTION_PRIO_ERROR = (
+        "Invalid interaction_priority of {priority} set for method: {method}"
+    )
 
 
 class Runtime_Warning_Messages:

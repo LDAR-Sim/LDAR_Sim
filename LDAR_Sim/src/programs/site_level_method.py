@@ -43,9 +43,6 @@ class SiteLevelMethod(Method):
 
     THRESHOLD_INT_PRIO = "threshold"
     PROPORTION_INT_PRIO = "proportion"
-    INVALID_INTERACTION_PRIO_ERROR = (
-        "Invalid interaction_priority of {priority} set for method: {method}"
-    )
 
     def __init__(
         self,
@@ -67,7 +64,7 @@ class SiteLevelMethod(Method):
         else:
             logger: logging.Logger = logging.getLogger(__name__)
             logger.error(
-                self.INVALID_INTERACTION_PRIO_ERROR.format(
+                ipm.INVALID_INTERACTION_PRIO_ERROR.format(
                     priority=interaction_priority, method=name
                 )
             )

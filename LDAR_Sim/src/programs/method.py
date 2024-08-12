@@ -43,8 +43,6 @@ from scheduling.schedule_dataclasses import (
 )
 from scheduling.surveying_dataclasses import DetectionRecord
 
-WEATHER_ERROR = "Unrecognized weather type"
-
 
 class Method:
 
