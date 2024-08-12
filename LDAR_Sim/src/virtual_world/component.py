@@ -20,6 +20,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 from copy import deepcopy
 from datetime import date
+import logging
 import re
 from typing import Any
 import sys
@@ -143,7 +144,8 @@ class Component:
             }
             self._sources.append(Source(src_id_nonrep, placeholder_nonrep_source_info, prop_params))
         else:
-            print(im.SOURCE_CREATION_ERROR_MESSAGE)
+            logger: logging.Logger = logging.getLogger(__name__)
+            logger.error(im.SOURCE_CREATION_ERROR_MESSAGE)
             sys.exit()
 
     def generate_emissions(

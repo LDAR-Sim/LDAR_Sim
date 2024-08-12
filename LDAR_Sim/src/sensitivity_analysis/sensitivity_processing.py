@@ -20,6 +20,7 @@
 #
 # ------------------------------------------------------------------------------
 
+import logging
 from pathlib import Path
 import sys
 from typing import Any
@@ -45,10 +46,14 @@ def read_in_sensitivity_parameters(
         with open(real_sensitive_info_filepath, "r") as file:
             sens_parameters: dict = yaml.load(file.read(), Loader=yaml.FullLoader)
     except FileNotFoundError:
-        print(sensitivity_analysis_constants.SensitivityParameterParsingConstants.MISSING_SENS_FILE)
+        logger: logging.Logger = logging.getLogger(__name__)
+        logger.error(
+            sensitivity_analysis_constants.SensitivityParameterParsingConstants.MISSING_SENS_FILE
+        )
         sys.exit()
     except Exception as e:
-        print(
+        logger: logging.Logger = logging.getLogger(__name__)
+        logger.error(
             (
                 sensitivity_analysis_constants.SensitivityParameterParsingConstants
             ).FILE_READ_ERROR.format(real_sensitive_info_filepath),
@@ -78,7 +83,10 @@ def process_parameter_variations(
                 for method in parameter_variations
             }
         else:
-            print(error_messages.SensitivityAnalysisMessages.INVALID_SENSITIVITY_VARIATIONS_ERROR)
+            logger: logging.Logger = logging.getLogger(__name__)
+            logger.error(
+                error_messages.SensitivityAnalysisMessages.INVALID_SENSITIVITY_VARIATIONS_ERROR
+            )
             sys.exit()
     elif parameter_level == param_default_const.Levels.PROGRAM:
         if isinstance(parameter_variations, list):
@@ -96,12 +104,16 @@ def process_parameter_variations(
                 for program in parameter_variations
             }
         else:
-            print(error_messages.SensitivityAnalysisMessages.INVALID_SENSITIVITY_VARIATIONS_ERROR)
+            logger: logging.Logger = logging.getLogger(__name__)
+            logger.error(
+                error_messages.SensitivityAnalysisMessages.INVALID_SENSITIVITY_VARIATIONS_ERROR
+            )
             sys.exit()
     elif parameter_level == param_default_const.Levels.VIRTUAL:
         return unpack_parameter_variations(parameter_variations, num_variations)
     else:
-        print(error_messages.SensitivityAnalysisMessages.INVALID_PARAMETER_LEVEL_ERROR)
+        logger: logging.Logger = logging.getLogger(__name__)
+        logger.error(error_messages.SensitivityAnalysisMessages.INVALID_PARAMETER_LEVEL_ERROR)
         sys.exit()
 
 
@@ -171,7 +183,10 @@ def get_sensitivity_info(
                 sensitivity_analysis_constants.SensitivityAnalysisMapping.SENS_PARAM_MAPPING[key]
             ] = sens_parameters.pop(key)
         else:
-            print(error_messages.SensitivityAnalysisMessages.MISSING_SENSITIVITY_INFO.format(key))
+            logger: logging.Logger = logging.getLogger(__name__)
+            logger.error(
+                error_messages.SensitivityAnalysisMessages.MISSING_SENSITIVITY_INFO.format(key)
+            )
             sys.exit()
 
     sens_info_dict[sensitivity_analysis_constants.SensitivityAnalysisMapping.PARAM_VARIATIONS] = (

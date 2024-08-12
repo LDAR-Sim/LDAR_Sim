@@ -2,7 +2,7 @@
 ------------------------------------------------------------------------------
 Program:     The LDAR Simulator (LDAR-Sim)
 File:        follow_up_survey_planner
-Purpose: The extended Survey Planner module, specifically for Follow up surveys.  
+Purpose: The extended Survey Planner module, specifically for Follow up surveys.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the MIT License as published
@@ -19,6 +19,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 """
 
 from datetime import date
+import logging
 import sys
 
 from numpy import average
@@ -61,7 +62,10 @@ class FollowUpSurveyPlanner(SurveyPlanner):
             self.rate_at_site = max(self._detected_rates)
             self._latest_detection_date = detect_date
         else:
-            print(rem.INVALID_REDUND_FILTER_ERROR.format(filter=redund_filter, method=method_name))
+            logger: logging.Logger = logging.getLogger(__name__)
+            logger.error(
+                rem.INVALID_REDUND_FILTER_ERROR.format(filter=redund_filter, method=method_name)
+            )
             sys.exit()
 
 
@@ -97,5 +101,8 @@ class StationaryFollowUpSurveyPlanner(FollowUpSurveyPlanner):
             )
             self._latest_detection_date = detect_date
         else:
-            print(rem.INVALID_REDUND_FILTER_ERROR.format(filter=redund_filter, method=method_name))
+            logger: logging.Logger = logging.getLogger(__name__)
+            logger.error(
+                rem.INVALID_REDUND_FILTER_ERROR.format(filter=redund_filter, method=method_name)
+            )
             sys.exit()

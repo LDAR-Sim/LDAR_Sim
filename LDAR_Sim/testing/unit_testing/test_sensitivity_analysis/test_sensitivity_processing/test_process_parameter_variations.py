@@ -19,6 +19,8 @@
 #
 # ------------------------------------------------------------------------------
 
+import logging
+import sys
 from typing import Any
 
 import pytest
@@ -327,10 +329,15 @@ def invalid_method_parameter_variations_2():
 )
 def test_invalid_method_parameter_variations(test_input, expected, request, capfd):
     parameter_variations, variation_count = request.getfixturevalue(test_input)
+    # Setup logger to write to stderr
+    logger: logging.Logger = logging.getLogger()
+    handler: logging.StreamHandler = logging.StreamHandler(sys.stderr)
+    logger.addHandler(handler)
+
     with pytest.raises(SystemExit):
         _ = process_parameter_variations(parameter_variations, Levels.METHOD, variation_count)
     out, err = capfd.readouterr()
-    assert SensitivityAnalysisMessages.INVALID_SENSITIVITY_VARIATIONS_ERROR in out
+    assert SensitivityAnalysisMessages.INVALID_SENSITIVITY_VARIATIONS_ERROR in err
 
 
 @pytest.fixture(name="invalid_program_parameter_variations_1")
@@ -352,7 +359,13 @@ def invalid_program_parameter_variations_2():
 )
 def test_invalid_program_parameter_variations(test_input, expected, request, capfd):
     parameter_variations, variation_count = request.getfixturevalue(test_input)
+
+    # Setup logger to write to stderr
+    logger: logging.Logger = logging.getLogger()
+    handler: logging.StreamHandler = logging.StreamHandler(sys.stderr)
+    logger.addHandler(handler)
+
     with pytest.raises(SystemExit):
         _ = process_parameter_variations(parameter_variations, Levels.PROGRAM, variation_count)
     out, err = capfd.readouterr()
-    assert SensitivityAnalysisMessages.INVALID_SENSITIVITY_VARIATIONS_ERROR in out
+    assert SensitivityAnalysisMessages.INVALID_SENSITIVITY_VARIATIONS_ERROR in err

@@ -19,6 +19,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 """
 
 from datetime import date, timedelta
+import logging
 from math import ceil
 
 from sortedcontainers import SortedList
@@ -42,9 +43,6 @@ class SiteLevelMethod(Method):
 
     THRESHOLD_INT_PRIO = "threshold"
     PROPORTION_INT_PRIO = "proportion"
-    INVALID_INTERACTION_PRIO_ERROR = (
-        "Error: Invalid interaction_priority of {priority} set for method: {method}"
-    )
 
     def __init__(
         self,
@@ -64,8 +62,9 @@ class SiteLevelMethod(Method):
         elif interaction_priority == self.PROPORTION_INT_PRIO:
             self._threshold_first: bool = False
         else:
-            print(
-                self.INVALID_INTERACTION_PRIO_ERROR.format(
+            logger: logging.Logger = logging.getLogger(__name__)
+            logger.error(
+                ipm.INVALID_INTERACTION_PRIO_ERROR.format(
                     priority=interaction_priority, method=name
                 )
             )
@@ -373,5 +372,6 @@ class SiteLevelMethod(Method):
                 input_dir=input_dir,
             )
         else:
-            print(ipm.ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
+            logger: logging.Logger = logging.getLogger(__name__)
+            logger.error(ipm.ERR_MSG_UNKNOWN_SENS_TYPE.format(method=self._name))
             sys.exit()

@@ -19,14 +19,16 @@
 #
 # ------------------------------------------------------------------------------
 import cProfile
-
 import os
 import sys
+from datetime import datetime
 from pathlib import Path
 
+from constants.file_processing_const import IOLocationConstants as io_loc
 from constants.output_messages import RuntimeMessages as rm
 from file_processing.input_processing.input_manager import InputManager
 from initialization.args import files_from_args
+from log_utils.logging_config import setup_error_logging
 from simulation.simulation_manager import SimulationManager
 
 
@@ -40,7 +42,7 @@ def run_ldar_sim(parameter_filenames, DEBUG=False):
 
     simulation_manager.check_inputs()
 
-    simulation_manager.initialize_outputs(input_manager)
+    simulation_manager.initialize_outputs(input_manager, setup_output_logging=True)
 
     simulation_manager.check_generator_files()
 
@@ -57,11 +59,30 @@ def run_ldar_sim(parameter_filenames, DEBUG=False):
     simulation_manager.generate_summary_results()
 
 
+def setup_logging(root_dir: Path) -> None:
+    # Setup log folder
+    log_folder: Path = root_dir / io_loc.LOG_FOLDER
+    if not os.path.exists(log_folder):
+        os.makedirs(log_folder)
+
+    timestamp: str = datetime.now().strftime("%Y-%m-%d_%H-%M")
+
+    setup_error_logging(
+        log_folder=log_folder,
+        timestamp=timestamp,
+        log_to_file=True,
+        log_to_console=True,
+    )
+
+
 if __name__ == "__main__":
+
     print(rm.OPENING_MSG)
 
     root_dir: Path = Path(__file__).resolve().parent.parent
     os.chdir(root_dir)
+
+    setup_logging(root_dir)
 
     src_dir: Path = root_dir / "src"
     sys.path.insert(1, str(src_dir))
