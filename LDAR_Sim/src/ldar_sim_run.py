@@ -19,6 +19,7 @@
 #
 # ------------------------------------------------------------------------------
 import cProfile
+import logging
 import os
 import sys
 from datetime import datetime
@@ -33,30 +34,36 @@ from simulation.simulation_manager import SimulationManager
 
 
 def run_ldar_sim(parameter_filenames, DEBUG=False):
+    try:
 
-    input_manager = InputManager()
+        input_manager = InputManager()
 
-    simulation_manager: SimulationManager = SimulationManager(
-        input_manager=input_manager, parameter_filenames=parameter_filenames
-    )
+        simulation_manager: SimulationManager = SimulationManager(
+            input_manager=input_manager, parameter_filenames=parameter_filenames
+        )
 
-    simulation_manager.check_inputs()
+        simulation_manager.check_inputs()
 
-    simulation_manager.initialize_outputs(input_manager, setup_output_logging=True)
+        simulation_manager.initialize_outputs(input_manager, setup_output_logging=True)
 
-    simulation_manager.check_generator_files()
+        simulation_manager.check_generator_files()
 
-    simulation_manager.setup_infrastructure()
+        simulation_manager.setup_infrastructure()
 
-    simulation_manager.setup_emissions()
+        simulation_manager.setup_emissions()
 
-    simulation_manager.setup_weather()
+        simulation_manager.setup_weather()
 
-    simulation_manager.setup_daylight()
+        simulation_manager.setup_daylight()
 
-    simulation_manager.run_simulations(DEBUG=DEBUG)
+        simulation_manager.run_simulations(DEBUG=DEBUG)
 
-    simulation_manager.generate_summary_results()
+        simulation_manager.generate_summary_results()
+
+    except Exception as e:
+        logger: logging.Logger = logging.getLogger(__name__)
+        logger.exception("An error occurred during the simulation run.")
+        raise e
 
 
 def setup_logging(root_dir: Path) -> None:
