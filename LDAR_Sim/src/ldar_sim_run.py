@@ -62,7 +62,7 @@ def run_ldar_sim(parameter_filenames, DEBUG=False):
 
     except Exception as e:
         logger: logging.Logger = logging.getLogger(__name__)
-        logger.exception("An error occurred during the simulation run.")
+        logger.exception(rm.SIMULATION_ERROR)
         raise e
 
 
