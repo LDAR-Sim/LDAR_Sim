@@ -257,7 +257,7 @@ class SimulationManager:
                     gc.collect()
                     print(rm.FIN_SIM_SET.format(simulation_number=simulation_number))
                 print(rm.BATCH_CLEAN.format(batch_count=batch_count))
-            self.summary_stats_manager.gen_summary_outputs(batch_count != 0)
+                self.summary_stats_manager.gen_summary_outputs(batch_count != 0)
 
     def _setup_programs(
         self,
