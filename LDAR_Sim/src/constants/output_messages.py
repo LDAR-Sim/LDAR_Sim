@@ -69,6 +69,8 @@ class RuntimeMessages:
     GEN_PRESEED_EMISS = "Generating Random Seed values for emissions..."
     GEN_ADD_PRESEED_EMISS = "Generating additional Random Seed values for emissions..."
 
+    SIMULATION_ERROR = "An error occurred during the simulation run."
+
 
 class InputHelpText:
     INPUT_FILE_HELP_TEXT = (
