@@ -174,7 +174,7 @@ class Source:
             sys.exit()
         self._emis_rate_source = prop_params[IC.Sources_File_Constants.EMIS_ERS]
         self._emis_prod_rate = prop_params[IC.Sources_File_Constants.EMIS_EPR]
-        self._emis_duration = prop_params[IC.Sources_File_Constants.EMIS_DUR]
+        self._emis_duration = int(prop_params[IC.Sources_File_Constants.EMIS_DUR])
         self._multi_emissions = prop_params[IC.Sources_File_Constants.MULTI_EMISSIONS]
 
         self._meth_spat_covs = prop_params[pdc.Common_Params.METH_SPECIFIC][
@@ -326,7 +326,7 @@ class Source:
             leak_count += 1
             emissions_fifo.append(emission)
             if not self._multi_emissions:
-                last_emis_day = emis_start_date + timedelta(days=int(self._emis_duration))
+                last_emis_day = emis_start_date + timedelta(days=self._emis_duration)
                 # If only one emission is allowed, break the loop
                 break
 
@@ -359,7 +359,7 @@ class Source:
             if not self._multi_emissions:
                 # if only a single emission can be made,
                 # update the last_emis_day based on the new emission
-                last_emis_day = emis_start_date + timedelta(days=int(self._emis_duration))
+                last_emis_day = emis_start_date + timedelta(days=self._emis_duration)
         emissions_fifo.reverse()
         self._generated_emissions[sim_number] = emissions_fifo
         return {self._source_ID: emissions_fifo}
