@@ -1,6 +1,7 @@
 parameter_level: "outputs"
 version: "4.0"
 Program Outputs:
+  Keep All Program Outputs: false
   Program Emissions: true
   Program Timeseries: true
 Program Visualizations:

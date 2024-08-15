@@ -111,6 +111,9 @@ class SimulationManager:
         self.sim_end_date: date = date(*self.virtual_world[pdc.Virtual_World_Params.END_DATE])
         self.seed_timeseries: dict[date, int] = None
         self.weather: WL = None
+        self.keep_all_program_outputs: bool = self.output_params[pdc.Output_Params.PROGRAM_OUTPUTS][
+            pdc.Output_Params.KEEP_ALL_PROGRAM_OUTPUTS
+        ]
         self.calc_simulation_years()
 
     def initialize_summary_managers(self) -> None:
@@ -234,7 +237,9 @@ class SimulationManager:
                     simulate(*program)
                 print(rm.FIN_SIM_SET.format(simulation_number=simulation_number))
             print(rm.BATCH_CLEAN.format(batch_count=batch_count))
-            self.summary_stats_manager.gen_summary_outputs(batch_count != 0)
+            self.summary_stats_manager.gen_summary_outputs(
+                batch_count != 0 and (not self.keep_all_program_outputs)
+            )
 
     def _run_simulation_multiprocessing(self, sim_counts: list[int]) -> None:
         n_processes: int = self.sim_params[pdc.Sim_Setting_Params.PROCESS]
@@ -257,7 +262,9 @@ class SimulationManager:
                     gc.collect()
                     print(rm.FIN_SIM_SET.format(simulation_number=simulation_number))
                 print(rm.BATCH_CLEAN.format(batch_count=batch_count))
-                self.summary_stats_manager.gen_summary_outputs(batch_count != 0)
+                self.summary_stats_manager.gen_summary_outputs(
+                    batch_count != 0 and (not self.keep_all_program_outputs)
+                )
 
     def _setup_programs(
         self,

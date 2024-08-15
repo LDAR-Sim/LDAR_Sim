@@ -160,6 +160,7 @@ class Method_Params:
 @dataclass
 class Output_Params:
     PROGRAM_OUTPUTS = "Program Outputs"
+    KEEP_ALL_PROGRAM_OUTPUTS = "Keep All Program Outputs"
     PROGRAM_EMISSIONS = "Program Emissions"
     PROGRAM_TIMESERIES = "Program Timeseries"
     SUMMARY_OUTPUTS = "Summary Outputs"
