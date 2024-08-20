@@ -374,6 +374,14 @@ It is strongly recommended to use the default settings provided. These settings 
 
 It is important to understand that certain outputs are interdependent. Disabling an output that serves as a dependency for another may cause errors or unexpected behavior. Therefore, users should be cautious and ensure they have a thorough understanding of these dependencies before making changes.
 
+### Output Settings of Note
+
+#### Keep All Program Outputs
+
+By default, LDAR-Sim only keep the results of the first 5 simulations for each program. Changing this setting to true will result in LDAR-Sim keeping program results for all simulations.
+
+**Warning** It is not recommended to run a large number of simulations with this setting set to true as this will result in a significant amount of output files being kept, potentially filling up a users filesystem.
+
 --------------------------------------------------------------------------------
 
 ## 7\. Virtual World Setting

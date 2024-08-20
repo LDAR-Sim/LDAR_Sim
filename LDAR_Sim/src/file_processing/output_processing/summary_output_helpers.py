@@ -154,6 +154,10 @@ def mark_outputs_to_keep(dir: Path):
     with os.scandir(dir) as entries:
         for entry in entries:
             if entry.is_file():
+                if re.search(
+                    file_processing_const.Multi_Sim_Output_Const.OUTPUT_KEEP_REGEX, entry.name
+                ):
+                    continue
                 old_file_path = entry.path
                 new_name = file_processing_const.Multi_Sim_Output_Const.OUTPUT_KEEP_STR + entry.name
                 new_file_path = os.path.join(dir, new_name)
