@@ -21,13 +21,13 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 import numpy as np
 from constants.sensor_constants import QuantificationTypes
-from sensors.default_sensor import DefaultSensor
+from sensors.default_site_level_sensor import DefaultSiteLevelSensor
 from sensors.default_component_level_sensor import DefaultComponentLevelSensor
 from sensors.default_equipment_group_level_sensor import DefaultEquipmentGroupLevelSensor
 from constants.general_const import Conversion_Constants as CC
 
 
-class METECNWSite(DefaultSensor):
+class METECNWSite(DefaultSiteLevelSensor):
     def __init__(
         self,
         mdl: float,
