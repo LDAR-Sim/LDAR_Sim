@@ -22,6 +22,7 @@ from typing import Union
 from sensors import quantification
 from virtual_world.sites import Site
 from constants.sensor_constants import QuantificationTypes
+from scheduling.schedule_dataclasses import SiteSurveyReport
 
 
 class DefaultSensor:
@@ -67,7 +68,7 @@ class DefaultSensor:
     def _rate_detected(self, emis_rate: float) -> bool:
         return emis_rate >= self._mdl
 
-    def detect_emissions(self, site: Site, meth_name: str):
+    def detect_emissions(self, site: Site, meth_name: str, survey_report: SiteSurveyReport):
         return
 
     def check_min_threshold(self, emis_rate: float) -> bool:
