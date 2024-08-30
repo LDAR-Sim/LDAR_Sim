@@ -22,7 +22,7 @@ from datetime import date
 import logging
 import sys
 
-from numpy import average
+from numpy import average, nan
 from scheduling.surveying_dataclasses import DetectionRecord
 from scheduling.survey_planner import SurveyPlanner
 from constants.error_messages import Runtime_Error_Messages as rem
@@ -92,14 +92,22 @@ class StationaryFollowUpSurveyPlanner(FollowUpSurveyPlanner):
             self._detected_rates.append(new_detection.rate_detected)
             series_detect_rates = pd.Series(self._detected_rates)
             self.rate_at_site = (
-                series_detect_rates.rolling(window=self._small_window, min_periods=1)
+                series_detect_rates.rolling(
+                    window=self._small_window, min_periods=self._small_window
+                )
                 .mean()
                 .iloc[-1]
             )
             self.rate_at_site_long = (
-                series_detect_rates.rolling(window=self._long_window, min_periods=1).mean().iloc[-1]
+                series_detect_rates.rolling(window=self._long_window, min_periods=self._long_window)
+                .mean()
+                .iloc[-1]
             )
             self._latest_detection_date = detect_date
+            if self.rate_at_site is nan:
+                self.rate_at_site = 0
+            if self.rate_at_site_long is nan:
+                self.rate_at_site_long = 0
         else:
             logger: logging.Logger = logging.getLogger(__name__)
             logger.error(
