@@ -22,7 +22,7 @@ from datetime import date
 import logging
 import sys
 
-from numpy import average, nan
+from numpy import average, isnan
 from scheduling.surveying_dataclasses import DetectionRecord
 from scheduling.survey_planner import SurveyPlanner
 from constants.error_messages import Runtime_Error_Messages as rem
@@ -68,6 +68,12 @@ class FollowUpSurveyPlanner(SurveyPlanner):
             )
             sys.exit()
 
+    def should_follow_up(self, threshold: float) -> bool:
+        return self.rate_at_site >= threshold
+
+    def should_follow_up_long(self, threshold: float) -> bool:
+        return False
+
 
 class StationaryFollowUpSurveyPlanner(FollowUpSurveyPlanner):
     def __init__(
@@ -80,6 +86,8 @@ class StationaryFollowUpSurveyPlanner(FollowUpSurveyPlanner):
         super().__init__(detection_record, detect_date)
         self._small_window: int = small_window
         self._long_window: int = long_window
+        self.rate_at_site: float = 0
+        self.rate_at_site_long: float = 0
 
     def update_with_latest_survey(
         self,
@@ -104,9 +112,9 @@ class StationaryFollowUpSurveyPlanner(FollowUpSurveyPlanner):
                 .iloc[-1]
             )
             self._latest_detection_date = detect_date
-            if self.rate_at_site is nan:
+            if isnan(self.rate_at_site):
                 self.rate_at_site = 0
-            if self.rate_at_site_long is nan:
+            if isnan(self.rate_at_site_long):
                 self.rate_at_site_long = 0
         else:
             logger: logging.Logger = logging.getLogger(__name__)
@@ -114,3 +122,6 @@ class StationaryFollowUpSurveyPlanner(FollowUpSurveyPlanner):
                 rem.INVALID_REDUND_FILTER_ERROR.format(filter=redund_filter, method=method_name)
             )
             sys.exit()
+
+    def should_follow_up_long(self, threshold: float) -> bool:
+        return self.rate_at_site_long >= threshold
