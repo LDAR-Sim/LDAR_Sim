@@ -114,6 +114,9 @@ class SimulationManager:
         self.keep_all_program_outputs: bool = self.output_params[pdc.Output_Params.PROGRAM_OUTPUTS][
             pdc.Output_Params.KEEP_ALL_PROGRAM_OUTPUTS
         ]
+        self.pre_simulation_emissions: bool = self.virtual_world[pdc.Virtual_World_Params.EMIS][
+            pdc.Virtual_World_Params.PRE_SIM_EMIS
+        ]
         self.calc_simulation_years()
 
     def initialize_summary_managers(self) -> None:
@@ -198,6 +201,7 @@ class SimulationManager:
             self.sim_start_date,
             self.sim_end_date,
             self.generator_dir,
+            pre_simulation_emissions=self.pre_simulation_emissions,
         )
 
     def setup_weather(self) -> None:

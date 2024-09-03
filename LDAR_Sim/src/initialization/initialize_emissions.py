@@ -40,6 +40,7 @@ def initialize_emissions(
     start_date: date,
     end_date: date,
     generator_dir: Path,
+    pre_simulation_emissions: bool,
     force_remake: bool = False,
 ):
     n_sim_loc = generator_dir / Generator_Files.N_SIM_SAVE_FILE
@@ -58,6 +59,7 @@ def initialize_emissions(
                     sim_start_date=start_date,
                     sim_end_date=end_date,
                     sim_number=i,
+                    pre_simulation_emissions=pre_simulation_emissions,
                 )
             )
             with open(emis_file_loc, "wb") as f:
@@ -93,6 +95,7 @@ def initialize_emissions(
                         sim_start_date=start_date,
                         sim_end_date=end_date,
                         sim_number=i,
+                        pre_simulation_emissions=pre_simulation_emissions,
                     )
                 )
                 with open(emis_file_loc, "wb") as f:

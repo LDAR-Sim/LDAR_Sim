@@ -22,6 +22,7 @@ repairs:
     # or the name of a column in the repair delays file to sample from
 emissions:
   emissions_file: "_placeholder_str_" # File containing sample emissions rates or emissions distributions.
+  Pre-Simulation Emissions: True # True/False of whether to simulate emissions before the start date of the simulation
   repairable_emissions:
     emissions_production_rate: "_placeholder_float_" # The production rate of repairable emissions
     emissions_rate_source: "_placeholder_str_" # The name of a column in the emissions file

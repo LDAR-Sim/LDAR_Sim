@@ -155,6 +155,7 @@ class Component:
         sim_number,
         emission_rate_source_dictionary: dict[str, EmissionsSource],
         repair_delay_dataframe: pd.DataFrame,
+        pre_simulation_emissions: bool,
     ) -> dict:
         equip_emissions = {}
         for src in self._sources:
@@ -165,6 +166,7 @@ class Component:
                     sim_number,
                     emission_rate_source_dictionary,
                     repair_delay_dataframe,
+                    pre_simulation_emissions=pre_simulation_emissions,
                 )
             )
 
