@@ -643,9 +643,9 @@ See the following files for examples on setting this value at a more granular le
 
 **Data Type:** Boolean
 
-**Default input:** None
+**Default input:** True
 
-**Description:** This parameter specifies if LDAR-Sim should generate emissions existing before the start date of the simulation. If "True", emissions beginning up to duration days before the start of the simulation will be generated. This essentially initializes the system from a state of no LDAR.
+**Description:** This parameter specifies if LDAR-Sim should generate emissions existing before the start date of the simulation. When set to 'False,' emissions are not generated before the simulation's start date. By default, emissions are produced leading up to this date, based on their durations, enabling the system to model a state without LDAR.
 
 **Notes on acquisition:** N/A
 
