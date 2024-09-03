@@ -285,50 +285,57 @@ class Source:
         sim_number: int,
         emission_rate_source_dictionary: dict[str, EmissionsSource],
         repair_delay_dataframe: pd.DataFrame,
+        pre_simulation_emissions: bool,
     ) -> dict[str, list[emission_types.Emission]]:
         # Using a list as a FIFO queue for less overhead and to be able to pickle it
         emissions_fifo: list[emission_types.Emission] = []
 
         # Initialize a counter to give all emissions for the source a unique "ID"
         leak_count: int = 0
-        # Pre-calculate date ranges
-        pre_existing_dates = pd.date_range(
-            start=sim_start_date - timedelta(days=self._emis_duration),
-            periods=self._emis_duration,
-            freq="D",
-        )
 
-        # Vectorize random number generation
-        pre_existing_emissions = np.random.binomial(1, self._emis_prod_rate, self._emis_duration)
-
-        # Filter dates where emissions should be created
-        filtered_emission_dates = pre_existing_dates[pre_existing_emissions == 1]
-
-        #  RNG the number of emissions to create and RNG the date for each emission
-
-        # Generate Pre-Existing Emissions to exist at the start of simulation
-        # The loop is working backwards in time, starting from 1 day before simulation start
-
-        # This first loop is to generate emissions that are already active
-        # at the start of the simulation. If only one emission is allowed
-        # for the given source, the loop will break once the first is made,
-        # since no other emissions should exist
         last_emis_day: date = sim_start_date
-        for day in filtered_emission_dates:
-            emis_start_date: date = day.date()
-            emission: emission_types.Emission = self._create_emission(
-                leak_count=leak_count,
-                start_date=emis_start_date,
-                sim_start_date=sim_start_date,
-                emission_rate_source_dictionary=emission_rate_source_dictionary,
-                repair_delay_dataframe=repair_delay_dataframe,
+
+        if pre_simulation_emissions:
+            # Pre-calculate date ranges
+            pre_existing_dates = pd.date_range(
+                start=sim_start_date - timedelta(days=self._emis_duration),
+                periods=self._emis_duration,
+                freq="D",
             )
-            leak_count += 1
-            emissions_fifo.append(emission)
-            if not self._multi_emissions:
-                last_emis_day = emis_start_date + timedelta(days=self._emis_duration)
-                # If only one emission is allowed, break the loop
-                break
+
+            # Vectorize random number generation
+            pre_existing_emissions = np.random.binomial(
+                1, self._emis_prod_rate, self._emis_duration
+            )
+
+            # Filter dates where emissions should be created
+            filtered_emission_dates = pre_existing_dates[pre_existing_emissions == 1]
+
+            #  RNG the number of emissions to create and RNG the date for each emission
+
+            # Generate Pre-Existing Emissions to exist at the start of simulation
+            # The loop is working backwards in time, starting from 1 day before simulation start
+
+            # This first loop is to generate emissions that are already active
+            # at the start of the simulation. If only one emission is allowed
+            # for the given source, the loop will break once the first is made,
+            # since no other emissions should exist
+
+            for day in filtered_emission_dates:
+                emis_start_date: date = day.date()
+                emission: emission_types.Emission = self._create_emission(
+                    leak_count=leak_count,
+                    start_date=emis_start_date,
+                    sim_start_date=sim_start_date,
+                    emission_rate_source_dictionary=emission_rate_source_dictionary,
+                    repair_delay_dataframe=repair_delay_dataframe,
+                )
+                leak_count += 1
+                emissions_fifo.append(emission)
+                if not self._multi_emissions:
+                    last_emis_day = emis_start_date + timedelta(days=self._emis_duration)
+                    # If only one emission is allowed, break the loop
+                    break
 
         # Generate Emissions for the course of the simulation
         date_diff: timedelta = sim_end_date - sim_start_date

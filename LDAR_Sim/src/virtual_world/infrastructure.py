@@ -149,7 +149,13 @@ class Infrastructure:
             site.set_pregen_emissions(emissions[site.get_id()], sim_number)
 
     # Generate Emissions for all infrastructure
-    def generate_emissions(self, sim_start_date, sim_end_date, sim_number) -> dict:
+    def generate_emissions(
+        self,
+        sim_start_date,
+        sim_end_date,
+        sim_number,
+        pre_simulation_emissions: bool = True,
+    ) -> dict:
         infrastructure_emissions: dict = {}
         for site in self._sites:
             infrastructure_emissions.update(
@@ -159,6 +165,7 @@ class Infrastructure:
                     sim_number,
                     self.emission_rate_source_dictionary,
                     self.repair_delay_dataframe,
+                    pre_simulation_emissions=pre_simulation_emissions,
                 )
             )
         return {sim_number: infrastructure_emissions}
@@ -273,7 +280,8 @@ class Infrastructure:
             site_measured_df (pd.DataFrame): The DataFrame with site measured data.
 
         Returns:
-            A dictionary: The dictionary with site potential measurement that can be used as a new row.
+            A dictionary: The dictionary with site potential
+            measurement that can be used as a new row.
         """
         for i, site in enumerate(self._sites):
 

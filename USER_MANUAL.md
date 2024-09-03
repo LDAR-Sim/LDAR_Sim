@@ -639,6 +639,18 @@ See the following files for examples on setting this value at a more granular le
 
 **Notes of caution:** N/A
 
+#### &lt;Pre-Simulation Emissions&gt;
+
+**Data Type:** Boolean
+
+**Default input:** True
+
+**Description:** This parameter specifies if LDAR-Sim should generate emissions existing before the start date of the simulation. When set to 'False,' emissions are not generated before the simulation's start date. By default, emissions are produced leading up to this date, based on their durations, enabling the system to model a state without LDAR.
+
+**Notes on acquisition:** N/A
+
+**Notes of caution:** N/A
+
 ### repairable_emissions / non_repairable_emissions
 
 **Description:** These parameters do not require user-defined input. Its purpose is to provide a broader categorization for parameters that define the emission characteristics of the virtual world. The following sub-parameters:  `emissions_production_rate`, `emissions_rate_source`, `duration` and `multiple_emissions_per_source`, can be set for either repairable emissions and/or non-repairable emissions.

@@ -139,6 +139,7 @@ def simple_inputs():
         sim_number,
         emission_rate_source_dictionary,
         repair_delay_dataframe,
+        True,
     )
 
 

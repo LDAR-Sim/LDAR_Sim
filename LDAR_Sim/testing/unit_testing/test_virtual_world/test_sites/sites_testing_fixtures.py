@@ -134,6 +134,7 @@ def mock_site_for_simple_activate_emissions_fix() -> Tuple[Site, date, int]:
             "test": EmissionsSourceSample("test", "gram", "second", [1], 1000)
         },
         repair_delay_dataframe={},
+        pre_simulation_emissions=True,
     )
     activate_date: date = date(*[2017, 1, 1])
     return test_site, activate_date, 1
@@ -189,6 +190,7 @@ def mock_site_for_simple_get_detectable_emissions_fix() -> Tuple[Site, str]:
             "test": EmissionsSourceSample("test", "gram", "second", [1], 1000)
         },
         repair_delay_dataframe={},
+        pre_simulation_emissions=True,
     )
     activate_date: date = date(*[2017, 1, 1])
     test_site.activate_emissions(activate_date, 1)

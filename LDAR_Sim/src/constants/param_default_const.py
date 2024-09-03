@@ -81,6 +81,7 @@ class Virtual_World_Params:
     MULTI_EMIS = "multiple_emissions_per_source"
     MAX_RATE = "max_leak_rate"
     UNITS = "units"
+    PRE_SIM_EMIS = "Pre-Simulation Emissions"
 
 
 @dataclass

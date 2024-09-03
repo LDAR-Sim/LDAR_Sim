@@ -21,5 +21,6 @@ def test_000_generate_emissions_properly_generates_emissions_for_simple_site(
             "test": EmissionsSourceSample("test", "gram", "second", [1], 1000)
         },
         repair_delay_dataframe={},
+        pre_simulation_emissions=True,
     )
     assert emissions is not None

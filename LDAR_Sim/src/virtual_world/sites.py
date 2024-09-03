@@ -312,6 +312,7 @@ class Site:
         sim_number,
         emission_rate_source_dictionary: dict[str, EmissionsSource],
         repair_delay_dataframe: pd.DataFrame,
+        pre_simulation_emissions: bool,
     ) -> dict:
         site_emissions: dict = {}
         for eqg in self._equipment_groups:
@@ -323,6 +324,7 @@ class Site:
                     sim_number,
                     emission_rate_source_dictionary,
                     repair_delay_dataframe,
+                    pre_simulation_emissions=pre_simulation_emissions,
                 )
             )
 

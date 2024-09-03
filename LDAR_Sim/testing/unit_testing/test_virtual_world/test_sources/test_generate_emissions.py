@@ -78,6 +78,7 @@ def test_001_validate_date_randomness(mocker) -> None:
         sim_number,
         emission_rate_source_dictionary,
         repair_delay_dataframe,
+        True,
     )
 
     # Extract the dates of the emissions for testing randomness
@@ -129,6 +130,7 @@ def test_001_test_single_emission_creation(mocker) -> None:
         sim_number,
         emission_rate_source_dictionary,
         repair_delay_dataframe,
+        True,
     )
     assert len(emissions_dict["test"]) == 3
     assert emissions_dict["test"][2]._start_date == date(2022, 1, 1)
@@ -167,5 +169,6 @@ def test_001_test_multi_emission_creation(mocker) -> None:
         sim_number,
         emission_rate_source_dictionary,
         repair_delay_dataframe,
+        True,
     )
     assert len(emissions_dict["test"]) == 730
