@@ -124,4 +124,6 @@ class StationaryFollowUpSurveyPlanner(FollowUpSurveyPlanner):
             sys.exit()
 
     def should_follow_up_long(self, threshold: float) -> bool:
-        return self.rate_at_site_long >= threshold
+        if threshold and self.rate_at_site_long:
+            return self.rate_at_site_long >= threshold
+        return False
