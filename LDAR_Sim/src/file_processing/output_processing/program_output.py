@@ -51,6 +51,9 @@ def gen_estimated_repairable_emissions_to_remove(
     # Drop rows with missing repair dates and missing measured rates
     fugitive_emissions_rates_and_repair_dates.dropna(inplace=True)
 
+    if fugitive_emissions_rates_and_repair_dates.empty:
+        return pd.DataFrame()
+
     # Populate a new column in the fugitive emissions rates and repair dates dataframe
     # with the closest future survey date. This wil be used to compute the estimated
     # fugitive emissions to remove to avoid double counting
@@ -170,6 +173,9 @@ def gen_estimated_comp_emissions_report(
         site_survey_reports_summary[eca.COMP].notnull()
     ]
 
+    if comp_reports.empty:
+        return
+
     # Get unique combinations of site_ID, equipment and component
     unique_combinations = comp_reports[[eca.SITE_ID, eca.EQG, eca.COMP]].drop_duplicates()
     unique_site_survey_dates = comp_reports[
@@ -266,6 +272,8 @@ def gen_estimated_comp_emissions_report(
 
 
 def determine_start_and_end_dates(sorted_by_site_summary_df, group_by_summary, duration_factor):
+    if sorted_by_site_summary_df.empty:
+        return sorted_by_site_summary_df
     # Determine if the previous or next condition should be used for the emission rate
     sorted_by_site_summary_df = program_output_helpers.calculate_prev_condition(
         sorted_by_site_summary_df, group_by_summary
@@ -276,12 +284,20 @@ def determine_start_and_end_dates(sorted_by_site_summary_df, group_by_summary, d
     # Set the estimated start/end date based on the emission rate condition
     sorted_by_site_summary_df[eca.START_DATE] = (
         sorted_by_site_summary_df.groupby(eca.SITE_ID)
-        .apply(lambda x: program_output_helpers.calculate_start_date(x, duration_factor))
+        .apply(
+            lambda x: pd.DataFrame(
+                program_output_helpers.calculate_start_date(x, duration_factor), index=x.index
+            )
+        )
         .reset_index(drop=True)
     )
     sorted_by_site_summary_df[eca.END_DATE] = (
         sorted_by_site_summary_df.groupby(eca.SITE_ID)
-        .apply(lambda x: program_output_helpers.calculate_end_date(x, duration_factor))
+        .apply(
+            lambda x: pd.DataFrame(
+                program_output_helpers.calculate_end_date(x, duration_factor), index=x.index
+            )
+        )
         .reset_index(drop=True)
     )
     return sorted_by_site_summary_df
