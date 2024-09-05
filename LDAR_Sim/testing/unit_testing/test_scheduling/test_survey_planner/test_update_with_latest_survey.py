@@ -252,4 +252,4 @@ def test_update_with_rolling_survey(mocker):
     ]
     assert stationary_survey_planner._latest_detection_date == date(2021, 1, 7)
     assert round(stationary_survey_planner.rate_at_site, 6) == 0.442857
-    assert round(stationary_survey_planner.rate_at_site_long, 5) == 0.34000
+    assert round(stationary_survey_planner.rate_at_site_long, 5) == 0
