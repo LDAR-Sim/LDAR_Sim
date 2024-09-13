@@ -92,6 +92,9 @@ def get_yearly_value_for_multi_day_stat(
         if end_date is pd.NaT:
             end_date = df[end_date_col].max()
             end_year: int = end_date.year
+            if end_date is pd.NaT:
+                end_year: int = year
+
             end_date = pd.Timestamp("-".join([str(end_year), "12", "31"]))
         else:
             end_year: int = end_date.year
