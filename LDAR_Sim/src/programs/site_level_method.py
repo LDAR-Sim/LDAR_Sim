@@ -273,10 +273,6 @@ class SiteLevelMethod(Method):
                     ) and not survey_plan.should_follow_up_long(self._large_window_threshold):
                         self._candidates_for_flags.add(survey_plan)
                         continue
-                elif self._deployment_type == pdc.Deployment_Types.MOBILE:
-                    if not survey_plan.should_follow_up(self._threshold):
-                        self._candidates_for_flags.add(survey_plan)
-                        continue
                 self._follow_up_schedule.add_to_survey_queue(survey_plan)
                 n_flags += 1
                 self._site_IDs_in_follow_up_queue[survey_plan.site_id] = True
