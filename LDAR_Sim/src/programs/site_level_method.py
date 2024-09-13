@@ -270,7 +270,7 @@ class SiteLevelMethod(Method):
                 if self._deployment_type == pdc.Deployment_Types.STATIONARY:
                     if not survey_plan.should_follow_up(
                         self._small_window_threshold
-                    ) or not survey_plan.should_follow_up_long(self._large_window_threshold):
+                    ) and not survey_plan.should_follow_up_long(self._large_window_threshold):
                         self._candidates_for_flags.add(survey_plan)
                         continue
                 elif self._deployment_type == pdc.Deployment_Types.MOBILE:
