@@ -51,8 +51,14 @@ class METECNWSite(DefaultSiteLevelSensor):
 
 
 class METECNWEquipmentGroup(DefaultEquipmentGroupLevelSensor):
-    def __init__(self, mdl: float, quantification_error: float) -> None:
-        super().__init__(mdl, quantification_error)
+    def __init__(
+        self,
+        mdl: float,
+        quantification_parameters: list[float],
+        quantification_type: str = QuantificationTypes.DEFAULT.value,
+        input_dir: str = None,
+    ) -> None:
+        super().__init__(mdl, quantification_parameters, quantification_type, input_dir)
 
     def _rate_detected(self, emis_rate: float) -> bool:
         prob_detect = 1 / (1 + np.exp(self._mdl[0] - self._mdl[1] * (emis_rate * CC.GS_TO_KGHR)))
@@ -62,8 +68,14 @@ class METECNWEquipmentGroup(DefaultEquipmentGroupLevelSensor):
 
 
 class METECNWComponent(DefaultComponentLevelSensor):
-    def __init__(self, mdl: float, quantification_error: float) -> None:
-        super().__init__(mdl, quantification_error)
+    def __init__(
+        self,
+        mdl: float,
+        quantification_parameters: list[float],
+        quantification_type: str = QuantificationTypes.DEFAULT.value,
+        input_dir: str = None,
+    ) -> None:
+        super().__init__(mdl, mdl, quantification_parameters, quantification_type, input_dir)
 
     def _rate_detected(self, emis_rate: float) -> bool:
         prob_detect = 1 / (1 + np.exp(self._mdl[0] - self._mdl[1] * (emis_rate * CC.GS_TO_KGHR)))
