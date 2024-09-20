@@ -1,5 +1,19 @@
 # Change Log
 
+## 2024-09-20 - Version 4.2
+
+1. Runtime Optimizations
+2. LDAR-Sim Run scripts were refactored to shared common behavior and be more modular
+3. Added LDAR-Sim error logging functionality
+4. Added parameter to keep all program outputs
+5. Added parameter to disable pre-simulation emissions
+6. Updated Stationary Rolling Average functionality
+7. Various bugfixes:
+    - Fixed runtime error during emissions creation when duration is provided in infrastructure files
+    - Fixed METEC NoWind sensor
+    - Fixed runtime error occurring in scenarios with little detected emissions
+    - Fixed runtime error occurring when simulation duration was <= 1 year
+
 ## 2024-07-31 - Version 4.1.1
 
 1. Update and re-introduce the End to End test runner, creator and suite
