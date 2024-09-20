@@ -1,0 +1,6 @@
+input_directory: ./inputs
+output_directory: ./outputs
+parameter_level: simulation_settings
+preseed_random: true
+simulation_count: 2
+version: '4.0'

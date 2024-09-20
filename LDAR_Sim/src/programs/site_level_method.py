@@ -131,17 +131,10 @@ class SiteLevelMethod(Method):
                 self._site_IDs_in_consideration_for_flag[detection_record.site_id] = False
                 self._site_IDs_in_follow_up_queue[detection_record.site_id] = True
 
-            elif existing_plan.rate_at_site >= self._small_window_threshold or (
-                self._large_window_threshold is not None
-                and existing_plan.rate_at_site_long >= self._large_window_threshold
-            ):
+            else:
                 # Adding it back into the queue, therefore do not need to update
                 # the sites to consider for flags
                 self._candidates_for_flags.add(existing_plan)
-            else:
-                # if the site is below the threshold, remove it from the list of
-                # sites to consider for flags
-                self._site_IDs_in_consideration_for_flag[detection_record.site_id] = False
 
         # If the site is already queued to get a follow-up,
         # update the queue priority based on new results
@@ -157,48 +150,21 @@ class SiteLevelMethod(Method):
             )
             if existing_plan.rate_at_site >= self._inst_threshold:
                 self._follow_up_schedule.add_previous_queued_to_survey_queue(existing_plan)
-            elif existing_plan.rate_at_site >= self._small_window_threshold or (
-                self._large_window_threshold is not None
-                and existing_plan.rate_at_site_long >= self._large_window_threshold
-            ):
-                self._follow_up_schedule.add_to_survey_queue(existing_plan)
             else:
-                self._site_IDs_in_follow_up_queue[detection_record.site_id] = False
+                self._follow_up_schedule.add_to_survey_queue(existing_plan)
 
         # Otherwise, the site is not already in processing for a follow-up,
         # process as normal
         else:
-            # if above the instant threshold, add to higher priority queue
-            if detection_record.rate_detected >= self._inst_threshold:
-                self._follow_up_schedule.add_previous_queued_to_survey_queue(
-                    StationaryFollowUpSurveyPlanner(
-                        detection_record,
-                        date_to_check,
-                        self._small_window,
-                        self._large_window,
-                    )
+            self._candidates_for_flags.add(
+                StationaryFollowUpSurveyPlanner(
+                    detection_record,
+                    date_to_check,
+                    self._small_window,
+                    self._large_window,
                 )
-                self._site_IDs_in_follow_up_queue[detection_record.site_id] = True
-
-            elif detection_record.rate_detected != 0 and (
-                detection_record.rate_detected >= self._small_window_threshold
-                or (
-                    self._large_window_threshold is not None
-                    and detection_record.rate_detected >= self._large_window_threshold
-                )
-            ):
-                self._candidates_for_flags.add(
-                    StationaryFollowUpSurveyPlanner(
-                        detection_record,
-                        date_to_check,
-                        self._small_window,
-                        self._large_window,
-                    )
-                )
-                self._site_IDs_in_consideration_for_flag[detection_record.site_id] = True
-            # count that there was a detection, but it wasn't above the thresholds
-            elif detection_record.rate_detected > 0:
-                self._detection_count += 1
+            )
+            self._site_IDs_in_consideration_for_flag[detection_record.site_id] = True
 
     def update_mobile(self, date_to_check, detection_record):
         # If the site is already in the list for potential flags, pop it from the list,
@@ -300,6 +266,13 @@ class SiteLevelMethod(Method):
             self._filter_candidates_by_proportion()
 
             for survey_plan in self._get_candidates():
+                survey_plan: FollowUpSurveyPlanner
+                if self._deployment_type == pdc.Deployment_Types.STATIONARY:
+                    if not survey_plan.should_follow_up(
+                        self._small_window_threshold
+                    ) and not survey_plan.should_follow_up_long(self._large_window_threshold):
+                        self._candidates_for_flags.add(survey_plan)
+                        continue
                 self._follow_up_schedule.add_to_survey_queue(survey_plan)
                 n_flags += 1
                 self._site_IDs_in_follow_up_queue[survey_plan.site_id] = True
