@@ -39,6 +39,7 @@ class NonRepairableEmission(Emission):
         simulation_sd: date,
         repairable: bool,
         tech_spat_cov_probs: dict[str, float],
+        tech_temp_cov_probs: dict[str, float],
         duration: int,
     ):
         super().__init__(
@@ -48,6 +49,7 @@ class NonRepairableEmission(Emission):
             simulation_sd,
             repairable,
             tech_spat_cov_probs,
+            tech_temp_cov_probs,
         )
         self._record: bool = False
         self._recorded_by_company: str = None

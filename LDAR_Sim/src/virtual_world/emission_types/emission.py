@@ -54,6 +54,7 @@ class Emission:
         simulation_sd: date,
         repairable: bool,
         tech_spat_cov_probs: dict[str, float],
+        tech_temp_cov_probs: dict[str, float],
     ) -> None:
         self._emissions_id: str = f"{str(emission_n).zfill(10)}"
         self._rate: float = rate
@@ -68,6 +69,7 @@ class Emission:
         self._init_detect_by: str = None
         self._init_detect_date: date = None
         self._tech_spat_cov_probs: dict[str, float] = tech_spat_cov_probs
+        self._tech_temp_cov_probs: dict[str, float] = tech_temp_cov_probs
         self._tech_spat_covs: dict[str, int] = {}
         self._status = ec.INACTIVE
 
@@ -99,6 +101,11 @@ class Emission:
             cov_prob: float = self._tech_spat_cov_probs[method]
             self._tech_spat_covs[name_str] = binomial(1, cov_prob)
         return self._tech_spat_covs[name_str]
+
+    def check_temporal_cov(self, method) -> int:
+        cov_prob: float = self._tech_temp_cov_probs[method]
+        roll = binomial(1, cov_prob)
+        return roll
 
     def activate() -> bool:
         return False

@@ -56,6 +56,7 @@ class Infrastructure_Constants:
         DEPLOYMENT_YEARS_PLACEHOLDER = "_deploy_year"  # Deployment Year - Method specific
         DEPLOYMENT_MONTHS_PLACEHOLDER = "_deploy_month"  # Deployment Month - Method specific
         SPATIAL_PLACEHOLDER = "_spatial"  # Spatial coverage - Method specific
+        TEMPORAL_PLACEHOLDER = "_temporal"  # Temporal coverage - Method specific
         SURVEY_TIME_PLACEHOLDER = "_survey_time"  # Survey Time - Method specific
         SURVEY_COST_PLACEHOLDER = "_survey_cost"  # Survey Cost - Method specific
 
@@ -76,6 +77,7 @@ class Infrastructure_Constants:
 
         METH_SPEC_PROP_PARAMS: list[str] = [
             SPATIAL_PLACEHOLDER,
+            TEMPORAL_PLACEHOLDER,
             SURVEY_FREQUENCY_PLACEHOLDER,
             SURVEY_COST_PLACEHOLDER,
             SURVEY_TIME_PLACEHOLDER,
@@ -122,6 +124,7 @@ class Infrastructure_Constants:
         SURVEY_TIME_PLACEHOLDER = "_survey_time"  # Survey Time - Method specific
         SURVEY_COST_PLACEHOLDER = "_survey_cost"  # Survey Cost - Method specific
         SPATIAL_PLACEHOLDER = "_spatial"  # Spatial coverage - Method specific
+        TEMPORAL_PLACEHOLDER = "_temporal"  # Temporal coverage - Method specific
 
         PROPAGATING_PARAMETER_COLUMNS: list[str] = [
             REP_EMIS_ERS,
@@ -140,6 +143,7 @@ class Infrastructure_Constants:
             SURVEY_TIME_PLACEHOLDER,
             SURVEY_COST_PLACEHOLDER,
             SPATIAL_PLACEHOLDER,
+            TEMPORAL_PLACEHOLDER,
         ]
 
     class Sources_File_Constants:
@@ -157,6 +161,7 @@ class Infrastructure_Constants:
         SURVEY_TIME_PLACEHOLDER = "_survey_time"  # Survey Time - Method specific
         SURVEY_COST_PLACEHOLDER = "_survey_cost"  # Survey Cost - Method specific
         SPATIAL_PLACEHOLDER = "_spatial"  # Spatial coverage - Method specific
+        TEMPORAL_PLACEHOLDER = "_temporal"  # Temporal coverage - Method specific
         MULTI_EMISSIONS = "multiple_emissions_per_source"  # Multiple Emissions (Y/N)
 
     class Site_Type_File_Constants:
@@ -182,6 +187,7 @@ class Infrastructure_Constants:
         NON_REP_EMIS_MULTI = "non_repairable_multiple_emissions_per_source"
         SURVEY_FREQUENCY_PLACEHOLDER = "_surveys_per_year"  # Survey Frequency - Method specific
         SPATIAL_PLACEHOLDER = "_spatial"  # Spatial coverage - Method specific
+        TEMPORAL_PLACEHOLDER = "_temporal"  # Temporal coverage - Method specific
         SURVEY_TIME_PLACEHOLDER = "_survey_time"  # Survey Time - Method specific
         SURVEY_COST_PLACEHOLDER = "_survey_cost"  # Survey Cost - Method specific
         DEPLOYMENT_YEARS_PLACEHOLDER = "_deploy_year"  # Deployment Year - Method specific
@@ -204,6 +210,7 @@ class Infrastructure_Constants:
 
         METH_SPEC_PROP_PARAMS: list[str] = [
             SPATIAL_PLACEHOLDER,
+            TEMPORAL_PLACEHOLDER,
             SURVEY_FREQUENCY_PLACEHOLDER,
             SURVEY_COST_PLACEHOLDER,
             SURVEY_TIME_PLACEHOLDER,
@@ -301,6 +308,9 @@ class Virtual_World_To_Prop_Params_Mapping:
     METH_SPEC_PROP_PARAMS: dict[str, str] = {
         Infrastructure_Constants.Sites_File_Constants.SPATIAL_PLACEHOLDER: ".".join(
             [param_default_const.Method_Params.COVERAGE, param_default_const.Method_Params.SPATIAL]
+        ),
+        Infrastructure_Constants.Sites_File_Constants.TEMPORAL_PLACEHOLDER: ".".join(
+            [param_default_const.Method_Params.COVERAGE, param_default_const.Method_Params.TEMPORAL]
         ),
         (
             Infrastructure_Constants.Sites_File_Constants
