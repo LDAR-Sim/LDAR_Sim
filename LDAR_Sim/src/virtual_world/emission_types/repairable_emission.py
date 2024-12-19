@@ -39,6 +39,7 @@ class RepairableEmission(Emission):
         simulation_sd: date,
         repairable: bool,
         tech_spat_cov_probs: dict[str, float],
+        tech_temp_cov_probs: dict[str, float],
         repair_delay: int,
         repair_cost: float,
         nrd: int,
@@ -50,6 +51,7 @@ class RepairableEmission(Emission):
             simulation_sd,
             repairable,
             tech_spat_cov_probs,
+            tech_temp_cov_probs,
         )
         self._tagged: bool = False
         self._days_since_tagged: int = 0

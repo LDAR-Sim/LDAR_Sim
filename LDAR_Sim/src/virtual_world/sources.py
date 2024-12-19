@@ -180,7 +180,9 @@ class Source:
         self._meth_spat_covs = prop_params[pdc.Common_Params.METH_SPECIFIC][
             IC.Sources_File_Constants.SPATIAL_PLACEHOLDER
         ]
-
+        self._meth_temp_covs = prop_params[pdc.Common_Params.METH_SPECIFIC][
+            IC.Sources_File_Constants.TEMPORAL_PLACEHOLDER
+        ]
         if self._repairable:
             # TODO look at processing for these values
             self._emis_rep_delay = prop_params[IC.Sources_File_Constants.REPAIR_DELAY][
@@ -236,6 +238,7 @@ class Source:
                     simulation_sd=sim_start_date,
                     repairable=self._get_repairable(),
                     tech_spat_cov_probs=self._meth_spat_covs,
+                    tech_temp_cov_probs=self._meth_temp_covs,
                     repair_delay=self._get_rep_delay(repair_delay_dataframe),
                     repair_cost=self._get_rep_cost(),
                     nrd=self._get_emis_duration(),
@@ -248,6 +251,7 @@ class Source:
                     simulation_start_date=sim_start_date,
                     repairable=self._get_repairable(),
                     tech_spatial_coverage_probabilities=self._meth_spat_covs,
+                    tech_temporal_coverage_probabilities=self._meth_temp_covs,
                     repair_delay=self._get_rep_delay(repair_delay_dataframe),
                     repair_cost=self._get_rep_cost(),
                     duration=self._get_emis_duration(),
@@ -263,6 +267,7 @@ class Source:
                     simulation_sd=sim_start_date,
                     repairable=self._get_repairable(),
                     tech_spat_cov_probs=self._meth_spat_covs,
+                    tech_temp_cov_probs=self._meth_temp_covs,
                     duration=self._get_emis_duration(),
                 )
             else:
@@ -273,6 +278,7 @@ class Source:
                     simulation_start_date=sim_start_date,
                     repairable=self._get_repairable(),
                     tech_spatial_coverage_probabilities=self._meth_spat_covs,
+                    tech_temporal_coverage_probabilities=self._meth_temp_covs,
                     duration=self._get_emis_duration(),
                     active_duration=self._active_duration,
                     inactive_duration=self._inactive_duration,
