@@ -175,7 +175,7 @@ def get_non_baseline_prog_names(programs, baseline_program) -> list:
 
 
 def get_annual_emissions_at_all_sites_with_extrapolation(
-    estimated_emissions_data: pd.DataFrame, year: int
+    dir: str, estimated_emissions_data: pd.DataFrame, year: int
 ) -> float:
     """
     Calculate the total annual emissions at all sites with extrapolation for sites that were not
@@ -222,6 +222,9 @@ def get_annual_emissions_at_all_sites_with_extrapolation(
         ).apply(lambda x: x[ofc.EMIS_DATA_COL_ACCESSORS.EST_VOL_EMIT].mean())
     )
 
+    # Uncomment this for extra outputs
+    # annual_emissions_site_type_averages.to_csv(dir + f"/annual_emissions_site_type_averages_{year}.csv")
+
     # Calculate the average of all measured sites
     average_emissions_all_sites: float = annual_emissions_and_site_type_measured[
         ofc.EMIS_DATA_COL_ACCESSORS.EST_VOL_EMIT
@@ -245,6 +248,9 @@ def get_annual_emissions_at_all_sites_with_extrapolation(
         ),
         average_emissions_map,
     )
+
+    # Uncomment this for extra outputs
+    # extrapolated_annual_emissions.to_csv(dir + f"/extrapolated_annual_emissions_{year}.csv")
 
     return extrapolated_annual_emissions.sum()
 

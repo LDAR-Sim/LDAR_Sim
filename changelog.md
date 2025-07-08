@@ -1,5 +1,9 @@
 # Change Log
 
+## 2025-07-08 - Version 4.2.1
+
+1. Fix bug with spatial extrapolation
+
 ## 2024-09-20 - Version 4.2
 
 1. Runtime Optimizations
