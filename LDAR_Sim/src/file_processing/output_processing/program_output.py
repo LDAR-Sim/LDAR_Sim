@@ -174,6 +174,12 @@ def gen_estimated_comp_emissions_report(
 
     if comp_reports.empty:
         return
+    
+    # Get Unique measured site IDs
+    unique_site_ids = comp_reports[eca.SITE_ID].unique()
+
+    # Unique Site ID's for unmeasured sites
+    unmeasured_site_ids = set(site_ids) - set(unique_site_ids)
 
     # Get unique combinations of site_ID, equipment and component
     unique_combinations = comp_reports[[eca.SITE_ID, eca.EQG, eca.COMP]].drop_duplicates()
@@ -196,6 +202,18 @@ def gen_estimated_comp_emissions_report(
         )
     )
     new_rows = []
+    # Append unmeasured sites with zero emissions
+    for site_id in unmeasured_site_ids:
+        new_rows.append(
+            {
+                eca.SITE_ID: site_id,
+                eca.EQG: None,
+                eca.COMP: None,
+                eca.SURVEY_COMPLETION_DATE: start_date,
+                eca.M_RATE: 0,
+            }
+        )
+
     # For each site/equipment/component combination, add in the missing reports
     # for when there were no detections for a given component at a given date
     for site_id, eqg, comp in unique_combinations_list:
