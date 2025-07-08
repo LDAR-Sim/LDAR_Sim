@@ -222,7 +222,8 @@ def get_annual_emissions_at_all_sites_with_extrapolation(
         ).apply(lambda x: x[ofc.EMIS_DATA_COL_ACCESSORS.EST_VOL_EMIT].mean())
     )
 
-    annual_emissions_site_type_averages.to_csv(dir + f"/annual_emissions_site_type_averages_{year}.csv")
+    # Uncomment this for extra outputs
+    # annual_emissions_site_type_averages.to_csv(dir + f"/annual_emissions_site_type_averages_{year}.csv")
 
     # Calculate the average of all measured sites
     average_emissions_all_sites: float = annual_emissions_and_site_type_measured[
@@ -248,7 +249,8 @@ def get_annual_emissions_at_all_sites_with_extrapolation(
         average_emissions_map,
     )
 
-    extrapolated_annual_emissions.to_csv(dir + f"/extrapolated_annual_emissions_{year}.csv")
+    # Uncomment this for extra outputs
+    # extrapolated_annual_emissions.to_csv(dir + f"/extrapolated_annual_emissions_{year}.csv")
 
     return extrapolated_annual_emissions.sum()
 
