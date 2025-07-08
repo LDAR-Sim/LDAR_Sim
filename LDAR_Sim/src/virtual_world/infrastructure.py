@@ -307,7 +307,7 @@ class Infrastructure:
                     ):
                         surveyed = True
                     else:
-                        surveyed = site.get_required_surveys(method) > 0
+                        surveyed = site.get_required_surveys(method) >= 0
                 site_measured_data[DTSC.SITE_DEPLOYMENT.format(method=method)] = deployed
                 site_measured_data[DTSC.REQUIRED_SURVEY.format(method=method)] = surveyed
                 site_measured_data[DTSC.METHOD_MEASURED.format(method=method)] = (
