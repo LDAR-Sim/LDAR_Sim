@@ -106,6 +106,7 @@ class ProgramOutputManager:
                 emis_info_for_duration_estimation,
                 start_date,
                 end_date,
+                program.get_program_site_ids(),
                 program.duration_factor,
             )
             if result:

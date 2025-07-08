@@ -26,83 +26,83 @@ class SummaryOutputMapper:
 
     SUMMARY_MAPPINGS = {
         file_name_constants.Output_Files.SummaryFileNames.TS_SUMMARY: {
-            output_file_constants.TS_SUMMARY_COLUMNS_ACCESSORS.AVG_T_DAILY_EMIS: lambda df: (
+            output_file_constants.TS_SUMMARY_COLUMNS_ACCESSORS.AVG_T_DAILY_EMIS: lambda df, dir: (
                 summary_output_helpers.get_mean_val(
                     df, output_file_constants.TIMESERIES_COL_ACCESSORS.EMIS
                 )
             ),
-            output_file_constants.TS_SUMMARY_COLUMNS_ACCESSORS.AVG_T_MIT_DAILY_EMIS: lambda df: (
+            output_file_constants.TS_SUMMARY_COLUMNS_ACCESSORS.AVG_T_MIT_DAILY_EMIS: lambda df, dir: (
                 summary_output_helpers.get_mean_val(
                     df, output_file_constants.TIMESERIES_COL_ACCESSORS.EMIS_MIT
                 )
             ),
             (
                 output_file_constants.TS_SUMMARY_COLUMNS_ACCESSORS.AVG_T_NON_MIT_DAILY_EMIS
-            ): lambda df: (
+            ): lambda df, dir: (
                 summary_output_helpers.get_mean_val(
                     df, output_file_constants.TIMESERIES_COL_ACCESSORS.EMIS_NON_MIT
                 )
             ),
-            output_file_constants.TS_SUMMARY_COLUMNS_ACCESSORS.T_DAILY_EMIS_95: lambda df: (
+            output_file_constants.TS_SUMMARY_COLUMNS_ACCESSORS.T_DAILY_EMIS_95: lambda df, dir: (
                 summary_output_helpers.get_nth_percentile(
                     df,
                     output_file_constants.TIMESERIES_COL_ACCESSORS.EMIS,
                     file_processing_const.Multi_Sim_Output_Const.PERCENTILE_95,
                 )
             ),
-            output_file_constants.TS_SUMMARY_COLUMNS_ACCESSORS.T_MIT_DAILY_EMIS_95: lambda df: (
+            output_file_constants.TS_SUMMARY_COLUMNS_ACCESSORS.T_MIT_DAILY_EMIS_95: lambda df, dir: (
                 summary_output_helpers.get_nth_percentile(
                     df,
                     output_file_constants.TIMESERIES_COL_ACCESSORS.EMIS_MIT,
                     file_processing_const.Multi_Sim_Output_Const.PERCENTILE_95,
                 )
             ),
-            output_file_constants.TS_SUMMARY_COLUMNS_ACCESSORS.T_NON_MIT_DAILY_EMIS_95: lambda df: (
+            output_file_constants.TS_SUMMARY_COLUMNS_ACCESSORS.T_NON_MIT_DAILY_EMIS_95: lambda df, dir: (
                 summary_output_helpers.get_nth_percentile(
                     df,
                     output_file_constants.TIMESERIES_COL_ACCESSORS.EMIS_NON_MIT,
                     file_processing_const.Multi_Sim_Output_Const.PERCENTILE_95,
                 )
             ),
-            output_file_constants.TS_SUMMARY_COLUMNS_ACCESSORS.T_DAILY_EMIS_5: lambda df: (
+            output_file_constants.TS_SUMMARY_COLUMNS_ACCESSORS.T_DAILY_EMIS_5: lambda df, dir: (
                 summary_output_helpers.get_nth_percentile(
                     df,
                     output_file_constants.TIMESERIES_COL_ACCESSORS.EMIS,
                     file_processing_const.Multi_Sim_Output_Const.PERCENTILE_5,
                 )
             ),
-            output_file_constants.TS_SUMMARY_COLUMNS_ACCESSORS.T_MIT_DAILT_EMIS_5: lambda df: (
+            output_file_constants.TS_SUMMARY_COLUMNS_ACCESSORS.T_MIT_DAILT_EMIS_5: lambda df, dir: (
                 summary_output_helpers.get_nth_percentile(
                     df,
                     output_file_constants.TIMESERIES_COL_ACCESSORS.EMIS_MIT,
                     file_processing_const.Multi_Sim_Output_Const.PERCENTILE_5,
                 )
             ),
-            output_file_constants.TS_SUMMARY_COLUMNS_ACCESSORS.T_NON_MIT_DAILY_EMIS_5: lambda df: (
+            output_file_constants.TS_SUMMARY_COLUMNS_ACCESSORS.T_NON_MIT_DAILY_EMIS_5: lambda df, dir: (
                 summary_output_helpers.get_nth_percentile(
                     df,
                     output_file_constants.TIMESERIES_COL_ACCESSORS.EMIS_NON_MIT,
                     file_processing_const.Multi_Sim_Output_Const.PERCENTILE_5,
                 )
             ),
-            output_file_constants.TS_SUMMARY_COLUMNS_ACCESSORS.AVG_DAILY_COST: lambda df: (
+            output_file_constants.TS_SUMMARY_COLUMNS_ACCESSORS.AVG_DAILY_COST: lambda df, dir: (
                 summary_output_helpers.get_mean_val(
                     df, output_file_constants.TIMESERIES_COL_ACCESSORS.COST
                 )
             ),
-            output_file_constants.TS_SUMMARY_COLUMNS_ACCESSORS.TOT_COST: lambda df: (
+            output_file_constants.TS_SUMMARY_COLUMNS_ACCESSORS.TOT_COST: lambda df, dir: (
                 summary_output_helpers.get_sum(
                     df, output_file_constants.TIMESERIES_COL_ACCESSORS.COST
                 )
             ),
-            output_file_constants.TS_SUMMARY_COLUMNS_ACCESSORS.DAILY_COST_95: lambda df: (
+            output_file_constants.TS_SUMMARY_COLUMNS_ACCESSORS.DAILY_COST_95: lambda df, dir: (
                 summary_output_helpers.get_nth_percentile(
                     df,
                     output_file_constants.TIMESERIES_COL_ACCESSORS.COST,
                     file_processing_const.Multi_Sim_Output_Const.PERCENTILE_95,
                 )
             ),
-            output_file_constants.TS_SUMMARY_COLUMNS_ACCESSORS.DAILY_COST_5: lambda df: (
+            output_file_constants.TS_SUMMARY_COLUMNS_ACCESSORS.DAILY_COST_5: lambda df, dir: (
                 summary_output_helpers.get_nth_percentile(
                     df,
                     output_file_constants.TIMESERIES_COL_ACCESSORS.COST,
@@ -111,65 +111,65 @@ class SummaryOutputMapper:
             ),
         },
         file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY: {
-            output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_TOT_MIT: lambda df: (
+            output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_TOT_MIT: lambda df, dir: (
                 summary_output_helpers.get_sum(
                     df, output_file_constants.EMIS_DATA_COL_ACCESSORS.MITIGATED
                 )
             ),
-            output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_TOTAL_EMIS: lambda df: (
+            output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_TOTAL_EMIS: lambda df, dir: (
                 summary_output_helpers.get_sum(
                     df, output_file_constants.EMIS_DATA_COL_ACCESSORS.T_VOL_EMIT
                 )
             ),
-            output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.EST_TOTAL_EMIS: lambda df: (
+            output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.EST_TOTAL_EMIS: lambda df, dir: (
                 summary_output_helpers.get_sum(
                     df, output_file_constants.EMIS_DATA_COL_ACCESSORS.EST_VOL_EMIT
                 )
             ),
-            output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_TOTAL_MIT_EMIS: lambda df: (
+            output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_TOTAL_MIT_EMIS: lambda df, dir: (
                 summary_output_helpers.get_sum(
                     df.loc[df[output_file_constants.EMIS_DATA_COL_ACCESSORS.REPAIRABLE]],
                     output_file_constants.EMIS_DATA_COL_ACCESSORS.T_VOL_EMIT,
                 )
             ),
-            output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_TOTAL_NON_MIT_EMIS: lambda df: (
+            output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_TOTAL_NON_MIT_EMIS: lambda df, dir: (
                 summary_output_helpers.get_sum(
                     df.loc[~df[output_file_constants.EMIS_DATA_COL_ACCESSORS.REPAIRABLE]],
                     output_file_constants.EMIS_DATA_COL_ACCESSORS.T_VOL_EMIT,
                 )
             ),
-            output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.AVG_T_EMIS_RATE: lambda df: (
+            output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.AVG_T_EMIS_RATE: lambda df, dir: (
                 summary_output_helpers.get_mean_val(
                     df, output_file_constants.EMIS_DATA_COL_ACCESSORS.T_RATE
                 )
             ),
-            output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_EMIS_RATE_95: lambda df: (
+            output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_EMIS_RATE_95: lambda df, dir: (
                 summary_output_helpers.get_nth_percentile(
                     df,
                     output_file_constants.EMIS_DATA_COL_ACCESSORS.T_RATE,
                     file_processing_const.Multi_Sim_Output_Const.PERCENTILE_95,
                 )
             ),
-            output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_EMIS_RATE_5: lambda df: (
+            output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_EMIS_RATE_5: lambda df, dir: (
                 summary_output_helpers.get_nth_percentile(
                     df,
                     output_file_constants.EMIS_DATA_COL_ACCESSORS.T_RATE,
                     file_processing_const.Multi_Sim_Output_Const.PERCENTILE_5,
                 )
             ),
-            output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_AVG_EMIS_AMOUNT: lambda df: (
+            output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_AVG_EMIS_AMOUNT: lambda df, dir: (
                 summary_output_helpers.get_mean_val(
                     df, output_file_constants.EMIS_DATA_COL_ACCESSORS.T_VOL_EMIT
                 )
             ),
-            output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_EMIS_AMOUNT_95: lambda df: (
+            output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_EMIS_AMOUNT_95: lambda df, dir: (
                 summary_output_helpers.get_nth_percentile(
                     df,
                     output_file_constants.EMIS_DATA_COL_ACCESSORS.T_VOL_EMIT,
                     file_processing_const.Multi_Sim_Output_Const.PERCENTILE_95,
                 )
             ),
-            output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_EMIS_AMOUNT_5: lambda df: (
+            output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_EMIS_AMOUNT_5: lambda df, dir: (
                 summary_output_helpers.get_nth_percentile(
                     df,
                     output_file_constants.EMIS_DATA_COL_ACCESSORS.T_VOL_EMIT,
@@ -185,7 +185,7 @@ class SummaryOutputMapper:
     YEARLY_MAPPINGS = {
         file_name_constants.Output_Files.SummaryFileNames.EMIS_SUMMARY: {
             output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_ANN_MIT: lambda year: (
-                lambda df: (
+                lambda df, dir: (
                     summary_output_helpers.get_yearly_value_for_multi_day_stat(
                         df,
                         output_file_constants.EMIS_DATA_COL_ACCESSORS.MITIGATED,
@@ -196,7 +196,7 @@ class SummaryOutputMapper:
                 )
             ),
             output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.T_ANN_EMIS: lambda year: (
-                lambda df: (
+                lambda df, dir: (
                     summary_output_helpers.get_yearly_value_for_multi_day_stat(
                         df,
                         output_file_constants.EMIS_DATA_COL_ACCESSORS.T_VOL_EMIT,
@@ -209,8 +209,9 @@ class SummaryOutputMapper:
         },
         file_name_constants.Output_Files.SummaryFileNames.EMIS_EST_SUMMARY: {
             output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.EST_ANN_EMIS: lambda year: (
-                lambda df: (
+                lambda df, dir: (
                     summary_output_helpers.get_annual_emissions_at_all_sites_with_extrapolation(
+                        dir,
                         df,
                         year,
                     )
@@ -219,7 +220,7 @@ class SummaryOutputMapper:
         },
         file_name_constants.Output_Files.SummaryFileNames.EMIS_FUG_EST_SUMMARY: {
             output_file_constants.EMIS_SUMMARY_COLUMNS_ACCESSORS.EST_ANN_EMIS: lambda year: (
-                lambda df: (
+                lambda df, dir: (
                     summary_output_helpers.get_yearly_value_for_multi_day_stat(
                         df,
                         output_file_constants.EMIS_DATA_COL_ACCESSORS.EST_VOL_EMIT,

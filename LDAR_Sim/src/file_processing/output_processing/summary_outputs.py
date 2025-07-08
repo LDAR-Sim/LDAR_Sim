@@ -48,6 +48,7 @@ def summarize_program_outputs(
                     data = pd.read_csv(entry.path)
                 except pd.errors.EmptyDataError:
                     data = pd.DataFrame()
+
                 new_summary_row[
                     output_file_constants.SummaryFileColumns.CommonColumns.PROGRAM_NAME
                 ] = (
@@ -63,7 +64,7 @@ def summarize_program_outputs(
                     .group(2)
                 )
                 for summary_stat, calc_func in summary_mappings.items():
-                    new_summary_row[summary_stat] = calc_func(data)
+                    new_summary_row[summary_stat] = calc_func(data, output_path)
                 summary_output.loc[len(summary_output)] = new_summary_row
 
 

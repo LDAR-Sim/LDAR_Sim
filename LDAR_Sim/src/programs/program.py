@@ -87,6 +87,7 @@ class Program:
             self.duration_method
         ]
         self._survey_reports: list[MinimalSurveyReport] = []
+        self._site_ids = [site.get_id() for site in sites]
 
     def _init_methods_and_schedules(
         self,
@@ -245,3 +246,7 @@ class Program:
         df: pd.DataFrame = pd.DataFrame(data)
 
         return df
+
+    def get_program_site_ids(self) -> list[str]:
+        """Get the site IDs for all sites in the program"""
+        return self._site_ids

@@ -94,6 +94,7 @@ def gen_estimated_emissions_report(
     fugutive_emissions_rates_and_repair_dates: pd.DataFrame,
     start_date: date,
     end_date: date,
+    site_ids: list[str],
     duration_factor: float,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     """Generate a report of yearly estimated emissions based on site survey reports
@@ -104,9 +105,6 @@ def gen_estimated_emissions_report(
     # return if no survey reports
     if site_survey_reports_summary.empty:
         return
-
-    # Get unique site ids
-    site_ids: list = site_survey_reports_summary[eca.SITE_ID].unique()
 
     # For all sites, add a survey report for the start and end date of the simulation
     site_survey_data: list = []
@@ -158,6 +156,7 @@ def gen_estimated_comp_emissions_report(
     fugitive_emissions_rates_and_repair_dates: pd.DataFrame,
     start_date: date,
     end_date: date,
+    site_ids: list[str],
     duration_factor: float,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     """Generate a report of yearly estimated emissions based on only component level surveys
