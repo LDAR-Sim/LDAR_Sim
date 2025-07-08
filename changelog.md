@@ -2,7 +2,8 @@
 
 ## 2025-07-08 - Version 4.2.1
 
-1. Fix bug with spatial extrapolation
+1. Bugfix - Required surveys should now be able to take in 0.
+2. Bugfix - spatial extrapolation
 
 ## 2024-09-20 - Version 4.2
 
@@ -13,10 +14,10 @@
 5. Added parameter to disable pre-simulation emissions
 6. Updated Stationary Rolling Average functionality
 7. Various bugfixes:
-    - Fixed runtime error during emissions creation when duration is provided in infrastructure files
-    - Fixed METEC NoWind sensor
-    - Fixed runtime error occurring in scenarios with little detected emissions
-    - Fixed runtime error occurring when simulation duration was <= 1 year
+   - Fixed runtime error during emissions creation when duration is provided in infrastructure files
+   - Fixed METEC NoWind sensor
+   - Fixed runtime error occurring in scenarios with little detected emissions
+   - Fixed runtime error occurring when simulation duration was <= 1 year
 
 ## 2024-07-31 - Version 4.1.1
 
@@ -27,10 +28,10 @@
 5. Runtime and memory optimization
 6. New quantification error module
 7. Various bug fixes:
-    - quantification error module file read bug
-    - generate emissions can now generate emission on the last day of simulation
-    - error handling for missing survey frequency
-    - error handling for missing methods
+   - quantification error module file read bug
+   - generate emissions can now generate emission on the last day of simulation
+   - error handling for missing survey frequency
+   - error handling for missing methods
 
 ## 2024-07-11 - Version 4.1.0
 
@@ -187,14 +188,14 @@ The version bump to 4.0 of LDAR-Sim included a significant overhaul of the exist
 
 ## 2022-11
 
-1. **Survey Scheduling bug fixes**  Bug fixes made to survey scheduling for mobile methods.
-    1. ***Changed logic for scheduling surveys for sites*** Changed site survey scheduling logic to begin counting time since a site was last surveyed from the starting date of the previous survey, not the end date.
-    2. ***Changed rollover of mobile_crew to shared*** The rollover variable was for mobile crews was moved to a class variables so all crews now share a rollover list. This ensures survey progress is no longer reset if the crew surveying the site changes.
-    3. ***Added scheduling fix to reduce schedule slipping*** Added scheduling to add sites to the survey pool if half the survey duration(campaign) has passed. This is intended to reduce the observed issue of schedule slipping.
-    4. ***Bugfix for survey scheduling*** Fixed behavior where surveys completed on Jan 1 of any year would wrongly be considered as a survey done the previous year.
+1. **Survey Scheduling bug fixes** Bug fixes made to survey scheduling for mobile methods.
+   1. **_Changed logic for scheduling surveys for sites_** Changed site survey scheduling logic to begin counting time since a site was last surveyed from the starting date of the previous survey, not the end date.
+   2. **_Changed rollover of mobile_crew to shared_** The rollover variable was for mobile crews was moved to a class variables so all crews now share a rollover list. This ensures survey progress is no longer reset if the crew surveying the site changes.
+   3. **_Added scheduling fix to reduce schedule slipping_** Added scheduling to add sites to the survey pool if half the survey duration(campaign) has passed. This is intended to reduce the observed issue of schedule slipping.
+   4. **_Bugfix for survey scheduling_** Fixed behavior where surveys completed on Jan 1 of any year would wrongly be considered as a survey done the previous year.
 2. **Added new parameter min_time_bt_surveys** Added a new parameter for setting value of minimum time that must pass between surveys, this is now the value used for determining when to add sites to survey pool.
 
-    ***_min_time_bt_surveys*** can be set like ***_RS*** or ***_time*** in the infrastructure file.
+   **_\_min_time_bt_surveys_** can be set like **_\_RS_** or **_\_time_** in the infrastructure file.
 
 ## 2022-09
 
@@ -231,7 +232,7 @@ The version bump to 4.0 of LDAR-Sim included a significant overhaul of the exist
 21. **Removed leak count and spin up -** These two inputs were redundant and prone to error. Initial emissions are now estimated using leak generation and removal assumptions.
 22. **Seed timeseries generator –** Useful for testing as each day will have the same seed for all programs in a simulation set.
 23. **Code cleanup –** Removed unused or obsolete code, including defunct sensitivity analyses.
-24. **Changed to YAML inputs -**  Switched from text file inputs to YAML to improve readability.
+24. **Changed to YAML inputs -** Switched from text file inputs to YAML to improve readability.
 25. **Restructured software folder -** Improved folder structure for entire software to be more modular and follow current practices.
 26. **Updated input data structure -** An object-orientated input data structure is now used.
 27. **Package upgrades -** Updated Python packages, requirements file and, pipenv files to enable flexibility in package management
