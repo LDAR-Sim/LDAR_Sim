@@ -1,5 +1,10 @@
 # Change Log
 
+## 2025-07-28 - Version 4.2.2
+
+1. Added Mac Environment file
+2. Bugfix - updated use of numpy NaN in output processing. 
+
 ## 2025-07-08 - Version 4.2.1
 
 1. Bugfix - Required surveys should now be able to take in 0.
