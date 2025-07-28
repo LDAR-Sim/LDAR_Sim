@@ -20,7 +20,7 @@ along with this program.  If not, see <https://opensource.org/licenses/MIT>.
 
 from dataclasses import dataclass
 from typing import Tuple
-from numpy import NaN
+import numpy as np
 from constants.error_messages import Output_Processing_Messages as om
 
 
@@ -98,8 +98,8 @@ class TsMethodData:
 
 @dataclass
 class TaggingFlaggingStats:
-    sites_flagged: int = NaN
-    leaks_tagged: int = NaN
+    sites_flagged: int = np.nan
+    leaks_tagged: int = np.nan
 
 
 @dataclass
