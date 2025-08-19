@@ -48,9 +48,17 @@ class DaylightCalculatorAve:
             obs.lon = str(lon_ave)
 
             # get the sunset and sunrise UTC time
-            sunrise = obs.previous_rising(ephem.Sun(), use_center=True).datetime()
-            sunset = obs.next_setting(ephem.Sun(), use_center=True).datetime()
-            dif_hours = (sunset - sunrise).total_seconds() / 3600
+            try:
+                # get the sunset and sunrise UTC time
+                sunrise = obs.previous_rising(ephem.Sun(), use_center=True).datetime()
+                sunset = obs.next_setting(ephem.Sun(), use_center=True).datetime()
+                dif_hours = (sunset - sunrise).total_seconds() / 3600
+            except ephem.NeverUpError:
+                # Sun never rises: polar night
+                dif_hours = 0.0
+            except ephem.AlwaysUpError:
+                # Sun never sets: polar day
+                dif_hours = 24.0
             self.daylight_hours[curr_date] = dif_hours
             curr_date += timedelta(days=1)
         return

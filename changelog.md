@@ -1,9 +1,13 @@
 # Change Log
 
+## 2025-08-19 - Version 4.2.3
+
+1. Bugfix - Updated Daylight Calculator to handle extreme daylight conditions.
+
 ## 2025-07-28 - Version 4.2.2
 
 1. Added Mac Environment file
-2. Bugfix - updated use of numpy NaN in output processing. 
+2. Bugfix - updated use of numpy NaN in output processing.
 
 ## 2025-07-08 - Version 4.2.1
 
