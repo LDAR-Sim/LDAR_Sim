@@ -71,7 +71,7 @@ class EmissionsSource:
                     input_increment=unit_time,
                 )
                 converted_list.append(converted_val)
-            return for_conversion
+            return converted_list
 
     def get_a_rate(self) -> float:
         return 0.0

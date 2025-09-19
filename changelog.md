@@ -1,5 +1,9 @@
 # Change Log
 
+## 2025-09-18 - Version 4.2.4
+
+1. Bugfix - Fixed the unit conversion for emissions sampling (previously always assumed g/s when sampling emission rates)
+
 ## 2025-08-19 - Version 4.2.3
 
 1. Bugfix - Updated Daylight Calculator to handle extreme daylight conditions.
