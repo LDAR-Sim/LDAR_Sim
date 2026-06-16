@@ -1,7 +1,7 @@
 
 MIT License
 
-Copyright (C) 2018-2021 Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz - The LDAR Simulator (LDAR-Sim)
+Copyright (C) 2018-2025 Thomas Fox, Mozhou Gao, Thomas Barchyn, Chris Hugenholtz - The LDAR Simulator (LDAR-Sim)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
